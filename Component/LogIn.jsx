@@ -115,21 +115,24 @@ export default function LogIn() {
                     </TouchableOpacity>
                 </View>
                 {/* remmeber me check box  in one line*/}
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <View style={{ flexDirection: 'row' }}>
+                    {/* remember me check box */}
                     <TouchableOpacity onPress={() => alert('Remember Me')}>
                         <Icon
                             name={'check-box-outline-blank'}
                             size={20}
                             color='#979797'
+                            style={styles.rememberMeIcon}
                         />
                     </TouchableOpacity>
                     <Text style={styles.rememberMe}>Remember Me</Text>
-                </View>
-                <View>
                     {/* forgot password button */}
-                    <TouchableOpacity onPress={() => alert('Forgot Password')}>
-                        <Text style={styles.btnForgotPassword}>Forgot Password?</Text>
-                    </TouchableOpacity>
+                    <View style={{ flexDirection: 'row', alignSelf: 'flex-end' }}>
+                        {/* forgot password button */}
+                        <TouchableOpacity onPress={() => alert('Forgot Password')}>
+                            <Text style={styles.btnForgotPassword}>Forgot Password?</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
                 {/* login button */}
                 <TouchableOpacity onPress={logInBtn} style={styles.button}>
@@ -138,7 +141,7 @@ export default function LogIn() {
             </View>
             <View style={styles.lineContainer}>
                 <View style={styles.line} />
-                <Text style={styles.orText}>or</Text>
+                <Text style={styles.orText}>Or</Text>
                 <View style={styles.line} />
             </View>
             <View style={styles.buttonContainer}>
@@ -165,7 +168,7 @@ const styles = StyleSheet.create({
     imageContainer: {
         alignItems: 'center',
         justifyContent: 'center',
-        flex: 2,
+        flex: 2.5,
     },
     buttonContainer: {
         flex: 1,
@@ -183,7 +186,6 @@ const styles = StyleSheet.create({
         flex: 2,
         width: '100%',
         alignItems: 'center',
-        // justifyContent: 'center',
     },
     image: {
         width: Dimensions.get('window').width * 0.85,
@@ -204,7 +206,6 @@ const styles = StyleSheet.create({
     button: {
         width: Dimensions.get('window').width * 0.85,
         padding: 10,
-        // margin: 10,
         backgroundColor: '#548DFF',
         alignItems: 'center',
         borderRadius: 10,
@@ -212,9 +213,10 @@ const styles = StyleSheet.create({
         borderColor: 'lightgray',
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.2,
-        shadowRadius: 2,
+        shadowOpacity: 0.3,
+        shadowRadius: 3,
         elevation: 1,
+        margin: 10,
     },
     buttonText: {
         color: 'white',
@@ -254,16 +256,20 @@ const styles = StyleSheet.create({
         margin: 5,
     },
     btnForgotPassword: {
-        // color :good blue
         color: '#548DFF',
         fontSize: 13,
-        margin: 10,
-        alignSelf: 'flex-end'
-        
+        marginLeft: Dimensions.get('window').width * 0.22,
+        marginTop: 10,
+        marginBottom: 10,
     },
     rememberMe: {
         color: '#979797',
         fontSize: 13,
-        margin: 10
-    }
+        marginTop: 10,
+        marginBottom: 10,
+    },
+    rememberMeIcon: {
+        marginTop: 10,
+        marginBottom: 10,
+    },
 });
