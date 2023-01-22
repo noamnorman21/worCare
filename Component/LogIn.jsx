@@ -1,9 +1,10 @@
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Button, Keyboard, Alert, LayoutAnimation, Types } from 'react-native'
+import { SafeAreaView, Dimensions, View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Button, Keyboard, Alert, LayoutAnimation, Types } from 'react-native'
 import React from 'react'
 import { useEffect, useState } from 'react';
 
 
 import Icon from 'react-native-vector-icons/MaterialIcons'
+//import { Dimensions } from 'react-native/Libraries/Utilities/Dimensions';
 
 export default function LogIn() {
     const [email, setEmail] = useState('');
@@ -74,34 +75,34 @@ export default function LogIn() {
 
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <View style={styles.imageContainer}>
-                {/* <Image
+                <Image
                     style={styles.image}
-                    source={require('../images/Logo_New_Small.png')}
-                /> */}
+                    source={require('../images/logo_New.png')}
+                />
+
             </View>
 
             <View style={[styles.inputContainer, animation]}>
-
-
+                {/* userName */}
                 <TextInput
                     style={styles.input}
                     placeholder="Email"
                     value={email}
                     onChangeText={text => setEmail(text)}
                     keyboardType="email-address"
-
                 />
                 <View style={styles.passwordContainer}>
+                    {/* password */}
                     <TextInput
                         style={styles.input}
                         placeholder="Password"
                         secureTextEntry={!showPassword}
                         value={password}
                         onChangeText={text => setPassword(text)}
-
                     />
+                    {/* password visibility button */}
                     <TouchableOpacity
                         style={styles.passwordButton}
                         onPress={() => setShowPassword(!showPassword)}
@@ -112,9 +113,25 @@ export default function LogIn() {
                             color='black'
                         />
                     </TouchableOpacity>
-
                 </View>
-
+                {/* remmeber me check box  in one line*/}
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <TouchableOpacity onPress={() => alert('Remember Me')}>
+                        <Icon
+                            name={'check-box-outline-blank'}
+                            size={20}
+                            color='#979797'
+                        />
+                    </TouchableOpacity>
+                    <Text style={styles.rememberMe}>Remember Me</Text>
+                </View>
+                <View>
+                    {/* forgot password button */}
+                    <TouchableOpacity onPress={() => alert('Forgot Password')}>
+                        <Text style={styles.btnForgotPassword}>Forgot Password?</Text>
+                    </TouchableOpacity>
+                </View>
+                {/* login button */}
                 <TouchableOpacity onPress={logInBtn} style={styles.button}>
                     <Text style={styles.buttonText}>Login</Text>
                 </TouchableOpacity>
@@ -124,23 +141,15 @@ export default function LogIn() {
                 <Text style={styles.orText}>or</Text>
                 <View style={styles.line} />
             </View>
-
-
             <View style={styles.buttonContainer}>
-
                 <Button
                     title="Sign Up"
                     onPress={() => alert('Sign Up')}
-                    color="red"
+                    color="#548DFF"
                     style={styles.signUpButton}
-
                 />
-                {/* <Button
-                    title="Forget Password"
-                    onPress={() => alert('Forget Password')}
-                /> */}
             </View>
-        </View>
+        </SafeAreaView>
     )
 }
 
@@ -156,40 +165,33 @@ const styles = StyleSheet.create({
     imageContainer: {
         alignItems: 'center',
         justifyContent: 'center',
-
         flex: 2,
     },
     buttonContainer: {
         flex: 1,
         width: '100%',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
+        flexDirection: 'column',
+        justifyContent: 'center',
         alignItems: 'center',
     },
     passwordContainer: {
         width: '100%',
-
         alignItems: 'center',
         justifyContent: 'center',
-
     },
     inputContainer: {
         flex: 2,
         width: '100%',
         alignItems: 'center',
         // justifyContent: 'center',
-
-
-
-
     },
     image: {
-        width: 250,
-        height: 250,
+        width: Dimensions.get('window').width * 0.85,
+        height: Dimensions.get('window').width * 0.85,
         resizeMode: 'contain',
     },
     input: {
-        width: '100%',
+        width: Dimensions.get('window').width * 0.85,
         padding: 10,
         margin: 10,
         alignItems: 'left',
@@ -198,15 +200,12 @@ const styles = StyleSheet.create({
         backgroundColor: '#F5F5F5',
         borderColor: 'lightgray',
         shadowColor: '#000',
-
-
     },
     button: {
-        width: '100%',
+        width: Dimensions.get('window').width * 0.85,
         padding: 10,
         // margin: 10,
-        backgroundColor: '#F95F6B',
-
+        backgroundColor: '#548DFF',
         alignItems: 'center',
         borderRadius: 10,
         borderWidth: 1,
@@ -216,26 +215,20 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.2,
         shadowRadius: 2,
         elevation: 1,
-
-
-
     },
     buttonText: {
         color: 'white',
         fontWeight: 'bold',
     },
-
     passwordButton: {
         position: 'absolute',
         right: 10,
         padding: 5,
-
         borderRadius: 5,
     },
     passwordButtonText: {
         color: 'black',
         fontWeight: 'bold',
-
     },
     lineContainer: {
         flexDirection: 'row',
@@ -259,8 +252,18 @@ const styles = StyleSheet.create({
         height: 30,
         padding: 5,
         margin: 5,
+    },
+    btnForgotPassword: {
+        // color :good blue
+        color: '#548DFF',
+        fontSize: 13,
+        margin: 10,
+        alignSelf: 'flex-end'
+        
+    },
+    rememberMe: {
+        color: '#979797',
+        fontSize: 13,
+        margin: 10
     }
-    
-    
-
 });
