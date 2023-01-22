@@ -1,10 +1,7 @@
 import { SafeAreaView, Dimensions, View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Button, Keyboard, Alert, LayoutAnimation, Types } from 'react-native'
 import React from 'react'
 import { useEffect, useState } from 'react';
-
-
 import Icon from 'react-native-vector-icons/MaterialIcons'
-//import { Dimensions } from 'react-native/Libraries/Utilities/Dimensions';
 
 export default function LogIn() {
     const [email, setEmail] = useState('');
@@ -48,12 +45,11 @@ export default function LogIn() {
                         useNativeDriver: true,
                     },
                 });
-                setAnimation({ marginBottom: 110 });
+                setAnimation({ marginBottom: Dimensions.get('window').height * 0.25 });
             }
         );
         const keyboardDidHideListener = Keyboard.addListener(
             'keyboardDidHide',
-
             () => {
                 LayoutAnimation.configureNext({
                     update: {
@@ -72,8 +68,6 @@ export default function LogIn() {
 
     }, []);
 
-
-
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.imageContainer}>
@@ -81,7 +75,6 @@ export default function LogIn() {
                     style={styles.image}
                     source={require('../images/logo_New.png')}
                 />
-
             </View>
 
             <View style={[styles.inputContainer, animation]}>
@@ -115,7 +108,7 @@ export default function LogIn() {
                     </TouchableOpacity>
                 </View>
                 {/* remmeber me check box  in one line*/}
-                <View style={{ flexDirection: 'row' }}>
+                <View style={{width:Dimensions.get('screen').width*0.85, flexDirection: 'row' }}>
                     {/* remember me check box */}
                     <TouchableOpacity onPress={() => alert('Remember Me')}>
                         <Icon
@@ -139,11 +132,13 @@ export default function LogIn() {
                     <Text style={styles.buttonText}>Login</Text>
                 </TouchableOpacity>
             </View>
+            
             <View style={styles.lineContainer}>
                 <View style={styles.line} />
                 <Text style={styles.orText}>Or</Text>
                 <View style={styles.line} />
             </View>
+
             <View style={styles.buttonContainer}>
                 <Button
                     title="Sign Up"
@@ -193,7 +188,7 @@ const styles = StyleSheet.create({
         resizeMode: 'contain',
     },
     input: {
-        width: Dimensions.get('window').width * 0.85,
+        width: Dimensions.get('window').width * 0.9,
         padding: 10,
         margin: 10,
         alignItems: 'left',
@@ -204,7 +199,7 @@ const styles = StyleSheet.create({
         shadowColor: '#000',
     },
     button: {
-        width: Dimensions.get('window').width * 0.85,
+        width: Dimensions.get('window').width * 0.9,
         padding: 10,
         backgroundColor: '#548DFF',
         alignItems: 'center',
@@ -227,6 +222,7 @@ const styles = StyleSheet.create({
         right: 10,
         padding: 5,
         borderRadius: 5,
+        marginLeft: 5,
     },
     passwordButtonText: {
         color: 'black',
@@ -241,8 +237,8 @@ const styles = StyleSheet.create({
     },
     line: {
         flex: 1,
-        height: 1.2,
-        backgroundColor: '#979797',
+        height: 0.3,
+        backgroundColor: '#979797D9',
         marginHorizontal: 10
     },
     orText: {
@@ -258,7 +254,7 @@ const styles = StyleSheet.create({
     btnForgotPassword: {
         color: '#548DFF',
         fontSize: 13,
-        marginLeft: Dimensions.get('window').width * 0.22,
+        marginLeft: Dimensions.get('screen').width * 0.175,
         marginTop: 10,
         marginBottom: 10,
     },

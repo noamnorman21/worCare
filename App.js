@@ -5,7 +5,7 @@ import LogIn from './Component/LogIn';
 export default function App() {
   return (
     <View style={styles.container}>
-      
+      <LogIn />
     </View>
   );
 }
