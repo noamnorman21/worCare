@@ -45,15 +45,28 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Web.Cors, Version=5.2.9.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Cors.5.2.9\lib\net45\System.Web.Cors.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Http.Cors, Version=5.2.9.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Cors.5.2.9\lib\net45\System.Web.Http.Cors.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Abstractions" />
@@ -161,6 +174,87 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="tblActualList.cs">
+      <DependentUpon>Worcare.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblCalendarForUser.cs">
+      <DependentUpon>Worcare.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblCalendersType.cs">
+      <DependentUpon>Worcare.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblCaresForPatient.cs">
+      <DependentUpon>Worcare.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblContacts.cs">
+      <DependentUpon>Worcare.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblCountry.cs">
+      <DependentUpon>Worcare.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDrug.cs">
+      <DependentUpon>Worcare.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDrugForPatient.cs">
+      <DependentUpon>Worcare.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblForeignUser.cs">
+      <DependentUpon>Worcare.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblHobbies.cs">
+      <DependentUpon>Worcare.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblLanguage.cs">
+      <DependentUpon>Worcare.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblLimitations.cs">
+      <DependentUpon>Worcare.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblList.cs">
+      <DependentUpon>Worcare.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPatient.cs">
+      <DependentUpon>Worcare.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPatientTask.cs">
+      <DependentUpon>Worcare.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPaycheck.cs">
+      <DependentUpon>Worcare.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPaymentRequest.cs">
+      <DependentUpon>Worcare.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPrivateTask.cs">
+      <DependentUpon>Worcare.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblProduct.cs">
+      <DependentUpon>Worcare.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblProductList.cs">
+      <DependentUpon>Worcare.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblRights.cs">
+      <DependentUpon>Worcare.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblUser.cs">
+      <DependentUpon>Worcare.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Worcare.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Worcare.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Worcare.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Worcare.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Worcare.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Worcare.edmx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HelpPage\HelpPage.css" />
@@ -192,6 +286,16 @@
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\CollectionModelDescription.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\ApiGroup.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\Api.cshtml" />
+    <Content Include="Worcare.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Worcare.Context.cs</LastGenOutput>
+      <DependentUpon>Worcare.edmx</DependentUpon>
+    </Content>
+    <Content Include="Worcare.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>Worcare.edmx</DependentUpon>
+      <LastGenOutput>Worcare.cs</LastGenOutput>
+    </Content>
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -212,6 +316,13 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
+    <EntityDeploy Include="Worcare.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>Worcare.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Worcare.edmx.diagram">
+      <DependentUpon>Worcare.edmx</DependentUpon>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -245,6 +356,15 @@
     <None Include="packages.config" />
     <Content Include="Scripts\jquery-3.4.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.4.1.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ClassLibrary\ClassLibrary.csproj">
+      <Project>{44d869ec-9ccb-41cc-b021-4261db085327}</Project>
+      <Name>ClassLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

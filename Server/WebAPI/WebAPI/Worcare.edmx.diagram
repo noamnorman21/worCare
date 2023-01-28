@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="576e3ec9817c4b91ba6cef54679ae7ec" Name="Diagram1" ZoomLevel="74">
+        <EntityTypeShape EntityType="igroup194_Model.tblActualList" Width="1.5" PointX="9" PointY="4" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup194_Model.tblCalendarForUser" Width="1.5" PointX="3" PointY="19.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup194_Model.tblCalendersType" Width="1.5" PointX="0.75" PointY="20.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup194_Model.tblCaresForPatient" Width="1.5" PointX="8.25" PointY="7.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup194_Model.tblContacts" Width="1.5" PointX="8.25" PointY="11.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup194_Model.tblCountry" Width="1.5" PointX="0.75" PointY="9.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup194_Model.tblDrug" Width="1.5" PointX="6" PointY="8" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup194_Model.tblDrugForPatient" Width="1.5" PointX="8.25" PointY="15.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup194_Model.tblForeignUser" Width="1.5" PointX="3" PointY="11.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup194_Model.tblHobbies" Width="1.5" PointX="3.75" PointY="6.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup194_Model.tblLanguage" Width="1.5" PointX="0.75" PointY="12" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup194_Model.tblLimitations" Width="1.5" PointX="3.75" PointY="2.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup194_Model.tblList" Width="1.5" PointX="6.75" PointY="3.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup194_Model.tblPatient" Width="1.5" PointX="6" PointY="11.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup194_Model.tblPatientTask" Width="1.5" PointX="11.25" PointY="11.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup194_Model.tblPaycheck" Width="1.5" PointX="3" PointY="16" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup194_Model.tblPaymentRequest" Width="1.5" PointX="5.25" PointY="17.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup194_Model.tblPrivateTask" Width="1.5" PointX="5.25" PointY="20.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup194_Model.tblProduct" Width="1.5" PointX="6.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup194_Model.tblProductList" Width="1.5" PointX="9" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup194_Model.tblRights" Width="1.5" PointX="0.75" PointY="1.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup194_Model.tblUser" Width="1.5" PointX="0.75" PointY="15.5" IsExpanded="true" />
+        <AssociationConnector Association="igroup194_Model.FK_tblActualList_tblList" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194_Model.FK_tblDrugForPatient_tblActualList" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194_Model.FK_tblPatientTask_tblActualList" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194_Model.FK__tblCalend__calen__74AE54BC" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194_Model.FK__tblCalendarF__id__75A278F5" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194_Model.FK_tblCaresForPatient_tblForeignUser" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194_Model.FK_tblCaresForPatient_tblPatient" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194_Model.FK_tblContacts_tblPatient" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194_Model.FK_tblForeignUser_tblCountry" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194_Model.FK_tblDrugForPatient_tblDrug1" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194_Model.FK_tblDrugForPatient_tblPatient" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194_Model.FK_tblForeignUser_tblLanguage" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194_Model.FK_tblForeignUser_tblUser" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194_Model.FK_tblPatientTask_tblForeignUser" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194_Model.FK_tblPaymentRequest_tblForeignUser" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194_Model.FK_tblPrivateTask_tblForeignUser" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194_Model.FK_tblPatient_tblHobbies" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194_Model.FK_tblPatient_tblLanguage" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194_Model.FK_tblPatient_tblLimitations" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194_Model.FK_tblProductList_tblList" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194_Model.FK_tblPatientTask_tblPatient" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194_Model.FK_tblPatientTask_tblUser" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194_Model.FK_tblPaycheck_tblUser" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194_Model.FK_tblProductList_tblProduct" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
