@@ -214,6 +214,7 @@ const styles = StyleSheet.create({
         shadowRadius: 3,
         elevation: 1,
         margin: 10,
+        height: 54,
     },
     buttonText: {
         color: 'white',
