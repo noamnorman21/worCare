@@ -85,6 +85,7 @@ export default function LogIn() {
                     value={email}
                     onChangeText={text => setEmail(text)}
                     keyboardType="email-address"
+                    autoCorrect={false}                 
                 />
                 <View style={styles.passwordContainer}>
                     {/* password */}
@@ -93,6 +94,9 @@ export default function LogIn() {
                         placeholder="Password"
                         secureTextEntry={!showPassword}
                         value={password}
+                        autoCapitalize='none'
+                        autoCorrect={false}                      
+                        keyboardType='ascii-capable'
                         onChangeText={text => setPassword(text)}
                     />
                     {/* password visibility button */}
@@ -100,11 +104,12 @@ export default function LogIn() {
                         style={styles.passwordButton}
                         onPress={() => setShowPassword(!showPassword)}
                     >
-                        <Icon
-                            name={showPassword ? 'visibility' : 'visibility-off'}
-                            size={20}
-                            color='black'
-                        />
+                    {/* Icon button For changing password input visibility */}
+                    <Icon
+                        name={showPassword ? 'visibility' : 'visibility-off'}
+                        size={20}
+                        color='#979797'
+                    />
                     </TouchableOpacity>
                 </View>
                 {/* remmeber me check box  in one line*/}
@@ -189,7 +194,7 @@ const styles = StyleSheet.create({
         padding: 10,
         margin: 10,
         alignItems: 'left',
-        borderRadius: 10,
+        borderRadius: 16,
         borderWidth: 1,
         backgroundColor: '#F5F5F5',
         borderColor: 'lightgray',
@@ -198,9 +203,9 @@ const styles = StyleSheet.create({
     },
     button: {
         width: Dimensions.get('window').width * 0.9,
-        padding: 15,
         backgroundColor: '#548DFF',
         alignItems: 'center',
+        justifyContent: 'center',
         borderRadius: 16,
         borderWidth: 1,
         borderColor: 'lightgray',
@@ -209,9 +214,8 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.3,
         shadowRadius: 3,
         elevation: 1,
-        margin: 10,
-        height: 54,
-        
+        margin: 15,
+        height: 54,        
     },
     buttonText: {
         color: 'white',
@@ -237,13 +241,15 @@ const styles = StyleSheet.create({
     },
     line: {
         flex: 1,
-        height: 0.3,
-        backgroundColor: '#979797D9',
-        marginHorizontal: 10
+        height: 1,
+        backgroundColor: '#808080',
+        marginHorizontal: 10,
     },
     orText: {
         paddingHorizontal: 10,
-        color: '#979797'
+        color: '#808080',
+        fontSize: 18,
+        fontWeight: '600',
     },
     btnForgotPassword: {
         color: '#548DFF',
