@@ -33,7 +33,7 @@ export default function LogIn() {
         return re.test(email);
     }
 
-    //keyboard listener
+    //keyboard listener for animation
     useEffect(() => {
         const keyboardDidShowListener = Keyboard.addListener(
             'keyboardDidShow',
@@ -45,7 +45,7 @@ export default function LogIn() {
                         useNativeDriver: true,
                     },
                 });
-                setAnimation({ marginBottom: Dimensions.get('window').height * 0.25 });
+                setAnimation({ marginBottom: Dimensions.get('window').height * 0.3 });
             }
         );
         const keyboardDidHideListener = Keyboard.addListener(
@@ -108,7 +108,7 @@ export default function LogIn() {
                     </TouchableOpacity>
                 </View>
                 {/* remmeber me check box  in one line*/}
-                <View style={{width:Dimensions.get('screen').width*0.85, flexDirection: 'row' }}>
+                <View style={{ width: Dimensions.get('screen').width * 0.85, flexDirection: 'row' }}>
                     {/* remember me check box */}
                     <TouchableOpacity onPress={() => alert('Remember Me')}>
                         <Icon
@@ -132,21 +132,24 @@ export default function LogIn() {
                     <Text style={styles.buttonText}>Login</Text>
                 </TouchableOpacity>
             </View>
-            
+            {/* Line OR Line */}
             <View style={styles.lineContainer}>
                 <View style={styles.line} />
                 <Text style={styles.orText}>Or</Text>
                 <View style={styles.line} />
             </View>
 
-            <View style={styles.buttonContainer && {flexDirection:'column' ,flex:1}}>
-                <Text style={styles.signUpText && { }}>Need an account?</Text>
-                <Button
-                    title="Sign Up"
-                    onPress={() => alert('Sign Up')}
-                    color="#548DFF"
-                    style={styles.signUpButton}
-                />
+            {/* for sign up button */}
+            <View style={styles.buttonContainer}>
+                <View style={styles.needAccountTXT}>
+                    <Text style={styles.signUpText}>Need an account ?</Text>
+                </View>
+                <View>
+                    <TouchableOpacity onPress={() => alert('Sign Up')}>
+                        <Text style={styles.signUpButtonText}>Sign Up</Text>
+                    </TouchableOpacity>
+                </View>
+
             </View>
         </SafeAreaView>
     )
@@ -164,14 +167,7 @@ const styles = StyleSheet.create({
     imageContainer: {
         alignItems: 'center',
         justifyContent: 'center',
-        flex: 2.5,
-    },
-    buttonContainer: {
-        flex: 1,
-        width: '100%',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
+        flex: 2,
     },
     passwordContainer: {
         width: '100%',
@@ -202,10 +198,10 @@ const styles = StyleSheet.create({
     },
     button: {
         width: Dimensions.get('window').width * 0.9,
-        padding: 10,
+        padding: 15,
         backgroundColor: '#548DFF',
         alignItems: 'center',
-        borderRadius: 10,
+        borderRadius: 16,
         borderWidth: 1,
         borderColor: 'lightgray',
         shadowColor: '#000',
@@ -215,6 +211,7 @@ const styles = StyleSheet.create({
         elevation: 1,
         margin: 10,
         height: 54,
+        
     },
     buttonText: {
         color: 'white',
@@ -236,7 +233,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         width: '100%',
         alignSelf: 'center',
-        marginVertical: 15
+        marginVertical: 30
     },
     line: {
         flex: 1,
@@ -247,12 +244,6 @@ const styles = StyleSheet.create({
     orText: {
         paddingHorizontal: 10,
         color: '#979797'
-    },
-    signUpButton: {
-        width: 60,
-        height: 30,
-        padding: 5,
-        margin: 5,
     },
     btnForgotPassword: {
         color: '#548DFF',
@@ -272,7 +263,19 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     signUpText: {
-        fontSize: 13,
-        marginRight: 5,
+        fontSize: 16,
+        flex: 1,
+    },
+    signUpButtonText: {
+        color: '#548DFF',
+        fontSize: 16,
+    },
+    needAccountTXT: {
+        marginRight: Dimensions.get('screen').width * 0.03,
+    },
+    buttonContainer: {
+        flex: 0.3,
+        flexDirection: 'row',
+        justifyContent: 'center',
     },
 });
