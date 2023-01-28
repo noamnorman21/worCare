@@ -139,7 +139,8 @@ export default function LogIn() {
                 <View style={styles.line} />
             </View>
 
-            <View style={styles.buttonContainer}>
+            <View style={styles.buttonContainer && {flexDirection:'column' ,flex:1}}>
+                <Text style={styles.signUpText && { }}>Need an account?</Text>
                 <Button
                     title="Sign Up"
                     onPress={() => alert('Sign Up')}
@@ -197,6 +198,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#F5F5F5',
         borderColor: 'lightgray',
         shadowColor: '#000',
+        height: 54,
     },
     button: {
         width: Dimensions.get('window').width * 0.9,
@@ -267,5 +269,9 @@ const styles = StyleSheet.create({
     rememberMeIcon: {
         marginTop: 10,
         marginBottom: 10,
+    },
+    signUpText: {
+        fontSize: 13,
+        marginRight: 5,
     },
 });
