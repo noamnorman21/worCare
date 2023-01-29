@@ -4,11 +4,15 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using ClassLibrary;
 
 namespace WebAPI.Controllers
 {
     public class ValuesController : ApiController
     {
+        igroup194DBContext db = new igroup194DBContext(); // Create a new instance of the database context
+        // IHTTPActionResult is a generic interface that can return any type of HTTP response
+        
         // GET api/values
         public IEnumerable<string> Get()
         {

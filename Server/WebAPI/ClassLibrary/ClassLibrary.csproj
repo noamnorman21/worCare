@@ -46,6 +46,8 @@
     <Reference Include="System.Net.Http.Formatting, Version=5.2.9.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.9\lib\net45\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Web.Cors, Version=5.2.9.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Cors.5.2.9\lib\net45\System.Web.Cors.dll</HintPath>
     </Reference>
@@ -66,10 +68,113 @@
     <Compile Include="Class1.cs" />
     <Compile Include="igroup194_prodEntities.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="tblActualList.cs">
+      <DependentUpon>Worcare_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblCalendarForUser.cs">
+      <DependentUpon>Worcare_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblCalendersType.cs">
+      <DependentUpon>Worcare_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblCaresForPatient.cs">
+      <DependentUpon>Worcare_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblContacts.cs">
+      <DependentUpon>Worcare_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblCountry.cs">
+      <DependentUpon>Worcare_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDrug.cs">
+      <DependentUpon>Worcare_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblDrugForPatient.cs">
+      <DependentUpon>Worcare_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblForeignUser.cs">
+      <DependentUpon>Worcare_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblHobbies.cs">
+      <DependentUpon>Worcare_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblLanguage.cs">
+      <DependentUpon>Worcare_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblLimitations.cs">
+      <DependentUpon>Worcare_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblList.cs">
+      <DependentUpon>Worcare_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPatient.cs">
+      <DependentUpon>Worcare_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPatientTask.cs">
+      <DependentUpon>Worcare_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPaycheck.cs">
+      <DependentUpon>Worcare_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPaymentRequest.cs">
+      <DependentUpon>Worcare_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblPrivateTask.cs">
+      <DependentUpon>Worcare_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblProduct.cs">
+      <DependentUpon>Worcare_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblProductList.cs">
+      <DependentUpon>Worcare_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblRights.cs">
+      <DependentUpon>Worcare_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblUser.cs">
+      <DependentUpon>Worcare_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Worcare_Model.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Worcare_Model.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Worcare_Model.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Worcare_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Worcare_Model.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Worcare_Model.edmx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <EntityDeploy Include="Worcare_Model.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>Worcare_Model.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="Worcare_Model.edmx.diagram">
+      <DependentUpon>Worcare_Model.edmx</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Worcare_Model.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>Worcare_Model.edmx</DependentUpon>
+      <LastGenOutput>Worcare_Model.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Worcare_Model.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>Worcare_Model.edmx</DependentUpon>
+      <LastGenOutput>Worcare_Model.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
