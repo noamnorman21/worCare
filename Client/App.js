@@ -4,16 +4,11 @@ import AppbarDown from './Component/AppBarDown';
 import LogIn from './Component/LogIn';
 import Welcome from './Component/Welcome';
 import { NavigationContainer } from '@react-navigation/native';
-import AppBarUp from './Component/AppBarUp';
-import SettingScreen from './Component/SettingScreen';
 export default function App() {
   return (
-    // <View style={styles.container}>
-    //   {/* <LogIn />       */}
     <NavigationContainer>
       <AppbarDown />
     </NavigationContainer>
-
   );
 }
 

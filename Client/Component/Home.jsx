@@ -61,6 +61,7 @@ export default function Home() {
 
   return (
 <View style={styles.container}>
+    <Text style={{fontSize:21, textAlign:'center', marginBottom:10, color:'red'}}> ברוכים הבאים למשחק של נועםםםםם</Text>
     <Text style={styles.text}>Player {player}</Text>        
     <View style={styles.row}>
         {renderCell(0, 0)}
