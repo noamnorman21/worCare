@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import AppbarDown from './Component/AppBarDown';
 import LogIn from './Component/LogIn';
 import Welcome from './Component/Welcome';
@@ -10,11 +10,10 @@ export default function App() {
   return (
     // <View style={styles.container}>
     //   {/* <LogIn />       */}
-      <NavigationContainer style={styles.NavBar}>
-        {/* <AppBarUp /> */}
-        <AppbarDown />
-      </NavigationContainer>
-    // </View>
+    <NavigationContainer>
+      <AppbarDown />
+    </NavigationContainer>
+
   );
 }
 
@@ -30,6 +29,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-    flexDirection:'row-reverse'
+    flexDirection: 'row'
   },
 });
