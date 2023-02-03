@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="igroup194_prodModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="igroup194_prodModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="tblActualList">
           <Key>
             <PropertyRef Name="listId" />
@@ -66,6 +66,7 @@
           <Property Name="drugName" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="drugUrl" Type="nvarchar" MaxLength="255" />
           <Property Name="modifyDate" Type="date" />
+          <Property Name="Type" Type="varchar" MaxLength="10" Nullable="false" />
         </EntityType>
         <EntityType Name="tblDrugForPatient">
           <Key>
@@ -645,8 +646,7 @@
             <End Role="tblProductList" EntitySet="tblProductList" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="igroup194_prodModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -722,6 +722,7 @@
           <Property Name="drugUrl" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="modifyDate" Type="DateTime" Precision="0" />
           <NavigationProperty Name="tblDrugForPatient" Relationship="Self.FK_tblDrugForPatient_tblDrug1" FromRole="tblDrug" ToRole="tblDrugForPatient" />
+          <Property Name="Type" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="tblDrugForPatient">
           <Key>
@@ -1404,6 +1405,7 @@
           <EntitySetMapping Name="tblDrug">
             <EntityTypeMapping TypeName="igroup194_prodModel.tblDrug">
               <MappingFragment StoreEntitySet="tblDrug">
+                <ScalarProperty Name="Type" ColumnName="Type" />
                 <ScalarProperty Name="drugId" ColumnName="drugId" />
                 <ScalarProperty Name="drugName" ColumnName="drugName" />
                 <ScalarProperty Name="drugUrl" ColumnName="drugUrl" />
