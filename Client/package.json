@@ -22,7 +22,8 @@
     "react-native": "0.70.5",
     "react-native-gesture-handler": "~2.8.0",
     "react-native-vector-icons": "^9.2.0",
-    "react-navigation": "^4.4.4"
+    "react-navigation": "^4.4.4",
+    "expo-sms": "~11.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"
