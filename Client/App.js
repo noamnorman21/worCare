@@ -9,14 +9,17 @@ import { createStackNavigator } from '@react-navigation/stack';
 import SettingScreen from './Component/SettingScreen';
 import Contacts from './Component/Contacts';
 import CustomHeader from './Component/AppBarUp';
-
+import CreateUser from './Component/SignUpComponents/CreateUser';
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <CustomHeader />
-      <AppbarDown />
-    </NavigationContainer>
+    // <NavigationContainer>
+    //   <CustomHeader />
+    //   <AppbarDown />
+    // </NavigationContainer>
+    <SafeAreaView>
+      <CreateUser />
+    </SafeAreaView>
   );
 }
 

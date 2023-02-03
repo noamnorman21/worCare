@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, SafeAreaView } from 'react-native';
 import React, { useState } from 'react';
 
 export default function Home() {
@@ -60,7 +60,7 @@ export default function Home() {
   };
 
   return (
-<View style={styles.container}>
+<SafeAreaView style={styles.container}>
     <Text style={{fontSize:21, textAlign:'center', marginBottom:10, color:'red'}}> ברוכים הבאים למשחק של נועםםםםם</Text>
     <Text style={styles.text}>Player {player}</Text>        
     <View style={styles.row}>
@@ -78,7 +78,7 @@ export default function Home() {
         {renderCell(2, 1)}
         {renderCell(2, 2)}
     </View>
-</View>
+</SafeAreaView>
   );
 }
 

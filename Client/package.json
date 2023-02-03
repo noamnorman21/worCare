@@ -17,13 +17,16 @@
     "@react-navigation/native-stack": "^6.9.8",
     "@react-navigation/stack": "^6.3.11",
     "expo": "~47.0.12",
+    "expo-firebase": "^0.0.0-alpha.0",
+    "expo-image-picker": "^14.1.0",
+    "expo-sms": "~11.0.0",
     "expo-status-bar": "~1.4.2",
+    "firebase": "^9.17.0",
     "react": "18.1.0",
     "react-native": "0.70.5",
     "react-native-gesture-handler": "~2.8.0",
     "react-native-vector-icons": "^9.2.0",
-    "react-navigation": "^4.4.4",
-    "expo-sms": "~11.0.0"
+    "react-navigation": "^4.4.4"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"

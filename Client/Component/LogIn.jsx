@@ -137,6 +137,7 @@ export default function LogIn() {
                     <Text style={styles.buttonText}>Login</Text>
                 </TouchableOpacity>
             </View>
+            
             {/* Line OR Line */}
             <View style={styles.lineContainer}>
                 <View style={styles.line} />
