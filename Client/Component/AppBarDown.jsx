@@ -19,35 +19,13 @@ const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 export default function AppBarDown() {
     
-    const [flexUp, setFlexUp] = useState(0.12);
-    const [flexDown, setFlexDown] = useState(0.88);
-
-    const flipFlex = () => {
-        if (flexUp == 0.12) {
-            setFlexUp(0);
-            setFlexDown(1);
-        } else {
-            setFlexUp(0.12);
-            setFlexDown(0.88);
-        }   
-    }
+    
     return (
-        <>
-            {/* <View style={{ flex:flexUp}}>
-                <NavigationContainer independent={true} >
-                    <Stack.Navigator headerMode='none' >
-                        
-                        <Stack.Screen name='AppBarUp' component={AppBarUp} />
-                        <Stack.Screen name='SettingScreen' component={SettingScreen} />
-                        <Stack.Screen name='PushNotifications' component={PushNotifications} />
-                        <Stack.Screen name='Contacts' component={Contacts} />
-                    </Stack.Navigator>
-                </NavigationContainer>
-            </View> */}
+        
+            
 
             <View style={{ flex: flexDown }}>
-                <Tab.Navigator
-                    screenOptions={({ route }) => ({
+                <Tab.Navigator screenOptions={({ route }) => ({
                         tabBarIcon: ({ focused, color, size }) => {
                             let iconSrc;
                             if (route.name === 'Home') {
@@ -68,24 +46,19 @@ export default function AppBarDown() {
                                 return <Octicons name="question" size={size} color={color} />
                             }
                         },
-                        headerShown: false
+                        headerShown: false,
+                        
                     })
                     }
-                    else if (route.name === 'Rights') {
-                        //iconSrc = focused ? 'home' : 'home';
-                        return <Octicons name="question" size={size} color={color} />
-                    }
-                },
-                headerShown: false,
                 
-            })
-        }
-            tabBarOptions={{
-                activeTintColor: '#548DFF',
-                inactiveTintColor: '#808080',
-                style: styles.tabBar,
-            }}
-            initialRouteName="Home"
+                    
+                    
+        
+              
+                
+       
+            
+           
         >
             <Tab.Screen name="Home" component={Home} options={{ tabBarLabel: 'Home'}} />
                 {/*בעת ניווט למסך הבית - תבוצע פעולת גט (באמצעות שליחת מספר משתמש) אשר תמשוך מידע מן הקונרולר יוזר, או קונטרולר עובד זר במקרה ובו מדובר בעובד זר.
@@ -94,13 +67,14 @@ export default function AppBarDown() {
             <Tab.Screen name="Payments" component={Payments} options={{ tabBarLabel: 'Payments' }} />
                  {/*בעת ניווט למסך הבית - תבוצע פעולת גט (באמצעות שליחת מספר משתמש ושליחת מספר משתמש מצוות) אשר תמשוך מידע מן הקונטרולר יוזר 
                 תמשוך את הפרטים הבאים-  */}
-            <Tab.Screen name="Chats" component={Chats} options={{ tabBarLabel: 'Chats' }} />
+           <Tab.Screen name="Chats" component={Chats} options={{ tabBarLabel: 'Chats' }} />
             <Tab.Screen name="Tasks" component={Tasks} options={{ tabBarLabel: 'Tasks'}} />
                {/*בעת ניווט למסך הבית - תבוצע פעולת גט (באמצעות שליחת מספר משתמש ושליחת מספר משתמש מצוות) אשר תמשוך מידע מן הקונטרולר יוזר 
                 תמשוך את הפרטים הבאים-  */}
             <Tab.Screen name="Rights" component={Rights} options={{ tabBarLabel: 'Rights' }} />
                {/* לא נדרשת שליפה/השמה של נתונים בהגעה לעמוד זה. בתוך העמוד יבוצע הממשק על GPT */}
         </Tab.Navigator>
+        </View>
     )
 }
 

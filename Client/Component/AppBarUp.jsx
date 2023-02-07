@@ -11,11 +11,11 @@ import PushNotifications from './PushNotifications';
 const Stack = createStackNavigator();
 export default function CustomHeader(props) {
     return (
-        <NavigationContainer independent={true} zIndex='2'  >
-            <Stack.Navigator screenOptions={() => ({            
         
-                })}>
-                <Stack.Screen name='AppBarUp' component={AppBarUp} options={(route) => ({
+        <View style={{flex:1}}>
+            <NavigationContainer independent={true} >
+                <Stack.Navigator headerMode='none' >
+                    <Stack.Screen name='AppBarUp' component={AppBarUp} options={(route) => ({
                    headerShown: false,
                   
                    style: {
@@ -23,27 +23,18 @@ export default function CustomHeader(props) {
                 },
                    
                 })} />
-                <Stack.Screen name='SettingScreen' component={SettingScreen} options={()=> ({
+                     <Stack.Screen name='SettingScreen' component={SettingScreen} options={()=> ({
                     headerShown: true,
                     headerTitle: 'check',
                     presentation: 'stack',
                     cardOverlayEnabled: true,
                 })} />
-                <Stack.Screen name='PushNotifications' component={PushNotifications} options={()=> ({
+                    <Stack.Screen name='PushNotifications' component={PushNotifications} options={()=> ({
                     headerShown: true,
                     headerTitle: 'bla',
                     presentation: 'stack',
                     cardOverlayEnabled: true,
                 })}/>
-                <Stack.Screen name='Contacts' component={Contacts} />
-            </Stack.Navigator>
-        </NavigationContainer>
-        <View style={{flex:1}}>
-            <NavigationContainer independent={true} >
-                <Stack.Navigator headerMode='none' >
-                    <Stack.Screen name='AppBarUp' component={AppBarUp} />
-                    <Stack.Screen name='SettingScreen' component={SettingScreen} />
-                    <Stack.Screen name='PushNotifications' component={PushNotifications} />
                     <Stack.Screen name='Contacts' component={Contacts} />
                 </Stack.Navigator>
             </NavigationContainer>
