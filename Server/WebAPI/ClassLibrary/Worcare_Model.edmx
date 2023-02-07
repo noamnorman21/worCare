@@ -236,7 +236,8 @@
           <Property Name="FirstName" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="LastName" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="gender" Type="char" MaxLength="1" />
-          <Property Name="userImg" Type="varbinary" MaxLength="250" />
+          <Property Name="phoneNum" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="userUri" Type="nvarchar" MaxLength="4000" />
         </EntityType>
         <Association Name="FK__tblCalend__calen__74AE54BC">
           <End Role="tblCalendersType" Type="Self.tblCalendersType" Multiplicity="1" />
@@ -925,11 +926,12 @@
           <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="gender" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
-          <Property Name="userImg" Type="Binary" MaxLength="250" FixedLength="false" />
           <NavigationProperty Name="tblCalendarForUser" Relationship="Self.FK__tblCalendarF__id__75A278F5" FromRole="tblUser" ToRole="tblCalendarForUser" />
           <NavigationProperty Name="tblForeignUser" Relationship="Self.FK_tblForeignUser_tblUser" FromRole="tblUser" ToRole="tblForeignUser" />
           <NavigationProperty Name="tblPatientTask" Relationship="Self.FK_tblPatientTask_tblUser" FromRole="tblUser" ToRole="tblPatientTask" />
           <NavigationProperty Name="tblPaycheck" Relationship="Self.FK_tblPaycheck_tblUser" FromRole="tblUser" ToRole="tblPaycheck" />
+          <Property Name="phoneNum" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="userUri" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_tblActualList_tblList">
           <End Role="tblList" Type="Self.tblList" Multiplicity="1" />
@@ -1587,13 +1589,14 @@
           <EntitySetMapping Name="tblUser">
             <EntityTypeMapping TypeName="igroup194_prodModel.tblUser">
               <MappingFragment StoreEntitySet="tblUser">
+                <ScalarProperty Name="userUri" ColumnName="userUri" />
+                <ScalarProperty Name="phoneNum" ColumnName="phoneNum" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Email" ColumnName="Email" />
                 <ScalarProperty Name="Password" ColumnName="Password" />
                 <ScalarProperty Name="FirstName" ColumnName="FirstName" />
                 <ScalarProperty Name="LastName" ColumnName="LastName" />
                 <ScalarProperty Name="gender" ColumnName="gender" />
-                <ScalarProperty Name="userImg" ColumnName="userImg" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
