@@ -28,7 +28,8 @@ namespace ClassLibrary
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string gender { get; set; }
-        public byte[] userImg { get; set; }
+        public string phoneNum { get; set; }
+        public string userUri { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tblCalendarForUser> tblCalendarForUser { get; set; }

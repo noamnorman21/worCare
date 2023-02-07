@@ -17,9 +17,10 @@ export default function App() {
     //   <CustomHeader />
     //   <AppbarDown />
     // </NavigationContainer>
-    <SafeAreaView>
+    <View style={styles.container}>
       <CreateUser />
-    </SafeAreaView>
+      {/* <LogIn /> */}
+    </View>
   );
 }
 
@@ -30,11 +31,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  NavBar: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row'
-  },
+  
 });

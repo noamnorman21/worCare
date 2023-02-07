@@ -2,6 +2,7 @@ import { SafeAreaView, Dimensions, View, Text, StyleSheet, TextInput, TouchableO
 import React from 'react'
 import { useEffect, useState } from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons'
+import { OrLine, NeedAccount } from './SignUpComponents/FooterLine'
 
 export default function LogIn() {
     const [email, setEmail] = useState('');
@@ -85,7 +86,7 @@ export default function LogIn() {
                     value={email}
                     onChangeText={text => setEmail(text)}
                     keyboardType="email-address"
-                    autoCorrect={false}                 
+                    autoCorrect={false}
                 />
                 <View style={styles.passwordContainer}>
                     {/* password */}
@@ -95,7 +96,7 @@ export default function LogIn() {
                         secureTextEntry={!showPassword}
                         value={password}
                         autoCapitalize='none'
-                        autoCorrect={false}                      
+                        autoCorrect={false}
                         keyboardType='ascii-capable'
                         onChangeText={text => setPassword(text)}
                     />
@@ -104,16 +105,17 @@ export default function LogIn() {
                         style={styles.passwordButton}
                         onPress={() => setShowPassword(!showPassword)}
                     >
-                    {/* Icon button For changing password input visibility */}
-                    <Icon
-                        name={showPassword ? 'visibility' : 'visibility-off'}
-                        size={20}
-                        color='#979797'
-                    />
+                        {/* Icon button For changing password input visibility */}
+                        <Icon
+                            name={showPassword ? 'visibility' : 'visibility-off'}
+                            size={20}
+                            color='#979797'
+                        />
                     </TouchableOpacity>
                 </View>
                 {/* remmeber me check box  in one line*/}
-                <View style={{ width: Dimensions.get('screen').width * 0.85, flexDirection: 'row' }}>
+                <View style={{ width: Dimensions.get('screen').width * 0.9, flexDirection: 'row' }}>
+
                     {/* remember me check box */}
                     <TouchableOpacity onPress={() => alert('Remember Me')}>
                         <Icon
@@ -124,8 +126,9 @@ export default function LogIn() {
                         />
                     </TouchableOpacity>
                     <Text style={styles.rememberMe}>Remember Me</Text>
+
                     {/* forgot password button */}
-                    <View style={{ flexDirection: 'row', alignSelf: 'flex-end' }}>
+                    <View style={styles.forgotPasswordContainer}>
                         {/* forgot password button */}
                         <TouchableOpacity onPress={() => alert('Forgot Password')}>
                             <Text style={styles.btnForgotPassword}>Forgot Password?</Text>
@@ -137,26 +140,9 @@ export default function LogIn() {
                     <Text style={styles.buttonText}>Login</Text>
                 </TouchableOpacity>
             </View>
-            
-            {/* Line OR Line */}
-            <View style={styles.lineContainer}>
-                <View style={styles.line} />
-                <Text style={styles.orText}>Or</Text>
-                <View style={styles.line} />
-            </View>
-
-            {/* for sign up button */}
-            <View style={styles.buttonContainer}>
-                <View style={styles.needAccountTXT}>
-                    <Text style={styles.signUpText}>Need an account ?</Text>
-                </View>
-                <View>
-                    <TouchableOpacity onPress={() => alert('Sign Up')}>
-                        <Text style={styles.signUpButtonText}>Sign Up</Text>
-                    </TouchableOpacity>
-                </View>
-
-            </View>
+            {/* footer line */}
+            <OrLine />
+            <NeedAccount />
         </SafeAreaView>
     )
 }
@@ -167,7 +153,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#F5F5F5',
-        paddingHorizontal: 20,
         flexDirection: 'column',
     },
     imageContainer: {
@@ -200,7 +185,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#F5F5F5',
         borderColor: 'lightgray',
         shadowColor: '#000',
-        height: 54,
+        height: 45,
     },
     button: {
         width: Dimensions.get('window').width * 0.9,
@@ -216,7 +201,7 @@ const styles = StyleSheet.create({
         shadowRadius: 3,
         elevation: 1,
         margin: 15,
-        height: 54,        
+        height: 45,
     },
     buttonText: {
         color: 'white',
@@ -224,7 +209,7 @@ const styles = StyleSheet.create({
     },
     passwordButton: {
         position: 'absolute',
-        right: 10,
+        right: Dimensions.get('window').width * 0.1,
         padding: 5,
         borderRadius: 5,
         marginLeft: 5,
@@ -233,29 +218,9 @@ const styles = StyleSheet.create({
         color: 'black',
         fontWeight: 'bold',
     },
-    lineContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        width: '100%',
-        alignSelf: 'center',
-        marginVertical: 30
-    },
-    line: {
-        flex: 1,
-        height: 1,
-        backgroundColor: '#808080',
-        marginHorizontal: 10,
-    },
-    orText: {
-        paddingHorizontal: 10,
-        color: '#808080',
-        fontSize: 18,
-        fontWeight: '600',
-    },
     btnForgotPassword: {
         color: '#548DFF',
         fontSize: 13,
-        marginLeft: Dimensions.get('screen').width * 0.175,
         marginTop: 10,
         marginBottom: 10,
     },
@@ -269,20 +234,5 @@ const styles = StyleSheet.create({
         marginTop: 10,
         marginBottom: 10,
     },
-    signUpText: {
-        fontSize: 16,
-        flex: 1,
-    },
-    signUpButtonText: {
-        color: '#548DFF',
-        fontSize: 16,
-    },
-    needAccountTXT: {
-        marginRight: Dimensions.get('screen').width * 0.03,
-    },
-    buttonContainer: {
-        flex: 0.3,
-        flexDirection: 'row',
-        justifyContent: 'center',
-    },
+    forgotPasswordContainer: { flexDirection: 'row', alignSelf: 'flex-end', marginLeft: Dimensions.get('screen').width * 0.275 }
 });

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TouchableOpacity, Image, View, Platform, Text } from 'react-native';
+import { TouchableOpacity, Image, View, Platform, Text, StyleSheet } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 
 export default function ImagePickerExample() {
@@ -22,11 +22,18 @@ export default function ImagePickerExample() {
   };
 
   return (
-    <View style={{ flex:0.5, alignItems: 'center', justifyContent: 'space-between' }}>
+    <View style={{ flex: 0.5, alignItems: 'center', justifyContent: 'space-between' }}>
       <TouchableOpacity onPress={pickImage} >
-        {!image && <Text>Upload Image</Text>}
+        {!image && <Image source={require('../../images/upload.png')} style={styles.imgUser} />}
+        {image && <Image source={{ uri: image }} style={styles.imgUser} />}
       </TouchableOpacity>
-      {image && <Image source={{ uri: image }} style={{ width: 100, height: 100, borderRadius:50 }} />}
     </View>
   );
 }
+const styles = StyleSheet.create({
+  imgUser: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+  },
+});
