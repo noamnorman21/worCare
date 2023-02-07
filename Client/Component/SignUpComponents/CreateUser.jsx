@@ -2,6 +2,7 @@ import { Image, Keyboard, LayoutAnimation, View, Text, TextInput, Dimensions, Sa
 import React, { useState, useEffect } from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import ImagePickerExample from './ImagePickerExample'
+import { OrLine, HaveAccount } from './FooterLine'
 
 export default function CreateUser() {
   const [showPassword, setShowPassword] = useState(false);//for password visibility
@@ -26,9 +27,11 @@ export default function CreateUser() {
             useNativeDriver: true,
           },
         });
-        setAnimation({ marginBottom: Dimensions.get('window').height * 0.6 });
+        setAnimation({ marginBottom: Dimensions.get('window').height * 0.325 });
       }
     );
+    {/* {/* needed data: user id, current date, user type => upcoming tasks (by nearest date- 
+      from patientTask- task name, fromdate, toDate, taskComment; privateTask- task name, fromdate, toDate, taskComment )   */}
     const keyboardDidHideListener = Keyboard.addListener(
       'keyboardDidHide',
       () => {
@@ -123,14 +126,11 @@ export default function CreateUser() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <View style={styles.imageContainer}>
+        <ImagePickerExample style={styles.image} />
+      </View>
+
       <View style={[styles.inputContainer, animation]}>
-        <View style={styles.imageContainer}>
-          {/* <Image
-          style={styles.image}
-          source={require('../../images/logo_New.png')}
-        /> */}
-          <ImagePickerExample style={styles.image} />
-        </View>
         <View style={styles.nameContainer}>
           <TextInput
             style={[styles.input, styles.firstNameInput]}
@@ -148,11 +148,20 @@ export default function CreateUser() {
           placeholder="Email"
           onChangeText={(value) => handleInputChange('email', value)}
         />
+
+        <View style={styles.phoneContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder="Phone Number"
+            keyboardType='phone-pad'
+            onChangeText={(value) => handleInputChange('phoneNum', value)}
+          />
+        </View>
         <View style={styles.passwordContainer}>
           <TextInput
             input
             style={styles.input}
-            placeholder="Password"
+            placeholder="Password (8+ characters)"
             secureTextEntry={!showPassword}
             autoCapitalize='none'
             autoCorrect={false}
@@ -171,18 +180,13 @@ export default function CreateUser() {
             />
           </TouchableOpacity>
         </View>
-        <View style={styles.phoneContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="Phone Number"
-            onChangeText={(value) => handleInputChange('phoneNum', value)}
-          />
-        </View>
 
         <TouchableOpacity style={styles.button} onPress={handleCreateUser} >
-          <Text style={styles.buttonText}>Continue</Text>
+          <Text style={styles.buttonText}>Get Started</Text>
         </TouchableOpacity>
       </View>
+      <OrLine />
+      <HaveAccount />
     </SafeAreaView>
   )
 }
@@ -190,28 +194,26 @@ export default function CreateUser() {
 const styles = StyleSheet.create({
   passwordButton: {
     position: 'absolute',
-    right: 10,
+    right: Dimensions.get('window').width * 0.1,
     padding: 5,
     borderRadius: 5,
     marginLeft: 5,
   },
-  passwordContainer: {
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   container: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#F5F5F5',
-    paddingHorizontal: 20,
     flexDirection: 'column',
   },
   inputContainer: {
-    width: '80%',
+    width: Dimensions.get('window').width * 1,
+    height: Dimensions.get('window').height * 1,
     alignItems: 'center',
+    flex: 6,
   },
   imageContainer: {
+    flex: 3,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -219,10 +221,6 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  inputContainer: {
-    width: '100%',
-    alignItems: 'center',
   },
   image: {
     width: Dimensions.get('window').width * 0.85,
@@ -231,18 +229,18 @@ const styles = StyleSheet.create({
   },
   input: {
     width: Dimensions.get('window').width * 0.85,
-    padding: 15,
-    margin: 5,
+    padding: 10,
+    margin: 10,
     alignItems: 'left',
     borderRadius: 16,
     borderWidth: 1,
     backgroundColor: '#F5F5F5',
     borderColor: 'lightgray',
     shadowColor: '#000',
-    height: 54,
+    height: 45,
   },
   button: {
-    width: Dimensions.get('window').width * 0.9,
+    width: Dimensions.get('window').width * 0.85,
     backgroundColor: '#548DFF',
     alignItems: 'center',
     justifyContent: 'center',
@@ -255,7 +253,7 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 1,
     margin: 15,
-    height: 54,
+    height: 45,
   },
   buttonText: {
     color: 'white',
