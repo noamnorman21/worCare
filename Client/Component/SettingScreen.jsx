@@ -1,12 +1,13 @@
-import { TouchableOpacity, View, Text, SafeAreaView } from 'react-native'
+import { TouchableOpacity, View, Text, SafeAreaView, sty } from 'react-native'
 import React from 'react'
 
 export default function SettingScreen(props) {
     return (
-        <SafeAreaView>
+        <SafeAreaView style={{backgroundColor:'red'}}>
             <Text>
                 SettingScreen
             </Text>
         </SafeAreaView >
     )
 }
+

@@ -12,8 +12,10 @@ namespace WebAPI.Controllers
     public class UserController : ApiController
     {
         igroup194DBContext db = new igroup194DBContext(); // Create a new instance of the database context        
-        // Add Specific Route To each controller method
-        // GET api/User
+                                                          // Add Specific Route To each controller method
+                                                          // GET api/User
+
+        [Route("api/User")]
         public IHttpActionResult GetUser(string email, string password)
         {
             try

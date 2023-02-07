@@ -34,7 +34,8 @@ export default function AppBarDown() {
                         return <Octicons name="question" size={size} color={color} />
                     }
                 },
-                headerShown: false
+                headerShown: false,
+                
             })
         }
             tabBarOptions={{
@@ -45,10 +46,18 @@ export default function AppBarDown() {
             initialRouteName="Home"
         >
             <Tab.Screen name="Home" component={Home} options={{ tabBarLabel: 'Home'}} />
+                {/*בעת ניווט למסך הבית - תבוצע פעולת גט (באמצעות שליחת מספר משתמש) אשר תמשוך מידע מן הקונרולר יוזר, או קונטרולר עובד זר במקרה ובו מדובר בעובד זר.
+                תמשוך את הפרטים הבאים- Calendarforuser- calendar type;
+                Patienttask, Privatetask (אם משתמש הינו מטפל זר)- task name, fromdate, toDate, taskComment ) */}
             <Tab.Screen name="Payments" component={Payments} options={{ tabBarLabel: 'Payments' }} />
+                 {/*בעת ניווט למסך הבית - תבוצע פעולת גט (באמצעות שליחת מספר משתמש ושליחת מספר משתמש מצוות) אשר תמשוך מידע מן הקונטרולר יוזר 
+                תמשוך את הפרטים הבאים-  */}
             <Tab.Screen name="Chats" component={Chats} options={{ tabBarLabel: 'Chats' }} />
             <Tab.Screen name="Tasks" component={Tasks} options={{ tabBarLabel: 'Tasks'}} />
+               {/*בעת ניווט למסך הבית - תבוצע פעולת גט (באמצעות שליחת מספר משתמש ושליחת מספר משתמש מצוות) אשר תמשוך מידע מן הקונטרולר יוזר 
+                תמשוך את הפרטים הבאים-  */}
             <Tab.Screen name="Rights" component={Rights} options={{ tabBarLabel: 'Rights' }} />
+               {/* לא נדרשת שליפה/השמה של נתונים בהגעה לעמוד זה. בתוך העמוד יבוצע הממשק על GPT */}
         </Tab.Navigator>
     )
 }

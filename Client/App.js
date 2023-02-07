@@ -13,14 +13,14 @@ import CreateUser from './Component/SignUpComponents/CreateUser';
 
 export default function App() {
   return (
-    // <NavigationContainer>
-    //   <CustomHeader />
-    //   <AppbarDown />
-    // </NavigationContainer>
-    <View style={styles.container}>
-      <CreateUser />
-      {/* <LogIn /> */}
-    </View>
+    <NavigationContainer>
+      <CustomHeader />
+      <AppbarDown />
+    </NavigationContainer>
+  //   <View style={styles.container}>
+  //     <CreateUser />
+  //     {/* <LogIn /> */}
+  //   </View>
   );
 }
 

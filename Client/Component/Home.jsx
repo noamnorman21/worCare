@@ -61,23 +61,7 @@ export default function Home() {
 
   return (
 <SafeAreaView style={styles.container}>
-    <Text style={{fontSize:21, textAlign:'center', marginBottom:10, color:'red'}}> ברוכים הבאים למשחק של נועםםםםם</Text>
-    <Text style={styles.text}>Player {player}</Text>        
-    <View style={styles.row}>
-        {renderCell(0, 0)}
-        {renderCell(0, 1)}
-        {renderCell(0, 2)}
-    </View>
-    <View style={styles.row}>
-        {renderCell(1, 0)}
-        {renderCell(1, 1)}
-        {renderCell(1, 2)}
-    </View>
-    <View style={styles.row}>
-        {renderCell(2, 0)}
-        {renderCell(2, 1)}
-        {renderCell(2, 2)}
-    </View>
+<Text>Home Screen</Text>
 </SafeAreaView>
   );
 }

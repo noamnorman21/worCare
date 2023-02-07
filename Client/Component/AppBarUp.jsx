@@ -11,11 +11,30 @@ import PushNotifications from './PushNotifications';
 const Stack = createStackNavigator();
 export default function CustomHeader(props) {
     return (
-        <NavigationContainer independent={true} >
-            <Stack.Navigator headerMode='none'>
-                <Stack.Screen name='AppBarUp' component={AppBarUp} />
-                <Stack.Screen name='SettingScreen' component={SettingScreen} />
-                <Stack.Screen name='PushNotifications' component={PushNotifications} />
+        <NavigationContainer independent={true} zIndex='2'  >
+            <Stack.Navigator screenOptions={() => ({            
+        
+                })}>
+                <Stack.Screen name='AppBarUp' component={AppBarUp} options={(route) => ({
+                   headerShown: false,
+                  
+                   style: {
+                   
+                },
+                   
+                })} />
+                <Stack.Screen name='SettingScreen' component={SettingScreen} options={()=> ({
+                    headerShown: true,
+                    headerTitle: 'check',
+                    presentation: 'stack',
+                    cardOverlayEnabled: true,
+                })} />
+                <Stack.Screen name='PushNotifications' component={PushNotifications} options={()=> ({
+                    headerShown: true,
+                    headerTitle: 'bla',
+                    presentation: 'stack',
+                    cardOverlayEnabled: true,
+                })}/>
                 <Stack.Screen name='Contacts' component={Contacts} />
             </Stack.Navigator>
         </NavigationContainer>
