@@ -2,7 +2,7 @@ import { SafeAreaView, Dimensions, View, Text, StyleSheet, TextInput, TouchableO
 import React from 'react'
 import { useEffect, useState } from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import { OrLine, NeedAccount } from './SignUpComponents/FooterLine'
+import { OrLine, NeedAccount } from './FooterLine'
 
 export default function LogIn() {
     const [email, setEmail] = useState('');
@@ -66,7 +66,6 @@ export default function LogIn() {
             keyboardDidShowListener.remove();
             keyboardDidHideListener.remove();
         }
-
     }, []);
 
     return (
@@ -74,7 +73,7 @@ export default function LogIn() {
             <View style={styles.imageContainer}>
                 <Image
                     style={styles.image}
-                    source={require('../images/logo_New.png')}
+                    source={require('../../images/logo_New.png')}
                 />
             </View>
 
@@ -137,7 +136,7 @@ export default function LogIn() {
                 </View>
                 {/* login button */}
                 <TouchableOpacity onPress={logInBtn} style={styles.button}>
-                    <Text style={styles.buttonText}>Login</Text>
+                    <Text style={styles.buttonText}>Log In</Text>
                 </TouchableOpacity>
             </View>
             {/* footer line */}
