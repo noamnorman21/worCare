@@ -1,7 +1,13 @@
-import { StyleSheet} from 'react-native'
-import React from 'react'
+import { StyleSheet, View, SafeAreaView, Dimensions,TouchableOpacity, Image } from 'react-native'
+import React, {useState} from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Octicons, Ionicons, AntDesign } from '@expo/vector-icons';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+
+import SettingScreen from './SettingScreen';
+import Contacts from './Contacts';
+import PushNotifications from './PushNotifications';
 
 import Home from '../Component/Home';
 import Payments from '../Component/Payments';
@@ -9,25 +15,61 @@ import Chats from '../Component/Chats';
 import Tasks from '../Component/Tasks';
 import Rights from '../Component/Rights';
 
+const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 export default function AppBarDown() {
+    
+    const [flexUp, setFlexUp] = useState(0.12);
+    const [flexDown, setFlexDown] = useState(0.88);
+
+    const flipFlex = () => {
+        if (flexUp == 0.12) {
+            setFlexUp(0);
+            setFlexDown(1);
+        } else {
+            setFlexUp(0.12);
+            setFlexDown(0.88);
+        }   
+    }
     return (
-        <Tab.Navigator 
-            screenOptions={({ route }) => ({
-                tabBarIcon: ({ focused, color, size }) => {
-                    let iconSrc;
-                    if (route.name === 'Home') {
-                        iconSrc = focused ? 'home' : 'home';
-                        return <Octicons name={iconSrc} size={size} color={color} />
-                    } else if (route.name === 'Payments') {
-                        iconSrc = focused ? 'credit-card' : 'credit-card';
-                        return <Octicons name={iconSrc} size={size} color={color} />
-                    } else if (route.name === 'Chats') {
-                        //sliders icon for settings
-                        return <Ionicons name="chatbubble-ellipses-outline" size={size} color={color} />
-                    } else if (route.name === 'Tasks') {
-                        //iconSrc = focused ? 'home' : 'home';
-                        return <Octicons name="checklist" size={size} color={color} />
+        <>
+            {/* <View style={{ flex:flexUp}}>
+                <NavigationContainer independent={true} >
+                    <Stack.Navigator headerMode='none' >
+                        
+                        <Stack.Screen name='AppBarUp' component={AppBarUp} />
+                        <Stack.Screen name='SettingScreen' component={SettingScreen} />
+                        <Stack.Screen name='PushNotifications' component={PushNotifications} />
+                        <Stack.Screen name='Contacts' component={Contacts} />
+                    </Stack.Navigator>
+                </NavigationContainer>
+            </View> */}
+
+            <View style={{ flex: flexDown }}>
+                <Tab.Navigator
+                    screenOptions={({ route }) => ({
+                        tabBarIcon: ({ focused, color, size }) => {
+                            let iconSrc;
+                            if (route.name === 'Home') {
+                                iconSrc = focused ? 'home' : 'home';
+                                return <Octicons name={iconSrc} size={size} color={color} />
+                            } else if (route.name === 'Payments') {
+                                iconSrc = focused ? 'credit-card' : 'credit-card';
+                                return <Octicons name={iconSrc} size={size} color={color} />
+                            } else if (route.name === 'Chats') {
+                                //sliders icon for settings
+                                return <Ionicons name="chatbubble-ellipses-outline" size={size} color={color} />
+                            } else if (route.name === 'Tasks') {
+                                //iconSrc = focused ? 'home' : 'home';
+                                return <Octicons name="checklist" size={size} color={color} />
+                            }
+                            else if (route.name === 'Rights') {
+                                //iconSrc = focused ? 'home' : 'home';
+                                return <Octicons name="question" size={size} color={color} />
+                            }
+                        },
+                        headerShown: false
+                    })
                     }
                     else if (route.name === 'Rights') {
                         //iconSrc = focused ? 'home' : 'home';

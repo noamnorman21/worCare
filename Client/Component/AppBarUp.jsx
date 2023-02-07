@@ -38,6 +38,16 @@ export default function CustomHeader(props) {
                 <Stack.Screen name='Contacts' component={Contacts} />
             </Stack.Navigator>
         </NavigationContainer>
+        <View style={{flex:1}}>
+            <NavigationContainer independent={true} >
+                <Stack.Navigator headerMode='none' >
+                    <Stack.Screen name='AppBarUp' component={AppBarUp} />
+                    <Stack.Screen name='SettingScreen' component={SettingScreen} />
+                    <Stack.Screen name='PushNotifications' component={PushNotifications} />
+                    <Stack.Screen name='Contacts' component={Contacts} />
+                </Stack.Navigator>
+            </NavigationContainer>
+        </View>
     );
 }
 
@@ -46,7 +56,7 @@ function AppBarUp({ navigation }) {
         <SafeAreaView style={{ flexDirection: 'row', backgroundColor: 'white', margin: 0, padding: 20, height: 100, alignItems: 'center', zIndex: 0 }}>
             {/* Left - Settings - ClickAble - To SettingScreen */}
             <View style={{ marginLeft: Dimensions.get('screen').width * 0.075, flex: 1, justifyContent: 'space-between', alignContent: 'space-between' }}>
-                <TouchableOpacity onPress={() => {navigation.navigate('SettingScreen')}}>
+                <TouchableOpacity onPress={() => { navigation.navigate('SettingScreen') }}>
                     <Image source={require('../images/icons/Profile.png')} style={{ width: 24, height: 24 }} />
                 </TouchableOpacity>
             </View>
@@ -56,13 +66,13 @@ function AppBarUp({ navigation }) {
             </View>
             {/* Right - Notifications - ClickAble - To PushNotifications */}
             <View style={{ marginRight: Dimensions.get('screen').width * 0.01 }}>
-                <TouchableOpacity onPress={() => {navigation.navigate('PushNotifications')}}>
+                <TouchableOpacity onPress={() => { navigation.navigate('PushNotifications') }}>
                     <Image source={require('../images/icons/notifications.png')} style={{ width: 24, height: 24 }} />
                 </TouchableOpacity>
             </View>
             {/* Right - Contacts - ClickAble - To Contacts */}
             <View style={{ marginRight: Dimensions.get('screen').width * 0.05 }}>
-                <TouchableOpacity onPress={()=>{navigation.navigate('Contacts')}}>
+                <TouchableOpacity onPress={() => { navigation.navigate('Contacts') }}>
                     <AntDesign name="contacts" size={24} color={'#000000'} />
                 </TouchableOpacity>
             </View>
