@@ -30,8 +30,6 @@ export default function CreateUser() {
         setAnimation({ marginBottom: Dimensions.get('window').height * 0.325 });
       }
     );
-    {/* {/* needed data: user id, current date, user type => upcoming tasks (by nearest date- 
-      from patientTask- task name, fromdate, toDate, taskComment; privateTask- task name, fromdate, toDate, taskComment )   */}
     const keyboardDidHideListener = Keyboard.addListener(
       'keyboardDidHide',
       () => {
