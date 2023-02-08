@@ -3,7 +3,7 @@ import React from 'react'
 import { NavigationContainer } from '@react-navigation/native';
 import { AntDesign } from '@expo/vector-icons';
 import { createStackNavigator } from '@react-navigation/stack';
-
+import AppBarDown from './AppBarDown';
 import SettingScreen from './SettingScreen';
 import Contacts from './Contacts';
 import PushNotifications from './PushNotifications';
@@ -11,34 +11,43 @@ import PushNotifications from './PushNotifications';
 const Stack = createStackNavigator();
 export default function CustomHeader(props) {
     return (
-        
-        <View style={{flex:1}}>
-            <NavigationContainer independent={true} >
-                <Stack.Navigator headerMode='none' >
-                    <Stack.Screen name='AppBarUp' component={AppBarUp} options={(route) => ({
-                   headerShown: false,
-                  
-                   style: {
-                   
-                },
-                   
+        <NavigationContainer independent={true} zIndex='0'   >
+            <Stack.Navigator>
+                <Stack.Screen name='AppBarUp' component={AppBarUp} options={(route) => ({
+                    headerShown: false,
+                    headercontent: 'bla',
+                    style: {
+                        flex: 1,
+                    },
+
                 })} />
-                     <Stack.Screen name='SettingScreen' component={SettingScreen} options={()=> ({
+                <Stack.Screen name='SettingScreen' component={SettingScreen} options={() => ({
                     headerShown: true,
                     headerTitle: 'check',
+
                     presentation: 'stack',
                     cardOverlayEnabled: true,
                 })} />
-                    <Stack.Screen name='PushNotifications' component={PushNotifications} options={()=> ({
+                <Stack.Screen name='PushNotifications' component={PushNotifications} options={() => ({
                     headerShown: true,
                     headerTitle: 'bla',
                     presentation: 'stack',
                     cardOverlayEnabled: true,
-                })}/>
-                    <Stack.Screen name='Contacts' component={Contacts} />
-                </Stack.Navigator>
-            </NavigationContainer>
-        </View>
+                })} />
+                <Stack.Screen name='Contacts' component={Contacts} />
+            </Stack.Navigator>
+
+        </NavigationContainer>
+        // <View style={{flex:1}}>
+        //     <NavigationContainer independent={true} >
+        //         <Stack.Navigator headerMode='none' >
+        //             <Stack.Screen name='AppBarUp' component={AppBarUp} />
+        //             <Stack.Screen name='SettingScreen' component={SettingScreen} />
+        //             <Stack.Screen name='PushNotifications' component={PushNotifications} />
+        //             <Stack.Screen name='Contacts' component={Contacts} />
+        //         </Stack.Navigator>
+        //     </NavigationContainer>
+        // </View>
     );
 }
 

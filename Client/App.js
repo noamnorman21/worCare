@@ -1,6 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { Dimensions, TouchableOpacity, Image, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import AppbarDown from './Component/AppBarDown';
+
 import LogIn from './Component/SignUpComponents/LogIn';
 import Welcome from './Component/Welcome';
 import { Octicons, Ionicons, AntDesign } from '@expo/vector-icons';
@@ -13,18 +14,18 @@ import CreateUser from './Component/SignUpComponents/CreateUser';
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <CustomHeader />
+    <NavigationContainer >
+    <CustomHeader />
       <AppbarDown />
     </NavigationContainer>
   //   <View style={styles.container}>
   //     <CreateUser />
   //     {/* <LogIn /> */}
   //   </View>
-    <NavigationContainer independent={true}>
-      {/* <CustomHeader /> */}
-      <AppbarDown />
-    </NavigationContainer>
+    // <NavigationContainer independent={true}>
+    //   {/* <CustomHeader /> */}
+    //   <AppbarDown />
+    // </NavigationContainer>
     // <View style={styles.container}>
     //   <CreateUser />
     //   <LogIn />
