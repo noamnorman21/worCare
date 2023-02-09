@@ -1,0 +1,11 @@
+C:\Users\dorat\source\repos\worCare2\Server\WebAPI\ConsoleApp1\bin\Debug\ConsoleApp1.exe.config
+C:\Users\dorat\source\repos\worCare2\Server\WebAPI\ConsoleApp1\bin\Debug\ConsoleApp1.exe
+C:\Users\dorat\source\repos\worCare2\Server\WebAPI\ConsoleApp1\bin\Debug\ConsoleApp1.pdb
+C:\Users\dorat\source\repos\worCare2\Server\WebAPI\ConsoleApp1\bin\Debug\Fleck.dll
+C:\Users\dorat\source\repos\worCare2\Server\WebAPI\ConsoleApp1\obj\Debug\ConsoleApp1.csproj.AssemblyReference.cache
+C:\Users\dorat\source\repos\worCare2\Server\WebAPI\ConsoleApp1\obj\Debug\ConsoleApp1.csproj.SuggestedBindingRedirects.cache
+C:\Users\dorat\source\repos\worCare2\Server\WebAPI\ConsoleApp1\obj\Debug\ConsoleApp1.csproj.CoreCompileInputs.cache
+C:\Users\dorat\source\repos\worCare2\Server\WebAPI\ConsoleApp1\obj\Debug\ConsoleApp1.csproj.CopyComplete
+C:\Users\dorat\source\repos\worCare2\Server\WebAPI\ConsoleApp1\obj\Debug\ConsoleApp1.exe
+C:\Users\dorat\source\repos\worCare2\Server\WebAPI\ConsoleApp1\obj\Debug\ConsoleApp1.pdb
+C:\Users\dorat\source\repos\worCare2\Server\WebAPI\ConsoleApp1\bin\Debug\websocket-sharp.dll
