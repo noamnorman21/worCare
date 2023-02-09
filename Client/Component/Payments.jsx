@@ -14,7 +14,7 @@ const Stack = createStackNavigator();
 
 export default function Payments() {
   return (
-    <NavigationContainer independent={true} zIndex='0' initialRouteName='choice'    >
+    <NavigationContainer independent={true} zIndex='0' initialRouteName='choice'  >
       <Stack.Navigator initialRouteName='choice'>
         <Stack.Screen name='choice' component={Choice} options={() => ({
           headerShown: false,
@@ -22,6 +22,7 @@ export default function Payments() {
         <Stack.Screen name='PaymentsInner' component={PaymentsInner} options={() => ({
           headerShown: false,
           presentation: 'stack',
+         
           cardOverlayEnabled: true,
           style: {
             flex: 1,

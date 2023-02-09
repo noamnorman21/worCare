@@ -48,14 +48,14 @@ export default function AppBarDown() {
             <Tab.Screen name="Home" component={Home} options={{ tabBarLabel: 'Home' }} />
             {/*בעת ניווט למסך הבית - תבוצע פעולת גט שתמשוך את הפרטים- לוח שנה למשתמש- סוג לוח שנה,
                 משימה אישית/משימה למטופל- מספר משימה, שם משימה, תאריך התחלה, תאריך סוף, הערות, סטטוס */}
-            <Tab.Screen name="Payments" component={Payments} options={{ tabBarLabel: 'Payments' }} />
+            <Tab.Screen name="Payments" component={Payments} options={{ tabBarLabel: 'Payments', unmountOnBlur: true }} />
             {/*בעת ניווט למסך תשלומים - למסך הראשי אין צורך בביצוע פעולות, לאחר בחירת המסך הרצוי(תשלומים/משכורות) יבוצעו פעולות גט)
                 מסך תשלומים- שני תתי מסכים- פירוט יבוצע בקומפוננטת הניווט במסכים היעודיים
                 */}
             <Tab.Screen name="Chats" component={Chats} options={{ tabBarLabel: 'Chats' }} />
             {/*בהתאים למימוש הצ'אט ושמירת הסטוריית השיחות - תתבצע פעולת גט אשר תשלוף את היסטוריית השיחות. 
             לכל שיחה ישלף שם המשתמש השני/הקבוצה, סטטוס השיחה (האם יש הודעה חדשה אשר לא נקראה) ותוצג ההודעה האחרונה אשר נשלחה.*/}
-            <Tab.Screen name="Tasks" component={Tasks} options={{ tabBarLabel: 'Tasks' }} />
+            <Tab.Screen name="Tasks" component={Tasks} options={{ tabBarLabel: 'Tasks', unmountOnBlur: true  }} />
             {/*בעת ניווט למסך תשלומים - תבוצע פעולת גט שתמשוך את הפרטים- ,
                  משימה אישית/משימה למטופל- מספר משימה, שם משימה, תאריך התחלה, תאריך סוף, הערות, סטטוס(לפי מספר משתמש),
                   שדות הייחודיים לטבלת משימה למטופל אשר יימשכו- מספר מטופל,מספר רשימה*/}

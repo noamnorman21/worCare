@@ -1,4 +1,4 @@
-import { View, TouchableOpacity, SafeAreaView, Image, Dimensions } from 'react-native'
+import { View, TouchableOpacity, SafeAreaView, Image, Dimensions,Button } from 'react-native'
 import React from 'react'
 import { NavigationContainer } from '@react-navigation/native';
 import { AntDesign } from '@expo/vector-icons';
@@ -9,12 +9,15 @@ import Contacts from './Contacts';
 import PushNotifications from './PushNotifications';
 
 const Stack = createStackNavigator();
-export default function CustomHeader(props) {
+export default function CustomHeader(props, {navigation}) {
     return (
+
+
         <NavigationContainer independent={true} zIndex='0'   >
             <Stack.Navigator>
                 <Stack.Screen name='AppBarUp' component={AppBarUp} options={(route) => ({
-                    headerShown: false,                   
+                    headerShown: false,  
+                                   
                     style: {
                         flex: 1,
                     },
@@ -25,6 +28,7 @@ export default function CustomHeader(props) {
                     headerTitle: 'check',
                     presentation: 'stack',
                     cardOverlayEnabled: true,
+                  
                 })} />
                 <Stack.Screen name='PushNotifications' component={PushNotifications} options={() => ({
                     headerShown: true,
@@ -36,6 +40,7 @@ export default function CustomHeader(props) {
             </Stack.Navigator>
 
         </NavigationContainer>
+        
         // <View style={{flex:1}}>
         //     <NavigationContainer independent={true} >
         //         <Stack.Navigator headerMode='none' >
@@ -47,6 +52,25 @@ export default function CustomHeader(props) {
         //     </NavigationContainer>
         // </View>
     );
+    {/* <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{
+            headerTitle: (props) => <LogoTitle {...props} />,
+            headerRight: () => (
+              <Button
+                onPress={() => alert('This is a button!')}
+                title="Info"
+                color="#00cc00"
+              />
+            ),
+          }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer> */}
+
 }
 
 function AppBarUp({ navigation }) {
