@@ -14,8 +14,8 @@ const Stack = createStackNavigator();
 
 export default function Payments() {
   return (
-    <NavigationContainer independent={true} zIndex='0'   >
-      <Stack.Navigator>
+    <NavigationContainer independent={true} zIndex='0' initialRouteName='choice'    >
+      <Stack.Navigator initialRouteName='choice'>
         <Stack.Screen name='choice' component={Choice} options={() => ({
           headerShown: false,
         })} />
@@ -33,7 +33,6 @@ export default function Payments() {
           presentation: 'stack',
           cardOverlayEnabled: true,
         })} />
-
       </Stack.Navigator>
 
     </NavigationContainer>
@@ -51,12 +50,12 @@ function Choice({ navigation }) {
           source={require('../images/logo_New.png')}
         />
       </View>
-      <TouchableOpacity onPress={() => { navigation.navigate('PaymentsInner') }} style={styles.Button}>
+      <TouchableOpacity activeOpacity={1} onPress={() => { navigation.navigate('PaymentsInner') }} style={styles.Button}>
         <Text style={styles.text}>
           Payments
         </Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => { navigation.navigate('Paychecks') }} style={styles.button2}>
+      <TouchableOpacity activeOpacity={1} onPress={() => { navigation.navigate('Paychecks') }} style={styles.button2}>
         <Text style={styles.text}>
         Paychecks
         </Text>
@@ -70,9 +69,9 @@ function Choice({ navigation }) {
 const styles = StyleSheet.create({
   Button: {
     width: 265,
-    height:54,
-    color: 'red',
-    backgroundColor: '#7DA9FF',
+    height:54,    
+    backgroundColor: '#548DFF',
+    opacity: 0.75,
     borderRadius: 25,
     alignContent: 'center',
     textAlign: 'center',
@@ -81,12 +80,13 @@ const styles = StyleSheet.create({
     TouchableOpacity: 1,
     padding:10 ,
     marginHorizontal: 'auto',
+   
   },
   button2 : {
     width: 265,
     height:54,
-    color: 'red',
-    backgroundColor: '#7DA9FF',
+    opacity: 0.75,    
+    backgroundColor: '#548DFF',
     borderRadius: 25,
     alignContent: 'center',
     textAlign: 'center',
@@ -117,5 +117,6 @@ text: {
   justifyContent:'center',
   fontFamily:'Roboto',
   fontWeight:'700',
+  opacity:1,
 }
 })
