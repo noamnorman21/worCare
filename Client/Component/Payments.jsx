@@ -45,7 +45,7 @@ function Choice({ navigation }) {
 
   return (
     <SafeAreaView style={{ flex: 1, alignItems: 'center', justifyContent: 'center', }}>
-      <View>
+      <View style={styles.imageContainer}>
         <Image
           
           source={require('../images/logo_New.png')}
@@ -56,7 +56,7 @@ function Choice({ navigation }) {
           Payments
         </Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => { navigation.navigate('Paychecks') }} style={styles.Button}>
+      <TouchableOpacity onPress={() => { navigation.navigate('Paychecks') }} style={styles.button2}>
         <Text style={styles.text}>
         Paychecks
         </Text>
@@ -69,7 +69,22 @@ function Choice({ navigation }) {
 
 const styles = StyleSheet.create({
   Button: {
-    width: 200,
+    width: 265,
+    height:54,
+    color: 'red',
+    backgroundColor: '#7DA9FF',
+    borderRadius: 25,
+    alignContent: 'center',
+    textAlign: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',    
+    TouchableOpacity: 1,
+    padding:10 ,
+    marginHorizontal: 'auto',
+  },
+  button2 : {
+    width: 265,
+    height:54,
     color: 'red',
     backgroundColor: '#7DA9FF',
     borderRadius: 25,
@@ -77,16 +92,16 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 13,
-    marginVertical: 10,
+    marginVertical: 20,
     TouchableOpacity: 1,
-    paddingBottom:10 ,
+    padding:10 ,
     marginHorizontal: 'auto',
   },
   imageContainer: {
     alignItems: 'center',
     justifyContent: 'center',    
-    marginBottom:-20,
+    marginBottom:-60,
+    marginTop:-120,
   },
    image: {
     paddingBottom:0,
@@ -100,6 +115,7 @@ text: {
   flex:0,
   alignItems:'center',
   justifyContent:'center',
-  fontFamily:'Roboto'
+  fontFamily:'Roboto',
+  fontWeight:'700',
 }
 })
