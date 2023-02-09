@@ -14,8 +14,7 @@ export default function CustomHeader(props) {
         <NavigationContainer independent={true} zIndex='0'   >
             <Stack.Navigator>
                 <Stack.Screen name='AppBarUp' component={AppBarUp} options={(route) => ({
-                    headerShown: false,
-                    headercontent: 'bla',
+                    headerShown: false,                   
                     style: {
                         flex: 1,
                     },
@@ -24,7 +23,6 @@ export default function CustomHeader(props) {
                 <Stack.Screen name='SettingScreen' component={SettingScreen} options={() => ({
                     headerShown: true,
                     headerTitle: 'check',
-
                     presentation: 'stack',
                     cardOverlayEnabled: true,
                 })} />
@@ -60,6 +58,8 @@ function AppBarUp({ navigation }) {
                     <Image source={require('../images/icons/Profile.png')} style={{ width: 24, height: 24 }} />
                 </TouchableOpacity>
             </View>
+            {/*במעבר למסך ההגדרות ישלפו הגדרות המתשתמש הנבחרות לתפעול האפליקתיה.
+            בנוסף תתבצע פעות גט למסד הנתונים וישלפו כלל הפרטים של המשתמש, על מנת לאפשר שינוי של הפרופיל. */}
             {/* Middle - Logo - not clickable */}
             <View style={{ flex: 1, marginLeft: Dimensions.get('screen').width * 0.01 }}>
                 <Image source={require('../images/logo_New_Small.png')} style={{ width: 50, height: 50 }} />
@@ -76,6 +76,8 @@ function AppBarUp({ navigation }) {
                     <AntDesign name="contacts" size={24} color={'#000000'} />
                 </TouchableOpacity>
             </View>
+            {/*בעת ניווט למסך אנשי הקשר תתבצע פעולת גט (באמצעות מספר מטופל- המקושר למשתמש), וישלפו נתוני איש הקשר 
+            הנתונים הנשלפים הינם שם,  */}
         </SafeAreaView>
     )
 }
