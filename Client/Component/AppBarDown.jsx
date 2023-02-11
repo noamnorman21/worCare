@@ -130,4 +130,4 @@ const styles = StyleSheet.create({
     Notifications: { marginRight: Dimensions.get('screen').width * 0.01 },
     ContactICON: { marginRight: Dimensions.get('screen').width * 0.05 },
     Header: { flexDirection: 'row', backgroundColor: 'white', margin: 0, padding: 20, height: 100, alignItems: 'center', zIndex: 0 },
-})
+});
