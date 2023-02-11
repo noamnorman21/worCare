@@ -16,7 +16,7 @@ namespace ClassLibrary
     {
         public int payCheckNum { get; set; }
         public System.DateTime paycheckDate { get; set; }
-        public byte[] paycheckSummary { get; set; }
+        public string paycheckSummary { get; set; }
         public string paycheckComment { get; set; }
         public int UserId { get; set; }
     

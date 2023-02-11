@@ -9,18 +9,19 @@ import { createStackNavigator } from '@react-navigation/stack';
 import SettingScreen from './Component/SettingScreen';
 import Contacts from './Component/Contacts';
 import CustomHeader from './Component/AppBarUp';
-import CreateUser from './Component/SignUpComponents/CreateUser';
-
+import CreateUser from './Component/SignUpComponents/SignUp';
+import ForgotPassword from './Component/SignUpComponents/ForgotPassword';
 export default function App() {
   return (
-    <NavigationContainer independent={true}>
-      {/* <CustomHeader /> */}
-      <AppbarDown />
-    </NavigationContainer>
-    // <View style={styles.container}>
-    //   <CreateUser />
-    //   <LogIn />
-    // </View>
+    // <NavigationContainer independent={true}>
+    //   {/* <CustomHeader /> */}
+    //   <AppbarDown />
+    // </NavigationContainer>
+    <View style={styles.container}>
+      {/* <CreateUser /> */}
+      {/* <LogIn /> */}
+      <ForgotPassword/>
+    </View>
   );
 }
 

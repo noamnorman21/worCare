@@ -18,7 +18,7 @@ namespace ClassLibrary
         public int id { get; set; }
         public Nullable<bool> isPrimary { get; set; }
     
-        public virtual tblCalendersType tblCalendersType { get; set; }
+        public virtual tblCalendarsType tblCalendarsType { get; set; }
         public virtual tblUser tblUser { get; set; }
     }
 }

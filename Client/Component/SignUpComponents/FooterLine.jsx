@@ -1,43 +1,6 @@
 import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native'
 
-const styles = StyleSheet.create({
-    lineContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        width: '100%',
-        alignSelf: 'center',
-        marginVertical: 30,
-    },
-    line: {
-        flex: 1,
-        height: 1,
-        backgroundColor: '#808080',
-        marginHorizontal: 10,
-    },
-    orText: {
-        paddingHorizontal: 10,
-        color: '#808080',
-        fontSize: 18,
-        fontWeight: '600',
-    },
-    needAccountTXT: {
-        marginRight: Dimensions.get('screen').width * 0.03,
-    },
-    buttonContainer: {
-        flex: 0.3,
-        flexDirection: 'row',
-        justifyContent: 'center',
-    },
-    signUpText: {
-        fontSize: 16,
-        flex: 1,
-    },
-    signUpButtonText: {
-        color: '#548DFF',
-        fontSize: 16,
-    },
-})
 
 const OrLine = () => {
     return (
@@ -80,4 +43,58 @@ const HaveAccount = () => {
     )
 }
 
-export { OrLine, NeedAccount, HaveAccount }
+const ReturnToLogin = () => {
+    {/* for forgot password screen */ }
+    return (
+        <View style={styles.buttonContainer}>
+            <TouchableOpacity onPress={() => alert('Navigate To Log In')}>
+                <Text style={styles.BackToLogIn}>Back to Log In</Text>
+            </TouchableOpacity>
+        </View>
+    )
+}
+
+export { OrLine, NeedAccount, HaveAccount, ReturnToLogin }
+
+const styles = StyleSheet.create({
+    lineContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        width: '100%',
+        alignSelf: 'center',
+        marginVertical: 30,
+    },
+    line: {
+        flex: 1,
+        height: 1,
+        backgroundColor: '#808080',
+        marginHorizontal: 10,
+    },
+    orText: {
+        paddingHorizontal: 10,
+        color: '#808080',
+        fontSize: 18,
+        fontWeight: '600',
+    },
+    needAccountTXT: {
+        marginRight: Dimensions.get('screen').width * 0.03,
+    },
+    buttonContainer: {
+        flex: 0.3,
+        flexDirection: 'row',
+        justifyContent: 'center',
+    },
+    signUpText: {
+        fontSize: 16,
+        flex: 1,
+    },
+    signUpButtonText: {
+        color: '#548DFF',
+        fontSize: 16,
+    },
+    BackToLogIn: {
+        color: '#548DFF',
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+})

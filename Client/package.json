@@ -9,7 +9,9 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@expo-google-fonts/urbanist": "^0.2.2",
     "@expo/vector-icons": "^13.0.0",
+    "@fontsource/urbanist": "^4.5.17",
     "@react-native-picker/picker": "^2.4.8",
     "@react-navigation/bottom-tabs": "^6.5.3",
     "@react-navigation/material-top-tabs": "^6.5.2",

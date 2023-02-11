@@ -18,7 +18,7 @@ namespace ClassLibrary
         public string requestSubject { get; set; }
         public double amountToPay { get; set; }
         public System.DateTime requestDate { get; set; }
-        public byte[] requestProofDocument { get; set; }
+        public string requestProofDocument { get; set; }
         public string requestComment { get; set; }
         public string requestStatus { get; set; }
         public int userId { get; set; }

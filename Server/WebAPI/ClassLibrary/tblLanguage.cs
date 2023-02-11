@@ -21,8 +21,8 @@ namespace ClassLibrary
             this.tblPatient = new HashSet<tblPatient>();
         }
     
-        public string LanguageName_He { get; set; }
         public string LanguageName_En { get; set; }
+        public string LanguageName_He { get; set; }
         public string LanguageName_Original { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

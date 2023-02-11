@@ -11,7 +11,7 @@ import PushNotifications from './PushNotifications';
 const Stack = createStackNavigator();
 export default function CustomHeader(props) {
     return (
-        <View style={{flex:1}}>
+        <View>
             <NavigationContainer independent={true} >
                 <Stack.Navigator headerMode='none' >
                     <Stack.Screen name='AppBarUp' component={AppBarUp} />

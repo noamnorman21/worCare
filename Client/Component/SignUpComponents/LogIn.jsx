@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#F5F5F5',
         borderColor: 'lightgray',
         shadowColor: '#000',
-        height: 45,
+        height: 54,
     },
     button: {
         width: Dimensions.get('window').width * 0.9,
@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
         shadowRadius: 3,
         elevation: 1,
         margin: 15,
-        height: 45,
+        height: 54,
     },
     buttonText: {
         color: 'white',
@@ -233,5 +233,9 @@ const styles = StyleSheet.create({
         marginTop: 10,
         marginBottom: 10,
     },
-    forgotPasswordContainer: { flexDirection: 'row', alignSelf: 'flex-end', marginLeft: Dimensions.get('screen').width * 0.275 }
+    forgotPasswordContainer: { 
+        flexDirection: 'row',
+        alignSelf: 'flex-end', 
+        marginLeft: Dimensions.get('screen').width * 0.275 
+    }
 });

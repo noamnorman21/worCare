@@ -9,11 +9,37 @@ using ClassLibrary;
 namespace WebAPI.Controllers
 {
     // Add Route Prefix to the controller 
+    [RoutePrefix("api/User")]
     public class UserController : ApiController
     {
-        igroup194DBContext db = new igroup194DBContext(); // Create a new instance of the database context        
+        igroup194_prodEntities db = new igroup194_prodEntities(); 
+        // Create a new instance of the database context        
         // Add Specific Route To each controller method
+
+        // GET api/User/5
+        [Route("GetUser/{id}")]
+        public IHttpActionResult GetUser(int id)
+        {
+            try
+            {
+                // Get the user from the database
+                var user = db.tblUser.Where(u => u.Id == id).FirstOrDefault();
+                // If the user is not found, return a 404 error
+                if (user == null)
+                {
+                    return NotFound();
+                }
+                // Return the user
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
         // GET api/User
+        [Route("GetAllUsers")]
         public IHttpActionResult GetUser(string email, string password)
         {
             try
@@ -31,6 +57,24 @@ namespace WebAPI.Controllers
             }
         }
 
+        [Route("GetUserById")]
+        // GET api/User/GetUserByEmail?email=
+        public IHttpActionResult GetUserByEmail(string email)
+        {
+            try
+            {
+                var user = db.tblUser.Where(u => u.Email == email).FirstOrDefault();
+                if (user == null)
+                {
+                    return NotFound();
+                }
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
         // POST api/User        
         public IHttpActionResult Post([FromBody] tblUser user)
         {

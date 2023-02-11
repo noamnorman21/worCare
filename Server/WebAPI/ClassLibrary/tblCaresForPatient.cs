@@ -19,7 +19,7 @@ namespace ClassLibrary
         public string status { get; set; }
         public string linkTo { get; set; }
     
-        public virtual tblForeignUser tblForeignUser { get; set; }
         public virtual tblPatient tblPatient { get; set; }
+        public virtual tblForeignUser tblForeignUser { get; set; }
     }
 }

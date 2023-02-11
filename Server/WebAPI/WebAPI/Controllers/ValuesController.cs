@@ -10,7 +10,7 @@ namespace WebAPI.Controllers
 {
     public class ValuesController : ApiController
     {
-        igroup194DBContext db = new igroup194DBContext(); // Create a new instance of the database context
+        igroup194_prodEntities db = new igroup194_prodEntities(); // Create a new instance of the database context
         // IHTTPActionResult is a generic interface that can return any type of HTTP response
         
         // GET api/values
