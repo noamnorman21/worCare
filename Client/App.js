@@ -15,7 +15,7 @@ import CreateUser from './Component/SignUpComponents/CreateUser';
 export default function App() {
   return (
     <NavigationContainer >
-    <CustomHeader />
+    {/* <CustomHeader /> */}
       <AppbarDown />
     </NavigationContainer>
   //   <View style={styles.container}>
