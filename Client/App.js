@@ -13,15 +13,15 @@ import CreateUser from './Component/SignUpComponents/SignUp';
 import ForgotPassword from './Component/SignUpComponents/ForgotPassword';
 export default function App() {
   return (
-    // <NavigationContainer independent={true}>
-    //   {/* <CustomHeader /> */}
-    //   <AppbarDown />
-    // </NavigationContainer>
-    <View style={styles.container}>
-      {/* <CreateUser /> */}
-      {/* <LogIn /> */}
-      <ForgotPassword/>
-    </View>
+    <NavigationContainer independent={true}>
+      {/* <CustomHeader /> */}
+      <AppbarDown />
+    </NavigationContainer>
+    // <View style={styles.container}>
+    //   {/* <CreateUser /> */}
+    //   {/* <LogIn /> */}
+    //   <ForgotPassword/>
+    // </View>
   );
 }
 
