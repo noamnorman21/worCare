@@ -20,7 +20,7 @@ export default function Tasks() {
         alignItems: 'center',
       },
       style: {
-        marginTop:30,
+        
         backgroundColor: 'transparent',
         height: 50,
         
@@ -78,7 +78,7 @@ function Medicine() {
 const styles= StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 30,
+    
     flexDirection: 'column',    
     fontFamily:'sans-serif',
     backgroundColor: 'none',
@@ -87,7 +87,7 @@ const styles= StyleSheet.create({
     },
     container2: {
       flex: 1,
-      paddingTop: 30,
+      
       flexDirection: 'column',
       fontFamily:'sans-serif',
       backgroundColor: 'none',

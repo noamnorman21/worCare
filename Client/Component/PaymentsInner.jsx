@@ -10,7 +10,7 @@ const Tab = createMaterialTopTabNavigator();
 
 export default function PaymentsInner() {
   return ( 
-      <Tab.Navigator initialRouteName="Pending" style={{paddingTop:30}} >
+      <Tab.Navigator initialRouteName="Pending"  >
       <Tab.Screen name="Pending" component={Pending} />
       <Tab.Screen name="History" component={History} />
       

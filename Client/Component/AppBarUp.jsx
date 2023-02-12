@@ -8,6 +8,7 @@ import SettingScreen from './SettingScreen';
 import Contacts from './Contacts';
 import PushNotifications from './PushNotifications';
 
+
 const Stack = createStackNavigator();
 export default function CustomHeader(props, {navigation}) {
     return (
@@ -15,24 +16,40 @@ export default function CustomHeader(props, {navigation}) {
 
         <NavigationContainer independent={true} zIndex='0'   >
             <Stack.Navigator>
-                <Stack.Screen name='AppBarUp' component={AppBarUp} options={(route) => ({
-                    headerShown: false,  
-                                   
-                    style: {
-                        flex: 1,
-                    },
-
+                {/*הכנסתי את הבאר התחתון כמסך הראשי, שינוי של הסדר של הכינון הפנימי גרם לזה לעבוד */}
+                <Stack.Screen name='AppBarDown' component={AppBarDown} options={({navigation}) => ({
+                    headerShown: true,
+                    headerTitle: '',
+                    headerLeft: () => ( <View style={{ marginLeft: Dimensions.get('screen').width * 0.075, flex: 1, justifyContent: 'space-between', alignContent: 'space-between' }}>
+                    <TouchableOpacity style={{justifyContent:'center', alignItems:'center', top:16}} onPress={() => {navigation.navigate('SettingScreen')}}>
+                        <Image source={require('../images/icons/Profile.png')} style={{ width: 24, height: 24, justifyContent:'center' }} />
+                    </TouchableOpacity>
+                </View>
+                    ),
+                    headerRight: () => ( <View style={{ marginLeft: Dimensions.get('screen').width * 0.075, flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignContent: 'space-between' }}>
+                    <TouchableOpacity style={{justifyContent:'center', alignItems:'center',  right:16}} onPress={() => {navigation.navigate('PushNotifications')}}>
+                        <Image source={require('../images/icons/notifications.png')} style={{ width: 24, height: 24, justifyContent:'center' }} />
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{justifyContent:'center', alignItems:'center',right:16}} onPress={() => {navigation.navigate('Contacts')}}>
+                    <AntDesign name="contacts" size={24} color={'#000000'} />
+                    </TouchableOpacity>
+                </View>
+                    ),
+                    headerTitleAlign: 'center',
+                    headerTitle: () => (
+                        <Image source={require('../images/logo_New_Small.png')} style={{ width: 50, height: 50 }} />
+                    ),
                 })} />
                 <Stack.Screen name='SettingScreen' component={SettingScreen} options={() => ({
                     headerShown: true,
-                    headerTitle: 'check',
+                    headerTitle: 'Settings',
                     presentation: 'stack',
                     cardOverlayEnabled: true,
                   
                 })} />
                 <Stack.Screen name='PushNotifications' component={PushNotifications} options={() => ({
                     headerShown: true,
-                    headerTitle: 'bla',
+                    headerTitle: 'Notifications',
                     presentation: 'stack',
                     cardOverlayEnabled: true,
                 })} />
@@ -73,6 +90,8 @@ export default function CustomHeader(props, {navigation}) {
 
 }
 
+
+// not in use
 function AppBarUp({ navigation }) {
     return (
         <SafeAreaView style={{ flexDirection: 'row', backgroundColor: 'white', margin: 0, padding: 20, height: 100, alignItems: 'center', zIndex: 0 }}>
@@ -106,3 +125,4 @@ function AppBarUp({ navigation }) {
         </SafeAreaView>
     )
 }
+

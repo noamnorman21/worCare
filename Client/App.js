@@ -14,8 +14,8 @@ import ForgotPassword from './Component/SignUpComponents/ForgotPassword';
 export default function App() {
   return (
     <NavigationContainer independent={true}>
-      {/* <CustomHeader /> */}
-      <AppbarDown />
+      <CustomHeader />
+      {/* <AppbarDown /> */}
     </NavigationContainer>
     // <View style={styles.container}>
     //   {/* <CreateUser /> */}
