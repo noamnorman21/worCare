@@ -1,39 +1,43 @@
 import React from 'react';
-import {SafeAreaView,View,
-    Text,
-    TextInput,
-    Button,
-    StyleSheet,
-    Dimensions,
-    TouchableOpacity,
-    Alert,
-} from 'react-native';
+import { SafeAreaView, View, Text, TextInput, Button, StyleSheet, Dimensions, TouchableOpacity, Alert } from 'react-native';
 import { useState, useEffect } from 'react';
 import { OrLine, ReturnToLogin } from './FooterLine';
+import axios from 'axios';
 
-export default function ForgotPassword() {
-    const [email, setEmail] = useState(''); // email state
-    const [emailExist, setEmailExist] = useState(false); // email exist state
+// This is the Forgot Password screen
+// This screen is the first screen of the forgot password process
+// The user enters his email address and clicks submit
+// The user is then redirected to the verification code screen
+export default function ForgotPassword({ navigation }) {
+    const [email, setEmail] = useState('');
 
-    useEffect(() => {
-        // check if email exists in the database
-        fetch(`https://localhost:44387/api/User/GetUserByEmail`)
-            .then((res) => res.json())
-            .then((data) => {
-                Alert.alert(data);
-                setEmailExist(data.length > 0);
-            });
-    }, [email]);
-
-    // function to check if email exists
+    // fetch with a GET request 
+    // to check if email exists in the database
+    // if it does, then the user is redirected to the verification code screen
+    // if it doesn't, then the user is alerted that the email doesn't exist
     const checkIfEmailExist = () => {
-        if (!emailExist) {
-            Alert.alert('Email does not exist');
-            return;
-        }
-        // here we will call the API to send the verification code to the email
-        Alert.alert('Verification code sent to your email'); // just for testing
-    };
+        axios.get(`https://localhost:44387/api/User/GetUserEmail`,
+            {
+                params: {
+                    email
+                }
+            })
+            .then((response) =>{
+                console.log(response.data);
+                return response.data;
+            })
+            .then((data) => {
+                if (data.length > 0) {
+                    Alert.alert('Email exists');
+                    // navigation.navigate('ForgotPasswordLvl2', { email: email });
+                } else {
+                    Alert.alert('Email does not exist');
+                }
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }
 
     return (
         <SafeAreaView style={styles.container}>
@@ -49,7 +53,6 @@ export default function ForgotPassword() {
                     keyboardType="email-address"
                     autoCorrect={false}
                     autoCapitalize="none"
-                    onChangeText={(text) => setEmail(text)}
                 />
                 {/* Submit And go to next lvl screen - verification code */}
                 <TouchableOpacity style={styles.button} onPress={checkIfEmailExist}>

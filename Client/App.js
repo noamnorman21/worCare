@@ -18,9 +18,9 @@ export default function App() {
     // </NavigationContainer>
    
     <View style={styles.container}>
-      <CreateUser />
+      {/* <CreateUser /> */}
       {/* <LogIn /> */}
-      {/* <ForgotPassword/> */}
+      <ForgotPassword/>
     </View>
   );
 }
