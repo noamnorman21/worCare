@@ -19,54 +19,55 @@ const Tab = createBottomTabNavigator();
 function CustomHeader() {
     return (
         <Stack.Navigator>
-            <Stack.Screen 
-                name='AppBarDown' 
+            <Stack.Screen
+                name='AppBarDown'
                 component={AppBarDown}
                 options={({ navigation }) => ({
-                    title:' ',
+                    title: ' ',
                     headerLeft: () => (
-                    <View style={styles.headerLeft}>
-                        <TouchableOpacity
-                            onPress={() => { navigation.navigate('SettingScreen') }}
-                        >
-                        <Image 
-                            source={require('../images/icons/Profile.png')} 
-                            style={{ width: 32, height: 28 }} 
-                        />
-                        </TouchableOpacity>
-                    </View>
+                        <View style={styles.headerLeft}>
+                            <TouchableOpacity
+                                onPress={() => { navigation.navigate('SettingScreen') }}
+                            >
+                                <Image
+                                    source={require('../images/icons/Profile.png')}
+                                    style={{ width: 32, height: 28 }}
+                                />
+                            </TouchableOpacity>
+                        </View>
                     ),
                     headerRight: () => (
-                    <View style={styles.headerRight}>
-                        <TouchableOpacity
-                            style={{ right: Dimensions.get('screen').width * 0.06 }}
-                            onPress={() => { navigation.navigate('PushNotifications') }}
-                        >
-                        <Feather 
-                            name="bell" 
-                            size={28} 
-                            color={'#000000'}
-                        />                            
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={{ right: Dimensions.get('screen').width * 0.04 }}
-                            onPress={() => { navigation.navigate('Contacts') }}
-                        >
-                        <AntDesign
-                            name="contacts"
-                            size={28}
-                            color={'#000000'}
-                        />
-                        </TouchableOpacity>
-                    </View>
+                        <View style={styles.headerRight}>
+                            <TouchableOpacity
+                                style={{ right: Dimensions.get('screen').width * 0.06 }}
+                                onPress={() => { navigation.navigate('PushNotifications') }}
+                            >
+                                <Feather
+                                    name="bell"
+                                    size={28}
+                                    color={'#000000'}
+                                />
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={{ right: Dimensions.get('screen').width * 0.04 }}
+                                onPress={() => { navigation.navigate('Contacts') }}
+                            >
+                                <AntDesign
+                                    name="contacts"
+                                    size={28}
+                                    color={'#000000'}
+                                />
+                            </TouchableOpacity>
+                        </View>
                     ),
                     headerTitle: () => (
-                    <Image
-                        source={require('../images/logo_New_Small.png')}
-                        style={styles.headerLogo} 
-                    />
-                    ),                    
-                })} 
+                        <Image
+                            source={require('../images/logo_New_Small.png')}
+                            style={styles.headerLogo}
+                        />
+                    ),
+                    headerTitleAlign: 'center',
+                })}
             />
             <Stack.Screen name='SettingScreen' component={SettingScreen}
                 options={() => ({
