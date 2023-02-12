@@ -13,15 +13,15 @@ import {CustomHeader} from './Component/AppBarUp';
 
 export default function App() {
   return (
-    <NavigationContainer independent={true}>
-      <CustomHeader />
-    </NavigationContainer>
+    // <NavigationContainer independent={true}>
+    //   <CustomHeader />
+    // </NavigationContainer>
    
-    // <View style={styles.container}>
-    //   {/* <CreateUser /> */}
-    //   {/* <LogIn /> */}
-    //   {/* <ForgotPassword/> */}
-    // </View>
+    <View style={styles.container}>
+      <CreateUser />
+      {/* <LogIn /> */}
+      {/* <ForgotPassword/> */}
+    </View>
   );
 }
 

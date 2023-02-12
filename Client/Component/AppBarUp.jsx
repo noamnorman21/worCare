@@ -1,6 +1,5 @@
-import { View, TouchableOpacity, SafeAreaView, Image, Dimensions, Button, StyleSheet } from 'react-native'
+import { View, TouchableOpacity, Image, Dimensions, StyleSheet } from 'react-native'
 import React from 'react'
-import { NavigationContainer } from '@react-navigation/native';
 import { Octicons, Ionicons, AntDesign, Feather } from '@expo/vector-icons';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -9,7 +8,7 @@ import Contacts from './Contacts';
 import PushNotifications from './PushNotifications';
 
 import Home from '../Component/Home';
-import Payments from '../Component/Payments';
+import Finance from './Finance';
 import Chats from '../Component/Chats';
 import Tasks from '../Component/Tasks';
 import Rights from '../Component/Rights';
@@ -93,7 +92,7 @@ function AppBarDown() {
                 tabBarIcon: ({ color, size }) => {
                     if (route.name === 'Home') {
                         return <Octicons name={'home'} size={size} color={color} />
-                    } else if (route.name === 'Payments') {
+                    } else if (route.name === 'Finance') {
                         return <Octicons name={'credit-card'} size={size} color={color} />
                     } else if (route.name === 'Chats') {
                         return <Ionicons name="chatbubble-ellipses-outline" size={size} color={color} />
@@ -116,7 +115,7 @@ function AppBarDown() {
             <Tab.Screen name="Home" component={Home} options={{ tabBarLabel: 'Home' }} />
             {/*בעת ניווט למסך הבית - תבוצע פעולת גט שתמשוך את הפרטים- לוח שנה למשתמש- סוג לוח שנה,
                 משימה אישית/משימה למטופל- מספר משימה, שם משימה, תאריך התחלה, תאריך סוף, הערות, סטטוס */}
-            <Tab.Screen name="Payments" component={Payments} options={{ tabBarLabel: 'Payments', unmountOnBlur: true }} />
+            <Tab.Screen name="Finance" component={Finance} options={{ tabBarLabel: 'Finance', unmountOnBlur: true }} />
             {/*בעת ניווט למסך תשלומים - למסך הראשי אין צורך בביצוע פעולות, לאחר בחירת המסך הרצוי(תשלומים/משכורות) יבוצעו פעולות גט)
                 מסך תשלומים- שני תתי מסכים- פירוט יבוצע בקומפוננטת הניווט במסכים היעודיים
                 */}
