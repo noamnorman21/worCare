@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions } from 'react-native'
 import React from 'react'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
@@ -9,7 +9,7 @@ const Tab = createMaterialTopTabNavigator();
 // Second Button will navigate to Paycheck screen - [History]
 export default function Finance() {
   return (
-    <View>
+    <View style={styles.container}>
       <Image source={require('../images/logo_New.png')} style={styles.BigIMG} />
       <TouchableOpacity
         style={styles.button}
@@ -17,7 +17,7 @@ export default function Finance() {
           navigation.navigate('Payments')
         }}
       >
-        <Text>Payment</Text>
+        <Text style={styles.txt}>Payment</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.button}
@@ -25,7 +25,7 @@ export default function Finance() {
           navigation.navigate('Paycheck')
         }}
       >
-        <Text>Paycheck</Text>
+        <Text style={styles.txt}>Paycheck</Text>
       </TouchableOpacity>
     </View>
   );
@@ -71,18 +71,23 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   BigIMG: {
-    width: 100,
-    height: 100,
+    width: Dimensions.get('screen').width * 1,
     resizeMode: 'contain',
   },
   button: {
     alignItems: 'center',
-    backgroundColor: '#DDDDDD',
-    padding: 10,
+    justifyContent: 'center',
+    backgroundColor: '#7DA9FF',
     height: 54,
+    width: Dimensions.get('screen').width * 0.65,
     margin: 10,
+    borderRadius: 25,
   },
-
+  txt: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
 })
 
 
