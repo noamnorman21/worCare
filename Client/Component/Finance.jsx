@@ -27,6 +27,10 @@ export default function Finance() {
         },
 
       })} />
+      {/*בעת ניווט למסך התשלומים, תתבצע פעולת גט אשר תשלוף את בקשות התשלומים אשר קיימות במסד הנתונים.
+      בעת רנדור עמוד פנימי פנדינג ירונדרו בקשות לפי סטוטס בקשה אינו שולם,
+      בעת רנדור מס היסטוריה ירונדרו בקשות אשר בעלות סטטוס שולמו.
+      מידע אשר ישלף כלפי כל בקשה- id, sunject, amount, requestDate, proofofdocument, comment, status */}
       <Stack.Screen name='Paychecks' component={Paycheck} options={() => ({
         headerShown: false,
         presentation: 'stack',
