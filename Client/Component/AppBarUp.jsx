@@ -31,7 +31,7 @@ function CustomHeader() {
                         >
                         <Image 
                             source={require('../images/icons/Profile.png')} 
-                            style={{ width: 32, height: 28 }} 
+                            style={{ width: 32, height: 28,  top:10 }} 
                         />
                         </TouchableOpacity>
                     </View>
@@ -39,7 +39,7 @@ function CustomHeader() {
                     headerRight: () => (
                     <View style={styles.headerRight}>
                         <TouchableOpacity
-                            style={{ right: Dimensions.get('screen').width * 0.06 }}
+                            style={{ right: Dimensions.get('screen').width * 0.06, top:10 }}
                             onPress={() => { navigation.navigate('PushNotifications') }}
                         >
                         <Feather 
@@ -49,7 +49,7 @@ function CustomHeader() {
                         />                            
                         </TouchableOpacity>
                         <TouchableOpacity
-                            style={{ right: Dimensions.get('screen').width * 0.04 }}
+                            style={{ right: Dimensions.get('screen').width * 0.04, top:10 }}
                             onPress={() => { navigation.navigate('Contacts') }}
                         >
                         <AntDesign
@@ -65,7 +65,8 @@ function CustomHeader() {
                         source={require('../images/logo_New_Small.png')}
                         style={styles.headerLogo} 
                     />
-                    ),                    
+                    ),  
+                    headerTitleAlign: 'center',                  
                 })} 
             />
             <Stack.Screen name='SettingScreen' component={SettingScreen}

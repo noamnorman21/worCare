@@ -12,24 +12,26 @@ export default function Tasks() {
         pressColor: '#548DFF',
         pressOpacity: 0.5,
         labelStyle: {
-          fontSize: 16, // <-- change this size to 18 when we have the font family 'Urbanist'
+          fontSize: 17, // <-- change this size to 18 when we have the font family 'Urbanist'
           fontWeight: 'bold',
           color: '#9E9E9E',
           textTransform: 'none',
           alignItems: 'center',
+          justifyContent: 'space-between',
+         
         },
         style: {
           backgroundColor: 'transparent',
-          marginTop: 25,
-          height: 50,
+          
+          
         },
         indicatorStyle: {
           backgroundColor: '#548DFF',
-          height: 4,
+          height: 3,
         },
         tabStyle: { width: 'auto', marginLeft: 10, alignItems: 'center' },
       }} >
-      <Tab.Screen style={styles.container2} name="Main" component={Main} />
+      <Tab.Screen name="Main" component={Main} />
       <Tab.Screen name="General" component={General} />
       <Tab.Screen name="Shop" component={Shop} />
       <Tab.Screen name="Medicine" component={Medicine} />
