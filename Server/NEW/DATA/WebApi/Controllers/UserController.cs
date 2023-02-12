@@ -14,7 +14,8 @@ namespace WebApi.Controllers
     {
         igroup194_Model db = new igroup194_Model();
         // GET api/<controller>
-        [Route("GetUser/{id}")]
+        [HttpGet]
+        [Route("GetUser/{id}")]        
         public IHttpActionResult GetUser(int id)
         {
             try
@@ -27,16 +28,25 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        public IEnumerable<string> Get()
+
+
+        //this is get method that return the user by email
+        [HttpGet]
+        [Route("GetUserEmail")]
+        public IHttpActionResult GetUserEmail([FromBody] string email)
         {
-            return new string[] { "value1", "value2" };
+            try
+            {
+                var user = db.tblUser.Where(x => x.Email == email).FirstOrDefault();
+                return Ok(user.Email);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
-        // GET api/<controller>/5
-        public string Get(int id)
-        {
-            return "value";
-        }
+
 
         // POST api/<controller>
         public void Post([FromBody] string value)

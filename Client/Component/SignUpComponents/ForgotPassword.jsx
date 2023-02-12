@@ -1,62 +1,55 @@
-import { SafeAreaView, View, Text, TextInput, Button, StyleSheet, Dimensions, TouchableOpacity, Alert } from 'react-native'
-import React from 'react'
-import { useState , useEffect} from 'react'
-import { OrLine, ReturnToLogin } from './FooterLine'
-
-
-// Validate Email if it is valid user in database or not
-// if it is valid user then send verification code to email
-// if it is not valid user then show error message
-const checkIfEmailExist = () => {
-    //check email format, it should be email format
-    if (!validateEmail(email)) {
-        Alert.alert('Email is not valid');
-        return;
-    }
-    //here we will call api to check if email exist or not.. 
-    useEffect(() => {
-        fetch('http://localhost:53700/api/User/GetUserByEmail?email=' + email, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-        })
-            .then((response) => response.json())
-            .then((responseJson) => {
-                if (responseJson == null) {
-                    Alert.alert('Email is not valid');
-                    return;
-                }
-                else {
-                    Alert.alert('Email is valid');//just for testing
-                }
-            })
-    }, []);     
-}
-
-//function to check email format
-const validateEmail = (email) => {
-    var re = /\S+@\S+\.\S+/;
-    return re.test(email);
-}
-
+import React from 'react';
+import {SafeAreaView,View,
+    Text,
+    TextInput,
+    Button,
+    StyleSheet,
+    Dimensions,
+    TouchableOpacity,
+    Alert,
+} from 'react-native';
+import { useState, useEffect } from 'react';
+import { OrLine, ReturnToLogin } from './FooterLine';
 
 export default function ForgotPassword() {
+    const [email, setEmail] = useState(''); // email state
+    const [emailExist, setEmailExist] = useState(false); // email exist state
+
+    useEffect(() => {
+        // check if email exists in the database
+        fetch(`https://localhost:44387/api/User/GetUserByEmail`)
+            .then((res) => res.json())
+            .then((data) => {
+                Alert.alert(data);
+                setEmailExist(data.length > 0);
+            });
+    }, [email]);
+
+    // function to check if email exists
+    const checkIfEmailExist = () => {
+        if (!emailExist) {
+            Alert.alert('Email does not exist');
+            return;
+        }
+        // here we will call the API to send the verification code to the email
+        Alert.alert('Verification code sent to your email'); // just for testing
+    };
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.inputContainer}>
-
                 <Text style={styles.welcome}>Forgot Your Password?</Text>
                 <Text style={styles.instructions}>
-                    no worries, you just need to enter your email address below and we will send you the verification code.
+                    no worries, you just need to enter your email address below and we
+                    will send you the verification code.
                 </Text>
                 <TextInput
                     style={styles.input}
                     placeholder="Email"
-                    onChangeText={text => setEmail(text)}
                     keyboardType="email-address"
                     autoCorrect={false}
+                    autoCapitalize="none"
+                    onChangeText={(text) => setEmail(text)}
                 />
                 {/* Submit And go to next lvl screen - verification code */}
                 <TouchableOpacity style={styles.button} onPress={checkIfEmailExist}>
@@ -66,7 +59,7 @@ export default function ForgotPassword() {
             <OrLine />
             <ReturnToLogin />
         </SafeAreaView>
-    )
+    );
 }
 
 const styles = StyleSheet.create({
@@ -91,7 +84,7 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         lineHeight: '18px',
         paddingTop: 10,
-        paddingBottom: 20
+        paddingBottom: 20,
     },
     input: {
         width: Dimensions.get('window').width * 0.9,
