@@ -4,16 +4,21 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import ImagePickerExample from './ImagePickerExample'
 import { OrLine, HaveAccount } from './FooterLine'
 
+// Sign up Screen - level 1 - first + last name, email, phone number, password, image 
+// On submit, user is taken to SignUpLvl2 Screen - address, city, state, zip code, country
+
 export default function CreateUser() {
   const [showPassword, setShowPassword] = useState(false);//for password visibility
   const [keyboardOpen, setKeyboardOpen] = useState(false);//for keyboard visibility
   const [animation, setAnimation] = useState({});
+  const [image, setUserImage] = useState('')
   const [user, setUser] = useState({
     email: '',
     password: '',
     firstName: '',
     lastName: '',
     phoneNum: '',
+    image: '',
   })
 
   useEffect(() => {
@@ -51,7 +56,7 @@ export default function CreateUser() {
   }, []);
 
   const handleCreateUser = () => {
-    const { email, password, firstName, lastName, phoneNum } = user
+    const { email, password, firstName, lastName, phoneNum, image } = user
     if (!email || !password || !firstName || !lastName || !phoneNum) {
       return Alert.alert('Error', 'All fields are required')
     }
@@ -61,21 +66,32 @@ export default function CreateUser() {
     }
 
     if (!validatePassword(password)) {
-      return Alert.alert('Invalid Password', 'Please enter a password with at least 8 characters, including 1 uppercase letter, 1 lowercase letter and 1 number')
+      return Alert.alert('Invalid Password', 'Please enter a password with at least 8 characters, 1 letter, and 1 number')
     }
 
-    if (!validateFirstName(firstName)) {
+    if (firstName === '') {
       return Alert.alert('Invalid First Name', 'Please enter a valid first name')
     }
-
-    if (!validateLastName(lastName)) {
+    if (lastName === '') {
       return Alert.alert('Invalid Last Name', 'Please enter a valid last name')
     }
 
     if (!validatePhoneNum(phoneNum)) {
       return Alert.alert('Invalid Phone Number', 'Please enter a valid phone number')
     }
+    if (image === '') {
+      image = '../../images/Avatar.pngs';
+      return;
+    }
 
+    let userData = {
+      email: user.email,
+      password: user.password,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      phoneNum: user.phoneNum,
+      image: user.image,
+    }
     // Add logic to post user data to your server here
     return Alert.alert(
       firstName,
@@ -93,8 +109,13 @@ export default function CreateUser() {
     )
   }
 
+  const changeIMG = (image) => {
+    setUserImage(image)
+  }
+
   const validatePhoneNum = (phoneNum) => {
-    const phoneNumRegex = /^[0-9\b]+$/
+    //only numbers allowed in phone number input - no spaces or dashes - 10 digits - starts with 0
+    const phoneNumRegex = /^(0)[0-9]{9}$/
     return phoneNumRegex.test(phoneNum)
   }
 
@@ -104,18 +125,8 @@ export default function CreateUser() {
   }
 
   const validatePassword = (password) => {
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/ //at least 8 characters, 1 letter and 1 number
     return passwordRegex.test(password)
-  }
-
-  const validateFirstName = (firstName) => {
-    const nameRegex = /^[a-zA-Z\u0590-\u05FF]+$/
-    return nameRegex.test(firstName)
-  }
-
-  const validateLastName = (lastName) => {
-    const nameRegex = /^[a-zA-Z\u0590-\u05FF]+$/
-    return nameRegex.test(lastName)
   }
 
   const handleInputChange = (field, value) => {
@@ -123,9 +134,14 @@ export default function CreateUser() {
   }
 
   return (
+
     <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.title}>Fill your profile</Text>
+        <Text style={styles.smallTitle}>Don’t worry, you can always change it later</Text>
+      </View>
       <View style={styles.imageContainer}>
-        <ImagePickerExample style={styles.image} />
+        <ImagePickerExample style={styles.image} onImgChange={changeIMG} />
       </View>
 
       <View style={[styles.inputContainer, animation]}>
@@ -208,10 +224,10 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width * 1,
     height: Dimensions.get('window').height * 1,
     alignItems: 'center',
-    flex: 6,
+    flex: 4,
   },
   imageContainer: {
-    flex: 3,
+    flex: 2,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -228,7 +244,7 @@ const styles = StyleSheet.create({
   input: {
     width: Dimensions.get('window').width * 0.85,
     padding: 10,
-    margin: 10,
+    margin: 7,
     alignItems: 'left',
     borderRadius: 16,
     borderWidth: 1,
@@ -250,12 +266,13 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 3,
     elevation: 1,
-    margin: 15,
+    margin: 7,
     height: 45,
   },
   buttonText: {
     color: 'white',
-    fontWeight: 'bold',
+    fontWeight: '600',
+    fontSize: 16,
   },
   nameContainer: {
     flexDirection: 'row',
@@ -270,5 +287,19 @@ const styles = StyleSheet.create({
   lastNameInput: {
     marginLeft: 10,
     width: Dimensions.get('window').width * 0.4,
+  },
+  title: {
+    fontSize: 26,
+    fontWeight: 'bold',
+    marginBottom: 7,
+  },
+  header: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  smallTitle: {
+    fontSize: 14,
+    marginBottom: 7,
   },
 });

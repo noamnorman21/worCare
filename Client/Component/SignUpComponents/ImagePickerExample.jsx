@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { TouchableOpacity, Image, View, Platform, Text, StyleSheet } from 'react-native';
+import { TouchableOpacity, Image, View, StyleSheet } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
-export default function ImagePickerExample() {
+export default function ImagePickerExample(props) {
   const [image, setImage] = useState(null);
 
   const pickImage = async () => {
@@ -14,19 +15,19 @@ export default function ImagePickerExample() {
       quality: 1,
     });
 
-    console.log(result);
-
     if (!result.canceled) {
       setImage(result.assets[0].uri);
+      props.onImgChange(result.assets[0].uri)
     }
   };
 
   return (
-    <View style={{ flex: 0.5, alignItems: 'center', justifyContent: 'space-between' }}>
+    <View style={{position:'absolute' }}>
       <TouchableOpacity onPress={pickImage} >
-        {!image && <Image source={require('../../images/upload.png')} style={styles.imgUser} />}
+        {!image && <Image source={require('../../images/Avatar.png')} style={styles.imgUser} />}
         {image && <Image source={{ uri: image }} style={styles.imgUser} />}
       </TouchableOpacity>
+        {image && <Icon name="edit" size={28} color="#548DFF" style={styles.icon} />}
     </View>
   );
 }
@@ -36,4 +37,9 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 50,
   },
+  icon: {
+    position: 'absolute',
+    right: 3,
+    bottom: 5,
+  }
 });

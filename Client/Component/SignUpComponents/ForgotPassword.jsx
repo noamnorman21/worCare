@@ -1,62 +1,58 @@
-import { SafeAreaView, View, Text, TextInput, Button, StyleSheet, Dimensions, TouchableOpacity, Alert } from 'react-native'
-import React from 'react'
-import { useState , useEffect} from 'react'
-import { OrLine, ReturnToLogin } from './FooterLine'
+import React from 'react';
+import { SafeAreaView, View, Text, TextInput, Button, StyleSheet, Dimensions, TouchableOpacity, Alert } from 'react-native';
+import { useState, useEffect } from 'react';
+import { OrLine, ReturnToLogin } from './FooterLine';
+import axios from 'axios';
 
+// This is the Forgot Password screen
+// This screen is the first screen of the forgot password process
+// The user enters his email address and clicks submit
+// The user is then redirected to the verification code screen
+export default function ForgotPassword({ navigation }) {
+    const [email, setEmail] = useState('');
 
-// Validate Email if it is valid user in database or not
-// if it is valid user then send verification code to email
-// if it is not valid user then show error message
-const checkIfEmailExist = () => {
-    //check email format, it should be email format
-    if (!validateEmail(email)) {
-        Alert.alert('Email is not valid');
-        return;
-    }
-    //here we will call api to check if email exist or not.. 
-    useEffect(() => {
-        fetch('http://localhost:53700/api/User/GetUserByEmail?email=' + email, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-        })
-            .then((response) => response.json())
-            .then((responseJson) => {
-                if (responseJson == null) {
-                    Alert.alert('Email is not valid');
-                    return;
-                }
-                else {
-                    Alert.alert('Email is valid');//just for testing
+    // fetch with a GET request 
+    // to check if email exists in the database
+    // if it does, then the user is redirected to the verification code screen
+    // if it doesn't, then the user is alerted that the email doesn't exist
+    const checkIfEmailExist = () => {
+        axios.get(`https://localhost:44387/api/User/GetUserEmail`,
+            {
+                params: {
+                    email
                 }
             })
-    }, []);     
-}
+            .then((response) =>{
+                console.log(response.data);
+                return response.data;
+            })
+            .then((data) => {
+                if (data.length > 0) {
+                    Alert.alert('Email exists');
+                    // navigation.navigate('ForgotPasswordLvl2', { email: email });
+                } else {
+                    Alert.alert('Email does not exist');
+                }
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }
 
-//function to check email format
-const validateEmail = (email) => {
-    var re = /\S+@\S+\.\S+/;
-    return re.test(email);
-}
-
-
-export default function ForgotPassword() {
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.inputContainer}>
-
                 <Text style={styles.welcome}>Forgot Your Password?</Text>
                 <Text style={styles.instructions}>
-                    no worries, you just need to enter your email address below and we will send you the verification code.
+                    no worries, you just need to enter your email address below and we
+                    will send you the verification code.
                 </Text>
                 <TextInput
                     style={styles.input}
                     placeholder="Email"
-                    onChangeText={text => setEmail(text)}
                     keyboardType="email-address"
                     autoCorrect={false}
+                    autoCapitalize="none"
                 />
                 {/* Submit And go to next lvl screen - verification code */}
                 <TouchableOpacity style={styles.button} onPress={checkIfEmailExist}>
@@ -66,7 +62,7 @@ export default function ForgotPassword() {
             <OrLine />
             <ReturnToLogin />
         </SafeAreaView>
-    )
+    );
 }
 
 const styles = StyleSheet.create({
@@ -91,7 +87,7 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         lineHeight: '18px',
         paddingTop: 10,
-        paddingBottom: 20
+        paddingBottom: 20,
     },
     input: {
         width: Dimensions.get('window').width * 0.9,
