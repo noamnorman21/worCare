@@ -18,7 +18,7 @@ namespace ConsoleApp1
         private static Dictionary<string,ClientData> clients= new Dictionary<string,ClientData>();
         static void Main(string[] args)
         {
-            string ApiGooglekey ="AIzaSyDA-GbcFjJNNLqEFteW3ic3l9s7zhpbKwA";
+            string ApiGooglekey = ENV.GetenviromentVariable();
             TranslationClient client = TranslationClient.CreateFromApiKey(ApiGooglekey);
             var server = new WebSocketServer("ws://0.0.0.0:8181");
             server.Start(socket =>
