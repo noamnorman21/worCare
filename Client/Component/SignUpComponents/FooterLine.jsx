@@ -2,6 +2,8 @@ import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native'
 
 
+
+
 const OrLine = () => {
     return (
         <View style={styles.lineContainer}>
@@ -11,7 +13,7 @@ const OrLine = () => {
         </View>
     )
 }
-const NeedAccount = () => {
+const NeedAccount = (props) => {
     {/* for log in screen */ }
     return (
         <View style={styles.buttonContainer}>
@@ -19,7 +21,8 @@ const NeedAccount = () => {
                 <Text style={styles.signUpText}>Need an account ?</Text>
             </View>
             <View>
-                <TouchableOpacity onPress={() => alert('Sign Up')}>
+                <TouchableOpacity onPress={() =>props.NavigateToSignUp()         
+            }>      
                     <Text style={styles.signUpButtonText}>Sign Up</Text>
                 </TouchableOpacity>
             </View>
@@ -27,7 +30,7 @@ const NeedAccount = () => {
     )
 }
 
-const HaveAccount = () => {
+const HaveAccount = (props) => {
     {/* for sign up screen */ }
     return (
         <View style={styles.buttonContainer}>
@@ -35,7 +38,7 @@ const HaveAccount = () => {
                 <Text style={styles.signUpText}>Have an account ?</Text>
             </View>
             <View>
-                <TouchableOpacity onPress={() => alert('Navigate To Log In')}>
+                <TouchableOpacity onPress={() =>props.NavigateToLogIn()}>
                     <Text style={styles.signUpButtonText}>Log In</Text>
                 </TouchableOpacity>
             </View>

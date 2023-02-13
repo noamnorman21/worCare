@@ -7,7 +7,7 @@ import { OrLine, HaveAccount } from './FooterLine'
 // Sign up Screen - level 1 - first + last name, email, phone number, password, image 
 // On submit, user is taken to SignUpLvl2 Screen - address, city, state, zip code, country
 
-export default function CreateUser() {
+export default function CreateUser({navigation}) {
   const [showPassword, setShowPassword] = useState(false);//for password visibility
   const [keyboardOpen, setKeyboardOpen] = useState(false);//for keyboard visibility
   const [animation, setAnimation] = useState({});
@@ -56,7 +56,7 @@ export default function CreateUser() {
   }, []);
 
   const handleCreateUser = () => {
-    const { email, password, firstName, lastName, phoneNum, image } = user
+    const { email, password, firstName, lastName, phoneNum, image } = user  
     if (!email || !password || !firstName || !lastName || !phoneNum) {
       return Alert.alert('Error', 'All fields are required')
     }
@@ -79,9 +79,10 @@ export default function CreateUser() {
     if (!validatePhoneNum(phoneNum)) {
       return Alert.alert('Invalid Phone Number', 'Please enter a valid phone number')
     }
-    if (image === '') {
-      image = '../../images/Avatar.pngs';
-      return;
+    if (image === '') {     
+      alert('No image selected, default image will be used')
+      setUserImage('../../images/Avatar.pngs');
+      
     }
 
     let userData = {
@@ -93,15 +94,13 @@ export default function CreateUser() {
       image: user.image,
     }
     // Add logic to post user data to your server here
-    return Alert.alert(
-      firstName,
-      'User Created',
-      'Your account has been created successfully',
+    return Alert.alert(`${firstName} User Created; Your account has been created successfully`, navigation.navigate('SignUpLvl2'),
       [
         {
           text: 'Ok',
           onPress: () => {
             console.log('User created successfully')
+            navigation.navigate('signUpLvl2')
           },
         },
       ],
@@ -111,6 +110,7 @@ export default function CreateUser() {
 
   const changeIMG = (image) => {
     setUserImage(image)
+    alert(image)
   }
 
   const validatePhoneNum = (phoneNum) => {
@@ -131,7 +131,13 @@ export default function CreateUser() {
 
   const handleInputChange = (field, value) => {
     setUser({ ...user, [field]: value });
+    
   }
+
+  const NavigateToLogIn = () => {
+    navigation.navigate('LogIn')
+}
+
 
   return (
 
@@ -200,7 +206,7 @@ export default function CreateUser() {
         </TouchableOpacity>
       </View>
       <OrLine />
-      <HaveAccount />
+      <HaveAccount NavigateToLogIn={NavigateToLogIn}/>
     </SafeAreaView>
   )
 }
@@ -245,7 +251,7 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width * 0.85,
     padding: 10,
     margin: 7,
-    alignItems: 'left',
+    alignItems: 'center',
     borderRadius: 16,
     borderWidth: 1,
     backgroundColor: '#F5F5F5',

@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, TouchableOpacity, Alert, SafeAreaView } from 'react-native';
 import React, { useState } from 'react';
-import CustomHeader from './AppBarUp';
+
 
 export default function Home() {
   const [grid, setGrid] = useState([['', '', ''], ['', '', ''], ['', '', '']]);
