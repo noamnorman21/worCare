@@ -1,4 +1,4 @@
-import { Image, Keyboard, LayoutAnimation, View, Text, TextInput, Dimensions, SafeAreaView, Alert, StyleSheet, TouchableOpacity } from 'react-native'
+import {Image, Keyboard, LayoutAnimation, View, Text, TextInput, Dimensions, SafeAreaView, Alert, StyleSheet, TouchableOpacity } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import ImagePickerExample from './ImagePickerExample'
@@ -11,14 +11,14 @@ export default function CreateUser({navigation}) {
   const [showPassword, setShowPassword] = useState(false);//for password visibility
   const [keyboardOpen, setKeyboardOpen] = useState(false);//for keyboard visibility
   const [animation, setAnimation] = useState({});
-  const [image, setUserImage] = useState('')
+  const [imagePath, setUserImage] = useState('')
   const [user, setUser] = useState({
     email: '',
     password: '',
     firstName: '',
     lastName: '',
     phoneNum: '',
-    image: '',
+    imagePath: '',
   })
 
   useEffect(() => {
@@ -56,7 +56,7 @@ export default function CreateUser({navigation}) {
   }, []);
 
   const handleCreateUser = () => {
-    const { email, password, firstName, lastName, phoneNum, image } = user  
+    const { email, password, firstName, lastName, phoneNum, image } = user
     if (!email || !password || !firstName || !lastName || !phoneNum) {
       return Alert.alert('Error', 'All fields are required')
     }
@@ -79,10 +79,9 @@ export default function CreateUser({navigation}) {
     if (!validatePhoneNum(phoneNum)) {
       return Alert.alert('Invalid Phone Number', 'Please enter a valid phone number')
     }
-    if (image === '') {     
-      alert('No image selected, default image will be used')
-      setUserImage('../../images/Avatar.pngs');
-      
+    if (imagePath === '') {
+      setUserImage('../../images/Avatar.png')
+      return;
     }
 
     let userData = {
@@ -91,16 +90,18 @@ export default function CreateUser({navigation}) {
       firstName: user.firstName,
       lastName: user.lastName,
       phoneNum: user.phoneNum,
-      image: user.image,
+      imagePath: user.imagePath,
     }
     // Add logic to post user data to your server here
-    return Alert.alert(`${firstName} User Created; Your account has been created successfully`, navigation.navigate('SignUpLvl2'),
+    return Alert.alert(
+      firstName,
+      'User Created',
+      'Your account has been created successfully',
       [
         {
           text: 'Ok',
           onPress: () => {
             console.log('User created successfully')
-            
           },
         },
       ],
@@ -108,9 +109,8 @@ export default function CreateUser({navigation}) {
     )
   }
 
-  const changeIMG = (image) => {
-    setUserImage(image)
-    alert(image)
+  const changeIMG = (imagePath) => {
+    setUserImage(imagePath)
   }
 
   const validatePhoneNum = (phoneNum) => {
@@ -125,22 +125,19 @@ export default function CreateUser({navigation}) {
   }
 
   const validatePassword = (password) => {
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/ //at least 8 characters, 1 letter and 1 number
+    const passwordRegex = /^(?=.[A-Za-z])(?=.\d)[A-Za-z\d]{8,}$/ //at least 8 characters, 1 letter and 1 number
     return passwordRegex.test(password)
   }
 
   const handleInputChange = (field, value) => {
     setUser({ ...user, [field]: value });
-    
   }
 
   const NavigateToLogIn = () => {
     navigation.navigate('LogIn')
 }
 
-
   return (
-
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Fill your profile</Text>
@@ -210,6 +207,10 @@ export default function CreateUser({navigation}) {
     </SafeAreaView>
   )
 }
+
+
+
+  
 
 const styles = StyleSheet.create({
   passwordButton: {
@@ -309,3 +310,6 @@ const styles = StyleSheet.create({
     marginBottom: 7,
   },
 });
+
+
+

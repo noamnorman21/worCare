@@ -10,11 +10,13 @@ import CreateUser from './Component/SignUpComponents/SignUp';
 import ForgotPassword from './Component/SignUpComponents/ForgotPassword';
 import { CustomHeader } from './Component/AppBarUp';
 import SettingScreen from './Component/SettingScreen';
+import NavigateSignUp from './Component/SignUpComponents/NavigateSignUp';
 
 export default function App() {
   return (
     <NavigationContainer independent={true}>
-      <CustomHeader />
+      {/* <CustomHeader /> */}
+      <NavigateSignUp />
       {/* <SettingScreen /> */}
 
     </NavigationContainer>

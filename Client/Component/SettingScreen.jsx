@@ -1,4 +1,3 @@
-// External imports:
 import { StyleSheet, View, Text, Button, SafeAreaView, TouchableOpacity, Dimensions, Image } from 'react-native'
 import React, { useState } from 'react'
 import { NavigationContainer } from '@react-navigation/native';
@@ -157,14 +156,14 @@ const styles = StyleSheet.create({
     btnContainer: {
         flex: 6,
         alignItems: 'center',
-        justifyContent: 'start',
+        justifyContent: 'flex-start',
 
     },
     personalContainer: {
         flex: 2.2,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'start',
+        alignItems: 'flex-start',
         width: Dimensions.get('window').width * 1,
         // paddingVertical: Dimensions.get('window').height * 0.04,
     },
@@ -200,7 +199,7 @@ const styles = StyleSheet.create({
     btn: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'start',
+        justifyContent: 'flex-start',
         width: Dimensions.get('window').width * 1,
         height: Dimensions.get('window').height * 0.08,
         borderBottomWidth: 1,

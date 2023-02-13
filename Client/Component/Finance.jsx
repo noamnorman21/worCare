@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, Image, SafeAreaView } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, Image, SafeAreaView, Dimensions } from 'react-native'
 import React from 'react'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -30,7 +30,7 @@ export default function Finance() {
       בעת רנדור עמוד פנימי פנדינג ירונדרו בקשות לפי סטוטס בקשה אינו שולם,
       בעת רנדור מס היסטוריה ירונדרו בקשות אשר בעלות סטטוס שולמו.
       מידע אשר ישלף כלפי כל בקשה- id, sunject, amount, requestDate, proofofdocument, comment, status */}
-        <Stack.Screen name='Paychecks' component={Paycheck} options={() => ({
+        <Stack.Screen name='Paycheck' component={Paycheck} options={() => ({
           headerShown: false,
           presentation: 'stack',
           cardOverlayEnabled: true,
@@ -40,7 +40,7 @@ export default function Finance() {
   );
 }
 
-function Choice() {
+function Choice({navigation}) {
   return (
     <View style={styles.container}>
       <Image source={require('../images/logo_New.png')} style={styles.BigIMG} />
@@ -104,10 +104,13 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    marginHorizontal: 'auto',
   },
   BigIMG: {
     width: Dimensions.get('screen').width * 1,
     resizeMode: 'contain',
+    top: 0,
+    bottom:-60,
   },
   button: {
     alignItems: 'center',
@@ -115,7 +118,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#7DA9FF',
     height: 54,
     width: Dimensions.get('screen').width * 0.65,
-    margin: 10,
+    marginBottom: 20,
     borderRadius: 25,
   },
   txt: {
