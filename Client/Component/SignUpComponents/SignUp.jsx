@@ -100,7 +100,7 @@ export default function CreateUser({navigation}) {
           text: 'Ok',
           onPress: () => {
             console.log('User created successfully')
-            navigation.navigate('signUpLvl2')
+            
           },
         },
       ],
