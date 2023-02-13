@@ -4,10 +4,10 @@
     "slug": "worcare",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./images/logo_New_Small.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./images/logo_New.png",      
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },

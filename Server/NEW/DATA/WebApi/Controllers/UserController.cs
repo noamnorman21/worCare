@@ -13,22 +13,22 @@ namespace WebApi.Controllers
     public class UserController : ApiController
     {
         igroup194_Model db = new igroup194_Model();
+
         // GET api/<controller>
         [HttpGet]
-        [Route("GetUser/{id}")]        
+        [Route("GetUser/{id}")]
         public IHttpActionResult GetUser(int id)
         {
             try
             {
                 var user = db.tblUser.Where(x => x.Id == id).FirstOrDefault();
-                return Ok("Full Name: " + user.FirstName + " " + user.LastName +", Email: "+ user.Email);
+                return Ok(user.FirstName + user.userUri + user.gender);
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
         }
-
 
         //this is get method that return the user by email
         [HttpGet]
@@ -47,10 +47,20 @@ namespace WebApi.Controllers
         }
 
 
-
-        // POST api/<controller>
-        public void Post([FromBody] string value)
+        // insert user to db by calling Stored Prodecdure InsertUser
+        [HttpPost]
+        [Route("InsertUser")]
+        public IHttpActionResult InsertUser([FromBody] tblUser user)
         {
+            try
+            {
+                db.InsertUser(user.Email, user.Password, user.FirstName, user.LastName, user.gender, user.phoneNum, user.userUri);
+                return Ok("User Inserted Successfully");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // PUT api/<controller>/5
@@ -58,9 +68,23 @@ namespace WebApi.Controllers
         {
         }
 
-        // DELETE api/<controller>/5
-        public void Delete(int id)
+        //Only If user realy sure he wants to delete his account we will
+        //delete him from the db - but first we will alert him to fuck himself
+        [HttpDelete]
+        [Route("DeleteUser")]
+        public IHttpActionResult Delete([FromBody] string email)
         {
+            try
+            {
+                var user = db.tblUser.Where(x => x.Email == email).FirstOrDefault();
+                db.tblUser.Remove(user);
+                db.SaveChanges();
+                return Ok("User Deleted Successfully");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

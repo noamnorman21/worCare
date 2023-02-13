@@ -1,24 +1,15 @@
 import { StyleSheet, View, Text, SafeAreaView, Image } from 'react-native'
 import React from 'react'
 
+// This is Splash Screen Component which will be display for 2 seconds before the app will be loaded 
 export default function Welcome() {
-
+    
     return (
         <SafeAreaView>
-            {/* This img will be display */}
             <View style={styles.imageContainer}>
-                <Image
-                    style={styles.image}
-                    source={require('../images/logo_New.png')}
-                />
+                <Image source={require('../images/logo_New.png')} style={styles.image} />
             </View>
-            {/* and after 2 seconds circular progress bar gif will add to the screen to show the progress of the loading */}
-            <View style={styles.imageContainer}>
-                <Image
-                    style={styles.image}
-                    source={require('../images/logo_New_Small.png')}
-                />
-            </View>
+
         </SafeAreaView>
     )
 }
