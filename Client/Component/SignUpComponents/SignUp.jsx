@@ -93,20 +93,17 @@ export default function CreateUser({navigation}) {
       imagePath: user.imagePath,
     }
     // Add logic to post user data to your server here
-    return Alert.alert(
-      firstName,
-      'User Created',
-      'Your account has been created successfully',
-      [
-        {
-          text: 'Ok',
-          onPress: () => {
-            console.log('User created successfully')
-          },
-        },
-      ],
-      { cancelable: false },
-    )
+    return Alert.alert(firstName)
+      // [
+      //   {
+      //     text: 'Ok',
+      //     onPress: () => {
+      //       console.log('User created successfully')
+      //     },
+      //   },
+      // ],
+      // { cancelable: false },
+    
   }
 
   const changeIMG = (imagePath) => {
@@ -125,7 +122,7 @@ export default function CreateUser({navigation}) {
   }
 
   const validatePassword = (password) => {
-    const passwordRegex = /^(?=.[A-Za-z])(?=.\d)[A-Za-z\d]{8,}$/ //at least 8 characters, 1 letter and 1 number
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/ //at least 8 characters, 1 letter and 1 number
     return passwordRegex.test(password)
   }
 
