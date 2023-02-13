@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, Image, SafeAreaView } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, Image,  Dimensions } from 'react-native'
 import React from 'react'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { createStackNavigator } from '@react-navigation/stack';

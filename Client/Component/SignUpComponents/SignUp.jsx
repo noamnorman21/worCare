@@ -7,18 +7,18 @@ import { OrLine, HaveAccount } from './FooterLine'
 // Sign up Screen - level 1 - first + last name, email, phone number, password, image 
 // On submit, user is taken to SignUpLvl2 Screen - address, city, state, zip code, country
 
-export default function CreateUser() {
+export default function CreateUser({ navigation }) {
   const [showPassword, setShowPassword] = useState(false);//for password visibility
   const [keyboardOpen, setKeyboardOpen] = useState(false);//for keyboard visibility
   const [animation, setAnimation] = useState({});
-  const [image, setUserImage] = useState('')
+  const [imagePath, setUserImage] = useState('')
   const [user, setUser] = useState({
     email: '',
     password: '',
     firstName: '',
     lastName: '',
     phoneNum: '',
-    image: '',
+    imagePath: '',
   })
 
   useEffect(() => {
@@ -79,8 +79,8 @@ export default function CreateUser() {
     if (!validatePhoneNum(phoneNum)) {
       return Alert.alert('Invalid Phone Number', 'Please enter a valid phone number')
     }
-    if (image === '') {
-      image = '../../images/Avatar.pngs';
+    if (imagePath === '') {
+      setUserImage('../../images/Avatar.png')
       return;
     }
 
@@ -90,8 +90,9 @@ export default function CreateUser() {
       firstName: user.firstName,
       lastName: user.lastName,
       phoneNum: user.phoneNum,
-      image: user.image,
+      imagePath: user.imagePath,
     }
+
     // Add logic to post user data to your server here
     return Alert.alert(
       firstName,
@@ -109,8 +110,8 @@ export default function CreateUser() {
     )
   }
 
-  const changeIMG = (image) => {
-    setUserImage(image)
+  const changeIMG = (imagePath) => {
+    setUserImage(imagePath)
   }
 
   const validatePhoneNum = (phoneNum) => {
@@ -125,7 +126,7 @@ export default function CreateUser() {
   }
 
   const validatePassword = (password) => {
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/ //at least 8 characters, 1 letter and 1 number
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/ //at least 8 characters, 1 letter, 1 number
     return passwordRegex.test(password)
   }
 
@@ -133,8 +134,11 @@ export default function CreateUser() {
     setUser({ ...user, [field]: value });
   }
 
+  const NavigateToLogIn = () => {
+    navigation.navigate('LogIn')
+  }
+  
   return (
-
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Fill your profile</Text>
@@ -149,17 +153,20 @@ export default function CreateUser() {
           <TextInput
             style={[styles.input, styles.firstNameInput]}
             placeholder="First Name"
+            keyboardType='ascii-capable'
             onChangeText={(value) => handleInputChange('firstName', value)}
           />
           <TextInput
             style={[styles.input, styles.lastNameInput]}
             placeholder="Last Name"
+            keyboardType='ascii-capable'
             onChangeText={(value) => handleInputChange('lastName', value)}
           />
         </View>
         <TextInput
           style={styles.input}
           placeholder="Email"
+          keyboardType='ascii-capable'
           onChangeText={(value) => handleInputChange('email', value)}
         />
 
@@ -200,7 +207,7 @@ export default function CreateUser() {
         </TouchableOpacity>
       </View>
       <OrLine />
-      <HaveAccount />
+      <HaveAccount NavigateToLogIn={NavigateToLogIn} />
     </SafeAreaView>
   )
 }
@@ -245,7 +252,7 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width * 0.85,
     padding: 10,
     margin: 7,
-    alignItems: 'left',
+    alignItems: 'center',
     borderRadius: 16,
     borderWidth: 1,
     backgroundColor: '#F5F5F5',
@@ -303,3 +310,5 @@ const styles = StyleSheet.create({
     marginBottom: 7,
   },
 });
+
+

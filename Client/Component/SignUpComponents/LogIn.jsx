@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { OrLine, NeedAccount } from './FooterLine'
 
-export default function LogIn() {
+export default function LogIn({navigation}) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);//for password visibility
@@ -34,6 +34,17 @@ export default function LogIn() {
         return re.test(email);
     }
 
+
+    //navigate to sign up screen
+    const NavigateToSignUp = () => {
+        navigation.navigate('SignUp')
+    }
+
+    const NavigateToForgotPassword = () => {
+        navigation.navigate('ForgotPassword')
+      }
+    
+  
     //keyboard listener for animation
     useEffect(() => {
         const keyboardDidShowListener = Keyboard.addListener(
@@ -129,7 +140,7 @@ export default function LogIn() {
                     {/* forgot password button */}
                     <View style={styles.forgotPasswordContainer}>
                         {/* forgot password button */}
-                        <TouchableOpacity onPress={() => alert('Forgot Password')}>
+                        <TouchableOpacity onPress={NavigateToForgotPassword}>
                             <Text style={styles.btnForgotPassword}>Forgot Password?</Text>
                         </TouchableOpacity>
                     </View>
@@ -141,7 +152,7 @@ export default function LogIn() {
             </View>
             {/* footer line */}
             <OrLine />
-            <NeedAccount />
+            <NeedAccount NavigateToSignUp={NavigateToSignUp} />
         </SafeAreaView>
     )
 }
@@ -178,7 +189,7 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width * 0.9,
         padding: 10,
         margin: 10,
-        alignItems: 'left',
+        alignItems: 'center',
         borderRadius: 16,
         borderWidth: 1,
         backgroundColor: '#F5F5F5',

@@ -2,43 +2,19 @@ import React from 'react';
 import { SafeAreaView, View, Text, TextInput, Button, StyleSheet, Dimensions, TouchableOpacity, Alert } from 'react-native';
 import { useState, useEffect } from 'react';
 import { OrLine, ReturnToLogin } from './FooterLine';
-import axios from 'axios';
 
 // This is the Forgot Password screen
 // This screen is the first screen of the forgot password process
 // The user enters his email address and clicks submit
 // The user is then redirected to the verification code screen
+
 export default function ForgotPassword({ navigation }) {
     const [email, setEmail] = useState('');
-
-    // fetch with a GET request 
-    // to check if email exists in the database
-    // if it does, then the user is redirected to the verification code screen
-    // if it doesn't, then the user is alerted that the email doesn't exist
-    const checkIfEmailExist = () => {
-        axios.get(`https://localhost:44387/api/User/GetUserEmail`,
-            {
-                params: {
-                    email
-                }
-            })
-            .then((response) =>{
-                console.log(response.data);
-                return response.data;
-            })
-            .then((data) => {
-                if (data.length > 0) {
-                    Alert.alert('Email exists');
-                    // navigation.navigate('ForgotPasswordLvl2', { email: email });
-                } else {
-                    Alert.alert('Email does not exist');
-                }
-            })
-            .catch((error) => {
-                console.error(error);
-            });
+    
+    const NavigateToLogIn = () => {
+        navigation.navigate('LogIn')
     }
-
+    
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.inputContainer}>
@@ -55,12 +31,12 @@ export default function ForgotPassword({ navigation }) {
                     autoCapitalize="none"
                 />
                 {/* Submit And go to next lvl screen - verification code */}
-                <TouchableOpacity style={styles.button} onPress={checkIfEmailExist}>
+                <TouchableOpacity style={styles.button} >
                     <Text style={styles.buttonText}>Submit</Text>
                 </TouchableOpacity>
             </View>
             <OrLine />
-            <ReturnToLogin />
+            <ReturnToLogin NavigateToLogIn={NavigateToLogIn}/>
         </SafeAreaView>
     );
 }

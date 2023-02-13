@@ -119,15 +119,7 @@ export default function SettingScreen(props) {
                         color: 'black',
                         marginLeft: Dimensions.get('window').width * 0.03,
                     },
-                    headerBackTitleVisible: false,
-                    // headerBackImage: () => (
-                    //   <Ionicons style={{
-                    //     marginLeft: Dimensions.get('window').width * 0.03,
-                    //     marginRight: Dimensions.get('window').width * 0.05
-                    //   }} name='ios-arrow-back' size={30} color='gray' />
-                    // ),
-                    //do not show the header,just the back button
-
+                    headerBackTitleVisible: false,                
                 }}
             >
                 <Stack.Screen name="Settings" options={{ headerShown: false }} component={HomeScreen} />
@@ -139,6 +131,7 @@ export default function SettingScreen(props) {
         </NavigationContainer>
     )
 }
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -157,14 +150,13 @@ const styles = StyleSheet.create({
     btnContainer: {
         flex: 6,
         alignItems: 'center',
-        justifyContent: 'start',
-
+        justifyContent: 'flex-start',
     },
     personalContainer: {
         flex: 2.2,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'start',
+        alignItems: 'flex-start',
         width: Dimensions.get('window').width * 1,
         // paddingVertical: Dimensions.get('window').height * 0.04,
     },
@@ -200,7 +192,7 @@ const styles = StyleSheet.create({
     btn: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'start',
+        justifyContent: 'flex-start',
         width: Dimensions.get('window').width * 1,
         height: Dimensions.get('window').height * 0.08,
         borderBottomWidth: 1,
