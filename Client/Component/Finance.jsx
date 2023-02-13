@@ -13,62 +13,58 @@ const Stack = createStackNavigator();
 export default function Finance() {
   return (
     <NavigationContainer independent={true} zIndex='0' initialRouteName='choice'  >
-    <Stack.Navigator initialRouteName='choice'>
-      <Stack.Screen name='choice' component={Choice} options={() => ({
-        headerShown: false,
-      })} />
-      <Stack.Screen name='Payments' component={Payments} options={() => ({
-        headerShown: false,
-        presentation: 'stack',
-       
-        cardOverlayEnabled: true,
-        style: {
-          flex: 1,
-        },
+      <Stack.Navigator initialRouteName='choice'>
+        <Stack.Screen name='choice' component={Choice} options={() => ({
+          headerShown: false,
+        })} />
+        <Stack.Screen name='Payments' component={Payments} options={() => ({
+          headerShown: false,
+          presentation: 'stack',
+          cardOverlayEnabled: true,
+          style: {
+            flex: 1,
+          },
 
-      })} />
-      {/*בעת ניווט למסך התשלומים, תתבצע פעולת גט אשר תשלוף את בקשות התשלומים אשר קיימות במסד הנתונים.
+        })} />
+        {/*בעת ניווט למסך התשלומים, תתבצע פעולת גט אשר תשלוף את בקשות התשלומים אשר קיימות במסד הנתונים.
       בעת רנדור עמוד פנימי פנדינג ירונדרו בקשות לפי סטוטס בקשה אינו שולם,
       בעת רנדור מס היסטוריה ירונדרו בקשות אשר בעלות סטטוס שולמו.
       מידע אשר ישלף כלפי כל בקשה- id, sunject, amount, requestDate, proofofdocument, comment, status */}
-      <Stack.Screen name='Paychecks' component={Paycheck} options={() => ({
-        headerShown: false,
-        presentation: 'stack',
-        cardOverlayEnabled: true,
-      })} />
-    </Stack.Navigator>
-
-  </NavigationContainer>
+        <Stack.Screen name='Paychecks' component={Paycheck} options={() => ({
+          headerShown: false,
+          presentation: 'stack',
+          cardOverlayEnabled: true,
+        })} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
-
-function Choice({ navigation }) {
-
+function Choice() {
   return (
-    <SafeAreaView style={{ flex: 1, alignItems: 'center', justifyContent: 'center', }}>
-      <View style={styles.imageContainer}>
-        <Image
-          
-          source={require('../images/logo_New.png')}
-        />
-      </View>
-      <TouchableOpacity activeOpacity={1} onPress={() => { navigation.navigate('Payments') }} style={styles.Button}>
-        <Text style={styles.text}>
-          Payments
-        </Text>
+    <View style={styles.container}>
+      <Image source={require('../images/logo_New.png')} style={styles.BigIMG} />
+      <TouchableOpacity
+        activeOpacity={1}
+        style={styles.button}
+        onPress={() => {
+          navigation.navigate('Payments')
+        }}
+      >
+        <Text style={styles.txt}>Payment</Text>
       </TouchableOpacity>
-      <TouchableOpacity activeOpacity={1} onPress={() => { navigation.navigate('Paychecks') }} style={styles.button2}>
-        <Text style={styles.text}>
-        Paychecks
-        </Text>
+      <TouchableOpacity
+        activeOpacity={1}
+        style={styles.button}
+        onPress={() => {
+          navigation.navigate('Paycheck')
+        }}
+      >
+        <Text style={styles.txt}>Paycheck</Text>
       </TouchableOpacity>
-
-    </SafeAreaView>
-  )
-
+    </View>
+  );
 }
-
 
 function Payments() {
   return (
@@ -103,64 +99,31 @@ function Paycheck() {
   );
 }
 
-
-
 const styles = StyleSheet.create({
-  Button: {
-    width: 265,
-    height:54,    
-    backgroundColor: '#548DFF',
-    opacity: 0.75,
-    borderRadius: 25,
-    alignContent: 'center',
-    textAlign: 'center',
-    alignItems: 'center',
-    justifyContent: 'center',    
-    TouchableOpacity: 1,
-    padding:10 ,
-    marginHorizontal: 'auto',
-   
-  },
-  button2 : {
-    width: 265,
-    height:54,
-    opacity: 0.75,    
-    backgroundColor: '#548DFF',
-    borderRadius: 25,
-    alignContent: 'center',
-    textAlign: 'center',
+  container: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    marginVertical: 20,
-    TouchableOpacity: 1,
-    padding:10 ,
-    marginHorizontal: 'auto',
   },
-  imageContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',    
-    marginBottom:-60,
-    marginTop:-120,
-  },
-   image: {
-    paddingBottom:0,
+  BigIMG: {
+    width: Dimensions.get('screen').width * 1,
     resizeMode: 'contain',
-   
-},
-text: {
-  color: 'white',
-  fontSize: 15,
-  padding:0,
-  flex:0,
-  alignItems:'center',
-  justifyContent:'center',
-  fontFamily:'Roboto',
-  fontWeight:'700',
-  opacity:1,
-}
+  },
+  button: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#7DA9FF',
+    height: 54,
+    width: Dimensions.get('screen').width * 0.65,
+    margin: 10,
+    borderRadius: 25,
+  },
+  txt: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
 })
-
-
 
 
 

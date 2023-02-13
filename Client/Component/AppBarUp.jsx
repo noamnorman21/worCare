@@ -19,55 +19,55 @@ const Tab = createBottomTabNavigator();
 function CustomHeader() {
     return (
         <Stack.Navigator>
-            <Stack.Screen 
-                name='AppBarDown' 
+            <Stack.Screen
+                name='AppBarDown'
                 component={AppBarDown}
                 options={({ navigation }) => ({
-                    title:' ',
+                    title: ' ',
                     headerLeft: () => (
-                    <View style={styles.headerLeft}>
-                        <TouchableOpacity
-                            onPress={() => { navigation.navigate('SettingScreen') }}
-                        >
-                        <Image 
-                            source={require('../images/icons/Profile.png')} 
-                            style={{ width: 32, height: 28,  top:10 }} 
-                        />
-                        </TouchableOpacity>
-                    </View>
+                        <View style={styles.headerLeft}>
+                            <TouchableOpacity
+                                onPress={() => { navigation.navigate('SettingScreen') }}
+                            >
+                                <Image
+                                    source={require('../images/icons/Profile.png')}
+                                    style={{ width: 32, height: 28 }}
+                                />
+                            </TouchableOpacity>
+                        </View>
                     ),
                     headerRight: () => (
-                    <View style={styles.headerRight}>
-                        <TouchableOpacity
-                            style={{ right: Dimensions.get('screen').width * 0.06, top:10 }}
-                            onPress={() => { navigation.navigate('PushNotifications') }}
-                        >
-                        <Feather 
-                            name="bell" 
-                            size={28} 
-                            color={'#000000'}
-                        />                            
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={{ right: Dimensions.get('screen').width * 0.04, top:10 }}
-                            onPress={() => { navigation.navigate('Contacts') }}
-                        >
-                        <AntDesign
-                            name="contacts"
-                            size={28}
-                            color={'#000000'}
-                        />
-                        </TouchableOpacity>
-                    </View>
+                        <View style={styles.headerRight}>
+                            <TouchableOpacity
+                                style={{ right: Dimensions.get('screen').width * 0.06 }}
+                                onPress={() => { navigation.navigate('PushNotifications') }}
+                            >
+                                <Feather
+                                    name="bell"
+                                    size={28}
+                                    color={'#000000'}
+                                />
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={{ right: Dimensions.get('screen').width * 0.04 }}
+                                onPress={() => { navigation.navigate('Contacts') }}
+                            >
+                                <AntDesign
+                                    name="contacts"
+                                    size={28}
+                                    color={'#000000'}
+                                />
+                            </TouchableOpacity>
+                        </View>
                     ),
                     headerTitle: () => (
-                    <Image
-                        source={require('../images/logo_New_Small.png')}
-                        style={styles.headerLogo} 
-                    />
-                    ),  
-                    headerTitleAlign: 'center',                  
-                })} 
+                        <Image
+                            source={require('../images/logo_New_Small.png')}
+                            style={styles.headerLogo}
+                        />
+                    ),
+                    headerTitleAlign: 'center',
+                })}
             />
             <Stack.Screen name='SettingScreen' component={SettingScreen}
                 options={() => ({
@@ -82,8 +82,6 @@ function CustomHeader() {
                     cardOverlayEnabled: true,
                 })} />
             <Stack.Screen name='Contacts' component={Contacts} />
-            {/*בעת מעבר לעמוד אנשי הקשר, תבוצע פעולת גט אשר תשלוף את פרטי אנשי הקשר מן טבלת קונטקט 
-            נצתיב הניווט יהיה מטבלת מטפל במטופל -> מטופל -> אנשי קשר */}
         </Stack.Navigator>
     );
 }
@@ -123,7 +121,7 @@ function AppBarDown() {
                 מסך תשלומים- שני תתי מסכים- פירוט יבוצע בקומפוננטת הניווט במסכים היעודיים
                 */}
             <Tab.Screen name="Chats" component={Chats} options={{ tabBarLabel: 'Chats' }} />
-            {/*בהתאם למימוש הצ'אט ושמירת הסטוריית השיחות - תתבצע פעולת גט אשר תשלוף את היסטוריית השיחות. 
+            {/*בהתאים למימוש הצ'אט ושמירת הסטוריית השיחות - תתבצע פעולת גט אשר תשלוף את היסטוריית השיחות. 
             לכל שיחה ישלף שם המשתמש השני/הקבוצה, סטטוס השיחה (האם יש הודעה חדשה אשר לא נקראה) ותוצג ההודעה האחרונה אשר נשלחה.*/}
             <Tab.Screen name="Tasks" component={Tasks} options={{ tabBarLabel: 'Tasks', unmountOnBlur: true }} />
             {/*בעת ניווט למסך תשלומים - תבוצע פעולת גט שתמשוך את הפרטים- ,
