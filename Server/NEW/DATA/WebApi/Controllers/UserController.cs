@@ -46,15 +46,15 @@ namespace WebApi.Controllers
             }
         }
 
-
         // insert user to db by calling Stored Prodecdure InsertUser
         [HttpPost]
         [Route("InsertUser")]
         public IHttpActionResult InsertUser([FromBody] tblUser user)
         {
             try
-            {
+             {
                 db.InsertUser(user.Email, user.Password, user.FirstName, user.LastName, user.gender, user.phoneNum, user.userUri);
+                db.SaveChanges();
                 return Ok("User Inserted Successfully");
             }
             catch (Exception ex)

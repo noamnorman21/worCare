@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="208c9ccc748e4bb399c87ae02449337a" Name="Diagram1" ZoomLevel="74">
+      <Diagram DiagramId="208c9ccc748e4bb399c87ae02449337a" Name="Diagram1" ZoomLevel="111">
         <EntityTypeShape EntityType="igroup194DBContext.sysdiagrams" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="igroup194DBContext.tblActualList" Width="1.5" PointX="3" PointY="9.125" IsExpanded="true" />
         <EntityTypeShape EntityType="igroup194DBContext.tblCalendarForUser" Width="1.5" PointX="8" PointY="14.75" IsExpanded="true" />

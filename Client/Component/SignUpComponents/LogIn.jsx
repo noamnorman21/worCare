@@ -3,8 +3,16 @@ import React from 'react'
 import { useEffect, useState } from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { OrLine, NeedAccount } from './FooterLine'
+import * as Font from 'expo-font';
 
-export default function LogIn({navigation}) {
+export default function LogIn({ navigation }) {
+    Font.loadAsync({
+        'Urbanist': require('../../assets/fonts/Urbanist-Regular.ttf'),
+        'Urbanist-Bold': require('../../assets/fonts/Urbanist-Bold.ttf'),
+        'Urbanist-Light': require('../../assets/fonts/Urbanist-Light.ttf'),
+        'Urbanist-Medium': require('../../assets/fonts/Urbanist-Medium.ttf'),
+    });
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);//for password visibility
@@ -42,9 +50,8 @@ export default function LogIn({navigation}) {
 
     const NavigateToForgotPassword = () => {
         navigation.navigate('ForgotPassword')
-      }
-    
-  
+    }
+
     //keyboard listener for animation
     useEffect(() => {
         const keyboardDidShowListener = Keyboard.addListener(
@@ -196,6 +203,8 @@ const styles = StyleSheet.create({
         borderColor: 'lightgray',
         shadowColor: '#000',
         height: 54,
+        fontFamily: 'Urbanist',
+        fontSize:14
     },
     button: {
         width: Dimensions.get('window').width * 0.9,
@@ -211,11 +220,12 @@ const styles = StyleSheet.create({
         shadowRadius: 3,
         elevation: 1,
         margin: 15,
-        height: 54,
+        height: 54,        
     },
     buttonText: {
         color: 'white',
-        fontWeight: 'bold',
+        fontFamily: 'Urbanist-Bold',
+        fontSize: 18,
     },
     passwordButton: {
         position: 'absolute',
@@ -226,17 +236,20 @@ const styles = StyleSheet.create({
     },
     passwordButtonText: {
         color: 'black',
-        fontWeight: 'bold',
+        fontFamily: 'Urbanist-Bold',
+        fontSize:14
     },
     btnForgotPassword: {
         color: '#548DFF',
-        fontSize: 13,
+        fontSize: 14,
+        fontFamily: 'Urbanist',
         marginTop: 10,
         marginBottom: 10,
     },
     rememberMe: {
         color: '#979797',
-        fontSize: 13,
+        fontSize: 14,
+        fontFamily: 'Urbanist',
         marginTop: 10,
         marginBottom: 10,
     },
@@ -244,9 +257,9 @@ const styles = StyleSheet.create({
         marginTop: 10,
         marginBottom: 10,
     },
-    forgotPasswordContainer: { 
+    forgotPasswordContainer: {
         flexDirection: 'row',
-        alignSelf: 'flex-end', 
-        marginLeft: Dimensions.get('screen').width * 0.275 
+        alignSelf: 'flex-end',
+        marginLeft: Dimensions.get('screen').width * 0.275,
     }
 });

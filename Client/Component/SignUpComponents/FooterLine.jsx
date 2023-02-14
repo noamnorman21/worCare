@@ -1,5 +1,13 @@
 import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native'
+import * as Font from 'expo-font'
+
+Font.loadAsync({
+    'Urbanist': require('../../assets/fonts/Urbanist-Regular.ttf'),
+    'Urbanist-Bold': require('../../assets/fonts/Urbanist-Bold.ttf'),
+    'Urbanist-Light': require('../../assets/fonts/Urbanist-Light.ttf'),
+    'Urbanist-Medium': require('../../assets/fonts/Urbanist-Medium.ttf'),
+});
 
 const OrLine = () => {
     return (
@@ -18,8 +26,8 @@ const NeedAccount = (props) => {
                 <Text style={styles.signUpText}>Need an account ?</Text>
             </View>
             <View>
-                <TouchableOpacity onPress={() =>props.NavigateToSignUp()         
-            }>      
+                <TouchableOpacity onPress={() => props.NavigateToSignUp()
+                }>
                     <Text style={styles.signUpButtonText}>Sign Up</Text>
                 </TouchableOpacity>
             </View>
@@ -32,10 +40,10 @@ const HaveAccount = (props) => {
     return (
         <View style={styles.buttonContainer}>
             <View style={styles.needAccountTXT}>
-                <Text style={styles.signUpText}>Have an account ?</Text>
+                <Text style={styles.signUpText}>Already have an account ?</Text>
             </View>
             <View>
-                <TouchableOpacity onPress={() =>props.NavigateToLogIn()}>
+                <TouchableOpacity onPress={() => props.NavigateToLogIn()}>
                     <Text style={styles.signUpButtonText}>Log In</Text>
                 </TouchableOpacity>
             </View>
@@ -74,10 +82,12 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         color: '#808080',
         fontSize: 18,
-        fontWeight: '600',
+        fontFamily: 'Urbanist-Medium',
     },
     needAccountTXT: {
         marginRight: Dimensions.get('screen').width * 0.03,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     buttonContainer: {
         flex: 0.3,
@@ -85,16 +95,18 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     signUpText: {
-        fontSize: 16,
         flex: 1,
+        fontFamily: 'Urbanist',
+        fontSize: 16
     },
     signUpButtonText: {
         color: '#548DFF',
         fontSize: 16,
+        fontFamily: 'Urbanist-Bold',
     },
     BackToLogIn: {
         color: '#548DFF',
-        fontSize: 16,
-        fontWeight: 'bold',
+        fontFamily: 'Urbanist-Bold',
+        fontSize: 18
     },
 })
