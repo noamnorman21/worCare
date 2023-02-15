@@ -1,4 +1,4 @@
-import {Image, Keyboard, LayoutAnimation, View, Text, TextInput, Dimensions, SafeAreaView, Alert, StyleSheet, TouchableOpacity } from 'react-native'
+import { Image, Keyboard, LayoutAnimation, View, Text, TextInput, Dimensions, SafeAreaView, Alert, StyleSheet, TouchableOpacity } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import ImagePickerExample from './ImagePickerExample'
@@ -7,7 +7,7 @@ import { OrLine, HaveAccount } from './FooterLine'
 // Sign up Screen - level 1 - first + last name, email, phone number, password, image 
 // On submit, user is taken to SignUpLvl2 Screen - address, city, state, zip code, country
 
-export default function CreateUser({navigation}) {
+export default function CreateUser({ navigation }) {
   const [showPassword, setShowPassword] = useState(false);//for password visibility
   const [keyboardOpen, setKeyboardOpen] = useState(false);//for keyboard visibility
   const [animation, setAnimation] = useState({});
@@ -93,17 +93,18 @@ export default function CreateUser({navigation}) {
       imagePath: user.imagePath,
     }
     // Add logic to post user data to your server here
-    return Alert.alert(firstName)
-      // [
-      //   {
-      //     text: 'Ok',
-      //     onPress: () => {
-      //       console.log('User created successfully')
-      //     },
-      //   },
-      // ],
-      // { cancelable: false },
-    
+    Alert.alert('User created successfully')
+    navigation.navigate('SignUpLvl2')
+    // [
+    //   {
+    //     text: 'Ok',
+    //     onPress: () => {
+    //       console.log('User created successfully')
+    //     },
+    //   },
+    // ],
+    // { cancelable: false },
+
   }
 
   const changeIMG = (imagePath) => {
@@ -132,7 +133,7 @@ export default function CreateUser({navigation}) {
 
   const NavigateToLogIn = () => {
     navigation.navigate('LogIn')
-}
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -200,14 +201,14 @@ export default function CreateUser({navigation}) {
         </TouchableOpacity>
       </View>
       <OrLine />
-      <HaveAccount NavigateToLogIn={NavigateToLogIn}/>
+      <HaveAccount NavigateToLogIn={NavigateToLogIn} />
     </SafeAreaView>
   )
 }
 
 
 
-  
+
 
 const styles = StyleSheet.create({
   passwordButton: {
