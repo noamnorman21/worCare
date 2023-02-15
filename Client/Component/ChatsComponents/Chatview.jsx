@@ -41,7 +41,7 @@ export default function Chats() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{flex:0.8}}>
+      <View>
       <Text style={{fontSize:20, fontWeight:"bold",textAlign:"center"}}>Our Chat</Text>
       <View style={{marginTop:70}}>
       <TextInput style={{borderWidth:1,borderColor:"black",width:200,height:40, textAlign:"center"}} value={message} onChangeText={setMessage}></TextInput>

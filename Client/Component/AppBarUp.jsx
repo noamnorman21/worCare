@@ -9,7 +9,7 @@ import PushNotifications from './PushNotifications';
 
 import Home from '../Component/Home';
 import Finance from './Finance';
-import Chats from '../Component/Chats';
+import Chats from './ChatsComponents/MainChats';
 import Tasks from '../Component/Tasks';
 import Rights from '../Component/Rights';
 
