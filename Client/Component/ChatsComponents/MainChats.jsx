@@ -10,15 +10,14 @@ import { Card } from 'react-native-elements';
 export default function MainChats(props) {
 
 
-    const conversation = [{namec:"Noam Norman", Message:"Hello",image:"../../images/icons/Woman.png"},
-    {namec:"Oryan Barnea",Message:"Hi",image:"../../images/icons/Dor.png"},
-    {namec:"Dor Ratzabi",Message:"How are you?",image:"../../images/icons/Oryan.png"},
-    {namec:"Dor Ratzabi",Message:"How are you?",image:"../../images/icons/Oryan.png"},
-    {namec:"Dor Ratzabi",Message:"How are you?",image:"../../images/icons/Oryan.png"},
-    {namec:"Dor Ratzabi",Message:"How are you?",image:"../../images/icons/Oryan.png"},
+    const conversation = [{namec:"Noam Norman", Message:"Hello",image:require("../../images/icons/Woman.png")},
+    {namec:"Oryan Barnea",Message:"Hi",image: require("../../images/icons/Oryan.png")},
+    {namec:"Dor Ratzabi",Message:"Hi everyone",image: require("../../images/icons/Dor.png")},
+    {namec:"Dor Ratzabi",Message:"Hi everyone",image: require("../../images/icons/Dor.png")},
+    {namec:"Dor Ratzabi",Message:"Hi everyone",image: require("../../images/icons/Dor.png")},
 
 
-
+    
    
 ];
 
@@ -61,7 +60,8 @@ const heightsetter = () => {
                         <View style={{padding:15,marginTop:30}} key={index}>
                       <View style={{borderBottomWidth:1,borderBottomColor:"grey",borderStyle:"solid", flexDirection:'row-reverse',padding:15}}>
                     <View style={styles.avatarContainer}>
-                      <Image source={require('../../images/icons/Dor.png')} style={styles.avatar} />
+                       
+                      <Image source={item.image} style={styles.avatar} />
                     </View>
                       <View style={styles.messageContainer}>
                       <Text style={styles.textforuser}>{item.namec}</Text>
