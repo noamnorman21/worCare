@@ -14,26 +14,25 @@ export default function SignUpLvl2({ navigation, route }) {
   const userData = route.params.user;
   const [userGender, setUserGender] = useState('');
 
+
   // Check if userGender is empty
   const NavigateToSignUpLvl3 = () => {
     if (userGender === '') {
       Alert.alert('Please Select a gender');
       return;
     }
-    const newUserToDB = {
-      //add the gender to the user object
-      FirstName: userData.firstName,
-      LastName: userData.lastName,
-      Email: userData.email,
-      Password: userData.password,
-      gender: userGender,
-      phoneNum: userData.phoneNum,
-      userUri: userData.imagePath
-    }
-    fetchData(newUserToDB);
-    // console.log(newUserToDB);
-    // Here send the data to add a new user to database using fetch and thats all
+    // const newUserToDB = {
+    //   //add the gender to the user object
+    //   FirstName: userData.firstName,
+    //   LastName: userData.lastName,
+    //   Email: userData.email,
+    //   Password: userData.password,
+    //   gender: userGender,
+    //   phoneNum: userData.phoneNum,
+    //   userUri: userData.imagePath
+    // }
 
+    // Here send the data to add a new user to database using fetch and thats all
     // Example for data to send:
     //{
     //     "FirstName":"Noam",
@@ -44,40 +43,10 @@ export default function SignUpLvl2({ navigation, route }) {
     //     "phoneNum":"0501231234",
     //     "userUri" : "////"
     // }
-
-    //   fetch('https://localhost:44387/api/User/InsertUser', {
-    //     method: 'POST',
-    //     body: JSON.stringify(newUserToDB),
-    //     headers: {
-    //       'Content-Type': 'application/json; charset=UTF-8'
-    //     }
-    //   })
-    //     .then(res => res.json())
-    //     .then(data => {
-    //       console.log(data);
-    //       // navigation.navigate('SignUpLvl3')
-    //     })
-    //     .catch(err => console.log(err))
   }
-  const apiUrl = 'https://localhost:44387/api/User/InsertUser';
-  const fetchData = async (newUserToDB) => {
-    try {
-      let res = await fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
-        },
-        body: JSON.stringify({
-          newUserToDB,
-        }),
-      });
-      res = await res.json();
-      console.log(res)
-      Alert.alert('onPress', res.json.newUserToDB);
-    } catch (e) {
-      console.error(e);
-    }
+  
+  const sendDataToDB = () => {
+    
   }
 
   const NavigateToLogIn = () => {
@@ -128,7 +97,7 @@ export default function SignUpLvl2({ navigation, route }) {
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.button}
-          onPress={NavigateToSignUpLvl3}
+          onPress={sendDataToDB}
         >
           <Text style={styles.buttonText}>
             Continue

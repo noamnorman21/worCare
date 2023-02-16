@@ -13,6 +13,17 @@ export default function SignUpLvl3({ navigation }) {
 
   const [role, setRole] = useState(''); // Caregiver or Patient's Family Member
 
+  const NavigateToNextLvl = () => {
+    if (role === 'Caregiver') {
+      navigation.navigate('SignUpCaregiverLVL4')
+    } else if (role === 'Patient’s Family Member') {
+      navigation.navigate('SignUpUserLVL4')
+    }
+    else {
+      alert('Please select your role')
+    }
+  }
+
   const NavigateToLogIn = () => {
     navigation.navigate('LogIn')
   }
@@ -38,7 +49,10 @@ export default function SignUpLvl3({ navigation }) {
           <Text style={styles.txtRole}>I will be managing their care needs.</Text>
         </TouchableOpacity>
       </View>
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={NavigateToNextLvl}
+      >
         <Text style={styles.buttonText}>
           Continue
         </Text>

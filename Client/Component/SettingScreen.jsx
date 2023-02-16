@@ -3,9 +3,7 @@ import { StyleSheet, View, Text, Button, SafeAreaView, TouchableOpacity, Dimensi
 import React, { useState } from 'react'
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Ionicons } from '@expo/vector-icons';
-import { AntDesign } from '@expo/vector-icons';
-import { SimpleLineIcons } from '@expo/vector-icons';
+import { AntDesign, Ionicons, SimpleLineIcons } from '@expo/vector-icons';
 // Internal imports:
 import Profile from './SettingsComponents/Profile'
 import Notifications from './SettingsComponents/Notifications'
@@ -119,7 +117,7 @@ export default function SettingScreen(props) {
                         color: 'black',
                         marginLeft: Dimensions.get('window').width * 0.03,
                     },
-                    headerBackTitleVisible: false,                
+                    headerBackTitleVisible: false,
                 }}
             >
                 <Stack.Screen name="Settings" options={{ headerShown: false }} component={HomeScreen} />
