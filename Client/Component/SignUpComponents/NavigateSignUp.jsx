@@ -13,7 +13,7 @@ const Stack= createStackNavigator();
 
 export default function NavigateSignUp() {
   return (
-    <Stack.Navigator initialRouteName="LogIn" screenOptions={{headerShown:false}}>
+    <Stack.Navigator initialRouteName="LogIn" screenOptions={{headerShown:false}} backBehavior='none' >
       <Stack.Screen name="LogIn" component={LogIn} />
       <Stack.Screen name="SignUp" component={SignUp} />   
       <Stack.Screen name="SignUpLvl2" component={SignUpLvl2} />

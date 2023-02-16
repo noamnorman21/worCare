@@ -82,7 +82,7 @@ function HomeScreen({ navigation }, props) {
                         }} name="right" size={25} color="gray" />
 
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Contact Us')}>
+                <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('ContactUs')}>
                     <Ionicons style={{
                         marginLeft: Dimensions.get('window').width * 0.03,
                         marginRight: Dimensions.get('window').width * 0.06
