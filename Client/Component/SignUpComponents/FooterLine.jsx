@@ -1,11 +1,20 @@
 import { useNavigation } from '@react-navigation/native'
 import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native'
-
+import { useEffect } from 'react';
+import useFonts from '../Fonts'
 
 
 
 const OrLine = () => {
+    const LoadFonts = async () => {
+        await useFonts();
+      };
+    //load fonts on mount
+      useEffect(() => {
+        LoadFonts();
+      }, []);
+    
     return (
         <View style={styles.lineContainer}>
             <View style={styles.line} />
@@ -15,6 +24,13 @@ const OrLine = () => {
     )
 }
 const NeedAccount = () => {
+    const LoadFonts = async () => {
+        await useFonts();
+      };
+    //load fonts on mount
+      useEffect(() => {
+        LoadFonts();
+      }, []);
     {/* for log in screen */ }
     const navigation= useNavigation();
     return (
@@ -33,6 +49,14 @@ const NeedAccount = () => {
 }
 
 const HaveAccount = () => {
+    const LoadFonts = async () => {
+        await useFonts();
+      };
+    //load fonts on mount
+      useEffect(() => {
+        LoadFonts();
+      }, []);
+    
     {/* for sign up screen */ }
     const navigation= useNavigation();
     return (
@@ -84,6 +108,8 @@ const styles = StyleSheet.create({
     },
     needAccountTXT: {
         marginRight: Dimensions.get('screen').width * 0.03,
+        fontWeight: '00',
+  
     },
     buttonContainer: {
         flex: 0.3,
@@ -92,15 +118,22 @@ const styles = StyleSheet.create({
     },
     signUpText: {
         fontSize: 16,
-        flex: 1,
+        flex: 1, 
+        fontFamily: 'Urbanist-Regular',
+        fontWeight: '500',       
+    
     },
     signUpButtonText: {
         color: '#548DFF',
         fontSize: 16,
+        fontWeight: '500',
+        fontFamily: 'Urbanist-Regular',
+       
     },
     BackToLogIn: {
         color: '#548DFF',
         fontSize: 18,
-        fontWeight: 'bold',
+        fontWeight: '700',
+        fontFamily: 'Urbanist-Regular',
     },
 })

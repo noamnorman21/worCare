@@ -11,8 +11,17 @@ import ForgotPassword from './Component/SignUpComponents/ForgotPassword';
 import { CustomHeader } from './Component/AppBarUp';
 import SettingScreen from './Component/SettingScreen';
 import NavigateSignUp from './Component/SignUpComponents/NavigateSignUp';
+import { useEffect } from 'react';
 
 export default function App() {
+  const LoadFonts = async () => {
+    await useFonts();
+  };
+
+  useEffect (() => {
+    LoadFonts();
+  }, []);
+
   return (
     <NavigationContainer independent={true}>
       {/* <CustomHeader /> */}

@@ -3,13 +3,21 @@ import React from 'react'
 import { useEffect, useState } from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { OrLine, NeedAccount } from './FooterLine'
+import useFonts from '../Fonts'
 
-export default function LogIn({navigation}) {
+export default function LogIn({ navigation }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);//for password visibility
     const [keyboardOpen, setKeyboardOpen] = useState(false);//for keyboard visibility
     const [animation, setAnimation] = useState({});
+
+
+    const LoadFonts = async () => {
+        await useFonts();
+    };
+    //load fonts on mount
+
 
     //login function
     const logInBtn = () => {
@@ -40,7 +48,7 @@ export default function LogIn({navigation}) {
         navigation.navigate('SignUp')
     }
 
-  
+
     //keyboard listener for animation
     useEffect(() => {
         const keyboardDidShowListener = Keyboard.addListener(
@@ -69,6 +77,8 @@ export default function LogIn({navigation}) {
                 setAnimation({ marginBottom: 0 });
             }
         );
+
+        LoadFonts();
         return () => {
             keyboardDidShowListener.remove();
             keyboardDidHideListener.remove();
@@ -148,7 +158,7 @@ export default function LogIn({navigation}) {
             </View>
             {/* footer line */}
             <OrLine />
-            <NeedAccount NavigateToSignUp={NavigateToSignUp} />
+            <NeedAccount />
         </SafeAreaView>
     )
 }
@@ -177,6 +187,7 @@ const styles = StyleSheet.create({
         flex: 2,
         width: '100%',
         alignItems: 'center',
+
     },
     image: {
         width: Dimensions.get('window').width * 0.85,
@@ -194,6 +205,10 @@ const styles = StyleSheet.create({
         borderColor: 'lightgray',
         shadowColor: '#000',
         height: 54,
+        fontFamily: 'Urbanist-Regular',
+        fontWeight: '500',
+        fontSize: 14,
+        color: '#979797',
     },
     button: {
         width: Dimensions.get('window').width * 0.9,
@@ -210,10 +225,13 @@ const styles = StyleSheet.create({
         elevation: 1,
         margin: 15,
         height: 54,
+
     },
     buttonText: {
         color: 'white',
-        fontWeight: 'bold',
+        fontWeight: '700',
+        fontSize: 18,
+
     },
     passwordButton: {
         position: 'absolute',
@@ -228,23 +246,28 @@ const styles = StyleSheet.create({
     },
     btnForgotPassword: {
         color: '#548DFF',
-        fontSize: 13,
+        fontSize: 14,
         marginTop: 10,
         marginBottom: 10,
+        fontFamily: 'Urbanist-Regular',
+        fontWeight: '500'
     },
     rememberMe: {
         color: '#979797',
-        fontSize: 13,
-        marginTop: 10,
+        fontSize: 14,
+        marginTop: 11,
         marginBottom: 10,
+        fontFamily: 'Urbanist-Regular',
+        fontWeight: '500'
     },
     rememberMeIcon: {
         marginTop: 10,
         marginBottom: 10,
     },
-    forgotPasswordContainer: { 
+    forgotPasswordContainer: {
         flexDirection: 'row',
-        alignSelf: 'flex-end', 
-        marginLeft: Dimensions.get('screen').width * 0.275 
+        alignSelf: 'flex-end',
+        marginLeft: Dimensions.get('screen').width * 0.275,
+
     }
 });

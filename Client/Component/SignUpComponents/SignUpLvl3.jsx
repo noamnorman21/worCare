@@ -2,10 +2,21 @@ import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Alert, TouchableH
 import React from 'react'
 import { useState, useEffect } from 'react'
 import { OrLine, NeedAccount, HaveAccount } from './FooterLine'
+import  useFonts from '../Fonts'
+
+
 
 export default function SignUpLvl3({ navigation }) {
-  const [Pick, setPick] = useState('')
+ //load fonts
+  const LoadFonts = async () => {
+    await useFonts();
+  };
+//load fonts on mount
+  useEffect(() => {
+    LoadFonts();
+  }, []);
 
+  const [Pick, setPick] = useState('')
   //navigation function- based on userChoice
   const StagePick = () => {
     if (Pick == 'CareGiver') {      
@@ -22,7 +33,7 @@ export default function SignUpLvl3({ navigation }) {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Text style={{ fontSize: 30, fontWeight: '700', marginBottom: 117, marginTop: 173 }}>I am a...</Text>
-      <RadioButton data={[{ name: 'CareGiver', header: 'CareGiver', body: 'I will be providing care for a patient.' }, { name: 'Involved', header: `Patient's Family Member`, body: 'I will be managing their care needs.' }]} onSelect={(name) => setPick(name)} />
+      <RadioButton data={[{ name: 'Caregiver', header: 'Caregiver', body: 'I will be providing care for a patient.' }, { name: 'Involved', header: `Patient's Family Member`, body: 'I will be managing their care needs.' }]} onSelect={(name) => setPick(name)} />
       <TouchableHighlight style={styles.button} onPress={StagePick} underlayColor='#548DFF' >
         <Text style={styles.buttonText}>Continue</Text>
       </TouchableHighlight>
@@ -46,7 +57,7 @@ function RadioButton({ data, onSelect }) {
     <View>
       {data.map((item) => {
         return (
-          <Pressable style={[styles.radio, item.name === userOption ? styles.selected : styles.unselected]} onPress={() => selectHandler(item.name)}>
+          <Pressable key={item.name} style={[styles.radio, item.name === userOption ? styles.selected : styles.unselected]} onPress={() => selectHandler(item.name)}>
             {/*button style based on state of selection= when selected, changess border color */}
             <Text style={styles.header}> {item.header}</Text>
             <Text style={styles.body}> {item.body}</Text>
@@ -79,8 +90,9 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: 'white',
-    fontWeight: '600',
-    fontSize: 16,
+    fontWeight: '700',
+    fontSize: 18,
+
   },
 
   radio: {
@@ -97,10 +109,12 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: '#548DFF',
     fontWeight: '700',
+ 
   },
   body: {
     fontSize: 16,
     color: '#9E9E9E',
+
   },
   unselected: {
     borderColor: '#E6EBF2',
