@@ -1,5 +1,6 @@
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, Dimensions } from 'react-native'
 import React from 'react'
+import { TouchableHighlight } from 'react-native-gesture-handler'
 
 export default function SignUpLvl2({navigation}) {
   return (
@@ -17,9 +18,9 @@ export default function SignUpLvl2({navigation}) {
             <Text>Blue View</Text>
         </View>
         <View style={{justifyContent:'center', alignItems:'center'}}>  
-        <TouchableOpacity style={styles.button} onPress={()=>navigation.navigate('SignUpLvl3')} >
-          <Text style={styles.buttonText}>next Stage</Text>
-        </TouchableOpacity> 
+        <TouchableHighlight style={styles.button} underlayColor='#548DFF' onPress={()=>navigation.navigate('SignUpLvl3')} >
+          <Text style={styles.buttonText}>Continue</Text>
+        </TouchableHighlight> 
         </View>   
     </View>
   )
@@ -28,7 +29,7 @@ export default function SignUpLvl2({navigation}) {
 const styles = StyleSheet.create({
   button: {
     width: Dimensions.get('window').width * 0.85,
-    backgroundColor: '#548DFF',
+    backgroundColor: '#7DA9FF',
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 16,

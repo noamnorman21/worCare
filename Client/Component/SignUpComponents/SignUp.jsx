@@ -201,7 +201,7 @@ export default function CreateUser({ navigation }) {
         </TouchableOpacity>
       </View>
       <OrLine />
-      <HaveAccount NavigateToLogIn={NavigateToLogIn} />
+      <HaveAccount />
     </SafeAreaView>
   )
 }

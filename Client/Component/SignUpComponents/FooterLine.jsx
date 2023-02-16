@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native'
 import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native'
 
@@ -13,15 +14,16 @@ const OrLine = () => {
         </View>
     )
 }
-const NeedAccount = (props) => {
+const NeedAccount = () => {
     {/* for log in screen */ }
+    const navigation= useNavigation();
     return (
         <View style={styles.buttonContainer}>
             <View style={styles.needAccountTXT}>
                 <Text style={styles.signUpText}>Need an account ?</Text>
             </View>
             <View>
-                <TouchableOpacity onPress={() =>props.NavigateToSignUp()         
+                <TouchableOpacity onPress={() =>navigation.navigate('SignUp')        
             }>      
                     <Text style={styles.signUpButtonText}>Sign Up</Text>
                 </TouchableOpacity>
@@ -30,15 +32,16 @@ const NeedAccount = (props) => {
     )
 }
 
-const HaveAccount = (props) => {
+const HaveAccount = () => {
     {/* for sign up screen */ }
+    const navigation= useNavigation();
     return (
         <View style={styles.buttonContainer}>
             <View style={styles.needAccountTXT}>
                 <Text style={styles.signUpText}>Have an account ?</Text>
             </View>
             <View>
-                <TouchableOpacity onPress={() =>props.NavigateToLogIn()}>
+                <TouchableOpacity onPress={() => navigation.navigate('LogIn')}>
                     <Text style={styles.signUpButtonText}>Log In</Text>
                 </TouchableOpacity>
             </View>

@@ -13,11 +13,12 @@ const Stack= createStackNavigator();
 
 export default function NavigateSignUp() {
   return (
-    <Stack.Navigator initialRouteName="LogIn" screenOptions={{headerShown:false}} backBehavior='none' >
+    <Stack.Navigator initialRouteName="SignUpLvl3" screenOptions={{headerShown:false}} backBehavior='none' >
+      <Stack.Screen name="SignUpLvl3" component={SignUpLvl3} />
       <Stack.Screen name="LogIn" component={LogIn} />
       <Stack.Screen name="SignUp" component={SignUp} />   
       <Stack.Screen name="SignUpLvl2" component={SignUpLvl2} />
-      <Stack.Screen name="SignUpLvl3" component={SignUpLvl3} />
+      
       <Stack.Screen name="SingUpLvl4Involved" component={SingUpLvl4Involved} />
       <Stack.Screen name="SignUpLvl4Care" component={SignUpLvl4Care} />
       <Stack.Screen name="CustomHeader" component={CustomHeader} />

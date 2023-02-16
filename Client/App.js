@@ -15,8 +15,8 @@ import NavigateSignUp from './Component/SignUpComponents/NavigateSignUp';
 export default function App() {
   return (
     <NavigationContainer independent={true}>
-      <CustomHeader />
-      {/* <NavigateSignUp /> */}
+      {/* <CustomHeader /> */}
+      <NavigateSignUp />
       {/* <SettingScreen /> */}
 
     </NavigationContainer>
