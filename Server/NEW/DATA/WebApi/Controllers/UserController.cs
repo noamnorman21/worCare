@@ -22,7 +22,7 @@ namespace WebApi.Controllers
             try
             {
                 var user = db.tblUser.Where(x => x.Id == id).FirstOrDefault();
-                return Ok(user.FirstName + user.userUri + user.gender);
+                return Ok(user.FirstName + user.LastName);
             }
             catch (Exception ex)
             {
