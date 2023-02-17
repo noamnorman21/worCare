@@ -1,7 +1,6 @@
 import { View, Text, StyleSheet, TouchableOpacity, Alert, SafeAreaView } from 'react-native';
 import React, { useState } from 'react';
 
-
 export default function Home() {
   const [grid, setGrid] = useState([['', '', ''], ['', '', ''], ['', '', '']]);
   const [player, setPlayer] = useState('X');
@@ -61,7 +60,7 @@ export default function Home() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+<SafeAreaView style={styles.container}>
     <Text style={{fontSize:21, textAlign:'center', marginBottom:10, color:'red'}}> ברוכים הבאים למשחק של נועםםםםם</Text>
     <Text style={styles.text}>Player {player}</Text>        
     <View style={styles.row}>
@@ -80,11 +79,6 @@ export default function Home() {
         {renderCell(2, 2)}
     </View>
 </SafeAreaView>
-/* <SafeAreaView style={styles.container}>
-  {<CustomHeader/> 
-{/* <Text>Home Screen</Text>
-</SafeAreaView> */
-
   );
 }
 

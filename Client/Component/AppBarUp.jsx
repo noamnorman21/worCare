@@ -31,7 +31,7 @@ function CustomHeader() {
                             >
                                 <Image
                                     source={require('../images/icons/Profile.png')}
-                                    style={{ width: 32, height: 28, top:13 }}
+                                    style={{ width: 32, height: 28 }}
                                 />
                             </TouchableOpacity>
                         </View>
@@ -39,7 +39,7 @@ function CustomHeader() {
                     headerRight: () => (
                         <View style={styles.headerRight}>
                             <TouchableOpacity
-                                style={{ right: Dimensions.get('screen').width * 0.06, top:13 }}
+                                style={{ right: Dimensions.get('screen').width * 0.06 }}
                                 onPress={() => { navigation.navigate('PushNotifications') }}
                             >
                                 <Feather
@@ -56,7 +56,6 @@ function CustomHeader() {
                                     name="contacts"
                                     size={28}
                                     color={'#000000'}
-                                    style={{top:13}}
                                 />
                             </TouchableOpacity>
                         </View>
@@ -113,7 +112,6 @@ function AppBarDown() {
                 style: styles.tabBar,
             }}
             initialRouteName="Home"
-            
         >
             <Tab.Screen name="Home" component={Home} options={{ tabBarLabel: 'Home' }} />
             {/*בעת ניווט למסך הבית - תבוצע פעולת גט שתמשוך את הפרטים- לוח שנה למשתמש- סוג לוח שנה,

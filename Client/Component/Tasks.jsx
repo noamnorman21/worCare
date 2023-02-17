@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Dimensions } from 'react-native'
+import { View, Text, StyleSheet } from 'react-native'
 import React from 'react'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
@@ -9,31 +9,27 @@ export default function Tasks() {
     <Tab.Navigator
       initialRouteName="Main"
       tabBarOptions={{
-        justifyContent: 'center',
         pressColor: '#548DFF',
-        activeTintColor: '#548DFF',
-        inactiveTintColor: '#9E9E9E',
+        pressOpacity: 0.5,
         labelStyle: {
-          fontSize: 15, // <-- change this size to 18 when we have the font family 'Urbanist'
-          fontWeight: 'bold',          
+          fontSize: 16, // <-- change this size to 18 when we have the font family 'Urbanist'
+          fontWeight: 'bold',
+          color: '#9E9E9E',
           textTransform: 'none',
           alignItems: 'center',
-          justifyContent: 'space-between',
-          
         },
         style: {
           backgroundColor: 'transparent',
-          
-          
+          marginTop: 25,
+          height: 50,
         },
         indicatorStyle: {
           backgroundColor: '#548DFF',
-          height: 3,
-          borderRadius: 25,
+          height: 4,
         },
-        
+        tabStyle: { width: 'auto', marginLeft: 10, alignItems: 'center' },
       }} >
-      <Tab.Screen name="Main" component={Main} />
+      <Tab.Screen style={styles.container2} name="Main" component={Main} />
       <Tab.Screen name="General" component={General} />
       <Tab.Screen name="Shop" component={Shop} />
       <Tab.Screen name="Medicine" component={Medicine} />
