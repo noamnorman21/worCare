@@ -3,11 +3,16 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { CustomHeader } from '../../Component/AppBarUp';
 
 // Importing the screens that will be used in the stack navigator
-import SignUp from './SignUp';
 import LogIn from './LogIn';
+
+import SignUp from './SignUp';
 import SignUpLvl2 from './SignUpLvl2';
 import SignUpLvl3 from './SignUpLvl3';
-import ForgotPassword from './ForgotPassword';
+
+import ForgotPassword from '../ForgotPasswordComponents/ForgotPassword';
+import ForgotPasswordLvl2 from '../ForgotPasswordComponents/ForgotPasswordLvl2';
+import CreateNewPassword from '../ForgotPasswordComponents/CreateNewPassword';
+
 import SignUpCaregiverLVL4 from './CareGiver/SignUpCaregiverLVL4';
 import SignUpCaregiverLVL5 from './CareGiver/SignUpCaregiverLVL5';
 import SignUpUserLVL4 from './User/SignUpUserLVL4';
@@ -22,10 +27,14 @@ const Stack = createStackNavigator();
 export default function NavigateSignUp() {
   return (
     <Stack.Navigator initialRouteName="LogIn" screenOptions={{ headerShown: false }}>
-      
-      <Stack.Screen name="LogIn" component={LogIn} />
-      <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+
       <Stack.Screen name="CustomHeader" component={CustomHeader} />
+      <Stack.Screen name="LogIn" component={LogIn} />
+
+      {/* שלבי שחזור סיסמה */}
+      <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+      <Stack.Screen name="ForgotPasswordLvl2" component={ForgotPasswordLvl2} options={{ headerShown: true, headerTitle: '' }} />
+      <Stack.Screen name="CreateNewPassword" component={CreateNewPassword} options={{ headerShown: true, headerTitle: '' }} />
 
       {/* שלבים 1-3 בתהליך ההרשמה משותפים לשני סוגי המשתמשים */}
       <Stack.Screen name="SignUp" component={SignUp} />
@@ -42,7 +51,7 @@ export default function NavigateSignUp() {
       <Stack.Screen name="SignUpHobbies" component={SignUpHobbies} options={{ headerShown: true, headerTitle: '' }} />
       <Stack.Screen name="SignUpLimitations" component={SignUpLimitations} options={{ headerShown: true, headerTitle: '' }} />
       <Stack.Screen name="SignUpFinish" component={SignUpFinish} options={{ headerShown: true, headerTitle: '' }} />
-      
+
     </Stack.Navigator>
   )
 }

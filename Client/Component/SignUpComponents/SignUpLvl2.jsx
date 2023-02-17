@@ -44,9 +44,29 @@ export default function SignUpLvl2({ navigation, route }) {
     //     "userUri" : "////"
     // }
   }
-  
+
   const sendDataToDB = () => {
-    
+    const newUserToDB = {
+      FirstName: userData.firstName,
+      LastName: userData.lastName,
+      Email: userData.email,
+      Password: userData.password,
+      gender: userGender,
+      phoneNum: userData.phoneNum,
+      userUri: userData.imagePath
+    }
+    console.log(newUserToDB.FirstName);
+    fetch('https://proj.ruppin.ac.il/cgroup94/prod/api/User/InsertUser', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: JSON.stringify(newUserToDB),
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        console.log(json);
+      })
   }
 
   const NavigateToLogIn = () => {

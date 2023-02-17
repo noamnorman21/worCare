@@ -66,24 +66,24 @@ export default function CreateUser({ navigation }) {
       return Alert.alert('Error', 'All fields are required')
     }
 
-    // if (!validateEmail(email)) {
-    //   return Alert.alert('Invalid Email', 'Please enter a valid email')
-    // }
+    if (!validateEmail(email)) {
+      return Alert.alert('Invalid Email', 'Please enter a valid email')
+    }
 
-    // if (!validatePassword(password)) {
-    //   return Alert.alert('Invalid Password', 'Please enter a password with at least 8 characters, 1 letter, and 1 number')
-    // }
+    if (!validatePassword(password)) {
+      return Alert.alert('Invalid Password', 'Please enter a password with at least 8 characters, 1 letter, and 1 number')
+    }
 
-    // if (firstName === '') {
-    //   return Alert.alert('Invalid First Name', 'Please enter a valid first name')
-    // }
-    // if (lastName === '') {
-    //   return Alert.alert('Invalid Last Name', 'Please enter a valid last name')
-    // }
+    if (firstName === '') {
+      return Alert.alert('Invalid First Name', 'Please enter a valid first name')
+    }
+    if (lastName === '') {
+      return Alert.alert('Invalid Last Name', 'Please enter a valid last name')
+    }
 
-    // if (!validatePhoneNum(phoneNum)) {
-    //   return Alert.alert('Invalid Phone Number', 'Please enter a valid phone number')
-    // }
+    if (!validatePhoneNum(phoneNum)) {
+      return Alert.alert('Invalid Phone Number', 'Please enter a valid phone number')
+    }
     if (imagePath === '') {
       setUserImage('../../images/Avatar.png')
     }

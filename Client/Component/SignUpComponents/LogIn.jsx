@@ -5,14 +5,14 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import { OrLine, NeedAccount } from './FooterLine'
 import * as Font from 'expo-font';
 
+Font.loadAsync({
+    'Urbanist': require('../../assets/fonts/Urbanist-Regular.ttf'),
+    'Urbanist-Bold': require('../../assets/fonts/Urbanist-Bold.ttf'),
+    'Urbanist-Light': require('../../assets/fonts/Urbanist-Light.ttf'),
+    'Urbanist-Medium': require('../../assets/fonts/Urbanist-Medium.ttf'),
+  });
+  
 export default function LogIn({ navigation }) {
-    Font.loadAsync({
-        'Urbanist': require('../../assets/fonts/Urbanist-Regular.ttf'),
-        'Urbanist-Bold': require('../../assets/fonts/Urbanist-Bold.ttf'),
-        'Urbanist-Light': require('../../assets/fonts/Urbanist-Light.ttf'),
-        'Urbanist-Medium': require('../../assets/fonts/Urbanist-Medium.ttf'),
-    });
-
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);//for password visibility
