@@ -42,7 +42,6 @@ export default function LogIn({ navigation }) {
         return re.test(email);
     }
 
-
     //navigate to sign up screen
     const NavigateToSignUp = () => {
         navigation.navigate('SignUp')

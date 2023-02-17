@@ -17,44 +17,46 @@ Font.loadAsync({
 
 export default function ForgotPassword({ navigation }) {
     const [email, setEmail] = useState('');
-    const [code, setCode] = useState('');
 
+    // Generate a random 5 digit code (letters and numbers)
     const generateCode = () => {
-        const code = Math.random().toString(36).substring(2, 7).toUpperCase();
-        console.log(code);
-        setCode(code);
-    };
+        let codeTemp = '';
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        const charactersLength = characters.length;
+        for (let i = 0; i < 5; i++) {
+            codeTemp += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        //in the future, here we will send the code to the user's email address
+        navigation.navigate('ForgotPasswordLvl2', { userCode: codeTemp });
+    }
 
     const NavigateToLogIn = () => {
         navigation.navigate('LogIn')
     }
-    // const NavigateToNextLVL = () => {
-    //     generateCode();
-    //     navigation.navigate('ForgotPasswordLvl2', { userCode: code })
-    // }
 
     const getData = () => {
-        console.log('in getData');
-        // const url ='https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUserEmail'
-        let email1="noam@gmail.com";
-        fetch("https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUserEmail/"+email1, {
+        fetch(`https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetEmail/${email}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json; charset=UTF-8',
             }
         })
-            .then((response) => response.json())
+            .then((response) => {
+                response.json()
+                if (response.ok === false) {
+                    Alert.alert('This email is not registered in our system');
+                    return;
+                }
+            })
             .then((json) => {
-                console.log(json);
                 if (json === null) {
                     Alert.alert('This email is not registered in our system');
                     return;
                 }
-                // generateCode();
-                // navigation.navigate('ForgotPasswordLvl2', { userCode: code });
+                generateCode();
             })
             .catch((error) => {
-                console.log(error);
+                console.log("Error:" + error);
             });
     }
 

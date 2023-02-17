@@ -5,6 +5,7 @@ using System.Data.SqlTypes;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.Cors;
 using DATA;
@@ -29,14 +30,19 @@ namespace WebApi.Controllers
             {
                 return BadRequest(ex.Message);
             }
-        }
+        }       
+
         [HttpGet]
-        [Route("GetEmail/{userEmail}")]            
+        [Route("GetEmail/{userEmail}")]
         public IHttpActionResult GetEmail(string userEmail)
         {
             try
             {
-                var user = db.tblUser.Where(x => x.Email == userEmail).FirstOrDefault();
+                var user = db.tblUser.Where(x => x.Email == userEmail).First();
+                if (user == null)
+                {
+                    return NotFound();
+                }
                 return Ok(user.Email);
             }
             catch (Exception ex)
@@ -44,24 +50,6 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-
-        //this is get method that return the user by email with @ sign
-        //[HttpGet]
-        //[Route("GetEmail/{userEmail1}/{userEmail2}/{userEmail3}")]
-        //public IHttpActionResult GetEmail(string userEmail1, string userEmail2, string userEmail3)
-        //{
-        //    try
-        //    {
-        //        var user = db.tblUser.Where(x => x.Email == userEmail1 + "@" + userEmail2 + "." + userEmail3).FirstOrDefault();
-        //        return Ok(user.Email);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(ex.Message);
-        //    }
-        //}
-
 
         // insert user to db by calling Stored Prodecdure InsertUser
         [HttpPost]
@@ -80,7 +68,7 @@ namespace WebApi.Controllers
             }
         }
 
-        
+
         // update user to db by calling Function UpdateUser
         [HttpPut]
         [Route("UpdateUser")]
@@ -103,8 +91,8 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        
-        
+
+
         //Only If user realy sure he wants to delete his account we will
         //delete him from the db - but first we will alert him to fuck himself
         [HttpDelete]

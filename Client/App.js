@@ -16,18 +16,18 @@ import ForgotPassword from './Component/ForgotPasswordComponents/ForgotPassword'
 
 export default function App() {
   return (
-    // <NavigationContainer independent={true}>
-    //   {/* <CustomHeader /> */}
-    //   {/* <SettingScreen /> */}
-    //   <NavigateSignUp />
-    // </NavigationContainer>
+    <NavigationContainer independent={true}>
+      {/* <CustomHeader /> */}
+      {/* <SettingScreen /> */}
+      <NavigateSignUp />
+    </NavigationContainer>
 
-    <View style={styles.container}>
-      {/* <CreateUser /> */}
-      {/* <LogIn />       */}
-      <ForgotPassword />
-      {/* <SignUpCareGiverLVL4 /> */}
-    </View>
+    // <View style={styles.container}>
+    //   {/* <CreateUser /> */}
+    //   {/* <LogIn />       */}
+    //   {/* <ForgotPassword /> */}
+    //   {/* <SignUpCareGiverLVL4 /> */}
+    // </View>
   );
 }
 

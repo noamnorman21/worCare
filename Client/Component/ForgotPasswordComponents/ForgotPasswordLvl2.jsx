@@ -1,34 +1,42 @@
-import { SafeAreaView, View, TouchableOpacity, Text, StyleSheet, TextInput, Dimensions } from 'react-native'
-import { React, useState, useRef } from 'react'
+import { SafeAreaView, View, TouchableOpacity, Text, StyleSheet, TextInput, Dimensions, Alert } from 'react-native'
+import { React, useState, useRef, useEffect } from 'react'
 import * as Font from 'expo-font';
-import { Alert } from 'react-native';
 import { OrLine, ReturnToLogin } from '../SignUpComponents/FooterLine';
 
 const CODE_LENGTH = 5;
 export default function ForgotPasswordLvl2({ navigation, route }) {
+    const userCode = route.params.userCode; //save the code that was sent to the user's email address   
+    Alert.alert(userCode);//temaporary alert to show the code,until we will send it to the user's email address
+
     Font.loadAsync({
         'Urbanist': require('../../assets/fonts/Urbanist-Regular.ttf'),
         'Urbanist-Bold': require('../../assets/fonts/Urbanist-Bold.ttf'),
         'Urbanist-Light': require('../../assets/fonts/Urbanist-Light.ttf'),
         'Urbanist-Medium': require('../../assets/fonts/Urbanist-Medium.ttf'),
     });
-    const inputs = useRef([]);
-    const userCode = route.params?.userCode?.trim();
+    
     const [code, setCode] = useState('');
+    const inputs = useRef([]);
 
     const handleInput = (index, value) => {
-        console.log(userCode)
-        if (/^\d*$/.test(value)) {
-            setCode(prevCode => {
-                const codeArr = prevCode.split('');
-                codeArr[index] = value;
-                return codeArr.join('');
-            });
-            if (value && index < CODE_LENGTH - 1) {
-                inputs.current[index + 1].focus();
-            }
+        setCode(prevState => {
+            return prevState.slice(0, index) + value + prevState.slice(index + 1);
+        });
+        if (value !== '') {
+            inputs.current[index + 1].focus();
         }
     };
+
+    const generateNewCode = () => {
+        let codeTemp = '';
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        const charactersLength = characters.length;
+        for (let i = 0; i < 5; i++) {
+            codeTemp += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        //in the future, here we will send the code to the user's email address
+        navigation.navigate('ForgotPasswordLvl2', { userCode: codeTemp });
+    }
 
     const NavigateToLogIn = () => {
         navigation.navigate('LogIn');
@@ -63,9 +71,7 @@ export default function ForgotPasswordLvl2({ navigation, route }) {
                 >
                     <Text style={styles.buttonText}>Submit</Text>
                 </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={() => { navigation.navigate('ForgotPassword') }}
-                >
+                <TouchableOpacity onPress={generateNewCode}>
                     <Text style={styles.smallBtn}>Resend Code</Text>
                 </TouchableOpacity>
             </View>

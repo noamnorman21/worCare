@@ -14,35 +14,13 @@ export default function SignUpLvl2({ navigation, route }) {
   const userData = route.params.user;
   const [userGender, setUserGender] = useState('');
 
-
   // Check if userGender is empty
   const NavigateToSignUpLvl3 = () => {
     if (userGender === '') {
       Alert.alert('Please Select a gender');
       return;
     }
-    // const newUserToDB = {
-    //   //add the gender to the user object
-    //   FirstName: userData.firstName,
-    //   LastName: userData.lastName,
-    //   Email: userData.email,
-    //   Password: userData.password,
-    //   gender: userGender,
-    //   phoneNum: userData.phoneNum,
-    //   userUri: userData.imagePath
-    // }
-
-    // Here send the data to add a new user to database using fetch and thats all
-    // Example for data to send:
-    //{
-    //     "FirstName":"Noam",
-    //     "LastName" :"Norman",
-    //     "Email": "Noam@gmail.com",
-    //     "Password": "Aa123456",
-    //     "gender":"F",
-    //     "phoneNum":"0501231234",
-    //     "userUri" : "////"
-    // }
+    navigation.navigate('SignUpLvl3')     
   }
 
   const sendDataToDB = () => {
@@ -67,6 +45,12 @@ export default function SignUpLvl2({ navigation, route }) {
       .then((json) => {
         console.log(json);
       })
+      .catch((error) => {
+        console.error(error);
+      }
+      );
+    NavigateToSignUpLvl3();
+
   }
 
   const NavigateToLogIn = () => {
