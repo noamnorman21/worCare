@@ -3,11 +3,18 @@ import React from 'react'
 import io from 'socket.io-client';
 import { useState, useEffect } from 'react';
 import { Card } from 'react-native-elements';
+import { useNavigation } from '@react-navigation/native';
+import { Touchable } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 
 
 
-export default function MainChats(props) {
+
+export default function MainChats() {
+
+  const navigation = useNavigation();
+
 
 
     const conversation = [{namec:"Noam Norman", Message:"Hello",image:require("../../images/icons/Woman.png")},
@@ -40,7 +47,6 @@ const heightsetter = () => {
 
 
 
-  const [image, setImage] = useState('Woman.png');
 
 
     return (
@@ -57,6 +63,7 @@ const heightsetter = () => {
             
 
                     return(
+                      <TouchableOpacity onPress={() => navigation.navigate('ChatView',{name1:item.namec})}>
                         <View style={{padding:15,marginTop:30}} key={index}>
                       <View style={{borderBottomWidth:1,borderBottomColor:"grey",borderStyle:"solid", flexDirection:'row-reverse',padding:15}}>
                     <View style={styles.avatarContainer}>
@@ -71,6 +78,7 @@ const heightsetter = () => {
 
                         </View>
                         </View>
+                         </TouchableOpacity>
                     )
                 
               } )}

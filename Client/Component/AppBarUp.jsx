@@ -12,6 +12,7 @@ import Finance from './Finance';
 import Chats from './ChatsComponents/MainChats';
 import Tasks from '../Component/Tasks';
 import Rights from '../Component/Rights';
+import ChatView from './ChatsComponents/Chatview';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -82,6 +83,8 @@ function CustomHeader() {
                     cardOverlayEnabled: true,
                 })} />
             <Stack.Screen name='Contacts' component={Contacts} />
+            <Stack.Screen name='ChatView' component={ChatView} options={{headerShown:false}} />
+            <Stack.Screen name='MainChats' component={Chats} options={{headerShown:false}} />
         </Stack.Navigator>
     );
 }
