@@ -3,10 +3,16 @@ import React, { useState, useEffect } from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import ImagePickerExample from './ImagePickerExample'
 import { OrLine, HaveAccount } from './FooterLine'
+import * as Font from 'expo-font';
+Font.loadAsync({
+  'Urbanist': require('../../assets/fonts/Urbanist-Regular.ttf'),
+  'Urbanist-Bold': require('../../assets/fonts/Urbanist-Bold.ttf'),
+  'Urbanist-Light': require('../../assets/fonts/Urbanist-Light.ttf'),
+  'Urbanist-Medium': require('../../assets/fonts/Urbanist-Medium.ttf'),
+});
 
 // Sign up Screen - level 1 - first + last name, email, phone number, password, image 
 // On submit, user is taken to SignUpLvl2 Screen - address, city, state, zip code, country
-
 export default function CreateUser({ navigation }) {
   const [showPassword, setShowPassword] = useState(false);//for password visibility
   const [keyboardOpen, setKeyboardOpen] = useState(false);//for keyboard visibility
@@ -32,7 +38,7 @@ export default function CreateUser({ navigation }) {
             useNativeDriver: true,
           },
         });
-        setAnimation({ marginBottom: Dimensions.get('window').height * 0.325 });
+        setAnimation({ marginBottom: Dimensions.get('window').height * 0.32 });
       }
     );
     const keyboardDidHideListener = Keyboard.addListener(
@@ -54,37 +60,35 @@ export default function CreateUser({ navigation }) {
     }
 
   }, []);
-
   const handleCreateUser = () => {
-    const { email, password, firstName, lastName, phoneNum, image } = user
+    const { email, password, firstName, lastName, phoneNum, imagePath } = user
     if (!email || !password || !firstName || !lastName || !phoneNum) {
       return Alert.alert('Error', 'All fields are required')
     }
 
-    if (!validateEmail(email)) {
-      return Alert.alert('Invalid Email', 'Please enter a valid email')
-    }
+    // if (!validateEmail(email)) {
+    //   return Alert.alert('Invalid Email', 'Please enter a valid email')
+    // }
 
-    if (!validatePassword(password)) {
-      return Alert.alert('Invalid Password', 'Please enter a password with at least 8 characters, 1 letter, and 1 number')
-    }
+    // if (!validatePassword(password)) {
+    //   return Alert.alert('Invalid Password', 'Please enter a password with at least 8 characters, 1 letter, and 1 number')
+    // }
 
-    if (firstName === '') {
-      return Alert.alert('Invalid First Name', 'Please enter a valid first name')
-    }
-    if (lastName === '') {
-      return Alert.alert('Invalid Last Name', 'Please enter a valid last name')
-    }
+    // if (firstName === '') {
+    //   return Alert.alert('Invalid First Name', 'Please enter a valid first name')
+    // }
+    // if (lastName === '') {
+    //   return Alert.alert('Invalid Last Name', 'Please enter a valid last name')
+    // }
 
-    if (!validatePhoneNum(phoneNum)) {
-      return Alert.alert('Invalid Phone Number', 'Please enter a valid phone number')
-    }
+    // if (!validatePhoneNum(phoneNum)) {
+    //   return Alert.alert('Invalid Phone Number', 'Please enter a valid phone number')
+    // }
     if (imagePath === '') {
       setUserImage('../../images/Avatar.png')
-      return;
     }
 
-    let userData = {
+    const userData = {
       email: user.email,
       password: user.password,
       firstName: user.firstName,
@@ -92,23 +96,18 @@ export default function CreateUser({ navigation }) {
       phoneNum: user.phoneNum,
       imagePath: user.imagePath,
     }
-    // Add logic to post user data to your server here
-    Alert.alert('User created successfully')
-    navigation.navigate('SignUpLvl2')
-    // [
-    //   {
-    //     text: 'Ok',
-    //     onPress: () => {
-    //       console.log('User created successfully')
-    //     },
-    //   },
-    // ],
-    // { cancelable: false },
-
+    navigation.navigate('SignUpLvl2', { user: userData })
   }
 
   const changeIMG = (imagePath) => {
+    //convert image path to string
+    imagePath = JSON.stringify(imagePath)
+    //remove quotes from string
+    imagePath = imagePath.replace(/['"]+/g, '')
+    //remove file:// from string
+    imagePath = imagePath.replace('file://', '')
     setUserImage(imagePath)
+    setUser({ ...user, imagePath: imagePath })
   }
 
   const validatePhoneNum = (phoneNum) => {
@@ -123,7 +122,7 @@ export default function CreateUser({ navigation }) {
   }
 
   const validatePassword = (password) => {
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/ //at least 8 characters, 1 letter and 1 number
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/ //at least 8 characters, 1 letter, 1 number
     return passwordRegex.test(password)
   }
 
@@ -133,6 +132,10 @@ export default function CreateUser({ navigation }) {
 
   const NavigateToLogIn = () => {
     navigation.navigate('LogIn')
+  }
+
+  const NavigateToLVL3 = () => {
+    navigation.navigate('SignUpLvl3')
   }
 
   return (
@@ -150,17 +153,20 @@ export default function CreateUser({ navigation }) {
           <TextInput
             style={[styles.input, styles.firstNameInput]}
             placeholder="First Name"
+            keyboardType='ascii-capable'
             onChangeText={(value) => handleInputChange('firstName', value)}
           />
           <TextInput
             style={[styles.input, styles.lastNameInput]}
             placeholder="Last Name"
+            keyboardType='ascii-capable'
             onChangeText={(value) => handleInputChange('lastName', value)}
           />
         </View>
         <TextInput
           style={styles.input}
           placeholder="Email"
+          keyboardType='ascii-capable'
           onChangeText={(value) => handleInputChange('email', value)}
         />
 
@@ -201,14 +207,13 @@ export default function CreateUser({ navigation }) {
         </TouchableOpacity>
       </View>
       <OrLine />
-      <HaveAccount />
+      <TouchableOpacity style={styles.button} onPress={NavigateToLVL3} >
+        <Text style={styles.buttonText}>Continue with Google</Text>
+      </TouchableOpacity>
+      <HaveAccount NavigateToLogIn={NavigateToLogIn} />
     </SafeAreaView>
   )
 }
-
-
-
-
 
 const styles = StyleSheet.create({
   passwordButton: {
@@ -295,7 +300,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 26,
-    fontWeight: 'bold',
+    fontFamily: 'Urbanist-Bold',
     marginBottom: 7,
   },
   header: {
@@ -304,10 +309,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   smallTitle: {
+    fontFamily: 'Urbanist',
     fontSize: 14,
-    marginBottom: 7,
+    marginBottom: 5,
   },
 });
-
 
 

@@ -1,20 +1,15 @@
-import { useNavigation } from '@react-navigation/native'
 import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native'
-import { useEffect } from 'react';
-import useFonts from '../Fonts'
+import * as Font from 'expo-font'
 
-
+Font.loadAsync({
+    'Urbanist': require('../../assets/fonts/Urbanist-Regular.ttf'),
+    'Urbanist-Bold': require('../../assets/fonts/Urbanist-Bold.ttf'),
+    'Urbanist-Light': require('../../assets/fonts/Urbanist-Light.ttf'),
+    'Urbanist-Medium': require('../../assets/fonts/Urbanist-Medium.ttf'),
+});
 
 const OrLine = () => {
-    const LoadFonts = async () => {
-        await useFonts();
-      };
-    //load fonts on mount
-      useEffect(() => {
-        LoadFonts();
-      }, []);
-    
     return (
         <View style={styles.lineContainer}>
             <View style={styles.line} />
@@ -23,24 +18,16 @@ const OrLine = () => {
         </View>
     )
 }
-const NeedAccount = () => {
-    const LoadFonts = async () => {
-        await useFonts();
-      };
-    //load fonts on mount
-      useEffect(() => {
-        LoadFonts();
-      }, []);
+const NeedAccount = (props) => {
     {/* for log in screen */ }
-    const navigation= useNavigation();
     return (
         <View style={styles.buttonContainer}>
             <View style={styles.needAccountTXT}>
                 <Text style={styles.signUpText}>Need an account ?</Text>
             </View>
             <View>
-                <TouchableOpacity onPress={() =>navigation.navigate('SignUp')        
-            }>      
+                <TouchableOpacity onPress={() => props.NavigateToSignUp()
+                }>
                     <Text style={styles.signUpButtonText}>Sign Up</Text>
                 </TouchableOpacity>
             </View>
@@ -48,24 +35,15 @@ const NeedAccount = () => {
     )
 }
 
-const HaveAccount = () => {
-    const LoadFonts = async () => {
-        await useFonts();
-      };
-    //load fonts on mount
-      useEffect(() => {
-        LoadFonts();
-      }, []);
-    
+const HaveAccount = (props) => {
     {/* for sign up screen */ }
-    const navigation= useNavigation();
     return (
         <View style={styles.buttonContainer}>
             <View style={styles.needAccountTXT}>
-                <Text style={styles.signUpText}>Have an account ?</Text>
+                <Text style={styles.signUpText}>Already have an account ?</Text>
             </View>
             <View>
-                <TouchableOpacity onPress={() => navigation.navigate('LogIn')}>
+                <TouchableOpacity onPress={() => props.NavigateToLogIn()}>
                     <Text style={styles.signUpButtonText}>Log In</Text>
                 </TouchableOpacity>
             </View>
@@ -73,11 +51,11 @@ const HaveAccount = () => {
     )
 }
 
-const ReturnToLogin = () => {
+const ReturnToLogin = (props) => {
     {/* for forgot password screen */ }
     return (
         <View style={styles.buttonContainer}>
-            <TouchableOpacity onPress={() => alert('Navigate To Log In')}>
+            <TouchableOpacity onPress={() => props.NavigateToLogIn()}>
                 <Text style={styles.BackToLogIn}>Back to Log In</Text>
             </TouchableOpacity>
         </View>
@@ -104,12 +82,12 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         color: '#808080',
         fontSize: 18,
-        fontWeight: '600',
+        fontFamily: 'Urbanist-Medium',
     },
     needAccountTXT: {
         marginRight: Dimensions.get('screen').width * 0.03,
-        fontWeight: '00',
-  
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     buttonContainer: {
         flex: 0.3,
@@ -117,23 +95,18 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     signUpText: {
-        fontSize: 16,
-        flex: 1, 
-        fontFamily: 'Urbanist-Regular',
-        fontWeight: '500',       
-    
+        flex: 1,
+        fontFamily: 'Urbanist',
+        fontSize: 16
     },
     signUpButtonText: {
         color: '#548DFF',
         fontSize: 16,
-        fontWeight: '500',
-        fontFamily: 'Urbanist-Regular',
-       
+        fontFamily: 'Urbanist-Bold',
     },
     BackToLogIn: {
         color: '#548DFF',
-        fontSize: 18,
-        fontWeight: '700',
-        fontFamily: 'Urbanist-Regular',
+        fontFamily: 'Urbanist-Bold',
+        fontSize: 18
     },
 })

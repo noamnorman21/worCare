@@ -1,10 +1,9 @@
+// External imports:
 import { StyleSheet, View, Text, Button, SafeAreaView, TouchableOpacity, Dimensions, Image } from 'react-native'
 import React, { useState } from 'react'
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Ionicons } from '@expo/vector-icons';
-import { AntDesign } from '@expo/vector-icons';
-import { SimpleLineIcons } from '@expo/vector-icons';
+import { AntDesign, Ionicons, SimpleLineIcons } from '@expo/vector-icons';
 // Internal imports:
 import Profile from './SettingsComponents/Profile'
 import Notifications from './SettingsComponents/Notifications'
@@ -82,7 +81,7 @@ function HomeScreen({ navigation }, props) {
                         }} name="right" size={25} color="gray" />
 
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('ContactUs')}>
+                <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Contact Us')}>
                     <Ionicons style={{
                         marginLeft: Dimensions.get('window').width * 0.03,
                         marginRight: Dimensions.get('window').width * 0.06
@@ -119,14 +118,6 @@ export default function SettingScreen(props) {
                         marginLeft: Dimensions.get('window').width * 0.03,
                     },
                     headerBackTitleVisible: false,
-                    // headerBackImage: () => (
-                    //   <Ionicons style={{
-                    //     marginLeft: Dimensions.get('window').width * 0.03,
-                    //     marginRight: Dimensions.get('window').width * 0.05
-                    //   }} name='ios-arrow-back' size={30} color='gray' />
-                    // ),
-                    //do not show the header,just the back button
-
                 }}
             >
                 <Stack.Screen name="Settings" options={{ headerShown: false }} component={HomeScreen} />
@@ -138,6 +129,7 @@ export default function SettingScreen(props) {
         </NavigationContainer>
     )
 }
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -157,7 +149,6 @@ const styles = StyleSheet.create({
         flex: 6,
         alignItems: 'center',
         justifyContent: 'flex-start',
-
     },
     personalContainer: {
         flex: 2.2,

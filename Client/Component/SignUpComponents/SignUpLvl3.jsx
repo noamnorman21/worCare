@@ -1,80 +1,78 @@
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Alert, TouchableHighlight, Pressable } from 'react-native'
-import React from 'react'
-import { useState, useEffect } from 'react'
-import { OrLine, NeedAccount, HaveAccount } from './FooterLine'
-import  useFonts from '../Fonts'
-
-
+import { SafeAreaView, View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native'
+import { useState } from 'react';
+import { OrLine, HaveAccount } from './FooterLine';
+import * as Font from 'expo-font';
+Font.loadAsync({
+  'Urbanist': require('../../assets/fonts/Urbanist-Regular.ttf'),
+  'Urbanist-Bold': require('../../assets/fonts/Urbanist-Bold.ttf'),
+  'Urbanist-Light': require('../../assets/fonts/Urbanist-Light.ttf'),
+  'Urbanist-Medium': require('../../assets/fonts/Urbanist-Medium.ttf'),
+});
 
 export default function SignUpLvl3({ navigation }) {
- //load fonts
-  const LoadFonts = async () => {
-    await useFonts();
-  };
-//load fonts on mount
-  useEffect(() => {
-    LoadFonts();
-  }, []);
 
-  const [Pick, setPick] = useState('')
-  //navigation function- based on userChoice
-  const StagePick = () => {
-    if (Pick == 'CareGiver') {      
-      navigation.navigate('SignUpLvl4Care')
-    }
-    else if (Pick == 'Involved') {     
-      navigation.navigate('SingUpLvl4Involved')
+  const [role, setRole] = useState(''); // Caregiver or Patient's Family Member
+
+  const NavigateToNextLvl = () => {
+    if (role === 'Caregiver') {
+      navigation.navigate('SignUpCaregiverLVL4')
+    } else if (role === 'Patient’s Family Member') {
+      navigation.navigate('SignUpUserLVL4')
     }
     else {
-      Alert.alert('Please pick a role')
+      alert('Please select your role')
     }
   }
 
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text style={{ fontSize: 30, fontWeight: '700', marginBottom: 117, marginTop: 173 }}>I am a...</Text>
-      <RadioButton data={[{ name: 'Caregiver', header: 'Caregiver', body: 'I will be providing care for a patient.' }, { name: 'Involved', header: `Patient's Family Member`, body: 'I will be managing their care needs.' }]} onSelect={(name) => setPick(name)} />
-      <TouchableHighlight style={styles.button} onPress={StagePick} underlayColor='#548DFF' >
-        <Text style={styles.buttonText}>Continue</Text>
-      </TouchableHighlight>
-      {/* // </View>    */}
-      <OrLine />
-      <HaveAccount />
-    </View>
-  )
-}
-{/*custom radio buttons */}
-function RadioButton({ data, onSelect }) {
-  const [userOption, setUserOption] = useState(null);
-  //for color changing affects
-  const selectHandler = (value) => {
-    onSelect(value);
-    setUserOption(value);
+  const NavigateToLogIn = () => {
+    navigation.navigate('LogIn')
   }
-
-
   return (
-    <View>
-      {data.map((item) => {
-        return (
-          <Pressable key={item.name} style={[styles.radio, item.name === userOption ? styles.selected : styles.unselected]} onPress={() => selectHandler(item.name)}>
-            {/*button style based on state of selection= when selected, changess border color */}
-            <Text style={styles.header}> {item.header}</Text>
-            <Text style={styles.body}> {item.body}</Text>
-          </Pressable>
-        )
-      }
-      )}
-    </View>
+    <SafeAreaView style={styles.container}>
+      <View style={{ flex: 1, marginTop: 50 }}>
+        <Text style={styles.Title}> I am a...</Text>
+      </View>
+      <View style={{ flex: 2 }}>
+        <TouchableOpacity
+          style={[styles.box, role === 'Caregiver' && styles.selectedBox]}
+          onPress={() => setRole('Caregiver')}
+        >
+          <Text style={styles.titleRole}>Caregiver</Text>
+          <Text style={styles.txtRole}>I will be providing care for a patient.</Text>
+        </TouchableOpacity>
 
+        <TouchableOpacity
+          style={[styles.box, role === 'Patient’s Family Member' && styles.selectedBox]}
+          onPress={() => setRole('Patient’s Family Member')}
+        >
+          <Text style={styles.titleRole}>Patient’s Family Member</Text>
+          <Text style={styles.txtRole}>I will be managing their care needs.</Text>
+        </TouchableOpacity>
+      </View>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={NavigateToNextLvl}
+      >
+        <Text style={styles.buttonText}>
+          Continue
+        </Text>
+      </TouchableOpacity>
+      <OrLine />
+      <HaveAccount NavigateToLogIn={NavigateToLogIn} />
+    </SafeAreaView>
   )
 }
-
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   button: {
-    width: Dimensions.get('window').width * 0.85,
-    backgroundColor: '#7DA9FF',
+    width: Dimensions.get('window').width * 0.9,
+    backgroundColor: '#548DFF',
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 16,
@@ -90,39 +88,48 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: 'white',
-    fontWeight: '700',
     fontSize: 18,
-
+    fontFamily: 'Urbanist-Bold',
   },
-
-  radio: {
+  Title: {
+    fontSize: 34,
+    textAlign: 'center',
+    fontFamily: 'Urbanist-Bold',
+    color: '#000',
+  },
+  box: {
+    width: Dimensions.get('window').width * 0.9,
+    backgroundColor: '#FFF',
     justifyContent: 'center',
-    height: 75,
-    width: Dimensions.get('window').width * 0.85,
     borderRadius: 16,
-    borderWidth: 1.5,
-    marginBottom: 24,
-    padding: 16,
-    
+    borderWidth: 1,
+    borderColor: 'lightgray',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 1,
+    margin: 15,
+    height: 75,
   },
-  header: {
+  titleRole: {
+    marginLeft: 15,
     fontSize: 20,
+    fontFamily: 'Urbanist-Bold',
     color: '#548DFF',
-    fontWeight: '700',
- 
   },
-  body: {
+  txtRole: {
+    marginLeft: 15,
     fontSize: 16,
+    fontFamily: 'Urbanist-SemiBold',
     color: '#9E9E9E',
-
   },
-  unselected: {
-    borderColor: '#E6EBF2',
-
-  },
-  selected: {
+  selectedBox: {
+    borderWidth: 2,
     borderColor: '#548DFF',
+    shadowColor: '#548DFF',
+    shadowOffset: { width: 4, height: 4 },
+    shadowOpacity: 0.5,
   },
-})
 
-
+});

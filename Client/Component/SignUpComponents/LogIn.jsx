@@ -3,21 +3,21 @@ import React from 'react'
 import { useEffect, useState } from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { OrLine, NeedAccount } from './FooterLine'
-import useFonts from '../Fonts'
+import * as Font from 'expo-font';
 
 export default function LogIn({ navigation }) {
+    Font.loadAsync({
+        'Urbanist': require('../../assets/fonts/Urbanist-Regular.ttf'),
+        'Urbanist-Bold': require('../../assets/fonts/Urbanist-Bold.ttf'),
+        'Urbanist-Light': require('../../assets/fonts/Urbanist-Light.ttf'),
+        'Urbanist-Medium': require('../../assets/fonts/Urbanist-Medium.ttf'),
+    });
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);//for password visibility
     const [keyboardOpen, setKeyboardOpen] = useState(false);//for keyboard visibility
     const [animation, setAnimation] = useState({});
-
-
-    const LoadFonts = async () => {
-        await useFonts();
-    };
-    //load fonts on mount
-
 
     //login function
     const logInBtn = () => {
@@ -48,6 +48,9 @@ export default function LogIn({ navigation }) {
         navigation.navigate('SignUp')
     }
 
+    const NavigateToForgotPassword = () => {
+        navigation.navigate('ForgotPassword')
+    }
 
     //keyboard listener for animation
     useEffect(() => {
@@ -77,8 +80,6 @@ export default function LogIn({ navigation }) {
                 setAnimation({ marginBottom: 0 });
             }
         );
-
-        LoadFonts();
         return () => {
             keyboardDidShowListener.remove();
             keyboardDidHideListener.remove();
@@ -146,7 +147,7 @@ export default function LogIn({ navigation }) {
                     {/* forgot password button */}
                     <View style={styles.forgotPasswordContainer}>
                         {/* forgot password button */}
-                        <TouchableOpacity onPress={() => alert('Forgot Password')}>
+                        <TouchableOpacity onPress={NavigateToForgotPassword}>
                             <Text style={styles.btnForgotPassword}>Forgot Password?</Text>
                         </TouchableOpacity>
                     </View>
@@ -158,12 +159,10 @@ export default function LogIn({ navigation }) {
             </View>
             {/* footer line */}
             <OrLine />
-            <NeedAccount />
+            <NeedAccount NavigateToSignUp={NavigateToSignUp} />
         </SafeAreaView>
     )
 }
-
-
 
 const styles = StyleSheet.create({
     container: {
@@ -187,7 +186,6 @@ const styles = StyleSheet.create({
         flex: 2,
         width: '100%',
         alignItems: 'center',
-
     },
     image: {
         width: Dimensions.get('window').width * 0.85,
@@ -205,10 +203,8 @@ const styles = StyleSheet.create({
         borderColor: 'lightgray',
         shadowColor: '#000',
         height: 54,
-        fontFamily: 'Urbanist-Regular',
-        fontWeight: '500',
-        fontSize: 14,
-        color: '#979797',
+        fontFamily: 'Urbanist',
+        fontSize:14
     },
     button: {
         width: Dimensions.get('window').width * 0.9,
@@ -224,14 +220,12 @@ const styles = StyleSheet.create({
         shadowRadius: 3,
         elevation: 1,
         margin: 15,
-        height: 54,
-
+        height: 54,        
     },
     buttonText: {
         color: 'white',
-        fontWeight: '700',
+        fontFamily: 'Urbanist-Bold',
         fontSize: 18,
-
     },
     passwordButton: {
         position: 'absolute',
@@ -242,23 +236,22 @@ const styles = StyleSheet.create({
     },
     passwordButtonText: {
         color: 'black',
-        fontWeight: 'bold',
+        fontFamily: 'Urbanist-Bold',
+        fontSize:14
     },
     btnForgotPassword: {
         color: '#548DFF',
         fontSize: 14,
+        fontFamily: 'Urbanist',
         marginTop: 10,
         marginBottom: 10,
-        fontFamily: 'Urbanist-Regular',
-        fontWeight: '500'
     },
     rememberMe: {
         color: '#979797',
         fontSize: 14,
-        marginTop: 11,
+        fontFamily: 'Urbanist',
+        marginTop: 10,
         marginBottom: 10,
-        fontFamily: 'Urbanist-Regular',
-        fontWeight: '500'
     },
     rememberMeIcon: {
         marginTop: 10,
@@ -268,6 +261,5 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignSelf: 'flex-end',
         marginLeft: Dimensions.get('screen').width * 0.275,
-
     }
 });
