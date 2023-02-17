@@ -73,7 +73,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
-    fontFamily: 'sans-serif',
     backgroundColor: 'none',
+    fontFamily: 'Urbanist',
   }
+
 })

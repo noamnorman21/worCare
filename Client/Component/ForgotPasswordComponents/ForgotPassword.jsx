@@ -1,9 +1,8 @@
 import React from 'react';
 import { SafeAreaView, View, Text, TextInput, Button, StyleSheet, Dimensions, TouchableOpacity, Alert } from 'react-native';
 import { useState, useEffect } from 'react';
-import { OrLine, ReturnToLogin } from './FooterLine';
+import { OrLine, ReturnToLogin } from '../SignUpComponents/FooterLine';
 import * as Font from 'expo-font'
-
 Font.loadAsync({
     'Urbanist': require('../../assets/fonts/Urbanist-Regular.ttf'),
     'Urbanist-Bold': require('../../assets/fonts/Urbanist-Bold.ttf'),
@@ -18,34 +17,47 @@ Font.loadAsync({
 
 export default function ForgotPassword({ navigation }) {
     const [email, setEmail] = useState('');
+    const [code, setCode] = useState('');
+
+    const generateCode = () => {
+        const code = Math.random().toString(36).substring(2, 7).toUpperCase();
+        console.log(code);
+        setCode(code);
+    };
 
     const NavigateToLogIn = () => {
         navigation.navigate('LogIn')
     }
-
-    const getData = () => {
-        Alert.alert('Login Success');//just for testing
-        fetch('https://localhost:44387/api/User/GetUserEmail', { // Need To update the get request and the functions that are called
-            method: 'GET',
-            headers: new Headers({
-                'Content-Type': 'application/json; charset=UTF-8',
-            })
-        })
-        .then(res => {
-            console.log('res=', res);
-            console.log('res.status', res.status);
-            console.log('res.ok', res.ok);
-            return res.json()
-        })
-        .then(
-            (result) => {
-                console.log("fetch GET= ", result);
-            },
-            (error) => {
-                console.log("err post=", error);
-            });
+    const NavigateToNextLVL = () => {
+        generateCode();
+        navigation.navigate('ForgotPasswordLvl2', { userCode: code })
     }
 
+    const getData = () => {
+        console.log('in getData');
+        fetch(`https://proj.ruppin.ac.il/cgroup94/prod/api/User/GetUserEmail`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json; charset=UTF-8',
+            },
+            body: JSON.stringify({
+                "email": "noam@gmail.com"
+            }),
+        })
+            .then((response) => response.json())
+            .then((json) => {
+                console.log(json);
+                if (json === null) {
+                    Alert.alert('This email is not registered in our system');
+                    return;
+                }
+                generateCode();
+                navigation.navigate('ForgotPasswordLvl2', { userCode: code });
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }
 
     return (
         <SafeAreaView style={styles.container}>
@@ -64,7 +76,7 @@ export default function ForgotPassword({ navigation }) {
                     onChangeText={(email) => setEmail(email)}
                 />
                 {/* Submit And go to next lvl screen - verification code */}
-                <TouchableOpacity style={styles.button} onPress={ getData } >
+                <TouchableOpacity style={styles.button} onPress={NavigateToNextLVL} >
                     <Text style={styles.buttonText}>Submit</Text>
                 </TouchableOpacity>
             </View>
