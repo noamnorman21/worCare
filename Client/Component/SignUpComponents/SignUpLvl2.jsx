@@ -56,7 +56,7 @@ export default function SignUpLvl2({ navigation, route }) {
       userUri: userData.imagePath
     }
     console.log(newUserToDB.FirstName);
-    fetch('https://proj.ruppin.ac.il/cgroup94/prod/api/User/InsertUser', {
+    fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/InsertUser', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',

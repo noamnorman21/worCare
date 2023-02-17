@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -15,35 +17,26 @@ namespace WebApi.Controllers
     {
         igroup194_Model db = new igroup194_Model();
 
-        [HttpGet]
         [Route("GetUser/{id}")]
         public IHttpActionResult GetUser(int id)
         {
             try
             {
                 var user = db.tblUser.Where(x => x.Id == id).FirstOrDefault();
-                return Ok(user.FirstName + " " + user.LastName);
+                return Ok(user.FirstName + " " + user.LastName + " - Email:" + user.Email);
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
         }
-
-        
-        //this is get method that return the user by email
         [HttpGet]
-        [Route("GetUserEmail")]
-        public IHttpActionResult GetUserEmail([FromBody] UserDTO userEmail)
+        [Route("GetEmail/{userEmail}")]            
+        public IHttpActionResult GetEmail(string userEmail)
         {
-
             try
             {
-                var user = db.tblUser.Where(x => x.Email == userEmail.Email).FirstOrDefault();
-                if (user == null)
-                {
-                    return NotFound();
-                }
+                var user = db.tblUser.Where(x => x.Email == userEmail).FirstOrDefault();
                 return Ok(user.Email);
             }
             catch (Exception ex)
@@ -52,7 +45,24 @@ namespace WebApi.Controllers
             }
         }
 
-        
+
+        //this is get method that return the user by email with @ sign
+        //[HttpGet]
+        //[Route("GetEmail/{userEmail1}/{userEmail2}/{userEmail3}")]
+        //public IHttpActionResult GetEmail(string userEmail1, string userEmail2, string userEmail3)
+        //{
+        //    try
+        //    {
+        //        var user = db.tblUser.Where(x => x.Email == userEmail1 + "@" + userEmail2 + "." + userEmail3).FirstOrDefault();
+        //        return Ok(user.Email);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
+
+
         // insert user to db by calling Stored Prodecdure InsertUser
         [HttpPost]
         [Route("InsertUser")]

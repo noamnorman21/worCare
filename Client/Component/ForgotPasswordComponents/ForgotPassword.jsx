@@ -28,21 +28,20 @@ export default function ForgotPassword({ navigation }) {
     const NavigateToLogIn = () => {
         navigation.navigate('LogIn')
     }
-    const NavigateToNextLVL = () => {
-        generateCode();
-        navigation.navigate('ForgotPasswordLvl2', { userCode: code })
-    }
+    // const NavigateToNextLVL = () => {
+    //     generateCode();
+    //     navigation.navigate('ForgotPasswordLvl2', { userCode: code })
+    // }
 
     const getData = () => {
         console.log('in getData');
-        fetch(`https://proj.ruppin.ac.il/cgroup94/prod/api/User/GetUserEmail`, {
+        // const url ='https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUserEmail'
+        let email1="noam@gmail.com";
+        fetch("https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUserEmail/"+email1, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json; charset=UTF-8',
-            },
-            body: JSON.stringify({
-                "email": "noam@gmail.com"
-            }),
+            }
         })
             .then((response) => response.json())
             .then((json) => {
@@ -51,8 +50,8 @@ export default function ForgotPassword({ navigation }) {
                     Alert.alert('This email is not registered in our system');
                     return;
                 }
-                generateCode();
-                navigation.navigate('ForgotPasswordLvl2', { userCode: code });
+                // generateCode();
+                // navigation.navigate('ForgotPasswordLvl2', { userCode: code });
             })
             .catch((error) => {
                 console.log(error);
@@ -76,7 +75,7 @@ export default function ForgotPassword({ navigation }) {
                     onChangeText={(email) => setEmail(email)}
                 />
                 {/* Submit And go to next lvl screen - verification code */}
-                <TouchableOpacity style={styles.button} onPress={NavigateToNextLVL} >
+                <TouchableOpacity style={styles.button} onPress={getData} >
                     <Text style={styles.buttonText}>Submit</Text>
                 </TouchableOpacity>
             </View>

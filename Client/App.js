@@ -12,6 +12,7 @@ import { CustomHeader } from './Component/AppBarUp';
 import SettingScreen from './Component/SettingScreen';
 import NavigateSignUp from './Component/SignUpComponents/NavigateSignUp';
 import SignUpCareGiverLVL4 from './Component/SignUpComponents/CareGiver/SignUpCaregiverLVL4';
+import ForgotPassword from './Component/ForgotPasswordComponents/ForgotPassword';
 
 export default function App() {
   return (
@@ -24,8 +25,8 @@ export default function App() {
     <View style={styles.container}>
       {/* <CreateUser /> */}
       {/* <LogIn />       */}
-      {/* <ForgotPassword/> */}
-      <SignUpCareGiverLVL4 />
+      <ForgotPassword />
+      {/* <SignUpCareGiverLVL4 /> */}
     </View>
   );
 }
