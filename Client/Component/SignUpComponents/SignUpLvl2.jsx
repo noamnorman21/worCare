@@ -21,6 +21,10 @@ export default function SignUpLvl2({ navigation, route }) {
       Alert.alert('Please Select a gender');
       return;
     }
+    else {  // if userGender is not empty
+      sendDataToDB();
+    }
+
     // const newUserToDB = {
     //   //add the gender to the user object
     //   FirstName: userData.firstName,
@@ -67,11 +71,16 @@ export default function SignUpLvl2({ navigation, route }) {
       .then((json) => {
         console.log(json);
       })
+      .catch((error) => {
+        console.error(error);
+      }
+      );
+      navigation.navigate('SignUpLvl3')
+
+
   }
 
-  const NavigateToLogIn = () => {
-    navigation.navigate('LogIn')
-  }
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -125,7 +134,7 @@ export default function SignUpLvl2({ navigation, route }) {
         </TouchableOpacity>
       </View>
       <OrLine />
-      <HaveAccount NavigateToLogIn={NavigateToLogIn} />
+      <HaveAccount  />
     </SafeAreaView>
   )
 }

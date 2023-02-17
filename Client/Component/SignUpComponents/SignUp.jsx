@@ -130,10 +130,7 @@ export default function CreateUser({ navigation }) {
     setUser({ ...user, [field]: value });
   }
 
-  const NavigateToLogIn = () => {
-    navigation.navigate('LogIn')
-  }
-
+ 
   const NavigateToLVL3 = () => {
     navigation.navigate('SignUpLvl3')
   }
@@ -210,7 +207,7 @@ export default function CreateUser({ navigation }) {
       <TouchableOpacity style={styles.button} onPress={NavigateToLVL3} >
         <Text style={styles.buttonText}>Continue with Google</Text>
       </TouchableOpacity>
-      <HaveAccount NavigateToLogIn={NavigateToLogIn} />
+      <HaveAccount />
     </SafeAreaView>
   )
 }

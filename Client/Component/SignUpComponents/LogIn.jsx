@@ -159,7 +159,7 @@ export default function LogIn({ navigation }) {
             </View>
             {/* footer line */}
             <OrLine />
-            <NeedAccount NavigateToSignUp={NavigateToSignUp} />
+            <NeedAccount />
         </SafeAreaView>
     )
 }

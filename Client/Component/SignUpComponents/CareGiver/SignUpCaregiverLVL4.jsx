@@ -226,7 +226,7 @@ export default function SignUpCaregiverLVL4() {
             },
             dateInput: {
               marginLeft: 0,
-              alignItems: 'flex-left',
+              alignItems: 'center',
               borderWidth: 0,
             },
             placeholderText: {
@@ -258,7 +258,7 @@ export default function SignUpCaregiverLVL4() {
             },
             dateInput: {
               marginLeft: 0,
-              alignItems: 'flex-left',
+              alignItems: 'center',
               borderWidth: 0,
             },
             placeholderText: {
@@ -296,7 +296,7 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width * 0.75,
     padding: 10,
     margin: 7,
-    alignItems: 'flex-left',
+    alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 16,
     borderWidth: 1,

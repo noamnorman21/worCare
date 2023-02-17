@@ -24,9 +24,7 @@ export default function SignUpLvl3({ navigation }) {
     }
   }
 
-  const NavigateToLogIn = () => {
-    navigation.navigate('LogIn')
-  }
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ flex: 1, marginTop: 50 }}>
@@ -58,7 +56,7 @@ export default function SignUpLvl3({ navigation }) {
         </Text>
       </TouchableOpacity>
       <OrLine />
-      <HaveAccount NavigateToLogIn={NavigateToLogIn} />
+      <HaveAccount  />
     </SafeAreaView>
   )
 }
