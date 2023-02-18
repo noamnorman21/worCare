@@ -9,6 +9,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@emailjs/browser": "^3.10.0",
     "@expo-google-fonts/urbanist": "^0.2.2",
     "@expo/vector-icons": "^13.0.0",
     "@fontsource/urbanist": "^4.5.17",
@@ -29,6 +30,7 @@
     "react": "18.1.0",
     "react-native": "0.70.5",
     "react-native-countries": "^1.0.3",
+    "react-native-date-picker": "^4.2.8",
     "react-native-datepicker": "^1.7.2",
     "react-native-dropdown-picker": "^5.4.4",
     "react-native-dropdown-select-list": "^2.0.4",

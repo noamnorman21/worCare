@@ -2,6 +2,9 @@ import React from 'react';
 import { SafeAreaView, View, Text, TextInput, Button, StyleSheet, Dimensions, TouchableOpacity, Alert } from 'react-native';
 import { useState, useEffect } from 'react';
 import { OrLine, ReturnToLogin } from '../SignUpComponents/FooterLine';
+import emailjs from '@emailjs/browser';
+// import { SendEmail } from '../HelpComponents/UserContext';
+
 import * as Font from 'expo-font'
 Font.loadAsync({
     'Urbanist': require('../../assets/fonts/Urbanist-Regular.ttf'),
@@ -10,25 +13,45 @@ Font.loadAsync({
     'Urbanist-Medium': require('../../assets/fonts/Urbanist-Medium.ttf'),
 });
 
-// This is the Forgot Password screen
-// This screen is the first screen of the forgot password process
-// The user enters his email address and clicks submit
-// The user is then redirected to the verification code screen
+const GenerateCode = () => {
+    let codeTemp = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const charactersLength = characters.length;
+    for (let i = 0; i < 5; i++) {
+        codeTemp += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return codeTemp;
+}
+
+const SendEmail = (senderEmail, nameUser, codeTemp) => {
+    if (senderEmail) {
+        console.log('start User Context 2');
+        // Set the template parameters for the email
+        const templateParams = {
+            senderEmail: senderEmail,
+            userName: nameUser,
+            code: codeTemp,
+        };
+
+        // Send the email using EmailJS
+        emailjs.send('service_cg2lqzg', 'template_pqsos33', templateParams, 'amgCa1UEu2kFg8DfI')
+            .then(result => {
+                console.log(result);
+                Alert.alert('Code sent!', 'Check your email for the verification code.');
+            })
+            .catch(error => {
+                console.log(error);
+                Alert.alert('Error!', 'An error occurred while sending the verification code.');
+            });
+
+    }
+    else {
+        Alert.alert('Error!', 'Please enter your email address.');
+    }
+};
 
 export default function ForgotPassword({ navigation }) {
     const [email, setEmail] = useState('');
-
-    // Generate a random 5 digit code (letters and numbers)
-    const generateCode = () => {
-        let codeTemp = '';
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-        const charactersLength = characters.length;
-        for (let i = 0; i < 5; i++) {
-            codeTemp += characters.charAt(Math.floor(Math.random() * charactersLength));
-        }
-        //in the future, here we will send the code to the user's email address
-        navigation.navigate('ForgotPasswordLvl2', { userCode: codeTemp });
-    }
 
     const NavigateToLogIn = () => {
         navigation.navigate('LogIn')
@@ -39,24 +62,25 @@ export default function ForgotPassword({ navigation }) {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json; charset=UTF-8',
-            }
+            },
         })
-            .then((response) => {
-                response.json()
-                if (response.ok === false) {
-                    Alert.alert('This email is not registered in our system');
-                    return;
+            .then(res => {
+                if (res.ok) {
+                    return res.json()
+                }
+                else {
+                    Alert.alert("Email not found")
                 }
             })
-            .then((json) => {
-                if (json === null) {
-                    Alert.alert('This email is not registered in our system');
-                    return;
+            .then(data => {
+                if (data != null) {
+                    const userCode = GenerateCode();
+                    SendEmail(email, data["FirstName"], userCode);
+                    navigation.navigate('ForgotPasswordLvl2', { email: email, userCode: userCode , userName: data["FirstName"]})
                 }
-                generateCode();
             })
             .catch((error) => {
-                console.log("Error:" + error);
+                console.log("err=", error);
             });
     }
 
@@ -140,7 +164,6 @@ const styles = StyleSheet.create({
         elevation: 1,
         margin: 15,
         height: 54,
-
     },
     buttonText: {
         color: 'white',
@@ -154,4 +177,3 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
 });
-

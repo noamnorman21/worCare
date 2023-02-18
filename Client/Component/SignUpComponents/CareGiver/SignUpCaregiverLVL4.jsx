@@ -1,9 +1,9 @@
-import { View, Text, TextInput, SafeAreaView, TouchableOpacity, Dimensions, StyleSheet, Image } from 'react-native'
+import { View, Text, Alert, SafeAreaView, TouchableOpacity, Dimensions, StyleSheet } from 'react-native'
 import { useState } from 'react'
-import { SelectList } from 'react-native-dropdown-select-list'
-import { FontAwesome } from '@expo/vector-icons';
+import { FontAwesome, Entypo, MaterialIcons, AntDesign } from '@expo/vector-icons';
 import DatePicker from 'react-native-datepicker';
-import DropDownPicker from 'react-native-dropdown-picker';
+import { Dropdown } from 'react-native-element-dropdown';
+import { OrLine, HaveAccount } from '../FooterLine';
 import * as Font from 'expo-font';
 Font.loadAsync({
   'Urbanist': require('../../../assets/fonts/Urbanist-Regular.ttf'),
@@ -12,31 +12,27 @@ Font.loadAsync({
   'Urbanist-Medium': require('../../../assets/fonts/Urbanist-Medium.ttf'),
 });
 
-export default function SignUpCaregiverLVL4() {
+const SCREEN_WIDTH = Dimensions.get('window').width;
+
+export default function SignUpCaregiverLVL4({ navigation }) {
 
   const getMinDate = () => {
     var date = new Date().getDate(); //Current Date
     var month = new Date().getMonth() + 1; //Current Month
     var year = new Date().getFullYear(); //Current Year
-    return year + '-' + month + '-' + date;
+    return date + '-' + month + '-' + year;
   }
   const getMaxDate = () => {
     var date = new Date().getDate(); //Current Date
     var month = new Date().getMonth() + 1; //Current Month
     var year = new Date().getFullYear() + 20; //Current Year
-    return year + '-' + month + '-' + date;
+    return date + '-' + month + '-' + year;
   }
-
-  const [countryCode, setCountryCode] = useState("");
-  const [countrySelected, setCountrySelected] = useState('');
-  const [language, setLanguage] = useState("");
-  const [languageCode, setLanguageCode] = useState("");
-  const [languageSelected, setLanguageSelected] = useState('');
   const [visaExpiration, setVisaExpiration] = useState("");
-  const [date, setDate] = useState();
+  const [date, setDate] = useState('');
 
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(null);
+  const [openCountry, setOpenCountry] = useState(false);
+  const [valueCountry, setValueCountry] = useState(null);
   const [country, setCountry] = useState([
     { label: "United States", value: "US" },
     { label: "United Kingdom", value: "UK" },
@@ -82,9 +78,6 @@ export default function SignUpCaregiverLVL4() {
     { label: "Azerbaijan", value: "AZ" },
     { label: "Georgia", value: "GE" },
     { label: "Armenia", value: "AM" },
-    { label: "Kazakhstan", value: "KZ" },
-    { label: "Kyrgyzstan", value: "KG" },
-    { label: "Tajikistan", value: "TJ" },
     { label: "Turkmenistan", value: "TM" },
     { label: "Uzbekistan", value: "UZ" },
     { label: "China", value: "CN" },
@@ -120,90 +113,84 @@ export default function SignUpCaregiverLVL4() {
     { label: "Morocco", value: "MA" },
     { label: "Tunisia", value: "TN" },
     { label: "Algeria", value: "DZ" },
-    { label: "India", value: "IN" },
+    { label: "Other", value: "Other" }
   ]); // להוציא לקובץ חיצוני ולהשתמש בפונקציה שמחזירה את המערך כי זה ארוך וחופר
 
+  const [openLanguage, setOpenLanguage] = useState(false);
+  const [valueLanguage, setValueLanguage] = useState(null);
+  const [language, setLanguage] = useState([
+    { label: "English", value: "EN" },
+    { label: "French", value: "FR" },
+    { label: "Spanish", value: "ES" },
+    { label: "German", value: "DE" },
+    { label: "Italian", value: "IT" },
+    { label: "Dutch", value: "NL" },
+    { label: "Portuguese", value: "PT" },
+    { label: "Russian", value: "RU" },
+    { label: "Chinese", value: "ZH" },
+    { label: "Japanese", value: "JA" },
+    { label: "Korean", value: "KO" },
+    { label: "Arabic", value: "AR" },
+    { label: "Hindi", value: "HI" },
+    { label: "Turkish", value: "TR" },
+    { label: "Polish", value: "PL" },
+    { label: "Czech", value: "CS" },
+    { label: "Slovak", value: "SK" },
+    { label: "Hungarian", value: "HU" },
+    { label: "Romanian", value: "RO" },
+    { label: "Bulgarian", value: "BG" },
+    { label: "Croatian", value: "HR" },
+    { label: "Slovenian", value: "SL" },
+    { label: "Serbian", value: "SR" },
+    { label: "Bosnian", value: "BS" },
+    { label: "Macedonian", value: "MK" },
+    { label: "Albanian", value: "SQ" },
+    { label: "Montenegrin", value: "ME" },
+    { label: "Ukrainian", value: "UK" },
+    { label: "Belarusian", value: "BE" },
+    { label: "Moldovan", value: "MO" },
+    { label: "Georgian", value: "KA" },
+    { label: "Azerbaijani", value: "AZ" },
+    { label: "Turkmen", value: "TK" },
+    { label: "Hebrew", value: "HE" },
+    { label: "Thai", value: "TH" },
+    { label: "Vietnamese", value: "VI" },
+    { label: "Indonesian", value: "ID" },
+    { label: "Malay", value: "MS" },
+    { label: "Burmese", value: "MY" },
+    { label: "Khmer", value: "KM" },
+    { label: "Lao", value: "LO" },
+    { label: "Tamil", value: "TA" },
+    { label: "Telugu", value: "TE" },
+    { label: "Kannada", value: "KN" },
+    { label: "Malayalam", value: "ML" },
+    { label: "Marathi", value: "MR" },
+    { label: "Other", value: "Other" }
+  ]); // להוציא לקובץ חיצוני ולהשתמש בפונקציה שמחזירה את המערך כי זה ארוך וחופר
+
+  // send this data to next screen (SignUpCaregiverLVL5)
+  const NavigateToNextScreen = () => {
+    if (valueCountry == null ) {
+      Alert.alert("Please fill all the details");
+    } else {
+      const data = {
+        country: valueCountry,
+        language: valueLanguage,
+        date: date,
+        visaExpiration: visaExpiration,
+      };
+      navigation.navigate("SignUpCaregiverLVL5", { data: data });
+    }
+  };
+
   return (
-    <SafeAreaView>
-      <Text style={styles.header}>Only few more details...</Text>
+    <SafeAreaView style={styles.container}>
+
+      <View style={styles.headerContainer}>
+        <Text style={styles.header}>Only few more details...</Text>
+      </View>
+
       <View style={styles.inputContainer}>
-        {/* Drill down of country's */}
-        <SelectList
-          arrowIcon={<FontAwesome name={'close'} size={24} color={"black"} />}
-          label="Origin Country"
-          placeholder="Select Country"
-          // setSelected={(val) => setCountrySelected(val)}
-          data={[
-            { label: "US", value: "United States" },
-            { label: "UK", value: "United Kingdom" },
-            { label: "CA", value: "Canada" },
-            { label: "FR", value: "France" },
-            { label: "DE", value: "Germany" },
-            { label: "IT", value: "Italy" },
-            { label: "ES", value: "Spain" },
-            { label: "NL", value: "Netherlands" },
-            { label: "BE", value: "Belgium" },
-            { label: "AT", value: "Austria" },
-            { label: "PT", value: "Portugal" },
-            { label: "IE", value: "Ireland" },
-            { label: "LU", value: "Luxembourg" },
-            { label: "DK", value: "Denmark" },
-          ]}
-          save="Value"
-          fontFamily="Urbanist"
-          boxStyles={{ borderWidth: 1, borderColor: 'lightgray', borderRadius: 16, padding: 10, width: Dimensions.get('window').width * 0.75 }}
-          inputStyles={{ fontFamily: 'Urbanist-Medium', fontSize: 16, color: 'gray' }}
-        // inputStyles={styles.input}
-        />
-
-        <DropDownPicker
-          style={styles.input}
-          open={open}
-          value={value}
-          items={country}
-          setOpen={setOpen}
-          setValue={setValue}
-          setItems={setCountry}
-          placeholder="Select Country"
-          searchable={true}
-          searchPlaceholder="Search..."
-          searchContainerStyle={{
-            borderBottomColor: "#dfdfdf",
-          }}
-          searchTextInputStyle={{
-            color: "#333333",
-            borderColor: "#dfdfdf",
-            borderWidth: 0,
-            fontFamily: "Urbanist-Medium",
-            fontSize: 14,
-          }}
-        />
-
-
-        {/* Drill down of language's */}
-        <SelectList
-          // style={styles.input}
-          boxStyles={{ borderWidth: 1, borderColor: 'lightgray', borderRadius: 16, padding: 10, width: Dimensions.get('window').width * 0.75 }}
-          inputStyles={{ fontFamily: 'Urbanist-Medium', fontSize: 16, color: 'gray' }}
-          label="Preferred Language"
-          placeholder="Select Language"
-          save="Value"
-          // setSelected={(val) => setLanguageSelected(val)}
-          data={[
-            { label: "EN", value: "English" },
-            { label: "FR", value: "French" },
-            { label: "DE", value: "German" },
-            { label: "IT", value: "Italian" },
-            { label: "ES", value: "Spanish" },
-            { label: "NL", value: "Dutch" },
-            { label: "BE", value: "Belgian" },
-            { label: "AT", value: "Austrian" },
-            { label: "PT", value: "Portuguese" },
-            { label: "IE", value: "Irish" },
-            { label: "LU", value: "Luxembourgish" },
-            { label: "DK", value: "Danish" },
-          ]}
-        />
         {/* Date Picker for birth-date */}
         <DatePicker
           useNativeDriver={'true'}
@@ -237,6 +224,9 @@ export default function SignUpCaregiverLVL4() {
           }}
           onDateChange={(date) => { setDate(date) }}
         />
+      </View>
+      <View style={styles.inputContainer}>
+
         {/* Date Picker for visa expiration min date should be today*/}
         <DatePicker
           iconComponent={<FontAwesome name="calendar-times-o" size={24} color="gray" />}
@@ -270,8 +260,71 @@ export default function SignUpCaregiverLVL4() {
           onDateChange={(date) => { setVisaExpiration(date) }}
         />
       </View>
+      {/* Drop Down Picker for Country */}
+      <View style={styles.listContainer}>
+        <Dropdown
+          style={styles.dropdown}
+          placeholder="Select Country"
+          placeholderStyle={styles.placeholderStyle}
+          selectedTextStyle={styles.selectedTextStyle}
+          inputSearchStyle={styles.inputSearchStyle}
+          iconStyle={styles.iconStyle}
+          data={country}
+          search={true}
+          maxHeight={300}
+          labelField="label"
+          valueField="value"
+          searchPlaceholder="Search..."
+          value={valueCountry}
+          onChange={item => {
+            setValueCountry(item.value);
+          }}
+          renderRightIcon={() => (
+            <Entypo name={'location'} color={'gray'} size={24} />
+          )}
+          containerStyle={styles.containerStyle}
+        />
+      </View>
+      {/* Drop Down Picker for Language */}
+      <View style={styles.listContainer}>
+        <Dropdown
+          style={styles.dropdown}
+          placeholder="Select Language"
+          placeholderStyle={styles.placeholderStyle}
+          selectedTextStyle={styles.selectedTextStyle}
+          inputSearchStyle={styles.inputSearchStyle}
+          iconStyle={styles.iconStyle}
+          data={language}
+          search={true}
+          maxHeight={300}
+          labelField="label"
+          valueField="value"
+          searchPlaceholder="Search..."
+          value={valueLanguage}
+          onChange={item => {
+            setValueLanguage(item.value);
+          }}
+          renderRightIcon={() => (
+            <MaterialIcons name="translate" size={24} color="gray" />
+          )}
+          containerStyle={styles.containerStyle}
+        />
+      </View>
 
+      {/* Button */}
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          // if the drop down picker is open then display none the button
+          style={[styles.button, { display: openCountry || openLanguage ? 'none' : 'flex' }]}
 
+          onPress={NavigateToNextScreen}
+        >
+          <Text style={styles.buttonText}>Continue</Text>
+        </TouchableOpacity>
+      </View>
+
+      <OrLine />
+      <HaveAccount />
     </SafeAreaView>
   )
 }
@@ -282,26 +335,108 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    flexDirection: 'column',
+  },
+  containerStyle: {
+    justifyContent: 'flex-start',
+    borderRadius: 16,
+  },
+  dropdown: {
+    padding: 16,
+    height: 50,
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 16,
+    width: SCREEN_WIDTH * 0.85,
+  },
+  placeholderStyle: {
+    fontSize: 16,
+    width: SCREEN_WIDTH * 0.85,
+    fontFamily: 'Urbanist-Medium',
+    color: 'gray',
+  },
+  selectedTextStyle: {
+    fontSize: 16,
+    color: 'gray',
+  },
+  iconStyle: {
+    width: 20,
+    height: 20,
+  },
+  inputSearchStyle: {
+    height: 40,
+    width: SCREEN_WIDTH * 0.8,
+    fontSize: 16,
+    fontFamily: 'Urbanist',
+    borderRadius: 16,
+    color: 'gray',
   },
   header: {
     fontSize: 30,
     fontFamily: 'Urbanist-Bold',
     textAlign: 'center',
-    marginBottom: 50,
+    marginBottom: 30,
+  },
+  headerContainer: {
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+    paddingHorizontal: 10,
+    // marginBottom: 10,
+    flex: 1
   },
   inputContainer: {
-    alignItems: 'center',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    flex: 0.35
   },
-  input: {
-    width: Dimensions.get('window').width * 0.75,
-    padding: 10,
-    margin: 7,
-    alignItems: 'flex-left',
+  buttonContainer: {
+    width: SCREEN_WIDTH * 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'column',
+    flex: 1
+  },
+  button: {
+    width: SCREEN_WIDTH * 0.85,
+    height: 50,
+    backgroundColor: '#548DFF',
+    alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 16,
-    borderWidth: 1,
-    borderColor: 'lightgray',
+    zIndex: 1000,
+    zIndexInverse: 3000,
     shadowColor: '#000',
-    height: 50,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
+  buttonText: {
+    color: '#fff',
+    fontFamily: 'Urbanist-Bold',
+    fontSize: 16,
+  },
+  listContainer: {
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    flex: 0.35,
+  },
+  input: {
+    width: SCREEN_WIDTH * 0.85,
+    height: 50,
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    fontSize: 16,
+    fontFamily: 'Urbanist-Medium',
+    color: 'gray',
+    borderColor: 'gray',
+    borderWidth: 1,
+    justifyContent: 'center',
+  }
 })

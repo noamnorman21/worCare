@@ -4,10 +4,45 @@ import * as Font from 'expo-font';
 import { OrLine, ReturnToLogin } from '../SignUpComponents/FooterLine';
 
 const CODE_LENGTH = 5;
-export default function ForgotPasswordLvl2({ navigation, route }) {
-    const userCode = route.params.userCode; //save the code that was sent to the user's email address   
-    Alert.alert(userCode);//temaporary alert to show the code,until we will send it to the user's email address
 
+const GenerateCode = () => {
+    let codeTemp = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const charactersLength = characters.length;
+    for (let i = 0; i < 5; i++) {
+        codeTemp += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return codeTemp;
+}
+
+const SendEmail = (senderEmail, nameUser, codeTemp) => {
+    if (senderEmail) {
+        console.log('start User Context 2');
+        // Set the template parameters for the email
+        const templateParams = {
+            senderEmail: senderEmail,
+            userName: nameUser,
+            code: codeTemp,
+        };
+
+        // Send the email using EmailJS
+        emailjs.send('service_cg2lqzg', 'template_pqsos33', templateParams, 'amgCa1UEu2kFg8DfI')
+            .then(result => {
+                console.log(result);
+                Alert.alert('Code sent!', 'Check your email for the verification code.');
+            })
+            .catch(error => {
+                console.log(error);
+                Alert.alert('Error!', 'An error occurred while sending the verification code.');
+            });
+
+    }
+    else {
+        Alert.alert('Error!', 'Please enter your email address.');
+    }
+};
+
+export default function ForgotPasswordLvl2({ navigation, route }) {
     Font.loadAsync({
         'Urbanist': require('../../assets/fonts/Urbanist-Regular.ttf'),
         'Urbanist-Bold': require('../../assets/fonts/Urbanist-Bold.ttf'),
@@ -15,28 +50,28 @@ export default function ForgotPasswordLvl2({ navigation, route }) {
         'Urbanist-Medium': require('../../assets/fonts/Urbanist-Medium.ttf'),
     });
     
-    const [code, setCode] = useState('');
-    const inputs = useRef([]);
+    const userCode = route.params.userCode; //save the code that was sent to the user's email address       
+    const email = route.params.email; // save the email address that the user entered
+    const nameUser = route.params.userName; //save the user's name
 
+    const [code, setCode] = useState(''); //code that the user will enter
+    const inputs = useRef([]); //array of inputs
+    useEffect(() => {
+        inputs.current[0].focus();
+        console.log(userCode);//temaporary alert to show the code,until we will send it to the user's email address
+    }, []);
     const handleInput = (index, value) => {
         setCode(prevState => {
             return prevState.slice(0, index) + value + prevState.slice(index + 1);
         });
         if (value !== '') {
-            inputs.current[index + 1].focus();
+            if (index < CODE_LENGTH - 1) {
+                inputs.current[index + 1].focus();
+            } else {
+                inputs.current[index].blur();
+            }
         }
     };
-
-    const generateNewCode = () => {
-        let codeTemp = '';
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-        const charactersLength = characters.length;
-        for (let i = 0; i < 5; i++) {
-            codeTemp += characters.charAt(Math.floor(Math.random() * charactersLength));
-        }
-        //in the future, here we will send the code to the user's email address
-        navigation.navigate('ForgotPasswordLvl2', { userCode: codeTemp });
-    }
 
     const NavigateToLogIn = () => {
         navigation.navigate('LogIn');
@@ -66,12 +101,17 @@ export default function ForgotPasswordLvl2({ navigation, route }) {
             <View style={styles.btnContainer}>
                 <TouchableOpacity style={styles.button}
                     onPress={() => {
-                        userCode?.trim() === code ? navigation.navigate('CreateNewPassword') : Alert.alert('Wrong code');
+                        if (code === userCode) {
+                            navigation.navigate('CreateNewPassword', { email: email });
+                        }
+                        else {
+                            Alert.alert('Wrong code', 'Please enter the correct code');
+                        }
                     }}
                 >
                     <Text style={styles.buttonText}>Submit</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={generateNewCode}>
+                <TouchableOpacity onPress={GenerateCode(email, nameUser, userCode)}>
                     <Text style={styles.smallBtn}>Resend Code</Text>
                 </TouchableOpacity>
             </View>

@@ -76,5 +76,4 @@ const styles = StyleSheet.create({
     backgroundColor: 'none',
     fontFamily: 'Urbanist',
   }
-
 })

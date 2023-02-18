@@ -1,4 +1,4 @@
-import { SafeAreaView, View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native'
+import { SafeAreaView, View, Text, TouchableOpacity, StyleSheet, Alert, Dimensions, TextInput } from 'react-native'
 import { useState } from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { OrLine, ReturnToLogin } from '../SignUpComponents/FooterLine'
@@ -9,14 +9,36 @@ Font.loadAsync({
   'Urbanist-Light': require('../../assets/fonts/Urbanist-Light.ttf'),
   'Urbanist-Medium': require('../../assets/fonts/Urbanist-Medium.ttf'),
 });
+const SCREEN_WIDTH = Dimensions.get('window').width;
+const SCREEN_HEIGHT = Dimensions.get('window').height;
 
-export default function CreateNewPassword({ navigation }) {
+export default function CreateNewPassword({ navigation, route }) {
   const [password, setPassword] = useState('');
   const [repeatPassword, setRepeatPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);//for password visibility
+  const email = route.params.email;
 
   const CreatePassword = () => {
     if (password === repeatPassword) {
+      const newData = {
+        email: email,
+        password: password,
+      };
+      // here we will send the new password to the server
+      fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/UpdateUserPassword', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: JSON.stringify({newData}),
+      })
+        .then((response) => response.json())
+        .then((json) => {
+          console.log(json);
+        })
+        .catch((error) => {
+          console.error(error);
+        });        
       Alert.alert('Password Created');
       NavigateToLogIn();
     } else {
@@ -31,70 +53,75 @@ export default function CreateNewPassword({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
-        <Text>Create New Password</Text>
-        <Text>Enter your new password to log-in</Text>
+        <Text style={styles.header}>Create New Password</Text>
+        <Text style={styles.smallHeader}>Enter your new password to log-in</Text>
       </View>
 
       <View style={styles.inputContainer}>
-        {/*new password input */}
-        <TextInput
-          style={styles.input}
-          placeholder="New Password"
-          placeholderTextColor="#A9A9A9"
-          secureTextEntry={!showPassword}
-          autoCapitalize='none'
-          autoCorrect={false}
-          keyboardType='ascii-capable'
-          onChangeText={(text) => setPassword(text)}
-        />
-        {/* password visibility button */}
-        <TouchableOpacity
-          style={styles.passwordButton}
-          onPress={() => setShowPassword(!showPassword)}
-        >
-          {/* Icon button For changing password input visibility */}
-          <Icon
-            name={showPassword ? 'visibility' : 'visibility-off'}
-            size={20}
-            color='#979797'
+        <View>
+          {/*new password input */}
+          <TextInput
+            style={styles.input}
+            placeholder="New Password"
+            placeholderTextColor="#A9A9A9"
+            secureTextEntry={!showPassword}
+            autoCapitalize='none'
+            autoCorrect={false}
+            keyboardType='ascii-capable'
+            onChangeText={(text) => setPassword(text)}
           />
-        </TouchableOpacity>
+          {/* password visibility button */}
+          <TouchableOpacity
+            style={styles.passwordButton}
+            onPress={() => setShowPassword(!showPassword)}
+          >
+            {/* Icon button For changing password input visibility */}
+            <Icon
+              name={showPassword ? 'visibility' : 'visibility-off'}
+              size={20}
+              color='#979797'
+            />
+          </TouchableOpacity>
+        </View>
 
-        {/* repeat password input */}
-        <TextInput
-          style={styles.input}
-          placeholder="Repeat Password"
-          placeholderTextColor="#A9A9A9"
-          secureTextEntry={!showPassword}
-          autoCapitalize='none'
-          autoCorrect={false}
-          keyboardType='ascii-capable'
-          onChangeText={(text) => setRepeatPassword(text)}
-        />
-
-        {/* password visibility button */}
-        <TouchableOpacity
-          style={styles.passwordButton}
-          onPress={() => setShowPassword(!showPassword)}
-        >
-          {/* Icon button For changing password input visibility */}
-          <Icon
-            name={showPassword ? 'visibility' : 'visibility-off'}
-            size={20}
-            color='#979797'
+        <View>
+          {/* repeat password input */}
+          <TextInput
+            style={styles.input}
+            placeholder="Repeat Password"
+            placeholderTextColor="#A9A9A9"
+            secureTextEntry={!showPassword}
+            autoCapitalize='none'
+            autoCorrect={false}
+            keyboardType='ascii-capable'
+            onChangeText={(text) => setRepeatPassword(text)}
           />
-        </TouchableOpacity>
 
+          {/* password visibility button */}
+          <TouchableOpacity
+            style={styles.passwordButton}
+            onPress={() => setShowPassword(!showPassword)}
+          >
+            {/* Icon button For changing password input visibility */}
+            <Icon
+              name={showPassword ? 'visibility' : 'visibility-off'}
+              size={20}
+              color='#979797'
+            />
+          </TouchableOpacity>
+        </View>
+
+        {/* Finish button */}
+        <TouchableOpacity
+          style={styles.button}
+
+        >
+          <Text style={styles.buttonText}>
+            Continue
+          </Text>
+        </TouchableOpacity>
       </View>
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={CreatePassword}
-      >
-        <Text style={styles.buttonText}>
-          Continue
-        </Text>
-      </TouchableOpacity>
 
       <OrLine />
       <ReturnToLogin NavigateToLogIn={NavigateToLogIn} />
@@ -104,57 +131,71 @@ export default function CreateNewPassword({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    flex: 1,
   },
   headerContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    flex: 2.5,
+    flex: 3,
   },
   header: {
     fontSize: 30,
-    fontWeight: 'bold',
+    textAlign: 'center',
+    fontFamily: 'Urbanist-Bold',
   },
   smallHeader: {
+    marginTop: 10,
     fontSize: 18,
     textAlign: 'center',
+    fontFamily: 'Urbanist',
   },
   inputContainer: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
+    flex: 4,
   },
   input: {
-    borderWidth: 1.5,
+    width: SCREEN_WIDTH * 0.9,
+    padding: 10,
+    margin: 10,
+    alignItems: 'flex-left',
     borderRadius: 16,
-    marginHorizontal: 5,
-    textAlign: 'center',
-    backgroundColor: '#FFFFFF',
-    borderColor: '#E6EBF2',
+    borderWidth: 1,
+    backgroundColor: '#F5F5F5',
+    borderColor: 'lightgray',
     shadowColor: '#000',
     height: 54,
-    width: 54,
     fontFamily: 'Urbanist',
-    fontSize: 14,
-    padding: 16,
-    marginLeft: 10,
+    fontSize: 16,
   },
   button: {
+    width: SCREEN_WIDTH * 0.9,
     backgroundColor: '#548DFF',
-    height: 54,
-    borderRadius: 10,
-    justifyContent: 'center',
     alignItems: 'center',
-    padding: 10,
+    justifyContent: 'center',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: 'lightgray',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 1,
+    margin: 15,
+    height: 54,
   },
   passwordButton: {
     position: 'absolute',
-    right: Dimensions.get('window').width * 0.1,
-    padding: 5,
-    borderRadius: 5,
-    marginLeft: 5,
+    right: SCREEN_WIDTH * 0.08,
+    top: SCREEN_HEIGHT * 0.03,
+  },
+  buttonText: {
+    color: 'white',
+    fontFamily: 'Urbanist-Bold',
+    fontSize: 18,
   },
 });
