@@ -26,10 +26,9 @@ const Stack = createStackNavigator();
 
 export default function NavigateSignUp() {
   return (
-    <Stack.Navigator initialRouteName="LogIn" screenOptions={{ headerShown: false }}>
-
-      <Stack.Screen name="CustomHeader" component={CustomHeader} />
-      <Stack.Screen name="LogIn" component={LogIn} />
+    <Stack.Navigator initialRouteName="LogIn" screenOptions={{ headerShown: false }} backBehavior='none'  >
+      <Stack.Screen name="CustomHeader" component={CustomHeader}  />
+      <Stack.Screen name="LogIn" component={LogIn}  />
 
       {/* שלבי שחזור סיסמה */}
       <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
@@ -38,6 +37,7 @@ export default function NavigateSignUp() {
 
       {/* שלבים 1-3 בתהליך ההרשמה משותפים לשני סוגי המשתמשים */}
       <Stack.Screen name="SignUp" component={SignUp} />
+      {/* יש להעביר את הפרמטרים של המשתמש החדש לקומפוננטה הבאה */}
       <Stack.Screen name="SignUpLvl2" component={SignUpLvl2} options={{ headerShown: true, headerTitle: '' }} />
       <Stack.Screen name="SignUpLvl3" component={SignUpLvl3} options={{ headerShown: true, headerTitle: '' }} />
 

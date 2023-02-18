@@ -12,7 +12,7 @@ Font.loadAsync({
   'Urbanist-Medium': require('../../../assets/fonts/Urbanist-Medium.ttf'),
 });
 
-export default function SignUpCaregiverLVL4() {
+export default function SignUpCaregiverLVL4({ navigation }) {
 
   const getMinDate = () => {
     var date = new Date().getDate(); //Current Date
@@ -269,6 +269,9 @@ export default function SignUpCaregiverLVL4() {
           }}
           onDateChange={(date) => { setVisaExpiration(date) }}
         />
+        <TouchableOpacity style={styles.button} onPress={() => { navigation.navigate('SignUpCaregiverLVL5') }}>
+        <Text>Next</Text>
+      </TouchableOpacity>
       </View>
 
 
@@ -304,4 +307,20 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     height: 50,
   },
+  button: {
+    width: Dimensions.get('window').width * 0.9,
+    backgroundColor: '#548DFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: 'lightgray',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 1,
+    margin: 15,
+    height: 54,        
+}
 })

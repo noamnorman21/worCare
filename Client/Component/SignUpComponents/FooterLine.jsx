@@ -46,7 +46,7 @@ const HaveAccount = () => {
                 <Text style={styles.signUpText}>Already have an account ?</Text>
             </View>
             <View>
-                <TouchableOpacity onPress={() =>navigation.navigate('LogIn')}>
+                <TouchableOpacity onPress={() =>navigation.popToTop()}>
                     <Text style={styles.signUpButtonText}>Log In</Text>
                 </TouchableOpacity>
             </View>

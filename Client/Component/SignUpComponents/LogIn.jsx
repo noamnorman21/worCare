@@ -35,6 +35,7 @@ export default function LogIn({ navigation }) {
         //here we will call api to login user.. 
 
         Alert.alert('Login Success');//just for testing
+        navigation.navigate('CustomHeader')//navigate to home screen
     }
     //function to check email format
     const validateEmail = (email) => {
