@@ -44,12 +44,7 @@ export default function LogIn({ navigation }) {
     }
 
 
-    //navigate to sign up screen
-    const NavigateToSignUp = () => {
-        navigation.navigate('SignUp')
-    }
-
-    const NavigateToForgotPassword = () => {
+     const NavigateToForgotPassword = () => {
         navigation.navigate('ForgotPassword')
     }
 
