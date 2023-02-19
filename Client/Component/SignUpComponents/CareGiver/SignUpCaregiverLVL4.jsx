@@ -380,7 +380,7 @@ const styles = StyleSheet.create({
   headerContainer: {
     alignItems: 'flex-start',
     justifyContent: 'center',
-    paddingHorizontal: 10,
+    // paddingHorizontal: 10,
     // marginBottom: 10,
     flex: 1
   },

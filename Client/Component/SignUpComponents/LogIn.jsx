@@ -87,7 +87,7 @@ export default function LogIn({ navigation }) {
 
     //navigate to sign up screen
     const NavigateToSignUp = () => {
-        navigation.navigate('SignUpUserLVL4')
+        navigation.navigate('SignUpLimitations')
     }
 
     const NavigateToForgotPassword = () => {

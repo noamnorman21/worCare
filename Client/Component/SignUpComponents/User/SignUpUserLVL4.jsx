@@ -12,7 +12,7 @@ Font.loadAsync({
 });
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
-export default function SignUpUserLVL4() {
+export default function SignUpUserLVL4({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>

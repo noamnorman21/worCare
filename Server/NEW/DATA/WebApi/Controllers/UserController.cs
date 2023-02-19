@@ -5,6 +5,7 @@ using System.Data.SqlTypes;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Cors;
@@ -83,7 +84,11 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-                
+
+
+        [HttpPost]
+        [Route("UploadIMG")]
+
         // insert user to db by calling Stored Prodecdure InsertUser
         [HttpPost]
         [Route("InsertUser")]
@@ -142,7 +147,6 @@ namespace WebApi.Controllers
             }
         }
 
-
         //Only If user realy sure he wants to delete his account we will
         //delete him from the db - but first we will alert him to fuck himself
         [HttpDelete]
@@ -165,5 +169,6 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
     }
 }
