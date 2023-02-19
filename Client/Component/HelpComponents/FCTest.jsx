@@ -783,9 +783,6 @@ const styles = StyleSheet.create({
     fontFamily: 'Urbanist-SemiBold',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  
-
+  }, 
 });
-
 export default PatientLimitations;
