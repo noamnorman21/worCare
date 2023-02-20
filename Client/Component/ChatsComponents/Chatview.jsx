@@ -1,8 +1,10 @@
 import { View, Text,StyleSheet, SafeAreaView, TextInput, Button,TouchableOpacity, ScrollView, Image } from 'react-native'
 import React from 'react'
-// import io from 'socket.io-client';
+import io from 'socket.io-client';
 import { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
+
+
 
 
 
@@ -12,36 +14,39 @@ export default function Chats({route}) {
   const navigation = useNavigation();
   const {name1} = route.params;
 
-  // const [socket, setSocket] = useState(null);
-  // const [message, setMessage] = useState('Send a message');
-  // const [receivedMessage, setReceivedMessage] = useState('Here will be the received message');
+  const [serverResponse, setServerResponse] = useState('');
 
-  // useEffect(() => {
-  //   const socket = io('http://localhost:3000');
+useEffect(() => {
+  const ws = new WebSocket('ws://10.0.0.3:8181');
 
-  //   socket.on('message', (data) => {
-  //     setReceivedMessage(data);
-  //   })
+    ws.onopen = () => {
+      console.log('WebSocket connection opened');
+      const user1={
+        "MessageType":"clientData",
+        "Username":"Noam1",
+        "Shouldtranslate":true
+      }
+      ws.send(JSON.stringify(user1));
+    };
 
-  //   socket.on('disconnect', () => {
-  //     console.log('Disconnected from the server');
-  //   });
+    ws.onmessage = (event) => {
+      console.log(`Received message: ${event.data}`);
+      setServerResponse(event.data);
+    };
 
-  //   socket.on('connect_error', (error) => {
-  //     console.log('Error connecting to the server: ', error);
-  //   });
+    ws.onclose = () => {
+      console.log('WebSocket connection closed');
+    };
 
-  //   setSocket(socket);
+    return () => {
+      ws.close();
+    };
+  }, []);
 
-  //   return () => {
-  //     socket.disconnect();
-  //   };
-
-  // },[]);
-
-  // const handlesend = () => {
-  //   socket.emit('message', message);
-  // }
+  const sendMessage = (myobj) => {
+    ws.send('Hello Server');
+  }
+  
 
 
   return (
