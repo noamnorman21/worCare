@@ -16,7 +16,7 @@ export default function SignUpLvl3({ navigation }) {
   const NavigateToNextLvl = () => {
     if (role === 'Caregiver') {
       navigation.navigate('SignUpCaregiverLVL4')
-    } else if (role === 'Patient`s Family Member') {
+    } else if (role === 'Patient’s Family Member') {
       navigation.navigate('SignUpUserLVL4')
     }
     else {
@@ -24,7 +24,9 @@ export default function SignUpLvl3({ navigation }) {
     }
   }
 
-
+  const NavigateToLogIn = () => {
+    navigation.navigate('LogIn')
+  }
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ flex: 1, marginTop: 50 }}>
@@ -40,8 +42,8 @@ export default function SignUpLvl3({ navigation }) {
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[styles.box, role === 'Patient`s Family Member' && styles.selectedBox]}
-          onPress={() => setRole('Patient`s Family Member')}
+          style={[styles.box, role === 'Patient’s Family Member' && styles.selectedBox]}
+          onPress={() => setRole('Patient’s Family Member')}
         >
           <Text style={styles.titleRole}>Patient’s Family Member</Text>
           <Text style={styles.txtRole}>I will be managing their care needs.</Text>
@@ -56,7 +58,7 @@ export default function SignUpLvl3({ navigation }) {
         </Text>
       </TouchableOpacity>
       <OrLine />
-      <HaveAccount  />
+      <HaveAccount NavigateToLogIn={NavigateToLogIn} />
     </SafeAreaView>
   )
 }
@@ -129,5 +131,4 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 4, height: 4 },
     shadowOpacity: 0.5,
   },
-
 });

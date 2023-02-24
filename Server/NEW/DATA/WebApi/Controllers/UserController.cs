@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.Cors;
 using DATA;
@@ -15,40 +19,13 @@ namespace WebApi.Controllers
     {
         igroup194_Model db = new igroup194_Model();
 
-        [HttpGet]
-        public IHttpActionResult Get()
-
-        {
-            try
-            {
-                var users = db.tblUser.Select(x => new UserDTO
-                {
-                    Email = x.Email,
-                    Password = x.Password
-                }).ToList();
-                return Ok(users);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-                throw;
-            }
-
-
-
-
-
-
-        }
-
-        [HttpGet]
         [Route("GetUser/{id}")]
         public IHttpActionResult GetUser(int id)
         {
             try
             {
                 var user = db.tblUser.Where(x => x.Id == id).FirstOrDefault();
-                return Ok(user.FirstName + " " + user.LastName);
+                return Ok(user.FirstName + " " + user.LastName + " - Email:" + user.Email);
             }
             catch (Exception ex)
             {
@@ -56,21 +33,21 @@ namespace WebApi.Controllers
             }
         }
 
-        
-        //this is get method that return the user by email
         [HttpGet]
-        [Route("GetUserEmail")]
-        public IHttpActionResult GetUserEmail([FromBody] UserDTO userEmail)
+        [Route("GetEmail/{userEmail}")]
+        public IHttpActionResult GetEmail(string userEmail)
         {
-
             try
             {
-                var user = db.tblUser.Where(x => x.Email == userEmail.Email).FirstOrDefault();
+                var user = db.tblUser.Where(x => x.Email == userEmail).First();
                 if (user == null)
                 {
                     return NotFound();
                 }
-                return Ok(user.Email);
+                UserDTO userDTO = new UserDTO();
+                userDTO.FirstName = user.FirstName;
+                userDTO.Email = user.Email;
+                return Ok(userDTO);
             }
             catch (Exception ex)
             {
@@ -78,7 +55,40 @@ namespace WebApi.Controllers
             }
         }
 
-        
+        [HttpGet]
+        [Route("GetUserForLogin")]
+        public IHttpActionResult GetUserForLogin([FromBody] UserDTO userDTO)
+        {
+            try
+            {
+                var user = from u in db.tblUser
+                           where u.Email == userDTO.Email && u.Password == userDTO.Password
+                           select u;
+                if (user == null)
+                {
+                    return NotFound();
+                }
+                UserDTO newUser = new UserDTO();
+                newUser.Id = user.First().Id;
+                newUser.Email = user.First().Email;
+                //newUser.Password = user.First().Password;
+                newUser.phoneNum = user.First().phoneNum;
+                newUser.userUri = user.First().userUri;
+                newUser.gender = user.First().gender;
+                newUser.FirstName = user.First().FirstName;
+                newUser.LastName = user.First().LastName;
+                return Ok(newUser);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        [HttpPost]
+        [Route("UploadIMG")]
+
         // insert user to db by calling Stored Prodecdure InsertUser
         [HttpPost]
         [Route("InsertUser")]
@@ -96,7 +106,6 @@ namespace WebApi.Controllers
             }
         }
 
-        
         // update user to db by calling Function UpdateUser
         [HttpPut]
         [Route("UpdateUser")]
@@ -119,8 +128,25 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        
-        
+
+        // Update user password by calling Function UpdateUserPassword
+        [HttpPut]
+        [Route("UpdateUserPassword")]
+        public IHttpActionResult UpdateUserPassword([FromBody] UserDTO userToUpdate)
+        {
+            try
+            {
+                tblUser user = db.tblUser.Where(x => x.Email == userToUpdate.Email).FirstOrDefault();
+                user.Password = userToUpdate.Password;
+                db.SaveChanges();
+                return Ok("User Password Updated Successfully");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         //Only If user realy sure he wants to delete his account we will
         //delete him from the db - but first we will alert him to fuck himself
         [HttpDelete]
@@ -143,5 +169,6 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
     }
 }

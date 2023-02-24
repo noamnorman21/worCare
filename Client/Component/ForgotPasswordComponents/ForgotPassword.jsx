@@ -2,6 +2,9 @@ import React from 'react';
 import { SafeAreaView, View, Text, TextInput, Button, StyleSheet, Dimensions, TouchableOpacity, Alert } from 'react-native';
 import { useState, useEffect } from 'react';
 import { OrLine, ReturnToLogin } from '../SignUpComponents/FooterLine';
+import emailjs from '@emailjs/browser';
+// import { SendEmail } from '../HelpComponents/UserContext';
+
 import * as Font from 'expo-font'
 Font.loadAsync({
     'Urbanist': require('../../assets/fonts/Urbanist-Regular.ttf'),
@@ -10,52 +13,74 @@ Font.loadAsync({
     'Urbanist-Medium': require('../../assets/fonts/Urbanist-Medium.ttf'),
 });
 
-// This is the Forgot Password screen
-// This screen is the first screen of the forgot password process
-// The user enters his email address and clicks submit
-// The user is then redirected to the verification code screen
+const GenerateCode = () => {
+    let codeTemp = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const charactersLength = characters.length;
+    for (let i = 0; i < 5; i++) {
+        codeTemp += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return codeTemp;
+}
+
+const SendEmail = (senderEmail, nameUser, codeTemp) => {
+    if (senderEmail) {
+        console.log('start User Context 2');
+        // Set the template parameters for the email
+        const templateParams = {
+            senderEmail: senderEmail,
+            userName: nameUser,
+            code: codeTemp,
+        };
+
+        // Send the email using EmailJS
+        emailjs.send('service_cg2lqzg', 'template_pqsos33', templateParams, 'amgCa1UEu2kFg8DfI')
+            .then(result => {
+                console.log(result);
+                Alert.alert('Code sent!', 'Check your email for the verification code.');
+            })
+            .catch(error => {
+                console.log(error);
+                Alert.alert('Error!', 'An error occurred while sending the verification code.');
+            });
+
+    }
+    else {
+        Alert.alert('Error!', 'Please enter your email address.');
+    }
+};
 
 export default function ForgotPassword({ navigation }) {
     const [email, setEmail] = useState('');
-    const [code, setCode] = useState('');
-
-    const generateCode = () => {
-        const code = Math.random().toString(36).substring(2, 7).toUpperCase();
-        console.log(code);
-        setCode(code);
-    };
 
     const NavigateToLogIn = () => {
         navigation.navigate('LogIn')
     }
-    const NavigateToNextLVL = () => {
-        generateCode();
-        navigation.navigate('ForgotPasswordLvl2', { userCode: code })
-    }
 
     const getData = () => {
-        console.log('in getData');
-        fetch(`https://proj.ruppin.ac.il/cgroup94/prod/api/User/GetUserEmail`, {
+        fetch(`https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetEmail/${email}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json; charset=UTF-8',
             },
-            body: JSON.stringify({
-                "email": "noam@gmail.com"
-            }),
         })
-            .then((response) => response.json())
-            .then((json) => {
-                console.log(json);
-                if (json === null) {
-                    Alert.alert('This email is not registered in our system');
-                    return;
+            .then(res => {
+                if (res.ok) {
+                    return res.json()
                 }
-                generateCode();
-                navigation.navigate('ForgotPasswordLvl2', { userCode: code });
+                else {
+                    Alert.alert("Email not found")
+                }
+            })
+            .then(data => {
+                if (data != null) {
+                    const userCode = GenerateCode();
+                    SendEmail(email, data["FirstName"], userCode);
+                    navigation.navigate('ForgotPasswordLvl2', { email: email, userCode: userCode , userName: data["FirstName"]})
+                }
             })
             .catch((error) => {
-                console.log(error);
+                console.log("err=", error);
             });
     }
 
@@ -76,7 +101,7 @@ export default function ForgotPassword({ navigation }) {
                     onChangeText={(email) => setEmail(email)}
                 />
                 {/* Submit And go to next lvl screen - verification code */}
-                <TouchableOpacity style={styles.button} onPress={NavigateToNextLVL} >
+                <TouchableOpacity style={styles.button} onPress={getData} >
                     <Text style={styles.buttonText}>Submit</Text>
                 </TouchableOpacity>
             </View>
@@ -114,7 +139,7 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width * 0.9,
         padding: 10,
         margin: 10,
-        alignItems: 'center',
+        alignItems: 'flex-left',
         borderRadius: 16,
         borderWidth: 1,
         backgroundColor: '#F5F5F5',
@@ -139,7 +164,6 @@ const styles = StyleSheet.create({
         elevation: 1,
         margin: 15,
         height: 54,
-
     },
     buttonText: {
         color: 'white',
@@ -153,4 +177,3 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
 });
-

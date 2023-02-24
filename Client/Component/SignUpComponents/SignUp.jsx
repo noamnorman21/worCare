@@ -1,7 +1,7 @@
 import { Image, Keyboard, LayoutAnimation, View, Text, TextInput, Dimensions, SafeAreaView, Alert, StyleSheet, TouchableOpacity } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import ImagePickerExample from './ImagePickerExample'
+import ImagePickerExample from '../HelpComponents/ImagePickerExample'
 import { OrLine, HaveAccount } from './FooterLine'
 import * as Font from 'expo-font';
 Font.loadAsync({
@@ -84,6 +84,7 @@ export default function CreateUser({ navigation }) {
     if (!validatePhoneNum(phoneNum)) {
       return Alert.alert('Invalid Phone Number', 'Please enter a valid phone number')
     }
+
     if (imagePath === '') {
       setUserImage('../../images/Avatar.png')
     }
@@ -100,14 +101,15 @@ export default function CreateUser({ navigation }) {
   }
 
   const changeIMG = (imagePath) => {
-    //convert image path to string
-    imagePath = JSON.stringify(imagePath)
-    //remove quotes from string
-    imagePath = imagePath.replace(/['"]+/g, '')
-    //remove file:// from string
-    imagePath = imagePath.replace('file://', '')
-    setUserImage(imagePath)
-    setUser({ ...user, imagePath: imagePath })
+    // //convert image path to string
+    // imagePath = JSON.stringify(imagePath)
+    // //remove quotes from string
+    // imagePath = imagePath.replace(/['"]+/g, '')
+    // //remove file:// from string
+    // imagePath = imagePath.replace('file://', '')
+    // setUserImage(imagePath)
+
+    // setUser({ ...user, imagePath: imagePath })
   }
 
   const validatePhoneNum = (phoneNum) => {
@@ -130,7 +132,10 @@ export default function CreateUser({ navigation }) {
     setUser({ ...user, [field]: value });
   }
 
- 
+  const NavigateToLogIn = () => {
+    navigation.navigate('LogIn')
+  }
+
   const NavigateToLVL3 = () => {
     navigation.navigate('SignUpLvl3')
   }
@@ -139,7 +144,7 @@ export default function CreateUser({ navigation }) {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Fill your profile</Text>
-        <Text style={styles.smallTitle}>Don’t worry, you can always change it later</Text>
+        <Text style={styles.smallTitle}>Don't worry, you can always change it later</Text>
       </View>
       <View style={styles.imageContainer}>
         <ImagePickerExample style={styles.image} onImgChange={changeIMG} />
@@ -207,7 +212,7 @@ export default function CreateUser({ navigation }) {
       <TouchableOpacity style={styles.button} onPress={NavigateToLVL3} >
         <Text style={styles.buttonText}>Continue with Google</Text>
       </TouchableOpacity>
-      <HaveAccount />
+      <HaveAccount NavigateToLogIn={NavigateToLogIn} />
     </SafeAreaView>
   )
 }
@@ -310,6 +315,5 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginBottom: 5,
   },
+
 });
-
-

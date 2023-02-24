@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, Image, SafeAreaView, Dimensions, TouchableHighlight } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, Image,  Dimensions } from 'react-native'
 import React from 'react'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -30,68 +30,47 @@ export default function Finance() {
       בעת רנדור עמוד פנימי פנדינג ירונדרו בקשות לפי סטוטס בקשה אינו שולם,
       בעת רנדור מס היסטוריה ירונדרו בקשות אשר בעלות סטטוס שולמו.
       מידע אשר ישלף כלפי כל בקשה- id, sunject, amount, requestDate, proofofdocument, comment, status */}
-        <Stack.Screen name='Paycheck' component={Paycheck} options={() => ({
+        <Stack.Screen name='Paychecks' component={Paycheck} options={() => ({
           headerShown: false,
           presentation: 'stack',
           cardOverlayEnabled: true,
         })} />
-          {/*בעת ניווט למסך המשכורות, תתבצע פעולת גט אשר תשלוף את המשכורות אשר קיימות במסד הנתונים.
-           מידע אשר ישלף כלפי כל משכורת- payCheckNum, paycheckDate, paycheckSummary,paycheckComment */}
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
 
-function Choice({ navigation }) {
+function Choice() {
   return (
     <View style={styles.container}>
       <Image source={require('../images/logo_New.png')} style={styles.BigIMG} />
-      <TouchableHighlight
+      <TouchableOpacity
+        activeOpacity={1}
         style={styles.button}
-        underlayColor='#548DFF'
         onPress={() => {
           navigation.navigate('Payments')
         }}
       >
         <Text style={styles.txt}>Payment</Text>
-      </TouchableHighlight>
-      <TouchableHighlight
-        underlayColor='#548DFF'
+      </TouchableOpacity>
+      <TouchableOpacity
+        activeOpacity={1}
         style={styles.button}
         onPress={() => {
           navigation.navigate('Paycheck')
         }}
       >
         <Text style={styles.txt}>Paycheck</Text>
-      </TouchableHighlight>
+      </TouchableOpacity>
     </View>
   );
 }
 
 function Payments() {
   return (
-    <Tab.Navigator initialRouteName="Pending"
-      tabBarOptions={{
-        activeTintColor: '#548DFF',
-        inactiveTintColor: '#9E9E9E',
-        pressColor: '#548DFF',
-        style: { backgroundColor: 'transparent', marginTop: 20, },
-        labelStyle: { fontSize: 17, fontWeight: 'bold' },
-        style: { backgroundColor: 'white' },
-        indicatorStyle: {
-          backgroundColor: '#548DFF',
-          height: 4,
-          borderRadius: 25,
-        }
-      }}
-      backBehavior='none'
-    >
+    <Tab.Navigator initialRouteName="Pending" >
       <Tab.Screen name="Pending" component={Pending} />
-      {/*במעבר למסך תשלומים ממתינים תבוצע םעולת גט אשר תשלוף את כלל בקשות התשלום אשר שמורות במסד הנתונים.
-      אשר סטטוס הבקשה שלהם אינו סומן כשולם*/}
       <Tab.Screen name="History" component={History} />
-      { /*במעבר למסך היסטוריית התשלומים תבוצע םעולת גט אשר תשלוף את כלל בקשות התשלום אשר שמורות במסד הנתונים.
-      אשר סטטוס הבקשה שלהם סומן כשולם*/}
     </Tab.Navigator>
   );
 }
@@ -114,7 +93,7 @@ function History() {
 
 function Paycheck() {
   return (
-    <View style={styles.container}>
+    <View>
       <Text>History</Text>
     </View>
   );
@@ -125,14 +104,10 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    marginHorizontal: 'auto',
-    top: -100,
   },
   BigIMG: {
-    top: 20,
-    width: Dimensions.get('screen').width * 1.6,
+    width: Dimensions.get('screen').width * 1,
     resizeMode: 'contain',
-    marginBottom: -10,
   },
   button: {
     alignItems: 'center',
@@ -145,10 +120,7 @@ const styles = StyleSheet.create({
   },
   txt: {
     color: 'white',
-    fontSize: 17,
+    fontSize: 16,
     fontWeight: 'bold',
   },
 })
-
-
-

@@ -1,34 +1,59 @@
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, Button, Modal, Dimensions, SafeAreaView } from 'react-native';
+import { Entypo } from '@expo/vector-icons';
+import { Dropdown } from 'react-native-element-dropdown';
+const SCREEN_WIDTH = Dimensions.get('window').width;
 
-export default function SignUpHobbies({ navigation}) {
+export default function SignUpHobbies({ navigation, route }) {
+  const [modal1Visible, setModal1Visible] = useState(false);
+  const [modal2Visible, setModal2Visible] = useState(false);
+  const [modal3Visible, setModal3Visible] = useState(false);
+  const [modal4Visible, setModal4Visible] = useState(false);
+  const [modal5Visible, setModal5Visible] = useState(false);
+  
+  const [books, setBooks] = useState('');
+  const [music, setMusic] = useState('');
+  const [tv, setTv] = useState('');
+  const [radio, setRadio] = useState('');
+  const [food, setFood] = useState('');
+  const [drinks, setDrinks] = useState('');
+  const [specialHobbies, setSpecialHobbies] = useState('');
+  const [afterNoonNaps, setAfterNoonNaps] = useState('');
+  const [nightSleep, setNightSleep] = useState('');
+  const [movies, setMovies] = useState('');
+  const [other, setOther] = useState('');
+
   return (
-    <View>
-      <Text>Hobbies</Text>
-      <TouchableOpacity style={styles.button} onPress={() => { navigation.navigate('SignUpLimitations') }}>
-        <Text>Next</Text>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.headerContainer}>
+        <Text>Add Patient’s Hobbies</Text>
+        <View style={styles.line} />
+      </View>
+      <TouchableOpacity
+        style={styles.inputBox}
+        onPress={() => setModal1Visible(true)}>
+        <Text style={styles.input}>Books</Text>
+        <Entypo style={styles.icon} name="chevron-right" size={24} color="black" />
       </TouchableOpacity>
+      
 
-    </View>
+
+    </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
-  button: {
-    width: Dimensions.get('window').width * 0.9,
-    backgroundColor: '#548DFF',
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: 'lightgray',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 1,
-    margin: 15,
-    height: 54,        
-},
-}
-)
+  },
+  line: {
+    borderBottomColor: 'gray',
+    borderBottomWidth: 0.5,
+    width: SCREEN_WIDTH * 1,
+    marginVertical: 20,
+  },
+
+});

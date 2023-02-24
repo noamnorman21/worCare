@@ -26,9 +26,10 @@ const Stack = createStackNavigator();
 
 export default function NavigateSignUp() {
   return (
-    <Stack.Navigator initialRouteName="LogIn" screenOptions={{ headerShown: false }} backBehavior='none'  >
-      <Stack.Screen name="CustomHeader" component={CustomHeader}  />
-      <Stack.Screen name="LogIn" component={LogIn}  />
+    <Stack.Navigator initialRouteName="LogIn" screenOptions={{ headerShown: false }}>
+
+      <Stack.Screen name="CustomHeader" component={CustomHeader} />
+      <Stack.Screen name="LogIn" component={LogIn} />
 
       {/* שלבי שחזור סיסמה */}
       <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
@@ -37,7 +38,6 @@ export default function NavigateSignUp() {
 
       {/* שלבים 1-3 בתהליך ההרשמה משותפים לשני סוגי המשתמשים */}
       <Stack.Screen name="SignUp" component={SignUp} />
-      {/* יש להעביר את הפרמטרים של המשתמש החדש לקומפוננטה הבאה */}
       <Stack.Screen name="SignUpLvl2" component={SignUpLvl2} options={{ headerShown: true, headerTitle: '' }} />
       <Stack.Screen name="SignUpLvl3" component={SignUpLvl3} options={{ headerShown: true, headerTitle: '' }} />
 
@@ -45,7 +45,7 @@ export default function NavigateSignUp() {
       <Stack.Screen name="SignUpCaregiverLVL4" component={SignUpCaregiverLVL4} options={{ headerShown: true, headerTitle: '' }} />
       <Stack.Screen name="SignUpCaregiverLVL5" component={SignUpCaregiverLVL5} options={{ headerShown: true, headerTitle: '' }} />
 
-      {/* שלבי המשך עבור הרשמת משתמש רגיל */}
+      {/* שלבי המשך עבור הרשמת מעורב בטיפול */}
       <Stack.Screen name="SignUpUserLVL4" component={SignUpUserLVL4} options={{ headerShown: true, headerTitle: '' }} />
       <Stack.Screen name="SignUpUserLVL5" component={SignUpUserLVL5} options={{ headerShown: true, headerTitle: '' }} />
       <Stack.Screen name="SignUpHobbies" component={SignUpHobbies} options={{ headerShown: true, headerTitle: '' }} />

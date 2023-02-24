@@ -11,22 +11,26 @@ import CreateUser from './Component/SignUpComponents/SignUp';
 import { CustomHeader } from './Component/AppBarUp';
 import SettingScreen from './Component/SettingScreen';
 import NavigateSignUp from './Component/SignUpComponents/NavigateSignUp';
-import SignUpCareGiverLVL4 from './Component/SignUpComponents/CareGiver/SignUpCaregiverLVL4';
+import SignUpCareGiverLVL5 from './Component/SignUpComponents/CareGiver/SignUpCaregiverLVL5';
+import ForgotPassword from './Component/ForgotPasswordComponents/CreateNewPassword';
+import FCTest from './Component/HelpComponents/FCTest';
+
 
 export default function App() {
   return (
-    <NavigationContainer independent={true}>
-      {/* <CustomHeader /> */}
-      {/* <SettingScreen /> */}
-      <NavigateSignUp />
-    </NavigationContainer>
+    // <NavigationContainer independent={true}>
+    //   {/* <CustomHeader /> */}
+    //   {/* <SettingScreen /> */}
+    //   <NavigateSignUp />
+    // </NavigationContainer>
 
-    // <View style={styles.container}>
-    //   {/* <CreateUser /> */}
-    //   {/* <LogIn />       */}
-    //   {/* <ForgotPassword/> */}
-    //   <SignUpCareGiverLVL4 />
-    // </View>
+    <View style={styles.container}>
+      {/* <CreateUser /> */}
+      {/* <LogIn />       */}
+      {/* <ForgotPassword /> */}
+      {/* <SignUpCareGiverLVL5 /> */}
+      <FCTest />
+    </View>
   );
 }
 

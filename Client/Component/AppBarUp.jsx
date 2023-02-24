@@ -1,4 +1,4 @@
-import { View, TouchableOpacity, Image, Dimensions, StyleSheet, Alert, BackHandler} from 'react-native'
+import { View, TouchableOpacity, Image, Dimensions, StyleSheet } from 'react-native'
 import React from 'react'
 import { Octicons, Ionicons, AntDesign, Feather } from '@expo/vector-icons';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -6,8 +6,6 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import SettingScreen from './SettingScreen';
 import Contacts from './Contacts';
 import PushNotifications from './PushNotifications';
-import { useState } from 'react';
-import { useEffect } from 'react';
 
 import Home from '../Component/Home';
 import Finance from './Finance';
@@ -18,34 +16,7 @@ import Rights from '../Component/Rights';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-function CustomHeader({navigation}) {
- const [text, settext] = useState('') 
- useEffect(() => 
- navigation.addListener('beforeRemove', (e) => {
-    if (text!=='Login') {
-         // Prevent default behavior of leaving the screen
-        e.preventDefault();
-        // Prompt the user before leaving the screen
-        Alert.alert(
-        'Exit app?',
-        'are you sure you want to alose the app?',
-        [
-          { text: "Don't leave", style: 'cancel', onPress: () => {} },
-          {
-            text: 'Leave',
-            style: 'destructive',
-            // If the user confirmed, then we dispatch the action we blocked earlier
-            // This will continue the action that had triggered the removal of the screen
-            onPress: () => BackHandler.exitApp()
-          },
-        ]
-      );
-    }   
-  }),
-[navigation]
-);
- 
-
+function CustomHeader() {
     return (
         <Stack.Navigator>
             <Stack.Screen
@@ -111,9 +82,6 @@ function CustomHeader({navigation}) {
                     cardOverlayEnabled: true,
                 })} />
             <Stack.Screen name='Contacts' component={Contacts} />
-            {/*במסך אנשי הקשר תתבצע פעולת גט אשר תשלוף מן קונטרולר מטופל את אנשי הקשר שלו.
-            לכל איש קשר ישלפו שם, מספר טלפון, מספר נייד, אימייל ותפקיד. 
-            במסך הראשוני יוצג רק השם ומספר הנייד, ובמסך איש קשר פנימי יוצגו שאר הפרטים */}
         </Stack.Navigator>
     );
 }
@@ -156,7 +124,7 @@ function AppBarDown() {
             {/*בהתאים למימוש הצ'אט ושמירת הסטוריית השיחות - תתבצע פעולת גט אשר תשלוף את היסטוריית השיחות. 
             לכל שיחה ישלף שם המשתמש השני/הקבוצה, סטטוס השיחה (האם יש הודעה חדשה אשר לא נקראה) ותוצג ההודעה האחרונה אשר נשלחה.*/}
             <Tab.Screen name="Tasks" component={Tasks} options={{ tabBarLabel: 'Tasks', unmountOnBlur: true }} />
-            {/*בעת ניווט למסך משימות - תבוצע פעולת גט שתמשוך את הפרטים- ,
+            {/*בעת ניווט למסך תשלומים - תבוצע פעולת גט שתמשוך את הפרטים- ,
                  משימה אישית/משימה למטופל- מספר משימה, שם משימה, תאריך התחלה, תאריך סוף, הערות, סטטוס(לפי מספר משתמש),
                   שדות הייחודיים לטבלת משימה למטופל אשר יימשכו- מספר מטופל,מספר רשימה*/}
             <Tab.Screen name="Rights" component={Rights} options={{ tabBarLabel: 'Rights' }} />

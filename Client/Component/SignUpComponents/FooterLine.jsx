@@ -1,7 +1,6 @@
 import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native'
 import * as Font from 'expo-font'
-import { useNavigation } from '@react-navigation/native'
 
 Font.loadAsync({
     'Urbanist': require('../../assets/fonts/Urbanist-Regular.ttf'),
@@ -19,8 +18,7 @@ const OrLine = () => {
         </View>
     )
 }
-const NeedAccount = () => {
-    const navigation= useNavigation();
+const NeedAccount = (props) => {
     {/* for log in screen */ }
     return (
         <View style={styles.buttonContainer}>
@@ -28,7 +26,7 @@ const NeedAccount = () => {
                 <Text style={styles.signUpText}>Need an account ?</Text>
             </View>
             <View>
-                <TouchableOpacity onPress={() => navigation.navigate('SignUp')  
+                <TouchableOpacity onPress={() => props.NavigateToSignUp()
                 }>
                     <Text style={styles.signUpButtonText}>Sign Up</Text>
                 </TouchableOpacity>
@@ -37,8 +35,7 @@ const NeedAccount = () => {
     )
 }
 
-const HaveAccount = () => {
-    const navigation= useNavigation();
+const HaveAccount = (props) => {
     {/* for sign up screen */ }
     return (
         <View style={styles.buttonContainer}>
@@ -46,7 +43,7 @@ const HaveAccount = () => {
                 <Text style={styles.signUpText}>Already have an account ?</Text>
             </View>
             <View>
-                <TouchableOpacity onPress={() =>navigation.popToTop()}>
+                <TouchableOpacity onPress={() => props.NavigateToLogIn()}>
                     <Text style={styles.signUpButtonText}>Log In</Text>
                 </TouchableOpacity>
             </View>

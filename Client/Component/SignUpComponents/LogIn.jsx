@@ -10,8 +10,10 @@ Font.loadAsync({
     'Urbanist-Bold': require('../../assets/fonts/Urbanist-Bold.ttf'),
     'Urbanist-Light': require('../../assets/fonts/Urbanist-Light.ttf'),
     'Urbanist-Medium': require('../../assets/fonts/Urbanist-Medium.ttf'),
-  });
-  
+});
+
+const SCREEN_WIDTH = Dimensions.get('window').width;
+
 export default function LogIn({ navigation }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -21,30 +23,74 @@ export default function LogIn({ navigation }) {
 
     //login function
     const logInBtn = () => {
-        //check email format, it should be email format
+        // check email is empty or not
+        if (email === '') {
+            Alert.alert('Email is required');
+            return;
+        }
+        //check email format
         if (!validateEmail(email)) {
             Alert.alert('Email is not valid');
             return;
         }
-
         //check password format, it should be password format
+        if (!validatePassword(password)) {
+            Alert.alert('Password is not valid');
+            return;
+        }
         if (password === '') {
             Alert.alert('Password is required');
             return;
         }
-        //here we will call api to login user.. 
 
-        Alert.alert('Login Success');//just for testing
-        navigation.navigate('CustomHeader')//navigate to home screen
+        const userData = {
+            email: email,
+            password: password,
+        }
+
+        //call api to login user
+        LoginUser(userData);
+    }
+    //function to login user
+    const LoginUser = (userData) => {
+        fetch('', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ userData }),
+        })
+            .then((response) => response.json())
+            .then((json) => {
+                if (json.status === 'success') {
+                    Alert.alert('Login Successful');
+                } else {
+                    Alert.alert('Login Failed');
+                }
+            }
+            )
+            .catch((error) => {
+                Alert.alert('Login Failed');
+            }
+            );
     }
     //function to check email format
     const validateEmail = (email) => {
         var re = /\S+@\S+\.\S+/;
         return re.test(email);
     }
+    //function to check password format
+    const validatePassword = (password) => {
+        var re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+        return re.test(password);
+    }
 
+    //navigate to sign up screen
+    const NavigateToSignUp = () => {
+        navigation.navigate('SignUpLimitations')
+    }
 
-     const NavigateToForgotPassword = () => {
+    const NavigateToForgotPassword = () => {
         navigation.navigate('ForgotPassword')
     }
 
@@ -127,7 +173,7 @@ export default function LogIn({ navigation }) {
                     </TouchableOpacity>
                 </View>
                 {/* remmeber me check box  in one line*/}
-                <View style={{ width: Dimensions.get('screen').width * 0.9, flexDirection: 'row' }}>
+                <View style={styles.rememberMeContainer}>
 
                     {/* remember me check box */}
                     <TouchableOpacity onPress={() => alert('Remember Me')}>
@@ -155,7 +201,7 @@ export default function LogIn({ navigation }) {
             </View>
             {/* footer line */}
             <OrLine />
-            <NeedAccount />
+            <NeedAccount NavigateToSignUp={NavigateToSignUp} />
         </SafeAreaView>
     )
 }
@@ -184,12 +230,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     image: {
-        width: Dimensions.get('window').width * 0.85,
-        height: Dimensions.get('window').width * 0.85,
+        width: SCREEN_WIDTH * 0.85,
+        height: SCREEN_WIDTH * 0.85,
         resizeMode: 'contain',
     },
     input: {
-        width: Dimensions.get('window').width * 0.9,
+        width: SCREEN_WIDTH * 0.9,
         padding: 10,
         margin: 10,
         alignItems: 'center',
@@ -200,10 +246,10 @@ const styles = StyleSheet.create({
         shadowColor: '#000',
         height: 54,
         fontFamily: 'Urbanist',
-        fontSize:14
+        fontSize: 14
     },
     button: {
-        width: Dimensions.get('window').width * 0.9,
+        width: SCREEN_WIDTH * 0.9,
         backgroundColor: '#548DFF',
         alignItems: 'center',
         justifyContent: 'center',
@@ -216,7 +262,7 @@ const styles = StyleSheet.create({
         shadowRadius: 3,
         elevation: 1,
         margin: 15,
-        height: 54,        
+        height: 54,
     },
     buttonText: {
         color: 'white',
@@ -225,7 +271,7 @@ const styles = StyleSheet.create({
     },
     passwordButton: {
         position: 'absolute',
-        right: Dimensions.get('window').width * 0.1,
+        right: SCREEN_WIDTH * 0.1,
         padding: 5,
         borderRadius: 5,
         marginLeft: 5,
@@ -233,7 +279,7 @@ const styles = StyleSheet.create({
     passwordButtonText: {
         color: 'black',
         fontFamily: 'Urbanist-Bold',
-        fontSize:14
+        fontSize: 14
     },
     btnForgotPassword: {
         color: '#548DFF',
@@ -256,6 +302,10 @@ const styles = StyleSheet.create({
     forgotPasswordContainer: {
         flexDirection: 'row',
         alignSelf: 'flex-end',
-        marginLeft: Dimensions.get('screen').width * 0.275,
+        marginLeft: SCREEN_WIDTH * 0.275,
+    },
+    rememberMeContainer: {
+        width: SCREEN_WIDTH * 0.9,
+        flexDirection: 'row'
     }
 });
