@@ -16,6 +16,32 @@ namespace WebApi.Controllers
         igroup194_Model db = new igroup194_Model();
 
         [HttpGet]
+        public IHttpActionResult Get()
+
+        {
+            try
+            {
+                var users = db.tblUser.Select(x => new UserDTO
+                {
+                    Email = x.Email,
+                    Password = x.Password
+                }).ToList();
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+                throw;
+            }
+
+
+
+
+
+
+        }
+
+        [HttpGet]
         [Route("GetUser/{id}")]
         public IHttpActionResult GetUser(int id)
         {
