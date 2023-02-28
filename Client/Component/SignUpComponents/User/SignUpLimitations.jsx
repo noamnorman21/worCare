@@ -33,7 +33,6 @@ export default function SignUpLimitations({ navigation, route }) {
     { id: 22, name: 'None', selected: false },
   ]);
   const [allergiesOther, setAllergiesOther] = useState('');
-  const [selectedAllergies, setSelectedAllergies] = useState([]);
 
   const [sensitivities, setSensitivities] = useState([
     { id: 1, name: 'Smell', selected: false },
@@ -77,7 +76,6 @@ export default function SignUpLimitations({ navigation, route }) {
     const activeSensitivities = sensitivities.filter((sensitivity) => sensitivity.selected).map((sensitivity) => sensitivity.name);
     const activePhysicalAbilities = physicalAbilities.filter((physicalAbility) => physicalAbility.selected).map((physicalAbility) => physicalAbility.name);
     const activeBathRoutine = bathRoutine.filter((bath) => bath.selected).map((bath) => bath.name);
-
     if (allergiesOther !== '') {
       activeAllergies.push(allergiesOther);
     }
@@ -101,6 +99,7 @@ export default function SignUpLimitations({ navigation, route }) {
     };
     navigation.navigate('SignUpHobbies', { tblLimitations: tblLimitations });
   };
+  
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
@@ -380,6 +379,7 @@ export default function SignUpLimitations({ navigation, route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#fff',
     padding: 20,
     justifyContent: 'center',
     alignItems: 'center',

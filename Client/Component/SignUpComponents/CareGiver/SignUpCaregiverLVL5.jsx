@@ -78,7 +78,6 @@ const styles = StyleSheet.create({
   headerContainer: {
     paddingTop: 30,
     paddingBottom: 20,
-    paddingHorizontal: 16,
     backgroundColor: '#fff',
   },
   headerTxt: {
@@ -92,7 +91,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: '#000',
     textAlign: 'center',
-    marginBottom: 10,
+    marginVertical: 10,
   },
   line: {
     borderBottomColor: '#808080',
@@ -124,11 +123,12 @@ const styles = StyleSheet.create({
   },
   btnContainer: {
     alignItems: 'center',
-    marginTop: 20,
+    justifyContent: 'center',
+    // marginTop: 20,
   },
   button: {
     width: SCREEN_WIDTH * 0.9,
-    height: 50,
+    height: 54,
     backgroundColor: '#548DFF',
     alignItems: 'center',
     justifyContent: 'center',
@@ -170,5 +170,4 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#548DFF',
   },
-
 });

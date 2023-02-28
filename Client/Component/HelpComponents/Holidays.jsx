@@ -64,7 +64,7 @@ export default function Holidays() {
 
 const styles = StyleSheet.create({
     headerContainer: {
-        paddingHorizontal: 16,        
+        // paddingHorizontal: 10,        
         backgroundColor: '#fff',
     },
     headerSmallTxt: {
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     line: {
         borderBottomColor: '#808080',
         borderBottomWidth: 0.5,
-        marginVertical: 20,
+        marginVertical: 10,
     },
     bodyContainer: {
         flexDirection: 'row',
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
         borderRadius: 16,
         borderWidth: 1.5,
         borderColor: '#E6EBF2',
-        marginVertical: 10,
+        marginVertical: 7,
         alignItems: 'center',
         justifyContent: 'center',
     },

@@ -13,7 +13,6 @@ Font.loadAsync({
 export default function SignUpLvl2({ navigation, route }) {
   const userData = route.params.user;
   const [userGender, setUserGender] = useState('');
-
   // Check if userGender is empty
   const NavigateToSignUpLvl3 = () => {
     if (userGender === '') {
@@ -34,22 +33,24 @@ export default function SignUpLvl2({ navigation, route }) {
       userUri: userData.imagePath
     }
     console.log(newUserToDB.FirstName);
-    fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/InsertUser', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: JSON.stringify(newUserToDB),
-    })
-      .then((response) => response.json())
-      .then((json) => {
-        console.log(json);
-      })
-      .catch((error) => {
-        console.error(error);
-      }
-      );
-    NavigateToSignUpLvl3();
+
+    console.log(newUserToDB.userUri);
+    // fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/InsertUser', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json; charset=UTF-8',
+    //   },
+    //   body: JSON.stringify(newUserToDB),
+    // })
+    //   .then((response) => response.json())
+    //   .then((json) => {
+    //     console.log(json);
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
+    //   }
+    //   );
+    // NavigateToSignUpLvl3();
 
   }
 

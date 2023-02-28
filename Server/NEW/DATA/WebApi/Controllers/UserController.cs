@@ -86,8 +86,25 @@ namespace WebApi.Controllers
         }
 
 
-        [HttpPost]
-        [Route("UploadIMG")]
+        // GET : Get all users (email and passwords) from DB for firebase authentication
+        [HttpGet]
+        [Route("GetAllUsersFireBase")]
+        public IHttpActionResult GetAllUsersFireBase()
+        {
+            try
+            {
+                var users = db.tblUser.Select(x => new { x.Email, x.Password }).ToList();
+                if (users == null)
+                {
+                    return NotFound();
+                }
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
         // insert user to db by calling Stored Prodecdure InsertUser
         [HttpPost]

@@ -42,12 +42,12 @@ container: {
     backgroundColor: '#fff',
   },
   headerContainer: {
-    flex: 0.7,
+    flex: 0.75,
     paddingHorizontal: 16,
     backgroundColor: '#fff',
   },
   headerTxt: {
-    marginTop: 50,
+    marginTop: 30,
     fontFamily: 'Urbanist-Bold',
     fontSize: 28,
     color: '#000',
@@ -57,18 +57,18 @@ container: {
     flex: 3,
   },
   btnContainer: {
-    flex: 0.3,
-    justifyContent: 'center',
+    flex: 0.5,
     alignItems: 'center',
+    justifyContent: 'flex-end',
   },
   button: {
     width: SCREEN_WIDTH * 0.9,
-    height: 50,
+    height: 54,
     backgroundColor: '#548DFF',
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 16,
-    marginBottom: 20,
+    // marginBottom: 20,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
