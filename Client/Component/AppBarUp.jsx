@@ -107,8 +107,6 @@ function AppBarDown() {
                     }
                 },
                 headerShown: false
-
-
             })
             }
             initialRouteName="Home"
