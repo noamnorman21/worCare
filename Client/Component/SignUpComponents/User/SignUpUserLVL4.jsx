@@ -24,7 +24,7 @@ export default function SignUpUserLVL4({ navigation }) {
       </View>
       <View style={styles.btnContainer}>
         <TouchableOpacity
-          style={styles.button}>
+          style={styles.button} onPress={() => { navigation.navigate('SignUpUserLVL5') }}>
           <Text style={styles.buttonText}>Continue</Text>
         </TouchableOpacity>
       </View>
