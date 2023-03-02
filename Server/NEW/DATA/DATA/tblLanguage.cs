@@ -17,8 +17,8 @@ namespace DATA
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public tblLanguage()
         {
-            this.tblForeignUser = new HashSet<tblForeignUser>();
-            this.tblPatient = new HashSet<tblPatient>();
+            this.tblForeignUsers = new HashSet<tblForeignUser>();
+            this.tblPatients = new HashSet<tblPatient>();
         }
     
         public string LanguageName_En { get; set; }
@@ -26,8 +26,8 @@ namespace DATA
         public string LanguageName_Original { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tblForeignUser> tblForeignUser { get; set; }
+        public virtual ICollection<tblForeignUser> tblForeignUsers { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tblPatient> tblPatient { get; set; }
+        public virtual ICollection<tblPatient> tblPatients { get; set; }
     }
 }

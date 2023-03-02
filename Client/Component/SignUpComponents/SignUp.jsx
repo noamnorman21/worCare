@@ -17,14 +17,14 @@ export default function CreateUser({ navigation }) {
   const [showPassword, setShowPassword] = useState(false);//for password visibility
   const [keyboardOpen, setKeyboardOpen] = useState(false);//for keyboard visibility
   const [animation, setAnimation] = useState({});
-  const [userImage, setUserImage] = useState('')
+  const [userImage, setUserImage] = useState(null)
   const [user, setUser] = useState({
     email: '',
     password: '',
     firstName: '',
     lastName: '',
     phoneNum: '',
-    userImage: ''
+
   })
 
   useEffect(() => {
@@ -62,7 +62,7 @@ export default function CreateUser({ navigation }) {
   }, []);
 
   const handleCreateUser = () => {
-    const { email, password, firstName, lastName, phoneNum, userImage } = user
+    const { email, password, firstName, lastName, phoneNum } = user
     if (!email || !password || !firstName || !lastName || !phoneNum) {
       return Alert.alert('Error', 'All fields are required')
     }
@@ -95,14 +95,18 @@ export default function CreateUser({ navigation }) {
       firstName: user.firstName,
       lastName: user.lastName,
       phoneNum: user.phoneNum,
-      imagePath: user.userImage,
+      imagePath: userImage,
     }
-    console.log(userData.imagePath)
+    //console.log(userData)
+
     navigation.navigate('SignUpLvl2', { user: userData })
   }
 
-  const changeIMG = (user) => {
-    setUserImage(user)
+  const changeIMG = (imageFromUser) => {
+
+    setUserImage(imageFromUser)
+
+
   }
 
   const validatePhoneNum = (phoneNum) => {

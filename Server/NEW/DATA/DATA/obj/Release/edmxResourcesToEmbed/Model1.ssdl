@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Schema Namespace="igroup194DBContext.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+<Schema Namespace="igroup194_Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
   <EntityType Name="sysdiagrams">
     <Key>
       <PropertyRef Name="diagram_id" />
@@ -87,6 +87,7 @@
     <Property Name="period" Type="varchar" MaxLength="15" />
     <Property Name="quantity" Type="int" />
     <Property Name="minQuantity" Type="int" />
+    <Property Name="TimeInDay" Type="time" Precision="7" />
   </EntityType>
   <EntityType Name="tblForeignUser">
     <Key>
@@ -169,6 +170,8 @@
     <Property Name="workerId" Type="int" Nullable="false" />
     <Property Name="userId" Type="int" Nullable="false" />
     <Property Name="listId" Type="int" Nullable="false" />
+    <Property Name="TimeInDay" Type="time" Precision="7" />
+    <Property Name="period" Type="varchar" MaxLength="15" />
   </EntityType>
   <EntityType Name="tblPaycheck">
     <Key>
@@ -204,6 +207,8 @@
     <Property Name="taskComment" Type="varchar(max)" />
     <Property Name="status" Type="char" MaxLength="1" Nullable="false" />
     <Property Name="workerId" Type="int" Nullable="false" />
+    <Property Name="TimeInDay" Type="time" Precision="7" />
+    <Property Name="period" Type="varchar" MaxLength="15" />
   </EntityType>
   <EntityType Name="tblProduct">
     <Key>
@@ -536,7 +541,7 @@
     <Parameter Name="LastName" Type="varchar" Mode="In" />
     <Parameter Name="Gender" Type="char" Mode="In" />
     <Parameter Name="PhoneNum" Type="varchar" Mode="In" />
-    <Parameter Name="UserUri" Type="varchar" Mode="In" />
+    <Parameter Name="UserUri" Type="nvarchar" Mode="In" />
   </Function>
   <Function Name="sp_alterdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
@@ -568,7 +573,7 @@
     <Parameter Name="new_diagramname" Type="nvarchar" Mode="In" />
   </Function>
   <Function Name="sp_upgraddiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
-  <EntityContainer Name="igroup194DBContextStoreContainer">
+  <EntityContainer Name="igroup194_ModelStoreContainer">
     <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="tblActualList" EntityType="Self.tblActualList" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="tblCalendarForUser" EntityType="Self.tblCalendarForUser" Schema="dbo" store:Type="Tables" />

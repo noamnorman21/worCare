@@ -24,6 +24,7 @@ namespace DATA
         public string period { get; set; }
         public Nullable<int> quantity { get; set; }
         public Nullable<int> minQuantity { get; set; }
+        public Nullable<System.TimeSpan> TimeInDay { get; set; }
     
         public virtual tblActualList tblActualList { get; set; }
         public virtual tblDrug tblDrug { get; set; }

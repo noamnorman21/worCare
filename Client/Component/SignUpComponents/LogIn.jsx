@@ -3,7 +3,7 @@ import React from 'react'
 import { useEffect, useState, useContext } from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { OrLine, NeedAccount } from './FooterLine'
-import { AuthContext } from '../ChatComponents/navigtion/authProvider'
+
 // import * as Font from 'expo-font';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -14,7 +14,7 @@ export default function LogIn({ navigation }) {
     const [showPassword, setShowPassword] = useState(false);//for password visibility
     const [keyboardOpen, setKeyboardOpen] = useState(false);//for keyboard visibility
     const [animation, setAnimation] = useState({});
-    const { login, loading } = useContext(AuthContext);
+
 
     //login function
     const logInBtn = () => {
@@ -48,7 +48,7 @@ export default function LogIn({ navigation }) {
     }
     //function to login user
     const LoginUser = (userData) => {
-        login(email, password);
+     
         fetch('', {
             method: 'GET',
             headers: {

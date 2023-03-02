@@ -1,8 +1,12 @@
-// import { View, Text, StyleSheet, } from 'react-native'
-import React from 'react'
-import Providers from './ChatComponents/navigtion'
+import { View, Text, StyleSheet } from 'react-native'
+
 
 
 export default function Chats() {
-  return <Providers />
+  return (
+    <View style={styles.container}>
+      <Text>Chats</Text>
+    </View>
+  )
+
 }

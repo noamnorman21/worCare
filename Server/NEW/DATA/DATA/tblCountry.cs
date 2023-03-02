@@ -17,12 +17,12 @@ namespace DATA
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public tblCountry()
         {
-            this.tblForeignUser = new HashSet<tblForeignUser>();
+            this.tblForeignUsers = new HashSet<tblForeignUser>();
         }
     
         public string CountryName_En { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tblForeignUser> tblForeignUser { get; set; }
+        public virtual ICollection<tblForeignUser> tblForeignUsers { get; set; }
     }
 }

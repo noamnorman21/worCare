@@ -12,16 +12,20 @@ namespace DATA
     using System;
     using System.Collections.Generic;
     
-    public partial class tblContacts
+    public partial class tblHobby
     {
-        public int contactId { get; set; }
-        public string contactName { get; set; }
-        public string phoneNo { get; set; }
-        public string mobileNo { get; set; }
-        public string email { get; set; }
-        public string role { get; set; }
-        public string contactComment { get; set; }
         public string patientId { get; set; }
+        public string books { get; set; }
+        public string music { get; set; }
+        public string TVShow { get; set; }
+        public string radioChannel { get; set; }
+        public string food { get; set; }
+        public string drink { get; set; }
+        public string movie { get; set; }
+        public string specialHabits { get; set; }
+        public string afternoonNap { get; set; }
+        public string nightSleep { get; set; }
+        public string other { get; set; }
     
         public virtual tblPatient tblPatient { get; set; }
     }

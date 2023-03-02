@@ -32,7 +32,7 @@ export default function ImagePickerExample(props) {
       setImage(result.assets[0].uri);
       const { uri } = result.assets[0];
       const filename = uri.substring(uri.lastIndexOf('/') + 1);
-      props.onImgChange(filename)
+      props.onImgChange(result.assets[0].uri)
     }
   };
 

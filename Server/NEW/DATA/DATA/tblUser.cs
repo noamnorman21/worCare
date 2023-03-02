@@ -17,9 +17,9 @@ namespace DATA
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public tblUser()
         {
-            this.tblCalendarForUser = new HashSet<tblCalendarForUser>();
-            this.tblPatientTask = new HashSet<tblPatientTask>();
-            this.tblPaycheck = new HashSet<tblPaycheck>();
+            this.tblCalendarForUsers = new HashSet<tblCalendarForUser>();
+            this.tblPatientTasks = new HashSet<tblPatientTask>();
+            this.tblPaychecks = new HashSet<tblPaycheck>();
         }
     
         public int Id { get; set; }
@@ -32,11 +32,11 @@ namespace DATA
         public string userUri { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tblCalendarForUser> tblCalendarForUser { get; set; }
+        public virtual ICollection<tblCalendarForUser> tblCalendarForUsers { get; set; }
         public virtual tblForeignUser tblForeignUser { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tblPatientTask> tblPatientTask { get; set; }
+        public virtual ICollection<tblPatientTask> tblPatientTasks { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tblPaycheck> tblPaycheck { get; set; }
+        public virtual ICollection<tblPaycheck> tblPaychecks { get; set; }
     }
 }

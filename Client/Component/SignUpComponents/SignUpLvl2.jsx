@@ -10,109 +10,156 @@ Font.loadAsync({
   'Urbanist-SemiBold': require('../../assets/fonts/Urbanist-SemiBold.ttf'),
 });
 
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { storage } from '../../config/firebase';
+
 export default function SignUpLvl2({ navigation, route }) {
   const userData = route.params.user;
   const [userGender, setUserGender] = useState('');
+  const [imageFireBaseUrl, setImageFireBaseUrl] = useState('');
   // Check if userGender is empty
   const NavigateToSignUpLvl3 = () => {
     if (userGender === '') {
       Alert.alert('Please Select a gender');
       return;
     }
-    navigation.navigate('SignUpLvl3')     
+    navigation.navigate('SignUpLvl3')
   }
+  const sendToFirebase = async (image) => {
+    
+   
+     const filename = image.substring(image.lastIndexOf('/') + 1);
+   
 
-  const sendDataToDB = () => {
-    const newUserToDB = {
-      FirstName: userData.firstName,
-      LastName: userData.lastName,
-      Email: userData.email,
-      Password: userData.password,
-      gender: userGender,
-      phoneNum: userData.phoneNum,
-      userUri: userData.imagePath
+     const storageRef = ref(storage, "images/" + filename);
+     const blob = await fetch(image).then(response => response.blob());
+
+    try {
+      const uploadTask = uploadBytesResumable(storageRef, blob);
+      uploadTask.on('state_changed',
+        snapshot => {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log(`Upload is ${progress}% complete`);
+        },
+        error => {
+          console.error(error);
+          Alert.alert('Upload Error', 'Sorry, there was an error uploading your image. Please try again later.');
+        },
+        () => {
+          getDownloadURL(storageRef).then(downloadURL => {
+            console.log('File available at', downloadURL);
+            setImageFireBaseUrl(downloadURL);
+          });
+        }
+      );
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Upload Error', 'Sorry, there was an error uploading your image. Please try again later.');
     }
-    console.log(newUserToDB.FirstName);
+  
+}
 
-    console.log(newUserToDB.userUri);
-    // fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/InsertUser', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json; charset=UTF-8',
-    //   },
-    //   body: JSON.stringify(newUserToDB),
-    // })
-    //   .then((response) => response.json())
-    //   .then((json) => {
-    //     console.log(json);
-    //   })
-    //   .catch((error) => {
-    //     console.error(error);
-    //   }
-    //   );
-    // NavigateToSignUpLvl3();
 
+const sendDataToDB = () => {
+
+  //send the image to firebase storage, we will get the image url and send it to the DB
+  //console.log(userData.imagePath);
+  sendToFirebase(userData.imagePath)
+  const newUserToDB = {
+    FirstName: userData.firstName,
+    LastName: userData.lastName,
+    Email: userData.email,
+    Password: userData.password,
+    gender: userGender,
+    phoneNum: userData.phoneNum,
+    userUri: imageFireBaseUrl,
+   
   }
+  console.log(newUserToDB.userUri);
 
-  const NavigateToLogIn = () => {
-    navigation.navigate('LogIn')
-  }
 
-  return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.header}>
-        We love to know you...
-      </Text>
-      <Text style={styles.smallHeader}>
-        It will take only 5 minutes
-      </Text>
 
-      <View>
-        <Text style={styles.TitleGender}> I am a...</Text>
-      </View>
 
-      <View style={styles.GenderContainer}>
-        <TouchableOpacity
-          style={[styles.GenderButton, userGender === 'M' && styles.selectedGender]}
-          onPress={() => setUserGender('M')}
-        >
-          <Image
-            source={require('../../images/hero.png')}
-            style={styles.imgGender}
-          />
-        </TouchableOpacity>
-        <View style={{ margin: 20 }}></View>
-        <TouchableOpacity
-          style={[styles.GenderButton, userGender === 'F' && styles.selectedGender]}
-          onPress={() => setUserGender('F')}
-        >
-          <Image
-            source={require('../../images/superhero.png')}
-            style={styles.imgGender}
-          />
-        </TouchableOpacity>
-      </View>
 
-      <View style={{ flex: 2 }}>
-        <TouchableOpacity
-          style={{ marginBottom: 40 }}
-          onPress={() => setUserGender('O')}
-        >
-          <Text style={[styles.txtOther, userGender === 'O' && styles.selectedGenderTXT]}>Prefer not to say...</Text>
-        </TouchableOpacity>
+ //send the user data to the DB
+  fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/InsertUser', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    body: JSON.stringify(newUserToDB),
+  })
+    .then((response) => response.json())
+    .then((json) => {
+      console.log(json);
+    })
+    .catch((error) => {
+      console.error(error);
+    }
+    );
+  NavigateToSignUpLvl3();
 
-        <TouchableOpacity style={styles.button}
-          onPress={sendDataToDB}
-        >
-          <Text style={styles.buttonText}>
-            Continue
-          </Text>
-        </TouchableOpacity>
-      </View>
-      <OrLine />
-      <HaveAccount NavigateToLogIn={NavigateToLogIn} />
-    </SafeAreaView>
-  )
+}
+
+const NavigateToLogIn = () => {
+  navigation.navigate('LogIn')
+}
+
+return (
+  <SafeAreaView style={styles.container}>
+    <Text style={styles.header}>
+      We love to know you...
+    </Text>
+    <Text style={styles.smallHeader}>
+      It will take only 5 minutes
+    </Text>
+
+    <View>
+      <Text style={styles.TitleGender}> I am a...</Text>
+    </View>
+
+    <View style={styles.GenderContainer}>
+      <TouchableOpacity
+        style={[styles.GenderButton, userGender === 'M' && styles.selectedGender]}
+        onPress={() => setUserGender('M')}
+      >
+        <Image
+          source={require('../../images/hero.png')}
+          style={styles.imgGender}
+        />
+      </TouchableOpacity>
+      <View style={{ margin: 20 }}></View>
+      <TouchableOpacity
+        style={[styles.GenderButton, userGender === 'F' && styles.selectedGender]}
+        onPress={() => setUserGender('F')}
+      >
+        <Image
+          source={require('../../images/superhero.png')}
+          style={styles.imgGender}
+        />
+      </TouchableOpacity>
+    </View>
+
+    <View style={{ flex: 2 }}>
+      <TouchableOpacity
+        style={{ marginBottom: 40 }}
+        onPress={() => setUserGender('O')}
+      >
+        <Text style={[styles.txtOther, userGender === 'O' && styles.selectedGenderTXT]}>Prefer not to say...</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.button}
+        onPress={sendDataToDB}
+      >
+        <Text style={styles.buttonText}>
+          Continue
+        </Text>
+      </TouchableOpacity>
+    </View>
+    <OrLine />
+    <HaveAccount NavigateToLogIn={NavigateToLogIn} />
+  </SafeAreaView>
+)
 }
 
 const styles = StyleSheet.create({

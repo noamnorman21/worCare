@@ -24,6 +24,8 @@ namespace DATA
         public int workerId { get; set; }
         public int userId { get; set; }
         public int listId { get; set; }
+        public Nullable<System.TimeSpan> TimeInDay { get; set; }
+        public string period { get; set; }
     
         public virtual tblActualList tblActualList { get; set; }
         public virtual tblForeignUser tblForeignUser { get; set; }

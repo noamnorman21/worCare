@@ -14,16 +14,16 @@ import NavigateSignUp from './Component/SignUpComponents/NavigateSignUp';
 import SignUpCareGiverLVL5 from './Component/SignUpComponents/CareGiver/SignUpCaregiverLVL5';
 import ForgotPassword from './Component/ForgotPasswordComponents/CreateNewPassword';
 import FCTest from './Component/HelpComponents/FCTest';
-import Chats from './Component/Chats';
-import Providers from './Component/ChatComponents/navigtion';
+
+
 
 
 export default function App() {
   return (
     <NavigationContainer independent={true}>
-      <CustomHeader />
+
       {/* <SettingScreen /> */}
-      {/* <NavigateSignUp /> */}
+      <NavigateSignUp />
     </NavigationContainer>
 
   );
