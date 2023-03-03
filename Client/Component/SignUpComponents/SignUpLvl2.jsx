@@ -17,23 +17,16 @@ export default function SignUpLvl2({ navigation, route }) {
   const userData = route.params.user;
   const [userGender, setUserGender] = useState('');
   const [imageFireBaseUrl, setImageFireBaseUrl] = useState('');
-  // Check if userGender is empty
-  const NavigateToSignUpLvl3 = () => {
+
+  // Send the image to firebase storage and get the image url
+  const sendToFirebase = async (image) => {
     if (userGender === '') {
       Alert.alert('Please Select a gender');
       return;
     }
-    navigation.navigate('SignUpLvl3')
-  }
-  const sendToFirebase = async (image) => {
-    
-   
      const filename = image.substring(image.lastIndexOf('/') + 1);
-   
-
      const storageRef = ref(storage, "images/" + filename);
      const blob = await fetch(image).then(response => response.blob());
-
     try {
       const uploadTask = uploadBytesResumable(storageRef, blob);
       uploadTask.on('state_changed',
@@ -49,22 +42,26 @@ export default function SignUpLvl2({ navigation, route }) {
           getDownloadURL(storageRef).then(downloadURL => {
             console.log('File available at', downloadURL);
             setImageFireBaseUrl(downloadURL);
+            sendDataToDB(downloadURL);
+
+           
           });
         }
       );
     } catch (error) {
       console.error(error);
       Alert.alert('Upload Error', 'Sorry, there was an error uploading your image. Please try again later.');
+      sendDataToDB();
     }
   
 }
 
 
-const sendDataToDB = () => {
+const sendDataToDB = (downloadURL) => {
 
   //send the image to firebase storage, we will get the image url and send it to the DB
-  //console.log(userData.imagePath);
-  sendToFirebase(userData.imagePath)
+  //sendToFirebase(userData.imagePath)
+  //create the user object to send to the DB, do it after we get the image url
   const newUserToDB = {
     FirstName: userData.firstName,
     LastName: userData.lastName,
@@ -72,14 +69,10 @@ const sendDataToDB = () => {
     Password: userData.password,
     gender: userGender,
     phoneNum: userData.phoneNum,
-    userUri: imageFireBaseUrl,
+    userUri: downloadURL,
    
   }
-  console.log(newUserToDB.userUri);
-
-
-
-
+  console.log("afetre: "+ newUserToDB.userUri);
 
  //send the user data to the DB
   fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/InsertUser', {
@@ -91,14 +84,16 @@ const sendDataToDB = () => {
   })
     .then((response) => response.json())
     .then((json) => {
-      console.log(json);
+      console.log("id: "+json);
+      //save the id of the new user that we got from the DB
+     navigation.navigate('SignUpLvl3',{userId:json})
     })
     .catch((error) => {
       console.error(error);
     }
     );
-  NavigateToSignUpLvl3();
 
+  
 }
 
 const NavigateToLogIn = () => {
@@ -149,7 +144,7 @@ return (
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.button}
-        onPress={sendDataToDB}
+        onPress={()=>sendToFirebase(userData.imagePath)}
       >
         <Text style={styles.buttonText}>
           Continue

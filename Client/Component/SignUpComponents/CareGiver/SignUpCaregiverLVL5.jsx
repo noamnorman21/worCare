@@ -16,21 +16,17 @@ export default function SignUpCaregiverLVL5({ navigation, route }, props) {
   // const [selectedHolidays, setSelectedHolidays] = useState([]);
   // const data = route.params.data;
   // console.log(data);
+  const newForeignUser = route.params.data;
 
   const sendToDB = () => {
-    const dataToSend = {
-      // country: data.valueCountry,
-      // language: data.valueLanguage,
-      // dateOfBirth: data.date,
-      // visaExpiration: data.visaExpiration,
-      // holidays: data.selectedHolidays,
-    };
-    fetch("", {
+    console.log(newForeignUser);
+
+    fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/ForeignUser/InsertForeignUser', {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ dataToSend }),
+      body: JSON.stringify({ newForeignUser }),
     })
       .then((response) => response.json())
       .then((json) => {

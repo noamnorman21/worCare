@@ -9,13 +9,14 @@ Font.loadAsync({
   'Urbanist-Medium': require('../../assets/fonts/Urbanist-Medium.ttf'),
 });
 
-export default function SignUpLvl3({ navigation }) {
-
+export default function SignUpLvl3({ navigation, route }) {
+  const userId = route.params.userId;
   const [role, setRole] = useState(''); // Caregiver or Patient's Family Member
 
   const NavigateToNextLvl = () => {
     if (role === 'Caregiver') {
-      navigation.navigate('SignUpCaregiverLVL4')
+     navigation.navigate('SignUpCaregiverLVL4', { userId: userId })
+
     } else if (role === 'Patient’s Family Member') {
       navigation.navigate('SignUpUserLVL4')
     }

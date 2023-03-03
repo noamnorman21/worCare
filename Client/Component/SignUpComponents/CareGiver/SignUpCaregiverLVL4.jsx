@@ -14,7 +14,9 @@ Font.loadAsync({
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
-export default function SignUpCaregiverLVL4({ navigation }) {
+export default function SignUpCaregiverLVL4({ navigation, route }) {
+  //we need to get the user data(most umporant is the id) from the previous screen
+  
 
   const getMinDate = () => {
     var date = new Date().getDate(); //Current Date
@@ -28,7 +30,7 @@ export default function SignUpCaregiverLVL4({ navigation }) {
     var year = new Date().getFullYear() + 20; //Current Year
     return date + '-' + month + '-' + year;
   }
-  const [visaExpiration, setVisaExpiration] = useState("");
+  const [visaExpiration, setVisaExpiration] = useState('');
   const [date, setDate] = useState('');
 
   const [openCountry, setOpenCountry] = useState(false);
@@ -114,7 +116,7 @@ export default function SignUpCaregiverLVL4({ navigation }) {
     { label: "Tunisia", value: "TN" },
     { label: "Algeria", value: "DZ" },
     { label: "Other", value: "Other" }
-  ]); // להוציא לקובץ חיצוני ולהשתמש בפונקציה שמחזירה את המערך כי זה ארוך וחופר
+  ]); //איזה שכונה.., להוציא לקובץ חיצוני ולהשתמש בפונקציה שמחזירה את המערך כי זה ארוך וחופר
 
   const [openLanguage, setOpenLanguage] = useState(false);
   const [valueLanguage, setValueLanguage] = useState(null);
@@ -170,14 +172,15 @@ export default function SignUpCaregiverLVL4({ navigation }) {
 
   // send this data to next screen (SignUpCaregiverLVL5)
   const NavigateToNextScreen = () => {
-    if (valueCountry == null ) {
+    if (valueCountry == null) {
       Alert.alert("Please fill all the details");
     } else {
       const data = {
-        country: valueCountry,
-        language: valueLanguage,
-        date: date,
-        visaExpiration: visaExpiration,
+        Id: route.params.userId,
+        CountryName_En: valueCountry,
+        LanguageName_En: valueLanguage,
+        DateOfBirth: date,
+        VisaExpirationDate: visaExpiration,
       };
       navigation.navigate("SignUpCaregiverLVL5", { data: data });
     }
@@ -193,7 +196,7 @@ export default function SignUpCaregiverLVL4({ navigation }) {
       <View style={styles.inputContainer}>
         {/* Date Picker for birth-date */}
         <DatePicker
-          useNativeDriver={'true'}
+          useNativeDriver={true}
           iconComponent={<FontAwesome name="calendar-check-o" size={24} color="gray" />}
           style={styles.input}
           date={date}
@@ -230,7 +233,7 @@ export default function SignUpCaregiverLVL4({ navigation }) {
         {/* Date Picker for visa expiration min date should be today*/}
         <DatePicker
           iconComponent={<FontAwesome name="calendar-times-o" size={24} color="gray" />}
-          useNativeDriver={'true'}
+          useNativeDriver={true}
           style={styles.input}
           date={visaExpiration}
           mode="date"
@@ -277,7 +280,7 @@ export default function SignUpCaregiverLVL4({ navigation }) {
           searchPlaceholder="Search..."
           value={valueCountry}
           onChange={item => {
-            setValueCountry(item.value);
+            setValueCountry(item.label);
           }}
           renderRightIcon={() => (
             <Entypo name={'location'} color={'gray'} size={24} />
@@ -302,7 +305,7 @@ export default function SignUpCaregiverLVL4({ navigation }) {
           searchPlaceholder="Search..."
           value={valueLanguage}
           onChange={item => {
-            setValueLanguage(item.value);
+            setValueLanguage(item.label);
           }}
           renderRightIcon={() => (
             <MaterialIcons name="translate" size={24} color="gray" />

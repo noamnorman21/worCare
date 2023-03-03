@@ -115,8 +115,11 @@ namespace WebApi.Controllers
             {
                 db.InsertUser(user.Email, user.Password, user.FirstName, user.LastName, user.gender, user.phoneNum, user.userUri);
                 db.SaveChanges();
-                return Ok("User Inserted Successfully");
+                //return the id from the new user
+                var newUser = db.tblUsers.Where(x => x.Email == user.Email).FirstOrDefault();
+                return Ok(newUser.Id);
             }
+
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
