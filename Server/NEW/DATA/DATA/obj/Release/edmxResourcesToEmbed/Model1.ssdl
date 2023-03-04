@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Schema Namespace="igroup194_Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+<Schema Namespace="igroup194_prodModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
   <EntityType Name="sysdiagrams">
     <Key>
       <PropertyRef Name="diagram_id" />
@@ -19,20 +19,20 @@
   </EntityType>
   <EntityType Name="tblCalendarForUser">
     <Key>
-      <PropertyRef Name="calenderNum" />
+      <PropertyRef Name="calendarNum" />
       <PropertyRef Name="id" />
     </Key>
-    <Property Name="calenderNum" Type="int" Nullable="false" />
+    <Property Name="calendarNum" Type="int" Nullable="false" />
     <Property Name="id" Type="int" Nullable="false" />
     <Property Name="isPrimary" Type="bit" />
   </EntityType>
   <EntityType Name="tblCalendarsType">
     <Key>
-      <PropertyRef Name="calenderNum" />
+      <PropertyRef Name="calendarNum" />
     </Key>
-    <Property Name="calenderNum" Type="int" Nullable="false" />
-    <Property Name="calenderName" Type="varchar" MaxLength="25" />
-    <Property Name="calenderUrl" Type="varchar(max)" />
+    <Property Name="calendarNum" Type="int" Nullable="false" />
+    <Property Name="calendarName" Type="varchar" MaxLength="25" />
+    <Property Name="calendarUrl" Type="varchar(max)" />
   </EntityType>
   <EntityType Name="tblCaresForPatient">
     <Key>
@@ -122,7 +122,8 @@
     </Key>
     <Property Name="LanguageName_En" Type="varchar" MaxLength="20" Nullable="false" />
     <Property Name="LanguageName_He" Type="nvarchar" MaxLength="20" Nullable="false" />
-    <Property Name="LanguageName_Original" Type="nvarchar" MaxLength="20" Nullable="false" />
+    <Property Name="LanguageName_Encode" Type="nvarchar" MaxLength="20" Nullable="false" />
+    <Property Name="LanguageName_Origin" Type="nvarchar" MaxLength="20" />
   </EntityType>
   <EntityType Name="tblLimitations">
     <Key>
@@ -258,10 +259,10 @@
     <End Role="tblCalendarForUser" Type="Self.tblCalendarForUser" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="tblCalendarsType">
-        <PropertyRef Name="calenderNum" />
+        <PropertyRef Name="calendarNum" />
       </Principal>
       <Dependent Role="tblCalendarForUser">
-        <PropertyRef Name="calenderNum" />
+        <PropertyRef Name="calendarNum" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -580,7 +581,7 @@
     <Parameter Name="new_diagramname" Type="nvarchar" Mode="In" />
   </Function>
   <Function Name="sp_upgraddiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
-  <EntityContainer Name="igroup194_ModelStoreContainer">
+  <EntityContainer Name="igroup194_prodModelStoreContainer">
     <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="tblActualList" EntityType="Self.tblActualList" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="tblCalendarForUser" EntityType="Self.tblCalendarForUser" Schema="dbo" store:Type="Tables" />

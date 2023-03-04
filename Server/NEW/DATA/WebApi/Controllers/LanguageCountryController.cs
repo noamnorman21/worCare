@@ -23,7 +23,7 @@ namespace WebApi.Controllers
                 var languages = from l in db.tblLanguages
                                 select new
                                 {
-                                   LanguageName_Enl = l.LanguageName_En,
+                                   LanguageName_En = l.LanguageName_En,
                                    LanguageName_Origin = l.LanguageName_Origin,
                                 };
 
@@ -36,6 +36,7 @@ namespace WebApi.Controllers
             }
         }
         // GET api/<controller>/5
+        [HttpGet]
         [Route("GetAllCountries")]
         public IHttpActionResult GetAllCountries()
         {

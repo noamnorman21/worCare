@@ -12,7 +12,7 @@ namespace WebApi.Controllers
     [RoutePrefix("api/ForeignUser")]
     public class ForeignUserController : ApiController
     {
-        igroup194_prodEntities db = new igroup194_prodEntities();
+        igroup194DB db = new igroup194DB();
         // GET api/<controller>
         public IEnumerable<string> Get()
         {

@@ -21,7 +21,7 @@ export default function SignUpCaregiverLVL4({ navigation, route }) {
   const userId = route.params.userId;
   useEffect(() => {
     let urlforLanguages = 'https://proj.ruppin.ac.il/cgroup94/test1/api/LanguageCountry/GetAllLanguages';
-    let urlforCountries = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetAllCountries';
+    let urlforCountries = 'https://proj.ruppin.ac.il/cgroup94/test1/api/LanguageCountry/GetAllCountries';
     fetch(urlforCountries, {
       method: 'GET',
       headers: {

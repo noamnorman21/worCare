@@ -17,7 +17,7 @@ namespace WebApi.Controllers
     [RoutePrefix("api/User")]
     public class UserController : ApiController
     {
-        igroup194_prodEntities db = new igroup194_prodEntities();
+        igroup194DB db = new igroup194DB();
 
         [Route("GetUser/{id}")]
         public IHttpActionResult GetUser(int id)
