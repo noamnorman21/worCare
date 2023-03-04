@@ -534,6 +534,13 @@
     </ReferentialConstraint>
   </Association>
   <Function Name="fn_diagramobjects" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int" />
+  <Function Name="InsertForeignUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="Id" Type="int" Mode="In" />
+    <Parameter Name="DateOfBirth" Type="date" Mode="In" />
+    <Parameter Name="VisaExpirationDate" Type="date" Mode="In" />
+    <Parameter Name="LanguageName_En" Type="varchar" Mode="In" />
+    <Parameter Name="CountryName_En" Type="varchar" Mode="In" />
+  </Function>
   <Function Name="InsertUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="Email" Type="varchar" Mode="In" />
     <Parameter Name="Password" Type="varchar" Mode="In" />

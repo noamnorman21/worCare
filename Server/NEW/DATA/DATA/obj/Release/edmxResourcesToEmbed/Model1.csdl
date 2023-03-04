@@ -739,6 +739,13 @@
       <Parameter Name="new_diagramname" Mode="In" Type="String" />
     </FunctionImport>
     <FunctionImport Name="sp_upgraddiagrams" />
+    <FunctionImport Name="InsertForeignUser">
+      <Parameter Name="Id" Mode="In" Type="Int32" />
+      <Parameter Name="DateOfBirth" Mode="In" Type="DateTime" />
+      <Parameter Name="VisaExpirationDate" Mode="In" Type="DateTime" />
+      <Parameter Name="LanguageName_En" Mode="In" Type="String" />
+      <Parameter Name="CountryName_En" Mode="In" Type="String" />
+    </FunctionImport>
   </EntityContainer>
   <ComplexType Name="sp_helpdiagramdefinition_Result">
     <Property Type="Int32" Name="version" Nullable="true" />

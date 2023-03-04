@@ -24,6 +24,13 @@ export default function SignUpLvl2({ navigation, route }) {
       Alert.alert('Please Select a gender');
       return;
     }
+    // if the user didn't upload an image, we will use the default image
+    if (image === null) {
+      //זה תמונה מכוערת -נועם תחליף אותה
+      let defultImage="https://firebasestorage.googleapis.com/v0/b/worcare-3df72.appspot.com/o/images%2FAvatar.png?alt=media&token=5e7d6c28-aeed-42df-ad09-1b6f29e27d72"
+      sendDataToDB(defultImage);
+     
+    }
      const filename = image.substring(image.lastIndexOf('/') + 1);
      const storageRef = ref(storage, "images/" + filename);
      const blob = await fetch(image).then(response => response.blob());
@@ -43,8 +50,7 @@ export default function SignUpLvl2({ navigation, route }) {
             console.log('File available at', downloadURL);
             setImageFireBaseUrl(downloadURL);
             sendDataToDB(downloadURL);
-
-           
+ 
           });
         }
       );

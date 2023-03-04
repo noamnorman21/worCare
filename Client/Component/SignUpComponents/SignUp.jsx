@@ -86,9 +86,7 @@ export default function CreateUser({ navigation }) {
       return Alert.alert('Invalid Phone Number', 'Please enter a valid phone number')
     }
 
-    if (userImage === '') {
-      setUserImage('../../images/Avatar.png')
-    }
+
     const userData = {
       email: user.email,
       password: user.password,

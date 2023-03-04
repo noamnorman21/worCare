@@ -286,5 +286,6 @@
     </FunctionImportMapping>
     <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="igroup194_Model.Store.sp_renamediagram" />
     <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="igroup194_Model.Store.sp_upgraddiagrams" />
+    <FunctionImportMapping FunctionImportName="InsertForeignUser" FunctionName="igroup194_Model.Store.InsertForeignUser" />
   </EntityContainerMapping>
 </Mapping>

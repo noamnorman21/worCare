@@ -539,6 +539,13 @@
           </ReferentialConstraint>
         </Association>
         <Function Name="fn_diagramobjects" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int" />
+        <Function Name="InsertForeignUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Id" Type="int" Mode="In" />
+          <Parameter Name="DateOfBirth" Type="date" Mode="In" />
+          <Parameter Name="VisaExpirationDate" Type="date" Mode="In" />
+          <Parameter Name="LanguageName_En" Type="varchar" Mode="In" />
+          <Parameter Name="CountryName_En" Type="varchar" Mode="In" />
+        </Function>
         <Function Name="InsertUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="Email" Type="varchar" Mode="In" />
           <Parameter Name="Password" Type="varchar" Mode="In" />
@@ -1441,6 +1448,13 @@
             <Parameter Name="new_diagramname" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="sp_upgraddiagrams" />
+          <FunctionImport Name="InsertForeignUser">
+            <Parameter Name="Id" Mode="In" Type="Int32" />
+            <Parameter Name="DateOfBirth" Mode="In" Type="DateTime" />
+            <Parameter Name="VisaExpirationDate" Mode="In" Type="DateTime" />
+            <Parameter Name="LanguageName_En" Mode="In" Type="String" />
+            <Parameter Name="CountryName_En" Mode="In" Type="String" />
+          </FunctionImport>
         </EntityContainer>
         <ComplexType Name="sp_helpdiagramdefinition_Result">
           <Property Type="Int32" Name="version" Nullable="true" />
@@ -1744,6 +1758,7 @@
           </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="igroup194_Model.Store.sp_renamediagram" />
           <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="igroup194_Model.Store.sp_upgraddiagrams" />
+          <FunctionImportMapping FunctionImportName="InsertForeignUser" FunctionName="igroup194_Model.Store.InsertForeignUser" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

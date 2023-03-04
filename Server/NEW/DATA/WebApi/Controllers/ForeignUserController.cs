@@ -30,24 +30,22 @@ namespace WebApi.Controllers
         public IHttpActionResult Post([FromBody] ForeignUserDTO user)
 
         {
+            try
+            {
+                tblUser userExist = db.tblUsers.Where(x => x.Id == user.Id).First();
+                if (userExist == null)
+                    return NotFound();
+                db.InsertForeignUser(user.Id, user.DateOfBirth, user.VisaExpirationDate, user.LanguageName_En, user.CountryName_En);
+                return Ok("Foreign user added");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
             //first we will check if the id is exist in tblUser
-            var userExist = db.tblUsers.Where(x => x.Id == user.Id).First();
-            if (userExist==null)
-                return NotFound();
-
-   
 
 
-            //if the id is exist we will add a new row to tblForeignUser
-            tblForeignUser foreignUser = new tblForeignUser();
-            foreignUser.Id = user.Id;
-            foreignUser.DateOfBirth = user.DateOfBirth;
-            foreignUser.VisaExpirationDate = user.VisaExpirationDate;
-            foreignUser.LanguageName_En = user.LanguageName_En;
-            foreignUser.CountryName_En = user.CountryName_En;
-            db.tblForeignUsers.Add(foreignUser);
-            db.SaveChanges();
-            return Ok("foreign user added successfully");
+  
 
         }
 

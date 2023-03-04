@@ -21,20 +21,20 @@ export default function SignUpCaregiverLVL5({ navigation, route }, props) {
   const sendToDB = () => {
     console.log(newForeignUser);
 
-    fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/ForeignUser/InsertForeignUser', {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ newForeignUser }),
-    })
-      .then((response) => response.json())
-      .then((json) => {
-        console.log(json);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    // fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/ForeignUser/InsertForeignUser', {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify({ newForeignUser }),
+    // })
+    //   .then((response) => response.json())
+    //   .then((json) => {
+    //     console.log(json);
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
+    //   });
   };
   return (
     <SafeAreaView style={styles.container}>
