@@ -20,9 +20,9 @@ namespace DATA
             this.tblCalendarForUsers = new HashSet<tblCalendarForUser>();
         }
     
-        public int calenderNum { get; set; }
-        public string calenderName { get; set; }
-        public string calenderUrl { get; set; }
+        public int calendarNum { get; set; }
+        public string calendarName { get; set; }
+        public string calendarUrl { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tblCalendarForUser> tblCalendarForUsers { get; set; }

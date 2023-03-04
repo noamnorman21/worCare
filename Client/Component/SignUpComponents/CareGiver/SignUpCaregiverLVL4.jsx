@@ -16,11 +16,39 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function SignUpCaregiverLVL4({ navigation, route }) {
   const [language, setLanguage] = useState([]);
+  const [country, setCountry] = useState([]);
   //we need to get the user data(most umporant is the id) from the previous screen
   const userId = route.params.userId;
   useEffect(() => {
     let urlforLanguages = 'https://proj.ruppin.ac.il/cgroup94/test1/api/LanguageCountry/GetAllLanguages';
     let urlforCountries = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetAllCountries';
+    fetch(urlforCountries, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    })
+      .then(res => {
+        if (res.ok) {
+          return res.json()
+        }
+        else {
+          console.log("not found")
+        }
+      })
+      .then(data => {
+        if (data != null) {
+          let coun = data.map((item) => {
+            return { label: item, value: item }
+          })
+          setCountry(coun);
+        }
+      })
+      .catch((error) => {
+        console.log("err=", error);
+      });
+
+
     fetch(urlforLanguages, {
       method: 'GET',
       headers: {
@@ -32,13 +60,13 @@ export default function SignUpCaregiverLVL4({ navigation, route }) {
           return res.json()
         }
         else {
-          Alert.alert("not found")
+          console.log("not found")
         }
       })
       .then(data => {
         if (data != null) {
           let lang = data.map((item) => {
-            return { label: item, value: item }
+            return { label: item.LanguageName_Origin, value: item.LanguageName_En }
           })
           setLanguage(lang);
         }
@@ -67,92 +95,11 @@ export default function SignUpCaregiverLVL4({ navigation, route }) {
 
   const [openCountry, setOpenCountry] = useState(false);
   const [valueCountry, setValueCountry] = useState(null);
-  const [country, setCountry] = useState([
-    { label: "United States", value: "US" },
-    { label: "United Kingdom", value: "UK" },
-    { label: "Canada", value: "CA" },
-    { label: "France", value: "FR" },
-    { label: "Germany", value: "DE" },
-    { label: "Italy", value: "IT" },
-    { label: "Spain", value: "ES" },
-    { label: "Netherlands", value: "NL" },
-    { label: "Belgium", value: "BE" },
-    { label: "Austria", value: "AT" },
-    { label: "Portugal", value: "PT" },
-    { label: "Ireland", value: "IE" },
-    { label: "Luxembourg", value: "LU" },
-    { label: "Denmark", value: "DK" },
-    { label: "Sweden", value: "SE" },
-    { label: "Norway", value: "NO" },
-    { label: "Finland", value: "FI" },
-    { label: "Iceland", value: "IS" },
-    { label: "Switzerland", value: "CH" },
-    { label: "Greece", value: "GR" },
-    { label: "Poland", value: "PL" },
-    { label: "Czech Republic", value: "CZ" },
-    { label: "Slovakia", value: "SK" },
-    { label: "Hungary", value: "HU" },
-    { label: "Romania", value: "RO" },
-    { label: "Bulgaria", value: "BG" },
-    { label: "Croatia", value: "HR" },
-    { label: "Slovenia", value: "SI" },
-    { label: "Serbia", value: "RS" },
-    { label: "Bosnia and Herzegovina", value: "BA" },
-    { label: "Macedonia", value: "MK" },
-    { label: "Albania", value: "AL" },
-    { label: "Montenegro", value: "ME" },
-    { label: "Turkey", value: "TR" },
-    { label: "Russia", value: "RU" },
-    { label: "Ukraine", value: "UA" },
-    { label: "Belarus", value: "BY" },
-    { label: "Moldova", value: "MD" },
-    { label: "Lithuania", value: "LT" },
-    { label: "Latvia", value: "LV" },
-    { label: "Estonia", value: "EE" },
-    { label: "Azerbaijan", value: "AZ" },
-    { label: "Georgia", value: "GE" },
-    { label: "Armenia", value: "AM" },
-    { label: "Turkmenistan", value: "TM" },
-    { label: "Uzbekistan", value: "UZ" },
-    { label: "China", value: "CN" },
-    { label: "Japan", value: "JP" },
-    { label: "South Korea", value: "KR" },
-    { label: "Vietnam", value: "VN" },
-    { label: "Thailand", value: "TH" },
-    { label: "Malaysia", value: "MY" },
-    { label: "Singapore", value: "SG" },
-    { label: "Philippines", value: "PH" },
-    { label: "Indonesia", value: "ID" },
-    { label: "India", value: "IN" },
-    { label: "Pakistan", value: "PK" },
-    { label: "Bangladesh", value: "BD" },
-    { label: "Nepal", value: "NP" },
-    { label: "Sri Lanka", value: "LK" },
-    { label: "Myanmar", value: "MM" },
-    { label: "Cambodia", value: "KH" },
-    { label: "Laos", value: "LA" },
-    { label: "Australia", value: "AU" },
-    { label: "New Zealand", value: "NZ" },
-    { label: "Fiji", value: "FJ" },
-    { label: "Mexico", value: "MX" },
-    { label: "Brazil", value: "BR" },
-    { label: "Argentina", value: "AR" },
-    { label: "Chile", value: "CL" },
-    { label: "Peru", value: "PE" },
-    { label: "Colombia", value: "CO" },
-    { label: "Venezuela", value: "VE" },
-    { label: "Ecuador", value: "EC" },
-    { label: "Israel", value: "IL" },
-    { label: "Egypt", value: "EG" },
-    { label: "Morocco", value: "MA" },
-    { label: "Tunisia", value: "TN" },
-    { label: "Algeria", value: "DZ" },
-    { label: "Other", value: "Other" }
-  ]); //איזה שכונה.., להוציא לקובץ חיצוני ולהשתמש בפונקציה שמחזירה את המערך כי זה ארוך וחופר
+ 
 
   const [openLanguage, setOpenLanguage] = useState(false);
   const [valueLanguage, setValueLanguage] = useState(null);
-  // להוציא לקובץ חיצוני ולהשתמש בפונקציה שמחזירה את המערך כי זה ארוך וחופר
+  
 
   // send this data to next screen (SignUpCaregiverLVL5)
   const NavigateToNextScreen = () => {

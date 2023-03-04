@@ -14,7 +14,7 @@ namespace DATA
     
     public partial class tblCalendarForUser
     {
-        public int calenderNum { get; set; }
+        public int calendarNum { get; set; }
         public int id { get; set; }
         public Nullable<bool> isPrimary { get; set; }
     

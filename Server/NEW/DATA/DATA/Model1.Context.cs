@@ -15,10 +15,10 @@ namespace DATA
     using System.Data.Entity.Core.Objects;
     using System.Linq;
     
-    public partial class igroup194_prodEntities : DbContext
+    public partial class igroup194DB : DbContext
     {
-        public igroup194_prodEntities()
-            : base("name=igroup194_prodEntities")
+        public igroup194DB()
+            : base("name=igroup194DB")
         {
         }
     
@@ -49,6 +49,31 @@ namespace DATA
         public virtual DbSet<tblProduct> tblProducts { get; set; }
         public virtual DbSet<tblProductList> tblProductLists { get; set; }
         public virtual DbSet<tblUser> tblUsers { get; set; }
+    
+        public virtual int InsertForeignUser(Nullable<int> id, Nullable<System.DateTime> dateOfBirth, Nullable<System.DateTime> visaExpirationDate, string languageName_En, string countryName_En)
+        {
+            var idParameter = id.HasValue ?
+                new ObjectParameter("Id", id) :
+                new ObjectParameter("Id", typeof(int));
+    
+            var dateOfBirthParameter = dateOfBirth.HasValue ?
+                new ObjectParameter("DateOfBirth", dateOfBirth) :
+                new ObjectParameter("DateOfBirth", typeof(System.DateTime));
+    
+            var visaExpirationDateParameter = visaExpirationDate.HasValue ?
+                new ObjectParameter("VisaExpirationDate", visaExpirationDate) :
+                new ObjectParameter("VisaExpirationDate", typeof(System.DateTime));
+    
+            var languageName_EnParameter = languageName_En != null ?
+                new ObjectParameter("LanguageName_En", languageName_En) :
+                new ObjectParameter("LanguageName_En", typeof(string));
+    
+            var countryName_EnParameter = countryName_En != null ?
+                new ObjectParameter("CountryName_En", countryName_En) :
+                new ObjectParameter("CountryName_En", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertForeignUser", idParameter, dateOfBirthParameter, visaExpirationDateParameter, languageName_EnParameter, countryName_EnParameter);
+        }
     
         public virtual int InsertUser(string email, string password, string firstName, string lastName, string gender, string phoneNum, string userUri)
         {
@@ -184,31 +209,6 @@ namespace DATA
         public virtual int sp_upgraddiagrams()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_upgraddiagrams");
-        }
-    
-        public virtual int InsertForeignUser(Nullable<int> id, Nullable<System.DateTime> dateOfBirth, Nullable<System.DateTime> visaExpirationDate, string languageName_En, string countryName_En)
-        {
-            var idParameter = id.HasValue ?
-                new ObjectParameter("Id", id) :
-                new ObjectParameter("Id", typeof(int));
-    
-            var dateOfBirthParameter = dateOfBirth.HasValue ?
-                new ObjectParameter("DateOfBirth", dateOfBirth) :
-                new ObjectParameter("DateOfBirth", typeof(System.DateTime));
-    
-            var visaExpirationDateParameter = visaExpirationDate.HasValue ?
-                new ObjectParameter("VisaExpirationDate", visaExpirationDate) :
-                new ObjectParameter("VisaExpirationDate", typeof(System.DateTime));
-    
-            var languageName_EnParameter = languageName_En != null ?
-                new ObjectParameter("LanguageName_En", languageName_En) :
-                new ObjectParameter("LanguageName_En", typeof(string));
-    
-            var countryName_EnParameter = countryName_En != null ?
-                new ObjectParameter("CountryName_En", countryName_En) :
-                new ObjectParameter("CountryName_En", typeof(string));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertForeignUser", idParameter, dateOfBirthParameter, visaExpirationDateParameter, languageName_EnParameter, countryName_EnParameter);
         }
     }
 }

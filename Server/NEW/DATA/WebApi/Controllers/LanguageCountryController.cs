@@ -12,7 +12,7 @@ namespace WebApi.Controllers
     public class LanguageCountryController : ApiController
     {
         // GET api/<controller>
-        igroup194_prodEntities db = new igroup194_prodEntities();
+        igroup194DB db = new igroup194DB();
 
         [HttpGet]
         [Route("GetAllLanguages")]
@@ -21,7 +21,13 @@ namespace WebApi.Controllers
             try
             {
                 var languages = from l in db.tblLanguages
-                                select l.LanguageName_En;                        
+                                select new
+                                {
+                                   LanguageName_Enl = l.LanguageName_En,
+                                   LanguageName_Origin = l.LanguageName_Origin,
+                                };
+
+                                       
                 return Ok(languages);
             }
             catch (Exception ex)

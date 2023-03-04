@@ -23,7 +23,8 @@ namespace DATA
     
         public string LanguageName_En { get; set; }
         public string LanguageName_He { get; set; }
-        public string LanguageName_Original { get; set; }
+        public string LanguageName_Encode { get; set; }
+        public string LanguageName_Origin { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tblForeignUser> tblForeignUsers { get; set; }
