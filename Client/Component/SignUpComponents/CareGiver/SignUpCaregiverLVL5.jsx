@@ -1,5 +1,5 @@
 import { View, Text, SafeAreaView, StyleSheet, Dimensions, ScrollView, TouchableOpacity } from 'react-native'
-import { useState } from 'react'
+import { useState,useEffect } from 'react'
 import * as Font from 'expo-font';
 import Holidays from '../../HelpComponents/Holidays';
 
@@ -13,24 +13,27 @@ Font.loadAsync({
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 export default function SignUpCaregiverLVL5({ navigation, route }, props) {
-  // const [selectedHolidays, setSelectedHolidays] = useState([]);
+  const [selectedHolidays, setSelectedHolidays] = useState([]);
   // const data = route.params.data;
   // console.log(data);
+  const newForeignUser = route.params.data;
+  const holidaysType= route.params.holidaysType;
+ 
+  //bring from DB all the holidays type
+  useEffect(() => {
+     
+  }, []);
 
   const sendToDB = () => {
-    const dataToSend = {
-      // country: data.valueCountry,
-      // language: data.valueLanguage,
-      // dateOfBirth: data.date,
-      // visaExpiration: data.visaExpiration,
-      // holidays: data.selectedHolidays,
-    };
-    fetch("", {
+ 
+    newForeignUser.Calendars = selectedHolidays; //selectedHolidays is the array of the selected holidays,use them in data base with stored procedure "InsertCalendarForUser"
+    console.log(newForeignUser);
+    fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/ForeignUser/InsertForeignUser', {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ dataToSend }),
+      body: JSON.stringify(newForeignUser),
     })
       .then((response) => response.json())
       .then((json) => {
@@ -39,6 +42,14 @@ export default function SignUpCaregiverLVL5({ navigation, route }, props) {
       .catch((error) => {
         console.error(error);
       });
+      //here we will add navigation to the home page of the foreign user (:
+  };
+
+  const isItemSelected = (arr) => {
+    setSelectedHolidays(arr); //arr is the array of the selected holidays
+    console.log("selectedHolidays=", selectedHolidays);
+
+    
   };
   return (
     <SafeAreaView style={styles.container}>
@@ -46,7 +57,7 @@ export default function SignUpCaregiverLVL5({ navigation, route }, props) {
         <Text style={styles.headerTxt}>Great Job !</Text>
       </View>
       {/* <Text style={styles.headerSmallTxt}>You are almost done</Text> */}
-      <Holidays />
+      <Holidays holidaysType={holidaysType} sendHolidays={isItemSelected} />
 
       <View style={styles.btnContainer}>
         <TouchableOpacity
@@ -78,7 +89,6 @@ const styles = StyleSheet.create({
   headerContainer: {
     paddingTop: 30,
     paddingBottom: 20,
-    paddingHorizontal: 16,
     backgroundColor: '#fff',
   },
   headerTxt: {
@@ -92,7 +102,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: '#000',
     textAlign: 'center',
-    marginBottom: 10,
+    marginVertical: 10,
   },
   line: {
     borderBottomColor: '#808080',
@@ -123,17 +133,19 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   btnContainer: {
-    alignItems: 'center',
     marginTop: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    // marginTop: 20,
   },
   button: {
     width: SCREEN_WIDTH * 0.9,
-    height: 50,
+    height: 54,
     backgroundColor: '#548DFF',
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 16,
-    marginBottom: 20,
+    marginBottom: 12,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -152,7 +164,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   legalTextContainer: {
-    marginVertical: 10,
+    marginBottom: 10,
+    marginTop: 20,
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
@@ -170,5 +183,4 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#548DFF',
   },
-
 });

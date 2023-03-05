@@ -1,5 +1,5 @@
 import { View, Text, Alert, SafeAreaView, TouchableOpacity, Dimensions, StyleSheet } from 'react-native'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { FontAwesome, Entypo, MaterialIcons, AntDesign } from '@expo/vector-icons';
 import DatePicker from 'react-native-datepicker';
 import { Dropdown } from 'react-native-element-dropdown';
@@ -14,172 +14,138 @@ Font.loadAsync({
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
-export default function SignUpCaregiverLVL4({ navigation }) {
+export default function SignUpCaregiverLVL4({ navigation, route }) {
+  const [language, setLanguage] = useState([]);
+  const [country, setCountry] = useState([]);
+  const [holidaysType, setHolidaysType] = useState([]);
+  //we need to get the user data(most umporant is the id) from the previous screen
+  const userId = route.params.userId;
+  useEffect(() => {
+    let urlforLanguages = 'https://proj.ruppin.ac.il/cgroup94/test1/api/LanguageCountry/GetAllLanguages';
+    let urlforCountries = 'https://proj.ruppin.ac.il/cgroup94/test1/api/LanguageCountry/GetAllCountries';
+    let calendarUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Calendars/GetAllCalendars';
+    fetch(calendarUrl, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+        },
+    })
+        .then(res => {
+            if (res.ok) {
+                return res.json()
+            }
+            else {
+                console.log("not found")
+            }
+        })
+        .then(data => {
+            if (data != null) {
+
+                for (let i = 0; i < data.length; i++) {
+                    holidaysType.push({
+                        id: data[i].calendarNum,
+                        label: data[i].CalendarName,
+                    })
+                    
+                }
+            
+            }
+        })
+        .catch((error) => {
+            console.log("err=", error);
+        });
+    fetch(urlforCountries, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    })
+      .then(res => {
+        if (res.ok) {
+          return res.json()
+        }
+        else {
+          console.log("not found")
+        }
+      })
+      .then(data => {
+        if (data != null) {
+          let coun = data.map((item) => {
+            return { label: item, value: item }
+          })
+          setCountry(coun);
+        }
+      })
+      .catch((error) => {
+        console.log("err=", error);
+      });
+
+
+    fetch(urlforLanguages, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    })
+      .then(res => {
+        if (res.ok) {
+          return res.json()
+        }
+        else {
+          console.log("not found")
+        }
+      })
+      .then(data => {
+        if (data != null) {
+          let lang = data.map((item) => {
+            return { label: item.LanguageName_Origin, value: item.LanguageName_En }
+          })
+          setLanguage(lang);
+        }
+      })
+      .catch((error) => {
+        console.log("err=", error);
+      });
+
+
+  }, [])
 
   const getMinDate = () => {
     var date = new Date().getDate(); //Current Date
     var month = new Date().getMonth() + 1; //Current Month
     var year = new Date().getFullYear(); //Current Year
-    return date + '-' + month + '-' + year;
+    return year + '-' + month + '-' + date;
   }
   const getMaxDate = () => {
     var date = new Date().getDate(); //Current Date
     var month = new Date().getMonth() + 1; //Current Month
     var year = new Date().getFullYear() + 20; //Current Year
-    return date + '-' + month + '-' + year;
+    return year + '-' + month + '-' + date;
   }
-  const [visaExpiration, setVisaExpiration] = useState("");
+  const [visaExpiration, setVisaExpiration] = useState('');
   const [date, setDate] = useState('');
 
   const [openCountry, setOpenCountry] = useState(false);
   const [valueCountry, setValueCountry] = useState(null);
-  const [country, setCountry] = useState([
-    { label: "United States", value: "US" },
-    { label: "United Kingdom", value: "UK" },
-    { label: "Canada", value: "CA" },
-    { label: "France", value: "FR" },
-    { label: "Germany", value: "DE" },
-    { label: "Italy", value: "IT" },
-    { label: "Spain", value: "ES" },
-    { label: "Netherlands", value: "NL" },
-    { label: "Belgium", value: "BE" },
-    { label: "Austria", value: "AT" },
-    { label: "Portugal", value: "PT" },
-    { label: "Ireland", value: "IE" },
-    { label: "Luxembourg", value: "LU" },
-    { label: "Denmark", value: "DK" },
-    { label: "Sweden", value: "SE" },
-    { label: "Norway", value: "NO" },
-    { label: "Finland", value: "FI" },
-    { label: "Iceland", value: "IS" },
-    { label: "Switzerland", value: "CH" },
-    { label: "Greece", value: "GR" },
-    { label: "Poland", value: "PL" },
-    { label: "Czech Republic", value: "CZ" },
-    { label: "Slovakia", value: "SK" },
-    { label: "Hungary", value: "HU" },
-    { label: "Romania", value: "RO" },
-    { label: "Bulgaria", value: "BG" },
-    { label: "Croatia", value: "HR" },
-    { label: "Slovenia", value: "SI" },
-    { label: "Serbia", value: "RS" },
-    { label: "Bosnia and Herzegovina", value: "BA" },
-    { label: "Macedonia", value: "MK" },
-    { label: "Albania", value: "AL" },
-    { label: "Montenegro", value: "ME" },
-    { label: "Turkey", value: "TR" },
-    { label: "Russia", value: "RU" },
-    { label: "Ukraine", value: "UA" },
-    { label: "Belarus", value: "BY" },
-    { label: "Moldova", value: "MD" },
-    { label: "Lithuania", value: "LT" },
-    { label: "Latvia", value: "LV" },
-    { label: "Estonia", value: "EE" },
-    { label: "Azerbaijan", value: "AZ" },
-    { label: "Georgia", value: "GE" },
-    { label: "Armenia", value: "AM" },
-    { label: "Turkmenistan", value: "TM" },
-    { label: "Uzbekistan", value: "UZ" },
-    { label: "China", value: "CN" },
-    { label: "Japan", value: "JP" },
-    { label: "South Korea", value: "KR" },
-    { label: "Vietnam", value: "VN" },
-    { label: "Thailand", value: "TH" },
-    { label: "Malaysia", value: "MY" },
-    { label: "Singapore", value: "SG" },
-    { label: "Philippines", value: "PH" },
-    { label: "Indonesia", value: "ID" },
-    { label: "India", value: "IN" },
-    { label: "Pakistan", value: "PK" },
-    { label: "Bangladesh", value: "BD" },
-    { label: "Nepal", value: "NP" },
-    { label: "Sri Lanka", value: "LK" },
-    { label: "Myanmar", value: "MM" },
-    { label: "Cambodia", value: "KH" },
-    { label: "Laos", value: "LA" },
-    { label: "Australia", value: "AU" },
-    { label: "New Zealand", value: "NZ" },
-    { label: "Fiji", value: "FJ" },
-    { label: "Mexico", value: "MX" },
-    { label: "Brazil", value: "BR" },
-    { label: "Argentina", value: "AR" },
-    { label: "Chile", value: "CL" },
-    { label: "Peru", value: "PE" },
-    { label: "Colombia", value: "CO" },
-    { label: "Venezuela", value: "VE" },
-    { label: "Ecuador", value: "EC" },
-    { label: "Israel", value: "IL" },
-    { label: "Egypt", value: "EG" },
-    { label: "Morocco", value: "MA" },
-    { label: "Tunisia", value: "TN" },
-    { label: "Algeria", value: "DZ" },
-    { label: "Other", value: "Other" }
-  ]); // להוציא לקובץ חיצוני ולהשתמש בפונקציה שמחזירה את המערך כי זה ארוך וחופר
+ 
 
   const [openLanguage, setOpenLanguage] = useState(false);
   const [valueLanguage, setValueLanguage] = useState(null);
-  const [language, setLanguage] = useState([
-    { label: "English", value: "EN" },
-    { label: "French", value: "FR" },
-    { label: "Spanish", value: "ES" },
-    { label: "German", value: "DE" },
-    { label: "Italian", value: "IT" },
-    { label: "Dutch", value: "NL" },
-    { label: "Portuguese", value: "PT" },
-    { label: "Russian", value: "RU" },
-    { label: "Chinese", value: "ZH" },
-    { label: "Japanese", value: "JA" },
-    { label: "Korean", value: "KO" },
-    { label: "Arabic", value: "AR" },
-    { label: "Hindi", value: "HI" },
-    { label: "Turkish", value: "TR" },
-    { label: "Polish", value: "PL" },
-    { label: "Czech", value: "CS" },
-    { label: "Slovak", value: "SK" },
-    { label: "Hungarian", value: "HU" },
-    { label: "Romanian", value: "RO" },
-    { label: "Bulgarian", value: "BG" },
-    { label: "Croatian", value: "HR" },
-    { label: "Slovenian", value: "SL" },
-    { label: "Serbian", value: "SR" },
-    { label: "Bosnian", value: "BS" },
-    { label: "Macedonian", value: "MK" },
-    { label: "Albanian", value: "SQ" },
-    { label: "Montenegrin", value: "ME" },
-    { label: "Ukrainian", value: "UK" },
-    { label: "Belarusian", value: "BE" },
-    { label: "Moldovan", value: "MO" },
-    { label: "Georgian", value: "KA" },
-    { label: "Azerbaijani", value: "AZ" },
-    { label: "Turkmen", value: "TK" },
-    { label: "Hebrew", value: "HE" },
-    { label: "Thai", value: "TH" },
-    { label: "Vietnamese", value: "VI" },
-    { label: "Indonesian", value: "ID" },
-    { label: "Malay", value: "MS" },
-    { label: "Burmese", value: "MY" },
-    { label: "Khmer", value: "KM" },
-    { label: "Lao", value: "LO" },
-    { label: "Tamil", value: "TA" },
-    { label: "Telugu", value: "TE" },
-    { label: "Kannada", value: "KN" },
-    { label: "Malayalam", value: "ML" },
-    { label: "Marathi", value: "MR" },
-    { label: "Other", value: "Other" }
-  ]); // להוציא לקובץ חיצוני ולהשתמש בפונקציה שמחזירה את המערך כי זה ארוך וחופר
+  
 
   // send this data to next screen (SignUpCaregiverLVL5)
   const NavigateToNextScreen = () => {
-    if (valueCountry == null ) {
+    if (valueCountry == null) {
       Alert.alert("Please fill all the details");
     } else {
       const data = {
-        country: valueCountry,
-        language: valueLanguage,
-        date: date,
-        visaExpiration: visaExpiration,
+        Id: route.params.userId,
+        CountryName_En: valueCountry,
+        LanguageName_En: valueLanguage,
+        DateOfBirth: date,
+        VisaExpirationDate: visaExpiration,
       };
-      navigation.navigate("SignUpCaregiverLVL5", { data: data });
+      navigation.navigate("SignUpCaregiverLVL5", { data:data,holidaysType:holidaysType });
     }
   };
 
@@ -193,15 +159,15 @@ export default function SignUpCaregiverLVL4({ navigation }) {
       <View style={styles.inputContainer}>
         {/* Date Picker for birth-date */}
         <DatePicker
-          useNativeDriver={'true'}
+          useNativeDriver={true}
           iconComponent={<FontAwesome name="calendar-check-o" size={24} color="gray" />}
           style={styles.input}
           date={date}
           mode="date"
           placeholder="Date Of Birth"
-          format="DD-MM-YYYY"
-          minDate="01-01-1900"
-          maxDate="01-01-2002"
+          format="YYYY-MM-DD"
+          minDate="1940-01-01"
+          maxDate="2001-01-01"
           confirmBtnText="Confirm"
           cancelBtnText="Cancel"
           customStyles={{
@@ -230,12 +196,12 @@ export default function SignUpCaregiverLVL4({ navigation }) {
         {/* Date Picker for visa expiration min date should be today*/}
         <DatePicker
           iconComponent={<FontAwesome name="calendar-times-o" size={24} color="gray" />}
-          useNativeDriver={'true'}
+          useNativeDriver={true}
           style={styles.input}
           date={visaExpiration}
           mode="date"
           placeholder="Visa Expiration"
-          format="DD-MM-YYYY"
+          format="YYYY-MM-DD"
           minDate={getMinDate()}
           maxDate={getMaxDate()}
           confirmBtnText="Confirm"
@@ -277,7 +243,7 @@ export default function SignUpCaregiverLVL4({ navigation }) {
           searchPlaceholder="Search..."
           value={valueCountry}
           onChange={item => {
-            setValueCountry(item.value);
+            setValueCountry(item.label);
           }}
           renderRightIcon={() => (
             <Entypo name={'location'} color={'gray'} size={24} />

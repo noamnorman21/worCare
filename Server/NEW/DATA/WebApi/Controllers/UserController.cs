@@ -17,14 +17,15 @@ namespace WebApi.Controllers
     [RoutePrefix("api/User")]
     public class UserController : ApiController
     {
-        igroup194_Model db = new igroup194_Model();
+        igroup194DB db = new igroup194DB();
 
-        [Route("GetUser/{id}")]
+        [HttpGet]
+        [Route("GetUser/{id}")]     
         public IHttpActionResult GetUser(int id)
         {
             try
             {
-                var user = db.tblUser.Where(x => x.Id == id).FirstOrDefault();
+                var user = db.tblUsers.Where(x => x.Id == id).FirstOrDefault();
                 return Ok(user.FirstName + " " + user.LastName + " - Email:" + user.Email);
             }
             catch (Exception ex)
@@ -39,7 +40,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                var user = db.tblUser.Where(x => x.Email == userEmail).First();
+                var user = db.tblUsers.Where(x => x.Email == userEmail).First();
                 if (user == null)
                 {
                     return NotFound();
@@ -61,7 +62,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                var user = from u in db.tblUser
+                var user = from u in db.tblUsers
                            where u.Email == userDTO.Email && u.Password == userDTO.Password
                            select u;
                 if (user == null)
@@ -86,8 +87,25 @@ namespace WebApi.Controllers
         }
 
 
-        [HttpPost]
-        [Route("UploadIMG")]
+        // GET : Get all users (email and passwords) from DB for firebase authentication
+        [HttpGet]
+        [Route("GetAllUsersFireBase")]
+        public IHttpActionResult GetAllUsersFireBase()
+        {
+            try
+            {
+                var users = db.tblUsers.Select(x => new { x.Email, x.Password }).ToList();
+                if (users == null)
+                {
+                    return NotFound();
+                }
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
         // insert user to db by calling Stored Prodecdure InsertUser
         [HttpPost]
@@ -98,7 +116,9 @@ namespace WebApi.Controllers
             {
                 db.InsertUser(user.Email, user.Password, user.FirstName, user.LastName, user.gender, user.phoneNum, user.userUri);
                 db.SaveChanges();
-                return Ok("User Inserted Successfully");
+                //return the id from the new user
+                var newUser = db.tblUsers.Where(x => x.Email == user.Email).FirstOrDefault();
+                return Ok(newUser.Id);
             }
             catch (Exception ex)
             {
@@ -113,7 +133,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                tblUser user = db.tblUser.Where(x => x.Email == userToUpdate.Email).FirstOrDefault();
+                tblUser user = db.tblUsers.Where(x => x.Email == userToUpdate.Email).FirstOrDefault();
                 user.phoneNum = userToUpdate.phoneNum;
                 user.FirstName = userToUpdate.FirstName;
                 user.LastName = userToUpdate.LastName;
@@ -136,7 +156,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                tblUser user = db.tblUser.Where(x => x.Email == userToUpdate.Email).FirstOrDefault();
+                tblUser user = db.tblUsers.Where(x => x.Email == userToUpdate.Email).FirstOrDefault();
                 user.Password = userToUpdate.Password;
                 db.SaveChanges();
                 return Ok("User Password Updated Successfully");
@@ -155,12 +175,12 @@ namespace WebApi.Controllers
         {
             try
             {
-                var user = db.tblUser.Where(x => x.Email == userToDelete.Email).FirstOrDefault();
+                var user = db.tblUsers.Where(x => x.Email == userToDelete.Email).FirstOrDefault();
                 if (user == null)
                 {
                     return NotFound();
                 }
-                db.tblUser.Remove(user);
+                db.tblUsers.Remove(user);
                 db.SaveChanges();
                 return Ok("User Deleted Successfully");
             }

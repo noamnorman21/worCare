@@ -17,7 +17,7 @@ namespace DATA
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public tblActualList()
         {
-            this.tblPatientTask = new HashSet<tblPatientTask>();
+            this.tblPatientTasks = new HashSet<tblPatientTask>();
         }
     
         public int listId { get; set; }
@@ -26,6 +26,6 @@ namespace DATA
         public virtual tblList tblList { get; set; }
         public virtual tblDrugForPatient tblDrugForPatient { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tblPatientTask> tblPatientTask { get; set; }
+        public virtual ICollection<tblPatientTask> tblPatientTasks { get; set; }
     }
 }

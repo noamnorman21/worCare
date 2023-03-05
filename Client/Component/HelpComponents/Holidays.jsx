@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity, ScrollView } from 'react-native'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import * as Font from 'expo-font';
 Font.loadAsync({
     'Urbanist': require('../../assets/fonts/Urbanist-Regular.ttf'),
@@ -9,20 +9,9 @@ Font.loadAsync({
     'Urbanist-SemiBold': require('../../assets/fonts/Urbanist-SemiBold.ttf'),
 });
 const SCREEN_WIDTH = Dimensions.get('window').width;
-export default function Holidays() {
+export default function Holidays(props) {
     const [selectedHolidays, setSelectedHolidays] = useState([]);
-    const holidaysType = [
-        { id: 1, label: 'Christian' },
-        { id: 2, label: 'Muslim' },
-        { id: 3, label: 'Jewish' },
-        { id: 4, label: 'Hindu' },
-        { id: 5, label: 'Buddhist' },
-        { id: 6, label: 'Sikh' },
-        { id: 7, label: 'Atheist' },
-        { id: 8, label: 'Agnostic' },
-        { id: 9, label: 'Other' },
-    ];
-
+ 
     const isItemSelected = (id) => {
         return selectedHolidays.includes(id);
     };
@@ -33,6 +22,7 @@ export default function Holidays() {
         } else {
             setSelectedHolidays([...selectedHolidays, item.id]);
         }
+       props.sendHolidays(selectedHolidays);
     };
 
     return (
@@ -45,8 +35,8 @@ export default function Holidays() {
             </View>
 
             <ScrollView>
-                <View style={styles.bodyContainer}>
-                    {holidaysType.map((item, index) => {
+            <View style={styles.bodyContainer}>
+                    {props.holidaysType.map((item, index) => {
                         const selectedStyle = isItemSelected(item.id) ? styles.selectedItem : {};
                         return (
                             <View style={[styles.itemBox, selectedStyle]} key={index}>
@@ -64,22 +54,24 @@ export default function Holidays() {
 
 const styles = StyleSheet.create({
     headerContainer: {
-        paddingHorizontal: 16,        
+        // paddingHorizontal: 10,        
         backgroundColor: '#fff',
     },
     headerSmallTxt: {
-        fontFamily: 'Urbanist-SemiBold',        
+        fontFamily: 'Urbanist-SemiBold',
         fontSize: 20,
         color: '#000',
         textAlign: 'center',
-        marginBottom: 10,        
+        marginBottom: 10,
     },
     line: {
         borderBottomColor: '#808080',
         borderBottomWidth: 0.5,
-        marginVertical: 20,
+        marginVertical: 10,
     },
     bodyContainer: {
+        // height: 300,
+        // backgroundColor: 'red',
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'space-around',
@@ -92,7 +84,7 @@ const styles = StyleSheet.create({
         borderRadius: 16,
         borderWidth: 1.5,
         borderColor: '#E6EBF2',
-        marginVertical: 10,
+        marginVertical: 7,
         alignItems: 'center',
         justifyContent: 'center',
     },

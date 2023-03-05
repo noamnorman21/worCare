@@ -17,14 +17,14 @@ export default function CreateUser({ navigation }) {
   const [showPassword, setShowPassword] = useState(false);//for password visibility
   const [keyboardOpen, setKeyboardOpen] = useState(false);//for keyboard visibility
   const [animation, setAnimation] = useState({});
-  const [imagePath, setUserImage] = useState('')
+  const [userImage, setUserImage] = useState(null)
   const [user, setUser] = useState({
     email: '',
     password: '',
     firstName: '',
     lastName: '',
     phoneNum: '',
-    imagePath: '',
+
   })
 
   useEffect(() => {
@@ -60,8 +60,9 @@ export default function CreateUser({ navigation }) {
     }
 
   }, []);
+
   const handleCreateUser = () => {
-    const { email, password, firstName, lastName, phoneNum, imagePath } = user
+    const { email, password, firstName, lastName, phoneNum } = user
     if (!email || !password || !firstName || !lastName || !phoneNum) {
       return Alert.alert('Error', 'All fields are required')
     }
@@ -85,9 +86,6 @@ export default function CreateUser({ navigation }) {
       return Alert.alert('Invalid Phone Number', 'Please enter a valid phone number')
     }
 
-    if (imagePath === '') {
-      setUserImage('../../images/Avatar.png')
-    }
 
     const userData = {
       email: user.email,
@@ -95,21 +93,18 @@ export default function CreateUser({ navigation }) {
       firstName: user.firstName,
       lastName: user.lastName,
       phoneNum: user.phoneNum,
-      imagePath: user.imagePath,
+      imagePath: userImage,
     }
+    //console.log(userData)
+
     navigation.navigate('SignUpLvl2', { user: userData })
   }
 
-  const changeIMG = (imagePath) => {
-    // //convert image path to string
-    // imagePath = JSON.stringify(imagePath)
-    // //remove quotes from string
-    // imagePath = imagePath.replace(/['"]+/g, '')
-    // //remove file:// from string
-    // imagePath = imagePath.replace('file://', '')
-    // setUserImage(imagePath)
+  const changeIMG = (imageFromUser) => {
 
-    // setUser({ ...user, imagePath: imagePath })
+    setUserImage(imageFromUser)
+
+
   }
 
   const validatePhoneNum = (phoneNum) => {
@@ -136,9 +131,6 @@ export default function CreateUser({ navigation }) {
     navigation.navigate('LogIn')
   }
 
-  const NavigateToLVL3 = () => {
-    navigation.navigate('SignUpLvl3')
-  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -209,9 +201,6 @@ export default function CreateUser({ navigation }) {
         </TouchableOpacity>
       </View>
       <OrLine />
-      <TouchableOpacity style={styles.button} onPress={NavigateToLVL3} >
-        <Text style={styles.buttonText}>Continue with Google</Text>
-      </TouchableOpacity>
       <HaveAccount NavigateToLogIn={NavigateToLogIn} />
     </SafeAreaView>
   )

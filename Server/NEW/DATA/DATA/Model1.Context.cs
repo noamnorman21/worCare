@@ -15,10 +15,10 @@ namespace DATA
     using System.Data.Entity.Core.Objects;
     using System.Linq;
     
-    public partial class igroup194_Model : DbContext
+    public partial class igroup194DB : DbContext
     {
-        public igroup194_Model()
-            : base("name=igroup194_Model")
+        public igroup194DB()
+            : base("name=igroup194DB")
         {
         }
     
@@ -27,28 +27,53 @@ namespace DATA
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
-        public virtual DbSet<tblActualList> tblActualList { get; set; }
-        public virtual DbSet<tblCalendarForUser> tblCalendarForUser { get; set; }
-        public virtual DbSet<tblCalendarsType> tblCalendarsType { get; set; }
-        public virtual DbSet<tblCaresForPatient> tblCaresForPatient { get; set; }
-        public virtual DbSet<tblContacts> tblContacts { get; set; }
-        public virtual DbSet<tblCountry> tblCountry { get; set; }
-        public virtual DbSet<tblDrug> tblDrug { get; set; }
-        public virtual DbSet<tblDrugForPatient> tblDrugForPatient { get; set; }
-        public virtual DbSet<tblForeignUser> tblForeignUser { get; set; }
-        public virtual DbSet<tblHobbies> tblHobbies { get; set; }
-        public virtual DbSet<tblLanguage> tblLanguage { get; set; }
-        public virtual DbSet<tblLimitations> tblLimitations { get; set; }
-        public virtual DbSet<tblList> tblList { get; set; }
-        public virtual DbSet<tblPatient> tblPatient { get; set; }
-        public virtual DbSet<tblPatientTask> tblPatientTask { get; set; }
-        public virtual DbSet<tblPaycheck> tblPaycheck { get; set; }
-        public virtual DbSet<tblPaymentRequest> tblPaymentRequest { get; set; }
-        public virtual DbSet<tblPrivateTask> tblPrivateTask { get; set; }
-        public virtual DbSet<tblProduct> tblProduct { get; set; }
-        public virtual DbSet<tblProductList> tblProductList { get; set; }
-        public virtual DbSet<tblUser> tblUser { get; set; }
+        public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
+        public virtual DbSet<tblActualList> tblActualLists { get; set; }
+        public virtual DbSet<tblCalendarForUser> tblCalendarForUsers { get; set; }
+        public virtual DbSet<tblCalendarsType> tblCalendarsTypes { get; set; }
+        public virtual DbSet<tblCaresForPatient> tblCaresForPatients { get; set; }
+        public virtual DbSet<tblContact> tblContacts { get; set; }
+        public virtual DbSet<tblCountry> tblCountries { get; set; }
+        public virtual DbSet<tblDrug> tblDrugs { get; set; }
+        public virtual DbSet<tblDrugForPatient> tblDrugForPatients { get; set; }
+        public virtual DbSet<tblForeignUser> tblForeignUsers { get; set; }
+        public virtual DbSet<tblHobby> tblHobbies { get; set; }
+        public virtual DbSet<tblLanguage> tblLanguages { get; set; }
+        public virtual DbSet<tblLimitation> tblLimitations { get; set; }
+        public virtual DbSet<tblList> tblLists { get; set; }
+        public virtual DbSet<tblPatient> tblPatients { get; set; }
+        public virtual DbSet<tblPatientTask> tblPatientTasks { get; set; }
+        public virtual DbSet<tblPaycheck> tblPaychecks { get; set; }
+        public virtual DbSet<tblPaymentRequest> tblPaymentRequests { get; set; }
+        public virtual DbSet<tblPrivateTask> tblPrivateTasks { get; set; }
+        public virtual DbSet<tblProduct> tblProducts { get; set; }
+        public virtual DbSet<tblProductList> tblProductLists { get; set; }
+        public virtual DbSet<tblUser> tblUsers { get; set; }
+    
+        public virtual int InsertForeignUser(Nullable<int> id, Nullable<System.DateTime> dateOfBirth, Nullable<System.DateTime> visaExpirationDate, string languageName_En, string countryName_En)
+        {
+            var idParameter = id.HasValue ?
+                new ObjectParameter("Id", id) :
+                new ObjectParameter("Id", typeof(int));
+    
+            var dateOfBirthParameter = dateOfBirth.HasValue ?
+                new ObjectParameter("DateOfBirth", dateOfBirth) :
+                new ObjectParameter("DateOfBirth", typeof(System.DateTime));
+    
+            var visaExpirationDateParameter = visaExpirationDate.HasValue ?
+                new ObjectParameter("VisaExpirationDate", visaExpirationDate) :
+                new ObjectParameter("VisaExpirationDate", typeof(System.DateTime));
+    
+            var languageName_EnParameter = languageName_En != null ?
+                new ObjectParameter("LanguageName_En", languageName_En) :
+                new ObjectParameter("LanguageName_En", typeof(string));
+    
+            var countryName_EnParameter = countryName_En != null ?
+                new ObjectParameter("CountryName_En", countryName_En) :
+                new ObjectParameter("CountryName_En", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertForeignUser", idParameter, dateOfBirthParameter, visaExpirationDateParameter, languageName_EnParameter, countryName_EnParameter);
+        }
     
         public virtual int InsertUser(string email, string password, string firstName, string lastName, string gender, string phoneNum, string userUri)
         {
@@ -184,6 +209,23 @@ namespace DATA
         public virtual int sp_upgraddiagrams()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_upgraddiagrams");
+        }
+    
+        public virtual int InsertCalendarForUser(Nullable<int> calendarNum, Nullable<int> id, Nullable<bool> isPrimary)
+        {
+            var calendarNumParameter = calendarNum.HasValue ?
+                new ObjectParameter("calendarNum", calendarNum) :
+                new ObjectParameter("calendarNum", typeof(int));
+    
+            var idParameter = id.HasValue ?
+                new ObjectParameter("id", id) :
+                new ObjectParameter("id", typeof(int));
+    
+            var isPrimaryParameter = isPrimary.HasValue ?
+                new ObjectParameter("isPrimary", isPrimary) :
+                new ObjectParameter("isPrimary", typeof(bool));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertCalendarForUser", calendarNumParameter, idParameter, isPrimaryParameter);
         }
     }
 }

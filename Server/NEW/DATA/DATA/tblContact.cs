@@ -12,12 +12,17 @@ namespace DATA
     using System;
     using System.Collections.Generic;
     
-    public partial class sysdiagrams
+    public partial class tblContact
     {
-        public string name { get; set; }
-        public int principal_id { get; set; }
-        public int diagram_id { get; set; }
-        public Nullable<int> version { get; set; }
-        public byte[] definition { get; set; }
+        public int contactId { get; set; }
+        public string contactName { get; set; }
+        public string phoneNo { get; set; }
+        public string mobileNo { get; set; }
+        public string email { get; set; }
+        public string role { get; set; }
+        public string contactComment { get; set; }
+        public string patientId { get; set; }
+    
+        public virtual tblPatient tblPatient { get; set; }
     }
 }

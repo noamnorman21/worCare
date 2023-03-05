@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { SafeAreaView, StyleSheet, View } from 'react-native';
+import { SafeAreaView, StyleSheet, View, Dimensions } from 'react-native';
 import { useState } from 'react';
 import LogIn from './Component/SignUpComponents/LogIn';
 import Welcome from './Component/Welcome';
@@ -14,32 +14,29 @@ import NavigateSignUp from './Component/SignUpComponents/NavigateSignUp';
 import SignUpCareGiverLVL5 from './Component/SignUpComponents/CareGiver/SignUpCaregiverLVL5';
 import ForgotPassword from './Component/ForgotPasswordComponents/CreateNewPassword';
 import FCTest from './Component/HelpComponents/FCTest';
+import Holidays from './Component/HelpComponents/Holidays';
+
+
 
 
 export default function App() {
   return (
-    // <NavigationContainer independent={true}>
-    //   {/* <CustomHeader /> */}
-    //   {/* <SettingScreen /> */}
-    //   <NavigateSignUp />
-    // </NavigationContainer>
+    <NavigationContainer independent={true}>
 
-    <View style={styles.container}>
-      {/* <CreateUser /> */}
-      {/* <LogIn />       */}
-      {/* <ForgotPassword /> */}
-      {/* <SignUpCareGiverLVL5 /> */}
-      <FCTest />
-    </View>
+      {/* <SettingScreen /> */}
+      <NavigateSignUp />
+    </NavigationContainer>
+ 
+
   );
+  // return <Providers/>
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff ',
+    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
   },
-
 });

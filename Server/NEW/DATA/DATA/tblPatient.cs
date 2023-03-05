@@ -17,10 +17,10 @@ namespace DATA
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public tblPatient()
         {
-            this.tblCaresForPatient = new HashSet<tblCaresForPatient>();
-            this.tblContacts = new HashSet<tblContacts>();
-            this.tblDrugForPatient = new HashSet<tblDrugForPatient>();
-            this.tblPatientTask = new HashSet<tblPatientTask>();
+            this.tblCaresForPatients = new HashSet<tblCaresForPatient>();
+            this.tblContacts = new HashSet<tblContact>();
+            this.tblDrugForPatients = new HashSet<tblDrugForPatient>();
+            this.tblPatientTasks = new HashSet<tblPatientTask>();
         }
     
         public string Id { get; set; }
@@ -30,15 +30,15 @@ namespace DATA
         public string LanguageName_En { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tblCaresForPatient> tblCaresForPatient { get; set; }
+        public virtual ICollection<tblCaresForPatient> tblCaresForPatients { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tblContacts> tblContacts { get; set; }
+        public virtual ICollection<tblContact> tblContacts { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tblDrugForPatient> tblDrugForPatient { get; set; }
-        public virtual tblHobbies tblHobbies { get; set; }
+        public virtual ICollection<tblDrugForPatient> tblDrugForPatients { get; set; }
+        public virtual tblHobby tblHobby { get; set; }
         public virtual tblLanguage tblLanguage { get; set; }
-        public virtual tblLimitations tblLimitations { get; set; }
+        public virtual tblLimitation tblLimitation { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tblPatientTask> tblPatientTask { get; set; }
+        public virtual ICollection<tblPatientTask> tblPatientTasks { get; set; }
     }
 }

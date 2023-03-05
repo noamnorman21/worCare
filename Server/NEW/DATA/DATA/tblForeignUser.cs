@@ -17,10 +17,10 @@ namespace DATA
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public tblForeignUser()
         {
-            this.tblCaresForPatient = new HashSet<tblCaresForPatient>();
-            this.tblPatientTask = new HashSet<tblPatientTask>();
-            this.tblPaymentRequest = new HashSet<tblPaymentRequest>();
-            this.tblPrivateTask = new HashSet<tblPrivateTask>();
+            this.tblCaresForPatients = new HashSet<tblCaresForPatient>();
+            this.tblPatientTasks = new HashSet<tblPatientTask>();
+            this.tblPaymentRequests = new HashSet<tblPaymentRequest>();
+            this.tblPrivateTasks = new HashSet<tblPrivateTask>();
         }
     
         public int Id { get; set; }
@@ -30,15 +30,15 @@ namespace DATA
         public string CountryName_En { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tblCaresForPatient> tblCaresForPatient { get; set; }
+        public virtual ICollection<tblCaresForPatient> tblCaresForPatients { get; set; }
         public virtual tblCountry tblCountry { get; set; }
         public virtual tblLanguage tblLanguage { get; set; }
         public virtual tblUser tblUser { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tblPatientTask> tblPatientTask { get; set; }
+        public virtual ICollection<tblPatientTask> tblPatientTasks { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tblPaymentRequest> tblPaymentRequest { get; set; }
+        public virtual ICollection<tblPaymentRequest> tblPaymentRequests { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tblPrivateTask> tblPrivateTask { get; set; }
+        public virtual ICollection<tblPrivateTask> tblPrivateTasks { get; set; }
     }
 }
