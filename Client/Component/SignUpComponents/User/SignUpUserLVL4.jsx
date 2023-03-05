@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Dimensions } from 'react-native'
+import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Dimensions, } from 'react-native'
 import React from 'react'
 import Holidays from '../../HelpComponents/Holidays'
 import { HaveAccount, OrLine } from '../FooterLine'
@@ -13,6 +13,7 @@ Font.loadAsync({
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 export default function SignUpUserLVL4({ navigation }) {
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
@@ -23,7 +24,7 @@ export default function SignUpUserLVL4({ navigation }) {
         <Holidays />
       </View>
       <View style={styles.btnContainer}>
-        <TouchableOpacity
+        <TouchableOpacity 
           style={styles.button}>
           <Text style={styles.buttonText}>Continue</Text>
         </TouchableOpacity>
@@ -42,12 +43,12 @@ container: {
     backgroundColor: '#fff',
   },
   headerContainer: {
-    flex: 0.7,
+    flex: 0.75,
     paddingHorizontal: 16,
     backgroundColor: '#fff',
   },
   headerTxt: {
-    marginTop: 50,
+    marginTop: 30,
     fontFamily: 'Urbanist-Bold',
     fontSize: 28,
     color: '#000',
@@ -57,18 +58,18 @@ container: {
     flex: 3,
   },
   btnContainer: {
-    flex: 0.3,
-    justifyContent: 'center',
+    flex: 0.5,
     alignItems: 'center',
+    justifyContent: 'flex-end',
   },
   button: {
     width: SCREEN_WIDTH * 0.9,
-    height: 50,
+    height: 54,
     backgroundColor: '#548DFF',
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 16,
-    marginBottom: 20,
+    // marginBottom: 20,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,

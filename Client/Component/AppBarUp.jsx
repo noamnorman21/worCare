@@ -90,6 +90,9 @@ function AppBarDown() {
     return (
         <Tab.Navigator
             screenOptions={({ route }) => ({
+                activeTintColor: '#548DFF',
+                inactiveTintColor: '#808080',
+                style: styles.tabBar,
                 tabBarIcon: ({ color, size }) => {
                     if (route.name === 'Home') {
                         return <Octicons name={'home'} size={size} color={color} />
@@ -106,11 +109,6 @@ function AppBarDown() {
                 headerShown: false
             })
             }
-            tabBarOptions={{
-                activeTintColor: '#548DFF',
-                inactiveTintColor: '#808080',
-                style: styles.tabBar,
-            }}
             initialRouteName="Home"
         >
             <Tab.Screen name="Home" component={Home} options={{ tabBarLabel: 'Home' }} />

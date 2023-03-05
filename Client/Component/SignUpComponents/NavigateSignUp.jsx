@@ -1,18 +1,16 @@
 import React from 'react'
+import { StyleSheet} from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { CustomHeader } from '../../Component/AppBarUp';
 
 // Importing the screens that will be used in the stack navigator
 import LogIn from './LogIn';
-
 import SignUp from './SignUp';
 import SignUpLvl2 from './SignUpLvl2';
 import SignUpLvl3 from './SignUpLvl3';
-
 import ForgotPassword from '../ForgotPasswordComponents/ForgotPassword';
 import ForgotPasswordLvl2 from '../ForgotPasswordComponents/ForgotPasswordLvl2';
 import CreateNewPassword from '../ForgotPasswordComponents/CreateNewPassword';
-
 import SignUpCaregiverLVL4 from './CareGiver/SignUpCaregiverLVL4';
 import SignUpCaregiverLVL5 from './CareGiver/SignUpCaregiverLVL5';
 import SignUpUserLVL4 from './User/SignUpUserLVL4';
@@ -20,7 +18,6 @@ import SignUpUserLVL5 from './User/SignUpUserLVL5';
 import SignUpHobbies from './User/SignUpHobbies';
 import SignUpLimitations from './User/SignUpLimitations';
 import SignUpFinish from './User/SignUpFinish'
-
 
 const Stack = createStackNavigator();
 
@@ -55,3 +52,12 @@ export default function NavigateSignUp() {
     </Stack.Navigator>
   )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});

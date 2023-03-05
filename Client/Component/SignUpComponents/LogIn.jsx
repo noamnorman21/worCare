@@ -1,16 +1,10 @@
 import { SafeAreaView, Dimensions, View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Button, Keyboard, Alert, LayoutAnimation, Types } from 'react-native'
 import React from 'react'
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { OrLine, NeedAccount } from './FooterLine'
-import * as Font from 'expo-font';
 
-Font.loadAsync({
-    'Urbanist': require('../../assets/fonts/Urbanist-Regular.ttf'),
-    'Urbanist-Bold': require('../../assets/fonts/Urbanist-Bold.ttf'),
-    'Urbanist-Light': require('../../assets/fonts/Urbanist-Light.ttf'),
-    'Urbanist-Medium': require('../../assets/fonts/Urbanist-Medium.ttf'),
-});
+// import * as Font from 'expo-font';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
@@ -20,6 +14,7 @@ export default function LogIn({ navigation }) {
     const [showPassword, setShowPassword] = useState(false);//for password visibility
     const [keyboardOpen, setKeyboardOpen] = useState(false);//for keyboard visibility
     const [animation, setAnimation] = useState({});
+
 
     //login function
     const logInBtn = () => {
@@ -53,6 +48,7 @@ export default function LogIn({ navigation }) {
     }
     //function to login user
     const LoginUser = (userData) => {
+     
         fetch('', {
             method: 'GET',
             headers: {
@@ -87,7 +83,7 @@ export default function LogIn({ navigation }) {
 
     //navigate to sign up screen
     const NavigateToSignUp = () => {
-        navigation.navigate('SignUpLimitations')
+        navigation.navigate('SignUp')
     }
 
     const NavigateToForgotPassword = () => {
