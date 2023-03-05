@@ -2,6 +2,7 @@ import { View, Text, SafeAreaView, StyleSheet, Dimensions, Image, TouchableOpaci
 import { useState } from 'react';
 import { OrLine, HaveAccount } from './FooterLine';
 import * as Font from 'expo-font';
+
 Font.loadAsync({
   'Urbanist': require('../../assets/fonts/Urbanist-Regular.ttf'),
   'Urbanist-Bold': require('../../assets/fonts/Urbanist-Bold.ttf'),
