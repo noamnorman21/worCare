@@ -17,8 +17,10 @@ export default function SignUpCaregiverLVL5({ navigation, route }, props) {
   // const data = route.params.data;
   // console.log(data);
   const newForeignUser = route.params.data;
+
   const sendToDB = () => {
     console.log(newForeignUser);
+    newForeignUser.Holidays = selectedHolidays; //selectedHolidays is the array of the selected holidays,use them in data base with stored procedure "InsertCalendarForUser"
     fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/ForeignUser/InsertForeignUser', {
       method: "POST",
       headers: {
@@ -38,6 +40,7 @@ export default function SignUpCaregiverLVL5({ navigation, route }, props) {
   const isItemSelected = (arr) => {
     setSelectedHolidays(arr); //arr is the array of the selected holidays
     console.log("selectedHolidays=", selectedHolidays);
+
     
   };
   return (

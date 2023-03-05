@@ -14,6 +14,8 @@ namespace WebApi.DTO
         public string LanguageName_En { get; set; }
         public string CountryName_En { get; set; }
 
+        public int[] Calendars { get; set; }
+        
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tblCaresForPatient> tblCaresForPatients { get; set; }
         public virtual tblCountry tblCountry { get; set; }

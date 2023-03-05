@@ -35,15 +35,10 @@ namespace WebApi.Controllers
             }
         }
 
-        // GET api/<controller>/5
-        public string Get(int id)
+        // add user calendar
+        public void Post([FromBody] int id)
         {
-            return "value";
-        }
 
-        // POST api/<controller>
-        public void Post([FromBody] string value)
-        {
         }
 
         // PUT api/<controller>/5

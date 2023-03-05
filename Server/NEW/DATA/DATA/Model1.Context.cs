@@ -210,5 +210,22 @@ namespace DATA
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_upgraddiagrams");
         }
+    
+        public virtual int InsertCalendarForUser(Nullable<int> calendarNum, Nullable<int> id, Nullable<bool> isPrimary)
+        {
+            var calendarNumParameter = calendarNum.HasValue ?
+                new ObjectParameter("calendarNum", calendarNum) :
+                new ObjectParameter("calendarNum", typeof(int));
+    
+            var idParameter = id.HasValue ?
+                new ObjectParameter("id", id) :
+                new ObjectParameter("id", typeof(int));
+    
+            var isPrimaryParameter = isPrimary.HasValue ?
+                new ObjectParameter("isPrimary", isPrimary) :
+                new ObjectParameter("isPrimary", typeof(bool));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertCalendarForUser", calendarNumParameter, idParameter, isPrimaryParameter);
+        }
     }
 }
