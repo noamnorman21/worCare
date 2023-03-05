@@ -13,14 +13,12 @@ Font.loadAsync({
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 export default function SignUpCaregiverLVL5({ navigation, route }, props) {
-  // const [selectedHolidays, setSelectedHolidays] = useState([]);
+  const [selectedHolidays, setSelectedHolidays] = useState([]);
   // const data = route.params.data;
   // console.log(data);
   const newForeignUser = route.params.data;
-
   const sendToDB = () => {
     console.log(newForeignUser);
-
     fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/ForeignUser/InsertForeignUser', {
       method: "POST",
       headers: {
@@ -36,13 +34,19 @@ export default function SignUpCaregiverLVL5({ navigation, route }, props) {
         console.error(error);
       });
   };
+
+  const isItemSelected = (arr) => {
+    setSelectedHolidays(arr); //arr is the array of the selected holidays
+    console.log("selectedHolidays=", selectedHolidays);
+    
+  };
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
         <Text style={styles.headerTxt}>Great Job !</Text>
       </View>
       {/* <Text style={styles.headerSmallTxt}>You are almost done</Text> */}
-      <Holidays />
+      <Holidays sendHolidays={isItemSelected} />
 
       <View style={styles.btnContainer}>
         <TouchableOpacity
@@ -118,6 +122,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   btnContainer: {
+    marginTop: 20,
     alignItems: 'center',
     justifyContent: 'center',
     // marginTop: 20,
@@ -129,7 +134,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 16,
-    marginBottom: 20,
+    marginBottom: 12,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -148,7 +153,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   legalTextContainer: {
-    marginVertical: 10,
+    marginBottom: 10,
+    marginTop: 20,
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',

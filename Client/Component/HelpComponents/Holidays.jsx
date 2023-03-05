@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity, ScrollView } from 'react-native'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import * as Font from 'expo-font';
 Font.loadAsync({
     'Urbanist': require('../../assets/fonts/Urbanist-Regular.ttf'),
@@ -9,19 +9,44 @@ Font.loadAsync({
     'Urbanist-SemiBold': require('../../assets/fonts/Urbanist-SemiBold.ttf'),
 });
 const SCREEN_WIDTH = Dimensions.get('window').width;
-export default function Holidays() {
+export default function Holidays(props) {
     const [selectedHolidays, setSelectedHolidays] = useState([]);
-    const holidaysType = [
-        { id: 1, label: 'Christian' },
-        { id: 2, label: 'Muslim' },
-        { id: 3, label: 'Jewish' },
-        { id: 4, label: 'Hindu' },
-        { id: 5, label: 'Buddhist' },
-        { id: 6, label: 'Sikh' },
-        { id: 7, label: 'Atheist' },
-        { id: 8, label: 'Agnostic' },
-        { id: 9, label: 'Other' },
-    ];
+    const [holidaysType, setHolidaysType] = useState([]);
+    //bring from DB all the holidays type
+    useEffect(() => {
+        let calendarUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Calendars/GetAllCalendars';
+        fetch(calendarUrl, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json; charset=UTF-8',
+            },
+        })
+            .then(res => {
+                if (res.ok) {
+                    return res.json()
+                }
+                else {
+                    console.log("not found")
+                }
+            })
+            .then(data => {
+                if (data != null) {
+
+                    for (let i = 0; i < data.length; i++) {
+                        holidaysType.push({
+                            id: data[i].calendarNum,
+                            label: data[i].CalendarName,
+                        })
+                        
+                    }
+                
+                }
+            })
+            .catch((error) => {
+                console.log("err=", error);
+            });
+    }, []);
+
 
     const isItemSelected = (id) => {
         return selectedHolidays.includes(id);
@@ -33,6 +58,7 @@ export default function Holidays() {
         } else {
             setSelectedHolidays([...selectedHolidays, item.id]);
         }
+       props.sendHolidays(selectedHolidays);
     };
 
     return (
@@ -45,7 +71,7 @@ export default function Holidays() {
             </View>
 
             <ScrollView>
-                <View style={styles.bodyContainer}>
+            <View style={styles.bodyContainer}>
                     {holidaysType.map((item, index) => {
                         const selectedStyle = isItemSelected(item.id) ? styles.selectedItem : {};
                         return (
@@ -68,11 +94,11 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     headerSmallTxt: {
-        fontFamily: 'Urbanist-SemiBold',        
+        fontFamily: 'Urbanist-SemiBold',
         fontSize: 20,
         color: '#000',
         textAlign: 'center',
-        marginBottom: 10,        
+        marginBottom: 10,
     },
     line: {
         borderBottomColor: '#808080',
@@ -80,6 +106,8 @@ const styles = StyleSheet.create({
         marginVertical: 10,
     },
     bodyContainer: {
+        // height: 300,
+        // backgroundColor: 'red',
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'space-around',

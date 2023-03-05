@@ -19,7 +19,8 @@ namespace WebApi.Controllers
     {
         igroup194DB db = new igroup194DB();
 
-        [Route("GetUser/{id}")]
+        [HttpGet]
+        [Route("GetUser/{id}")]     
         public IHttpActionResult GetUser(int id)
         {
             try
@@ -119,7 +120,6 @@ namespace WebApi.Controllers
                 var newUser = db.tblUsers.Where(x => x.Email == user.Email).FirstOrDefault();
                 return Ok(newUser.Id);
             }
-
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);

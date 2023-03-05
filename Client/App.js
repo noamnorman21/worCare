@@ -14,6 +14,7 @@ import NavigateSignUp from './Component/SignUpComponents/NavigateSignUp';
 import SignUpCareGiverLVL5 from './Component/SignUpComponents/CareGiver/SignUpCaregiverLVL5';
 import ForgotPassword from './Component/ForgotPasswordComponents/CreateNewPassword';
 import FCTest from './Component/HelpComponents/FCTest';
+import Holidays from './Component/HelpComponents/Holidays';
 
 
 
@@ -25,6 +26,7 @@ export default function App() {
       {/* <SettingScreen /> */}
       <NavigateSignUp />
     </NavigationContainer>
+ 
 
   );
   // return <Providers/>

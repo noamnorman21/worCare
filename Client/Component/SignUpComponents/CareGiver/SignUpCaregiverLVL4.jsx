@@ -236,7 +236,7 @@ export default function SignUpCaregiverLVL4({ navigation, route }) {
           searchPlaceholder="Search..."
           value={valueLanguage}
           onChange={item => {
-            setValueLanguage(item.label);
+            setValueLanguage(item.value);
           }}
           renderRightIcon={() => (
             <MaterialIcons name="translate" size={24} color="gray" />
