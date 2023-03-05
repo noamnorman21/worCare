@@ -42,8 +42,7 @@ namespace WebApi.Controllers
                 {
                     //here we will add all the calendars that the user choose 
                     if (item!=24)
-                        db.InsertCalendarForUser(item, userExist.Id, false);
-             
+                        db.InsertCalendarForUser(item, userExist.Id, false);           
                 }
         
                 db.InsertForeignUser(user.Id, user.DateOfBirth, user.VisaExpirationDate, user.LanguageName_En, user.CountryName_En);

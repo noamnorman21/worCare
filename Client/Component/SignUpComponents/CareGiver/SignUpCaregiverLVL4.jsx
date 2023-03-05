@@ -17,11 +17,43 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 export default function SignUpCaregiverLVL4({ navigation, route }) {
   const [language, setLanguage] = useState([]);
   const [country, setCountry] = useState([]);
+  const [holidaysType, setHolidaysType] = useState([]);
   //we need to get the user data(most umporant is the id) from the previous screen
   const userId = route.params.userId;
   useEffect(() => {
     let urlforLanguages = 'https://proj.ruppin.ac.il/cgroup94/test1/api/LanguageCountry/GetAllLanguages';
     let urlforCountries = 'https://proj.ruppin.ac.il/cgroup94/test1/api/LanguageCountry/GetAllCountries';
+    let calendarUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Calendars/GetAllCalendars';
+    fetch(calendarUrl, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+        },
+    })
+        .then(res => {
+            if (res.ok) {
+                return res.json()
+            }
+            else {
+                console.log("not found")
+            }
+        })
+        .then(data => {
+            if (data != null) {
+
+                for (let i = 0; i < data.length; i++) {
+                    holidaysType.push({
+                        id: data[i].calendarNum,
+                        label: data[i].CalendarName,
+                    })
+                    
+                }
+            
+            }
+        })
+        .catch((error) => {
+            console.log("err=", error);
+        });
     fetch(urlforCountries, {
       method: 'GET',
       headers: {
@@ -113,7 +145,7 @@ export default function SignUpCaregiverLVL4({ navigation, route }) {
         DateOfBirth: date,
         VisaExpirationDate: visaExpiration,
       };
-      navigation.navigate("SignUpCaregiverLVL5", { data: data });
+      navigation.navigate("SignUpCaregiverLVL5", { data:data,holidaysType:holidaysType });
     }
   };
 

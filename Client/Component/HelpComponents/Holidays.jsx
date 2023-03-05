@@ -11,43 +11,7 @@ Font.loadAsync({
 const SCREEN_WIDTH = Dimensions.get('window').width;
 export default function Holidays(props) {
     const [selectedHolidays, setSelectedHolidays] = useState([]);
-    const [holidaysType, setHolidaysType] = useState([]);
-    //bring from DB all the holidays type
-    useEffect(() => {
-        let calendarUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Calendars/GetAllCalendars';
-        fetch(calendarUrl, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json; charset=UTF-8',
-            },
-        })
-            .then(res => {
-                if (res.ok) {
-                    return res.json()
-                }
-                else {
-                    console.log("not found")
-                }
-            })
-            .then(data => {
-                if (data != null) {
-
-                    for (let i = 0; i < data.length; i++) {
-                        holidaysType.push({
-                            id: data[i].calendarNum,
-                            label: data[i].CalendarName,
-                        })
-                        
-                    }
-                
-                }
-            })
-            .catch((error) => {
-                console.log("err=", error);
-            });
-    }, []);
-
-
+ 
     const isItemSelected = (id) => {
         return selectedHolidays.includes(id);
     };
@@ -72,7 +36,7 @@ export default function Holidays(props) {
 
             <ScrollView>
             <View style={styles.bodyContainer}>
-                    {holidaysType.map((item, index) => {
+                    {props.holidaysType.map((item, index) => {
                         const selectedStyle = isItemSelected(item.id) ? styles.selectedItem : {};
                         return (
                             <View style={[styles.itemBox, selectedStyle]} key={index}>

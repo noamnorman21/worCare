@@ -27,7 +27,7 @@ export default function SignUpLvl2({ navigation, route }) {
     // if the user didn't upload an image, we will use the default image
     if (image === null) {
       //זה תמונה מכוערת -נועם תחליף אותה
-      let defultImage="https://firebasestorage.googleapis.com/v0/b/worcare-3df72.appspot.com/o/images%2FAvatar.png?alt=media&token=5e7d6c28-aeed-42df-ad09-1b6f29e27d72"
+      let defultImage="https://png.pngtree.com/element_our/20200610/ourmid/pngtree-character-default-avatar-image_2237203.jpg"
       sendDataToDB(defultImage);
      
     }
@@ -78,7 +78,7 @@ const sendDataToDB = (downloadURL) => {
     userUri: downloadURL,
    
   }
-  console.log("afetre: "+ newUserToDB.userUri);
+  console.log("after: "+ newUserToDB.userUri);
 
  //send the user data to the DB
   fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/InsertUser', {

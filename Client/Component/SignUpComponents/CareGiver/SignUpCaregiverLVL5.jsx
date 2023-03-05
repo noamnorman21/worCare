@@ -1,5 +1,5 @@
 import { View, Text, SafeAreaView, StyleSheet, Dimensions, ScrollView, TouchableOpacity } from 'react-native'
-import { useState } from 'react'
+import { useState,useEffect } from 'react'
 import * as Font from 'expo-font';
 import Holidays from '../../HelpComponents/Holidays';
 
@@ -17,16 +17,23 @@ export default function SignUpCaregiverLVL5({ navigation, route }, props) {
   // const data = route.params.data;
   // console.log(data);
   const newForeignUser = route.params.data;
+  const holidaysType= route.params.holidaysType;
+ 
+  //bring from DB all the holidays type
+  useEffect(() => {
+     
+  }, []);
 
   const sendToDB = () => {
+ 
+    newForeignUser.Calendars = selectedHolidays; //selectedHolidays is the array of the selected holidays,use them in data base with stored procedure "InsertCalendarForUser"
     console.log(newForeignUser);
-    newForeignUser.Holidays = selectedHolidays; //selectedHolidays is the array of the selected holidays,use them in data base with stored procedure "InsertCalendarForUser"
     fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/ForeignUser/InsertForeignUser', {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify( newForeignUser ),
+      body: JSON.stringify(newForeignUser),
     })
       .then((response) => response.json())
       .then((json) => {
@@ -35,6 +42,7 @@ export default function SignUpCaregiverLVL5({ navigation, route }, props) {
       .catch((error) => {
         console.error(error);
       });
+      //here we will add navigation to the home page of the foreign user (:
   };
 
   const isItemSelected = (arr) => {
@@ -49,7 +57,7 @@ export default function SignUpCaregiverLVL5({ navigation, route }, props) {
         <Text style={styles.headerTxt}>Great Job !</Text>
       </View>
       {/* <Text style={styles.headerSmallTxt}>You are almost done</Text> */}
-      <Holidays sendHolidays={isItemSelected} />
+      <Holidays holidaysType={holidaysType} sendHolidays={isItemSelected} />
 
       <View style={styles.btnContainer}>
         <TouchableOpacity
