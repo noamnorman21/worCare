@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, StyleSheet, Dimensions, ScrollView, TouchableOpacity } from 'react-native'
+import { View, Text, SafeAreaView, StyleSheet, Dimensions, ScrollView, TouchableOpacity, Alert } from 'react-native'
 import { useState,useEffect } from 'react'
 import * as Font from 'expo-font';
 import Holidays from '../../HelpComponents/Holidays';
@@ -38,11 +38,22 @@ export default function SignUpCaregiverLVL5({ navigation, route }, props) {
       .then((response) => response.json())
       .then((json) => {
         console.log(json);
+        Alert.alert("Great Job !", "You can login now", [
+          {
+            text: "OK",
+            onPress: () => {
+              navigation.navigate('LogIn');
+            }
+          }
+        ]);
       })
       .catch((error) => {
         console.error(error);
       });
-      //here we will add navigation to the home page of the foreign user (:
+  
+      
+     
+     
   };
 
   const isItemSelected = (arr) => {

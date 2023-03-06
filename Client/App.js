@@ -29,7 +29,7 @@ export default function App() {
  
 
   );
-  // return <Providers/>
+
 }
 
 const styles = StyleSheet.create({

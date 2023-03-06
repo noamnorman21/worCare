@@ -19,6 +19,7 @@ import SignUpHobbies from './User/SignUpHobbies';
 import SignUpLimitations from './User/SignUpLimitations';
 import SignUpFinish from './User/SignUpFinish'
 
+
 const Stack = createStackNavigator();
 
 export default function NavigateSignUp() {
@@ -48,6 +49,7 @@ export default function NavigateSignUp() {
       <Stack.Screen name="SignUpHobbies" component={SignUpHobbies} options={{ headerShown: true, headerTitle: '' }} />
       <Stack.Screen name="SignUpLimitations" component={SignUpLimitations} options={{ headerShown: true, headerTitle: '' }} />
       <Stack.Screen name="SignUpFinish" component={SignUpFinish} options={{ headerShown: true, headerTitle: '' }} />
+      {/* כניסה למערכת */}
 
     </Stack.Navigator>
   )

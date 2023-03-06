@@ -60,6 +60,7 @@ export default function LogIn({ navigation }) {
             .then((json) => {
                 if (json.status === 'success') {
                     Alert.alert('Login Successful');
+                    
                 } else {
                     Alert.alert('Login Failed');
                 }
