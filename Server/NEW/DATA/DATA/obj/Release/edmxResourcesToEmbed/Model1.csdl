@@ -752,6 +752,15 @@
       <Parameter Name="id" Mode="In" Type="Int32" />
       <Parameter Name="isPrimary" Mode="In" Type="Boolean" />
     </FunctionImport>
+    <FunctionImport Name="NewContact">
+      <Parameter Name="contactName" Mode="In" Type="String" />
+      <Parameter Name="phoneNo" Mode="In" Type="String" />
+      <Parameter Name="mobileNo" Mode="In" Type="String" />
+      <Parameter Name="email" Mode="In" Type="String" />
+      <Parameter Name="role" Mode="In" Type="String" />
+      <Parameter Name="contactComment" Mode="In" Type="String" />
+      <Parameter Name="patientId" Mode="In" Type="String" />
+    </FunctionImport>
   </EntityContainer>
   <ComplexType Name="sp_helpdiagramdefinition_Result">
     <Property Type="Int32" Name="version" Nullable="true" />

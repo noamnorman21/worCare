@@ -556,6 +556,15 @@
     <Parameter Name="PhoneNum" Type="varchar" Mode="In" />
     <Parameter Name="UserUri" Type="nvarchar" Mode="In" />
   </Function>
+  <Function Name="NewContact" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="contactName" Type="varchar" Mode="In" />
+    <Parameter Name="phoneNo" Type="varchar" Mode="In" />
+    <Parameter Name="mobileNo" Type="varchar" Mode="In" />
+    <Parameter Name="email" Type="varchar" Mode="In" />
+    <Parameter Name="role" Type="varchar" Mode="In" />
+    <Parameter Name="contactComment" Type="varchar" Mode="In" />
+    <Parameter Name="patientId" Type="char" Mode="In" />
+  </Function>
   <Function Name="sp_alterdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
     <Parameter Name="owner_id" Type="int" Mode="In" />

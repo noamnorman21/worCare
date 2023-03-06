@@ -561,6 +561,15 @@
           <Parameter Name="PhoneNum" Type="varchar" Mode="In" />
           <Parameter Name="UserUri" Type="nvarchar" Mode="In" />
         </Function>
+        <Function Name="NewContact" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="contactName" Type="varchar" Mode="In" />
+          <Parameter Name="phoneNo" Type="varchar" Mode="In" />
+          <Parameter Name="mobileNo" Type="varchar" Mode="In" />
+          <Parameter Name="email" Type="varchar" Mode="In" />
+          <Parameter Name="role" Type="varchar" Mode="In" />
+          <Parameter Name="contactComment" Type="varchar" Mode="In" />
+          <Parameter Name="patientId" Type="char" Mode="In" />
+        </Function>
         <Function Name="sp_alterdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
           <Parameter Name="owner_id" Type="int" Mode="In" />
@@ -1467,6 +1476,15 @@
             <Parameter Name="id" Mode="In" Type="Int32" />
             <Parameter Name="isPrimary" Mode="In" Type="Boolean" />
           </FunctionImport>
+          <FunctionImport Name="NewContact">
+            <Parameter Name="contactName" Mode="In" Type="String" />
+            <Parameter Name="phoneNo" Mode="In" Type="String" />
+            <Parameter Name="mobileNo" Mode="In" Type="String" />
+            <Parameter Name="email" Mode="In" Type="String" />
+            <Parameter Name="role" Mode="In" Type="String" />
+            <Parameter Name="contactComment" Mode="In" Type="String" />
+            <Parameter Name="patientId" Mode="In" Type="String" />
+          </FunctionImport>
         </EntityContainer>
         <ComplexType Name="sp_helpdiagramdefinition_Result">
           <Property Type="Int32" Name="version" Nullable="true" />
@@ -1773,6 +1791,7 @@
           <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="igroup194_prodModel.Store.sp_renamediagram" />
           <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="igroup194_prodModel.Store.sp_upgraddiagrams" />
           <FunctionImportMapping FunctionImportName="InsertCalendarForUser" FunctionName="igroup194_prodModel.Store.InsertCalendarForUser" />
+          <FunctionImportMapping FunctionImportName="NewContact" FunctionName="igroup194_prodModel.Store.NewContact" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

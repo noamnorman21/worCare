@@ -53,8 +53,6 @@ namespace WebApi.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            //first we will check if the id is exist in tblUser
-
 
   
 

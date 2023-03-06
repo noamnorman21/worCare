@@ -227,5 +227,38 @@ namespace DATA
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertCalendarForUser", calendarNumParameter, idParameter, isPrimaryParameter);
         }
+    
+        public virtual int NewContact(string contactName, string phoneNo, string mobileNo, string email, string role, string contactComment, string patientId)
+        {
+            var contactNameParameter = contactName != null ?
+                new ObjectParameter("contactName", contactName) :
+                new ObjectParameter("contactName", typeof(string));
+    
+            var phoneNoParameter = phoneNo != null ?
+                new ObjectParameter("phoneNo", phoneNo) :
+                new ObjectParameter("phoneNo", typeof(string));
+    
+            var mobileNoParameter = mobileNo != null ?
+                new ObjectParameter("mobileNo", mobileNo) :
+                new ObjectParameter("mobileNo", typeof(string));
+    
+            var emailParameter = email != null ?
+                new ObjectParameter("email", email) :
+                new ObjectParameter("email", typeof(string));
+    
+            var roleParameter = role != null ?
+                new ObjectParameter("role", role) :
+                new ObjectParameter("role", typeof(string));
+    
+            var contactCommentParameter = contactComment != null ?
+                new ObjectParameter("contactComment", contactComment) :
+                new ObjectParameter("contactComment", typeof(string));
+    
+            var patientIdParameter = patientId != null ?
+                new ObjectParameter("patientId", patientId) :
+                new ObjectParameter("patientId", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("NewContact", contactNameParameter, phoneNoParameter, mobileNoParameter, emailParameter, roleParameter, contactCommentParameter, patientIdParameter);
+        }
     }
 }
