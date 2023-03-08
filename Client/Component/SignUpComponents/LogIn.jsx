@@ -28,19 +28,18 @@ export default function LogIn({ navigation }) {
             Alert.alert('Email is not valid');
             return;
         }
+        if (password === '') {
+            Alert.alert('Password is required');
+            return;
+        }
         //check password format, it should be password format
         if (!validatePassword(password)) {
             Alert.alert('Password is not valid');
             return;
         }
-        if (password === '') {
-            Alert.alert('Password is required');
-            return;
-        }
-
         const userData = {
-            email: email,
-            password: password,
+            Email: email,
+            Password: password,
         }
 
         //call api to login user
@@ -48,13 +47,16 @@ export default function LogIn({ navigation }) {
     }
     //function to login user
     const LoginUser = (userData) => {
+        let userForLoginUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUserForLogin';
+        console.log(userData);
+
      
-        fetch('', {
+        fetch(userForLoginUrl, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ userData }),
+            body: JSON.stringify(userData),
         })
             .then((response) => response.json())
             .then((json) => {
@@ -78,7 +80,7 @@ export default function LogIn({ navigation }) {
     }
     //function to check password format
     const validatePassword = (password) => {
-        var re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+        var re =  /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
         return re.test(password);
     }
 
