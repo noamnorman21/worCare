@@ -52,8 +52,6 @@ export default function SignUpCaregiverLVL5({ navigation, route }, props) {
       });
   
       
-     
-     
   };
 
   const isItemSelected = (arr) => {

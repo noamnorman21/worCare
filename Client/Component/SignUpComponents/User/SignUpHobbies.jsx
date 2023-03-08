@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, Button, Modal, Dimensions, SafeAreaView } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, Modal, Dimensions, SafeAreaView } from 'react-native';
 import { Entypo } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
-
+import HobbiesData from './Hobbies.json';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function SignUpHobbies({ navigation, route }) {
@@ -13,119 +13,28 @@ export default function SignUpHobbies({ navigation, route }) {
   const [modal5Visible, setModal5Visible] = useState(false);
   const [modal6Visible, setModal6Visible] = useState(false);
 
-  const [books, setBooks] = useState([
-    { id: 1, name: 'Comic', selected: false },
-    { id: 2, name: 'Novel', selected: false },
-    { id: 3, name: 'Poetry', selected: false },
-    { id: 4, name: 'Science', selected: false },
-    { id: 5, name: 'History', selected: false },
-    { id: 6, name: 'Religion', selected: false },
-    { id: 7, name: 'Philosophy', selected: false },
-    { id: 8, name: 'Biography', selected: false },
-    { id: 9, name: 'Comedy', selected: false },
-    { id: 10, name: 'Drama', selected: false },
-    { id: 11, name: 'Horror', selected: false },
-    { id: 12, name: 'Romance', selected: false },
-    { id: 13, name: 'Mystery', selected: false },
-    { id: 14, name: 'Thriller', selected: false },
-    { id: 15, name: 'Fantasy', selected: false },
-    { id: 16, name: 'None', selected: false }
-
-  ]);
+  const [books, setBooks] = useState(HobbiesData.books);
   const [booksOther, setBooksOther] = useState('');
-  const [music, setMusic] = useState([
-    { id: 1, name: 'Rock', selected: false },
-    { id: 2, name: 'Pop', selected: false },
-    { id: 3, name: 'Rap', selected: false },
-    { id: 4, name: 'Country', selected: false },
-    { id: 5, name: 'Jazz', selected: false },
-    { id: 6, name: 'Blues', selected: false },
-    { id: 7, name: 'Classical', selected: false },
-    { id: 8, name: 'Opera', selected: false },
-    { id: 9, name: 'None', selected: false }
-  ]);
+  const [music, setMusic] = useState(HobbiesData.music);
   const [musicOther, setMusicOther] = useState('');
-  const [tvShows, setTvShows] = useState([
-    { id: 1, name: 'News', selected: false },
-    { id: 2, name: 'Sports', selected: false },
-    { id: 3, name: 'Comedy', selected: false },
-    { id: 4, name: 'Drama', selected: false },
-    { id: 5, name: 'Reality', selected: false },
-    { id: 6, name: 'None', selected: false }
-  ]);
+  const [tvShows, setTvShows] = useState(HobbiesData.tvShows);
   const [tvShowsOther, setTvShowsOther] = useState('');
-  const [radioChannel, setRadioChannel] = useState([
-    { id: 1, name: '88.8', selected: false },
-    { id: 2, name: '91', selected: false },
-    { id: 3, name: '91.8', selected: false },
-    { id: 4, name: '93.5', selected: false },
-    { id: 5, name: '94', selected: false },
-    { id: 6, name: '99.8', selected: false },
-    { id: 7, name: '100', selected: false },
-    { id: 8, name: '107', selected: false },
-    { id: 9, name: 'None', selected: false }
-  ]);
+  const [radioChannel, setRadioChannel] = useState(HobbiesData.radioChannel);
   const [radioChannelOther, setRadioChannelOther] = useState('');
-
-  const [food, setFood] = useState([
-    { id: 1, name: 'Pizza', selected: false },
-    { id: 2, name: 'Burger', selected: false },
-    { id: 3, name: 'Pasta', selected: false },
-    { id: 4, name: 'Sandwich', selected: false },
-    { id: 5, name: 'Salad', selected: false },
-    { id: 6, name: 'Steak', selected: false },
-    { id: 7, name: 'Chicken', selected: false },
-    { id: 8, name: 'Fish', selected: false },
-    { id: 9, name: 'Sushi', selected: false },
-    { id: 10, name: 'Rice', selected: false },
-    { id: 11, name: 'Ravioli', selected: false },
-    { id: 12, name: 'None', selected: false }
-  ]);
+  const [food, setFood] = useState(HobbiesData.food);
   const [foodOther, setFoodOther] = useState('');
-  const [drink, setDrink] = useState([
-    { id: 1, name: 'Coffee', selected: false },
-    { id: 2, name: 'Tea', selected: false },
-    { id: 3, name: 'Juice', selected: false },
-    { id: 4, name: 'Water', selected: false },
-    { id: 5, name: 'Milk', selected: false },
-    { id: 6, name: 'Soda', selected: false },
-    { id: 7, name: 'Beer', selected: false },
-    { id: 8, name: 'Wine', selected: false },
-    { id: 9, name: 'None', selected: false }
-  ]);
+  const [drink, setDrink] = useState(HobbiesData.drink);
   const [drinkOther, setDrinkOther] = useState('');
-  const [hobbies, setHobbies] = useState([
-    { id: 1, name: 'Gardening', selected: false },
-    { id: 2, name: 'Cooking', selected: false },
-    { id: 3, name: 'Drawing', selected: false },
-    { id: 4, name: 'Painting', selected: false },
-    { id: 5, name: 'Sewing', selected: false },
-    { id: 6, name: 'Knitting', selected: false },
-    { id: 7, name: 'Photography', selected: false },
-    { id: 8, name: 'Sport', selected: false },
-    { id: 9, name: 'Dancing', selected: false },
-    { id: 10, name: 'Singing', selected: false },
-    { id: 11, name: 'Diving', selected: false },
-    { id: 12, name: 'None', selected: false }
-  ]);
+  const [hobbies, setHobbies] = useState(HobbiesData.hobbies);
   const [hobbiesOther, setHobbiesOther] = useState('');
+  const [movies, setMovies] = useState(HobbiesData.movies);
+  const [moviesOther, setMoviesOther] = useState('');
+  const [other, setOther] = useState('');
 
   const hours = [...Array(25)].map((_, i) => `${i}:00`);
   hours.unshift('Select...');
-
   const [selectedNightHour, setSelectedNightHour] = useState('');
   const [selectedAfterNoonNaps, setSelectedAfterNoonNaps] = useState('');
-
-  const [movies, setMovies] = useState([
-    { id: 1, name: 'Action', selected: false },
-    { id: 2, name: 'Comedy', selected: false },
-    { id: 3, name: 'Drama', selected: false },
-    { id: 4, name: 'Romance', selected: false },
-    { id: 5, name: 'Horror', selected: false },
-    { id: 6, name: 'None', selected: false }
-  ]);
-  const [moviesOther, setMoviesOther] = useState('');
-  const [other, setOther] = useState('');
 
   const NavigateToNextLVL = () => {
     const activeBooks = books.filter((book) => book.selected).map((book) => book.name);
@@ -135,8 +44,7 @@ export default function SignUpHobbies({ navigation, route }) {
     const activeFood = food.filter((food) => food.selected).map((food) => food.name);
     const activeDrink = drink.filter((drink) => drink.selected).map((drink) => drink.name);
     const activeHobbies = hobbies.filter((hobby) => hobby.selected).map((hobby) => hobby.name);
-    const activeMovies = movies.filter((movie) => movie.selected).map((movie) => movie.name);
-
+    const activeMovies = movies.filter((movie) => movie.selected).map((movie) => movie.name);   
     if (booksOther !== '') {
       activeBooks.push(booksOther);
     }
@@ -188,7 +96,7 @@ export default function SignUpHobbies({ navigation, route }) {
       <TouchableOpacity
         style={styles.inputBox}
         onPress={() => setModal1Visible(true)}>
-        <Text style={styles.input}>Allergies</Text>
+        <Text style={styles.input}>Books</Text>
         <Entypo style={styles.icon} name="chevron-right" size={24} color="black" />
       </TouchableOpacity>
 
@@ -196,24 +104,20 @@ export default function SignUpHobbies({ navigation, route }) {
       <Modal animationType="slide" visible={modal1Visible}>
         <View style={styles.modal}>
           <Text style={styles.modalText}>Pick Books</Text>
-
           <View style={styles.booksContainer}>
-            {books.map((books) => (
+            {books.map((book, index) => (
               <TouchableOpacity
-                key={books.id}
-                style={[styles.books, books.selected && { borderColor: '#548DFF' }]}
+                key={index}
+                style={[styles.SMInput, book.selected && { borderColor: '#548DFF' }]}
                 onPress={() => {
-                  const newBooks = books.map((item) => {
-                    if (item.id === books.id) {
-                      return { ...item, selected: !item.selected };
-                    }
-                    return item;
-                  });
+                  const newBooks = [...books];
+                  newBooks[index].selected = !newBooks[index].selected;
                   setBooks(newBooks);
                 }}>
-                <Text style={styles.booksText}>{books.name}</Text>
+                <Text style={styles.bookText}>{book.name}</Text>
               </TouchableOpacity>
             ))}
+
             <TextInput
               style={styles.inputOther}
               placeholder="Other..."
@@ -252,13 +156,13 @@ export default function SignUpHobbies({ navigation, route }) {
 
       {/* Radio Channel & Music - Modal */}
       <Modal animationType="slide" visible={modal2Visible}>
-        <View style={styles.modal}>
-          <Text style={styles.modalText}>Pick Radio Channel</Text>
-          <View style={styles.musicContainer}>
+        <SafeAreaView style={styles.modal}>
+          <Text style={styles.modalXSText}>Pick Radio Channel</Text>
+          <View style={styles.doubleContainer}>
             {radioChannel.map((radioChannel) => (
               <TouchableOpacity
                 key={radioChannel.id}
-                style={[styles.music, radioChannel.selected && { borderColor: '#548DFF' }]}
+                style={[styles.XSInput, radioChannel.selected && { borderColor: '#548DFF' }]}
                 onPress={() => {
                   const newRadioChannel = radioChannel.map((item) => {
                     if (item.id === radioChannel.id) {
@@ -279,13 +183,12 @@ export default function SignUpHobbies({ navigation, route }) {
               onChangeText={(text) => setRadioChannelOther(text)}
             />
           </View>
-
-          <Text style={styles.modalText}>Pick Music</Text>
-          <View style={styles.musicContainer}>
+          <Text style={styles.modalXSText}>Pick Music</Text>
+          <View style={styles.doubleContainer}>
             {music.map((music) => (
               <TouchableOpacity
                 key={music.id}
-                style={[styles.music, music.selected && { borderColor: '#548DFF' }]}
+                style={[styles.XSInput, music.selected && { borderColor: '#548DFF' }]}
                 onPress={() => {
                   const newMusic = music.map((item) => {
                     if (item.id === music.id) {
@@ -323,7 +226,7 @@ export default function SignUpHobbies({ navigation, route }) {
               <Text style={styles.cancelBtnTxt}>Cancel</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </SafeAreaView>
       </Modal>
 
       {/* Tv Shows & Movies */}
@@ -422,7 +325,7 @@ export default function SignUpHobbies({ navigation, route }) {
       <Modal animationType="slide" visible={modal4Visible}>
         <View style={styles.modal}>
           <Text style={styles.modalText}>Pick Food</Text>
-          <View style={styles.FoodContainer}>
+          <View style={styles.doubleContainer}>
             {food.map((food) => (
               <TouchableOpacity
                 key={food.id}
@@ -450,7 +353,7 @@ export default function SignUpHobbies({ navigation, route }) {
           </View>
 
           <Text style={styles.modalText}>Pick Drink</Text>
-          <View style={styles.FoodContainer}>
+          <View style={styles.doubleContainer}>
             {drink.map((drink) => (
               <TouchableOpacity
                 key={drink.id}
@@ -620,7 +523,7 @@ export default function SignUpHobbies({ navigation, route }) {
           <Text style={styles.button}>Continue</Text>
         </TouchableOpacity>
       </View>
-    </SafeAreaView>
+    </SafeAreaView >
   );
 }
 
@@ -643,13 +546,13 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH * 1,
     marginTop: 50,
   },
-  musicContainer: {
+  doubleContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-around',
     alignItems: 'center',
     width: SCREEN_WIDTH * 1,
-    marginTop: 50,
+    marginTop: 20,
   },
   inputBox: {
     width: SCREEN_WIDTH * 0.9,
@@ -690,6 +593,11 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontFamily: 'Urbanist-Bold',
     margin: 40,
+  },
+  modalXSText: {
+    fontSize: 25,
+    fontFamily: 'Urbanist-Bold',
+    marginTop: 20,
   },
   saveButton: {
     width: SCREEN_WIDTH * 0.45,
@@ -780,6 +688,28 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: '#000',
     fontFamily: 'Urbanist',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  SMInput: {
+    width: SCREEN_WIDTH * 0.2275,
+    height: 55,
+    borderRadius: 16,
+    backgroundColor: '#fff',
+    borderWidth: 1.5,
+    borderColor: '#E6EBF2',
+    marginVertical: 7,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  XSInput:{
+    width: SCREEN_WIDTH * 0.3,
+    height: 50,
+    borderRadius: 16,
+    backgroundColor: '#fff',
+    borderWidth: 1.5,
+    borderColor: '#E6EBF2',
+    marginVertical: 7,
     justifyContent: 'center',
     alignItems: 'center',
   },

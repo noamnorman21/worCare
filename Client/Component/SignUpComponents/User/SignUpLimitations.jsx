@@ -1,69 +1,24 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, Button, Modal, Dimensions, SafeAreaView } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, Modal, Dimensions, SafeAreaView } from 'react-native';
 import { Entypo } from '@expo/vector-icons';
 import { Dropdown } from 'react-native-element-dropdown';
+import LimitationsData from './Limitations.json';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function SignUpLimitations({ navigation, route }) {
+
   const [modal1Visible, setModal1Visible] = useState(false);
   const [modal2Visible, setModal2Visible] = useState(false);
   const [modal3Visible, setModal3Visible] = useState(false);
   const [modal4Visible, setModal4Visible] = useState(false);
   const [comments, setComments] = useState('');
-  const [allergies, setAllergies] = useState([
-    { id: 1, name: 'Peanuts', selected: false },
-    { id: 2, name: 'Shellfish', selected: false },
-    { id: 3, name: 'Milk', selected: false },
-    { id: 4, name: 'Eggs', selected: false },
-    { id: 5, name: 'Wheat', selected: false },
-    { id: 6, name: 'Soy', selected: false },
-    { id: 7, name: 'Fish', selected: false },
-    { id: 8, name: 'Tree Nuts', selected: false },
-    { id: 9, name: 'Sesame', selected: false },
-    { id: 10, name: 'Dust', selected: false },
-    { id: 11, name: 'Pollen', selected: false },
-    { id: 12, name: 'Mold', selected: false },
-    { id: 13, name: 'Latex', selected: false },
-    { id: 14, name: 'Dog', selected: false },
-    { id: 15, name: 'Cat', selected: false },
-    { id: 17, name: 'Seasonal', selected: false },
-    { id: 19, name: 'Penicillin', selected: false },
-    { id: 20, name: 'Aspirin', selected: false },
-    { id: 21, name: 'Chlorine', selected: false },
-    { id: 22, name: 'None', selected: false },
-  ]);
+  const [allergies, setAllergies] = useState(LimitationsData.allergies);
   const [allergiesOther, setAllergiesOther] = useState('');
-
-  const [sensitivities, setSensitivities] = useState([
-    { id: 1, name: 'Smell', selected: false },
-    { id: 2, name: 'Taste', selected: false },
-    { id: 3, name: 'Touch', selected: false },
-    { id: 4, name: 'Sight', selected: false },
-    { id: 5, name: 'Hearing', selected: false },
-    { id: 6, name: 'None', selected: false },
-  ]);
+  const [sensitivities, setSensitivities] = useState(LimitationsData.sensitivities);
   const [sensitivitiesOther, setSensitivitiesOther] = useState('');
-  const [physicalAbilities, setPhysicalAbilities] = useState([
-    { id: 1, name: 'Walking', selected: false },
-    { id: 3, name: 'Standing', selected: false },
-    { id: 4, name: 'Sitting', selected: false },
-    { id: 5, name: 'Bending', selected: false },
-    { id: 6, name: 'Lifting', selected: false },
-    { id: 7, name: 'Carrying', selected: false },
-    { id: 8, name: 'Reaching', selected: false },
-    { id: 9, name: 'Pushing', selected: false },
-    { id: 10, name: 'Pulling', selected: false },
-    { id: 11, name: 'None', selected: false },
-  ]);
+  const [physicalAbilities, setPhysicalAbilities] = useState(LimitationsData.physicalAbilities);
   const [physicalAbilitiesOther, setPhysicalAbilitiesOther] = useState('');
-  const [bathRoutine, setBathRoutine] = useState([
-    { id: 1, name: 'Morning', selected: false },
-    { id: 2, name: 'Afternoon', selected: false },
-    { id: 3, name: 'Evening', selected: false },
-    { id: 4, name: 'Night', selected: false },
-    { id: 5, name: 'Both', selected: false },
-    { id: 6, name: 'None', selected: false },
-  ]);
+  const [bathRoutine, setBathRoutine] = useState(LimitationsData.bathRoutine);
   const [bathRoutineOther, setBathRoutineOther] = useState('');
   const [noiseSensitiveData, setNoiseSensitiveData] = useState([
     { label: 'Yes', value: 1 },
@@ -371,7 +326,6 @@ export default function SignUpLimitations({ navigation, route }) {
           <Text style={styles.button}>Continue</Text>
         </TouchableOpacity>
       </View>
-
     </SafeAreaView>
   )
 }
