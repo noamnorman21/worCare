@@ -52,8 +52,9 @@ export default function SignUpLimitations({ navigation, route }) {
       sensitivityToNoise: noiseSensitive,
       other: comments,
     };
-    navigation.navigate('SignUpHobbies', { tblLimitations: tblLimitations });
-  };
+    navigation.navigate('SignUpHobbies', { tblLimitations: tblLimitations }); 
+    
+  }; 
   
   return (
     <SafeAreaView style={styles.container}>
