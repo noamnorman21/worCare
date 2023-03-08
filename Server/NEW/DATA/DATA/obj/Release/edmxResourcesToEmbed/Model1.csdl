@@ -1,0 +1,776 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="igroup194_prodModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="sysdiagram">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <EntityType Name="tblActualList">
+    <Key>
+      <PropertyRef Name="listId" />
+    </Key>
+    <Property Name="listId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="type" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="tblList" Relationship="Self.FK__tblActual__listI__558AAF1E" FromRole="tblActualList" ToRole="tblList" />
+    <NavigationProperty Name="tblDrugForPatient" Relationship="Self.FK__tblDrugFo__listI__1758727B" FromRole="tblActualList" ToRole="tblDrugForPatient" />
+    <NavigationProperty Name="tblPatientTasks" Relationship="Self.FK__tblPatien__listI__0539C240" FromRole="tblActualList" ToRole="tblPatientTask" />
+  </EntityType>
+  <EntityType Name="tblCalendarForUser">
+    <Key>
+      <PropertyRef Name="calendarNum" />
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="calendarNum" Type="Int32" Nullable="false" />
+    <Property Name="id" Type="Int32" Nullable="false" />
+    <Property Name="isPrimary" Type="Boolean" />
+    <NavigationProperty Name="tblCalendarsType" Relationship="Self.FK__tblCalend__calen__09FE775D" FromRole="tblCalendarForUser" ToRole="tblCalendarsType" />
+    <NavigationProperty Name="tblUser" Relationship="Self.FK__tblCalendarF__id__090A5324" FromRole="tblCalendarForUser" ToRole="tblUser" />
+  </EntityType>
+  <EntityType Name="tblCalendarsType">
+    <Key>
+      <PropertyRef Name="calendarNum" />
+    </Key>
+    <Property Name="calendarNum" Type="Int32" Nullable="false" />
+    <Property Name="calendarName" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+    <Property Name="calendarUrl" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="tblCalendarForUsers" Relationship="Self.FK__tblCalend__calen__09FE775D" FromRole="tblCalendarsType" ToRole="tblCalendarForUser" />
+  </EntityType>
+  <EntityType Name="tblCaresForPatient">
+    <Key>
+      <PropertyRef Name="patientId" />
+      <PropertyRef Name="workerId" />
+    </Key>
+    <Property Name="patientId" Type="String" MaxLength="9" FixedLength="true" Unicode="false" Nullable="false" />
+    <Property Name="workerId" Type="Int32" Nullable="false" />
+    <Property Name="status" Type="String" MaxLength="1" FixedLength="true" Unicode="false" Nullable="false" />
+    <Property Name="linkTo" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="tblPatient" Relationship="Self.FK__tblCaresF__patie__0CDAE408" FromRole="tblCaresForPatient" ToRole="tblPatient" />
+    <NavigationProperty Name="tblForeignUser" Relationship="Self.FK__tblCaresF__worke__0DCF0841" FromRole="tblCaresForPatient" ToRole="tblForeignUser" />
+  </EntityType>
+  <EntityType Name="tblContact">
+    <Key>
+      <PropertyRef Name="contactId" />
+    </Key>
+    <Property Name="contactId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="contactName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="phoneNo" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="mobileNo" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="role" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="contactComment" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="patientId" Type="String" MaxLength="9" FixedLength="true" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="tblPatient" Relationship="Self.FK__tblContac__patie__1293BD5E" FromRole="tblContacts" ToRole="tblPatient" />
+  </EntityType>
+  <EntityType Name="tblCountry">
+    <Key>
+      <PropertyRef Name="CountryName_En" />
+    </Key>
+    <Property Name="CountryName_En" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="tblForeignUsers" Relationship="Self.FK__tblForeig__Count__731B1205" FromRole="tblCountry" ToRole="tblForeignUser" />
+  </EntityType>
+  <EntityType Name="tblDrug">
+    <Key>
+      <PropertyRef Name="drugId" />
+    </Key>
+    <Property Name="drugId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="drugName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="drugUrl" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="modifyDate" Type="DateTime" Precision="0" />
+    <Property Name="Type" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="tblDrugForPatients" Relationship="Self.FK__tblDrugFo__drugI__15702A09" FromRole="tblDrug" ToRole="tblDrugForPatient" />
+  </EntityType>
+  <EntityType Name="tblDrugForPatient">
+    <Key>
+      <PropertyRef Name="listId" />
+    </Key>
+    <Property Name="listId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="fromDate" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="toDate" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="numOfTimes" Type="Byte" Nullable="false" />
+    <Property Name="comment" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="drugId" Type="Int32" Nullable="false" />
+    <Property Name="patientId" Type="String" MaxLength="9" FixedLength="true" Unicode="false" Nullable="false" />
+    <Property Name="period" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+    <Property Name="quantity" Type="Int32" />
+    <Property Name="minQuantity" Type="Int32" />
+    <Property Name="TimeInDay" Type="Time" Precision="7" />
+    <NavigationProperty Name="tblActualList" Relationship="Self.FK__tblDrugFo__listI__1758727B" FromRole="tblDrugForPatient" ToRole="tblActualList" />
+    <NavigationProperty Name="tblDrug" Relationship="Self.FK__tblDrugFo__drugI__15702A09" FromRole="tblDrugForPatient" ToRole="tblDrug" />
+    <NavigationProperty Name="tblPatient" Relationship="Self.FK__tblDrugFo__patie__16644E42" FromRole="tblDrugForPatient" ToRole="tblPatient" />
+  </EntityType>
+  <EntityType Name="tblForeignUser">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="DateOfBirth" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="VisaExpirationDate" Type="DateTime" Precision="0" />
+    <Property Name="LanguageName_En" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="CountryName_En" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="tblCaresForPatients" Relationship="Self.FK__tblCaresF__worke__0DCF0841" FromRole="tblForeignUser" ToRole="tblCaresForPatient" />
+    <NavigationProperty Name="tblCountry" Relationship="Self.FK__tblForeig__Count__731B1205" FromRole="tblForeignUser" ToRole="tblCountry" />
+    <NavigationProperty Name="tblLanguage" Relationship="Self.FK__tblForeig__Langu__7226EDCC" FromRole="tblForeignUser" ToRole="tblLanguage" />
+    <NavigationProperty Name="tblUser" Relationship="Self.FK__tblForeignUs__Id__703EA55A" FromRole="tblForeignUser" ToRole="tblUser" />
+    <NavigationProperty Name="tblPatientTasks" Relationship="Self.FK__tblPatien__worke__035179CE" FromRole="tblForeignUser" ToRole="tblPatientTask" />
+    <NavigationProperty Name="tblPaymentRequests" Relationship="Self.FK__tblPaymen__userI__1EF99443" FromRole="tblForeignUser" ToRole="tblPaymentRequest" />
+    <NavigationProperty Name="tblPrivateTasks" Relationship="Self.FK__tblPrivat__worke__7ABC33CD" FromRole="tblForeignUser" ToRole="tblPrivateTask" />
+  </EntityType>
+  <EntityType Name="tblHobby">
+    <Key>
+      <PropertyRef Name="patientId" />
+    </Key>
+    <Property Name="patientId" Type="String" MaxLength="9" FixedLength="true" Unicode="false" Nullable="false" />
+    <Property Name="books" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="music" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="TVShow" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="radioChannel" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="food" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="drink" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="movie" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="specialHabits" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="afternoonNap" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="nightSleep" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="other" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="tblPatient" Relationship="Self.FK__tblHobbie__patie__5C37ACAD" FromRole="tblHobbies" ToRole="tblPatient" />
+  </EntityType>
+  <EntityType Name="tblLanguage">
+    <Key>
+      <PropertyRef Name="LanguageName_En" />
+    </Key>
+    <Property Name="LanguageName_En" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="LanguageName_He" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="LanguageName_Encode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="LanguageName_Origin" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="tblForeignUsers" Relationship="Self.FK__tblForeig__Langu__7226EDCC" FromRole="tblLanguage" ToRole="tblForeignUser" />
+    <NavigationProperty Name="tblPatients" Relationship="Self.FK__tblPatien__Langu__58671BC9" FromRole="tblLanguage" ToRole="tblPatient" />
+  </EntityType>
+  <EntityType Name="tblLimitation">
+    <Key>
+      <PropertyRef Name="patientId" />
+    </Key>
+    <Property Name="patientId" Type="String" MaxLength="9" FixedLength="true" Unicode="false" Nullable="false" />
+    <Property Name="allergies" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="sensitivities" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="physicalAbilities" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="bathRoutine" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="sensitivityToNoise" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="other" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="tblPatient" Relationship="Self.FK__tblLimita__patie__5F141958" FromRole="tblLimitations" ToRole="tblPatient" />
+  </EntityType>
+  <EntityType Name="tblList">
+    <Key>
+      <PropertyRef Name="listId" />
+    </Key>
+    <Property Name="listId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="listName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="listFromDate" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="listToDate" Type="DateTime" Precision="0" />
+    <Property Name="listComment" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="tblActualList" Relationship="Self.FK__tblActual__listI__558AAF1E" FromRole="tblList" ToRole="tblActualList" />
+    <NavigationProperty Name="tblProductLists" Relationship="Self.FK__tblProduc__listI__21D600EE" FromRole="tblList" ToRole="tblProductList" />
+  </EntityType>
+  <EntityType Name="tblPatient">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="String" MaxLength="9" FixedLength="true" Unicode="false" Nullable="false" />
+    <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="DateOfBirth" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="LanguageName_En" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="tblCaresForPatients" Relationship="Self.FK__tblCaresF__patie__0CDAE408" FromRole="tblPatient" ToRole="tblCaresForPatient" />
+    <NavigationProperty Name="tblContacts" Relationship="Self.FK__tblContac__patie__1293BD5E" FromRole="tblPatient" ToRole="tblContacts" />
+    <NavigationProperty Name="tblDrugForPatients" Relationship="Self.FK__tblDrugFo__patie__16644E42" FromRole="tblPatient" ToRole="tblDrugForPatient" />
+    <NavigationProperty Name="tblHobby" Relationship="Self.FK__tblHobbie__patie__5C37ACAD" FromRole="tblPatient" ToRole="tblHobbies" />
+    <NavigationProperty Name="tblLanguage" Relationship="Self.FK__tblPatien__Langu__58671BC9" FromRole="tblPatient" ToRole="tblLanguage" />
+    <NavigationProperty Name="tblLimitation" Relationship="Self.FK__tblLimita__patie__5F141958" FromRole="tblPatient" ToRole="tblLimitations" />
+    <NavigationProperty Name="tblPatientTasks" Relationship="Self.FK__tblPatien__patie__025D5595" FromRole="tblPatient" ToRole="tblPatientTask" />
+  </EntityType>
+  <EntityType Name="tblPatientTask">
+    <Key>
+      <PropertyRef Name="taskId" />
+    </Key>
+    <Property Name="taskId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="taskName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="taskFromDate" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="taskToDate" Type="DateTime" Precision="0" />
+    <Property Name="taskComment" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="taskStatus" Type="String" MaxLength="1" FixedLength="true" Unicode="false" Nullable="false" />
+    <Property Name="patientId" Type="String" MaxLength="9" FixedLength="true" Unicode="false" Nullable="false" />
+    <Property Name="workerId" Type="Int32" Nullable="false" />
+    <Property Name="userId" Type="Int32" Nullable="false" />
+    <Property Name="listId" Type="Int32" Nullable="false" />
+    <Property Name="TimeInDay" Type="Time" Precision="7" />
+    <Property Name="period" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="tblActualList" Relationship="Self.FK__tblPatien__listI__0539C240" FromRole="tblPatientTask" ToRole="tblActualList" />
+    <NavigationProperty Name="tblForeignUser" Relationship="Self.FK__tblPatien__worke__035179CE" FromRole="tblPatientTask" ToRole="tblForeignUser" />
+    <NavigationProperty Name="tblPatient" Relationship="Self.FK__tblPatien__patie__025D5595" FromRole="tblPatientTask" ToRole="tblPatient" />
+    <NavigationProperty Name="tblUser" Relationship="Self.FK__tblPatien__userI__04459E07" FromRole="tblPatientTask" ToRole="tblUser" />
+  </EntityType>
+  <EntityType Name="tblPaycheck">
+    <Key>
+      <PropertyRef Name="payCheckNum" />
+    </Key>
+    <Property Name="payCheckNum" Type="Int32" Nullable="false" />
+    <Property Name="paycheckDate" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="paycheckSummary" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="paycheckComment" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="UserId" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="tblUser" Relationship="Self.FK__tblPayche__UserI__6D6238AF" FromRole="tblPaycheck" ToRole="tblUser" />
+  </EntityType>
+  <EntityType Name="tblPaymentRequest">
+    <Key>
+      <PropertyRef Name="requestId" />
+    </Key>
+    <Property Name="requestId" Type="Int32" Nullable="false" />
+    <Property Name="requestSubject" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="amountToPay" Type="Double" Nullable="false" />
+    <Property Name="requestDate" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="requestProofDocument" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="requestComment" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="requestStatus" Type="String" MaxLength="1" FixedLength="true" Unicode="false" Nullable="false" />
+    <Property Name="userId" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="tblForeignUser" Relationship="Self.FK__tblPaymen__userI__1EF99443" FromRole="tblPaymentRequest" ToRole="tblForeignUser" />
+  </EntityType>
+  <EntityType Name="tblPrivateTask">
+    <Key>
+      <PropertyRef Name="taskId" />
+    </Key>
+    <Property Name="taskId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="taskName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="taskFromDate" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="taskToDate" Type="DateTime" Precision="0" />
+    <Property Name="taskComment" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="status" Type="String" MaxLength="1" FixedLength="true" Unicode="false" Nullable="false" />
+    <Property Name="workerId" Type="Int32" Nullable="false" />
+    <Property Name="TimeInDay" Type="Time" Precision="7" />
+    <Property Name="period" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="tblForeignUser" Relationship="Self.FK__tblPrivat__worke__7ABC33CD" FromRole="tblPrivateTask" ToRole="tblForeignUser" />
+  </EntityType>
+  <EntityType Name="tblProduct">
+    <Key>
+      <PropertyRef Name="productId" />
+    </Key>
+    <Property Name="productId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="productName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="productQuantity" Type="Int32" Nullable="false" />
+    <Property Name="commentForProduct" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="tblProductLists" Relationship="Self.FK__tblProduc__produ__24B26D99" FromRole="tblProduct" ToRole="tblProductList" />
+  </EntityType>
+  <EntityType Name="tblProductList">
+    <Key>
+      <PropertyRef Name="productId" />
+      <PropertyRef Name="listId" />
+    </Key>
+    <Property Name="productId" Type="Int32" Nullable="false" />
+    <Property Name="listId" Type="Int32" Nullable="false" />
+    <Property Name="productStatus" Type="String" MaxLength="1" FixedLength="true" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="tblList" Relationship="Self.FK__tblProduc__listI__21D600EE" FromRole="tblProductList" ToRole="tblList" />
+    <NavigationProperty Name="tblProduct" Relationship="Self.FK__tblProduc__produ__24B26D99" FromRole="tblProductList" ToRole="tblProduct" />
+  </EntityType>
+  <EntityType Name="tblUser">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Password" Type="String" MaxLength="16" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="gender" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="phoneNum" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="userUri" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="tblCalendarForUsers" Relationship="Self.FK__tblCalendarF__id__090A5324" FromRole="tblUser" ToRole="tblCalendarForUser" />
+    <NavigationProperty Name="tblForeignUser" Relationship="Self.FK__tblForeignUs__Id__703EA55A" FromRole="tblUser" ToRole="tblForeignUser" />
+    <NavigationProperty Name="tblPatientTasks" Relationship="Self.FK__tblPatien__userI__04459E07" FromRole="tblUser" ToRole="tblPatientTask" />
+    <NavigationProperty Name="tblPaychecks" Relationship="Self.FK__tblPayche__UserI__6D6238AF" FromRole="tblUser" ToRole="tblPaycheck" />
+  </EntityType>
+  <Association Name="FK__tblActual__listI__558AAF1E">
+    <End Role="tblList" Type="Self.tblList" Multiplicity="1" />
+    <End Role="tblActualList" Type="Self.tblActualList" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="tblList">
+        <PropertyRef Name="listId" />
+      </Principal>
+      <Dependent Role="tblActualList">
+        <PropertyRef Name="listId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__tblDrugFo__listI__1758727B">
+    <End Role="tblActualList" Type="Self.tblActualList" Multiplicity="1" />
+    <End Role="tblDrugForPatient" Type="Self.tblDrugForPatient" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="tblActualList">
+        <PropertyRef Name="listId" />
+      </Principal>
+      <Dependent Role="tblDrugForPatient">
+        <PropertyRef Name="listId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__tblPatien__listI__0539C240">
+    <End Role="tblActualList" Type="Self.tblActualList" Multiplicity="1" />
+    <End Role="tblPatientTask" Type="Self.tblPatientTask" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblActualList">
+        <PropertyRef Name="listId" />
+      </Principal>
+      <Dependent Role="tblPatientTask">
+        <PropertyRef Name="listId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__tblCalend__calen__09FE775D">
+    <End Role="tblCalendarsType" Type="Self.tblCalendarsType" Multiplicity="1" />
+    <End Role="tblCalendarForUser" Type="Self.tblCalendarForUser" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblCalendarsType">
+        <PropertyRef Name="calendarNum" />
+      </Principal>
+      <Dependent Role="tblCalendarForUser">
+        <PropertyRef Name="calendarNum" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__tblCalendarF__id__090A5324">
+    <End Role="tblUser" Type="Self.tblUser" Multiplicity="1" />
+    <End Role="tblCalendarForUser" Type="Self.tblCalendarForUser" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblUser">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="tblCalendarForUser">
+        <PropertyRef Name="id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__tblCaresF__patie__0CDAE408">
+    <End Role="tblPatient" Type="Self.tblPatient" Multiplicity="1" />
+    <End Role="tblCaresForPatient" Type="Self.tblCaresForPatient" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblPatient">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="tblCaresForPatient">
+        <PropertyRef Name="patientId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__tblCaresF__worke__0DCF0841">
+    <End Role="tblForeignUser" Type="Self.tblForeignUser" Multiplicity="1" />
+    <End Role="tblCaresForPatient" Type="Self.tblCaresForPatient" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblForeignUser">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="tblCaresForPatient">
+        <PropertyRef Name="workerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__tblContac__patie__1293BD5E">
+    <End Role="tblPatient" Type="Self.tblPatient" Multiplicity="1" />
+    <End Role="tblContacts" Type="Self.tblContact" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblPatient">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="tblContacts">
+        <PropertyRef Name="patientId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__tblForeig__Count__731B1205">
+    <End Role="tblCountry" Type="Self.tblCountry" Multiplicity="1" />
+    <End Role="tblForeignUser" Type="Self.tblForeignUser" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblCountry">
+        <PropertyRef Name="CountryName_En" />
+      </Principal>
+      <Dependent Role="tblForeignUser">
+        <PropertyRef Name="CountryName_En" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__tblDrugFo__drugI__15702A09">
+    <End Role="tblDrug" Type="Self.tblDrug" Multiplicity="1" />
+    <End Role="tblDrugForPatient" Type="Self.tblDrugForPatient" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblDrug">
+        <PropertyRef Name="drugId" />
+      </Principal>
+      <Dependent Role="tblDrugForPatient">
+        <PropertyRef Name="drugId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__tblDrugFo__patie__16644E42">
+    <End Role="tblPatient" Type="Self.tblPatient" Multiplicity="1" />
+    <End Role="tblDrugForPatient" Type="Self.tblDrugForPatient" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblPatient">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="tblDrugForPatient">
+        <PropertyRef Name="patientId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__tblForeig__Langu__7226EDCC">
+    <End Role="tblLanguage" Type="Self.tblLanguage" Multiplicity="1" />
+    <End Role="tblForeignUser" Type="Self.tblForeignUser" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblLanguage">
+        <PropertyRef Name="LanguageName_En" />
+      </Principal>
+      <Dependent Role="tblForeignUser">
+        <PropertyRef Name="LanguageName_En" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__tblForeignUs__Id__703EA55A">
+    <End Role="tblUser" Type="Self.tblUser" Multiplicity="1" />
+    <End Role="tblForeignUser" Type="Self.tblForeignUser" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="tblUser">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="tblForeignUser">
+        <PropertyRef Name="Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__tblPatien__worke__035179CE">
+    <End Role="tblForeignUser" Type="Self.tblForeignUser" Multiplicity="1" />
+    <End Role="tblPatientTask" Type="Self.tblPatientTask" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblForeignUser">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="tblPatientTask">
+        <PropertyRef Name="workerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__tblPaymen__userI__1EF99443">
+    <End Role="tblForeignUser" Type="Self.tblForeignUser" Multiplicity="1" />
+    <End Role="tblPaymentRequest" Type="Self.tblPaymentRequest" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblForeignUser">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="tblPaymentRequest">
+        <PropertyRef Name="userId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__tblPrivat__worke__7ABC33CD">
+    <End Role="tblForeignUser" Type="Self.tblForeignUser" Multiplicity="1" />
+    <End Role="tblPrivateTask" Type="Self.tblPrivateTask" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblForeignUser">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="tblPrivateTask">
+        <PropertyRef Name="workerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__tblHobbie__patie__5C37ACAD">
+    <End Role="tblPatient" Type="Self.tblPatient" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="tblHobbies" Type="Self.tblHobby" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="tblPatient">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="tblHobbies">
+        <PropertyRef Name="patientId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__tblPatien__Langu__58671BC9">
+    <End Role="tblLanguage" Type="Self.tblLanguage" Multiplicity="1" />
+    <End Role="tblPatient" Type="Self.tblPatient" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblLanguage">
+        <PropertyRef Name="LanguageName_En" />
+      </Principal>
+      <Dependent Role="tblPatient">
+        <PropertyRef Name="LanguageName_En" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__tblLimita__patie__5F141958">
+    <End Role="tblPatient" Type="Self.tblPatient" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="tblLimitations" Type="Self.tblLimitation" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="tblPatient">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="tblLimitations">
+        <PropertyRef Name="patientId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__tblProduc__listI__21D600EE">
+    <End Role="tblList" Type="Self.tblList" Multiplicity="1" />
+    <End Role="tblProductList" Type="Self.tblProductList" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblList">
+        <PropertyRef Name="listId" />
+      </Principal>
+      <Dependent Role="tblProductList">
+        <PropertyRef Name="listId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__tblPatien__patie__025D5595">
+    <End Role="tblPatient" Type="Self.tblPatient" Multiplicity="1" />
+    <End Role="tblPatientTask" Type="Self.tblPatientTask" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblPatient">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="tblPatientTask">
+        <PropertyRef Name="patientId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__tblPatien__userI__04459E07">
+    <End Role="tblUser" Type="Self.tblUser" Multiplicity="1" />
+    <End Role="tblPatientTask" Type="Self.tblPatientTask" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblUser">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="tblPatientTask">
+        <PropertyRef Name="userId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__tblPayche__UserI__6D6238AF">
+    <End Role="tblUser" Type="Self.tblUser" Multiplicity="1" />
+    <End Role="tblPaycheck" Type="Self.tblPaycheck" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblUser">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="tblPaycheck">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__tblProduc__produ__24B26D99">
+    <End Role="tblProduct" Type="Self.tblProduct" Multiplicity="1" />
+    <End Role="tblProductList" Type="Self.tblProductList" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblProduct">
+        <PropertyRef Name="productId" />
+      </Principal>
+      <Dependent Role="tblProductList">
+        <PropertyRef Name="productId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="igroup194DB" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+    <EntitySet Name="tblActualLists" EntityType="Self.tblActualList" />
+    <EntitySet Name="tblCalendarForUsers" EntityType="Self.tblCalendarForUser" />
+    <EntitySet Name="tblCalendarsTypes" EntityType="Self.tblCalendarsType" />
+    <EntitySet Name="tblCaresForPatients" EntityType="Self.tblCaresForPatient" />
+    <EntitySet Name="tblContacts" EntityType="Self.tblContact" />
+    <EntitySet Name="tblCountries" EntityType="Self.tblCountry" />
+    <EntitySet Name="tblDrugs" EntityType="Self.tblDrug" />
+    <EntitySet Name="tblDrugForPatients" EntityType="Self.tblDrugForPatient" />
+    <EntitySet Name="tblForeignUsers" EntityType="Self.tblForeignUser" />
+    <EntitySet Name="tblHobbies" EntityType="Self.tblHobby" />
+    <EntitySet Name="tblLanguages" EntityType="Self.tblLanguage" />
+    <EntitySet Name="tblLimitations" EntityType="Self.tblLimitation" />
+    <EntitySet Name="tblLists" EntityType="Self.tblList" />
+    <EntitySet Name="tblPatients" EntityType="Self.tblPatient" />
+    <EntitySet Name="tblPatientTasks" EntityType="Self.tblPatientTask" />
+    <EntitySet Name="tblPaychecks" EntityType="Self.tblPaycheck" />
+    <EntitySet Name="tblPaymentRequests" EntityType="Self.tblPaymentRequest" />
+    <EntitySet Name="tblPrivateTasks" EntityType="Self.tblPrivateTask" />
+    <EntitySet Name="tblProducts" EntityType="Self.tblProduct" />
+    <EntitySet Name="tblProductLists" EntityType="Self.tblProductList" />
+    <EntitySet Name="tblUsers" EntityType="Self.tblUser" />
+    <AssociationSet Name="FK__tblActual__listI__558AAF1E" Association="Self.FK__tblActual__listI__558AAF1E">
+      <End Role="tblList" EntitySet="tblLists" />
+      <End Role="tblActualList" EntitySet="tblActualLists" />
+    </AssociationSet>
+    <AssociationSet Name="FK__tblDrugFo__listI__1758727B" Association="Self.FK__tblDrugFo__listI__1758727B">
+      <End Role="tblActualList" EntitySet="tblActualLists" />
+      <End Role="tblDrugForPatient" EntitySet="tblDrugForPatients" />
+    </AssociationSet>
+    <AssociationSet Name="FK__tblPatien__listI__0539C240" Association="Self.FK__tblPatien__listI__0539C240">
+      <End Role="tblActualList" EntitySet="tblActualLists" />
+      <End Role="tblPatientTask" EntitySet="tblPatientTasks" />
+    </AssociationSet>
+    <AssociationSet Name="FK__tblCalend__calen__09FE775D" Association="Self.FK__tblCalend__calen__09FE775D">
+      <End Role="tblCalendarsType" EntitySet="tblCalendarsTypes" />
+      <End Role="tblCalendarForUser" EntitySet="tblCalendarForUsers" />
+    </AssociationSet>
+    <AssociationSet Name="FK__tblCalendarF__id__090A5324" Association="Self.FK__tblCalendarF__id__090A5324">
+      <End Role="tblUser" EntitySet="tblUsers" />
+      <End Role="tblCalendarForUser" EntitySet="tblCalendarForUsers" />
+    </AssociationSet>
+    <AssociationSet Name="FK__tblCaresF__patie__0CDAE408" Association="Self.FK__tblCaresF__patie__0CDAE408">
+      <End Role="tblPatient" EntitySet="tblPatients" />
+      <End Role="tblCaresForPatient" EntitySet="tblCaresForPatients" />
+    </AssociationSet>
+    <AssociationSet Name="FK__tblCaresF__worke__0DCF0841" Association="Self.FK__tblCaresF__worke__0DCF0841">
+      <End Role="tblForeignUser" EntitySet="tblForeignUsers" />
+      <End Role="tblCaresForPatient" EntitySet="tblCaresForPatients" />
+    </AssociationSet>
+    <AssociationSet Name="FK__tblContac__patie__1293BD5E" Association="Self.FK__tblContac__patie__1293BD5E">
+      <End Role="tblPatient" EntitySet="tblPatients" />
+      <End Role="tblContacts" EntitySet="tblContacts" />
+    </AssociationSet>
+    <AssociationSet Name="FK__tblForeig__Count__731B1205" Association="Self.FK__tblForeig__Count__731B1205">
+      <End Role="tblCountry" EntitySet="tblCountries" />
+      <End Role="tblForeignUser" EntitySet="tblForeignUsers" />
+    </AssociationSet>
+    <AssociationSet Name="FK__tblDrugFo__drugI__15702A09" Association="Self.FK__tblDrugFo__drugI__15702A09">
+      <End Role="tblDrug" EntitySet="tblDrugs" />
+      <End Role="tblDrugForPatient" EntitySet="tblDrugForPatients" />
+    </AssociationSet>
+    <AssociationSet Name="FK__tblDrugFo__patie__16644E42" Association="Self.FK__tblDrugFo__patie__16644E42">
+      <End Role="tblPatient" EntitySet="tblPatients" />
+      <End Role="tblDrugForPatient" EntitySet="tblDrugForPatients" />
+    </AssociationSet>
+    <AssociationSet Name="FK__tblForeig__Langu__7226EDCC" Association="Self.FK__tblForeig__Langu__7226EDCC">
+      <End Role="tblLanguage" EntitySet="tblLanguages" />
+      <End Role="tblForeignUser" EntitySet="tblForeignUsers" />
+    </AssociationSet>
+    <AssociationSet Name="FK__tblForeignUs__Id__703EA55A" Association="Self.FK__tblForeignUs__Id__703EA55A">
+      <End Role="tblUser" EntitySet="tblUsers" />
+      <End Role="tblForeignUser" EntitySet="tblForeignUsers" />
+    </AssociationSet>
+    <AssociationSet Name="FK__tblPatien__worke__035179CE" Association="Self.FK__tblPatien__worke__035179CE">
+      <End Role="tblForeignUser" EntitySet="tblForeignUsers" />
+      <End Role="tblPatientTask" EntitySet="tblPatientTasks" />
+    </AssociationSet>
+    <AssociationSet Name="FK__tblPaymen__userI__1EF99443" Association="Self.FK__tblPaymen__userI__1EF99443">
+      <End Role="tblForeignUser" EntitySet="tblForeignUsers" />
+      <End Role="tblPaymentRequest" EntitySet="tblPaymentRequests" />
+    </AssociationSet>
+    <AssociationSet Name="FK__tblPrivat__worke__7ABC33CD" Association="Self.FK__tblPrivat__worke__7ABC33CD">
+      <End Role="tblForeignUser" EntitySet="tblForeignUsers" />
+      <End Role="tblPrivateTask" EntitySet="tblPrivateTasks" />
+    </AssociationSet>
+    <AssociationSet Name="FK__tblHobbie__patie__5C37ACAD" Association="Self.FK__tblHobbie__patie__5C37ACAD">
+      <End Role="tblPatient" EntitySet="tblPatients" />
+      <End Role="tblHobbies" EntitySet="tblHobbies" />
+    </AssociationSet>
+    <AssociationSet Name="FK__tblPatien__Langu__58671BC9" Association="Self.FK__tblPatien__Langu__58671BC9">
+      <End Role="tblLanguage" EntitySet="tblLanguages" />
+      <End Role="tblPatient" EntitySet="tblPatients" />
+    </AssociationSet>
+    <AssociationSet Name="FK__tblLimita__patie__5F141958" Association="Self.FK__tblLimita__patie__5F141958">
+      <End Role="tblPatient" EntitySet="tblPatients" />
+      <End Role="tblLimitations" EntitySet="tblLimitations" />
+    </AssociationSet>
+    <AssociationSet Name="FK__tblProduc__listI__21D600EE" Association="Self.FK__tblProduc__listI__21D600EE">
+      <End Role="tblList" EntitySet="tblLists" />
+      <End Role="tblProductList" EntitySet="tblProductLists" />
+    </AssociationSet>
+    <AssociationSet Name="FK__tblPatien__patie__025D5595" Association="Self.FK__tblPatien__patie__025D5595">
+      <End Role="tblPatient" EntitySet="tblPatients" />
+      <End Role="tblPatientTask" EntitySet="tblPatientTasks" />
+    </AssociationSet>
+    <AssociationSet Name="FK__tblPatien__userI__04459E07" Association="Self.FK__tblPatien__userI__04459E07">
+      <End Role="tblUser" EntitySet="tblUsers" />
+      <End Role="tblPatientTask" EntitySet="tblPatientTasks" />
+    </AssociationSet>
+    <AssociationSet Name="FK__tblPayche__UserI__6D6238AF" Association="Self.FK__tblPayche__UserI__6D6238AF">
+      <End Role="tblUser" EntitySet="tblUsers" />
+      <End Role="tblPaycheck" EntitySet="tblPaychecks" />
+    </AssociationSet>
+    <AssociationSet Name="FK__tblProduc__produ__24B26D99" Association="Self.FK__tblProduc__produ__24B26D99">
+      <End Role="tblProduct" EntitySet="tblProducts" />
+      <End Role="tblProductList" EntitySet="tblProductLists" />
+    </AssociationSet>
+    <FunctionImport Name="InsertForeignUser">
+      <Parameter Name="Id" Mode="In" Type="Int32" />
+      <Parameter Name="DateOfBirth" Mode="In" Type="DateTime" />
+      <Parameter Name="VisaExpirationDate" Mode="In" Type="DateTime" />
+      <Parameter Name="LanguageName_En" Mode="In" Type="String" />
+      <Parameter Name="CountryName_En" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="InsertUser">
+      <Parameter Name="Email" Mode="In" Type="String" />
+      <Parameter Name="Password" Mode="In" Type="String" />
+      <Parameter Name="FirstName" Mode="In" Type="String" />
+      <Parameter Name="LastName" Mode="In" Type="String" />
+      <Parameter Name="Gender" Mode="In" Type="String" />
+      <Parameter Name="PhoneNum" Mode="In" Type="String" />
+      <Parameter Name="UserUri" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="sp_alterdiagram">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+      <Parameter Name="version" Mode="In" Type="Int32" />
+      <Parameter Name="definition" Mode="In" Type="Binary" />
+    </FunctionImport>
+    <FunctionImport Name="sp_creatediagram">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+      <Parameter Name="version" Mode="In" Type="Int32" />
+      <Parameter Name="definition" Mode="In" Type="Binary" />
+    </FunctionImport>
+    <FunctionImport Name="sp_dropdiagram">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="sp_helpdiagramdefinition" ReturnType="Collection(igroup194_prodModel.sp_helpdiagramdefinition_Result)">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="sp_helpdiagrams" ReturnType="Collection(igroup194_prodModel.sp_helpdiagrams_Result)">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="sp_renamediagram">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+      <Parameter Name="new_diagramname" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="sp_upgraddiagrams" />
+    <FunctionImport Name="InsertCalendarForUser">
+      <Parameter Name="calendarNum" Mode="In" Type="Int32" />
+      <Parameter Name="id" Mode="In" Type="Int32" />
+      <Parameter Name="isPrimary" Mode="In" Type="Boolean" />
+    </FunctionImport>
+    <FunctionImport Name="NewContact">
+      <Parameter Name="contactName" Mode="In" Type="String" />
+      <Parameter Name="phoneNo" Mode="In" Type="String" />
+      <Parameter Name="mobileNo" Mode="In" Type="String" />
+      <Parameter Name="email" Mode="In" Type="String" />
+      <Parameter Name="role" Mode="In" Type="String" />
+      <Parameter Name="contactComment" Mode="In" Type="String" />
+      <Parameter Name="patientId" Mode="In" Type="String" />
+    </FunctionImport>
+  </EntityContainer>
+  <ComplexType Name="sp_helpdiagramdefinition_Result">
+    <Property Type="Int32" Name="version" Nullable="true" />
+    <Property Type="Binary" Name="definition" Nullable="true" />
+  </ComplexType>
+  <ComplexType Name="sp_helpdiagrams_Result">
+    <Property Type="String" Name="Database" Nullable="true" MaxLength="128" />
+    <Property Type="String" Name="Name" Nullable="false" MaxLength="128" />
+    <Property Type="Int32" Name="ID" Nullable="false" />
+    <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
+    <Property Type="Int32" Name="OwnerID" Nullable="false" />
+  </ComplexType>
+</Schema>
