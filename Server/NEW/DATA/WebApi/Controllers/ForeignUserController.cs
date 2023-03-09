@@ -12,23 +12,11 @@ namespace WebApi.Controllers
     [RoutePrefix("api/ForeignUser")]
     public class ForeignUserController : ApiController
     {
-        igroup194DB db = new igroup194DB();
-        // GET api/<controller>
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
-        // GET api/<controller>/5
-        public string Get(int id)
-        {
-            return "value";
-        }
+        igroup194DB db = new igroup194DB();       
 
         [HttpPost]
         [Route("InsertForeignUser")]
         public IHttpActionResult Post([FromBody] ForeignUserDTO user)
-
         {
             try
             {
@@ -53,9 +41,6 @@ namespace WebApi.Controllers
             {
                 return BadRequest(ex.Message);
             }
-
-  
-
         }
 
         // PUT api/<controller>/5

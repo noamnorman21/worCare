@@ -6,56 +6,8 @@ import { Dropdown } from 'react-native-element-dropdown';
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
-export default function SignUpUserLVL5({ navigation }) {
-  const [language, setLanguage] = useState([
-    { label: "English", value: "EN" },
-    { label: "French", value: "FR" },
-    { label: "Spanish", value: "ES" },
-    { label: "German", value: "DE" },
-    { label: "Italian", value: "IT" },
-    { label: "Dutch", value: "NL" },
-    { label: "Portuguese", value: "PT" },
-    { label: "Russian", value: "RU" },
-    { label: "Chinese", value: "ZH" },
-    { label: "Japanese", value: "JA" },
-    { label: "Korean", value: "KO" },
-    { label: "Arabic", value: "AR" },
-    { label: "Hindi", value: "HI" },
-    { label: "Turkish", value: "TR" },
-    { label: "Polish", value: "PL" },
-    { label: "Czech", value: "CS" },
-    { label: "Slovak", value: "SK" },
-    { label: "Hungarian", value: "HU" },
-    { label: "Romanian", value: "RO" },
-    { label: "Bulgarian", value: "BG" },
-    { label: "Croatian", value: "HR" },
-    { label: "Slovenian", value: "SL" },
-    { label: "Serbian", value: "SR" },
-    { label: "Bosnian", value: "BS" },
-    { label: "Macedonian", value: "MK" },
-    { label: "Albanian", value: "SQ" },
-    { label: "Montenegrin", value: "ME" },
-    { label: "Ukrainian", value: "UK" },
-    { label: "Belarusian", value: "BE" },
-    { label: "Moldovan", value: "MO" },
-    { label: "Georgian", value: "KA" },
-    { label: "Azerbaijani", value: "AZ" },
-    { label: "Turkmen", value: "TK" },
-    { label: "Hebrew", value: "HE" },
-    { label: "Thai", value: "TH" },
-    { label: "Vietnamese", value: "VI" },
-    { label: "Indonesian", value: "ID" },
-    { label: "Malay", value: "MS" },
-    { label: "Burmese", value: "MY" },
-    { label: "Khmer", value: "KM" },
-    { label: "Lao", value: "LO" },
-    { label: "Tamil", value: "TA" },
-    { label: "Telugu", value: "TE" },
-    { label: "Kannada", value: "KN" },
-    { label: "Malayalam", value: "ML" },
-    { label: "Marathi", value: "MR" },
-    { label: "Other", value: "Other" }
-  ]); // להוציא לקובץ חיצוני ולהשתמש בפונקציה שמחזירה את המערך כי זה ארוך וחופר
+export default function SignUpUserLVL5({ navigation, route }) {
+  const [language, setLanguage] = useState(route.params.language);
   const [valueLanguage, setValueLanguage] = useState(null);
   const [date, setDate] = useState('');
   const [patientID, setPatientID] = useState('');
@@ -63,7 +15,6 @@ export default function SignUpUserLVL5({ navigation }) {
   const [patientLastName, setPatientLastName] = useState('');
 
   const handleInputAndContinue = () => {
-
     if (patientFirstName === '' || patientLastName === '' || patientID === '' || date === '' || valueLanguage === null) {
       Alert.alert('Please fill all the fields')
       return
@@ -90,6 +41,7 @@ export default function SignUpUserLVL5({ navigation }) {
         {/* Line */}
         <View style={styles.line} />
       </View>
+
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
@@ -98,6 +50,7 @@ export default function SignUpUserLVL5({ navigation }) {
           value={patientFirstName}
           onChangeText={(patientFirstName) => setPatientFirstName(patientFirstName)}
         />
+        
         <TextInput
           style={styles.input}
           placeholder="Last Name"
@@ -105,6 +58,7 @@ export default function SignUpUserLVL5({ navigation }) {
           value={patientLastName}
           onChangeText={(patientLastName) => setPatientLastName(patientLastName)}
         />
+
         <TextInput
           style={styles.inputFull}
           placeholder="Patient ID (9 Digits)"
@@ -147,6 +101,7 @@ export default function SignUpUserLVL5({ navigation }) {
           onDateChange={(date) => { setDate(date) }}
         />
       </View>
+
       <View style={styles.listContainer}>
         <Dropdown
           style={styles.dropdown}
@@ -170,6 +125,7 @@ export default function SignUpUserLVL5({ navigation }) {
           containerStyle={styles.containerStyle}
         />
       </View>
+
       <View style={styles.btnContainer}>
         <TouchableOpacity
           style={styles.button}

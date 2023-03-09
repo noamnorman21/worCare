@@ -14,20 +14,18 @@ using DATA;
 using WebApi.DTO;
 namespace WebApi.Controllers
 {
-
     [RoutePrefix("api/Contacts")]
     public class ContactController : ApiController
     {
         igroup194DB db = new igroup194DB();
+        
         // GET: api/Contacts
         [Route("GetContacts/{id}")]
         [HttpGet]
         public IHttpActionResult GetContacts(int id)
         {
-
             //tblUser d = db.tblUsers.Where(x => x.Id == id).FirstOrDefault();
             //tblForeignUser f = d.tblForeignUser;
-
             try
             {
                 var Contacts = db.tblContacts.Where(x => x.patientId == id.ToString()).Select(y => new ContactDTO
@@ -53,10 +51,8 @@ namespace WebApi.Controllers
         [Route("GetSpecificContact/{id}")]
         public IHttpActionResult GetSpecificContact(int id)
         {
-
             //tblUser d = db.tblUsers.Where(x => x.Id == id).FirstOrDefault();
             //tblForeignUser f = d.tblForeignUser;
-
             try
             {
                 var Contact = db.tblContacts.Where(x => x.contactId == id).Select(y => new ContactDTO
@@ -93,10 +89,9 @@ namespace WebApi.Controllers
             {
                 return BadRequest(ex.Message);
             }
-
         }
 
-        // PUT: api/Contacts/5
+        // PUT: api/Contacts/{id}
         [HttpPut]
         [Route("UpdateContact/{id}")]
         public IHttpActionResult UpdateContact([FromBody] ContactDTO value)
@@ -118,10 +113,9 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
                 throw;
             }
-
         }
 
-        // DELETE: api/Contacts/5
+        // DELETE: api/Contacts/{id}
         [HttpDelete]
         [Route("DeleteContact")]
         public IHttpActionResult DeleteContact([FromBody] ContactDTO ContactToDelete)
@@ -141,7 +135,6 @@ namespace WebApi.Controllers
             {
                 return BadRequest(ex.Message);
             }
-
         }
     }
 }

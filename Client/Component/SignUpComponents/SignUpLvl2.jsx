@@ -28,8 +28,7 @@ export default function SignUpLvl2({ navigation, route }) {
     if (image === null) {
       //זה תמונה מכוערת -נועם תחליף אותה
       let defultImage="https://png.pngtree.com/element_our/20200610/ourmid/pngtree-character-default-avatar-image_2237203.jpg"
-      sendDataToDB(defultImage);
-     
+      sendDataToDB(defultImage);     
     }
      const filename = image.substring(image.lastIndexOf('/') + 1);
      const storageRef = ref(storage, "images/" + filename);
@@ -62,11 +61,8 @@ export default function SignUpLvl2({ navigation, route }) {
   
 }
 
-
 const sendDataToDB = (downloadURL) => {
-
   //send the image to firebase storage, we will get the image url and send it to the DB
-  //sendToFirebase(userData.imagePath)
   //create the user object to send to the DB, do it after we get the image url
   const newUserToDB = {
     FirstName: userData.firstName,
@@ -76,10 +72,8 @@ const sendDataToDB = (downloadURL) => {
     gender: userGender,
     phoneNum: userData.phoneNum,
     userUri: downloadURL,
-   
   }
   console.log("after: "+ newUserToDB.userUri);
-
  //send the user data to the DB
   fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/InsertUser', {
     method: 'POST',
@@ -98,8 +92,6 @@ const sendDataToDB = (downloadURL) => {
       console.error(error);
     }
     );
-
-  
 }
 
 const NavigateToLogIn = () => {

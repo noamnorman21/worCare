@@ -1,5 +1,6 @@
 import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Dimensions, } from 'react-native'
 import React from 'react'
+import { useState, useEffect } from 'react'
 import Holidays from '../../HelpComponents/Holidays'
 import { HaveAccount, OrLine } from '../FooterLine'
 import * as Font from 'expo-font';
@@ -12,7 +13,22 @@ Font.loadAsync({
 });
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
-export default function SignUpUserLVL4({ navigation }) {
+export default function SignUpUserLVL4({ navigation , route}, props) {
+  const [selectedHolidays, setSelectedHolidays] = useState([]);
+  const holidaysType = route.params.holidaysType;
+  
+  const isItemSelected = (arr) => {
+    setSelectedHolidays(arr); //arr is the array of the selected holidays
+    console.log("selectedHolidays=", selectedHolidays);
+  };
+
+  const NavigateToNextLVL = () => {
+    navigation.navigate('SignUpUserLVL5', {
+      selectedHolidays: selectedHolidays,
+      language: route.params.language,
+      userId: route.params.userId,
+    });
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -21,10 +37,11 @@ export default function SignUpUserLVL4({ navigation }) {
       </View>
 
       <View style={styles.holidaysContainer}>
-        <Holidays />
+        <Holidays holidaysType={holidaysType} sendHolidays={isItemSelected} />
       </View>
       <View style={styles.btnContainer}>
-        <TouchableOpacity 
+        <TouchableOpacity
+          onPress={NavigateToNextLVL}
           style={styles.button}>
           <Text style={styles.buttonText}>Continue</Text>
         </TouchableOpacity>
@@ -32,13 +49,12 @@ export default function SignUpUserLVL4({ navigation }) {
 
       <OrLine />
       <HaveAccount />
-
     </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
-container: {
+  container: {
     flex: 1,
     backgroundColor: '#fff',
   },

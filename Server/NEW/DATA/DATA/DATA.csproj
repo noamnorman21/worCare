@@ -121,13 +121,13 @@
     <Compile Include="tblForeignUser.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
-    <Compile Include="tblHobby.cs">
+    <Compile Include="tblHobbies.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="tblLanguage.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
-    <Compile Include="tblLimitation.cs">
+    <Compile Include="tblLimitations.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="tblList.cs">

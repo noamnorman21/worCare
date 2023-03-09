@@ -37,9 +37,9 @@ namespace DATA
         public virtual DbSet<tblDrug> tblDrugs { get; set; }
         public virtual DbSet<tblDrugForPatient> tblDrugForPatients { get; set; }
         public virtual DbSet<tblForeignUser> tblForeignUsers { get; set; }
-        public virtual DbSet<tblHobby> tblHobbies { get; set; }
+        public virtual DbSet<tblHobbies> tblHobbies1 { get; set; }
         public virtual DbSet<tblLanguage> tblLanguages { get; set; }
-        public virtual DbSet<tblLimitation> tblLimitations { get; set; }
+        public virtual DbSet<tblLimitations> tblLimitations1 { get; set; }
         public virtual DbSet<tblList> tblLists { get; set; }
         public virtual DbSet<tblPatient> tblPatients { get; set; }
         public virtual DbSet<tblPatientTask> tblPatientTasks { get; set; }

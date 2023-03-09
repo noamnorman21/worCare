@@ -7,7 +7,10 @@ const SCREEN_HEIGHT = Dimensions.get('window').height;
 export default function SignUpFinish({ navigation, route }) {
     const [modalVisible, setModalVisible] = useState(false);
     const tblHobbies = route.params.tblHobbies;
-    const tblLimitations = route.params.tblLimitations;    
+    const tblLimitations = route.params.tblLimitations;
+    const holidaysType = route.params.holidaysType;
+    const tblPatient = route.params.tblPatient;
+    // const tblCalendar = route.params.tblCalendar; 
 
     const sendToDB = () => {
         console.log("Send to DB")

@@ -1,8 +1,7 @@
 import { View, Text, SafeAreaView, StyleSheet, Dimensions, ScrollView, TouchableOpacity, Alert } from 'react-native'
-import { useState,useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import * as Font from 'expo-font';
 import Holidays from '../../HelpComponents/Holidays';
-
 Font.loadAsync({
   'Urbanist': require('../../../assets/fonts/Urbanist-Regular.ttf'),
   'Urbanist-Bold': require('../../../assets/fonts/Urbanist-Bold.ttf'),
@@ -14,18 +13,10 @@ Font.loadAsync({
 const SCREEN_WIDTH = Dimensions.get('window').width;
 export default function SignUpCaregiverLVL5({ navigation, route }, props) {
   const [selectedHolidays, setSelectedHolidays] = useState([]);
-  // const data = route.params.data;
-  // console.log(data);
   const newForeignUser = route.params.data;
-  const holidaysType= route.params.holidaysType;
- 
-  //bring from DB all the holidays type
-  useEffect(() => {
-     
-  }, []);
+  const holidaysType = route.params.holidaysType;
 
   const sendToDB = () => {
- 
     newForeignUser.Calendars = selectedHolidays; //selectedHolidays is the array of the selected holidays,use them in data base with stored procedure "InsertCalendarForUser"
     console.log(newForeignUser);
     fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/ForeignUser/InsertForeignUser', {
@@ -50,24 +41,19 @@ export default function SignUpCaregiverLVL5({ navigation, route }, props) {
       .catch((error) => {
         console.error(error);
       });
-  
-      
   };
 
   const isItemSelected = (arr) => {
     setSelectedHolidays(arr); //arr is the array of the selected holidays
     console.log("selectedHolidays=", selectedHolidays);
-
-    
   };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
         <Text style={styles.headerTxt}>Great Job !</Text>
       </View>
-      {/* <Text style={styles.headerSmallTxt}>You are almost done</Text> */}
       <Holidays holidaysType={holidaysType} sendHolidays={isItemSelected} />
-
       <View style={styles.btnContainer}>
         <TouchableOpacity
           style={styles.button}

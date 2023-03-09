@@ -86,7 +86,6 @@ namespace WebApi.Controllers
             }
         }
 
-
         // GET : Get all users (email and passwords) from DB for firebase authentication
         [HttpGet]
         [Route("GetAllUsersFireBase")]
@@ -148,7 +147,6 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
         // Update user password by calling Function UpdateUserPassword
         [HttpPut]
         [Route("UpdateUserPassword")]
@@ -189,6 +187,5 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
     }
 }

@@ -35,9 +35,9 @@ namespace DATA
         public virtual ICollection<tblContact> tblContacts { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tblDrugForPatient> tblDrugForPatients { get; set; }
-        public virtual tblHobby tblHobby { get; set; }
+        public virtual tblHobbies tblHobby { get; set; }
         public virtual tblLanguage tblLanguage { get; set; }
-        public virtual tblLimitation tblLimitation { get; set; }
+        public virtual tblLimitations tblLimitation { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tblPatientTask> tblPatientTasks { get; set; }
     }

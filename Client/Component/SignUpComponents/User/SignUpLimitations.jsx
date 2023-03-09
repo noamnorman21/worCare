@@ -6,7 +6,6 @@ import LimitationsData from './Limitations.json';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function SignUpLimitations({ navigation, route }) {
-
   const [modal1Visible, setModal1Visible] = useState(false);
   const [modal2Visible, setModal2Visible] = useState(false);
   const [modal3Visible, setModal3Visible] = useState(false);
@@ -52,10 +51,9 @@ export default function SignUpLimitations({ navigation, route }) {
       sensitivityToNoise: noiseSensitive,
       other: comments,
     };
-    navigation.navigate('SignUpHobbies', { tblLimitations: tblLimitations }); 
-    
+    navigation.navigate('SignUpHobbies', { tblLimitations: tblLimitations }); // Navigate to next lvl
   }; 
-  
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>

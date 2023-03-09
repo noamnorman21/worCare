@@ -16,7 +16,7 @@ namespace WebApi.Controllers
         //get all calendars types
         [HttpGet]
         [Route("GetAllCalendars")]
-        public IHttpActionResult  GetAllCalendars()
+        public IHttpActionResult GetAllCalendars()
         {
             try
             {
@@ -25,8 +25,7 @@ namespace WebApi.Controllers
                                 {
                                     calendarNum = c.calendarNum,
                                     CalendarName = c.calendarName
-                                };
-                
+                                };               
                 return Ok(calendars);
             }
             catch (Exception ex)
@@ -38,7 +37,7 @@ namespace WebApi.Controllers
         // add user calendar
         public void Post([FromBody] int id)
         {
-
+            
         }
 
         // PUT api/<controller>/5
@@ -49,6 +48,7 @@ namespace WebApi.Controllers
         // DELETE api/<controller>/5
         public void Delete(int id)
         {
+            
         }
     }
 }
