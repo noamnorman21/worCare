@@ -72,7 +72,7 @@ namespace WebApi.Controllers
                 UserDTO newUser = new UserDTO();
                 newUser.Id = user.First().Id;
                 newUser.Email = user.First().Email;
-                //newUser.Password = user.First().Password;
+                // newUser.Password = user.First().Password;
                 newUser.phoneNum = user.First().phoneNum;
                 newUser.userUri = user.First().userUri;
                 newUser.gender = user.First().gender;
