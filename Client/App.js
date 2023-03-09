@@ -19,12 +19,15 @@ import Holidays from './Component/HelpComponents/Holidays';
 
 
 
+
 export default function App() {
   return (
     <NavigationContainer independent={true}>
 
       {/* <SettingScreen /> */}
-      <NavigateSignUp />
+      {/* <NavigateSignUp /> */}
+      <CustomHeader />
+
     </NavigationContainer>
  
 

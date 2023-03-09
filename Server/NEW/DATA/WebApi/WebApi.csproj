@@ -284,10 +284,12 @@
     <Compile Include="Controllers\ForeignUserController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LanguageCountryController.cs" />
+    <Compile Include="Controllers\PaymentRequestController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="DTO\ContactDTO.cs" />
     <Compile Include="DTO\ForeignUserDTO.cs" />
+    <Compile Include="DTO\PaymentsRequestDTO.cs" />
     <Compile Include="DTO\UserDTO.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

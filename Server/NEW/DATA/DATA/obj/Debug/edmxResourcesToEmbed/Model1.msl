@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-  <EntityContainerMapping StorageEntityContainer="igroup194DBContextStoreContainer" CdmEntityContainer="igroup194_Model">
+  <EntityContainerMapping StorageEntityContainer="igroup194_prodModelStoreContainer" CdmEntityContainer="igroup194DB">
     <EntitySetMapping Name="sysdiagrams">
-      <EntityTypeMapping TypeName="igroup194DBContext.sysdiagrams">
+      <EntityTypeMapping TypeName="igroup194_prodModel.sysdiagram">
         <MappingFragment StoreEntitySet="sysdiagrams">
           <ScalarProperty Name="name" ColumnName="name" />
           <ScalarProperty Name="principal_id" ColumnName="principal_id" />
@@ -12,34 +12,34 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="tblActualList">
-      <EntityTypeMapping TypeName="igroup194DBContext.tblActualList">
+    <EntitySetMapping Name="tblActualLists">
+      <EntityTypeMapping TypeName="igroup194_prodModel.tblActualList">
         <MappingFragment StoreEntitySet="tblActualList">
           <ScalarProperty Name="listId" ColumnName="listId" />
           <ScalarProperty Name="type" ColumnName="type" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="tblCalendarForUser">
-      <EntityTypeMapping TypeName="igroup194DBContext.tblCalendarForUser">
+    <EntitySetMapping Name="tblCalendarForUsers">
+      <EntityTypeMapping TypeName="igroup194_prodModel.tblCalendarForUser">
         <MappingFragment StoreEntitySet="tblCalendarForUser">
-          <ScalarProperty Name="calenderNum" ColumnName="calenderNum" />
+          <ScalarProperty Name="calendarNum" ColumnName="calendarNum" />
           <ScalarProperty Name="id" ColumnName="id" />
           <ScalarProperty Name="isPrimary" ColumnName="isPrimary" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="tblCalendarsType">
-      <EntityTypeMapping TypeName="igroup194DBContext.tblCalendarsType">
+    <EntitySetMapping Name="tblCalendarsTypes">
+      <EntityTypeMapping TypeName="igroup194_prodModel.tblCalendarsType">
         <MappingFragment StoreEntitySet="tblCalendarsType">
-          <ScalarProperty Name="calenderNum" ColumnName="calenderNum" />
-          <ScalarProperty Name="calenderName" ColumnName="calenderName" />
-          <ScalarProperty Name="calenderUrl" ColumnName="calenderUrl" />
+          <ScalarProperty Name="calendarNum" ColumnName="calendarNum" />
+          <ScalarProperty Name="calendarName" ColumnName="calendarName" />
+          <ScalarProperty Name="calendarUrl" ColumnName="calendarUrl" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="tblCaresForPatient">
-      <EntityTypeMapping TypeName="igroup194DBContext.tblCaresForPatient">
+    <EntitySetMapping Name="tblCaresForPatients">
+      <EntityTypeMapping TypeName="igroup194_prodModel.tblCaresForPatient">
         <MappingFragment StoreEntitySet="tblCaresForPatient">
           <ScalarProperty Name="patientId" ColumnName="patientId" />
           <ScalarProperty Name="workerId" ColumnName="workerId" />
@@ -49,7 +49,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="tblContacts">
-      <EntityTypeMapping TypeName="igroup194DBContext.tblContacts">
+      <EntityTypeMapping TypeName="igroup194_prodModel.tblContact">
         <MappingFragment StoreEntitySet="tblContacts">
           <ScalarProperty Name="contactId" ColumnName="contactId" />
           <ScalarProperty Name="contactName" ColumnName="contactName" />
@@ -62,15 +62,15 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="tblCountry">
-      <EntityTypeMapping TypeName="igroup194DBContext.tblCountry">
+    <EntitySetMapping Name="tblCountries">
+      <EntityTypeMapping TypeName="igroup194_prodModel.tblCountry">
         <MappingFragment StoreEntitySet="tblCountry">
           <ScalarProperty Name="CountryName_En" ColumnName="CountryName_En" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="tblDrug">
-      <EntityTypeMapping TypeName="igroup194DBContext.tblDrug">
+    <EntitySetMapping Name="tblDrugs">
+      <EntityTypeMapping TypeName="igroup194_prodModel.tblDrug">
         <MappingFragment StoreEntitySet="tblDrug">
           <ScalarProperty Name="drugId" ColumnName="drugId" />
           <ScalarProperty Name="drugName" ColumnName="drugName" />
@@ -80,8 +80,8 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="tblDrugForPatient">
-      <EntityTypeMapping TypeName="igroup194DBContext.tblDrugForPatient">
+    <EntitySetMapping Name="tblDrugForPatients">
+      <EntityTypeMapping TypeName="igroup194_prodModel.tblDrugForPatient">
         <MappingFragment StoreEntitySet="tblDrugForPatient">
           <ScalarProperty Name="listId" ColumnName="listId" />
           <ScalarProperty Name="fromDate" ColumnName="fromDate" />
@@ -93,11 +93,12 @@
           <ScalarProperty Name="period" ColumnName="period" />
           <ScalarProperty Name="quantity" ColumnName="quantity" />
           <ScalarProperty Name="minQuantity" ColumnName="minQuantity" />
+          <ScalarProperty Name="TimeInDay" ColumnName="TimeInDay" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="tblForeignUser">
-      <EntityTypeMapping TypeName="igroup194DBContext.tblForeignUser">
+    <EntitySetMapping Name="tblForeignUsers">
+      <EntityTypeMapping TypeName="igroup194_prodModel.tblForeignUser">
         <MappingFragment StoreEntitySet="tblForeignUser">
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="DateOfBirth" ColumnName="DateOfBirth" />
@@ -108,7 +109,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="tblHobbies">
-      <EntityTypeMapping TypeName="igroup194DBContext.tblHobbies">
+      <EntityTypeMapping TypeName="igroup194_prodModel.tblHobby">
         <MappingFragment StoreEntitySet="tblHobbies">
           <ScalarProperty Name="patientId" ColumnName="patientId" />
           <ScalarProperty Name="books" ColumnName="books" />
@@ -125,17 +126,18 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="tblLanguage">
-      <EntityTypeMapping TypeName="igroup194DBContext.tblLanguage">
+    <EntitySetMapping Name="tblLanguages">
+      <EntityTypeMapping TypeName="igroup194_prodModel.tblLanguage">
         <MappingFragment StoreEntitySet="tblLanguage">
           <ScalarProperty Name="LanguageName_En" ColumnName="LanguageName_En" />
           <ScalarProperty Name="LanguageName_He" ColumnName="LanguageName_He" />
-          <ScalarProperty Name="LanguageName_Original" ColumnName="LanguageName_Original" />
+          <ScalarProperty Name="LanguageName_Encode" ColumnName="LanguageName_Encode" />
+          <ScalarProperty Name="LanguageName_Origin" ColumnName="LanguageName_Origin" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="tblLimitations">
-      <EntityTypeMapping TypeName="igroup194DBContext.tblLimitations">
+      <EntityTypeMapping TypeName="igroup194_prodModel.tblLimitation">
         <MappingFragment StoreEntitySet="tblLimitations">
           <ScalarProperty Name="patientId" ColumnName="patientId" />
           <ScalarProperty Name="allergies" ColumnName="allergies" />
@@ -147,8 +149,8 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="tblList">
-      <EntityTypeMapping TypeName="igroup194DBContext.tblList">
+    <EntitySetMapping Name="tblLists">
+      <EntityTypeMapping TypeName="igroup194_prodModel.tblList">
         <MappingFragment StoreEntitySet="tblList">
           <ScalarProperty Name="listId" ColumnName="listId" />
           <ScalarProperty Name="listName" ColumnName="listName" />
@@ -158,8 +160,8 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="tblPatient">
-      <EntityTypeMapping TypeName="igroup194DBContext.tblPatient">
+    <EntitySetMapping Name="tblPatients">
+      <EntityTypeMapping TypeName="igroup194_prodModel.tblPatient">
         <MappingFragment StoreEntitySet="tblPatient">
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="FirstName" ColumnName="FirstName" />
@@ -169,8 +171,8 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="tblPatientTask">
-      <EntityTypeMapping TypeName="igroup194DBContext.tblPatientTask">
+    <EntitySetMapping Name="tblPatientTasks">
+      <EntityTypeMapping TypeName="igroup194_prodModel.tblPatientTask">
         <MappingFragment StoreEntitySet="tblPatientTask">
           <ScalarProperty Name="taskId" ColumnName="taskId" />
           <ScalarProperty Name="taskName" ColumnName="taskName" />
@@ -182,11 +184,13 @@
           <ScalarProperty Name="workerId" ColumnName="workerId" />
           <ScalarProperty Name="userId" ColumnName="userId" />
           <ScalarProperty Name="listId" ColumnName="listId" />
+          <ScalarProperty Name="TimeInDay" ColumnName="TimeInDay" />
+          <ScalarProperty Name="period" ColumnName="period" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="tblPaycheck">
-      <EntityTypeMapping TypeName="igroup194DBContext.tblPaycheck">
+    <EntitySetMapping Name="tblPaychecks">
+      <EntityTypeMapping TypeName="igroup194_prodModel.tblPaycheck">
         <MappingFragment StoreEntitySet="tblPaycheck">
           <ScalarProperty Name="payCheckNum" ColumnName="payCheckNum" />
           <ScalarProperty Name="paycheckDate" ColumnName="paycheckDate" />
@@ -196,8 +200,8 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="tblPaymentRequest">
-      <EntityTypeMapping TypeName="igroup194DBContext.tblPaymentRequest">
+    <EntitySetMapping Name="tblPaymentRequests">
+      <EntityTypeMapping TypeName="igroup194_prodModel.tblPaymentRequest">
         <MappingFragment StoreEntitySet="tblPaymentRequest">
           <ScalarProperty Name="requestId" ColumnName="requestId" />
           <ScalarProperty Name="requestSubject" ColumnName="requestSubject" />
@@ -210,8 +214,8 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="tblPrivateTask">
-      <EntityTypeMapping TypeName="igroup194DBContext.tblPrivateTask">
+    <EntitySetMapping Name="tblPrivateTasks">
+      <EntityTypeMapping TypeName="igroup194_prodModel.tblPrivateTask">
         <MappingFragment StoreEntitySet="tblPrivateTask">
           <ScalarProperty Name="taskId" ColumnName="taskId" />
           <ScalarProperty Name="taskName" ColumnName="taskName" />
@@ -220,11 +224,13 @@
           <ScalarProperty Name="taskComment" ColumnName="taskComment" />
           <ScalarProperty Name="status" ColumnName="status" />
           <ScalarProperty Name="workerId" ColumnName="workerId" />
+          <ScalarProperty Name="TimeInDay" ColumnName="TimeInDay" />
+          <ScalarProperty Name="period" ColumnName="period" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="tblProduct">
-      <EntityTypeMapping TypeName="igroup194DBContext.tblProduct">
+    <EntitySetMapping Name="tblProducts">
+      <EntityTypeMapping TypeName="igroup194_prodModel.tblProduct">
         <MappingFragment StoreEntitySet="tblProduct">
           <ScalarProperty Name="productId" ColumnName="productId" />
           <ScalarProperty Name="productName" ColumnName="productName" />
@@ -233,8 +239,8 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="tblProductList">
-      <EntityTypeMapping TypeName="igroup194DBContext.tblProductList">
+    <EntitySetMapping Name="tblProductLists">
+      <EntityTypeMapping TypeName="igroup194_prodModel.tblProductList">
         <MappingFragment StoreEntitySet="tblProductList">
           <ScalarProperty Name="productId" ColumnName="productId" />
           <ScalarProperty Name="listId" ColumnName="listId" />
@@ -242,8 +248,8 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="tblUser">
-      <EntityTypeMapping TypeName="igroup194DBContext.tblUser">
+    <EntitySetMapping Name="tblUsers">
+      <EntityTypeMapping TypeName="igroup194_prodModel.tblUser">
         <MappingFragment StoreEntitySet="tblUser">
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Email" ColumnName="Email" />
@@ -256,21 +262,22 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <FunctionImportMapping FunctionImportName="InsertUser" FunctionName="igroup194DBContext.Store.InsertUser" />
-    <FunctionImportMapping FunctionImportName="sp_alterdiagram" FunctionName="igroup194DBContext.Store.sp_alterdiagram" />
-    <FunctionImportMapping FunctionImportName="sp_creatediagram" FunctionName="igroup194DBContext.Store.sp_creatediagram" />
-    <FunctionImportMapping FunctionImportName="sp_dropdiagram" FunctionName="igroup194DBContext.Store.sp_dropdiagram" />
-    <FunctionImportMapping FunctionImportName="sp_helpdiagramdefinition" FunctionName="igroup194DBContext.Store.sp_helpdiagramdefinition">
+    <FunctionImportMapping FunctionImportName="InsertForeignUser" FunctionName="igroup194_prodModel.Store.InsertForeignUser" />
+    <FunctionImportMapping FunctionImportName="InsertUser" FunctionName="igroup194_prodModel.Store.InsertUser" />
+    <FunctionImportMapping FunctionImportName="sp_alterdiagram" FunctionName="igroup194_prodModel.Store.sp_alterdiagram" />
+    <FunctionImportMapping FunctionImportName="sp_creatediagram" FunctionName="igroup194_prodModel.Store.sp_creatediagram" />
+    <FunctionImportMapping FunctionImportName="sp_dropdiagram" FunctionName="igroup194_prodModel.Store.sp_dropdiagram" />
+    <FunctionImportMapping FunctionImportName="sp_helpdiagramdefinition" FunctionName="igroup194_prodModel.Store.sp_helpdiagramdefinition">
       <ResultMapping>
-        <ComplexTypeMapping TypeName="igroup194DBContext.sp_helpdiagramdefinition_Result">
+        <ComplexTypeMapping TypeName="igroup194_prodModel.sp_helpdiagramdefinition_Result">
           <ScalarProperty Name="version" ColumnName="version" />
           <ScalarProperty Name="definition" ColumnName="definition" />
         </ComplexTypeMapping>
       </ResultMapping>
     </FunctionImportMapping>
-    <FunctionImportMapping FunctionImportName="sp_helpdiagrams" FunctionName="igroup194DBContext.Store.sp_helpdiagrams">
+    <FunctionImportMapping FunctionImportName="sp_helpdiagrams" FunctionName="igroup194_prodModel.Store.sp_helpdiagrams">
       <ResultMapping>
-        <ComplexTypeMapping TypeName="igroup194DBContext.sp_helpdiagrams_Result">
+        <ComplexTypeMapping TypeName="igroup194_prodModel.sp_helpdiagrams_Result">
           <ScalarProperty Name="Database" ColumnName="Database" />
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="ID" ColumnName="ID" />
@@ -279,7 +286,9 @@
         </ComplexTypeMapping>
       </ResultMapping>
     </FunctionImportMapping>
-    <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="igroup194DBContext.Store.sp_renamediagram" />
-    <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="igroup194DBContext.Store.sp_upgraddiagrams" />
+    <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="igroup194_prodModel.Store.sp_renamediagram" />
+    <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="igroup194_prodModel.Store.sp_upgraddiagrams" />
+    <FunctionImportMapping FunctionImportName="InsertCalendarForUser" FunctionName="igroup194_prodModel.Store.InsertCalendarForUser" />
+    <FunctionImportMapping FunctionImportName="NewContact" FunctionName="igroup194_prodModel.Store.NewContact" />
   </EntityContainerMapping>
 </Mapping>
