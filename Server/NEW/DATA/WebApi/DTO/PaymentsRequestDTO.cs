@@ -15,6 +15,6 @@ namespace WebApi.DTO
         public string requestComment { get; set; }
         public string requestStatus { get; set; }
         public int userId { get; set; }
-        public int fId { get; set; }
+       
     }
 }

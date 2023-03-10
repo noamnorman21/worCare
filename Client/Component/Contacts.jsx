@@ -5,8 +5,7 @@ import { Searchbar } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import AddNewContact from './ContactComponents/AddNewContact'
-import useIsFocused from '@react-navigation/native';
-import { useFocusEffect } from '@react-navigation/native';
+
 
 import Contact from './ContactComponents/Contact'
 
@@ -19,19 +18,19 @@ export default function Contacts() {
   return (
     <stack.Navigator initialRouteName='Main' screenOptions={{ headerShown: false} } >
       <stack.Screen name="Main" component={Main} options={{ headerShown: false }} />
-      <stack.Screen name="Contact" component={Contact} />
-      <stack.Screen name="AddNewContact" component={AddNewContact} options={{ headerShown: false }} />
+      <stack.Screen name="Contact" component={Contact}  options={{ headerShown: false,presentation: 'modal' }} />
+      <stack.Screen name="AddNewContact" component={AddNewContact} options={{ headerShown: false,presentation: 'modal' }}  />
     </stack.Navigator>
   )
 
 }
-
+import { useIsFocused } from '@react-navigation/native';
 function Main({ navigation }) {
-  const isfocused = useIsFocused();
   const [Contacts, setContacts] = useState([])
   const [Search, setSearch] = useState([])
   const [ContactToRender, setContactToRender] = useState([])
   const PatientId = 779355403// will change when we finish context to get the patient id
+  const isFocused = useIsFocused()
 
   const onChangeSearch = query => setSearch(query);
   const fetchContacts = async () => {
@@ -39,10 +38,9 @@ function Main({ navigation }) {
       .then((response) => response.json())
       .then(json => {
         if (json != null) {
-          let contacts = json.map((item) => {
+            let contacts = json.map((item) => {
             return <ContactCard key={item.contactId} contact={item}  />
           })
-
           setContacts(json);
           setContactToRender(contacts);
         }
@@ -53,11 +51,7 @@ function Main({ navigation }) {
       );
   }
 
-  useEffect(() => {
-    fetchContacts()
-  }, [])
-
-  useEffect(() => {
+   useEffect(() => {
     let temp = Contacts.filter((item) => {
       return item.contactName.includes(Search)
     })
@@ -67,9 +61,11 @@ function Main({ navigation }) {
     setContactToRender(contacts);
   }, [Search])
 
-
-
-
+  useEffect(() => {
+    if(isFocused){
+     fetchContacts()
+    }
+}, [isFocused])
 
 
   return (
@@ -216,7 +212,8 @@ fontSize: 15,
   searchBar: {
     margin: 10,
     borderRadius: 16,
-    backgroundColor: '#EEEEEE',
+    backgroundColor: '#E6EBF2',
+    height: Dimensions.get('window').height * 0.06,
   },
   button: {
     margin: 10,

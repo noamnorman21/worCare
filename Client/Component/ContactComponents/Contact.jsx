@@ -30,7 +30,7 @@ export default function Contact({ route, navigation }) {
             useNativeDriver: true,
           },
         });
-        setAnimation({ marginBottom: Dimensions.get('window').height * 0.32 });
+        setAnimation({ marginBottom: Dimensions.get('window').height * 0.1 });
       }
     );
     const keyboardDidHideListener = Keyboard.addListener(
@@ -57,7 +57,7 @@ export default function Contact({ route, navigation }) {
   const Cancel = () => {
     Alert.alert(
       'Cancel Changes',
-      'are you sure you want to alose the app?',
+      'are you sure you want to Exit the Page? All changes will be lost',
       [
         { text: "Don't leave", style: 'cancel', onPress: () => { } },
         {
@@ -74,7 +74,22 @@ export default function Contact({ route, navigation }) {
     setContact({ ...Contact, [field]: value });
   }
   const SaveChanges = () => {
-      fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/UpdateContact/' + Contact.contactId, {
+    const { email, mobileNo, contactName } = Contact
+    if (!mobileNo || !contactName) {
+      return Alert.alert('Error', 'Email and Mobile Number are required')
+    }
+    if (!email) {
+      if (!validateEmail(email)) {
+        return Alert.alert('Invalid Email', 'Please enter a valid email')
+      }
+    }
+    if (contactName === '') {
+      return Alert.alert('Invalid Contact Name', 'Please enter a valid contact name')
+    }
+    if (!validatePhoneNum(mobileNo)) {
+      return Alert.alert('Invalid Phone Number', 'Please enter a valid phone number')
+    }
+    fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/UpdateContact/' + Contact.contactId, {
       method: 'PUT',
       body: JSON.stringify(Contact),
       headers: new Headers({
@@ -94,132 +109,147 @@ export default function Contact({ route, navigation }) {
         });
   }
 
+  const DeleteContact = () => {
+    Alert.alert( 
+      'Delete Contact',
+      'Are you sure you want to delete this contact?',
+      [
+        { text: "Don't Delete", style: 'cancel', onPress: () => { } },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          // If the user confirmed, then we dispatch the action we blocked earlier
+          // This will continue the action that had triggered the removal of the screen
+          onPress: () => {
+            fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/DeleteContact/', {
+              method: 'DELETE',
+              body: JSON.stringify(Contact),
+              headers: new Headers({
+                'Content-Type': 'application/json; charset=UTF-8',
+              })
+            })
+              .then(res => {
+                return res.json()
+              })
+              .then(
+                (result) => {
+                  console.log("fetch POST= ", result);
+                  navigation.goBack();
+                },
+                (error) => {
+                  console.log("err post=", error);
+                });
+          }
+        },
+      ]
+    );
+  }
+
+
+
   return (
-    <SafeAreaView style={styles.contact}>
-      <Text style={styles.contactheader}>{Contact.contactName}</Text>
-      <View style={styles.details}>
-        <Text style={styles.detailsheader}>Phone number:</Text>
-        <TextInput
-          onChangeText={(value) => handleInputChange('phoneNo', value)}
-          style={styles.contacttext}>
-          {Contact.phoneNo}
-        </TextInput>        
-        <Text style={styles.detailsheader}>Mobile number: </Text>
-        <TextInput
-          onChangeText={(value) => handleInputChange('mobileNo', value)}
-          style={styles.contacttext}>{Contact.mobileNo}</TextInput>
-        <Text style={styles.detailsheader}>Email: </Text>
-        <TextInput
-          onChangeText={(value) => handleInputChange('email', value)}
-          style={styles.contacttext}>
-          {Contact.email}
-        </TextInput>
-        <Text style={styles.detailsheader}>Role: </Text>
-        <TextInput
-          onChangeText={(value) => handleInputChange('role', value)}
-          style={styles.contacttext}>{Contact.role}</TextInput>
-        <Text style={styles.detailsheader}>Comment: </Text>
-        <TextInput
-        onChangeText={(value) => handleInputChange('contactComment', value)}
-        style={styles.contacttext}>{Contact.contactComment}</TextInput>
-        <View style={styles.bottom}>
-          <TouchableOpacity style={styles.savebutton} onPress={SaveChanges}>
-            <Text style={styles.savebuttonText}>Save</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.cancelbutton} onPress={Cancel}>
-            <Text style={styles.cancelbuttonText}>Cancel</Text>
-          </TouchableOpacity>
-        </View>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.title}>Contact Details</Text>
       </View>
+      <View style={[styles.inputContainer, animation]}>
+        <Text style={styles.contactheader}>Name:</Text>
+        <TextInput
+          style={styles.input}
+          value={Contact.contactName}
+          keyboardType='ascii-capable'
+          onChangeText={(value) => handleInputChange('contactName', value)}
+        />
+        <View style={styles.numbersInput}>
+          <View>
+            <Text style={styles.contactheader}>Phone number:</Text>
+            <TextInput
+              style={[styles.input, styles.numInput]}
+              value={Contact.phoneNo}
+              keyboardType='ascii-capable'
+              onChangeText={(value) => handleInputChange('phoneNo', value)}
+            />
+          </View>
+          <View>
+            <Text style={styles.contactheader}>Mobile number:</Text>
+            <TextInput
+              style={[styles.input, styles.numInput]}
+              value={Contact.mobileNo}
+              keyboardType='ascii-capable'
+              onChangeText={(value) => handleInputChange('mobileNo', value)}
+            />
+          </View>
+        </View>
+        <Text style={styles.contactheader}>Role:</Text>
+        <TextInput
+          style={styles.input}
+          value={Contact.role}
+          keyboardType='ascii-capable'
+          onChangeText={(value) => handleInputChange('role', value)}
+        />
+        <Text style={styles.contactheader}>Email:</Text>
+        <TextInput
+          style={styles.input}
+          value={Contact.email}
+          keyboardType='ascii-capable'
+          onChangeText={(value) => handleInputChange('email', value)}
+        />
+        <Text style={styles.contactheader}>Comment:</Text>
+        <TextInput
+          style={styles.input}
+          value={Contact.contactComment}
+          keyboardType='ascii-capable'
+          onChangeText={(value) => handleInputChange('contactComment', value)}
+        />
+      </View>
+
+      <View style={styles.bottom}>
+        <TouchableOpacity style={styles.savebutton} onPress={SaveChanges}>
+          <Text style={styles.savebuttonText}>Save</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.cancelbutton} onPress={Cancel}>
+          <Text style={styles.cancelbuttonText}>Cancel</Text>
+        </TouchableOpacity>        
+      </View>
+      <TouchableOpacity style={styles.Deletebutton} onPress={DeleteContact}>
+          <Text style={styles.cancelbuttonText}>Delete</Text>
+        </TouchableOpacity>
     </SafeAreaView>
   )
 }
 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-  },
-  contact: {
+    alignItems: 'center',
     justifyContent: 'center',
-  },
-  details: {
-    marginTop: -20,
-    margin: 10,
-    padding: 10,
-    textAlign: 'left',
-  },
-  detailsheader: {
-    fontSize: 15,
-  },
-  contactheader: {
-    fontSize: 18,
-    color: '#000',
-    borderBottomColor: '#B9B9B9',
-    borderBottomWidth: 1,
-    borderRadius: 10,
-    margin: 10,
-    padding: 10,
-    textAlign: 'left',
-  },
+    backgroundColor: '#F5F5F5',
+    marginTop: -50,
 
-  contacttext: {
-    fontSize: 14,
-    textAlign: 'left',
-    padding: 10,
-    paddingBottom: 10,
-    borderBottomColor: '#B9B9B9',
-    borderBottomWidth: 0.4,
-    marginTop: 10,
-    marginLeft: 0,
-    backgroundColor: '#fff',
-    borderRadius: 16,
-  },
-
-  contactcard: {
-    backgroundColor: '#fff',
-    height: 60,
-    marginTop: 0,
-    margin: 10,
-    padding: 10,
-    textAlign: 'left',
-    borderBottomWidth: 1,
-    borderBottomColor: '#B9B9B9',
-  },
-  name: {
-    fontSize: 17,
-    color: '#000',
-  },
-  number: {
-    fontSize: 14,
-    color: '#8A8A8D',
-  },
-  searchBar: {
-    margin: 10,
-    borderRadius: 16,
-    backgroundColor: '#EEEEEE',
   },
   inputContainer: {
     width: Dimensions.get('window').width * 1,
     height: Dimensions.get('window').height * 1,
-    alignItems: 'center',
     flex: 4,
-
+    textAlign: 'left',
+    marginTop: -20,
   },
   input: {
-    width: Dimensions.get('window').width * 0.9,
+    width: Dimensions.get('window').width * 0.95,
     padding: 10,
     margin: 7,
     alignItems: 'center',
     borderRadius: 16,
     borderWidth: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: 'white',
     borderColor: 'lightgray',
     shadowColor: '#000',
     height: 45,
+    fontFamily: 'Urbanist',
   },
   numInput: {
-    width: Dimensions.get('window').width * 0.43,
+    width: Dimensions.get('window').width * 0.455,
   },
   savebutton: {
     width: Dimensions.get('window').width * 0.4,
@@ -253,6 +283,23 @@ const styles = StyleSheet.create({
     margin: 7,
     height: 45,
   },
+  Deletebutton: {
+    width: Dimensions.get('window').width * 0.85,
+    backgroundColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#548DFF',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 1,
+    margin: 7,
+    height: 45,
+
+  },
   bottom: {
     flexDirection: 'row',
   },
@@ -266,5 +313,22 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontSize: 16,
   },
-});
+  title: {
+    fontSize: 26,
+    fontFamily: 'Urbanist-Bold',
+  },
+  header: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  contactheader: {
+    fontFamily: 'Urbanist-Bold',
+    marginLeft: 7,
+    textAlign: 'left',
+  },
+  numbersInput: {
+    flexDirection: 'row',
+  },
 
+});

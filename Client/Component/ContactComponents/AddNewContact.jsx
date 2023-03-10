@@ -1,4 +1,4 @@
-import { View,Keyboard, StyleSheet, Text, SafeAreaView, TextInput, Dimensions ,TouchableOpacity, LayoutAnimation } from "react-native"
+import { Alert, View,Keyboard, StyleSheet, Text, SafeAreaView, TextInput, Dimensions ,TouchableOpacity, LayoutAnimation } from "react-native"
 import { useState, useEffect } from "react"
 
 export default function AddNewContact({navigation}) {
@@ -7,7 +7,7 @@ export default function AddNewContact({navigation}) {
     contactName: '',
     phoneNo: '',
     mobileNo: '',
-    email: '',
+    email: null,
     role: '',
     contactComment: '',
     patientId: 779355403 // will change when we finish context to get the patient id
@@ -52,6 +52,21 @@ export default function AddNewContact({navigation}) {
   }
 
   const sendToDB = () => {
+  
+    if (!Contact.mobileNo || !Contact.contactName) {
+      return Alert.alert('Error', 'Email and Mobile Number are required')
+    }
+    if (Contact.email !== null) {
+      if(!validateEmail(Contact.email)){
+      return Alert.alert('Invalid Email', 'Please enter a valid email')
+    }
+  }
+    if (Contact.contactName === '') {
+      return Alert.alert('Invalid Contact Name', 'Please enter a valid contact name')
+    }  
+    if (!validatePhoneNum(Contact.mobileNo)) {
+      return Alert.alert('Invalid Phone Number', 'Please enter a valid phone number')
+    }
     fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/NewContact', {
       method: 'POST',
       body: JSON.stringify(Contact),
@@ -60,28 +75,35 @@ export default function AddNewContact({navigation}) {
       })
     })
       .then(res => {
-        console.log('res=', res);
-        console.log('res.status=', res.status);
-        console.log('res.ok=', res.ok);
-        return res.json()
+          return res.json()
       })
       .then(
         (result) => {
           console.log("fetch POST= ", result);
           alert("Contact added successfully");
+          navigation.popToTop();
         },
         (error) => {
           console.log("err post=", error);
         });
   }
 
+  const validateEmail = (email) => {
+    const emailRegex = /\S+@\S+\.\S+/
+    return emailRegex.test(email)
+  }
+
+  const validatePhoneNum = (phoneNum) => {
+    //only numbers allowed in phone number input - no spaces or dashes - 10 digits - starts with 0
+    const phoneNumRegex = /^(0)[0-9]{9}$/
+    return phoneNumRegex.test(phoneNum)
+  }
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Add New Contact</Text>
       </View>
-
       <View style={[styles.inputContainer, animation]}>
         <View>
           <TextInput
@@ -142,8 +164,8 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#F5F5F5',
     flexDirection: 'column',
+    backgroundColor: 'white',
   },
   inputContainer: {
     width: Dimensions.get('window').width * 1,
