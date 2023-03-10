@@ -13,18 +13,46 @@ Font.loadAsync({
 const SCREEN_WIDTH = Dimensions.get('window').width;
 export default function SignUpCaregiverLVL5({ navigation, route }, props) {
   const [selectedHolidays, setSelectedHolidays] = useState([]);
-  const newForeignUser = route.params.data;
+  const newForeignUserData = route.params.newForeignUserData;
+  const newUser = route.params.newUser;
   const holidaysType = route.params.holidaysType;
 
-  const sendToDB = () => {
-    newForeignUser.Calendars = selectedHolidays; //selectedHolidays is the array of the selected holidays,use them in data base with stored procedure "InsertCalendarForUser"
-    console.log(newForeignUser);
+  const createUserInDB = () => {
+    newUser.Calendars = selectedHolidays; //selectedHolidays is the array of the selected holidays,use them in data base with stored procedure "InsertCalendarForUser"    
+    fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/InsertUser', { //send the user data to the DB
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: JSON.stringify(newUser),
+    })
+      .then((response) => {
+        if (response.ok == true) {
+          createForeignUserInDB() //create the foreign user in the DB
+        }
+        else {
+          console.log("not found")
+        }
+      })
+      .then((json) => {
+        //save the id of the new user that we got from the DB 
+        newForeignUserData.Id = json;
+        console.log("newForeignUserData=", newForeignUserData.Id);
+      })
+      .catch((error) => {
+        console.error(error);
+      }
+      );
+  };
+
+  const createForeignUserInDB = () => {
+    console.log(newForeignUserData);
     fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/ForeignUser/InsertForeignUser', {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(newForeignUser),
+      body: JSON.stringify(newForeignUserData),
     })
       .then((response) => response.json())
       .then((json) => {
@@ -57,7 +85,7 @@ export default function SignUpCaregiverLVL5({ navigation, route }, props) {
       <View style={styles.btnContainer}>
         <TouchableOpacity
           style={styles.button}
-          onPress={sendToDB}
+          onPress={createUserInDB}
         >
           <Text style={styles.buttonText}>Sign Up</Text>
         </TouchableOpacity>

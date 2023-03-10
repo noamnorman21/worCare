@@ -17,9 +17,8 @@ export default function SignUpCaregiverLVL4({ navigation, route }) {
   const [language, setLanguage] = useState(route.params.language);
   const [country, setCountry] = useState(route.params.country);
   const [holidaysType, setHolidaysType] = useState(route.params.holidaysType);
-
-  //we need to get the user data(most imporant is the id) from the previous screen
-  const userId = route.params.userId;
+  const userData = route.params.userData;
+  
   const getMinDate = () => {
     var date = new Date().getDate(); //Current Date
     var month = new Date().getMonth() + 1; //Current Month
@@ -46,14 +45,22 @@ export default function SignUpCaregiverLVL4({ navigation, route }) {
     if (valueCountry == null) {
       Alert.alert("Please fill all the details");
     } else {
-      const data = {
-        Id: route.params.userId,
+      const newUser = {
+        FirstName: userData.firstName,
+        LastName: userData.lastName,
+        Email: userData.email,
+        Password: userData.password,
+        gender: userData.gender,
+        phoneNum: userData.phoneNum,
+        userUri: userData.userUri,
+      }
+      const newForeignUserData = {
         CountryName_En: valueCountry,
         LanguageName_En: valueLanguage,
         DateOfBirth: date,
         VisaExpirationDate: visaExpiration,
       };
-      navigation.navigate("SignUpCaregiverLVL5", { data: data, holidaysType: holidaysType });
+      navigation.navigate("SignUpCaregiverLVL5", { newForeignUserData: newForeignUserData, newUser: newUser, holidaysType: holidaysType });
     }
   };
 

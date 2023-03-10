@@ -6,13 +6,14 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using WebApi.DTO;
+using System.Web.Http.Cors;
 
 namespace WebApi.Controllers
 {
     [RoutePrefix("api/ForeignUser")]
     public class ForeignUserController : ApiController
     {
-        igroup194DB db = new igroup194DB();       
+        igroup194DB db = new igroup194DB();
 
         [HttpPost]
         [Route("InsertForeignUser")]
@@ -20,21 +21,14 @@ namespace WebApi.Controllers
         {
             try
             {
-                tblUser userExist = db.tblUsers.Where(x => x.Id == user.Id).First();      
+                tblUser userExist = db.tblUsers.Where(x => x.Id == user.Id).First();
                 if (userExist == null)
                     return NotFound();
-
-                //add the jewish(id-24) calnder as primary calnder
-                db.InsertCalendarForUser(24, userExist.Id, true);
-                foreach (int item in user.Calendars)
-                {
-                    //here we will add all the calendars that the user choose 
-                    if (item!=24)
-                        db.InsertCalendarForUser(item, userExist.Id, false);           
-                }
-        
+                //tblCalendarForUser calendarForUser = new tblCalendarForUser();
+                //int result = calendarForUser.InsertCalendar(user.Id, user.Calendars);
+                //if (result == -1)
+                //    return BadRequest("Error in insert calendar for user");                
                 db.InsertForeignUser(user.Id, user.DateOfBirth, user.VisaExpirationDate, user.LanguageName_En, user.CountryName_En);
-                
                 return Ok("Foreign user added");
             }
             catch (Exception ex)

@@ -24,8 +24,6 @@ namespace WebApi.Controllers
         [HttpGet]
         public IHttpActionResult GetContacts(int id)
         {
-            //tblUser d = db.tblUsers.Where(x => x.Id == id).FirstOrDefault();
-            //tblForeignUser f = d.tblForeignUser;
             try
             {
                 var Contacts = db.tblContacts.Where(x => x.patientId == id.ToString()).Select(y => new ContactDTO
@@ -46,13 +44,11 @@ namespace WebApi.Controllers
             }
         }
 
-        // GET: api/Contacts/5
+        // GET: api/Contacts/{id}
         [HttpGet]
         [Route("GetSpecificContact/{id}")]
         public IHttpActionResult GetSpecificContact(int id)
         {
-            //tblUser d = db.tblUsers.Where(x => x.Id == id).FirstOrDefault();
-            //tblForeignUser f = d.tblForeignUser;
             try
             {
                 var Contact = db.tblContacts.Where(x => x.contactId == id).Select(y => new ContactDTO
@@ -90,7 +86,7 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
+        
         // PUT: api/Contacts/{id}
         [HttpPut]
         [Route("UpdateContact/{id}")]
@@ -113,6 +109,7 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
                 throw;
             }
+
         }
 
         // DELETE: api/Contacts/{id}

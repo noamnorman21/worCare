@@ -15,19 +15,14 @@ import SignUpCareGiverLVL5 from './Component/SignUpComponents/CareGiver/SignUpCa
 import ForgotPassword from './Component/ForgotPasswordComponents/CreateNewPassword';
 import FCTest from './Component/HelpComponents/FCTest';
 import Holidays from './Component/HelpComponents/Holidays';
-import SignUpHobbies from './Component/SignUpComponents/User/SignUpHobbies';
+
 export default function App() {
   return (
     <NavigationContainer independent={true}>
       {/* <SettingScreen /> */}
-      <SignUpHobbies />
+      <NavigateSignUp />
     </NavigationContainer>
   );
-  // return (
-  //   <View style={styles.container}>
-  //     <SignUpHobbies />
-  //   </View>
-  //   )
 }
 
 const styles = StyleSheet.create({

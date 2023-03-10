@@ -27,12 +27,12 @@ export default function SignUpLvl2({ navigation, route }) {
     // if the user didn't upload an image, we will use the default image
     if (image === null) {
       //זה תמונה מכוערת -נועם תחליף אותה
-      let defultImage="https://png.pngtree.com/element_our/20200610/ourmid/pngtree-character-default-avatar-image_2237203.jpg"
-      sendDataToDB(defultImage);     
+      let defultImage = "https://png.pngtree.com/element_our/20200610/ourmid/pngtree-character-default-avatar-image_2237203.jpg"
+      sendDataToNextLVL(defultImage);
     }
-     const filename = image.substring(image.lastIndexOf('/') + 1);
-     const storageRef = ref(storage, "images/" + filename);
-     const blob = await fetch(image).then(response => response.blob());
+    const filename = image.substring(image.lastIndexOf('/') + 1);
+    const storageRef = ref(storage, "images/" + filename);
+    const blob = await fetch(image).then(response => response.blob());
     try {
       const uploadTask = uploadBytesResumable(storageRef, blob);
       uploadTask.on('state_changed',
@@ -48,111 +48,91 @@ export default function SignUpLvl2({ navigation, route }) {
           getDownloadURL(storageRef).then(downloadURL => {
             console.log('File available at', downloadURL);
             setImageFireBaseUrl(downloadURL);
-            sendDataToDB(downloadURL);
- 
+            sendDataToNextLVL(downloadURL);
           });
         }
       );
     } catch (error) {
       console.error(error);
       Alert.alert('Upload Error', 'Sorry, there was an error uploading your image. Please try again later.');
-      sendDataToDB();
+      sendDataToNextLVL();
     }
-  
-}
-
-const sendDataToDB = (downloadURL) => {
-  //send the image to firebase storage, we will get the image url and send it to the DB
-  //create the user object to send to the DB, do it after we get the image url
-  const newUserToDB = {
-    FirstName: userData.firstName,
-    LastName: userData.lastName,
-    Email: userData.email,
-    Password: userData.password,
-    gender: userGender,
-    phoneNum: userData.phoneNum,
-    userUri: downloadURL,
   }
-  console.log("after: "+ newUserToDB.userUri);
- //send the user data to the DB
-  fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/InsertUser', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-    body: JSON.stringify(newUserToDB),
-  })
-    .then((response) => response.json())
-    .then((json) => {
-      console.log("id: "+json);
-      //save the id of the new user that we got from the DB
-     navigation.navigate('SignUpLvl3',{userId:json})
-    })
-    .catch((error) => {
-      console.error(error);
+
+  const sendDataToNextLVL = (downloadURL) => {
+    //send the image to firebase storage, we will get the image url and send it to the DB
+    //create the user object to send to the DB, do it after we get the image url
+    const newUserToDB = {
+      FirstName: userData.firstName,
+      LastName: userData.lastName,
+      Email: userData.email,
+      Password: userData.password,
+      gender: userGender,
+      phoneNum: userData.phoneNum,
+      userUri: downloadURL,
     }
-    );
-}
+    navigation.navigate('SignUpLvl3', { userData: newUserToDB })
+  }
 
-const NavigateToLogIn = () => {
-  navigation.navigate('LogIn')
-}
+  const NavigateToLogIn = () => {
+    navigation.navigate('LogIn')
+  }
 
-return (
-  <SafeAreaView style={styles.container}>
-    <Text style={styles.header}>
-      We love to know you...
-    </Text>
-    <Text style={styles.smallHeader}>
-      It will take only 5 minutes
-    </Text>
+  return (
+    <SafeAreaView style={styles.container}>
+      <Text style={styles.header}>
+        We love to know you...
+      </Text>
+      <Text style={styles.smallHeader}>
+        It will take only 5 minutes
+      </Text>
 
-    <View>
-      <Text style={styles.TitleGender}> I am a...</Text>
-    </View>
+      <View>
+        <Text style={styles.TitleGender}> I am a...</Text>
+      </View>
 
-    <View style={styles.GenderContainer}>
-      <TouchableOpacity
-        style={[styles.GenderButton, userGender === 'M' && styles.selectedGender]}
-        onPress={() => setUserGender('M')}
-      >
-        <Image
-          source={require('../../images/hero.png')}
-          style={styles.imgGender}
-        />
-      </TouchableOpacity>
-      <View style={{ margin: 20 }}></View>
-      <TouchableOpacity
-        style={[styles.GenderButton, userGender === 'F' && styles.selectedGender]}
-        onPress={() => setUserGender('F')}
-      >
-        <Image
-          source={require('../../images/superhero.png')}
-          style={styles.imgGender}
-        />
-      </TouchableOpacity>
-    </View>
+      <View style={styles.GenderContainer}>
+        <TouchableOpacity
+          style={[styles.GenderButton, userGender === 'M' && styles.selectedGender]}
+          onPress={() => setUserGender('M')}
+        >
+          <Image
+            source={require('../../images/hero.png')}
+            style={styles.imgGender}
+          />
+        </TouchableOpacity>
+        <View style={{ margin: 20 }}></View>
+        <TouchableOpacity
+          style={[styles.GenderButton, userGender === 'F' && styles.selectedGender]}
+          onPress={() => setUserGender('F')}
+        >
+          <Image
+            source={require('../../images/superhero.png')}
+            style={styles.imgGender}
+          />
+        </TouchableOpacity>
+      </View>
 
-    <View style={{ flex: 2 }}>
-      <TouchableOpacity
-        style={{ marginBottom: 40 }}
-        onPress={() => setUserGender('O')}
-      >
-        <Text style={[styles.txtOther, userGender === 'O' && styles.selectedGenderTXT]}>Prefer not to say...</Text>
-      </TouchableOpacity>
+      <View style={{ flex: 2 }}>
+        <TouchableOpacity
+          style={{ marginBottom: 40 }}
+          onPress={() => setUserGender('O')}
+        >
+          <Text style={[styles.txtOther, userGender === 'O' && styles.selectedGenderTXT]}>Prefer not to say...</Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button}
-        onPress={()=>sendToFirebase(userData.imagePath)}
-      >
-        <Text style={styles.buttonText}>
-          Continue
-        </Text>
-      </TouchableOpacity>
-    </View>
-    <OrLine />
-    <HaveAccount NavigateToLogIn={NavigateToLogIn} />
-  </SafeAreaView>
-)
+        <TouchableOpacity style={styles.button}
+          onPress={() => sendToFirebase(userData.imagePath)}
+        >
+          <Text style={styles.buttonText}>
+            Continue
+          </Text>
+        </TouchableOpacity>
+      </View>
+      <OrLine />
+      <HaveAccount NavigateToLogIn={NavigateToLogIn} />
+    </SafeAreaView>
+  )
 }
 
 const styles = StyleSheet.create({

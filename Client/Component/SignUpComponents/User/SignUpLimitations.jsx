@@ -10,6 +10,7 @@ export default function SignUpLimitations({ navigation, route }) {
   const [modal2Visible, setModal2Visible] = useState(false);
   const [modal3Visible, setModal3Visible] = useState(false);
   const [modal4Visible, setModal4Visible] = useState(false);
+
   const [comments, setComments] = useState('');
   const [allergies, setAllergies] = useState(LimitationsData.allergies);
   const [allergiesOther, setAllergiesOther] = useState('');
@@ -50,16 +51,51 @@ export default function SignUpLimitations({ navigation, route }) {
       bathRoutine: activeBathRoutine,
       sensitivityToNoise: noiseSensitive,
       other: comments,
-    };
+    };    
     navigation.navigate('SignUpHobbies', { tblLimitations: tblLimitations }); // Navigate to next lvl
-  }; 
+  };
+  changebathRoutine = (value) => {
+    if (value === 'All') { // if the user clicked on the "All" button
+      // change the state of all the checkboxes with inverse value
+      if (bathRoutine.filter((item) => item.selected === true).length === bathRoutine.length - 1) {
+        bathRoutine[bathRoutine.length - 1].selected = true;        
+      }
+      // if all the checkboxes are checked, uncheck all of them
+      if (bathRoutine.filter((item) => item.selected === true).length === bathRoutine.length) {
+        setBathRoutine(
+          bathRoutine.map((item) => {
+            return { ...item, selected: false };
+          })
+        );
+        return;
+      }
+      // if not all the checkboxes are checked, check all of them
+      setBathRoutine(
+        bathRoutine.map((item) => {
+          return { ...item, selected: true };
+        })
+      );
+    }
+    else { // if the user clicked on a checkbox (not the "All" button)
+      setBathRoutine(
+        bathRoutine.map((item) => {
+          if (item.name === value) {
+            return { ...item, selected: !item.selected };
+          }
+          return item;
+        })
+      );
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
+
       <View style={styles.headerContainer}>
         <Text style={styles.header}>Add Patient limitation's</Text>
         <View style={styles.line} />
       </View>
+
       {/* Allergies */}
       <TouchableOpacity
         style={styles.inputBox}
@@ -72,7 +108,6 @@ export default function SignUpLimitations({ navigation, route }) {
       <Modal animationType="slide" visible={modal1Visible}>
         <View style={styles.modal}>
           <Text style={styles.modalText}>Pick Allergies</Text>
-
           <View style={styles.allergiesContainer}>
             {allergies.map((allergy) => (
               <TouchableOpacity
@@ -186,7 +221,7 @@ export default function SignUpLimitations({ navigation, route }) {
       <Modal animationType="slide" visible={modal3Visible}>
         <View style={styles.modal}>
           <Text style={styles.modalTextSecondRow}>Pick Physicial</Text>
-          <Text style={[styles.modalTextSecondRow, { marginBottom: 40 }]}>Abilities</Text>
+          <Text style={[styles.modalTextSecondRow, { marginBottom: 20 }]}>Abilities</Text>
           <View style={styles.physicialContainer}>
             {physicalAbilities.map((physicial) => (
               <TouchableOpacity
@@ -247,16 +282,8 @@ export default function SignUpLimitations({ navigation, route }) {
             {bathRoutine.map((bath) => (
               <TouchableOpacity
                 key={bath.id}
-                style={[styles.bath, bath.selected && { borderColor: '#548DFF' }]}
-                onPress={() => {
-                  const newBathRoutine = bathRoutine.map((item) => {
-                    if (item.id === bath.id) {
-                      return { ...item, selected: !item.selected };
-                    }
-                    return item;
-                  });
-                  setBathRoutine(newBathRoutine);
-                }}>
+                style={[styles.bath, (bath.selected & bath.name != 'All') && { borderColor: '#548DFF' }]}
+                onPress={() => changebathRoutine(bath.name)}>
                 <Text style={styles.allergyText}>{bath.name}</Text>
               </TouchableOpacity>
             ))}
@@ -325,6 +352,7 @@ export default function SignUpLimitations({ navigation, route }) {
           <Text style={styles.button}>Continue</Text>
         </TouchableOpacity>
       </View>
+
     </SafeAreaView>
   )
 }
@@ -357,13 +385,12 @@ const styles = StyleSheet.create({
     marginTop: 50,
   },
   sensitivity: {
-    width: SCREEN_WIDTH * 0.45,
-    height: 50,
+    width: SCREEN_WIDTH * 0.455,
+    height: 55,
     borderRadius: 16,
     backgroundColor: '#fff',
     borderWidth: 1.5,
     borderColor: '#E6EBF2',
-    padding: 10,
     marginVertical: 7,
     justifyContent: 'center',
     alignItems: 'center',
@@ -464,12 +491,11 @@ const styles = StyleSheet.create({
   },
   buttonBox: {
     width: SCREEN_WIDTH * 0.9,
-    height: 50,
+    height: 54,
     borderRadius: 16,
     backgroundColor: '#548DFF',
     borderWidth: 1,
-    borderColor: 'gray',
-    padding: 10,
+    borderColor: '#548DFF',
     marginVertical: 7,
     justifyContent: 'center',
     alignItems: 'center',
@@ -477,7 +503,7 @@ const styles = StyleSheet.create({
   button: {
     fontSize: 18,
     color: '#fff',
-    fontFamily: 'Urbanist-Bold',
+    fontFamily: 'Urbanist-SemiBold',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -499,9 +525,9 @@ const styles = StyleSheet.create({
     borderColor: "#E6EBF2",
     borderWidth: 1.5,
     borderRadius: 16,
-    marginVertical: 10,
+    marginVertical: 5,
     height: 55,
-    width: SCREEN_WIDTH * 0.215,
+    width: SCREEN_WIDTH * 0.31,
   },
   allergyText: {
     fontSize: 15,
@@ -541,9 +567,9 @@ const styles = StyleSheet.create({
     borderColor: "#E6EBF2",
     borderWidth: 1.5,
     borderRadius: 16,
-    marginVertical: 10,
-    height: 55,
-    width: SCREEN_WIDTH * 0.45,
+    margin: 5,
+    height: 50,
+    width: SCREEN_WIDTH * 0.295,
   },
   physicalText: {
     fontSize: 15,

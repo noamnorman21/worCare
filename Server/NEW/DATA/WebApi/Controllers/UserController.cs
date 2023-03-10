@@ -109,15 +109,20 @@ namespace WebApi.Controllers
         // insert user to db by calling Stored Prodecdure InsertUser
         [HttpPost]
         [Route("InsertUser")]
-        public IHttpActionResult InsertUser([FromBody] tblUser user)
+        public IHttpActionResult InsertUser([FromBody] UserDTO user)
         {
             try
             {
+                tblCalendarForUser calendarForUser = new tblCalendarForUser();
                 db.InsertUser(user.Email, user.Password, user.FirstName, user.LastName, user.gender, user.phoneNum, user.userUri);
                 db.SaveChanges();
-                //return the id from the new user
-                var newUser = db.tblUsers.Where(x => x.Email == user.Email).FirstOrDefault();
-                return Ok(newUser.Id);
+                var newUser = db.tblUsers.Where(x => x.Email == user.Email).First();
+                if (newUser == null)
+                    return NotFound();                
+                int result = calendarForUser.InsertCalendar(user.Id, user.Calendars);
+                if (result == -1)
+                    return BadRequest("Error in insert calendar for user");                
+                return Ok(newUser.Id);                
             }
             catch (Exception ex)
             {
@@ -125,7 +130,7 @@ namespace WebApi.Controllers
             }
         }
 
-        // update user to db by calling Function UpdateUser
+        // Update user to db by calling Function UpdateUser
         [HttpPut]
         [Route("UpdateUser")]
         public IHttpActionResult UpdateUser([FromBody] UserDTO userToUpdate)
@@ -147,6 +152,7 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        
         // Update user password by calling Function UpdateUserPassword
         [HttpPut]
         [Route("UpdateUserPassword")]

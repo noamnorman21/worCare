@@ -10,7 +10,6 @@ export default function SignUpFinish({ navigation, route }) {
     const tblLimitations = route.params.tblLimitations;
     const holidaysType = route.params.holidaysType;
     const tblPatient = route.params.tblPatient;
-    // const tblCalendar = route.params.tblCalendar; 
 
     const sendToDB = () => {
         console.log("Send to DB")

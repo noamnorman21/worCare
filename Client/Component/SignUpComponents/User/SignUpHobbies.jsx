@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, Modal, Dimensions, SafeAreaView, ScrollView, FlatList } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, Modal, Dimensions, SafeAreaView, Keyboard, FlatList } from 'react-native';
 import { Entypo } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
 import HobbiesData from './Hobbies.json';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
-//{ navigation, route }
-export default function SignUpHobbies() {
+
+export default function SignUpHobbies({ navigation, route }) {
   const [holidaysType, setHolidaysType] = useState([]);
   const [modal1Visible, setModal1Visible] = useState(false);
   const [modal2Visible, setModal2Visible] = useState(false);
@@ -84,9 +84,7 @@ export default function SignUpHobbies() {
       nightSleep: selectedNightHour,
       other: other
     };
-    // const tblLimitations = 1;
-    //route.params.tblLimitations;
-    // navigation.navigate('SignUpFinish', { tblHobbies: tblHobbies, tblLimitations: tblLimitations, holidaysType: holidaysType });
+    navigation.navigate('SignUpFinish', { tblHobbies: tblHobbies, tblLimitations: route.params.tblLimitations, holidaysType: holidaysType });
   };
 
   return (
@@ -162,18 +160,25 @@ export default function SignUpHobbies() {
         <SafeAreaView style={styles.modal}>
           <Text style={styles.modalXSText}>Pick Radio Channel</Text>
           <View style={styles.doubleContainer}>
-            {radioChannel.map((radio, index) => (
-              <TouchableOpacity
-                key={index}
-                style={[styles.XSInput, radio.selected && { borderColor: '#548DFF' }]}
-                onPress={() => {
-                  const newRadioChannel = [...radioChannel];
-                  newRadioChannel[index].selected = !newRadioChannel[index].selected;
-                  setRadioChannel(newRadioChannel);
-                }}>
-                <Text style={styles.booksText}>{radio.name}</Text>
-              </TouchableOpacity>
-            ))}
+            <FlatList
+              data={radioChannel}
+              keyExtractor={(item, index) => index.toString()}
+              numColumns={3}
+              renderItem={({ item, index }) => (
+                <View style={{ margin: 3 }}>
+                  <TouchableOpacity
+                    key={index}
+                    style={[styles.XSInput, item.selected && { borderColor: '#548DFF' }]}
+                    onPress={() => {
+                      const newRadioChannel = [...radioChannel];
+                      newRadioChannel[index].selected = !newRadioChannel[index].selected;
+                      setRadioChannel(newRadioChannel);
+                    }}>
+                    <Text style={styles.booksText}>{item.name}</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+            />
             <TextInput
               style={styles.inputOther}
               placeholder="Other..."
@@ -184,18 +189,25 @@ export default function SignUpHobbies() {
           </View>
           <Text style={styles.modalXSText}>Pick Music</Text>
           <View style={styles.doubleContainer}>
-            {music.map((m, index) => (
-              <TouchableOpacity
-                key={index}
-                style={[styles.XSInput, m.selected && { borderColor: '#548DFF' }]}
-                onPress={() => {
-                  const newMusic = [...music];
-                  newMusic[index].selected = !newMusic[index].selected;
-                  setMusic(newMusic);
-                }}>
-                <Text style={styles.booksText}>{m.name}</Text>
-              </TouchableOpacity>
-            ))}
+            <FlatList
+              data={music}
+              keyExtractor={(item, index) => index.toString()}
+              numColumns={3}
+              renderItem={({ item, index }) => (
+                <View style={{ margin: 3 }}>
+                  <TouchableOpacity
+                    key={index}
+                    style={[styles.XSInput, item.selected && { borderColor: '#548DFF' }]}
+                    onPress={() => {
+                      const newMusic = [...music];
+                      newMusic[index].selected = !newMusic[index].selected;
+                      setMusic(newMusic);
+                    }}>
+                    <Text style={styles.booksText}>{item.name}</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+            />
             <TextInput
               style={styles.inputOther}
               placeholder="Other..."
@@ -235,21 +247,29 @@ export default function SignUpHobbies() {
       {/* Tv Shows & Movies Modal*/}
       <Modal animationType="slide" visible={modal3Visible}>
         <View style={styles.modal}>
-
           <Text style={styles.modalXSText}>Pick Tv Shows </Text>
-          <View style={styles.TVContainer}>
-            {tvShows.map((tvShow, index) => (
-              <TouchableOpacity
-                key={index}
-                style={[styles.XSInput, tvShow.selected && { borderColor: '#548DFF' }]}
-                onPress={() => {
-                  const newTvShows = [...tvShows];
-                  newTvShows[index].selected = !newTvShows[index].selected;
-                  setTvShows(newTvShows);
-                }}>
-                <Text style={styles.booksText}>{tvShow.name}</Text>
-              </TouchableOpacity>
-            ))}
+          <View style={styles.doubleContainer}>
+            <FlatList
+              data={tvShows}
+              renderItem={({ item, index }) => (
+                <View style={{ margin: 3 }}>
+                  <TouchableOpacity
+                    key={index}
+                    style={[styles.XSInput, item.selected && { borderColor: '#548DFF' }]}
+                    onPress={() => {
+                      const newTvShows = [...tvShows];
+                      newTvShows[index].selected = !newTvShows[index].selected;
+                      setTvShows(newTvShows);
+                    }}>
+                    <Text style={styles.booksText}>{item.name}</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+              keyExtractor={(item, index) => index.toString()}
+              numColumns={3}
+            />
+
+
             <TextInput
               style={styles.inputOther}
               placeholder="Other..."
@@ -316,7 +336,7 @@ export default function SignUpHobbies() {
           <View style={styles.doubleContainer}>
             <FlatList
               data={food}
-              keyExtractor={(item) => item.id + 1}
+              keyExtractor={(item) => item.id - 1}
               numColumns={3}
               contentContainerStyle={styles.flatList}
               renderItem={({ item }) => (
@@ -325,7 +345,7 @@ export default function SignUpHobbies() {
                     style={[styles.XSInput, item.selected && { borderColor: '#548DFF' }]}
                     onPress={() => {
                       const newFood = [...food];
-                      newFood[item.id + 1].selected = !newFood[item.id + 1].selected;
+                      newFood[item.id - 1].selected = !newFood[item.id - 1].selected;
                       setFood(newFood);
                     }}>
                     <Text style={styles.booksText}>{item.name}</Text>
@@ -344,18 +364,25 @@ export default function SignUpHobbies() {
 
           <Text style={styles.modalText}>Pick Drink</Text>
           <View style={styles.doubleContainer}>
-            {drink.map((d, index) => (
-              <TouchableOpacity
-                key={index}
-                style={[styles.XSInput, d.selected && { borderColor: '#548DFF' }]}
-                onPress={() => {
-                  const newDrink = [...drink];
-                  newDrink[index].selected = !newDrink[index].selected;
-                  setDrink(newDrink);
-                }}>
-                <Text style={styles.booksText}>{d.name}</Text>
-              </TouchableOpacity>
-            ))}
+            <FlatList
+              data={drink}
+              keyExtractor={(item) => item.id - 1}
+              numColumns={3}
+              contentContainerStyle={styles.flatList}
+              renderItem={({ item }) => (
+                <View style={{ margin: 3 }}>
+                  <TouchableOpacity
+                    style={[styles.XSInput, item.selected && { borderColor: '#548DFF' }]}
+                    onPress={() => {
+                      const newDrink = [...drink];
+                      newDrink[item.id - 1].selected = !newDrink[item.id - 1].selected;
+                      setDrink(newDrink);
+                    }}>
+                    <Text style={styles.booksText}>{item.name}</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+            />
             <TextInput
               style={styles.inputOther}
               placeholder="Other..."
@@ -449,20 +476,16 @@ export default function SignUpHobbies() {
         <View style={styles.modal}>
           <Text style={styles.modalText}>Pick Hobbies</Text>
           <View style={styles.FoodContainer}>
-            {hobbies.map((hobbies) => (
+            {hobbies.map((hobbie, index) => (
               <TouchableOpacity
-                key={hobbies.id}
-                style={[styles.Food, hobbies.selected && { borderColor: '#548DFF' }]}
+                key={index}
+                style={[styles.XSInput, hobbie.selected && { borderColor: '#548DFF' }]}
                 onPress={() => {
-                  const newHobbies = hobbies.map((item) => {
-                    if (item.id === hobbies.id) {
-                      return { ...item, selected: !item.selected };
-                    }
-                    return item;
-                  });
+                  const newHobbies = [...hobbies];
+                  newHobbies[index].selected = !newHobbies[index].selected;
                   setHobbies(newHobbies);
                 }}>
-                <Text style={styles.booksText}>{hobbies.name}</Text>
+                <Text style={styles.booksText}>{hobbie.name}</Text>
               </TouchableOpacity>
             ))}
             <TextInput
@@ -490,7 +513,6 @@ export default function SignUpHobbies() {
         </View>
       </Modal>
 
-
       {/* Other info */}
       <TextInput
         style={styles.comments}
@@ -498,7 +520,8 @@ export default function SignUpHobbies() {
         placeholderTextColor={'black'}
         onChangeText={setOther}
         value={other}
-        multiline={true}
+        multiline
+        editable
       />
 
       {/* Continue Button */}
@@ -538,12 +561,10 @@ const styles = StyleSheet.create({
     marginTop: 50,
   },
   doubleContainer: {
-    // // flexDirection: 'row',
-    // flexWrap: 'wrap',
     justifyContent: 'center',
     width: SCREEN_WIDTH * 1,
-    marginTop: 20,
-    height: SCREEN_HEIGHT * 0.25,
+    alignItems: 'center',
+    height: SCREEN_HEIGHT * 0.27,
   },
   inputBox: {
     width: SCREEN_WIDTH * 0.9,
@@ -588,7 +609,7 @@ const styles = StyleSheet.create({
   modalXSText: {
     fontSize: 25,
     fontFamily: 'Urbanist-Bold',
-    marginTop: 20,
+    margin: 20,
   },
   saveButton: {
     width: SCREEN_WIDTH * 0.45,
@@ -700,7 +721,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderWidth: 1.5,
     borderColor: '#E6EBF2',
-    marginVertical: 7,
+    marginVertical: 5,
     justifyContent: 'center',
     alignItems: 'center',
   },
