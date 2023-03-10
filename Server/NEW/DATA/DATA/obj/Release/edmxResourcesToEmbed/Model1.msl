@@ -108,8 +108,8 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="tblHobbies">
-      <EntityTypeMapping TypeName="igroup194_prodModel.tblHobby">
+    <EntitySetMapping Name="tblHobbies1">
+      <EntityTypeMapping TypeName="igroup194_prodModel.tblHobbies">
         <MappingFragment StoreEntitySet="tblHobbies">
           <ScalarProperty Name="patientId" ColumnName="patientId" />
           <ScalarProperty Name="books" ColumnName="books" />
@@ -136,8 +136,8 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="tblLimitations">
-      <EntityTypeMapping TypeName="igroup194_prodModel.tblLimitation">
+    <EntitySetMapping Name="tblLimitations1">
+      <EntityTypeMapping TypeName="igroup194_prodModel.tblLimitations">
         <MappingFragment StoreEntitySet="tblLimitations">
           <ScalarProperty Name="patientId" ColumnName="patientId" />
           <ScalarProperty Name="allergies" ColumnName="allergies" />

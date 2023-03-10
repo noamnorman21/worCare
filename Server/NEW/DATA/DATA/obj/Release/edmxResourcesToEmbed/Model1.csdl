@@ -120,7 +120,7 @@
     <NavigationProperty Name="tblPaymentRequests" Relationship="Self.FK__tblPaymen__userI__1EF99443" FromRole="tblForeignUser" ToRole="tblPaymentRequest" />
     <NavigationProperty Name="tblPrivateTasks" Relationship="Self.FK__tblPrivat__worke__7ABC33CD" FromRole="tblForeignUser" ToRole="tblPrivateTask" />
   </EntityType>
-  <EntityType Name="tblHobby">
+  <EntityType Name="tblHobbies">
     <Key>
       <PropertyRef Name="patientId" />
     </Key>
@@ -149,7 +149,7 @@
     <NavigationProperty Name="tblForeignUsers" Relationship="Self.FK__tblForeig__Langu__7226EDCC" FromRole="tblLanguage" ToRole="tblForeignUser" />
     <NavigationProperty Name="tblPatients" Relationship="Self.FK__tblPatien__Langu__58671BC9" FromRole="tblLanguage" ToRole="tblPatient" />
   </EntityType>
-  <EntityType Name="tblLimitation">
+  <EntityType Name="tblLimitations">
     <Key>
       <PropertyRef Name="patientId" />
     </Key>
@@ -486,7 +486,7 @@
     <End Role="tblPatient" Type="Self.tblPatient" Multiplicity="1">
       <OnDelete Action="Cascade" />
     </End>
-    <End Role="tblHobbies" Type="Self.tblHobby" Multiplicity="0..1" />
+    <End Role="tblHobbies" Type="igroup194_prodModel.tblHobbies" Multiplicity="0..1" />
     <ReferentialConstraint>
       <Principal Role="tblPatient">
         <PropertyRef Name="Id" />
@@ -512,7 +512,7 @@
     <End Role="tblPatient" Type="Self.tblPatient" Multiplicity="1">
       <OnDelete Action="Cascade" />
     </End>
-    <End Role="tblLimitations" Type="Self.tblLimitation" Multiplicity="0..1" />
+    <End Role="tblLimitations" Type="igroup194_prodModel.tblLimitations" Multiplicity="0..1" />
     <ReferentialConstraint>
       <Principal Role="tblPatient">
         <PropertyRef Name="Id" />
@@ -593,9 +593,9 @@
     <EntitySet Name="tblDrugs" EntityType="Self.tblDrug" />
     <EntitySet Name="tblDrugForPatients" EntityType="Self.tblDrugForPatient" />
     <EntitySet Name="tblForeignUsers" EntityType="Self.tblForeignUser" />
-    <EntitySet Name="tblHobbies" EntityType="Self.tblHobby" />
+    <EntitySet Name="tblHobbies1" EntityType="igroup194_prodModel.tblHobbies" />
     <EntitySet Name="tblLanguages" EntityType="Self.tblLanguage" />
-    <EntitySet Name="tblLimitations" EntityType="Self.tblLimitation" />
+    <EntitySet Name="tblLimitations1" EntityType="igroup194_prodModel.tblLimitations" />
     <EntitySet Name="tblLists" EntityType="Self.tblList" />
     <EntitySet Name="tblPatients" EntityType="Self.tblPatient" />
     <EntitySet Name="tblPatientTasks" EntityType="Self.tblPatientTask" />
@@ -671,7 +671,7 @@
     </AssociationSet>
     <AssociationSet Name="FK__tblHobbie__patie__5C37ACAD" Association="Self.FK__tblHobbie__patie__5C37ACAD">
       <End Role="tblPatient" EntitySet="tblPatients" />
-      <End Role="tblHobbies" EntitySet="tblHobbies" />
+      <End Role="tblHobbies" EntitySet="tblHobbies1" />
     </AssociationSet>
     <AssociationSet Name="FK__tblPatien__Langu__58671BC9" Association="Self.FK__tblPatien__Langu__58671BC9">
       <End Role="tblLanguage" EntitySet="tblLanguages" />
@@ -679,7 +679,7 @@
     </AssociationSet>
     <AssociationSet Name="FK__tblLimita__patie__5F141958" Association="Self.FK__tblLimita__patie__5F141958">
       <End Role="tblPatient" EntitySet="tblPatients" />
-      <End Role="tblLimitations" EntitySet="tblLimitations" />
+      <End Role="tblLimitations" EntitySet="tblLimitations1" />
     </AssociationSet>
     <AssociationSet Name="FK__tblProduc__listI__21D600EE" Association="Self.FK__tblProduc__listI__21D600EE">
       <End Role="tblList" EntitySet="tblLists" />
