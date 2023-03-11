@@ -36,6 +36,7 @@ namespace WebApi.Controllers
         {
             try
             {
+                // {"BirthDate": "01-08-1927", "FirstName": "Sara", "Id": "577042518", "Language": "Arabic", "LastName": "Bibi", "userId": 147}
                 tblPatient patientExist = db.tblPatients.Where(x => x.Id == patient.Id).First();
                 if (patientExist != null)
                     return BadRequest("Patient already exists");

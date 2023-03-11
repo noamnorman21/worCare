@@ -13,6 +13,13 @@ export default function SignUpUserLVL5({ navigation, route }) {
   const [patientID, setPatientID] = useState('');
   const [patientFirstName, setPatientFirstName] = useState('');
   const [patientLastName, setPatientLastName] = useState('');
+  //  getMaxDate for age 21="2002-01-01" 
+  const getMaxDate = () => {
+    var date = new Date().getDate(); //Current Date
+    var month = new Date().getMonth() + 1; //Current Month
+    var year = new Date().getFullYear() - 21; //Current Year
+    return year + '-' + month + '-' + date;
+  }
 
   const handleInputAndContinue = () => {
     if (patientFirstName === '' || patientLastName === '' || patientID === '' || date === '' || valueLanguage === null) {
@@ -22,18 +29,16 @@ export default function SignUpUserLVL5({ navigation, route }) {
     if (patientID.length !== 9) {
       Alert.alert('Patient ID must be 9 digits')
       return
-    }    
+    }
     const patientData = {
       FirstName: patientFirstName,
       LastName: patientLastName,
-      PatientID: patientID,
-      BirthDate: date,
-      Language: valueLanguage
+      Id: patientID,
+      DateOfBirth: date,
+      LanguageName_En: valueLanguage
     }
-
-    navigation.navigate('SignUpLimitations', { patientData: patientData, userData : route.params.userData })
+    navigation.navigate('SignUpLimitations', { patientData: patientData, userData: route.params.userData })
   }
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
@@ -51,7 +56,7 @@ export default function SignUpUserLVL5({ navigation, route }) {
           value={patientFirstName}
           onChangeText={(patientFirstName) => setPatientFirstName(patientFirstName)}
         />
-        
+
         <TextInput
           style={styles.input}
           placeholder="Last Name"
@@ -76,9 +81,9 @@ export default function SignUpUserLVL5({ navigation, route }) {
           date={date}
           mode="date"
           placeholder="Date Of Birth"
-          format="DD-MM-YYYY"
-          minDate="01-01-1900"
-          maxDate="01-01-2002"
+          format="YYYY-MM-DD"
+          minDate="1900-01-01"
+          maxDate= "2002-01-01"
           confirmBtnText="Confirm"
           cancelBtnText="Cancel"
           customStyles={{

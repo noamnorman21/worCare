@@ -15,7 +15,6 @@ import SignUpCareGiverLVL5 from './Component/SignUpComponents/CareGiver/SignUpCa
 import ForgotPassword from './Component/ForgotPasswordComponents/CreateNewPassword';
 import FCTest from './Component/HelpComponents/FCTest';
 import Holidays from './Component/HelpComponents/Holidays';
-import SignUpLimitations from './Component/SignUpComponents/User/SignUpLimitations';
 
 export default function App() {
   return (

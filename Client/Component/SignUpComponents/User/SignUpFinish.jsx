@@ -32,6 +32,7 @@ export default function SignUpFinish({ navigation, route }) {
 
     // InsertPatient
     const createNewPatient = () => {
+        console.log("tblPatient=", tblPatient)
         fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/InsertPatient', { //send the patient data to the DB
             method: 'POST',
             headers: {
@@ -60,8 +61,8 @@ export default function SignUpFinish({ navigation, route }) {
         })
             .then((response) => response.json())
             .then((json) => {
-                // navigation.navigate('Login')
-                console.log("success")
+                // navigation.navigate('LogIn')
+                console.log(json)
             })
             .catch((error) => {
                 console.error(error);

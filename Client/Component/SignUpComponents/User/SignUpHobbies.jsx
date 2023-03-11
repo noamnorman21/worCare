@@ -87,7 +87,7 @@ export default function SignUpHobbies({ navigation, route }) {
     const activeMoviesString = activeMovies.join(', ');
     
     const HobbiesAndLimitationsData = {
-      patientId: route.params.tblPatient.PatientID,
+      patientId: route.params.tblPatient.Id,
       books: activeBooksString,
       music: activeMusicString,
       TVShow: activeTvShowsString,
