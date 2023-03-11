@@ -99,10 +99,7 @@ export default function SignUpHobbies({ navigation, route }) {
       nightSleep: selectedNightHour,
       otherH: other
     };
-
-    console.log(tblHobbies);
-
-//    navigation.navigate('SignUpFinish', { tblHobbies: tblHobbies, tblLimitations: route.params.tblLimitations, tblPatient: route.params.tblPatient , tblUser: route.params.tblUser });
+    navigation.navigate('SignUpFinish', { tblHobbies: tblHobbies, tblLimitations: route.params.tblLimitations, tblPatient: route.params.tblPatient , tblUser: route.params.tblUser });
   };
 
   return (
