@@ -86,7 +86,8 @@ export default function SignUpHobbies({ navigation, route }) {
     const activeHobbiesString = activeHobbies.join(', ');
     const activeMoviesString = activeMovies.join(', ');
     
-    const tblHobbies = {
+    const HobbiesAndLimitationsData = {
+      patientId: route.params.tblPatient.PatientID,
       books: activeBooksString,
       music: activeMusicString,
       TVShow: activeTvShowsString,
@@ -97,9 +98,15 @@ export default function SignUpHobbies({ navigation, route }) {
       movie: activeMoviesString,
       afternoonNap: selectedAfterNoonNaps,
       nightSleep: selectedNightHour,
-      otherH: other
-    };
-    navigation.navigate('SignUpFinish', { tblHobbies: tblHobbies, tblLimitations: route.params.tblLimitations, tblPatient: route.params.tblPatient , tblUser: route.params.tblUser });
+      otherH: other,
+      allergies: route.params.tblLimitations.allergies,
+      sensitivities: route.params.tblLimitations.sensitivities,
+      physicalAbilities: route.params.tblLimitations.physicalAbilities,
+      bathRoutine: route.params.tblLimitations.bathRoutine,
+      sensitivityToNoise: route.params.tblLimitations.sensitivityToNoise,
+      otherL: route.params.tblLimitations.otherL,
+    };    
+    navigation.navigate('SignUpFinish', { HobbiesAndLimitationsData: HobbiesAndLimitationsData, tblPatient: route.params.tblPatient , tblUser: route.params.tblUser });
   };
 
   return (

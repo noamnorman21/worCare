@@ -20,9 +20,7 @@ import SignUpLimitations from './Component/SignUpComponents/User/SignUpLimitatio
 export default function App() {
   return (
     <NavigationContainer independent={true}>
-      {/* <SettingScreen /> */}
-      {/* <NavigateSignUp /> */}
-      <SignUpLimitations/>
+      <NavigateSignUp />
     </NavigationContainer>
   );
 }

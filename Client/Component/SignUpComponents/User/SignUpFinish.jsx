@@ -5,7 +5,11 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export default function SignUpFinish({ navigation, route }) {
+
+    const tblPatient = route.params.tblPatient;
     const [modalVisible, setModalVisible] = useState(false);
+    
+    // InsertUser
     const createNewUserInDB = () => {
         fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/InsertUser', { //send the user data to the DB
             method: 'POST',
@@ -17,8 +21,47 @@ export default function SignUpFinish({ navigation, route }) {
             .then((response) => response.json())
             .then((json) => {
                 //save the id of the new user that we got from the DB 
-                newForeignUserData.Id = json; //save the id of the new user that we got from the DB
+                tblPatient.userId = json; //save the id of the new user that we got from the DB
                 createNewPatient() //create the foreign user in the DB
+            })
+            .catch((error) => {
+                console.error(error);
+            }
+            );
+    }
+
+    // InsertPatient
+    const createNewPatient = () => {
+        fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/InsertPatient', { //send the patient data to the DB
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json; charset=UTF-8',
+            },
+            body: JSON.stringify(tblPatient),
+        })
+            .then((response) => response.json())
+            .then((json) => {
+                addHobbiesAndLimitations()
+            })
+            .catch((error) => {
+                console.error(error);
+            }
+            );
+    }
+
+    // InsertPatientHobbiesAndLimitations
+    const addHobbiesAndLimitations = () => {
+        fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/InsertPatientHobbiesAndLimitations', { //send the user data to the DB
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json; charset=UTF-8',
+            },
+            body: JSON.stringify(route.params.HobbiesAndLimitationsData),
+        })
+            .then((response) => response.json())
+            .then((json) => {
+                // navigation.navigate('Login')
+                console.log("success")
             })
             .catch((error) => {
                 console.error(error);
