@@ -23,10 +23,11 @@ export default function SignUpUserLVL4({ navigation , route}, props) {
   };
 
   const NavigateToNextLVL = () => {
+    const userData = route.params.userData;
+    userData.Calendars = selectedHolidays;
     navigation.navigate('SignUpUserLVL5', {
-      selectedHolidays: selectedHolidays,
       language: route.params.language,
-      userId: route.params.userId,
+      userData : userData
     });
   };
 

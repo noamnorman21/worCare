@@ -24,10 +24,6 @@ namespace WebApi.Controllers
                 tblUser userExist = db.tblUsers.Where(x => x.Id == user.Id).First();
                 if (userExist == null)
                     return NotFound();
-                //tblCalendarForUser calendarForUser = new tblCalendarForUser();
-                //int result = calendarForUser.InsertCalendar(user.Id, user.Calendars);
-                //if (result == -1)
-                //    return BadRequest("Error in insert calendar for user");                
                 db.InsertForeignUser(user.Id, user.DateOfBirth, user.VisaExpirationDate, user.LanguageName_En, user.CountryName_En);
                 return Ok("Foreign user added");
             }

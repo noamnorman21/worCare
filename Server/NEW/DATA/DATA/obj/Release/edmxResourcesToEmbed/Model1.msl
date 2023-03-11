@@ -163,6 +163,7 @@
     <EntitySetMapping Name="tblPatients">
       <EntityTypeMapping TypeName="igroup194_prodModel.tblPatient">
         <MappingFragment StoreEntitySet="tblPatient">
+          <ScalarProperty Name="userId" ColumnName="userId" />
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="FirstName" ColumnName="FirstName" />
           <ScalarProperty Name="LastName" ColumnName="LastName" />

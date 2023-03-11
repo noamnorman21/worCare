@@ -26,18 +26,11 @@ export default function SignUpCaregiverLVL5({ navigation, route }, props) {
       },
       body: JSON.stringify(newUser),
     })
-      .then((response) => {
-        if (response.ok == true) {
-          createForeignUserInDB() //create the foreign user in the DB
-        }
-        else {
-          console.log("not found")
-        }
-      })
+      .then((response) => response.json())
       .then((json) => {
         //save the id of the new user that we got from the DB 
-        newForeignUserData.Id = json;
-        console.log("newForeignUserData=", newForeignUserData.Id);
+        newForeignUserData.Id = json; //save the id of the new user that we got from the DB
+        createForeignUserInDB() //create the foreign user in the DB
       })
       .catch((error) => {
         console.error(error);

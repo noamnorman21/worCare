@@ -161,6 +161,7 @@
           <Property Name="LastName" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="DateOfBirth" Type="date" Nullable="false" />
           <Property Name="LanguageName_En" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="userId" Type="int" />
         </EntityType>
         <EntityType Name="tblPatientTask">
           <Key>
@@ -467,6 +468,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK__tblPatien__userI__2A6B46EF">
+          <End Role="tblUser" Type="Self.tblUser" Multiplicity="0..1" />
+          <End Role="tblPatient" Type="Self.tblPatient" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblUser">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="tblPatient">
+              <PropertyRef Name="userId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK__tblPatien__worke__035179CE">
           <End Role="tblForeignUser" Type="Self.tblForeignUser" Multiplicity="1" />
           <End Role="tblPatientTask" Type="Self.tblPatientTask" Multiplicity="*" />
@@ -551,6 +564,14 @@
           <Parameter Name="VisaExpirationDate" Type="date" Mode="In" />
           <Parameter Name="LanguageName_En" Type="varchar" Mode="In" />
           <Parameter Name="CountryName_En" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="InsertPatient" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Id" Type="char" Mode="In" />
+          <Parameter Name="FirstName" Type="varchar" Mode="In" />
+          <Parameter Name="LastName" Type="varchar" Mode="In" />
+          <Parameter Name="DateOfBirth" Type="date" Mode="In" />
+          <Parameter Name="userId" Type="int" Mode="In" />
+          <Parameter Name="LanguageName_En" Type="varchar" Mode="In" />
         </Function>
         <Function Name="InsertUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="Email" Type="varchar" Mode="In" />
@@ -694,6 +715,10 @@
           <AssociationSet Name="FK__tblPatien__userI__04459E07" Association="Self.FK__tblPatien__userI__04459E07">
             <End Role="tblUser" EntitySet="tblUser" />
             <End Role="tblPatientTask" EntitySet="tblPatientTask" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tblPatien__userI__2A6B46EF" Association="Self.FK__tblPatien__userI__2A6B46EF">
+            <End Role="tblUser" EntitySet="tblUser" />
+            <End Role="tblPatient" EntitySet="tblPatient" />
           </AssociationSet>
           <AssociationSet Name="FK__tblPatien__worke__035179CE" Association="Self.FK__tblPatien__worke__035179CE">
             <End Role="tblForeignUser" EntitySet="tblForeignUser" />
@@ -914,6 +939,8 @@
           <NavigationProperty Name="tblLanguage" Relationship="Self.FK__tblPatien__Langu__58671BC9" FromRole="tblPatient" ToRole="tblLanguage" />
           <NavigationProperty Name="tblLimitation" Relationship="Self.FK__tblLimita__patie__5F141958" FromRole="tblPatient" ToRole="tblLimitations" />
           <NavigationProperty Name="tblPatientTasks" Relationship="Self.FK__tblPatien__patie__025D5595" FromRole="tblPatient" ToRole="tblPatientTask" />
+          <Property Name="userId" Type="Int32" />
+          <NavigationProperty Name="tblUser" Relationship="igroup194_prodModel.FK__tblPatien__userI__2A6B46EF" FromRole="tblPatient" ToRole="tblUser" />
         </EntityType>
         <EntityType Name="tblPatientTask">
           <Key>
@@ -1013,6 +1040,7 @@
           <NavigationProperty Name="tblForeignUser" Relationship="Self.FK__tblForeignUs__Id__703EA55A" FromRole="tblUser" ToRole="tblForeignUser" />
           <NavigationProperty Name="tblPatientTasks" Relationship="Self.FK__tblPatien__userI__04459E07" FromRole="tblUser" ToRole="tblPatientTask" />
           <NavigationProperty Name="tblPaychecks" Relationship="Self.FK__tblPayche__UserI__6D6238AF" FromRole="tblUser" ToRole="tblPaycheck" />
+          <NavigationProperty Name="tblPatients" Relationship="igroup194_prodModel.FK__tblPatien__userI__2A6B46EF" FromRole="tblUser" ToRole="tblPatient" />
         </EntityType>
         <Association Name="FK__tblActual__listI__558AAF1E">
           <End Role="tblList" Type="Self.tblList" Multiplicity="1" />
@@ -1485,6 +1513,18 @@
             <Parameter Name="contactComment" Mode="In" Type="String" />
             <Parameter Name="patientId" Mode="In" Type="String" />
           </FunctionImport>
+          <AssociationSet Name="FK__tblPatien__userI__2A6B46EF" Association="igroup194_prodModel.FK__tblPatien__userI__2A6B46EF">
+            <End Role="tblUser" EntitySet="tblUsers" />
+            <End Role="tblPatient" EntitySet="tblPatients" />
+          </AssociationSet>
+          <FunctionImport Name="InsertPatient">
+            <Parameter Name="Id" Mode="In" Type="String" />
+            <Parameter Name="FirstName" Mode="In" Type="String" />
+            <Parameter Name="LastName" Mode="In" Type="String" />
+            <Parameter Name="DateOfBirth" Mode="In" Type="DateTime" />
+            <Parameter Name="userId" Mode="In" Type="Int32" />
+            <Parameter Name="LanguageName_En" Mode="In" Type="String" />
+          </FunctionImport>
         </EntityContainer>
         <ComplexType Name="sp_helpdiagramdefinition_Result">
           <Property Type="Int32" Name="version" Nullable="true" />
@@ -1497,6 +1537,18 @@
           <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
           <Property Type="Int32" Name="OwnerID" Nullable="false" />
         </ComplexType>
+        <Association Name="FK__tblPatien__userI__2A6B46EF">
+          <End Type="igroup194_prodModel.tblUser" Role="tblUser" Multiplicity="0..1" />
+          <End Type="igroup194_prodModel.tblPatient" Role="tblPatient" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblUser">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="tblPatient">
+              <PropertyRef Name="userId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1665,6 +1717,7 @@
           <EntitySetMapping Name="tblPatients">
             <EntityTypeMapping TypeName="igroup194_prodModel.tblPatient">
               <MappingFragment StoreEntitySet="tblPatient">
+                <ScalarProperty Name="userId" ColumnName="userId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="FirstName" ColumnName="FirstName" />
                 <ScalarProperty Name="LastName" ColumnName="LastName" />
@@ -1792,6 +1845,7 @@
           <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="igroup194_prodModel.Store.sp_upgraddiagrams" />
           <FunctionImportMapping FunctionImportName="InsertCalendarForUser" FunctionName="igroup194_prodModel.Store.InsertCalendarForUser" />
           <FunctionImportMapping FunctionImportName="NewContact" FunctionName="igroup194_prodModel.Store.NewContact" />
+          <FunctionImportMapping FunctionImportName="InsertPatient" FunctionName="igroup194_prodModel.Store.InsertPatient" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

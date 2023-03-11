@@ -20,6 +20,7 @@ namespace DATA
             this.tblCalendarForUsers = new HashSet<tblCalendarForUser>();
             this.tblPatientTasks = new HashSet<tblPatientTask>();
             this.tblPaychecks = new HashSet<tblPaycheck>();
+            this.tblPatients = new HashSet<tblPatient>();
         }
     
         public int Id { get; set; }
@@ -38,5 +39,7 @@ namespace DATA
         public virtual ICollection<tblPatientTask> tblPatientTasks { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tblPaycheck> tblPaychecks { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<tblPatient> tblPatients { get; set; }
     }
 }

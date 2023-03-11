@@ -18,7 +18,7 @@ export default function SignUpCaregiverLVL4({ navigation, route }) {
   const [country, setCountry] = useState(route.params.country);
   const [holidaysType, setHolidaysType] = useState(route.params.holidaysType);
   const userData = route.params.userData;
-  
+
   const getMinDate = () => {
     var date = new Date().getDate(); //Current Date
     var month = new Date().getMonth() + 1; //Current Month
@@ -44,12 +44,13 @@ export default function SignUpCaregiverLVL4({ navigation, route }) {
   const NavigateToNextScreen = () => {
     if (valueCountry == null) {
       Alert.alert("Please fill all the details");
-    } else {
+    }
+    else {
       const newUser = {
-        FirstName: userData.firstName,
-        LastName: userData.lastName,
-        Email: userData.email,
-        Password: userData.password,
+        FirstName: userData.FirstName,
+        LastName: userData.LastName,
+        Email: userData.Email,
+        Password: userData.Password,
         gender: userData.gender,
         phoneNum: userData.phoneNum,
         userUri: userData.userUri,

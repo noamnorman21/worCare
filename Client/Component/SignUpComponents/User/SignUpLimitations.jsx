@@ -52,7 +52,7 @@ export default function SignUpLimitations({ navigation, route }) {
       sensitivityToNoise: noiseSensitive,
       other: comments,
     };    
-    navigation.navigate('SignUpHobbies', { tblLimitations: tblLimitations }); // Navigate to next lvl
+    navigation.navigate('SignUpHobbies', { tblLimitations: tblLimitations, tblPatient : route.params.patientData, tblUser : route.params.userData }); // Navigate to next lvl
   };
   changebathRoutine = (value) => {
     if (value === 'All') { // if the user clicked on the "All" button

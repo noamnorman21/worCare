@@ -1,5 +1,4 @@
 import { View, TouchableOpacity, Image, Dimensions, StyleSheet } from 'react-native'
-import React from 'react'
 import { Octicons, Ionicons, AntDesign, Feather } from '@expo/vector-icons';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -81,7 +80,7 @@ function CustomHeader() {
                     presentation: 'stack',
                     cardOverlayEnabled: true,
                 })} />
-            <Stack.Screen name='Contacts' component={Contacts} />
+            <Stack.Screen name='Contacts' component={Contacts} options={{ unmountOnBlur: true }} />
         </Stack.Navigator>
     );
 }
@@ -137,9 +136,9 @@ const styles = StyleSheet.create({
     tabBar:
         { backgroundColor: '#fff', paddingTop: 10 },
     headerLeft:
-        { marginLeft: Dimensions.get('screen').width * 0.075, flex: 1, justifyContent: 'space-between', alignContent: 'space-between' },
+        { marginTop: 10, marginLeft: Dimensions.get('screen').width * 0.075, flex: 1, justifyContent: 'space-between', alignContent: 'space-between' },
     headerRight:
-        { marginLeft: Dimensions.get('screen').width * 0.075, flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignContent: 'space-between' },
+        { marginTop: 10, marginLeft: Dimensions.get('screen').width * 0.075, flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignContent: 'space-between' },
     headerLogo:
         { width: 50, height: 50, bottom: Dimensions.get('screen').height * 0.01, left: Dimensions.get('screen').width * 0.005 }
 });

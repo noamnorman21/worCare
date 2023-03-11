@@ -156,6 +156,7 @@
     <Property Name="LastName" Type="varchar" MaxLength="50" Nullable="false" />
     <Property Name="DateOfBirth" Type="date" Nullable="false" />
     <Property Name="LanguageName_En" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="userId" Type="int" />
   </EntityType>
   <EntityType Name="tblPatientTask">
     <Key>
@@ -462,6 +463,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK__tblPatien__userI__2A6B46EF">
+    <End Role="tblUser" Type="Self.tblUser" Multiplicity="0..1" />
+    <End Role="tblPatient" Type="Self.tblPatient" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblUser">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="tblPatient">
+        <PropertyRef Name="userId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK__tblPatien__worke__035179CE">
     <End Role="tblForeignUser" Type="Self.tblForeignUser" Multiplicity="1" />
     <End Role="tblPatientTask" Type="Self.tblPatientTask" Multiplicity="*" />
@@ -689,6 +702,10 @@
     <AssociationSet Name="FK__tblPatien__userI__04459E07" Association="Self.FK__tblPatien__userI__04459E07">
       <End Role="tblUser" EntitySet="tblUser" />
       <End Role="tblPatientTask" EntitySet="tblPatientTask" />
+    </AssociationSet>
+    <AssociationSet Name="FK__tblPatien__userI__2A6B46EF" Association="Self.FK__tblPatien__userI__2A6B46EF">
+      <End Role="tblUser" EntitySet="tblUser" />
+      <End Role="tblPatient" EntitySet="tblPatient" />
     </AssociationSet>
     <AssociationSet Name="FK__tblPatien__worke__035179CE" Association="Self.FK__tblPatien__worke__035179CE">
       <End Role="tblForeignUser" EntitySet="tblForeignUser" />

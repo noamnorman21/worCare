@@ -103,7 +103,6 @@ export default function SignUpLvl3({ navigation, route }) {
   const NavigateToNextLvl = () => {
     if (role === 'Caregiver') {
       navigation.navigate('SignUpCaregiverLVL4', { userData: userData, language: language, holidaysType: holidaysType, country: country })
-
     } else if (role === 'Patient’s Family Member') {
       navigation.navigate('SignUpUserLVL4', { userData: userData, language: language, holidaysType: holidaysType })
     }

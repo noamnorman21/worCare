@@ -22,7 +22,7 @@ export default function SignUpUserLVL5({ navigation, route }) {
     if (patientID.length !== 9) {
       Alert.alert('Patient ID must be 9 digits')
       return
-    }
+    }    
     const patientData = {
       FirstName: patientFirstName,
       LastName: patientLastName,
@@ -30,7 +30,8 @@ export default function SignUpUserLVL5({ navigation, route }) {
       BirthDate: date,
       Language: valueLanguage
     }
-    navigation.navigate('SignUpLimitations', { patientData: patientData })
+
+    navigation.navigate('SignUpLimitations', { patientData: patientData, userData : route.params.userData })
   }
 
   return (

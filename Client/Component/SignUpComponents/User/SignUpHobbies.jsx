@@ -84,7 +84,7 @@ export default function SignUpHobbies({ navigation, route }) {
       nightSleep: selectedNightHour,
       other: other
     };
-    navigation.navigate('SignUpFinish', { tblHobbies: tblHobbies, tblLimitations: route.params.tblLimitations, holidaysType: holidaysType });
+    navigation.navigate('SignUpFinish', { tblHobbies: tblHobbies, tblLimitations: route.params.tblLimitations, tblPatient: route.params.tblPatient , tblUser: route.params.tblUser });
   };
 
   return (
@@ -93,6 +93,7 @@ export default function SignUpHobbies({ navigation, route }) {
         <Text style={styles.header}>Add Patient’s Hobbies</Text>
         <View style={styles.line} />
       </View>
+
       {/* Books */}
       <TouchableOpacity
         style={styles.inputBox}

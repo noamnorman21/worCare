@@ -190,6 +190,8 @@
     <NavigationProperty Name="tblLanguage" Relationship="Self.FK__tblPatien__Langu__58671BC9" FromRole="tblPatient" ToRole="tblLanguage" />
     <NavigationProperty Name="tblLimitation" Relationship="Self.FK__tblLimita__patie__5F141958" FromRole="tblPatient" ToRole="tblLimitations" />
     <NavigationProperty Name="tblPatientTasks" Relationship="Self.FK__tblPatien__patie__025D5595" FromRole="tblPatient" ToRole="tblPatientTask" />
+    <Property Name="userId" Type="Int32" />
+    <NavigationProperty Name="tblUser" Relationship="igroup194_prodModel.FK__tblPatien__userI__2A6B46EF" FromRole="tblPatient" ToRole="tblUser" />
   </EntityType>
   <EntityType Name="tblPatientTask">
     <Key>
@@ -289,6 +291,7 @@
     <NavigationProperty Name="tblForeignUser" Relationship="Self.FK__tblForeignUs__Id__703EA55A" FromRole="tblUser" ToRole="tblForeignUser" />
     <NavigationProperty Name="tblPatientTasks" Relationship="Self.FK__tblPatien__userI__04459E07" FromRole="tblUser" ToRole="tblPatientTask" />
     <NavigationProperty Name="tblPaychecks" Relationship="Self.FK__tblPayche__UserI__6D6238AF" FromRole="tblUser" ToRole="tblPaycheck" />
+    <NavigationProperty Name="tblPatients" Relationship="igroup194_prodModel.FK__tblPatien__userI__2A6B46EF" FromRole="tblUser" ToRole="tblPatient" />
   </EntityType>
   <Association Name="FK__tblActual__listI__558AAF1E">
     <End Role="tblList" Type="Self.tblList" Multiplicity="1" />
@@ -761,6 +764,10 @@
       <Parameter Name="contactComment" Mode="In" Type="String" />
       <Parameter Name="patientId" Mode="In" Type="String" />
     </FunctionImport>
+    <AssociationSet Name="FK__tblPatien__userI__2A6B46EF" Association="igroup194_prodModel.FK__tblPatien__userI__2A6B46EF">
+      <End Role="tblUser" EntitySet="tblUsers" />
+      <End Role="tblPatient" EntitySet="tblPatients" />
+    </AssociationSet>
   </EntityContainer>
   <ComplexType Name="sp_helpdiagramdefinition_Result">
     <Property Type="Int32" Name="version" Nullable="true" />
@@ -773,4 +780,16 @@
     <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
     <Property Type="Int32" Name="OwnerID" Nullable="false" />
   </ComplexType>
+  <Association Name="FK__tblPatien__userI__2A6B46EF">
+    <End Type="igroup194_prodModel.tblUser" Role="tblUser" Multiplicity="0..1" />
+    <End Type="igroup194_prodModel.tblPatient" Role="tblPatient" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblUser">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="tblPatient">
+        <PropertyRef Name="userId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
 </Schema>

@@ -71,6 +71,7 @@ export default function SignUpLvl2({ navigation, route }) {
       phoneNum: userData.phoneNum,
       userUri: downloadURL,
     }
+    // console.log(newUserToDB);
     navigation.navigate('SignUpLvl3', { userData: newUserToDB })
   }
 

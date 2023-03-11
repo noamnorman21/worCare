@@ -6,8 +6,8 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
   <PropertyGroup>
     <TimeStampOfAssociatedLegacyPublishXmlFile />
     <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAA9BnK/6peBEu8J8wdjgZeAgAAAAACAAAAAAAQZgAAAAEAACAAAACbiM6AmLf6hw1eQuj4TgOOexb6beOh8yYpkLkvC/GzawAAAAAOgAAAAAIAACAAAAB46IejYCv6sx4hviZ4Gy6txsuE8PO85sApSg0Uk4M2XCAAAACX2f3R7oJXJjJkj1PN/CkOlzF7kfRiLsoxAi5Popm+r0AAAAAIJ2M77/AZmAlicRwcYGCor3lTG/lFKYwmi8Fub4/1aNj0FMsiF77zsYbcyLok74b1Yj+04rsOo7SThkVNgeFu</EncryptedPassword>
-    <_PublishTargetUrl>ftp://194.90.158.74/21</_PublishTargetUrl>
-    <History>True|2023-03-10T10:25:35.1725929Z;</History>
+    <_PublishTargetUrl>ftp://194.90.158.74/test1</_PublishTargetUrl>
+    <History>False|2023-03-10T15:32:37.6821277Z;True|2023-03-10T12:25:35.1725929+02:00;</History>
     <LastFailureDetails />
   </PropertyGroup>
   <ItemGroup>
@@ -525,7 +525,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>03/08/2023 12:54:08</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>03/10/2023 12:22:38</publishTime>
+      <publishTime>03/10/2023 17:31:54</publishTime>
     </File>
   </ItemGroup>
 </Project>

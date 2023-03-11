@@ -6,13 +6,24 @@ const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export default function SignUpFinish({ navigation, route }) {
     const [modalVisible, setModalVisible] = useState(false);
-    const tblHobbies = route.params.tblHobbies;
-    const tblLimitations = route.params.tblLimitations;
-    const holidaysType = route.params.holidaysType;
-    const tblPatient = route.params.tblPatient;
-
-    const sendToDB = () => {
-        console.log("Send to DB")
+    const createNewUserInDB = () => {
+        fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/InsertUser', { //send the user data to the DB
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json; charset=UTF-8',
+            },
+            body: JSON.stringify(route.params.tblUser),
+        })
+            .then((response) => response.json())
+            .then((json) => {
+                //save the id of the new user that we got from the DB 
+                newForeignUserData.Id = json; //save the id of the new user that we got from the DB
+                createNewPatient() //create the foreign user in the DB
+            })
+            .catch((error) => {
+                console.error(error);
+            }
+            );
     }
 
     return (
@@ -39,7 +50,7 @@ export default function SignUpFinish({ navigation, route }) {
                 <View style={styles.btnContainer}>
                     <TouchableOpacity
                         style={styles.button}
-                        onPress={sendToDB}
+                        onPress={createNewUserInDB}
                     >
                         <Text style={styles.buttonText}>Sign Up</Text>
                     </TouchableOpacity>

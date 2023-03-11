@@ -119,7 +119,7 @@ namespace WebApi.Controllers
                 var newUser = db.tblUsers.Where(x => x.Email == user.Email).First();
                 if (newUser == null)
                     return NotFound();                
-                int result = calendarForUser.InsertCalendar(user.Id, user.Calendars);
+                int result = calendarForUser.InsertCalendar(newUser.Id, user.Calendars);
                 if (result == -1)
                     return BadRequest("Error in insert calendar for user");                
                 return Ok(newUser.Id);                

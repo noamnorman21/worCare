@@ -24,7 +24,6 @@ export default function CreateUser({ navigation }) {
     firstName: '',
     lastName: '',
     phoneNum: '',
-
   })
 
   useEffect(() => {
@@ -86,7 +85,6 @@ export default function CreateUser({ navigation }) {
       return Alert.alert('Invalid Phone Number', 'Please enter a valid phone number')
     }
 
-
     const userData = {
       email: user.email,
       password: user.password,
@@ -95,16 +93,12 @@ export default function CreateUser({ navigation }) {
       phoneNum: user.phoneNum,
       imagePath: userImage,
     }
-    //console.log(userData)
-
+    // console.log(userData)
     navigation.navigate('SignUpLvl2', { user: userData })
   }
 
   const changeIMG = (imageFromUser) => {
-
     setUserImage(imageFromUser)
-
-
   }
 
   const validatePhoneNum = (phoneNum) => {
