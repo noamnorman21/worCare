@@ -290,6 +290,8 @@
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="DTO\ContactDTO.cs" />
     <Compile Include="DTO\ForeignUserDTO.cs" />
+    <Compile Include="DTO\HobbiesAndLimitationsDTO.cs" />
+    <Compile Include="DTO\LimitationsDTO.cs" />
     <Compile Include="DTO\PatientDTO.cs" />
     <Compile Include="DTO\PaymentsRequestDTO.cs" />
     <Compile Include="DTO\UserDTO.cs" />

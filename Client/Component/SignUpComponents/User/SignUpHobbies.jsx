@@ -33,8 +33,13 @@ export default function SignUpHobbies({ navigation, route }) {
   const [moviesOther, setMoviesOther] = useState('');
   const [other, setOther] = useState('');
 
-  const hours = [...Array(25)].map((_, i) => `${i}:00`);
-  hours.unshift('Select...');
+  // Hours Night should start at 18:00 and end at 1:00
+  const hoursNight = [...Array(7)].map((_, i) => `${i + 18}:00`);
+  hoursNight.unshift('Select...');
+  // Hours Afternoon Naps should start at 13:00 and end at 18:00
+  const hoursAfternoonNaps = [...Array(6)].map((_, i) => `${i + 13}:00`);
+  hoursAfternoonNaps.unshift('Select...');
+
   const [selectedNightHour, setSelectedNightHour] = useState('');
   const [selectedAfterNoonNaps, setSelectedAfterNoonNaps] = useState('');
 
@@ -71,20 +76,33 @@ export default function SignUpHobbies({ navigation, route }) {
     if (moviesOther !== '') {
       activeMovies.push(moviesOther);
     }
+    // turns each array into a string with commas between each item without the last comma    
+    const activeBooksString = activeBooks.join(', ');
+    const activeMusicString = activeMusic.join(', ');
+    const activeTvShowsString = activeTvShows.join(', ');
+    const activeRadioChannelString = activeRadioChannel.join(', ');
+    const activeFoodString = activeFood.join(', ');
+    const activeDrinkString = activeDrink.join(', ');
+    const activeHobbiesString = activeHobbies.join(', ');
+    const activeMoviesString = activeMovies.join(', ');
+    
     const tblHobbies = {
-      books: activeBooks,
-      music: activeMusic,
-      TVShow: activeTvShows,
-      radioChannel: activeRadioChannel,
-      food: activeFood,
-      drink: activeDrink,
-      specialHabits: activeHobbies,
-      movie: activeMovies,
+      books: activeBooksString,
+      music: activeMusicString,
+      TVShow: activeTvShowsString,
+      radioChannel: activeRadioChannelString,
+      food: activeFoodString,
+      drink: activeDrinkString,
+      specialHabits: activeHobbiesString,
+      movie: activeMoviesString,
       afternoonNap: selectedAfterNoonNaps,
       nightSleep: selectedNightHour,
-      other: other
+      otherH: other
     };
-    navigation.navigate('SignUpFinish', { tblHobbies: tblHobbies, tblLimitations: route.params.tblLimitations, tblPatient: route.params.tblPatient , tblUser: route.params.tblUser });
+
+    console.log(tblHobbies);
+
+//    navigation.navigate('SignUpFinish', { tblHobbies: tblHobbies, tblLimitations: route.params.tblLimitations, tblPatient: route.params.tblPatient , tblUser: route.params.tblUser });
   };
 
   return (
@@ -428,7 +446,7 @@ export default function SignUpHobbies({ navigation, route }) {
               onValueChange={itemValue => setSelectedNightHour(itemValue)}
               itemStyle={styles.pickerItem}
             >
-              {hours.map(hour => (
+              {hoursNight.map(hour => (
                 <Picker.Item key={hour} label={hour} value={hour} />
               ))}
             </Picker>
@@ -441,7 +459,7 @@ export default function SignUpHobbies({ navigation, route }) {
               onValueChange={itemValue => setSelectedAfterNoonNaps(itemValue)}
               itemStyle={styles.pickerItem}
             >
-              {hours.map(hour => (
+              {hoursAfternoonNaps.map(hour => (
                 <Picker.Item key={hour} label={hour} value={hour} />
               ))}
             </Picker>

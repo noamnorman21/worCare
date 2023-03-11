@@ -50,25 +50,35 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        [Route("InsertPatientHobbies")]
-        public IHttpActionResult InsertPatientHobbies([FromBody] HobbiesDTO hobbies)
+        [Route("InsertPatientHobbiesAndLimitations")]
+        public IHttpActionResult InsertPatientHobbiesAndLimitations([FromBody] HobbiesAndLimitationsDTO patient)
         {
             try
             {
-                tblPatient patientExist = db.tblPatients.Where(x => x.Id == hobbies.patientId).First();
+                tblPatient patientExist = db.tblPatients.Where(x => x.Id == patient.patientId).First();
                 if (patientExist == null)
                     return BadRequest("Patient does not exist");
-
-
-
-
-                db.SaveChanges();
-                return Ok("Patient hobbies added");
+                string books = patient.books;
+                string music = patient.music;
+                string TVShow = patient.TVShow;
+                string radioChannel = patient.radioChannel;
+                string food = patient.food;
+                string drink = patient.drink;
+                string specialHabits = patient.specialHabits;
+                string afternoonNap = patient.afternoonNap;
+                string movie = patient.movie;
+                string nightSleep = patient.nightSleep;
+                string other = patient.otherH;
+                string patientId = patient.patientId;
+                
+                db.InsertPatientHobbies(patientId, books, music, TVShow, radioChannel, food, drink, specialHabits, afternoonNap, movie, nightSleep, other);                
+                db.InsertPatientLimitations(patientId, patient.allergies, patient.sensitivities, patient.physicalAbilities, patient.bathRoutine, patient.sensitivityToNoise, patient.otherL);                
+                db.SaveChanges();                
+                return Ok("Patient Details added");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BadRequest("Error in insert patient hobbies");
-
+                return BadRequest(ex.Message);
             }
         }
     }

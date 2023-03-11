@@ -43,16 +43,23 @@ export default function SignUpLimitations({ navigation, route }) {
     if (bathRoutineOther !== '') {
       activeBathRoutine.push(bathRoutineOther);
     }
-
+    // turns each array into a string with commas between each item without the last comma    
+    const allergiesString = activeAllergies.join(', ');
+    const sensitivitiesString = activeSensitivities.join(', ');
+    const physicalAbilitiesString = activePhysicalAbilities.join(', ');
+    const bathRoutineString = activeBathRoutine.join(', ');
+    
+    // creates a table with the data
     const tblLimitations = {
-      allergies: activeAllergies,
-      sensitivities: activeSensitivities,
-      physicalAbilities: activePhysicalAbilities,
-      bathRoutine: activeBathRoutine,
+      allergies: allergiesString,
+      sensitivities: sensitivitiesString,
+      physicalAbilities: physicalAbilitiesString,
+      bathRoutine: bathRoutineString,
       sensitivityToNoise: noiseSensitive,
-      other: comments,
+      otherL: comments,
     };    
-    navigation.navigate('SignUpHobbies', { tblLimitations: tblLimitations, tblPatient : route.params.patientData, tblUser : route.params.userData }); // Navigate to next lvl
+    console.log(tblLimitations);
+    // navigation.navigate('SignUpHobbies', { tblLimitations: tblLimitations, tblPatient : route.params.patientData, tblUser : route.params.userData }); // Navigate to next lvl
   };
   changebathRoutine = (value) => {
     if (value === 'All') { // if the user clicked on the "All" button

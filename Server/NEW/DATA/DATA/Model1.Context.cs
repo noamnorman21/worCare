@@ -27,7 +27,6 @@ namespace DATA
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<tblActualList> tblActualLists { get; set; }
         public virtual DbSet<tblCalendarForUser> tblCalendarForUsers { get; set; }
         public virtual DbSet<tblCalendarsType> tblCalendarsTypes { get; set; }
@@ -288,6 +287,92 @@ namespace DATA
                 new ObjectParameter("LanguageName_En", typeof(string));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertPatient", idParameter, firstNameParameter, lastNameParameter, dateOfBirthParameter, userIdParameter, languageName_EnParameter);
+        }
+    
+        public virtual int InsertPatientHobbies(string patientId, string books, string music, string tVShow, string radioChannel, string food, string drink, string movie, string specialHabits, string afternoonNap, string nightSleep, string other)
+        {
+            var patientIdParameter = patientId != null ?
+                new ObjectParameter("patientId", patientId) :
+                new ObjectParameter("patientId", typeof(string));
+    
+            var booksParameter = books != null ?
+                new ObjectParameter("books", books) :
+                new ObjectParameter("books", typeof(string));
+    
+            var musicParameter = music != null ?
+                new ObjectParameter("music", music) :
+                new ObjectParameter("music", typeof(string));
+    
+            var tVShowParameter = tVShow != null ?
+                new ObjectParameter("TVShow", tVShow) :
+                new ObjectParameter("TVShow", typeof(string));
+    
+            var radioChannelParameter = radioChannel != null ?
+                new ObjectParameter("radioChannel", radioChannel) :
+                new ObjectParameter("radioChannel", typeof(string));
+    
+            var foodParameter = food != null ?
+                new ObjectParameter("food", food) :
+                new ObjectParameter("food", typeof(string));
+    
+            var drinkParameter = drink != null ?
+                new ObjectParameter("drink", drink) :
+                new ObjectParameter("drink", typeof(string));
+    
+            var movieParameter = movie != null ?
+                new ObjectParameter("movie", movie) :
+                new ObjectParameter("movie", typeof(string));
+    
+            var specialHabitsParameter = specialHabits != null ?
+                new ObjectParameter("specialHabits", specialHabits) :
+                new ObjectParameter("specialHabits", typeof(string));
+    
+            var afternoonNapParameter = afternoonNap != null ?
+                new ObjectParameter("afternoonNap", afternoonNap) :
+                new ObjectParameter("afternoonNap", typeof(string));
+    
+            var nightSleepParameter = nightSleep != null ?
+                new ObjectParameter("nightSleep", nightSleep) :
+                new ObjectParameter("nightSleep", typeof(string));
+    
+            var otherParameter = other != null ?
+                new ObjectParameter("other", other) :
+                new ObjectParameter("other", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertPatientHobbies", patientIdParameter, booksParameter, musicParameter, tVShowParameter, radioChannelParameter, foodParameter, drinkParameter, movieParameter, specialHabitsParameter, afternoonNapParameter, nightSleepParameter, otherParameter);
+        }
+    
+        public virtual int InsertPatientLimitations(string patientId, string allergies, string sensitivities, string physicalAbilities, string bathRoutine, string sensitivityToNoise, string other)
+        {
+            var patientIdParameter = patientId != null ?
+                new ObjectParameter("patientId", patientId) :
+                new ObjectParameter("patientId", typeof(string));
+    
+            var allergiesParameter = allergies != null ?
+                new ObjectParameter("allergies", allergies) :
+                new ObjectParameter("allergies", typeof(string));
+    
+            var sensitivitiesParameter = sensitivities != null ?
+                new ObjectParameter("sensitivities", sensitivities) :
+                new ObjectParameter("sensitivities", typeof(string));
+    
+            var physicalAbilitiesParameter = physicalAbilities != null ?
+                new ObjectParameter("physicalAbilities", physicalAbilities) :
+                new ObjectParameter("physicalAbilities", typeof(string));
+    
+            var bathRoutineParameter = bathRoutine != null ?
+                new ObjectParameter("bathRoutine", bathRoutine) :
+                new ObjectParameter("bathRoutine", typeof(string));
+    
+            var sensitivityToNoiseParameter = sensitivityToNoise != null ?
+                new ObjectParameter("sensitivityToNoise", sensitivityToNoise) :
+                new ObjectParameter("sensitivityToNoise", typeof(string));
+    
+            var otherParameter = other != null ?
+                new ObjectParameter("other", other) :
+                new ObjectParameter("other", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertPatientLimitations", patientIdParameter, allergiesParameter, sensitivitiesParameter, physicalAbilitiesParameter, bathRoutineParameter, sensitivityToNoiseParameter, otherParameter);
         }
     }
 }

@@ -5,7 +5,6 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="fb214af752184ba68ae5df8726ab5b06" Name="Diagram1" ZoomLevel="86">
-        <EntityTypeShape EntityType="igroup194_prodModel.sysdiagram" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="igroup194_prodModel.tblActualList" Width="1.5" PointX="3" PointY="9.75" IsExpanded="true" />
         <EntityTypeShape EntityType="igroup194_prodModel.tblCalendarForUser" Width="1.5" PointX="8.125" PointY="14.5" IsExpanded="true" />
         <EntityTypeShape EntityType="igroup194_prodModel.tblCalendarsType" Width="2.25" PointX="5.75" PointY="7.375" IsExpanded="true" />

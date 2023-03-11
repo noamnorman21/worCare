@@ -1,15 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Schema Namespace="igroup194_prodModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-  <EntityType Name="sysdiagram">
-    <Key>
-      <PropertyRef Name="diagram_id" />
-    </Key>
-    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-    <Property Name="principal_id" Type="Int32" Nullable="false" />
-    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="version" Type="Int32" />
-    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
-  </EntityType>
   <EntityType Name="tblActualList">
     <Key>
       <PropertyRef Name="listId" />
@@ -586,7 +576,6 @@
     </ReferentialConstraint>
   </Association>
   <EntityContainer Name="igroup194DB" annotation:LazyLoadingEnabled="true">
-    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
     <EntitySet Name="tblActualLists" EntityType="Self.tblActualList" />
     <EntitySet Name="tblCalendarForUsers" EntityType="Self.tblCalendarForUser" />
     <EntitySet Name="tblCalendarsTypes" EntityType="Self.tblCalendarsType" />
@@ -768,6 +757,37 @@
       <End Role="tblUser" EntitySet="tblUsers" />
       <End Role="tblPatient" EntitySet="tblPatients" />
     </AssociationSet>
+    <FunctionImport Name="InsertPatient">
+      <Parameter Name="Id" Mode="In" Type="String" />
+      <Parameter Name="FirstName" Mode="In" Type="String" />
+      <Parameter Name="LastName" Mode="In" Type="String" />
+      <Parameter Name="DateOfBirth" Mode="In" Type="DateTime" />
+      <Parameter Name="userId" Mode="In" Type="Int32" />
+      <Parameter Name="LanguageName_En" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="InsertPatientHobbies">
+      <Parameter Name="patientId" Mode="In" Type="String" />
+      <Parameter Name="books" Mode="In" Type="String" />
+      <Parameter Name="music" Mode="In" Type="String" />
+      <Parameter Name="TVShow" Mode="In" Type="String" />
+      <Parameter Name="radioChannel" Mode="In" Type="String" />
+      <Parameter Name="food" Mode="In" Type="String" />
+      <Parameter Name="drink" Mode="In" Type="String" />
+      <Parameter Name="movie" Mode="In" Type="String" />
+      <Parameter Name="specialHabits" Mode="In" Type="String" />
+      <Parameter Name="afternoonNap" Mode="In" Type="String" />
+      <Parameter Name="nightSleep" Mode="In" Type="String" />
+      <Parameter Name="other" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="InsertPatientLimitations">
+      <Parameter Name="patientId" Mode="In" Type="String" />
+      <Parameter Name="allergies" Mode="In" Type="String" />
+      <Parameter Name="sensitivities" Mode="In" Type="String" />
+      <Parameter Name="physicalAbilities" Mode="In" Type="String" />
+      <Parameter Name="bathRoutine" Mode="In" Type="String" />
+      <Parameter Name="sensitivityToNoise" Mode="In" Type="String" />
+      <Parameter Name="other" Mode="In" Type="String" />
+    </FunctionImport>
   </EntityContainer>
   <ComplexType Name="sp_helpdiagramdefinition_Result">
     <Property Type="Int32" Name="version" Nullable="true" />

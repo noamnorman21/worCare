@@ -5,16 +5,6 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="igroup194_prodModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <EntityType Name="sysdiagrams">
-          <Key>
-            <PropertyRef Name="diagram_id" />
-          </Key>
-          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
-          <Property Name="principal_id" Type="int" Nullable="false" />
-          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="version" Type="int" />
-          <Property Name="definition" Type="varbinary(max)" />
-        </EntityType>
         <EntityType Name="tblActualList">
           <Key>
             <PropertyRef Name="listId" />
@@ -573,6 +563,29 @@
           <Parameter Name="userId" Type="int" Mode="In" />
           <Parameter Name="LanguageName_En" Type="varchar" Mode="In" />
         </Function>
+        <Function Name="InsertPatientHobbies" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="patientId" Type="char" Mode="In" />
+          <Parameter Name="books" Type="nvarchar" Mode="In" />
+          <Parameter Name="music" Type="nvarchar" Mode="In" />
+          <Parameter Name="TVShow" Type="nvarchar" Mode="In" />
+          <Parameter Name="radioChannel" Type="nvarchar" Mode="In" />
+          <Parameter Name="food" Type="nvarchar" Mode="In" />
+          <Parameter Name="drink" Type="nvarchar" Mode="In" />
+          <Parameter Name="movie" Type="nvarchar" Mode="In" />
+          <Parameter Name="specialHabits" Type="nvarchar" Mode="In" />
+          <Parameter Name="afternoonNap" Type="nvarchar" Mode="In" />
+          <Parameter Name="nightSleep" Type="nvarchar" Mode="In" />
+          <Parameter Name="other" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="InsertPatientLimitations" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="patientId" Type="char" Mode="In" />
+          <Parameter Name="allergies" Type="varchar" Mode="In" />
+          <Parameter Name="sensitivities" Type="varchar" Mode="In" />
+          <Parameter Name="physicalAbilities" Type="varchar" Mode="In" />
+          <Parameter Name="bathRoutine" Type="varchar" Mode="In" />
+          <Parameter Name="sensitivityToNoise" Type="varchar" Mode="In" />
+          <Parameter Name="other" Type="varchar" Mode="In" />
+        </Function>
         <Function Name="InsertUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="Email" Type="varchar" Mode="In" />
           <Parameter Name="Password" Type="varchar" Mode="In" />
@@ -622,7 +635,6 @@
         </Function>
         <Function Name="sp_upgraddiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <EntityContainer Name="igroup194_prodModelStoreContainer">
-          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tblActualList" EntityType="Self.tblActualList" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tblCalendarForUser" EntityType="Self.tblCalendarForUser" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tblCalendarsType" EntityType="Self.tblCalendarsType" Schema="dbo" store:Type="Tables" />
@@ -749,16 +761,6 @@
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="igroup194_prodModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityType Name="sysdiagram">
-          <Key>
-            <PropertyRef Name="diagram_id" />
-          </Key>
-          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="principal_id" Type="Int32" Nullable="false" />
-          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="version" Type="Int32" />
-          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
-        </EntityType>
         <EntityType Name="tblActualList">
           <Key>
             <PropertyRef Name="listId" />
@@ -1335,7 +1337,6 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="igroup194DB" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
           <EntitySet Name="tblActualLists" EntityType="Self.tblActualList" />
           <EntitySet Name="tblCalendarForUsers" EntityType="Self.tblCalendarForUser" />
           <EntitySet Name="tblCalendarsTypes" EntityType="Self.tblCalendarsType" />
@@ -1525,6 +1526,29 @@
             <Parameter Name="userId" Mode="In" Type="Int32" />
             <Parameter Name="LanguageName_En" Mode="In" Type="String" />
           </FunctionImport>
+          <FunctionImport Name="InsertPatientHobbies">
+            <Parameter Name="patientId" Mode="In" Type="String" />
+            <Parameter Name="books" Mode="In" Type="String" />
+            <Parameter Name="music" Mode="In" Type="String" />
+            <Parameter Name="TVShow" Mode="In" Type="String" />
+            <Parameter Name="radioChannel" Mode="In" Type="String" />
+            <Parameter Name="food" Mode="In" Type="String" />
+            <Parameter Name="drink" Mode="In" Type="String" />
+            <Parameter Name="movie" Mode="In" Type="String" />
+            <Parameter Name="specialHabits" Mode="In" Type="String" />
+            <Parameter Name="afternoonNap" Mode="In" Type="String" />
+            <Parameter Name="nightSleep" Mode="In" Type="String" />
+            <Parameter Name="other" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="InsertPatientLimitations">
+            <Parameter Name="patientId" Mode="In" Type="String" />
+            <Parameter Name="allergies" Mode="In" Type="String" />
+            <Parameter Name="sensitivities" Mode="In" Type="String" />
+            <Parameter Name="physicalAbilities" Mode="In" Type="String" />
+            <Parameter Name="bathRoutine" Mode="In" Type="String" />
+            <Parameter Name="sensitivityToNoise" Mode="In" Type="String" />
+            <Parameter Name="other" Mode="In" Type="String" />
+          </FunctionImport>
         </EntityContainer>
         <ComplexType Name="sp_helpdiagramdefinition_Result">
           <Property Type="Int32" Name="version" Nullable="true" />
@@ -1555,17 +1579,6 @@
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="igroup194_prodModelStoreContainer" CdmEntityContainer="igroup194DB">
-          <EntitySetMapping Name="sysdiagrams">
-            <EntityTypeMapping TypeName="igroup194_prodModel.sysdiagram">
-              <MappingFragment StoreEntitySet="sysdiagrams">
-                <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
-                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
-                <ScalarProperty Name="version" ColumnName="version" />
-                <ScalarProperty Name="definition" ColumnName="definition" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="tblActualLists">
             <EntityTypeMapping TypeName="igroup194_prodModel.tblActualList">
               <MappingFragment StoreEntitySet="tblActualList">
@@ -1846,6 +1859,8 @@
           <FunctionImportMapping FunctionImportName="InsertCalendarForUser" FunctionName="igroup194_prodModel.Store.InsertCalendarForUser" />
           <FunctionImportMapping FunctionImportName="NewContact" FunctionName="igroup194_prodModel.Store.NewContact" />
           <FunctionImportMapping FunctionImportName="InsertPatient" FunctionName="igroup194_prodModel.Store.InsertPatient" />
+          <FunctionImportMapping FunctionImportName="InsertPatientHobbies" FunctionName="igroup194_prodModel.Store.InsertPatientHobbies" />
+          <FunctionImportMapping FunctionImportName="InsertPatientLimitations" FunctionName="igroup194_prodModel.Store.InsertPatientLimitations" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
