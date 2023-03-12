@@ -1,4 +1,4 @@
-import { View, StyleSheet, Text, Image, TouchableOpacity, Dimensions, Modal } from 'react-native'
+import { View, StyleSheet, Text, Image, TouchableOpacity, Dimensions, Modal, Alert } from 'react-native'
 import { useState } from 'react'
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -8,7 +8,7 @@ export default function SignUpFinish({ navigation, route }) {
 
     const tblPatient = route.params.tblPatient;
     const [modalVisible, setModalVisible] = useState(false);
-    
+
     // InsertUser
     const createNewUserInDB = () => {
         fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/InsertUser', { //send the user data to the DB
@@ -32,7 +32,6 @@ export default function SignUpFinish({ navigation, route }) {
 
     // InsertPatient
     const createNewPatient = () => {
-        console.log("tblPatient=", tblPatient)
         fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/InsertPatient', { //send the patient data to the DB
             method: 'POST',
             headers: {
@@ -49,7 +48,6 @@ export default function SignUpFinish({ navigation, route }) {
             }
             );
     }
-
     // InsertPatientHobbiesAndLimitations
     const addHobbiesAndLimitations = () => {
         fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/InsertPatientHobbiesAndLimitations', { //send the user data to the DB
@@ -61,7 +59,17 @@ export default function SignUpFinish({ navigation, route }) {
         })
             .then((response) => response.json())
             .then((json) => {
-                // navigation.navigate('LogIn')
+                Alert.alert(
+                    "Great Job!",
+                    "You have successfully signed up to worCare!",
+                    [
+                        {
+                            text: "OK",
+                            onPress: () => navigation.navigate('LogIn', { tblUser: route.params.tblUser })
+                        }
+                    ],
+                    { cancelable: false }
+                );
                 console.log(json)
             })
             .catch((error) => {
@@ -69,7 +77,6 @@ export default function SignUpFinish({ navigation, route }) {
             }
             );
     }
-
     return (
         <View style={styles.container} >
             <View style={styles.headerContainer}>

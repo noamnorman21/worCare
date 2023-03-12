@@ -37,16 +37,21 @@ namespace WebApi.Controllers
             try
             {
                 // {"BirthDate": "01-08-1927", "FirstName": "Sara", "Id": "577042518", "Language": "Arabic", "LastName": "Bibi", "userId": 147}
-                tblPatient patientExist = db.tblPatients.Where(x => x.Id == patient.Id).First();
-                if (patientExist != null)
-                    return BadRequest("Patient already exists");
-                db.InsertPatient(patient.Id, patient.FirstName, patient.LastName, patient.DateOfBirth, patient.userId, patient.LanguageName_En);
-                db.SaveChanges();
-                return Ok("Patient added");
+                var patientExist = db.tblPatients.Where(x => x.Id == patient.Id).FirstOrDefault();
+                if (patientExist == null)
+                {
+                    db.InsertPatient(patient.Id, patient.FirstName, patient.LastName, patient.DateOfBirth, patient.userId, patient.LanguageName_En);
+                    db.SaveChanges();
+                    return Ok("Patient added successfully");
+                }
+                else
+                {
+                    return Ok("Patient already exist");
+                }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BadRequest("Error in insert patient");
+                return BadRequest("Error in insert patient= " + ex.Message);
             }
         }
 

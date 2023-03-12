@@ -37,7 +37,7 @@ export default function SignUpUserLVL5({ navigation, route }) {
       DateOfBirth: date,
       LanguageName_En: valueLanguage
     }
-    navigation.navigate('SignUpLimitations', { patientData: patientData, userData: route.params.userData })
+    navigation.navigate('SignUpLimitations', { patientData: patientData, tblUser: route.params.tblUser })
   }
   return (
     <SafeAreaView style={styles.container}>

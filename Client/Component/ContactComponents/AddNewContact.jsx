@@ -78,7 +78,7 @@ export default function AddNewContact({ navigation }) {
          .then(
             (result) => {
                console.log("fetch POST= ", result);
-               alert("Contact added successfully");
+               Alert.alert("Contact added successfully");
                navigation.popToTop();
             },
             (error) => {
