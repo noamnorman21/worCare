@@ -43,6 +43,8 @@ public partial class tblPatient
 
     public string LanguageName_En { get; set; }
 
+    public Nullable<int> userId { get; set; }
+
 
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -66,6 +68,8 @@ public partial class tblPatient
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
 
     public virtual ICollection<tblPatientTask> tblPatientTasks { get; set; }
+
+    public virtual tblUser tblUser { get; set; }
 
 }
 

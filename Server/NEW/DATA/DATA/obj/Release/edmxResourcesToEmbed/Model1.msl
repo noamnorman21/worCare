@@ -163,6 +163,7 @@
     <EntitySetMapping Name="tblPatients">
       <EntityTypeMapping TypeName="igroup194_prodModel.tblPatient">
         <MappingFragment StoreEntitySet="tblPatient">
+          <ScalarProperty Name="userId" ColumnName="userId" />
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="FirstName" ColumnName="FirstName" />
           <ScalarProperty Name="LastName" ColumnName="LastName" />
@@ -290,5 +291,10 @@
     <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="igroup194_prodModel.Store.sp_upgraddiagrams" />
     <FunctionImportMapping FunctionImportName="InsertCalendarForUser" FunctionName="igroup194_prodModel.Store.InsertCalendarForUser" />
     <FunctionImportMapping FunctionImportName="NewContact" FunctionName="igroup194_prodModel.Store.NewContact" />
+    <FunctionImportMapping FunctionImportName="InsertPatient" FunctionName="igroup194_prodModel.Store.InsertPatient" />
+    <FunctionImportMapping FunctionImportName="InsertPatientHobbies" FunctionName="igroup194_prodModel.Store.InsertPatientHobbies" />
+    <FunctionImportMapping FunctionImportName="InsertPatientLimitations" FunctionName="igroup194_prodModel.Store.InsertPatientLimitations" />
+    <FunctionImportMapping FunctionImportName="NewPaymentRequest" FunctionName="igroup194_prodModel.Store.NewPaymentRequest" />
+    <FunctionImportMapping FunctionImportName="NewPaycheck" FunctionName="igroup194_prodModel.Store.NewPaycheck" />
   </EntityContainerMapping>
 </Mapping>

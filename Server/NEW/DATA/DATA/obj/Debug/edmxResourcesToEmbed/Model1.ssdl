@@ -156,6 +156,7 @@
     <Property Name="LastName" Type="varchar" MaxLength="50" Nullable="false" />
     <Property Name="DateOfBirth" Type="date" Nullable="false" />
     <Property Name="LanguageName_En" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="userId" Type="int" />
   </EntityType>
   <EntityType Name="tblPatientTask">
     <Key>
@@ -462,6 +463,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK__tblPatien__userI__2A6B46EF">
+    <End Role="tblUser" Type="Self.tblUser" Multiplicity="0..1" />
+    <End Role="tblPatient" Type="Self.tblPatient" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblUser">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="tblPatient">
+        <PropertyRef Name="userId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK__tblPatien__worke__035179CE">
     <End Role="tblForeignUser" Type="Self.tblForeignUser" Multiplicity="1" />
     <End Role="tblPatientTask" Type="Self.tblPatientTask" Multiplicity="*" />
@@ -546,6 +559,37 @@
     <Parameter Name="VisaExpirationDate" Type="date" Mode="In" />
     <Parameter Name="LanguageName_En" Type="varchar" Mode="In" />
     <Parameter Name="CountryName_En" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="InsertPatient" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="Id" Type="char" Mode="In" />
+    <Parameter Name="FirstName" Type="varchar" Mode="In" />
+    <Parameter Name="LastName" Type="varchar" Mode="In" />
+    <Parameter Name="DateOfBirth" Type="date" Mode="In" />
+    <Parameter Name="userId" Type="int" Mode="In" />
+    <Parameter Name="LanguageName_En" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="InsertPatientHobbies" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="patientId" Type="char" Mode="In" />
+    <Parameter Name="books" Type="nvarchar" Mode="In" />
+    <Parameter Name="music" Type="nvarchar" Mode="In" />
+    <Parameter Name="TVShow" Type="nvarchar" Mode="In" />
+    <Parameter Name="radioChannel" Type="nvarchar" Mode="In" />
+    <Parameter Name="food" Type="nvarchar" Mode="In" />
+    <Parameter Name="drink" Type="nvarchar" Mode="In" />
+    <Parameter Name="movie" Type="nvarchar" Mode="In" />
+    <Parameter Name="specialHabits" Type="nvarchar" Mode="In" />
+    <Parameter Name="afternoonNap" Type="nvarchar" Mode="In" />
+    <Parameter Name="nightSleep" Type="nvarchar" Mode="In" />
+    <Parameter Name="other" Type="nvarchar" Mode="In" />
+  </Function>
+  <Function Name="InsertPatientLimitations" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="patientId" Type="char" Mode="In" />
+    <Parameter Name="allergies" Type="varchar" Mode="In" />
+    <Parameter Name="sensitivities" Type="varchar" Mode="In" />
+    <Parameter Name="physicalAbilities" Type="varchar" Mode="In" />
+    <Parameter Name="bathRoutine" Type="varchar" Mode="In" />
+    <Parameter Name="sensitivityToNoise" Type="varchar" Mode="In" />
+    <Parameter Name="other" Type="varchar" Mode="In" />
   </Function>
   <Function Name="InsertUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="Email" Type="varchar" Mode="In" />
@@ -689,6 +733,10 @@
     <AssociationSet Name="FK__tblPatien__userI__04459E07" Association="Self.FK__tblPatien__userI__04459E07">
       <End Role="tblUser" EntitySet="tblUser" />
       <End Role="tblPatientTask" EntitySet="tblPatientTask" />
+    </AssociationSet>
+    <AssociationSet Name="FK__tblPatien__userI__2A6B46EF" Association="Self.FK__tblPatien__userI__2A6B46EF">
+      <End Role="tblUser" EntitySet="tblUser" />
+      <End Role="tblPatient" EntitySet="tblPatient" />
     </AssociationSet>
     <AssociationSet Name="FK__tblPatien__worke__035179CE" Association="Self.FK__tblPatien__worke__035179CE">
       <End Role="tblForeignUser" EntitySet="tblForeignUser" />

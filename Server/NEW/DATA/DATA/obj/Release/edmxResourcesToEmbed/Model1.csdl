@@ -190,6 +190,8 @@
     <NavigationProperty Name="tblLanguage" Relationship="Self.FK__tblPatien__Langu__58671BC9" FromRole="tblPatient" ToRole="tblLanguage" />
     <NavigationProperty Name="tblLimitation" Relationship="Self.FK__tblLimita__patie__5F141958" FromRole="tblPatient" ToRole="tblLimitations" />
     <NavigationProperty Name="tblPatientTasks" Relationship="Self.FK__tblPatien__patie__025D5595" FromRole="tblPatient" ToRole="tblPatientTask" />
+    <Property Name="userId" Type="Int32" />
+    <NavigationProperty Name="tblUser" Relationship="igroup194_prodModel.FK__tblPatien__userI__2A6B46EF" FromRole="tblPatient" ToRole="tblUser" />
   </EntityType>
   <EntityType Name="tblPatientTask">
     <Key>
@@ -289,6 +291,7 @@
     <NavigationProperty Name="tblForeignUser" Relationship="Self.FK__tblForeignUs__Id__703EA55A" FromRole="tblUser" ToRole="tblForeignUser" />
     <NavigationProperty Name="tblPatientTasks" Relationship="Self.FK__tblPatien__userI__04459E07" FromRole="tblUser" ToRole="tblPatientTask" />
     <NavigationProperty Name="tblPaychecks" Relationship="Self.FK__tblPayche__UserI__6D6238AF" FromRole="tblUser" ToRole="tblPaycheck" />
+    <NavigationProperty Name="tblPatients" Relationship="igroup194_prodModel.FK__tblPatien__userI__2A6B46EF" FromRole="tblUser" ToRole="tblPatient" />
   </EntityType>
   <Association Name="FK__tblActual__listI__558AAF1E">
     <End Role="tblList" Type="Self.tblList" Multiplicity="1" />
@@ -761,6 +764,58 @@
       <Parameter Name="contactComment" Mode="In" Type="String" />
       <Parameter Name="patientId" Mode="In" Type="String" />
     </FunctionImport>
+    <AssociationSet Name="FK__tblPatien__userI__2A6B46EF" Association="igroup194_prodModel.FK__tblPatien__userI__2A6B46EF">
+      <End Role="tblUser" EntitySet="tblUsers" />
+      <End Role="tblPatient" EntitySet="tblPatients" />
+    </AssociationSet>
+    <FunctionImport Name="InsertPatient">
+      <Parameter Name="Id" Mode="In" Type="String" />
+      <Parameter Name="FirstName" Mode="In" Type="String" />
+      <Parameter Name="LastName" Mode="In" Type="String" />
+      <Parameter Name="DateOfBirth" Mode="In" Type="DateTime" />
+      <Parameter Name="userId" Mode="In" Type="Int32" />
+      <Parameter Name="LanguageName_En" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="InsertPatientHobbies">
+      <Parameter Name="patientId" Mode="In" Type="String" />
+      <Parameter Name="books" Mode="In" Type="String" />
+      <Parameter Name="music" Mode="In" Type="String" />
+      <Parameter Name="TVShow" Mode="In" Type="String" />
+      <Parameter Name="radioChannel" Mode="In" Type="String" />
+      <Parameter Name="food" Mode="In" Type="String" />
+      <Parameter Name="drink" Mode="In" Type="String" />
+      <Parameter Name="movie" Mode="In" Type="String" />
+      <Parameter Name="specialHabits" Mode="In" Type="String" />
+      <Parameter Name="afternoonNap" Mode="In" Type="String" />
+      <Parameter Name="nightSleep" Mode="In" Type="String" />
+      <Parameter Name="other" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="InsertPatientLimitations">
+      <Parameter Name="patientId" Mode="In" Type="String" />
+      <Parameter Name="allergies" Mode="In" Type="String" />
+      <Parameter Name="sensitivities" Mode="In" Type="String" />
+      <Parameter Name="physicalAbilities" Mode="In" Type="String" />
+      <Parameter Name="bathRoutine" Mode="In" Type="String" />
+      <Parameter Name="sensitivityToNoise" Mode="In" Type="String" />
+      <Parameter Name="other" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="NewPaymentRequest">
+      <Parameter Name="requestId" Mode="In" Type="Int32" />
+      <Parameter Name="requestSubject" Mode="In" Type="String" />
+      <Parameter Name="amountToPay" Mode="In" Type="Double" />
+      <Parameter Name="requestDate" Mode="In" Type="DateTime" />
+      <Parameter Name="requestProofDocument" Mode="In" Type="String" />
+      <Parameter Name="requestComment" Mode="In" Type="String" />
+      <Parameter Name="requestStatus" Mode="In" Type="String" />
+      <Parameter Name="userId" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="NewPaycheck">
+      <Parameter Name="payCheckNum" Mode="In" Type="Int32" />
+      <Parameter Name="paycheckDate" Mode="In" Type="DateTime" />
+      <Parameter Name="paycheckSummary" Mode="In" Type="String" />
+      <Parameter Name="paycheckComment" Mode="In" Type="String" />
+      <Parameter Name="UserId" Mode="In" Type="Int32" />
+    </FunctionImport>
   </EntityContainer>
   <ComplexType Name="sp_helpdiagramdefinition_Result">
     <Property Type="Int32" Name="version" Nullable="true" />
@@ -773,4 +828,16 @@
     <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
     <Property Type="Int32" Name="OwnerID" Nullable="false" />
   </ComplexType>
+  <Association Name="FK__tblPatien__userI__2A6B46EF">
+    <End Type="igroup194_prodModel.tblUser" Role="tblUser" Multiplicity="0..1" />
+    <End Type="igroup194_prodModel.tblPatient" Role="tblPatient" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblUser">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="tblPatient">
+        <PropertyRef Name="userId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
 </Schema>

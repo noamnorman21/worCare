@@ -105,15 +105,8 @@ namespace WebApi.Controllers
         {
             try
             {
-                tblPaymentRequest p = new tblPaymentRequest();
-                p.requestSubject = req.requestSubject;
-                p.amountToPay = req.amountToPay;
-                p.requestDate = req.requestDate;
-                p.requestProofDocument = req.requestProofDocument;
-                p.requestComment = req.requestComment;
-                p.requestStatus = req.requestStatus;
-                p.userId = req.userId;
-                db.tblPaymentRequests.Add(p);
+                int id = db.tblPaymentRequests.Max(x => x.requestId)+1;
+                db.NewPaymentRequest(id, req.requestSubject, req.amountToPay, req.requestDate, req.requestProofDocument, req.requestComment, req.requestStatus, req.userId);
                 db.SaveChanges();
                 return Ok("Request added successfully!");
             }
@@ -126,11 +119,11 @@ namespace WebApi.Controllers
         // PUT: api/PaymentRequest/5
         [HttpPut]
         [Route("UpdateRequest")]
-        public IHttpActionResult UpdateRequest(PaymentsRequestDTO req)
+        public IHttpActionResult UpdateRequest([FromBody] PaymentsRequestDTO req)
         {
             try
             {
-                tblPaymentRequest p = db.tblPaymentRequests.Where(x => x.requestId == req.requestId).FirstOrDefault();
+                var p = db.tblPaymentRequests.Where(x => x.requestId == req.requestId).FirstOrDefault();
                 if (p != null)
                 {
                     p.requestSubject = req.requestSubject;
@@ -140,9 +133,8 @@ namespace WebApi.Controllers
                     p.requestComment = req.requestComment;
                     p.requestStatus = req.requestStatus;
                     p.userId = req.userId;
-                    db.tblPaymentRequests.Add(p);
                     db.SaveChanges();
-                    return Ok("Request added successfully!");                   
+                    return Ok("Request Updated successfully!");                   
                 }
                 else
                 {
@@ -157,19 +149,19 @@ namespace WebApi.Controllers
         }
 
         [HttpDelete]
-        [Route("DeletePayment")]
-        public IHttpActionResult DeleteContact([FromBody] PaymentsRequestDTO RequestToDelete)
+        [Route("DeletePayment/{id}")]
+        public IHttpActionResult DeletePayment(int id)
         {
             try
             {
-                var request = db.tblPaymentRequests.Where(x => x.requestId == RequestToDelete.requestId).FirstOrDefault();
+                var request = db.tblPaymentRequests.Where(x => x.requestId == id).FirstOrDefault();
                 if (request == null)
                 {
                     return NotFound();
                 }
                 db.tblPaymentRequests.Remove(request);
                 db.SaveChanges();
-                return Ok("Contact Deleted Successfully");
+                return Ok("Payment Request Deleted Successfully");
             }
             catch (Exception ex)
             {

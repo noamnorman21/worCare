@@ -351,6 +351,231 @@ public partial class igroup194DB : DbContext
         return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("NewContact", contactNameParameter, phoneNoParameter, mobileNoParameter, emailParameter, roleParameter, contactCommentParameter, patientIdParameter);
     }
 
+
+    public virtual int InsertPatient(string id, string firstName, string lastName, Nullable<System.DateTime> dateOfBirth, Nullable<int> userId, string languageName_En)
+    {
+
+        var idParameter = id != null ?
+            new ObjectParameter("Id", id) :
+            new ObjectParameter("Id", typeof(string));
+
+
+        var firstNameParameter = firstName != null ?
+            new ObjectParameter("FirstName", firstName) :
+            new ObjectParameter("FirstName", typeof(string));
+
+
+        var lastNameParameter = lastName != null ?
+            new ObjectParameter("LastName", lastName) :
+            new ObjectParameter("LastName", typeof(string));
+
+
+        var dateOfBirthParameter = dateOfBirth.HasValue ?
+            new ObjectParameter("DateOfBirth", dateOfBirth) :
+            new ObjectParameter("DateOfBirth", typeof(System.DateTime));
+
+
+        var userIdParameter = userId.HasValue ?
+            new ObjectParameter("userId", userId) :
+            new ObjectParameter("userId", typeof(int));
+
+
+        var languageName_EnParameter = languageName_En != null ?
+            new ObjectParameter("LanguageName_En", languageName_En) :
+            new ObjectParameter("LanguageName_En", typeof(string));
+
+
+        return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertPatient", idParameter, firstNameParameter, lastNameParameter, dateOfBirthParameter, userIdParameter, languageName_EnParameter);
+    }
+
+
+    public virtual int InsertPatientHobbies(string patientId, string books, string music, string tVShow, string radioChannel, string food, string drink, string movie, string specialHabits, string afternoonNap, string nightSleep, string other)
+    {
+
+        var patientIdParameter = patientId != null ?
+            new ObjectParameter("patientId", patientId) :
+            new ObjectParameter("patientId", typeof(string));
+
+
+        var booksParameter = books != null ?
+            new ObjectParameter("books", books) :
+            new ObjectParameter("books", typeof(string));
+
+
+        var musicParameter = music != null ?
+            new ObjectParameter("music", music) :
+            new ObjectParameter("music", typeof(string));
+
+
+        var tVShowParameter = tVShow != null ?
+            new ObjectParameter("TVShow", tVShow) :
+            new ObjectParameter("TVShow", typeof(string));
+
+
+        var radioChannelParameter = radioChannel != null ?
+            new ObjectParameter("radioChannel", radioChannel) :
+            new ObjectParameter("radioChannel", typeof(string));
+
+
+        var foodParameter = food != null ?
+            new ObjectParameter("food", food) :
+            new ObjectParameter("food", typeof(string));
+
+
+        var drinkParameter = drink != null ?
+            new ObjectParameter("drink", drink) :
+            new ObjectParameter("drink", typeof(string));
+
+
+        var movieParameter = movie != null ?
+            new ObjectParameter("movie", movie) :
+            new ObjectParameter("movie", typeof(string));
+
+
+        var specialHabitsParameter = specialHabits != null ?
+            new ObjectParameter("specialHabits", specialHabits) :
+            new ObjectParameter("specialHabits", typeof(string));
+
+
+        var afternoonNapParameter = afternoonNap != null ?
+            new ObjectParameter("afternoonNap", afternoonNap) :
+            new ObjectParameter("afternoonNap", typeof(string));
+
+
+        var nightSleepParameter = nightSleep != null ?
+            new ObjectParameter("nightSleep", nightSleep) :
+            new ObjectParameter("nightSleep", typeof(string));
+
+
+        var otherParameter = other != null ?
+            new ObjectParameter("other", other) :
+            new ObjectParameter("other", typeof(string));
+
+
+        return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertPatientHobbies", patientIdParameter, booksParameter, musicParameter, tVShowParameter, radioChannelParameter, foodParameter, drinkParameter, movieParameter, specialHabitsParameter, afternoonNapParameter, nightSleepParameter, otherParameter);
+    }
+
+
+    public virtual int InsertPatientLimitations(string patientId, string allergies, string sensitivities, string physicalAbilities, string bathRoutine, string sensitivityToNoise, string other)
+    {
+
+        var patientIdParameter = patientId != null ?
+            new ObjectParameter("patientId", patientId) :
+            new ObjectParameter("patientId", typeof(string));
+
+
+        var allergiesParameter = allergies != null ?
+            new ObjectParameter("allergies", allergies) :
+            new ObjectParameter("allergies", typeof(string));
+
+
+        var sensitivitiesParameter = sensitivities != null ?
+            new ObjectParameter("sensitivities", sensitivities) :
+            new ObjectParameter("sensitivities", typeof(string));
+
+
+        var physicalAbilitiesParameter = physicalAbilities != null ?
+            new ObjectParameter("physicalAbilities", physicalAbilities) :
+            new ObjectParameter("physicalAbilities", typeof(string));
+
+
+        var bathRoutineParameter = bathRoutine != null ?
+            new ObjectParameter("bathRoutine", bathRoutine) :
+            new ObjectParameter("bathRoutine", typeof(string));
+
+
+        var sensitivityToNoiseParameter = sensitivityToNoise != null ?
+            new ObjectParameter("sensitivityToNoise", sensitivityToNoise) :
+            new ObjectParameter("sensitivityToNoise", typeof(string));
+
+
+        var otherParameter = other != null ?
+            new ObjectParameter("other", other) :
+            new ObjectParameter("other", typeof(string));
+
+
+        return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertPatientLimitations", patientIdParameter, allergiesParameter, sensitivitiesParameter, physicalAbilitiesParameter, bathRoutineParameter, sensitivityToNoiseParameter, otherParameter);
+    }
+
+
+    public virtual int NewPaymentRequest(Nullable<int> requestId, string requestSubject, Nullable<double> amountToPay, Nullable<System.DateTime> requestDate, string requestProofDocument, string requestComment, string requestStatus, Nullable<int> userId)
+    {
+
+        var requestIdParameter = requestId.HasValue ?
+            new ObjectParameter("requestId", requestId) :
+            new ObjectParameter("requestId", typeof(int));
+
+
+        var requestSubjectParameter = requestSubject != null ?
+            new ObjectParameter("requestSubject", requestSubject) :
+            new ObjectParameter("requestSubject", typeof(string));
+
+
+        var amountToPayParameter = amountToPay.HasValue ?
+            new ObjectParameter("amountToPay", amountToPay) :
+            new ObjectParameter("amountToPay", typeof(double));
+
+
+        var requestDateParameter = requestDate.HasValue ?
+            new ObjectParameter("requestDate", requestDate) :
+            new ObjectParameter("requestDate", typeof(System.DateTime));
+
+
+        var requestProofDocumentParameter = requestProofDocument != null ?
+            new ObjectParameter("requestProofDocument", requestProofDocument) :
+            new ObjectParameter("requestProofDocument", typeof(string));
+
+
+        var requestCommentParameter = requestComment != null ?
+            new ObjectParameter("requestComment", requestComment) :
+            new ObjectParameter("requestComment", typeof(string));
+
+
+        var requestStatusParameter = requestStatus != null ?
+            new ObjectParameter("requestStatus", requestStatus) :
+            new ObjectParameter("requestStatus", typeof(string));
+
+
+        var userIdParameter = userId.HasValue ?
+            new ObjectParameter("userId", userId) :
+            new ObjectParameter("userId", typeof(int));
+
+
+        return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("NewPaymentRequest", requestIdParameter, requestSubjectParameter, amountToPayParameter, requestDateParameter, requestProofDocumentParameter, requestCommentParameter, requestStatusParameter, userIdParameter);
+    }
+
+
+    public virtual int NewPaycheck(Nullable<int> payCheckNum, Nullable<System.DateTime> paycheckDate, string paycheckSummary, string paycheckComment, Nullable<int> userId)
+    {
+
+        var payCheckNumParameter = payCheckNum.HasValue ?
+            new ObjectParameter("payCheckNum", payCheckNum) :
+            new ObjectParameter("payCheckNum", typeof(int));
+
+
+        var paycheckDateParameter = paycheckDate.HasValue ?
+            new ObjectParameter("paycheckDate", paycheckDate) :
+            new ObjectParameter("paycheckDate", typeof(System.DateTime));
+
+
+        var paycheckSummaryParameter = paycheckSummary != null ?
+            new ObjectParameter("paycheckSummary", paycheckSummary) :
+            new ObjectParameter("paycheckSummary", typeof(string));
+
+
+        var paycheckCommentParameter = paycheckComment != null ?
+            new ObjectParameter("paycheckComment", paycheckComment) :
+            new ObjectParameter("paycheckComment", typeof(string));
+
+
+        var userIdParameter = userId.HasValue ?
+            new ObjectParameter("UserId", userId) :
+            new ObjectParameter("UserId", typeof(int));
+
+
+        return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("NewPaycheck", payCheckNumParameter, paycheckDateParameter, paycheckSummaryParameter, paycheckCommentParameter, userIdParameter);
+    }
+
 }
 
 }

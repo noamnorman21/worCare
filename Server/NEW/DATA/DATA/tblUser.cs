@@ -28,6 +28,8 @@ public partial class tblUser
 
         this.tblPaychecks = new HashSet<tblPaycheck>();
 
+        this.tblPatients = new HashSet<tblPatient>();
+
     }
 
 
@@ -62,6 +64,10 @@ public partial class tblUser
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
 
     public virtual ICollection<tblPaycheck> tblPaychecks { get; set; }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+
+    public virtual ICollection<tblPatient> tblPatients { get; set; }
 
 }
 

@@ -103,7 +103,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                tblContact c = db.tblContacts.Where(x => x.contactId == value.contactId).FirstOrDefault();
+                var c = db.tblContacts.Where(x => x.contactId == value.contactId).FirstOrDefault();
                 c.contactName = value.contactName;
                 c.phoneNo = value.phoneNo;
                 c.mobileNo = value.mobileNo;
