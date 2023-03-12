@@ -1,13 +1,49 @@
 import { View, StyleSheet, Text, Image, TouchableOpacity, Dimensions, Modal, Alert } from 'react-native'
-import { useState } from 'react'
-
+import { useState, useEffect } from 'react'
+import ContactsList from '../../HelpComponents/ContactsList';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
+import * as SMS from 'expo-sms';
 
-export default function SignUpFinish({ navigation, route }) {
-
+export default function SignUpFinish({ navigation, route }, props) {
     const tblPatient = route.params.tblPatient;
+    const [contactUser, setContactUser] = useState('');
     const [modalVisible, setModalVisible] = useState(false);
+    const [contactVisible, setContactVisible] = useState(false);
+    const [contactNumber, setContactNumber] = useState('');
+    const [isAvailable, setIsAvailable] = useState(false);
+    // const code = Math.floor(100000 + Math.random() * 900000);
+    const message = "Hello " + contactUser + ",\n\n" + "Here is your verification code for using the app: " + tblPatient.Id + "\n\n" + "Thank you,\n" + "worCare Team ";
+
+    useEffect(() => {
+        (async () => {
+            const isAvailable = await SMS.isAvailableAsync();
+            setIsAvailable(isAvailable);
+        }
+        )();
+    }, []);
+
+    const btnSendSMS = async () => {
+        if (isAvailable) {
+            // do your SMS stuff here
+            const { result } = await SMS.sendSMSAsync(
+                [contactNumber], message);
+            Alert.alert(result);
+        } else {
+            // misfortune... there's no SMS available on this device
+            Alert.alert('SMS is not available on this device');
+        }
+    }
+
+    const sendContact = (name, number) => {
+        setContactNumber(number);
+        setContactUser(name);
+    }
+
+    const changeVisible = () => {
+        setModalVisible(false);
+        setContactVisible(true);
+    }
 
     // InsertUser
     const createNewUserInDB = () => {
@@ -77,6 +113,12 @@ export default function SignUpFinish({ navigation, route }) {
             }
             );
     }
+
+    const sendVisible = () => {
+        setContactVisible(false);
+        setModalVisible(true);
+    }
+
     return (
         <View style={styles.container} >
             <View style={styles.headerContainer}>
@@ -96,7 +138,6 @@ export default function SignUpFinish({ navigation, route }) {
                         <Text style={styles.btnShare}> Share My Code With Caregiver </Text>
                     </TouchableOpacity>
                 </View>
-                {/* <Text> Share your code with your friends and family to help them sign up. </Text> */}
 
                 <View style={styles.btnContainer}>
                     <TouchableOpacity
@@ -126,21 +167,26 @@ export default function SignUpFinish({ navigation, route }) {
                                 <Image source={require('../../../images/logo_New_Small.png')} style={styles.image} />
                                 <Text style={styles.modalText}>Invite a Caregiver</Text>
                                 <Text style={styles.modalSmallText}>
-                                    Please share this code with a caregiver.
+                                    Please invite a caregiver.
                                 </Text>
                                 <Text style={styles.modalSmallText}>
                                     Once they have joined, you will both be connected.
                                 </Text>
                             </View>
                             <View style={styles.modalHeader}>
-                                <TouchableOpacity style={styles.modalBtn1}>
-                                    <Text style={styles.modalBtnText}> YOURNAME-PATIENTID</Text>
-                                    <Text style={styles.modalBtnText1}>Copy Code</Text>
+                                <TouchableOpacity style={styles.modalBtn1}
+                                    onPress={changeVisible}
+                                >
+                                    <Text style={styles.modalBtnText}>
+                                        {/* if contactUser different then '' write Choose Caregiver Contact */}
+                                        {contactUser == '' ? 'Choose Caregiver Contact' : contactUser}
+                                    </Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity style={styles.modalBtn2}>
-                                    <Text style={styles.modalBtnText2}>Share Code</Text>
+                                <TouchableOpacity
+                                    onPress={btnSendSMS}
+                                    style={styles.modalBtn2}>
+                                    <Text style={styles.modalBtnText2}>Send Invitation</Text>
                                 </TouchableOpacity>
-
                                 <TouchableOpacity onPress={() => setModalVisible(false)}>
                                     <Text style={styles.modalBtnText3}>Done</Text>
                                 </TouchableOpacity>
@@ -149,6 +195,7 @@ export default function SignUpFinish({ navigation, route }) {
                     </View>
                 </View>
             </Modal>
+            <ContactsList sendVisible={sendVisible} contactVisible={contactVisible} sendContact={sendContact} />
         </View>
     )
 }
