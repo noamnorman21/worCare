@@ -1,8 +1,32 @@
-import { StyleSheet, View, Text, SafeAreaView, Image } from 'react-native'
-import React from 'react'
+import { StyleSheet, View, Text, SafeAreaView, Image, Dimensions, Alert } from 'react-native'
+import {useEffect, useState} from 'react'
 
+const { width, height } = Dimensions.get('window')
 // This is Splash Screen Component which will be display for 2 seconds before the app will be loaded 
-export default function Welcome() {
+export default function Welcome({ navigation, route }) {
+
+    useEffect(() => {
+        showOptions()
+    }, [])
+    
+    const showOptions = async () => {
+        Alert.alert(
+            'Welcome',
+            `You were invited to join the app by your ${route.params.userName}. Please log in or sign up to continue.`,                
+            [
+                {
+                    text: 'Log In',
+                    onPress: () => navigation.navigate('LogIn'),
+                },
+                { 
+                    text: 'Sign Up', 
+                    onPress: () => navigation.navigate('SignUp') 
+                },
+            ],
+            { cancelable: false }
+        )
+    }
+
     return (
         <SafeAreaView>
             <View style={styles.imageContainer}>
@@ -14,13 +38,13 @@ export default function Welcome() {
 
 const styles = StyleSheet.create({
     imageContainer: {
-        flex: 1,
-        justifyContent: 'center',
         alignItems: 'center',
+        justifyContent: 'center'        
     },
     image: {
-        width: 200,
-        height: 200,
+        width: width * 0.8 ,
+        height: height * 0.8,
+        alignItems: 'center',
         resizeMode: 'contain',
     },
 });

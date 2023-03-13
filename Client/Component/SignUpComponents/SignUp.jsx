@@ -62,38 +62,55 @@ export default function CreateUser({ navigation }) {
 
   const handleCreateUser = () => {
     const { email, password, firstName, lastName, phoneNum } = user
-    if (!email || !password || !firstName || !lastName || !phoneNum) {
-      return Alert.alert('Error', 'All fields are required')
-    }
+    // if (!email || !password || !firstName || !lastName || !phoneNum) {
+    //   return Alert.alert('Error', 'All fields are required')
+    // }
 
-    if (!validateEmail(email)) {
-      return Alert.alert('Invalid Email', 'Please enter a valid email')
-    }
+    // if (!validateEmail(email)) {
+    //   return Alert.alert('Invalid Email', 'Please enter a valid email')
+    // }
 
-    if (!validatePassword(password)) {
-      return Alert.alert('Invalid Password', 'Please enter a password with at least 8 characters, 1 letter, and 1 number')
-    }
+    // if (!validatePassword(password)) {
+    //   return Alert.alert('Invalid Password', 'Please enter a password with at least 8 characters, 1 letter, and 1 number')
+    // }
 
-    if (firstName === '') {
-      return Alert.alert('Invalid First Name', 'Please enter a valid first name')
-    }
-    if (lastName === '') {
-      return Alert.alert('Invalid Last Name', 'Please enter a valid last name')
-    }
+    // if (firstName === '') {
+    //   return Alert.alert('Invalid First Name', 'Please enter a valid first name')
+    // }
+    // if (lastName === '') {
+    //   return Alert.alert('Invalid Last Name', 'Please enter a valid last name')
+    // }
 
-    if (!validatePhoneNum(phoneNum)) {
-      return Alert.alert('Invalid Phone Number', 'Please enter a valid phone number')
-    }
-
-    const userData = {
-      email: user.email,
-      password: user.password,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      phoneNum: user.phoneNum,
+    // if (!validatePhoneNum(phoneNum)) {
+    //   return Alert.alert('Invalid Phone Number', 'Please enter a valid phone number')
+    // }
+    // for testing purposes
+    const userTest = {
+      email: 'noam@gmail.com',
+      password: '12345678',
+      firstName: 'Noam',
+      lastName: 'Norman',
+      phoneNum: '0541234567',
       imagePath: userImage,
     }
-    // console.log(userData)
+    // const userData = {
+    //   email: user.email,
+    //   password: user.password,
+    //   firstName: user.firstName,
+    //   lastName: user.lastName,
+    //   phoneNum: user.phoneNum,
+    //   imagePath: userImage,
+    // }
+
+    const userData = {
+      email: userTest.email,
+      password: userTest.password,
+      firstName: userTest.firstName,
+      lastName: userTest.lastName,
+      phoneNum: userTest.phoneNum,
+      imagePath: userTest.imagePath,
+    }
+    console.log(userData)
     navigation.navigate('SignUpLvl2', { user: userData })
   }
 

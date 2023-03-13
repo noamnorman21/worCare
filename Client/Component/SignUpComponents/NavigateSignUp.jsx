@@ -18,6 +18,7 @@ import SignUpUserLVL5 from './User/SignUpUserLVL5';
 import SignUpHobbies from './User/SignUpHobbies';
 import SignUpLimitations from './User/SignUpLimitations';
 import SignUpFinish from './User/SignUpFinish'
+import Welcome from '../Welcome';
 
 const Stack = createStackNavigator();
 
@@ -33,12 +34,15 @@ export default function NavigateSignUp() {
       <Stack.Screen name="ForgotPasswordLvl2" component={ForgotPasswordLvl2} options={{ headerShown: true, headerTitle: '' }} />
       <Stack.Screen name="CreateNewPassword" component={CreateNewPassword} options={{ headerShown: true, headerTitle: '' }} />
 
+      {/* מסך לקישור המטפל למשפחת המטופל*/}
+      <Stack.Screen name="Welcome" component={Welcome} options={{ headerShown: false }} />
+
       {/* שלבים 1-3 בתהליך ההרשמה משותפים לשני סוגי המשתמשים */}
       <Stack.Screen name="SignUp" component={SignUp} />
       <Stack.Screen name="SignUpLvl2" component={SignUpLvl2} options={{ headerShown: true, headerTitle: '' }} />
       <Stack.Screen name="SignUpLvl3" component={SignUpLvl3} options={{ headerShown: true, headerTitle: '' }} />
 
-      {/* שלבי המשך עבור הרשמת המטפל */}
+      {/* שלבי המשך עבור הרשמת המטפל */}      
       <Stack.Screen name="SignUpCaregiverLVL4" component={SignUpCaregiverLVL4} options={{ headerShown: true, headerTitle: '' }} />
       <Stack.Screen name="SignUpCaregiverLVL5" component={SignUpCaregiverLVL5} options={{ headerShown: true, headerTitle: '' }} />
 

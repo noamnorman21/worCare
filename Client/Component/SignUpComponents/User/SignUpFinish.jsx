@@ -4,6 +4,7 @@ import ContactsList from '../../HelpComponents/ContactsList';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 import * as SMS from 'expo-sms';
+import * as Linking from 'expo-linking';
 
 export default function SignUpFinish({ navigation, route }, props) {
     const tblPatient = route.params.tblPatient;
@@ -12,10 +13,16 @@ export default function SignUpFinish({ navigation, route }, props) {
     const [contactVisible, setContactVisible] = useState(false);
     const [contactNumber, setContactNumber] = useState('');
     const [isAvailable, setIsAvailable] = useState(false);
-    // const code = Math.floor(100000 + Math.random() * 900000);
-    const message = "Hello " + contactUser + ",\n\n" + "Here is your verification code for using the app: " + tblPatient.Id + "\n\n" + "Thank you,\n" + "worCare Team ";
+    const [message, setMessage] = useState('');
+    const [link, setLink] = useState('');
+    // link to the specific screen in the app and send the patient id to the screen as a parameter
+    // link to screen "LinkBetweenUsers" and send the patient id to the screen as a parameter
+    const deepLinkToApp = () => {
+        setLink(Linking.createURL(`InvitedFrom/${tblPatient.Id}/${route.params.tblUser.FirstName}`));
+    }
 
     useEffect(() => {
+        deepLinkToApp();
         (async () => {
             const isAvailable = await SMS.isAvailableAsync();
             setIsAvailable(isAvailable);
@@ -26,23 +33,65 @@ export default function SignUpFinish({ navigation, route }, props) {
     const btnSendSMS = async () => {
         if (isAvailable) {
             // do your SMS stuff here
-            const { result } = await SMS.sendSMSAsync(
-                [contactNumber], message);
-            Alert.alert(result);
+            const { result } = await SMS.sendSMSAsync([contactNumber], message);
+            if (result === 'sent') {
+                // Alert.alert('Invitation sent \n\n We will notify you when your friend will join');
+                Alert.alert('Invitation sent', 'We will notify you when your friend will join', [
+                    {
+                        text: "OK",
+                        onPress: () => { setModalVisible(false) },
+                        style: "cancel"
+                    },
+                ]);
+
+            }
+            else {
+                Alert.alert('Invitation Failed', 'Please try again', [
+                    {
+                        text: "OK",
+                        style: "cancel"
+                    },
+                ]);
+            }
+
+            // Alert.alert(result);
         } else {
             // misfortune... there's no SMS available on this device
             Alert.alert('SMS is not available on this device');
         }
     }
 
-    const sendContact = (name, number) => {
-        setContactNumber(number);
-        setContactUser(name);
-    }
-
     const changeVisible = () => {
         setModalVisible(false);
         setContactVisible(true);
+    }
+
+    const sendVisible = () => {
+        setContactVisible(false);
+        setModalVisible(true);
+    }
+
+    const sendContact = (name, number) => {
+        if (name === '' || number === '') {
+            Alert.alert('Please fill all the fields');
+        }
+        // if name is only one word without space
+        if (name.indexOf(' ') === -1) {
+            console.log("1:", name);
+            setContactUser(name);
+        }
+        else {
+            console.log("2:", name.substring(0, name.indexOf(' ')));
+            name = name.substring(0, name.indexOf(' '));
+            setContactUser(name.substring(0, name.indexOf(' ')));
+        }
+        setContactNumber(number);
+        setMessage("Hello " + name + ",\n\n" +
+            "I would like to invite you to join worCare app.\n" +
+            "Please click on the link below to download the app and join worCare.\n\n" +
+            link +
+            "\n\n" + "Thank you,\n" + "worCare Team."
+        );
     }
 
     // InsertUser
@@ -112,11 +161,6 @@ export default function SignUpFinish({ navigation, route }, props) {
                 console.error(error);
             }
             );
-    }
-
-    const sendVisible = () => {
-        setContactVisible(false);
-        setModalVisible(true);
     }
 
     return (

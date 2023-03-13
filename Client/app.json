@@ -1,6 +1,7 @@
 {
   "expo": {
     "name": "worcare",
+    "scheme": "worcare",
     "slug": "worcare",
     "version": "1.0.0",
     "orientation": "portrait",

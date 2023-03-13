@@ -3,7 +3,7 @@ import React from 'react'
 import { useEffect, useState, useContext } from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { OrLine, NeedAccount } from './FooterLine'
-
+import * as Linking from 'expo-linking';
 // import * as Font from 'expo-font';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -15,7 +15,24 @@ export default function LogIn({ navigation }) {
     const [keyboardOpen, setKeyboardOpen] = useState(false);//for keyboard visibility
     const [animation, setAnimation] = useState({});
 
+    const getInitialUrl = async () => {
+        // check if the app was opened from a link
+        const initialUrl = await Linking.getInitialURL();
+        // exp://l4rfr8w.anonymous.19000.exp.direct/--/InvitedFrom/123456789
 
+        if (initialUrl === null || initialUrl === undefined) {            
+            return;
+        }
+            
+        // if the app was opened from a link, navigate to the correct screen
+        const route = initialUrl.replace(/.*?:\/\//g, '');
+        const routeName = route.split('/')[2];
+        const id = route.split('/')[3];
+        const userName = route.split('/')[4];
+        if (routeName === 'InvitedFrom') {
+            navigation.navigate('Welcome', { id: id , userName: userName});
+        }
+    }
     //login function
     const logInBtn = () => {
         // check email is empty or not
@@ -50,7 +67,6 @@ export default function LogIn({ navigation }) {
         let userForLoginUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUserForLogin';
         console.log(userData);
 
-     
         fetch(userForLoginUrl, {
             method: 'GET',
             headers: {
@@ -64,7 +80,7 @@ export default function LogIn({ navigation }) {
                     Alert.alert('Login Failed');
                 }
                 else {
-                    Alert.alert('Login Success: '+ json.FirstName);
+                    Alert.alert('Login Success: ' + json.FirstName);
                 }
 
             }
@@ -81,21 +97,19 @@ export default function LogIn({ navigation }) {
     }
     //function to check password format
     const validatePassword = (password) => {
-        var re =  /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+        var re = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
         return re.test(password);
     }
-
     //navigate to sign up screen
     const NavigateToSignUp = () => {
         navigation.navigate('SignUp')
     }
-
     const NavigateToForgotPassword = () => {
         navigation.navigate('ForgotPassword')
     }
-
     //keyboard listener for animation
     useEffect(() => {
+        getInitialUrl();
         const keyboardDidShowListener = Keyboard.addListener(
             'keyboardDidShow',
             () => {
