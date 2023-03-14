@@ -8,7 +8,6 @@ import { Feather } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 
-
 export default function History() {
   const userId = 1 // יש להחליף למשתנה של המשתמש הנוכחי
 
@@ -81,7 +80,6 @@ export default function History() {
     );
   }
 
-
   const View=(id)=>{
     Alert.alert(
       "View",
@@ -130,8 +128,8 @@ export default function History() {
       "userId": 1
     }
   ]
-  useEffect(() => {
 
+  useEffect(() => {
     let arr = temp.map((item) => {
       return (
         <Request key={item.requestId} data={item} id={item.requestId} Notofication={Notification} View={View} Delete={Delete} subject={item.requestSubject} amountToPay={item.amountToPay} date={item.requestDate} requestComment={item.requestComment} />
@@ -171,7 +169,6 @@ function Request(props) {
     Animated.timing(animationController, config).start();
     setExpanded(!expanded);
   };
-
 
   const handlePress = () => setExpanded(!expanded);
   return (
@@ -224,10 +221,7 @@ function Request(props) {
   )
 }
 
-
-
 const styles = StyleSheet.create({
-
   Pending: {
     alignItems: 'center',
     backgroundColor: 'white',

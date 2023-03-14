@@ -4,7 +4,6 @@ import {useEffect, useState} from 'react'
 const { width, height } = Dimensions.get('window')
 // This is Splash Screen Component which will be display for 2 seconds before the app will be loaded 
 export default function Welcome({ navigation, route }) {
-
     useEffect(() => {
         showOptions()
     }, [])
@@ -12,15 +11,15 @@ export default function Welcome({ navigation, route }) {
     const showOptions = async () => {
         Alert.alert(
             'Welcome',
-            `You were invited to join the app by your ${route.params.userName}. Please log in or sign up to continue.`,                
+            `You were invited to join the app by ${route.params.userName}. Please log in or sign up to continue.`,                
             [
                 {
                     text: 'Log In',
-                    onPress: () => navigation.navigate('LogIn'),
+                    onPress: () => navigation.navigate('LogIn', {patientId : route.params.patientId}),
                 },
                 { 
                     text: 'Sign Up', 
-                    onPress: () => navigation.navigate('SignUp') 
+                    onPress: () => navigation.navigate('SignUp', {patientId : route.params.patientId , userType: 'Caregiver'}) 
                 },
             ],
             { cancelable: false }

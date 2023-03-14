@@ -1,5 +1,5 @@
 import { View, Text, SafeAreaView, StyleSheet, Dimensions, Image, TouchableOpacity, Alert } from 'react-native'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { OrLine, HaveAccount } from './FooterLine';
 import * as Font from 'expo-font';
 Font.loadAsync({
@@ -17,7 +17,95 @@ export default function SignUpLvl2({ navigation, route }) {
   const userData = route.params.user;
   const [userGender, setUserGender] = useState('');
   const [imageFireBaseUrl, setImageFireBaseUrl] = useState('');
+  // Fetch GET 
+  const [language, setLanguage] = useState([]);
+  const [country, setCountry] = useState([]);
+  const [holidaysType, setHolidaysType] = useState([]);
 
+  useEffect(() => {
+    // setPatientId(route.params.patienId);
+    // console.log("patient ID: ", patientId);
+    let urlforLanguages = 'https://proj.ruppin.ac.il/cgroup94/test1/api/LanguageCountry/GetAllLanguages';
+    let urlforCountries = 'https://proj.ruppin.ac.il/cgroup94/test1/api/LanguageCountry/GetAllCountries';
+    let calendarUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Calendars/GetAllCalendars';
+    fetch(calendarUrl, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    })
+      .then(res => {
+        if (res.ok) {
+          return res.json()
+        }
+        else {
+          console.log("not found")
+        }
+      })
+      .then(data => {
+        if (data != null) {
+          for (let i = 0; i < data.length; i++) {
+            holidaysType.push({
+              id: data[i].calendarNum,
+              label: data[i].CalendarName,
+            })
+          }
+        }
+      })
+      .catch((error) => {
+        console.log("err=", error);
+      });
+    fetch(urlforCountries, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    })
+      .then(res => {
+        if (res.ok) {
+          return res.json()
+        }
+        else {
+          console.log("not found")
+        }
+      })
+      .then(data => {
+        if (data != null) {
+          let coun = data.map((item) => {
+            return { label: item, value: item }
+          })
+          setCountry(coun);
+        }
+      })
+      .catch((error) => {
+        console.log("err=", error);
+      });
+    fetch(urlforLanguages, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    })
+      .then(res => {
+        if (res.ok) {
+          return res.json()
+        }
+        else {
+          console.log("not found")
+        }
+      })
+      .then(data => {
+        if (data != null) {
+          let lang = data.map((item) => {
+            return { label: item.LanguageName_Origin, value: item.LanguageName_En }
+          })
+          setLanguage(lang);
+        }
+      })
+      .catch((error) => {
+        console.log("err=", error);
+      });
+  }, []);
   // Send the image to firebase storage and get the image url
   const sendToFirebase = async (image) => {
     if (userGender === '') {
@@ -71,7 +159,7 @@ export default function SignUpLvl2({ navigation, route }) {
     //   phoneNum: userData.phoneNum,
     //   userUri: downloadURL,
     // }
-    
+
     // for testing only
     const newUserToDB = {
       Email: 'noam@gmail.com',
@@ -82,8 +170,14 @@ export default function SignUpLvl2({ navigation, route }) {
       gender: 'F',
       userUri: downloadURL,
     }
-    // console.log(newUserToDB);
-    navigation.navigate('SignUpLvl3', { userData: newUserToDB })
+    const userType = route.params.userType;
+    const patientId = route.params.patientId;
+    if (userType == 'User') {
+      navigation.navigate('SignUpLvl3', { userData: newUserToDB, holidaysType: holidaysType, language: language })
+    }
+    else if (userType === 'Caregiver') {
+      navigation.navigate('SignUpCaregiverLVL4', { userData: newUserToDB, patientId: patientId ,holidaysType: holidaysType, language: language, country: country })
+    }
   }
 
   const NavigateToLogIn = () => {

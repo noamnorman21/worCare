@@ -13,7 +13,7 @@ Font.loadAsync({
 
 // Sign up Screen - level 1 - first + last name, email, phone number, password, image 
 // On submit, user is taken to SignUpLvl2 Screen - address, city, state, zip code, country
-export default function CreateUser({ navigation }) {
+export default function CreateUser({ navigation, route }) {
   const [showPassword, setShowPassword] = useState(false);//for password visibility
   const [keyboardOpen, setKeyboardOpen] = useState(false);//for keyboard visibility
   const [animation, setAnimation] = useState({});
@@ -25,8 +25,10 @@ export default function CreateUser({ navigation }) {
     lastName: '',
     phoneNum: '',
   })
+  const [patientId, setPatientId] = useState('');
 
   useEffect(() => {
+    setPatientId(route.params.patientId);
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
       () => {
@@ -57,7 +59,6 @@ export default function CreateUser({ navigation }) {
       keyboardDidShowListener.remove();
       keyboardDidHideListener.remove();
     }
-
   }, []);
 
   const handleCreateUser = () => {
@@ -110,8 +111,14 @@ export default function CreateUser({ navigation }) {
       phoneNum: userTest.phoneNum,
       imagePath: userTest.imagePath,
     }
+
     console.log(userData)
-    navigation.navigate('SignUpLvl2', { user: userData })
+    if (route.params.userType === 'User') {
+      navigation.navigate('SignUpLvl2', { user: userData, userType: route.params.userType })
+    }
+    else {
+      navigation.navigate('SignUpLvl2', { user: userData, userType: route.params.userType, patientId: patientId })
+    }
   }
 
   const changeIMG = (imageFromUser) => {
@@ -141,7 +148,6 @@ export default function CreateUser({ navigation }) {
   const NavigateToLogIn = () => {
     navigation.navigate('LogIn')
   }
-
 
   return (
     <SafeAreaView style={styles.container}>

@@ -6,7 +6,7 @@ const SCREEN_HEIGHT = Dimensions.get('window').height;
 import * as SMS from 'expo-sms';
 import * as Linking from 'expo-linking';
 
-export default function SignUpFinish({ navigation, route }, props) {
+export default function SignUpFinish({ navigation, route }) {
     const tblPatient = route.params.tblPatient;
     const [contactUser, setContactUser] = useState('');
     const [modalVisible, setModalVisible] = useState(false);
@@ -16,16 +16,18 @@ export default function SignUpFinish({ navigation, route }, props) {
     const [message, setMessage] = useState('');
     const [link, setLink] = useState('');
     // link to the specific screen in the app and send the patient id to the screen as a parameter
-    // link to screen "LinkBetweenUsers" and send the patient id to the screen as a parameter
-    const deepLinkToApp = () => {
-        setLink(Linking.createURL(`InvitedFrom/${tblPatient.Id}/${route.params.tblUser.FirstName}`));
+    // link to screen "Welcome" and send the patient id to the screen as a parameter
+    const deepLinkToApp = () => {        
+        // , link);
+        console.log("link: ", link);
     }
 
     useEffect(() => {
-        deepLinkToApp();
         (async () => {
+            setLink(Linking.createURL(`InvitedFrom/${tblPatient.Id}/${route.params.tblUser.FirstName}`));
             const isAvailable = await SMS.isAvailableAsync();
             setIsAvailable(isAvailable);
+            deepLinkToApp();
         }
         )();
     }, []);
@@ -83,7 +85,7 @@ export default function SignUpFinish({ navigation, route }, props) {
         else {
             console.log("2:", name.substring(0, name.indexOf(' ')));
             name = name.substring(0, name.indexOf(' '));
-            setContactUser(name.substring(0, name.indexOf(' ')));
+            setContactUser(name);
         }
         setContactNumber(number);
         setMessage("Hello " + name + ",\n\n" +

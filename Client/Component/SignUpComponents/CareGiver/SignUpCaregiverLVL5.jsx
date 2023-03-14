@@ -16,6 +16,11 @@ export default function SignUpCaregiverLVL5({ navigation, route }, props) {
   const newForeignUserData = route.params.newForeignUserData;
   const newUser = route.params.newUser;
   const holidaysType = route.params.holidaysType;
+  const patientId = route.params.patientId;
+
+  const createUserTemp = () => {
+    console.log("patient ID: ", patientId);
+  }
 
   const createUserInDB = () => {
     newUser.Calendars = selectedHolidays; //selectedHolidays is the array of the selected holidays,use them in data base with stored procedure "InsertCalendarForUser"    
@@ -78,7 +83,7 @@ export default function SignUpCaregiverLVL5({ navigation, route }, props) {
       <View style={styles.btnContainer}>
         <TouchableOpacity
           style={styles.button}
-          onPress={createUserInDB}
+          onPress={createUserTemp}
         >
           <Text style={styles.buttonText}>Sign Up</Text>
         </TouchableOpacity>

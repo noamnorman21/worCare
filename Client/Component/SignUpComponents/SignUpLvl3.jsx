@@ -1,4 +1,4 @@
-import { SafeAreaView, View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native'
+import { SafeAreaView, View, Text, StyleSheet, TouchableOpacity, Dimensions ,Alert} from 'react-native'
 import { useState, useEffect } from 'react';
 import { OrLine, HaveAccount } from './FooterLine';
 import * as Font from 'expo-font';
@@ -12,102 +12,15 @@ Font.loadAsync({
 export default function SignUpLvl3({ navigation, route }) {
   const userData = route.params.userData;
   const [role, setRole] = useState(''); // Caregiver or Patient's Family Member
-  // Fetch GET 
-  const [language, setLanguage] = useState([]);
-  const [country, setCountry] = useState([]);
-  const [holidaysType, setHolidaysType] = useState([]);
-
-  useEffect(() => {
-    let urlforLanguages = 'https://proj.ruppin.ac.il/cgroup94/test1/api/LanguageCountry/GetAllLanguages';
-    let urlforCountries = 'https://proj.ruppin.ac.il/cgroup94/test1/api/LanguageCountry/GetAllCountries';
-    let calendarUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Calendars/GetAllCalendars';
-    fetch(calendarUrl, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-    })
-      .then(res => {
-        if (res.ok) {
-          return res.json()
-        }
-        else {
-          console.log("not found")
-        }
-      })
-      .then(data => {
-        if (data != null) {
-          for (let i = 0; i < data.length; i++) {
-            holidaysType.push({
-              id: data[i].calendarNum,
-              label: data[i].CalendarName,
-            })
-          }
-        }
-      })
-      .catch((error) => {
-        console.log("err=", error);
-      });
-    fetch(urlforCountries, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-    })
-      .then(res => {
-        if (res.ok) {
-          return res.json()
-        }
-        else {
-          console.log("not found")
-        }
-      })
-      .then(data => {
-        if (data != null) {
-          let coun = data.map((item) => {
-            return { label: item, value: item }
-          })
-          setCountry(coun);
-        }
-      })
-      .catch((error) => {
-        console.log("err=", error);
-      });
-    fetch(urlforLanguages, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-    })
-      .then(res => {
-        if (res.ok) {
-          return res.json()
-        }
-        else {
-          console.log("not found")
-        }
-      })
-      .then(data => {
-        if (data != null) {
-          let lang = data.map((item) => {
-            return { label: item.LanguageName_Origin, value: item.LanguageName_En }
-          })
-          setLanguage(lang);
-        }
-      })
-      .catch((error) => {
-        console.log("err=", error);
-      });
-  }, []);
 
   const NavigateToNextLvl = () => {
     if (role === 'Caregiver') {
-      navigation.navigate('SignUpCaregiverLVL4', { userData: userData, language: language, holidaysType: holidaysType, country: country })
+      navigation.navigate('SignUpCaregiverLVL4', { userData: userData, language: route.params.language, holidaysType: route.params.holidaysType, country: route.params.country })
     } else if (role === 'Patient’s Family Member') {
-      navigation.navigate('SignUpUserLVL4', { userData: userData, language: language, holidaysType: holidaysType })
+      navigation.navigate('SignUpUserLVL4', { userData: userData, language: route.params.language, holidaysType: route.params.holidaysType })
     }
     else {
-      alert('Please select your role')
+      Alert.alert('Please select your role')
     }
   }
 

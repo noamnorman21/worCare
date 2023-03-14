@@ -14,23 +14,26 @@ export default function LogIn({ navigation }) {
     const [showPassword, setShowPassword] = useState(false);//for password visibility
     const [keyboardOpen, setKeyboardOpen] = useState(false);//for keyboard visibility
     const [animation, setAnimation] = useState({});
-
+    const [userType, setUserType] = useState('User');
+    
     const getInitialUrl = async () => {
         // check if the app was opened from a link
         const initialUrl = await Linking.getInitialURL();
-        // exp://l4rfr8w.anonymous.19000.exp.direct/--/InvitedFrom/123456789
-
-        if (initialUrl === null || initialUrl === undefined) {            
+        //example of the url: exp://l4rfr8w.anonymous.19000.exp.direct/--/InvitedFrom/123456789/Noam
+        // Example of the real url: exp://l4rfr8w.anonymous.19000.exp.direct/
+        if (initialUrl === null || initialUrl === undefined) {
             return;
         }
-            
-        // if the app was opened from a link, navigate to the correct screen
-        const route = initialUrl.replace(/.*?:\/\//g, '');
-        const routeName = route.split('/')[2];
-        const id = route.split('/')[3];
-        const userName = route.split('/')[4];
-        if (routeName === 'InvitedFrom') {
-            navigation.navigate('Welcome', { id: id , userName: userName});
+        else {
+            // if the app was opened from a link, navigate to the correct screen
+            const route = initialUrl.replace(/.*?:\/\//g, '');
+            const routeName = route.split('/')[2];
+            const patientId = route.split('/')[3];
+            const userName = route.split('/')[4];
+            if (routeName === 'InvitedFrom') {
+                setUserType('Caregiver');
+                navigation.navigate('Welcome', { patientId: patientId, userName: userName, userType: userType });
+            }
         }
     }
     //login function
@@ -102,7 +105,7 @@ export default function LogIn({ navigation }) {
     }
     //navigate to sign up screen
     const NavigateToSignUp = () => {
-        navigation.navigate('SignUp')
+        navigation.navigate('SignUp', { userType: userType })
     }
     const NavigateToForgotPassword = () => {
         navigation.navigate('ForgotPassword')

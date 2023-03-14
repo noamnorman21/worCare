@@ -11,8 +11,8 @@ Font.loadAsync({
   'Urbanist-Light': require('../../../assets/fonts/Urbanist-Light.ttf'),
   'Urbanist-Medium': require('../../../assets/fonts/Urbanist-Medium.ttf'),
 });
-
 const SCREEN_WIDTH = Dimensions.get('window').width;
+
 export default function SignUpCaregiverLVL4({ navigation, route }) {
   const [language, setLanguage] = useState(route.params.language);
   const [country, setCountry] = useState(route.params.country);
@@ -70,7 +70,7 @@ export default function SignUpCaregiverLVL4({ navigation, route }) {
       //   DateOfBirth: date,
       //   VisaExpirationDate: visaExpiration,
       // };
-      navigation.navigate("SignUpCaregiverLVL5", { newForeignUserData: newForeignUserData, newUser: newUser, holidaysType: holidaysType });
+      navigation.navigate("SignUpCaregiverLVL5", { newForeignUserData: newForeignUserData, newUser: newUser, holidaysType: holidaysType , patientId: route.params.patientId});
     }
   };
 
