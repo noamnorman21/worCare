@@ -374,5 +374,67 @@ namespace DATA
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertPatientLimitations", patientIdParameter, allergiesParameter, sensitivitiesParameter, physicalAbilitiesParameter, bathRoutineParameter, sensitivityToNoiseParameter, otherParameter);
         }
+    
+        public virtual int NewPaycheck(Nullable<int> payCheckNum, Nullable<System.DateTime> paycheckDate, string paycheckSummary, string paycheckComment, Nullable<int> userId)
+        {
+            var payCheckNumParameter = payCheckNum.HasValue ?
+                new ObjectParameter("payCheckNum", payCheckNum) :
+                new ObjectParameter("payCheckNum", typeof(int));
+    
+            var paycheckDateParameter = paycheckDate.HasValue ?
+                new ObjectParameter("paycheckDate", paycheckDate) :
+                new ObjectParameter("paycheckDate", typeof(System.DateTime));
+    
+            var paycheckSummaryParameter = paycheckSummary != null ?
+                new ObjectParameter("paycheckSummary", paycheckSummary) :
+                new ObjectParameter("paycheckSummary", typeof(string));
+    
+            var paycheckCommentParameter = paycheckComment != null ?
+                new ObjectParameter("paycheckComment", paycheckComment) :
+                new ObjectParameter("paycheckComment", typeof(string));
+    
+            var userIdParameter = userId.HasValue ?
+                new ObjectParameter("UserId", userId) :
+                new ObjectParameter("UserId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("NewPaycheck", payCheckNumParameter, paycheckDateParameter, paycheckSummaryParameter, paycheckCommentParameter, userIdParameter);
+        }
+    
+        public virtual int NewPaymentRequest(Nullable<int> requestId, string requestSubject, Nullable<double> amountToPay, Nullable<System.DateTime> requestDate, string requestProofDocument, string requestComment, string requestStatus, Nullable<int> userId)
+        {
+            var requestIdParameter = requestId.HasValue ?
+                new ObjectParameter("requestId", requestId) :
+                new ObjectParameter("requestId", typeof(int));
+    
+            var requestSubjectParameter = requestSubject != null ?
+                new ObjectParameter("requestSubject", requestSubject) :
+                new ObjectParameter("requestSubject", typeof(string));
+    
+            var amountToPayParameter = amountToPay.HasValue ?
+                new ObjectParameter("amountToPay", amountToPay) :
+                new ObjectParameter("amountToPay", typeof(double));
+    
+            var requestDateParameter = requestDate.HasValue ?
+                new ObjectParameter("requestDate", requestDate) :
+                new ObjectParameter("requestDate", typeof(System.DateTime));
+    
+            var requestProofDocumentParameter = requestProofDocument != null ?
+                new ObjectParameter("requestProofDocument", requestProofDocument) :
+                new ObjectParameter("requestProofDocument", typeof(string));
+    
+            var requestCommentParameter = requestComment != null ?
+                new ObjectParameter("requestComment", requestComment) :
+                new ObjectParameter("requestComment", typeof(string));
+    
+            var requestStatusParameter = requestStatus != null ?
+                new ObjectParameter("requestStatus", requestStatus) :
+                new ObjectParameter("requestStatus", typeof(string));
+    
+            var userIdParameter = userId.HasValue ?
+                new ObjectParameter("userId", userId) :
+                new ObjectParameter("userId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("NewPaymentRequest", requestIdParameter, requestSubjectParameter, amountToPayParameter, requestDateParameter, requestProofDocumentParameter, requestCommentParameter, requestStatusParameter, userIdParameter);
+        }
     }
 }

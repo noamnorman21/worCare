@@ -604,6 +604,23 @@
           <Parameter Name="contactComment" Type="varchar" Mode="In" />
           <Parameter Name="patientId" Type="char" Mode="In" />
         </Function>
+        <Function Name="NewPaycheck" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="payCheckNum" Type="int" Mode="In" />
+          <Parameter Name="paycheckDate" Type="date" Mode="In" />
+          <Parameter Name="paycheckSummary" Type="nvarchar" Mode="In" />
+          <Parameter Name="paycheckComment" Type="varchar(max)" Mode="In" />
+          <Parameter Name="UserId" Type="int" Mode="In" />
+        </Function>
+        <Function Name="NewPaymentRequest" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="requestId" Type="int" Mode="In" />
+          <Parameter Name="requestSubject" Type="varchar" Mode="In" />
+          <Parameter Name="amountToPay" Type="float" Mode="In" />
+          <Parameter Name="requestDate" Type="date" Mode="In" />
+          <Parameter Name="requestProofDocument" Type="nvarchar" Mode="In" />
+          <Parameter Name="requestComment" Type="varchar(max)" Mode="In" />
+          <Parameter Name="requestStatus" Type="char" Mode="In" />
+          <Parameter Name="userId" Type="int" Mode="In" />
+        </Function>
         <Function Name="sp_alterdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
           <Parameter Name="owner_id" Type="int" Mode="In" />
@@ -1549,6 +1566,23 @@
             <Parameter Name="sensitivityToNoise" Mode="In" Type="String" />
             <Parameter Name="other" Mode="In" Type="String" />
           </FunctionImport>
+          <FunctionImport Name="NewPaycheck">
+            <Parameter Name="payCheckNum" Mode="In" Type="Int32" />
+            <Parameter Name="paycheckDate" Mode="In" Type="DateTime" />
+            <Parameter Name="paycheckSummary" Mode="In" Type="String" />
+            <Parameter Name="paycheckComment" Mode="In" Type="String" />
+            <Parameter Name="UserId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="NewPaymentRequest">
+            <Parameter Name="requestId" Mode="In" Type="Int32" />
+            <Parameter Name="requestSubject" Mode="In" Type="String" />
+            <Parameter Name="amountToPay" Mode="In" Type="Double" />
+            <Parameter Name="requestDate" Mode="In" Type="DateTime" />
+            <Parameter Name="requestProofDocument" Mode="In" Type="String" />
+            <Parameter Name="requestComment" Mode="In" Type="String" />
+            <Parameter Name="requestStatus" Mode="In" Type="String" />
+            <Parameter Name="userId" Mode="In" Type="Int32" />
+          </FunctionImport>
         </EntityContainer>
         <ComplexType Name="sp_helpdiagramdefinition_Result">
           <Property Type="Int32" Name="version" Nullable="true" />
@@ -1861,6 +1895,8 @@
           <FunctionImportMapping FunctionImportName="InsertPatient" FunctionName="igroup194_prodModel.Store.InsertPatient" />
           <FunctionImportMapping FunctionImportName="InsertPatientHobbies" FunctionName="igroup194_prodModel.Store.InsertPatientHobbies" />
           <FunctionImportMapping FunctionImportName="InsertPatientLimitations" FunctionName="igroup194_prodModel.Store.InsertPatientLimitations" />
+          <FunctionImportMapping FunctionImportName="NewPaycheck" FunctionName="igroup194_prodModel.Store.NewPaycheck" />
+          <FunctionImportMapping FunctionImportName="NewPaymentRequest" FunctionName="igroup194_prodModel.Store.NewPaymentRequest" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
