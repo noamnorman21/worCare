@@ -46,6 +46,7 @@ namespace WebApi.Controllers
                         return BadRequest("This worker already cares for this patient");
                     }                   
                 }
+                //P is status pending, we will use triger to change it to A after the user will approve 
                 db.InsertCaresForPatient(CaresForPatientDTO.patientId, CaresForPatientDTO.workerId, "P", CaresForPatientDTO.linkTo);
                 db.SaveChanges();
                 return Ok("linked succesfuly");

@@ -1,5 +1,6 @@
-import { SafeAreaView, Dimensions, View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Button, Keyboard, Alert, LayoutAnimation, Types } from 'react-native'
+import { SafeAreaView, Dimensions, View, Text, CheckBox, StyleSheet, TextInput, TouchableOpacity, Image, Button, Keyboard, Alert, LayoutAnimation, Types } from 'react-native'
 import React from 'react'
+import Checkbox from 'expo-checkbox';
 import { useEffect, useState, useContext } from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { OrLine, NeedAccount } from './FooterLine'
@@ -15,7 +16,7 @@ export default function LogIn({ navigation }) {
     const [keyboardOpen, setKeyboardOpen] = useState(false);//for keyboard visibility
     const [animation, setAnimation] = useState({});
     const [userType, setUserType] = useState('User');
-    
+    const [isChecked, setChecked] = useState(false);
     const getInitialUrl = async () => {
         // check if the app was opened from a link
         const initialUrl = await Linking.getInitialURL();
@@ -71,7 +72,7 @@ export default function LogIn({ navigation }) {
         console.log(userData);
 
         fetch(userForLoginUrl, {
-            method: 'GET',
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -83,7 +84,8 @@ export default function LogIn({ navigation }) {
                     Alert.alert('Login Failed');
                 }
                 else {
-                    Alert.alert('Login Success: ' + json.FirstName);
+                    navigation.navigate('CustomHeader');//navigate to home screen, we will add a necessary call to get user data
+                    console.log(json);
                 }
 
             }
@@ -110,6 +112,16 @@ export default function LogIn({ navigation }) {
     const NavigateToForgotPassword = () => {
         navigation.navigate('ForgotPassword')
     }
+    const taggeleRememberMe = () => {
+        if (isChecked) {
+            setChecked(false);
+        }
+        else {
+            setChecked(true);
+        }
+
+    }
+
     //keyboard listener for animation
     useEffect(() => {
         getInitialUrl();
@@ -191,15 +203,27 @@ export default function LogIn({ navigation }) {
                 </View>
                 {/* remmeber me check box  in one line*/}
                 <View style={styles.rememberMeContainer}>
-
+                    {/* <Checkbox color={'#979797'}
+                //do not shwow the vi ins
+                style={styles.rememberMeIcon} value={isChecked} onValueChange={setChecked} /> */}
                     {/* remember me check box */}
-                    <TouchableOpacity onPress={() => alert('Remember Me')}>
+                    <TouchableOpacity onPress={taggeleRememberMe}>
+                        {!isChecked ? 
                         <Icon
                             name={'check-box-outline-blank'}
                             size={20}
                             color='#979797'
+
                             style={styles.rememberMeIcon}
                         />
+                        :
+                        <Icon
+                            name={'stop'}
+                            size={20}
+                            color='#979797'
+                            style={styles.rememberMeIcon}
+                        />
+                        }
                     </TouchableOpacity>
                     <Text style={styles.rememberMe}>Remember Me</Text>
 
@@ -315,6 +339,9 @@ const styles = StyleSheet.create({
     rememberMeIcon: {
         marginTop: 10,
         marginBottom: 10,
+
+
+
     },
     forgotPasswordContainer: {
         flexDirection: 'row',

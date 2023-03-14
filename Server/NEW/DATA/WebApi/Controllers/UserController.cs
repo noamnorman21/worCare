@@ -34,7 +34,7 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("GetEmail/{userEmail}")]
         public IHttpActionResult GetEmail(string userEmail)
         {
@@ -56,7 +56,7 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("GetUserForLogin")]
         public IHttpActionResult GetUserForLogin([FromBody] UserDTO userDTO)
         {
