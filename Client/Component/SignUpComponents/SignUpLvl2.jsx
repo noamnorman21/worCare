@@ -150,26 +150,26 @@ export default function SignUpLvl2({ navigation, route }) {
   const sendDataToNextLVL = (downloadURL) => {
     //send the image to firebase storage, we will get the image url and send it to the DB
     //create the user object to send to the DB, do it after we get the image url
-    // const newUserToDB = {
-    //   FirstName: userData.firstName,
-    //   LastName: userData.lastName,
-    //   Email: userData.email,
-    //   Password: userData.password,
-    //   gender: userGender,
-    //   phoneNum: userData.phoneNum,
-    //   userUri: downloadURL,
-    // }
-
-    // for testing only
     const newUserToDB = {
-      Email: 'noam@gmail.com',
-      Password: '12345678',
-      FirstName: 'Noam',
-      LastName: 'Norman',
-      phoneNum: '0541234567',
-      gender: 'F',
+      FirstName: userData.firstName,
+      LastName: userData.lastName,
+      Email: userData.email,
+      Password: userData.password,
+      gender: userGender,
+      phoneNum: userData.phoneNum,
       userUri: downloadURL,
     }
+
+    // for testing only
+    // const newUserToDB = {
+    //   Email: 'noam@gmail.com',
+    //   Password: '12345678',
+    //   FirstName: 'Noam',
+    //   LastName: 'Norman',
+    //   phoneNum: '0541234567',
+    //   gender: 'F',
+    //   userUri: downloadURL,
+    // }
     const userType = route.params.userType;
     const patientId = route.params.patientId;
     if (userType == 'User') {

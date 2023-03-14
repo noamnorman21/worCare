@@ -24,6 +24,7 @@ namespace WebApi.Controllers
                 if (userExist == null)
                     return NotFound();
                 db.InsertForeignUser(user.Id, user.DateOfBirth, user.VisaExpirationDate, user.LanguageName_En, user.CountryName_En);
+   
                 return Ok("Foreign user added");
             }
             catch (Exception ex)

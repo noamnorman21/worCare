@@ -15,9 +15,10 @@ export default function SignUpFinish({ navigation, route }) {
     const [isAvailable, setIsAvailable] = useState(false);
     const [message, setMessage] = useState('');
     const [link, setLink] = useState('');
+    const [fromShare, setFromShare] = useState(false);
     // link to the specific screen in the app and send the patient id to the screen as a parameter
     // link to screen "Welcome" and send the patient id to the screen as a parameter
-    const deepLinkToApp = () => {        
+    const deepLinkToApp = () => {
         // , link);
         console.log("link: ", link);
     }
@@ -33,21 +34,26 @@ export default function SignUpFinish({ navigation, route }) {
     }, []);
 
     const btnSendSMS = async () => {
+
         if (isAvailable) {
             // do your SMS stuff here
             const { result } = await SMS.sendSMSAsync([contactNumber], message);
             if (result === 'sent') {
                 // Alert.alert('Invitation sent \n\n We will notify you when your friend will join');
+                setFromShare(true);
                 Alert.alert('Invitation sent', 'We will notify you when your friend will join', [
                     {
+
                         text: "OK",
-                        onPress: () => { setModalVisible(false) },
+                        onPress: () => {setModalVisible(false), createNewUserInDB() },
                         style: "cancel"
+
                     },
                 ]);
 
             }
             else {
+
                 Alert.alert('Invitation Failed', 'Please try again', [
                     {
                         text: "OK",
@@ -146,18 +152,25 @@ export default function SignUpFinish({ navigation, route }) {
         })
             .then((response) => response.json())
             .then((json) => {
-                Alert.alert(
-                    "Great Job!",
-                    "You have successfully signed up to worCare!",
-                    [
-                        {
-                            text: "OK",
-                            onPress: () => navigation.navigate('LogIn', { tblUser: route.params.tblUser })
-                        }
-                    ],
-                    { cancelable: false }
-                );
-                console.log(json)
+                if (!fromShare) {
+                    Alert.alert(
+                        "Great Job!",
+                        "You have successfully signed up to worCare!",
+                        [
+                            {
+                                text: "OK",
+                                onPress: () => navigation.navigate('LogIn', { tblUser: route.params.tblUser })
+                            }
+                        ],
+                        { cancelable: false }
+                    );
+                    console.log(json)
+                }
+                else {
+                    navigation.navigate('LogIn', { tblUser: route.params.tblUser })
+                }
+
+
             })
             .catch((error) => {
                 console.error(error);

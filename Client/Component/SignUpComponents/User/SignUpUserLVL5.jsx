@@ -22,41 +22,41 @@ export default function SignUpUserLVL5({ navigation, route }) {
   }
 
   const handleInputAndContinue = () => {
-    // if (patientFirstName === '' || patientLastName === '' || patientID === '' || date === '' || valueLanguage === null) {
-    //   Alert.alert('Please fill all the fields')
-    //   return
-    // }
-    // if (patientID.length !== 9) {
-    //   Alert.alert('Patient ID must be 9 digits')
-    //   return
-    // }
+    if (patientFirstName === '' || patientLastName === '' || patientID === '' || date === '' || valueLanguage === null) {
+      Alert.alert('Please fill all the fields')
+      return
+    }
+    if (patientID.length !== 9) {
+      Alert.alert('Patient ID must be 9 digits')
+      return
+    }
 
     
     // after all the checks, we can navigate to the next screen and pass the data 
     // after all ready uncomment the following lines and delete the lines below it
-    // const patientData = {
-    //   FirstName: patientFirstName,
-    //   LastName: patientLastName,
-    //   Id: patientID,
-    //   DateOfBirth: date,
-    //   LanguageName_En: valueLanguage
-    // }
+    const patientData = {
+      FirstName: patientFirstName,
+      LastName: patientLastName,
+      Id: patientID,
+      DateOfBirth: date,
+      LanguageName_En: valueLanguage
+    }
 
     // for testing purposes
-    const patientTest = {
-      FirstName: 'test',
-      LastName: 'test',
-      Id: '123456789',
-      DateOfBirth: '2002-01-01',
-      LanguageName_En: 'English'
-    }
-    const patientData = {
-      FirstName: patientTest.FirstName,
-      LastName: patientTest.LastName,
-      Id: patientTest.Id,
-      DateOfBirth: patientTest.DateOfBirth,
-      LanguageName_En: patientTest.LanguageName_En
-    }
+    // const patientTest = {
+    //   FirstName: 'test',
+    //   LastName: 'test',
+    //   Id: '123456789',
+    //   DateOfBirth: '2002-01-01',
+    //   LanguageName_En: 'English'
+    // }
+    // const patientData = {
+    //   FirstName: patientTest.FirstName,
+    //   LastName: patientTest.LastName,
+    //   Id: patientTest.Id,
+    //   DateOfBirth: patientTest.DateOfBirth,
+    //   LanguageName_En: patientTest.LanguageName_En
+    // }
 
     navigation.navigate('SignUpLimitations', { patientData: patientData, tblUser: route.params.tblUser })
   }

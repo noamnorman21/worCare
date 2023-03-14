@@ -56,20 +56,20 @@ export default function SignUpCaregiverLVL4({ navigation, route }) {
         userUri: userData.userUri,
       }
       // foreign user data testing 
-      const newForeignUserData = {
-        CountryName_En: 'Egypt',
-        LanguageName_En: 'Arabic',
-        DateOfBirth: '1999-01-01',
-        VisaExpirationDate: '2025-01-01',
-      };
-
-      // Foreign User Data
       // const newForeignUserData = {
-      //   CountryName_En: valueCountry,
-      //   LanguageName_En: valueLanguage,
-      //   DateOfBirth: date,
-      //   VisaExpirationDate: visaExpiration,
+      //   CountryName_En: 'Egypt',
+      //   LanguageName_En: 'Arabic',
+      //   DateOfBirth: '1999-01-01',
+      //   VisaExpirationDate: '2025-01-01',
       // };
+
+      //Foreign User Data
+      const newForeignUserData = {
+        CountryName_En: valueCountry,
+        LanguageName_En: valueLanguage,
+        DateOfBirth: date,
+        VisaExpirationDate: visaExpiration,
+      };
       navigation.navigate("SignUpCaregiverLVL5", { newForeignUserData: newForeignUserData, newUser: newUser, holidaysType: holidaysType , patientId: route.params.patientId});
     }
   };

@@ -42,6 +42,7 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
       .then((json) => {
         //save the id of the new user that we got from the DB 
         newForeignUserData.Id = json; //save the id of the new user that we got from the DB
+        console.log(newForeignUserData.Id);
         createForeignUserInDB() //create the foreign user in the DB
       })
       .catch((error) => {

@@ -805,6 +805,12 @@
       <Parameter Name="requestStatus" Mode="In" Type="String" />
       <Parameter Name="userId" Mode="In" Type="Int32" />
     </FunctionImport>
+    <FunctionImport Name="InsertCaresForPatient">
+      <Parameter Name="patientId" Mode="In" Type="String" />
+      <Parameter Name="workerId" Mode="In" Type="Int32" />
+      <Parameter Name="status" Mode="In" Type="String" />
+      <Parameter Name="linkTo" Mode="In" Type="String" />
+    </FunctionImport>
   </EntityContainer>
   <ComplexType Name="sp_helpdiagramdefinition_Result">
     <Property Type="Int32" Name="version" Nullable="true" />

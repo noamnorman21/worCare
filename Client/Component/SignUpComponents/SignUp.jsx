@@ -63,54 +63,54 @@ export default function CreateUser({ navigation, route }) {
 
   const handleCreateUser = () => {
     const { email, password, firstName, lastName, phoneNum } = user
-    // if (!email || !password || !firstName || !lastName || !phoneNum) {
-    //   return Alert.alert('Error', 'All fields are required')
-    // }
-
-    // if (!validateEmail(email)) {
-    //   return Alert.alert('Invalid Email', 'Please enter a valid email')
-    // }
-
-    // if (!validatePassword(password)) {
-    //   return Alert.alert('Invalid Password', 'Please enter a password with at least 8 characters, 1 letter, and 1 number')
-    // }
-
-    // if (firstName === '') {
-    //   return Alert.alert('Invalid First Name', 'Please enter a valid first name')
-    // }
-    // if (lastName === '') {
-    //   return Alert.alert('Invalid Last Name', 'Please enter a valid last name')
-    // }
-
-    // if (!validatePhoneNum(phoneNum)) {
-    //   return Alert.alert('Invalid Phone Number', 'Please enter a valid phone number')
-    // }
-    // for testing purposes
-    const userTest = {
-      email: 'noam@gmail.com',
-      password: '12345678',
-      firstName: 'Noam',
-      lastName: 'Norman',
-      phoneNum: '0541234567',
-      imagePath: userImage,
+    if (!email || !password || !firstName || !lastName || !phoneNum) {
+      return Alert.alert('Error', 'All fields are required')
     }
-    // const userData = {
-    //   email: user.email,
-    //   password: user.password,
-    //   firstName: user.firstName,
-    //   lastName: user.lastName,
-    //   phoneNum: user.phoneNum,
+
+    if (!validateEmail(email)) {
+      return Alert.alert('Invalid Email', 'Please enter a valid email')
+    }
+
+    if (!validatePassword(password)) {
+      return Alert.alert('Invalid Password', 'Please enter a password with at least 8 characters, 1 letter, and 1 number')
+    }
+
+    if (firstName === '') {
+      return Alert.alert('Invalid First Name', 'Please enter a valid first name')
+    }
+    if (lastName === '') {
+      return Alert.alert('Invalid Last Name', 'Please enter a valid last name')
+    }
+
+    if (!validatePhoneNum(phoneNum)) {
+      return Alert.alert('Invalid Phone Number', 'Please enter a valid phone number')
+    }
+    // for testing purposes
+    // const userTest = {
+    //   email: 'noam12232@gmail.com',
+    //   password: '12345678',
+    //   firstName: 'Noam',
+    //   lastName: 'Norman',
+    //   phoneNum: '0591277567',
     //   imagePath: userImage,
     // }
-
     const userData = {
-      email: userTest.email,
-      password: userTest.password,
-      firstName: userTest.firstName,
-      lastName: userTest.lastName,
-      phoneNum: userTest.phoneNum,
-      imagePath: userTest.imagePath,
+      email: user.email,
+      password: user.password,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      phoneNum: user.phoneNum,
+      imagePath: userImage,
     }
+
+    // const userData = {
+    //   email: userTest.email,
+    //   password: userTest.password,
+    //   firstName: userTest.firstName,
+    //   lastName: userTest.lastName,
+    //   phoneNum: userTest.phoneNum,
+    //   imagePath: userTest.imagePath,
+    // }
 
     console.log(userData)
     if (route.params.userType === 'User') {

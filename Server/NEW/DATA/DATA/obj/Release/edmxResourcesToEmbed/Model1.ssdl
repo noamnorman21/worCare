@@ -543,6 +543,12 @@
     <Parameter Name="id" Type="int" Mode="In" />
     <Parameter Name="isPrimary" Type="bit" Mode="In" />
   </Function>
+  <Function Name="InsertCaresForPatient" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="patientId" Type="char" Mode="In" />
+    <Parameter Name="workerId" Type="int" Mode="In" />
+    <Parameter Name="status" Type="char" Mode="In" />
+    <Parameter Name="linkTo" Type="varchar" Mode="In" />
+  </Function>
   <Function Name="InsertForeignUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="Id" Type="int" Mode="In" />
     <Parameter Name="DateOfBirth" Type="date" Mode="In" />
