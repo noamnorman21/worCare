@@ -1,10 +1,281 @@
-import { View, Text } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Alert } from 'react-native'
+import { useEffect, useState } from 'react'
 import React from 'react'
+import { Searchbar } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import AddNewContact from './ContactComponents/AddNewContact'
+
+
+import Contact from './ContactComponents/Contact'
+
+
+
 
 export default function Contacts() {
+  const stack = createStackNavigator();
+
   return (
-    <View>
-      <Text>Contacts</Text>
+    <stack.Navigator initialRouteName='Main' screenOptions={{ headerShown: false} } >
+      <stack.Screen name="Main" component={Main} options={{ headerShown: false }} />
+      <stack.Screen name="Contact" component={Contact}  options={{ headerShown: false,presentation: 'modal' }} />
+      <stack.Screen name="AddNewContact" component={AddNewContact} options={{ headerShown: false,presentation: 'modal' }}  />
+    </stack.Navigator>
+  )
+
+}
+import { useIsFocused } from '@react-navigation/native';
+function Main({ navigation }) {
+  const [Contacts, setContacts] = useState([])
+  const [Search, setSearch] = useState([])
+  const [ContactToRender, setContactToRender] = useState([])
+  const PatientId = 779355403// will change when we finish context to get the patient id
+  const isFocused = useIsFocused()
+
+  const onChangeSearch = query => setSearch(query);
+  const fetchContacts = async () => {
+    fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/GetContacts/' + PatientId)
+      .then((response) => response.json())
+      .then(json => {
+        if (json != null) {
+            let contacts = json.map((item) => {
+            return <ContactCard key={item.contactId} contact={item}  />
+          })
+          setContacts(json);
+          setContactToRender(contacts);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      }
+      );
+  }
+
+   useEffect(() => {
+    let temp = Contacts.filter((item) => {
+      return item.contactName.includes(Search)
+    })
+    let contacts = temp.map((item) => {
+      return <ContactCard key={item.contactId}  contact={item} />
+    })
+    setContactToRender(contacts);
+  }, [Search])
+
+  useEffect(() => {
+    if(isFocused){
+     fetchContacts()
+    }
+}, [isFocused])
+
+
+  return (
+    <View style={styles.container}>
+      <Searchbar style={styles.searchBar}
+        placeholder="Search"
+        onChangeText={onChangeSearch}
+        value={Search}
+        icon="magnify"
+      />
+      {ContactToRender}
+      <TouchableOpacity style={styles.button} mode="fixed" onPress={() => navigation.navigate('AddNewContact')}>
+        <Text style={styles.buttonText}>+</Text>
+      </TouchableOpacity>
     </View>
   )
 }
+
+
+
+function ContactCard(props) {
+  const navigation = useNavigation();
+  return (
+    <TouchableOpacity style={styles.contactcard} onPress={() => navigation.navigate('Contact', { contact: props.contact })}>
+      <Text style={styles.name}>{props.contact.contactName}</Text>
+      <Text style={styles.number}>{props.contact.mobileNo}</Text>
+    </TouchableOpacity>
+  )
+}
+
+
+// Path: Client\Component\Contact.jsx
+// Contact Page
+// function Contact({ route, navigation }) {
+//   const { contact } = route.params;
+//   const Cancel = () => {
+//     Alert.alert(
+//       'Cancel Changes',
+//       'are you sure you want to alose the app?',
+//       [
+//         { text: "Don't leave", style: 'cancel', onPress: () => {} },
+//         {
+//           text: 'Leave',
+//           style: 'destructive',
+//           // If the user confirmed, then we dispatch the action we blocked earlier
+//           // This will continue the action that had triggered the removal of the screen
+//           onPress: () => navigation.popToTop()
+//         },
+//       ]
+//     );
+//   }
+  
+//   const SaveChanges = () => {
+//     Alert.alert("Changes saved")
+//   }
+
+//   return (
+//     <SafeAreaView style={styles.contact}>
+//       <Text style={styles.contactheader}>{contact.contactName}</Text>
+//       <View style={styles.details}>
+//       <Text style={styles.detailsheader}>Phone number: </Text> 
+//       <Text style={styles.contacttext}>{contact.phoneNo} </Text> 
+//       <Text style={styles.detailsheader}>Mobile number: </Text>
+//       <Text style={styles.contacttext}>{contact.mobileNo}</Text>
+//       <Text style={styles.detailsheader}>Email: </Text>
+//       <Text style={styles.contacttext}>{contact.email}</Text>
+//       <Text style={styles.detailsheader}>Role: </Text>
+//       <Text style={styles.contacttext}>{contact.role}</Text>
+//       <Text style={styles.detailsheader}>Comment: </Text>
+//       <Text style={styles.contacttext}>{contact.contactComment}</Text>
+//       <View style={styles.bottom}>
+//       <TouchableOpacity style={styles.savebutton} onPress={SaveChanges}>
+//         <Text style={styles.savebuttonText}>Save</Text>
+//       </TouchableOpacity>
+//       <TouchableOpacity style={styles.cancelbutton} onPress={Cancel}>
+//         <Text style={styles.cancelbuttonText}>Cancel</Text>
+//       </TouchableOpacity>
+//       </View>
+//       </View>
+//     </SafeAreaView>
+//   )
+// }
+
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  contact:{
+    justifyContent:'center',
+  },
+  details:{
+    marginTop: -20,
+    margin: 10,
+    padding: 10,
+    textAlign: 'left',
+  },
+detailsheader:{
+fontSize: 15,
+},
+  contactheader: {
+    fontSize: 18,
+    color: '#000',
+    borderBottomColor: '#B9B9B9',
+    borderBottomWidth: 1,
+    borderRadius: 10,
+    margin: 10,
+    padding: 10,
+    textAlign: 'left',   
+  },
+ 
+  contacttext: {
+    fontSize: 14,
+    textAlign: 'left',
+    paddingTop: 10,
+    paddingBottom: 10,
+    borderBottomColor: '#B9B9B9',
+    borderBottomWidth: 0.4,    
+    marginTop: 10,
+    marginLeft:0,
+    backgroundColor: '#fff',
+    borderRadius: 16,    
+  },
+
+  contactcard: {
+    backgroundColor: '#fff',
+    height: 60,
+    marginTop: 0,
+    margin: 10,
+    padding: 10,
+    textAlign: 'left',
+    borderBottomWidth: 1,
+    borderBottomColor: '#B9B9B9',
+  },
+  name: {
+    fontSize: 17,
+    color: '#000',
+  },
+  number: {
+    fontSize: 14,
+    color: '#8A8A8D',
+  },
+  searchBar: {
+    margin: 10,
+    borderRadius: 16,
+    backgroundColor: '#E6EBF2',
+    height: Dimensions.get('window').height * 0.06,
+  },
+  button: {
+    margin: 10,
+    borderRadius: 54,
+    backgroundColor: '#548DFF',
+    width: Dimensions.get('window').width * 0.2,
+    height: Dimensions.get('window').height * 0.1,
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonText: {
+    fontSize: 30,
+    color: '#fff',
+  },
+  savebutton: {
+    width: Dimensions.get('window').width * 0.4,
+    backgroundColor: '#548DFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: 'lightgray',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 1,
+    margin: 7,
+    height: 45,
+  },
+  cancelbutton: {
+    width: Dimensions.get('window').width * 0.4,
+    backgroundColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: 'lightgray',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 1,
+    margin: 7,
+    height: 45,
+  },
+  bottom: {
+    flexDirection: 'row',
+    marginTop: 20,
+  },
+  savebuttonText: {
+    color: 'white',
+    fontWeight: '600',
+    fontSize: 16,
+  },
+  cancelbuttonText: {
+    color: 'black',
+    fontWeight: '600',
+    fontSize: 16,
+  },
+
+});
