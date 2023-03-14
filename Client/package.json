@@ -26,6 +26,7 @@
     "dotenv": "^16.0.3",
     "expo": "~47.0.12",
     "expo-app-loading": "^2.1.1",
+    "expo-checkbox": "~2.2.2",
     "expo-constants": "~14.0.2",
     "expo-contacts": "~11.0.1",
     "expo-firebase": "^0.0.0-alpha.0",
@@ -54,8 +55,7 @@
     "react-native-screens": "~3.18.0",
     "react-native-vector-icons": "^9.2.0",
     "react-navigation": "^4.4.4",
-    "rn-country-picker": "^1.0.1",
-    "expo-checkbox": "~2.2.2"
+    "rn-country-picker": "^1.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"
