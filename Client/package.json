@@ -34,6 +34,7 @@
     "firebase": "^9.17.1",
     "react": "18.1.0",
     "react-native": "0.70.5",
+    "react-native-collapsible": "^1.6.0",
     "react-native-countries": "^1.0.3",
     "react-native-date-picker": "^4.2.8",
     "react-native-datepicker": "^1.7.2",

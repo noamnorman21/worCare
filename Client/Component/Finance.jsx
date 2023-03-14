@@ -3,8 +3,9 @@ import React from 'react'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
-import useIsFocused from '@react-navigation/native';
-import { useState } from 'react';
+import Pending from './PaymentsScreen/Pending';
+import History from './PaymentsScreen/History';
+
 
 
 
@@ -74,29 +75,15 @@ function Payments() {
   return (
     <Tab.Navigator initialRouteName="Pending"
       backBehavior='none'
-      tabBarOptions={{
-        activeTintColor: '#548DFF',
-        inactiveTintColor: '#9E9E9E',
-        style: {
-          backgroundColor: 'none',
-          flex: 0,
-          indicatorStyle: {
-            backgroundColor: '#548DFF',
-            height: 4,
-            borderRadius: 25,
-          }
-
-        },
-        labelStyle: {
-          fontSize: 24,
-          fontWeight: 'bold',
-          
-        },
-
-
-      }}
+     screenOptions={{
+      tabBarActiveTintColor: '#548DFF',
+      tabBarInactiveTintColor: 'grey',
+      tabBarIndicatorStyle: { height: 4, marginLeft:5, marginRight:5, width: '45%', borderRadius: 16,},
+      tabBarLabelStyle: { fontSize: 24, fontWeight: 'bold', fontFamily: 'sans-serif', textTransform: 'none' },
+      tabBarStyle: { backgroundColor: '#fff' },      
+     }}
     >
-      <Tab.Screen name="Pending" component={Pending} />
+      <Tab.Screen name="Pending" component={Pending}  />
       {/*במעבר למסך תשלומים ממתינים תבוצע םעולת גט אשר תשלוף את כלל בקשות התשלום אשר שמורות במסד הנתונים.
     אשר סטטוס הבקשה שלהם אינו סומן כשולם*/}
       <Tab.Screen name="History" component={History} />
@@ -106,64 +93,7 @@ function Payments() {
   );
 }
 
-function Pending() {
-  const userId = 1 // יש להחליף למשתנה של המשתמש הנוכחי
 
-  // const [Pending, setPending] = useState(second)
-  // useEffect(() => {
-  //   if (isFocused) {
-  //     getPending()
-  //   }
-  // }, [isFocused])
-
-  // const getPending = async () => {
-  //   try {
-  //     const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/GetPending/' + userId, {
-  //       method: 'GET',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-
-  //       },
-  //     });
-  //     const data = await response.json();
-  //     console.log(data)
-  //     let data2 = data.map((item) => {
-  //       return {
-  //         id: item.id,
-  //         subject: item.subject,
-  //         amount: item.amount,
-  //         requestDate: item.requestDate,
-  //         proofofdocument: item.proofofdocument,
-  //         comment: item.comment,
-  //         status: item.status,
-  //       }
-  //     })
-  //     setPending(data)
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // }
-
-
-
-  return (
-    <View style={styles.Pending}>    
-      <Request/>
-      <Request/>
-      <Request/>
-    </View>
-  );
-}
-
-function History() {
-  return (
-    <View style={styles.Pending}>    
-    <Request/>
-    <Request/>
-    <Request/>
-  </View>
-  );
-}
 
 function Paycheck() {
   return (
@@ -173,11 +103,11 @@ function Paycheck() {
   );
 }
 
-function Request () {
+function Request (props) {
   return (
     <View style={styles.request}>
-      <Text style={styles.requestText}>Date</Text>
-      <Text style={styles.requestText}>Name</Text>
+      <Text style={styles.requestText}>{props.date}</Text>
+      <Text style={styles.requestText}>{props.subject}</Text>
     </View>
   )
 }
@@ -191,7 +121,8 @@ const styles = StyleSheet.create({
   Pending: {
     flex: 1,
     alignItems: 'center',
-    marginTop: 20,
+    paddingTop: 20,
+    backgroundColor: 'white',
   },
 
   BigIMG: {
