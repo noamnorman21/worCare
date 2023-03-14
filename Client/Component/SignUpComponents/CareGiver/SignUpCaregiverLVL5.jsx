@@ -1,4 +1,5 @@
 import { View, Text, SafeAreaView, StyleSheet, Dimensions, ScrollView, TouchableOpacity, Alert } from 'react-native'
+import * as Linking from 'expo-linking';
 import { useState, useEffect } from 'react'
 import * as Font from 'expo-font';
 import Holidays from '../../HelpComponents/Holidays';
@@ -11,16 +12,22 @@ Font.loadAsync({
 });
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
-export default function SignUpCaregiverLVL5({ navigation, route }, props) {
+export default function SignUpCaregiverLVL5({ navigation, route }) {
   const [selectedHolidays, setSelectedHolidays] = useState([]);
   const newForeignUserData = route.params.newForeignUserData;
   const newUser = route.params.newUser;
   const holidaysType = route.params.holidaysType;
-  const patientId = route.params.patientId;
+  const [linkTo, setLinkTo] = useState("");
 
-  const createUserTemp = () => {
-    console.log("patient ID: ", patientId);
+
+  useEffect(() => {
+    getInitialUrl();
+  }, []);
+  const getInitialUrl = async () => {
+    setLinkTo( await Linking.getInitialURL());
+    console.log("link:", linkTo);
   }
+
 
   const createUserInDB = () => {
     newUser.Calendars = selectedHolidays; //selectedHolidays is the array of the selected holidays,use them in data base with stored procedure "InsertCalendarForUser"    
@@ -55,11 +62,37 @@ export default function SignUpCaregiverLVL5({ navigation, route }, props) {
       .then((response) => response.json())
       .then((json) => {
         console.log(json);
+        InsertCaresForPatient();
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+  const InsertCaresForPatient = () => {
+    const caresForPatient = {
+      patientId: route.params.patientId,
+      workerId: newForeignUserData.Id,
+      linkTo: linkTo,
+      status: "P"
+    };
+    console.log(caresForPatient);
+    fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/ForeignUser/InsertCaresForPatient', {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(caresForPatient),
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        console.log(json);
+
         Alert.alert("Great Job !", "You can login now", [
           {
             text: "OK",
             onPress: () => {
               navigation.navigate('LogIn');
+              //we will add to this stage a notification to the user that a new caregiver was added to his care team, and he will approve it
             }
           }
         ]);
@@ -71,7 +104,7 @@ export default function SignUpCaregiverLVL5({ navigation, route }, props) {
 
   const isItemSelected = (arr) => {
     setSelectedHolidays(arr); //arr is the array of the selected holidays
-    console.log("selectedHolidays=", selectedHolidays);
+
   };
 
   return (
@@ -83,7 +116,7 @@ export default function SignUpCaregiverLVL5({ navigation, route }, props) {
       <View style={styles.btnContainer}>
         <TouchableOpacity
           style={styles.button}
-          onPress={createUserTemp}
+          onPress={createUserInDB}
         >
           <Text style={styles.buttonText}>Sign Up</Text>
         </TouchableOpacity>
