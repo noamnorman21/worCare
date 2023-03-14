@@ -87,7 +87,7 @@ export default function LogIn({ navigation }) {
             console.log('error saving user');
         }
     }
-    //function to get user email and password from async storage
+    //function to get user email and password from async storage, it called when the app starts using useEffect
     const _retrieveData = async () => {
         try {
             const value = await AsyncStorage.getItem('user');
@@ -98,6 +98,12 @@ export default function LogIn({ navigation }) {
                 setEmail(user.Email);
                 setPassword(user.Password);
                 setChecked(true);
+                let userData = {
+                    Email: email,
+                    Password: password,
+                }
+                LoginUser(userData);    
+
             }
         } catch (error) {
             // Error retrieving data
@@ -129,7 +135,7 @@ export default function LogIn({ navigation }) {
                             console.log('checked');
                             _storeData();
                         }
-                        //navigation.navigate('CustomHeader');//navigate to home screen, we will add a necessary call to get user data
+                        navigation.navigate('CustomHeader');//navigate to home screen, we will add a necessary call to get user data from the server 
                         console.log(json);
                     }
 
