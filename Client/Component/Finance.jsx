@@ -1,10 +1,14 @@
-import { View, Text, StyleSheet, TouchableOpacity, Image,  Dimensions } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions } from 'react-native'
 import React from 'react'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
+import Pending from './PaymentsScreen/Pending';
+import History from './PaymentsScreen/History';
 
-const Tab = createMaterialTopTabNavigator();
+
+
+
 const Stack = createStackNavigator();
 
 // Big Image and 2 Buttons that will navigate to 2 different screens
@@ -40,7 +44,7 @@ export default function Finance() {
   );
 }
 
-function Choice() {
+function Choice({ navigation }) {
   return (
     <View style={styles.container}>
       <Image source={require('../images/logo_New.png')} style={styles.BigIMG} />
@@ -57,7 +61,7 @@ function Choice() {
         activeOpacity={1}
         style={styles.button}
         onPress={() => {
-          navigation.navigate('Paycheck')
+          navigation.navigate('Paychecks')
         }}
       >
         <Text style={styles.txt}>Paycheck</Text>
@@ -66,30 +70,30 @@ function Choice() {
   );
 }
 
+const Tab = createMaterialTopTabNavigator();
 function Payments() {
   return (
-    <Tab.Navigator initialRouteName="Pending" >
-      <Tab.Screen name="Pending" component={Pending} />
+    <Tab.Navigator initialRouteName="Pending"
+      backBehavior='none'
+     screenOptions={{
+      tabBarActiveTintColor: '#548DFF',
+      tabBarInactiveTintColor: 'grey',
+      tabBarIndicatorStyle: { height: 4, marginLeft:5, marginRight:5, width: '45%', borderRadius: 16,},
+      tabBarLabelStyle: { fontSize: 24, fontWeight: 'bold', fontFamily: 'sans-serif', textTransform: 'none' },
+      tabBarStyle: { backgroundColor: '#fff' },      
+     }}
+    >
+      <Tab.Screen name="Pending" component={Pending}  />
+      {/*במעבר למסך תשלומים ממתינים תבוצע םעולת גט אשר תשלוף את כלל בקשות התשלום אשר שמורות במסד הנתונים.
+    אשר סטטוס הבקשה שלהם אינו סומן כשולם*/}
       <Tab.Screen name="History" component={History} />
+      { /*במעבר למסך היסטוריית התשלומים תבוצע םעולת גט אשר תשלוף את כלל בקשות התשלום אשר שמורות במסד הנתונים.
+    אשר סטטוס הבקשה שלהם סומן כשולם*/}
     </Tab.Navigator>
   );
 }
 
-function Pending() {
-  return (
-    <View style={styles.container} >
-      <Text>Pending</Text>
-    </View>
-  );
-}
 
-function History() {
-  return (
-    <View style={styles.container} >
-      <Text>History</Text>
-    </View>
-  );
-}
 
 function Paycheck() {
   return (
@@ -99,12 +103,28 @@ function Paycheck() {
   );
 }
 
+function Request (props) {
+  return (
+    <View style={styles.request}>
+      <Text style={styles.requestText}>{props.date}</Text>
+      <Text style={styles.requestText}>{props.subject}</Text>
+    </View>
+  )
+}
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
+  Pending: {
+    flex: 1,
+    alignItems: 'center',
+    paddingTop: 20,
+    backgroundColor: 'white',
+  },
+
   BigIMG: {
     width: Dimensions.get('screen').width * 1,
     resizeMode: 'contain',
@@ -123,4 +143,21 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  request: {
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: 'none',
+    height: 54,
+    width: Dimensions.get('screen').width * 0.9,
+    margin: 10,   
+    borderWidth: 1,
+    borderColor: '#9E9E9E',
+    borderRadius: 16,
+    flexDirection: 'row', 
+    padding: 16,  
+  },
+  requestText: {
+    fontSize: 16,
+    fontWeight: '600',
+  }
 })
