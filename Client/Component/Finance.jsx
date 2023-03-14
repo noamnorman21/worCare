@@ -5,6 +5,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import Pending from './PaymentsScreen/Pending';
 import History from './PaymentsScreen/History';
+import EditPaymentScreen from './PaymentsScreen/EditPaymentScreen';
+import NewPayment from './PaymentsScreen/NewPayment';
 
 
 
@@ -21,7 +23,7 @@ export default function Finance() {
         <Stack.Screen name='choice' component={Choice} options={() => ({
           headerShown: false,
         })} />
-        <Stack.Screen name='Payments' component={Payments} options={() => ({
+        <Stack.Screen name='PaymentNav' component={PaymentNav} options={() => ({
           headerShown: false,
           presentation: 'stack',
           cardOverlayEnabled: true,
@@ -39,6 +41,16 @@ export default function Finance() {
           presentation: 'stack',
           cardOverlayEnabled: true,
         })} />
+         <Stack.Screen name='EditPaymentScreen' component={EditPaymentScreen} options={() => ({
+          headerShown: false,
+          presentation: 'modal',
+          cardOverlayEnabled: true,
+        })} />
+             <Stack.Screen name='NewPayment' component={NewPayment} options={() => ({
+          headerShown: false,
+          presentation: 'modal',
+          cardOverlayEnabled: true,
+        })} />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -52,7 +64,7 @@ function Choice({ navigation }) {
         activeOpacity={1}
         style={styles.button}
         onPress={() => {
-          navigation.navigate('Payments')
+          navigation.navigate('PaymentNav')
         }}
       >
         <Text style={styles.txt}>Payment</Text>
@@ -70,9 +82,37 @@ function Choice({ navigation }) {
   );
 }
 
+
 const Tab = createMaterialTopTabNavigator();
+
+function PaymentNav (){
+  return(
+    <Stack.Navigator initialRouteName="Payments" independent={true}
+      backBehavior='none'
+     screenOptions={{
+      tabBarActiveTintColor: '#548DFF',
+      tabBarInactiveTintColor: 'grey',
+      tabBarIndicatorStyle: { height: 4, marginLeft:5, marginRight:5, width: '45%', borderRadius: 16,},
+      tabBarLabelStyle: { fontSize: 24, fontWeight: 'bold', fontFamily: 'sans-serif', textTransform: 'none' },
+      tabBarStyle: { backgroundColor: '#fff' },     
+           
+     }}
+    >
+      <Tab.Screen name="Payments" component={Payments} options={{ headerShown: false} }  />
+      {/*במעבר למסך תשלומים ממתינים תבוצע םעולת גט אשר תשלוף את כלל בקשות התשלום אשר שמורות במסד הנתונים.
+    אשר סטטוס הבקשה שלהם אינו סומן כשולם*/}
+      <Tab.Screen name="History" component={History} options={{ headerShown: false} } />
+      { /*במעבר למסך היסטוריית התשלומים תבוצע םעולת גט אשר תשלוף את כלל בקשות התשלום אשר שמורות במסד הנתונים.
+    אשר סטטוס הבקשה שלהם סומן כשולם*/}
+    
+    </Stack.Navigator>
+
+  );
+}
+
 function Payments() {
   return (
+    
     <Tab.Navigator initialRouteName="Pending"
       backBehavior='none'
      screenOptions={{
@@ -88,8 +128,9 @@ function Payments() {
     אשר סטטוס הבקשה שלהם אינו סומן כשולם*/}
       <Tab.Screen name="History" component={History} />
       { /*במעבר למסך היסטוריית התשלומים תבוצע םעולת גט אשר תשלוף את כלל בקשות התשלום אשר שמורות במסד הנתונים.
-    אשר סטטוס הבקשה שלהם סומן כשולם*/}
+    אשר סטטוס הבקשה שלהם סומן כשולם*/}    
     </Tab.Navigator>
+
   );
 }
 

@@ -16,7 +16,7 @@ Font.loadAsync({
 export default function CreateUser({ navigation }) {
   const [showPassword, setShowPassword] = useState(false);//for password visibility
   const [keyboardOpen, setKeyboardOpen] = useState(false);//for keyboard visibility
-  const [animation, setAnimation] = useState({});
+    
   const [userImage, setUserImage] = useState(null)
   const [user, setUser] = useState({
     email: '',
@@ -24,7 +24,6 @@ export default function CreateUser({ navigation }) {
     firstName: '',
     lastName: '',
     phoneNum: '',
-
   })
 
   useEffect(() => {

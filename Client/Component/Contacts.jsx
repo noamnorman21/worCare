@@ -56,7 +56,7 @@ function Main({ navigation }) {
       return item.contactName.includes(Search)
     })
     let contacts = temp.map((item) => {
-      return <ContactCard key={item.contactId}  contact={item} />
+      return <ContactCard key={item.contactId} contact={item} />
     })
     setContactToRender(contacts);
   }, [Search])
@@ -97,57 +97,6 @@ function ContactCard(props) {
 }
 
 
-// Path: Client\Component\Contact.jsx
-// Contact Page
-// function Contact({ route, navigation }) {
-//   const { contact } = route.params;
-//   const Cancel = () => {
-//     Alert.alert(
-//       'Cancel Changes',
-//       'are you sure you want to alose the app?',
-//       [
-//         { text: "Don't leave", style: 'cancel', onPress: () => {} },
-//         {
-//           text: 'Leave',
-//           style: 'destructive',
-//           // If the user confirmed, then we dispatch the action we blocked earlier
-//           // This will continue the action that had triggered the removal of the screen
-//           onPress: () => navigation.popToTop()
-//         },
-//       ]
-//     );
-//   }
-  
-//   const SaveChanges = () => {
-//     Alert.alert("Changes saved")
-//   }
-
-//   return (
-//     <SafeAreaView style={styles.contact}>
-//       <Text style={styles.contactheader}>{contact.contactName}</Text>
-//       <View style={styles.details}>
-//       <Text style={styles.detailsheader}>Phone number: </Text> 
-//       <Text style={styles.contacttext}>{contact.phoneNo} </Text> 
-//       <Text style={styles.detailsheader}>Mobile number: </Text>
-//       <Text style={styles.contacttext}>{contact.mobileNo}</Text>
-//       <Text style={styles.detailsheader}>Email: </Text>
-//       <Text style={styles.contacttext}>{contact.email}</Text>
-//       <Text style={styles.detailsheader}>Role: </Text>
-//       <Text style={styles.contacttext}>{contact.role}</Text>
-//       <Text style={styles.detailsheader}>Comment: </Text>
-//       <Text style={styles.contacttext}>{contact.contactComment}</Text>
-//       <View style={styles.bottom}>
-//       <TouchableOpacity style={styles.savebutton} onPress={SaveChanges}>
-//         <Text style={styles.savebuttonText}>Save</Text>
-//       </TouchableOpacity>
-//       <TouchableOpacity style={styles.cancelbutton} onPress={Cancel}>
-//         <Text style={styles.cancelbuttonText}>Cancel</Text>
-//       </TouchableOpacity>
-//       </View>
-//       </View>
-//     </SafeAreaView>
-//   )
-// }
 
 
 const styles = StyleSheet.create({
