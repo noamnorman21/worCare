@@ -14,10 +14,9 @@ namespace WebApi.Controllers
     public class ForeignUserController : ApiController
     {
         igroup194DB db = new igroup194DB();
-
         [HttpPost]
         [Route("InsertForeignUser")]
-        public IHttpActionResult Post([FromBody] ForeignUserDTO user)
+        public IHttpActionResult InsertForeignUser([FromBody] ForeignUserDTO user)
         {
             try
             {
@@ -31,6 +30,29 @@ namespace WebApi.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+        //function to link Foreign with patient        
+        [HttpPost]
+        [Route("InsertCaresForPatient")]
+        public IHttpActionResult InsertCaresForPatient([FromBody] CaresForPatientDTO CaresForPatientDTO)
+        {
+            try
+            {
+                foreach (tblCaresForPatient item in db.tblCaresForPatients)
+                {
+                    if (CaresForPatientDTO.workerId == item.workerId && CaresForPatientDTO.patientId == item.patientId &&item.status=="A")
+                    {
+                        return BadRequest("This worker already cares for this patient");
+                    }                   
+                }
+                db.InsertCaresForPatient(CaresForPatientDTO.patientId, CaresForPatientDTO.workerId, "P", CaresForPatientDTO.linkTo);
+                db.SaveChanges();
+                return Ok("linked succesfuly");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }          
         }
 
         // PUT api/<controller>/5

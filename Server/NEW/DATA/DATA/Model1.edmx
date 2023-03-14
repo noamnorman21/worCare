@@ -548,6 +548,12 @@
           <Parameter Name="id" Type="int" Mode="In" />
           <Parameter Name="isPrimary" Type="bit" Mode="In" />
         </Function>
+        <Function Name="InsertCaresForPatient" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="patientId" Type="char" Mode="In" />
+          <Parameter Name="workerId" Type="int" Mode="In" />
+          <Parameter Name="status" Type="char" Mode="In" />
+          <Parameter Name="linkTo" Type="varchar" Mode="In" />
+        </Function>
         <Function Name="InsertForeignUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="Id" Type="int" Mode="In" />
           <Parameter Name="DateOfBirth" Type="date" Mode="In" />
@@ -1583,6 +1589,12 @@
             <Parameter Name="requestStatus" Mode="In" Type="String" />
             <Parameter Name="userId" Mode="In" Type="Int32" />
           </FunctionImport>
+          <FunctionImport Name="InsertCaresForPatient">
+            <Parameter Name="patientId" Mode="In" Type="String" />
+            <Parameter Name="workerId" Mode="In" Type="Int32" />
+            <Parameter Name="status" Mode="In" Type="String" />
+            <Parameter Name="linkTo" Mode="In" Type="String" />
+          </FunctionImport>
         </EntityContainer>
         <ComplexType Name="sp_helpdiagramdefinition_Result">
           <Property Type="Int32" Name="version" Nullable="true" />
@@ -1897,6 +1909,7 @@
           <FunctionImportMapping FunctionImportName="InsertPatientLimitations" FunctionName="igroup194_prodModel.Store.InsertPatientLimitations" />
           <FunctionImportMapping FunctionImportName="NewPaycheck" FunctionName="igroup194_prodModel.Store.NewPaycheck" />
           <FunctionImportMapping FunctionImportName="NewPaymentRequest" FunctionName="igroup194_prodModel.Store.NewPaymentRequest" />
+          <FunctionImportMapping FunctionImportName="InsertCaresForPatient" FunctionName="igroup194_prodModel.Store.InsertCaresForPatient" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

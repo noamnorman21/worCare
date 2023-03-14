@@ -436,5 +436,26 @@ namespace DATA
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("NewPaymentRequest", requestIdParameter, requestSubjectParameter, amountToPayParameter, requestDateParameter, requestProofDocumentParameter, requestCommentParameter, requestStatusParameter, userIdParameter);
         }
+    
+        public virtual int InsertCaresForPatient(string patientId, Nullable<int> workerId, string status, string linkTo)
+        {
+            var patientIdParameter = patientId != null ?
+                new ObjectParameter("patientId", patientId) :
+                new ObjectParameter("patientId", typeof(string));
+    
+            var workerIdParameter = workerId.HasValue ?
+                new ObjectParameter("workerId", workerId) :
+                new ObjectParameter("workerId", typeof(int));
+    
+            var statusParameter = status != null ?
+                new ObjectParameter("status", status) :
+                new ObjectParameter("status", typeof(string));
+    
+            var linkToParameter = linkTo != null ?
+                new ObjectParameter("linkTo", linkTo) :
+                new ObjectParameter("linkTo", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertCaresForPatient", patientIdParameter, workerIdParameter, statusParameter, linkToParameter);
+        }
     }
 }
