@@ -788,6 +788,23 @@
       <Parameter Name="sensitivityToNoise" Mode="In" Type="String" />
       <Parameter Name="other" Mode="In" Type="String" />
     </FunctionImport>
+    <FunctionImport Name="NewPaycheck">
+      <Parameter Name="payCheckNum" Mode="In" Type="Int32" />
+      <Parameter Name="paycheckDate" Mode="In" Type="DateTime" />
+      <Parameter Name="paycheckSummary" Mode="In" Type="String" />
+      <Parameter Name="paycheckComment" Mode="In" Type="String" />
+      <Parameter Name="UserId" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="NewPaymentRequest">
+      <Parameter Name="requestId" Mode="In" Type="Int32" />
+      <Parameter Name="requestSubject" Mode="In" Type="String" />
+      <Parameter Name="amountToPay" Mode="In" Type="Double" />
+      <Parameter Name="requestDate" Mode="In" Type="DateTime" />
+      <Parameter Name="requestProofDocument" Mode="In" Type="String" />
+      <Parameter Name="requestComment" Mode="In" Type="String" />
+      <Parameter Name="requestStatus" Mode="In" Type="String" />
+      <Parameter Name="userId" Mode="In" Type="Int32" />
+    </FunctionImport>
   </EntityContainer>
   <ComplexType Name="sp_helpdiagramdefinition_Result">
     <Property Type="Int32" Name="version" Nullable="true" />

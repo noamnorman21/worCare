@@ -118,7 +118,7 @@ namespace WebApi.Controllers
 
         // PUT: api/PaymentRequest/5
         [HttpPut]
-        [Route("UpdateRequest")]
+        [Route("UpdateRequest")]  
         public IHttpActionResult UpdateRequest([FromBody] PaymentsRequestDTO req)
         {
             try

@@ -283,5 +283,7 @@
     <FunctionImportMapping FunctionImportName="InsertPatient" FunctionName="igroup194_prodModel.Store.InsertPatient" />
     <FunctionImportMapping FunctionImportName="InsertPatientHobbies" FunctionName="igroup194_prodModel.Store.InsertPatientHobbies" />
     <FunctionImportMapping FunctionImportName="InsertPatientLimitations" FunctionName="igroup194_prodModel.Store.InsertPatientLimitations" />
+    <FunctionImportMapping FunctionImportName="NewPaycheck" FunctionName="igroup194_prodModel.Store.NewPaycheck" />
+    <FunctionImportMapping FunctionImportName="NewPaymentRequest" FunctionName="igroup194_prodModel.Store.NewPaymentRequest" />
   </EntityContainerMapping>
 </Mapping>
