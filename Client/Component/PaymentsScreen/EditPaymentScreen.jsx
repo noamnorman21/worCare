@@ -187,14 +187,13 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#F5F5F5',   
-    flexDirection: 'column',
+    backgroundColor: '#F5F5F5', 
+     
   },
-  inputContainer: {
-    width: Dimensions.get('window').width * 1,
-    height: Dimensions.get('window').height * 1,
+  inputContainer: { 
     flex: 4,
-    textAlign: 'left',    
+    textAlign: 'left',
+    flexDirection: 'column',
   },
   input: {
     width: Dimensions.get('window').width * 0.95,
@@ -264,6 +263,7 @@ const styles = StyleSheet.create({
   },
   bottom: {
     flexDirection: 'row',
+    margin: 0,
   },
   savebuttonText: {
     color: 'white',
