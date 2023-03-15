@@ -1,7 +1,8 @@
 import { View, Text, StyleSheet, TouchableOpacity, Alert, SafeAreaView } from 'react-native';
 import React, { useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function Home() {
+export default function Home({ navigation }) {
   const [grid, setGrid] = useState([['', '', ''], ['', '', ''], ['', '', '']]);
   const [player, setPlayer] = useState('X');
 
@@ -15,14 +16,14 @@ export default function Home() {
     setGrid(newGrid);
 
     if (isGameOver()) {
-      Alert.alert('Game Over', `Player ${player} has won!`, [        
-        {          
-        text: 'Restart',          onPress: () => setGrid([['', '', ''], ['', '', ''], ['', '', '']]),
+      Alert.alert('Game Over', `Player ${player} has won!`, [
+        {
+          text: 'Restart',
+          onPress: () => setGrid([['', '', ''], ['', '', ''], ['', '', '']]),
         },
       ]);
       return;
     }
-
     setPlayer(player === 'X' ? 'O' : 'X');
   };
 
@@ -48,37 +49,51 @@ export default function Home() {
     if (grid[0][2] !== '' && grid[0][2] === grid[1][1] && grid[1][1] === grid[2][0]) {
       return true;
     }
-
     return false;
   };
   const renderCell = (row, col) => {
     return (
-    <TouchableOpacity style={styles.cell} onPress={() => onPress(row, col)}>
+      <TouchableOpacity style={styles.cell} onPress={() => onPress(row, col)}>
         <Text style={styles.text}>{grid[row][col]}</Text>
-    </TouchableOpacity>    
+      </TouchableOpacity>
     );
   };
 
   return (
-<SafeAreaView style={styles.container}>
-    <Text style={{fontSize:21, textAlign:'center', marginBottom:10, color:'red'}}> ברוכים הבאים למשחק של נועםםםםם</Text>
-    <Text style={styles.text}>Player {player}</Text>        
-    <View style={styles.row}>
+    <SafeAreaView style={styles.container}>
+      <Text style={{ fontSize: 21, textAlign: 'center', marginBottom: 10, color: 'red' }}> ברוכים הבאים למשחק של נועםםםםם</Text>
+      <Text style={styles.text}>Player {player}</Text>
+      <View style={styles.row}>
         {renderCell(0, 0)}
         {renderCell(0, 1)}
         {renderCell(0, 2)}
-    </View>
-    <View style={styles.row}>
+      </View>
+      <View style={styles.row}>
         {renderCell(1, 0)}
         {renderCell(1, 1)}
         {renderCell(1, 2)}
-    </View>
-    <View style={styles.row}>
+      </View>
+      <View style={styles.row}>
         {renderCell(2, 0)}
         {renderCell(2, 1)}
         {renderCell(2, 2)}
-    </View>
-</SafeAreaView>
+      </View>
+      <View>
+        <TouchableOpacity
+          onPress={() => {
+            AsyncStorage.clear();
+            Alert.alert('Log Out', 'You have been logged out', [
+              {
+                text: 'OK',
+                onPress: () => navigation.navigate('LogIn'),
+              },
+            ]);            
+          }}
+        >
+          <Text>Log Out</Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
   );
 }
 

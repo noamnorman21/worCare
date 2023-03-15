@@ -1,19 +1,34 @@
-import { StatusBar } from 'expo-status-bar';
-import { SafeAreaView, StyleSheet, View, Dimensions } from 'react-native';
-import { useState } from 'react';
-import Welcome from './Component/Welcome';
+import { StyleSheet } from 'react-native';
+import { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import { CustomHeader } from './Component/AppBarUp';
 import SettingScreen from './Component/SettingScreen';
 import NavigateSignUp from './Component/SignUpComponents/NavigateSignUp';
-import ForgotPassword from './Component/ForgotPasswordComponents/CreateNewPassword';
-import FCTest from './Component/HelpComponents/FCTest';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function App() {
+  const [defaultScreen, setDefaultScreen] = useState("");
+  //function to get user email and password from async storage, it called when the app starts using useEffect
+  const _retrieveData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('user');
+      if (value !== null) {
+        // We have data!!
+        setDefaultScreen("CustomHeader");
+      }
+      else {
+        setDefaultScreen("LogIn");
+      }
+    } catch (error) {
+      // Error retrieving data
+    }
+  }
+  useEffect(() => {
+    _retrieveData();
+  }, []);
+
   return (
     <NavigationContainer independent={true}>
-      <NavigateSignUp />
+      <NavigateSignUp defaultScreen={defaultScreen} />
     </NavigationContainer>
   );
 }

@@ -180,12 +180,14 @@ export default function CreateUser({ navigation, route }) {
           keyboardType='ascii-capable'
           onChangeText={(value) => handleInputChange('email', value)}
         />
-
+        
         <View style={styles.phoneContainer}>
           <TextInput
             style={styles.input}
             placeholder="Phone Number"
             keyboardType='phone-pad'
+            // return button type in keyboard for ios devices
+            returnKeyType='done'
             onChangeText={(value) => handleInputChange('phoneNum', value)}
           />
         </View>
