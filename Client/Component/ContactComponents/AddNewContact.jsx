@@ -1,7 +1,7 @@
 import { Alert, View,Keyboard, StyleSheet, Text, SafeAreaView, TextInput, Dimensions ,TouchableOpacity, LayoutAnimation } from "react-native"
 import { useState, useEffect } from "react"
 
-export default function AddNewContact({navigation}) {
+export default function AddNewContact(props) {
   const [animation, setAnimation] = useState({});
   const [Contact, setContact] = useState({
     contactName: '',
@@ -116,14 +116,18 @@ export default function AddNewContact({navigation}) {
           <TextInput
            style={[styles.input, styles.numInput]}
             placeholder="Phone Numner"
-            keyboardType='ascii-capable'
+            keyboardType='decimal-pad'
             onChangeText={(value) => handleInputChange('phoneNo', value)}
+            returnKeyType='done'
+            inputMode='numeric'
           />
           <TextInput 
             style={[styles.input, styles.numInput]}
             placeholder="Mobile Numner"
-            keyboardType='ascii-capable'
+            keyboardType='decimal-pad'
             onChangeText={(value) => handleInputChange('mobileNo', value)}
+            returnKeyType='done'
+            inputMode='numeric'
           />
           </View>
              <TextInput
@@ -151,7 +155,7 @@ export default function AddNewContact({navigation}) {
       <TouchableOpacity style={styles.savebutton} onPress={sendToDB}>
         <Text style={styles.savebuttonText}>Save</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.cancelbutton} onPress={()=> navigation.popToTop()}>
+      <TouchableOpacity style={styles.cancelbutton} onPress={props.cancel}>
         <Text style={styles.cancelbuttonText}>Cancel</Text>
       </TouchableOpacity>
       </View>

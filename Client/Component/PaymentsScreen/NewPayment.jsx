@@ -4,8 +4,9 @@ import { storage } from '../../config/firebase';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import * as DocumentPicker from 'expo-document-picker';
 
-export default function NewPayment({navigation}) {
+export default function NewPayment(props) {
   const [animation, setAnimation] = useState({});
+  
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -53,7 +54,11 @@ export default function NewPayment({navigation}) {
   
   const pickDocument = async () => {
 
-    let result = await DocumentPicker.getDocumentAsync({});    
+    let result = await DocumentPicker.getDocumentAsync({
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 0.1,
+    });    
     alert(result.uri);    
     console.log(result);
     changeIMG(result.uri);
@@ -74,7 +79,15 @@ export default function NewPayment({navigation}) {
       //זה תמונה מכוערת -נועם תחליף אותה
       // let defultImage="https://png.pngtree.com/element_our/20200610/ourmid/pngtree-character-default-avatar-image_2237203.jpg"
       // sendDataToDB(defultImage);
-      return Alert.alert('Upload Error', '.');
+      return Alert.alert('Please upload an image');
+    }
+    if (payment.amountToPay === '') {
+      Alert.alert('Please enter amount');
+      return;
+    }
+    if (payment.requestSubject === '') {
+      Alert.alert('Please enter subject');
+      return;
     }
     console.log('image', image);
      const filename = image.substring(image.lastIndexOf('/') + 1);
@@ -94,31 +107,31 @@ export default function NewPayment({navigation}) {
         () => {
           getDownloadURL(storageRef).then(downloadURL => {
             console.log('File available at', downloadURL);
-           setPayment({ ...payment, requestProofDocument: downloadURL });
-           savePayment();
- 
-          });
+            setPayment({ ...payment, requestProofDocument: downloadURL });
+            savePayment(downloadURL);
+          });          
         }
       );
     } catch (error) {
       console.error(error);
       Alert.alert('Upload Error', 'Sorry, there was an error uploading your image. Please try again later.');
-      savePayment();
     }
   };
 
-  const savePayment = async () => {
-    if (payment.amountToPay === '') {
-      alert('Please enter amount');
-      return;
-    }
-    if (payment.requestSubject === '') {
-      alert('Please enter subject');
-      return;
-    } else {
+  const savePayment = async (downloadURL) => {
+    const NewPayment = {
+      amountToPay: payment.amountToPay,
+      requestSubject: payment.requestSubject,
+      requestDate: payment.requestDate,
+      requestProofDocument: downloadURL,
+      requestComment: payment.requestComment,
+      requestStatus: payment.requestStatus,
+      userId: payment.userId
+    } 
+  
       fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/NewRequest', {
       method: 'POST',
-      body: JSON.stringify(payment),
+      body: JSON.stringify(NewPayment),
       headers: new Headers({
         'Content-Type': 'application/json; charset=UTF-8',
       })
@@ -128,15 +141,14 @@ export default function NewPayment({navigation}) {
       })
       .then(
         (result) => {
-          console.log("fetch POST= ", result);
-          
-          navigation.popToTop();
+          console.log("fetch POST= ", result);          
+          props.cancel();
         },
         (error) => {
           console.log("err post=", error);
         });
     }
-  };
+  
 
   
   return (  
@@ -169,6 +181,9 @@ export default function NewPayment({navigation}) {
           </TouchableOpacity>
           <TouchableOpacity style={styles.uploadButton} onPress={()=> sendToFirebase(payment.requestProofDocument)}>
             <Text style={styles.buttonText}>Upload request</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.uploadButton} onPress={props.cancel}>
+            <Text style={styles.buttonText}>Cancel</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>

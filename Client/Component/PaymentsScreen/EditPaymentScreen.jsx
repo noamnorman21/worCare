@@ -4,21 +4,22 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { TextInput } from "react-native-paper";
 import { ScrollView } from "react-native-gesture-handler";
+import * as DocumentPicker from 'expo-document-picker';
 
-export default function EditPaymentScreen({ navigation,route}) {
+export default function EditPaymentScreen(props) {
 
   
   const [animation, setAnimation] = useState({});
-
-  const isFocused= useIsFocused()
+  const [imageChanged, setimageChanged] = useState(false);  
   const [Payment, setPayment] = useState({
-    amountToPay:route.params.id,
-    requestId:route.params.data.requestId,
-    requestSubject:route.params.data.requestSubject,
-    requestDate :route.params.data.requestDate,
-    requestProofDocument : route.params.data.requestProofDocument,
-    requestComment : route.params.data.requestComment,
-    requestStatus:route.params.data.requestStatus,  
+    amountToPay:props.data.amountToPay,
+    requestId:props.data.requestId,
+    requestSubject:props.data.requestSubject,
+    requestDate :props.data.requestDate,
+    requestProofDocument : props.data.requestProofDocument,
+    requestComment : props.data.requestComment,
+    requestStatus:props.data.requestStatus,  
+    userId:props.data.userId
   })
 
   useEffect(() => {
@@ -55,14 +56,26 @@ export default function EditPaymentScreen({ navigation,route}) {
 
   }, []);
 
+  const pickDocument = async () => {
+    let result = await DocumentPicker.getDocumentAsync({});    
+    alert(result.uri);    
+    changeIMG(result.uri);
+    
+  };
+
+  const changeIMG = (imageFromUser) => {
+   setPayment({ ...Payment, requestProofDocument: imageFromUser });
+   if (!imageChanged) {
+     setimageChanged(true);
+   }
+  }
 
 
 
   
 
 const handleInputChange = (name, value) => {
-    setPayment({ ...Payment, [name]: value })
-    console.log(Payment)
+    setPayment({ ...Payment, [name]: value })    
   }
   const Cancel = () => {
     Alert.alert(
@@ -75,7 +88,7 @@ const handleInputChange = (name, value) => {
           style: 'destructive',
           // If the user confirmed, then we dispatch the action we blocked earlier
           // This will continue the action that had triggered the removal of the screen
-          onPress: () => navigation.goBack()
+          onPress: () => props.cancel()
         },
       ]
     );
@@ -98,75 +111,125 @@ const handleInputChange = (name, value) => {
               'Content-Type': 'application/json',
             },
           });
-          console.log(res)
-          navigation.goBack()
+            console.log(res);          
+            props.cancel();
           }
         },
       ]
     );
   }
+
+  const sendToFirebase = async (image) => {   
+    // if the user didn't upload an image, we will use the default image
+    if(imageChanged) {
+    console.log('image', image);
+     const filename = image.substring(image.lastIndexOf('/') + 1);
+     const storageRef = ref(storage, "requests/" + filename);
+     const blob = await fetch(image).then(response => response.blob());
+    try {
+      const uploadTask = uploadBytesResumable(storageRef, blob);
+      uploadTask.on('state_changed',
+        snapshot => {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log(`Upload is ${progress}% complete`);
+        },
+        error => {
+          console.error(error);
+          Alert.alert('Upload Error', 'Sorry, there was an error uploading your image. Please try again later.');
+        },
+        () => {
+          getDownloadURL(storageRef).then(downloadURL => {
+            console.log('File available at', downloadURL);
+            setPayment({ ...Payment, requestProofDocument: downloadURL });
+            savePayment(downloadURL);
+          });          
+        }
+      );
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Upload Error', 'Sorry, there was an error uploading your image. Please try again later.');
+    }
+  } else {
+    savePayment(Payment.requestProofDocument);
+  }
+  
+}
+
+const savePayment = async (downloadURL) => {
+  
+  const temp = {
+    requestId: Payment.requestId,
+    amountToPay: Payment.amountToPay,
+    requestSubject: Payment.requestSubject,
+    requestDate: Payment.requestDate,
+    requestProofDocument: downloadURL,
+    requestComment: Payment.requestComment,
+    requestStatus: Payment.requestStatus,
+    userId: Payment.userId
+  }
+  console.log(temp);
+ 
+    fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/UpdateRequest', {
+    method: 'PUT',
+    body: JSON.stringify(temp),
+    headers: new Headers({
+      'Content-Type': 'application/json; charset=UTF-8',
+    })
+  })
+    .then(res => {
+        return res.json()
+    })
+    .then(
+      (result) => {
+        console.log("fetch POST= ", result);          
+        props.cancel();
+      },
+      (error) => {
+        console.log("err post=", error);
+      });
+  }
+
+
+
   
   return (
     
     <ScrollView>
      <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>request number {Payment.requestId}</Text>
-      </View>
-      <View style={[styles.inputContainer, animation]}>
-        <Text style={styles.contactheader}>Subject:</Text>
-        <TextInput
-          style={styles.input}
-          value={Payment.requestSubject}
-          keyboardType='ascii-capable'
-          onChangeText={(value) => handleInputChange('requestSubject', value)}
-        />
-        <View style={styles.numbersInput}>
-          <View>
-            <Text style={styles.contactheader}>Amount:</Text>
-            <TextInput
-              style={[styles.input, styles.numInput]}
-              value={Payment.amountToPay}
-              keyboardType='decimal-pad'
-              onChangeText={(value) => handleInputChange('amountToPay', value)}
-              inputMode='decimal'
-            />
-          </View>
-          <View>
-            <Text style={styles.contactheader}>Date:</Text>
-            <TextInput
-              style={[styles.input, styles.numInput]}
-              value={Payment.requestDate}
-              keyboardType='ascii-capable'
-              onChangeText={(value) => handleInputChange('requestDate', value)}
-            />
-          </View>
+     <View style={styles.header}>
+          <Text style={styles.title}>Edit Payment {Payment.requestId}</Text>
         </View>
-        <Text style={styles.contactheader}>Role:</Text>
-        <TextInput
-          style={styles.input}        
-          keyboardType='ascii-capable'
-          onChangeText={(value) => handleInputChange('requestStatus', value)}
-          value={Payment.requestStatus}
-        />
-        <Text style={styles.contactheader}>Email:</Text>
-        <TextInput
-          style={styles.input} 
-          value={Payment.requestProofDocument}      
-          keyboardType='ascii-capable'
-          onChangeText={(value) => handleInputChange('requestProofDocument', value)}
-        />
-        <Text style={styles.contactheader}>Comment:</Text>
-        <TextInput
-          style={styles.input}         
-          keyboardType='ascii-capable'
-          value={Payment.requestComment}
-          onChangeText={(value) => handleInputChange('requestComment', value)}
-        />
-      </View>
+        <View style={[styles.inputContainer, animation]}>
+          <TextInput
+            style={styles.input}
+            value={Payment.requestSubject}
+            placeholder='Reason'
+            keyboardType='ascii-capable'
+            onChangeText={(value) => handleInputChange('requestSubject', value)}
+          />
+          <TextInput
+            style={[styles.input]}
+            placeholder='Amount'
+            value={Payment.amountToPay}
+            keyboardType='ascii-capable'
+            onChangeText={(value) => handleInputChange('amountToPay', value)}
+            inputMode='decimal'
+          />
+          <TextInput
+            style={styles.input}
+            placeholder='Enter comment'
+            value={Payment.requestComment}
+            keyboardType='ascii-capable'
+            onChangeText={(value) => handleInputChange('requestComment', value)}
+          />
+          <TouchableOpacity style={styles.uploadButton} onPress={pickDocument}>
+            <Text style={styles.buttonText}>Upload document</Text>
+          </TouchableOpacity>
+         
+        </View>
 
       <View style={styles.bottom}>
-        <TouchableOpacity style={styles.savebutton} onPress={()=>{}}>
+        <TouchableOpacity style={styles.savebutton} onPress={()=> sendToFirebase(Payment.requestProofDocument)}>
           <Text style={styles.savebuttonText}>Save</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.cancelbutton} onPress={Cancel}>
@@ -188,26 +251,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#F5F5F5', 
-     
+    height: Dimensions.get('window').height *1     
   },
-  inputContainer: { 
-    flex: 4,
-    textAlign: 'left',
-    flexDirection: 'column',
+   inputContainer: {
+    padding: 20,  
   },
   input: {
-    width: Dimensions.get('window').width * 0.95,
-    padding: 10,
-    margin: 7,
-    alignItems: 'center',
+    height: Dimensions.get('window').height *0.07,
+    backgroundColor: '#fff',
+    marginBottom: 20,
+    color: '#000',
+    paddingHorizontal: 10,
+    borderColor: '#E6EBF2',
     borderRadius: 16,
     borderWidth: 1,
-    backgroundColor: 'white',
-    borderColor: 'lightgray',
-    shadowColor: '#000',
-    height: 45,
-    fontFamily: 'Urbanist',
-    overflow: 'hidden',
+    width: Dimensions.get('window').width * 0.9,
+    underlindColorAndroid: 'transparent',
   },
   numInput: {
     width: Dimensions.get('window').width * 0.455,
@@ -280,9 +339,9 @@ const styles = StyleSheet.create({
     fontFamily: 'Urbanist-Bold',
   },
   header: {
-    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    padding: 20,
   },
   contactheader: {
     fontFamily: 'Urbanist-Bold',
@@ -291,6 +350,15 @@ const styles = StyleSheet.create({
   },
   numbersInput: {
     flexDirection: 'row',
+  },
+  uploadButton: {
+    paddingVertical: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignContent: 'center',
+    marginBottom: 20,
+    borderRadius: 16,
+    backgroundColor:'#548DFF'
   },
 
 });

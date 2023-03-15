@@ -23,7 +23,7 @@ export default function Finance() {
         <Stack.Screen name='choice' component={Choice} options={() => ({
           headerShown: false,
         })} />
-        <Stack.Screen name='PaymentNav' component={PaymentNav} options={() => ({
+        <Stack.Screen name='Payments' component={Payments} options={() => ({
           headerShown: false,
           presentation: 'stack',
           cardOverlayEnabled: true,
@@ -41,16 +41,8 @@ export default function Finance() {
           presentation: 'stack',
           cardOverlayEnabled: true,
         })} />
-         <Stack.Screen name='EditPaymentScreen' component={EditPaymentScreen} options={() => ({
-          headerShown: false,
-          presentation: 'modal',
-          cardOverlayEnabled: true,
-        })} />
-             <Stack.Screen name='NewPayment' component={NewPayment} options={() => ({
-          headerShown: false,
-          presentation: 'modal',
-          cardOverlayEnabled: true,
-        })} />
+         
+       
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -58,19 +50,19 @@ export default function Finance() {
 
 function Choice({ navigation }) {
   return (
-    <View style={styles.container}>
+    <View style={styles.Choice}>
       <Image source={require('../images/logo_New.png')} style={styles.BigIMG} />
       <TouchableOpacity
-        activeOpacity={1}
+        
         style={styles.button}
         onPress={() => {
-          navigation.navigate('PaymentNav')
+          navigation.navigate('Payments')
         }}
       >
         <Text style={styles.txt}>Payment</Text>
       </TouchableOpacity>
       <TouchableOpacity
-        activeOpacity={1}
+        
         style={styles.button}
         onPress={() => {
           navigation.navigate('Paychecks')
@@ -84,32 +76,6 @@ function Choice({ navigation }) {
 
 
 const Tab = createMaterialTopTabNavigator();
-
-function PaymentNav (){
-  return(
-    <Stack.Navigator initialRouteName="Payments" independent={true}
-      backBehavior='none'
-     screenOptions={{
-      tabBarActiveTintColor: '#548DFF',
-      tabBarInactiveTintColor: 'grey',
-      tabBarIndicatorStyle: { height: 4, marginLeft:5, marginRight:5, width: '45%', borderRadius: 16,},
-      tabBarLabelStyle: { fontSize: 24, fontWeight: 'bold', fontFamily: 'sans-serif', textTransform: 'none' },
-      tabBarStyle: { backgroundColor: '#fff' },     
-           
-     }}
-    >
-      <Tab.Screen name="Payments" component={Payments} options={{ headerShown: false} }  />
-      {/*במעבר למסך תשלומים ממתינים תבוצע םעולת גט אשר תשלוף את כלל בקשות התשלום אשר שמורות במסד הנתונים.
-    אשר סטטוס הבקשה שלהם אינו סומן כשולם*/}
-      <Tab.Screen name="History" component={History} options={{ headerShown: false} } />
-      { /*במעבר למסך היסטוריית התשלומים תבוצע םעולת גט אשר תשלוף את כלל בקשות התשלום אשר שמורות במסד הנתונים.
-    אשר סטטוס הבקשה שלהם סומן כשולם*/}
-    
-    </Stack.Navigator>
-
-  );
-}
-
 function Payments() {
   return (
     
@@ -144,21 +110,20 @@ function Paycheck() {
   );
 }
 
-function Request (props) {
-  return (
-    <View style={styles.request}>
-      <Text style={styles.requestText}>{props.date}</Text>
-      <Text style={styles.requestText}>{props.subject}</Text>
-    </View>
-  )
-}
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  container: {    
     alignItems: 'center',
     justifyContent: 'center',
+    height: Dimensions.get('screen').height * 1,
+    overflow: 'hidden',
   },
+  Choice: {
+    flex: 1,
+    alignItems: 'center',    
+    backgroundColor: 'white',
+  },
+
   Pending: {
     flex: 1,
     alignItems: 'center',
@@ -167,8 +132,7 @@ const styles = StyleSheet.create({
   },
 
   BigIMG: {
-    width: Dimensions.get('screen').width * 1,
-    resizeMode: 'contain',
+    height: Dimensions.get('screen').height * 0.55,
   },
   button: {
     alignItems: 'center',
@@ -178,6 +142,7 @@ const styles = StyleSheet.create({
     width: Dimensions.get('screen').width * 0.65,
     margin: 10,
     borderRadius: 25,
+    activeOpacity: 1,
   },
   txt: {
     color: 'white',

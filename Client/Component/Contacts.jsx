@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Alert } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Alert, Modal } from 'react-native'
 import { useEffect, useState } from 'react'
 import React from 'react'
 import { Searchbar } from 'react-native-paper';
@@ -18,8 +18,7 @@ export default function Contacts() {
   return (
     <stack.Navigator initialRouteName='Main' screenOptions={{ headerShown: false} } >
       <stack.Screen name="Main" component={Main} options={{ headerShown: false }} />
-      <stack.Screen name="Contact" component={Contact}  options={{ headerShown: false,presentation: 'modal' }} />
-      <stack.Screen name="AddNewContact" component={AddNewContact} options={{ headerShown: false,presentation: 'modal' }}  />
+      <stack.Screen name="Contact" component={Contact}  options={{ headerShown: false }} />
     </stack.Navigator>
   )
 
@@ -29,6 +28,8 @@ function Main({ navigation }) {
   const [Contacts, setContacts] = useState([])
   const [Search, setSearch] = useState([])
   const [ContactToRender, setContactToRender] = useState([])
+  const [modal1Visible, setModal1Visible] = useState(false);
+  const [modal2Visible, setModal2Visible] = useState(false);
   const PatientId = 779355403// will change when we finish context to get the patient id
   const isFocused = useIsFocused()
 
@@ -77,9 +78,23 @@ function Main({ navigation }) {
         icon="magnify"
       />
       {ContactToRender}
-      <TouchableOpacity style={styles.button} mode="fixed" onPress={() => navigation.navigate('AddNewContact')}>
+      <TouchableOpacity style={styles.button} mode="fixed" onPress={() => setModal1Visible(true)}>
         <Text style={styles.buttonText}>+</Text>
       </TouchableOpacity>
+      {/*NewContactModal*/}
+      <Modal animationType="slide" visible={modal1Visible}>
+        <AddNewContact cancel={()=>{
+          setModal1Visible(false)}} />
+      </Modal>
+      <Modal animationType="slide" visible={modal2Visible}>
+        <AddNewContact cancel={()=>{
+          setModal2Visible(false)}} />
+      </Modal>
+      
+      
+
+      
+
     </View>
   )
 }
@@ -91,7 +106,7 @@ function ContactCard(props) {
   return (
     <TouchableOpacity style={styles.contactcard} onPress={() => navigation.navigate('Contact', { contact: props.contact })}>
       <Text style={styles.name}>{props.contact.contactName}</Text>
-      <Text style={styles.number}>{props.contact.mobileNo}</Text>
+      <Text style={styles.number}>{props.contact.mobileNo}</Text>      
     </TouchableOpacity>
   )
 }
@@ -164,15 +179,14 @@ fontSize: 15,
     backgroundColor: '#E6EBF2',
     height: Dimensions.get('window').height * 0.06,
   },
-  button: {
-    margin: 10,
+  button: {    
     borderRadius: 54,
     backgroundColor: '#548DFF',
-    width: Dimensions.get('window').width * 0.2,
-    height: Dimensions.get('window').height * 0.1,
+    width: 64,
+    height: 64,
     position: 'absolute',
-    bottom: 0,
-    right: 0,
+    bottom: Platform.OS === 'ios' ? 40 : 10,
+    right:  Platform.OS === 'ios' ? 15: 10,
     alignItems: 'center',
     justifyContent: 'center',
   },

@@ -8,6 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Contact({ route, navigation }) {
   const [animation, setAnimation] = useState({});
+  const [isChanged, setIsChanged] = useState(false);
   const [Contact, setContact] = useState({
     contactId: route.params.contact.contactId,
     contactName: route.params.contact.contactName,
@@ -55,6 +56,9 @@ export default function Contact({ route, navigation }) {
 
   const { contact } = route.params;
   const Cancel = () => {
+    if (!isChanged) {
+      return navigation.goBack();
+    }    
     Alert.alert(
       'Cancel Changes',
       'are you sure you want to Exit the Page? All changes will be lost',
@@ -72,6 +76,9 @@ export default function Contact({ route, navigation }) {
   }
   const handleInputChange = (field, value) => {
     setContact({ ...Contact, [field]: value });
+    if(!isChanged){
+      setIsChanged(true);
+    }
   }
   const SaveChanges = () => {
     const { email, mobileNo, contactName } = Contact
@@ -144,9 +151,7 @@ export default function Contact({ route, navigation }) {
       ]
     );
   }
-
-
-
+  
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>

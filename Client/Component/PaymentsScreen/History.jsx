@@ -1,11 +1,11 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, Animated } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, Animated, Modal } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { List } from 'react-native-paper';
-import { FlatList, ScrollView } from 'react-native-gesture-handler';
-import { Feather } from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { ScrollView } from 'react-native-gesture-handler';
+import NewPayment from './NewPayment';
+import EditPaymentScreen from './EditPaymentScreen';
 
 
 
@@ -13,6 +13,7 @@ export default function History({navigation}) {
   const userId = 1 // יש להחליף למשתנה של המשתמש הנוכחי
   const [History, setHistory] = useState()
   const isFocused = useIsFocused()
+  const [modal1Visible, setModal1Visible] = useState(false);
 
   const Edit = (id, data) => {
     Alert.alert(
@@ -64,12 +65,10 @@ export default function History({navigation}) {
       const data = await response.json();
       let arr = data.map((item) => {
         return (
-          <Request key={item.requestId} data={item} id={item.requestId} Notofication={Notification} View={View} Edit={Edit} subject={item.requestSubject} amountToPay={item.amountToPay} date={item.requestDate} requestComment={item.requestComment} />
+          <Request key={item.requestId} getHistory={getHistory} data={item} id={item.requestId} Notofication={Notification} View={View} Edit={Edit} subject={item.requestSubject} amountToPay={item.amountToPay} date={item.requestDate} requestComment={item.requestComment} />
         )
       })
-      setHistory(arr)
-  
-      
+      setHistory(arr)  
     } catch (error) {
       console.log(error)
     }
@@ -113,9 +112,13 @@ export default function History({navigation}) {
   return (
     <ScrollView contentContainerStyle={styles.Pending}>
       {History}
-      <TouchableOpacity style={styles.addRequest} onPress={() => navigation.navigate('NewPayment')}>
+      <TouchableOpacity style={styles.addRequest} onPress={() => setModal1Visible(true)}>
         <Text style={styles.addRequestText}>+</Text>
       </TouchableOpacity>
+      <Modal animationType='slide' transparent={true} visible={modal1Visible}>
+       <NewPayment cancel={() => setModal1Visible(false)} />
+      </Modal>
+      
     </ScrollView>
   );
 }
@@ -123,6 +126,7 @@ export default function History({navigation}) {
 function Request(props) {
   const [expanded, setExpanded] = React.useState(true);
   const animationController = useRef(new Animated.Value(0)).current;
+  const [modal1Visible, setModal1Visible] = useState(false);
   const toggle = () => {
     const config = {
       toValue: expanded ? 0 : 1,
@@ -137,33 +141,37 @@ function Request(props) {
   
   return (
     <List.Accordion style={!expanded ? styles.request : styles.requestunFocused}
-      theme={{ colors: { background: 'white' } }}
-      right={() => <View><Text style={styles.requestHeaderText}>{props.subject}</Text>     
-        </View>}
-      left={() => <View >
-        <Text style={styles.requestHeaderText}>{props.date.substring(0, 10)}</Text>      
+    theme={{ colors: { background: 'white' } }}
+    right={() => <View style={styles.requesRight}><Text style={styles.requestHeaderText}>{props.subject}</Text>
+    
       </View>}
+    left={() => <View >
+      <Text style={styles.requestHeaderText}>{props.date.substring(0, 10)}</Text>      
+    </View>}
 
-      expanded={!expanded}
-      onPress={toggle}
-    >
-      <View style={!expanded ? styles.Focused : styles.unFocused}>
-        <View>
-        <List.Item title={() => <Text style={styles.itemsText}>Date: {props.date.substring(0, 10)} </Text>} />
-        <List.Item title={() => <Text style={styles.itemsText}>Amount: {props.amountToPay} </Text>} />
-        <List.Item title={() => <Text style={styles.itemsText}>Comment: {props.requestComment} </Text>} />
-        <List.Item title={() =>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-             <TouchableOpacity style={[styles.itemsText, styles.viewButton]} onPress={!expanded ? () => props.View(props.id, props.data) : null}>
-              <Text style={styles.viewbuttonText}>View Document</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.itemsText, styles.editButton]} onPress={!expanded ? () => props.Edit(props.id, props.data) : null}>
-              <Text style={styles.editbuttonText}>Edit</Text>
-            </TouchableOpacity>
-          </View>} />
-          </View>
-      </View>
-    </List.Accordion>
+    expanded={!expanded}
+    onPress={toggle}
+  >
+    <View style={!expanded ? styles.Focused : styles.unFocused}>
+      <View>
+      <List.Item title={() => <Text style={styles.itemsText}>Date: {props.date.substring(0, 10)} </Text>} />
+      <List.Item title={() => <Text style={styles.itemsText}>Amount: {props.amountToPay} </Text>} />
+      <List.Item title={() => <Text style={styles.itemsText}>Comment: {props.requestComment} </Text>} />
+      <List.Item title={() =>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <TouchableOpacity style={[styles.itemsText, styles.viewButton]} onPress={!expanded ? () =>{setModal1Visible(true)}:null}>
+            <Text style={styles.viewbuttonText}>View Document</Text>
+          </TouchableOpacity>
+          <Modal animationType='slide' transparent={true} visible={modal1Visible}>
+            <EditPaymentScreen cancel={() => {setModal1Visible(false); props.getHistory()}} data={props.data} />
+          </Modal>
+          <TouchableOpacity style={[styles.itemsText, styles.editButton]} onPress={!expanded ? () =>{setModal1Visible(true)} : null}>
+            <Text style={styles.editbuttonText}>Edit</Text>
+          </TouchableOpacity>
+        </View>} />
+        </View>
+    </View>
+  </List.Accordion>
   )
 }
 
@@ -290,14 +298,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#7DA9FF',
-    height: Dimensions.get('screen').height * 0.07,
-    width: Dimensions.get('screen').width * 0.15,
+    height:64,
+    width: 64,
     borderRadius: 54,
     position: 'absolute',
-    bottom: Dimensions.get('screen').height * 0.05,
-    right: Dimensions.get('screen').width * 0.05,
+    bottom: Platform.OS === 'ios' ? 40 : 10,
+    right:  Platform.OS === 'ios' ? 15: 10,
     elevation: 5,    
-  }
+  },
+  addRequestText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+  },
 
 
 
