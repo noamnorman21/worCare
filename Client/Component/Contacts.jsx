@@ -5,8 +5,7 @@ import { Searchbar } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import AddNewContact from './ContactComponents/AddNewContact'
-
-
+import { useIsFocused } from '@react-navigation/native';
 import Contact from './ContactComponents/Contact'
 
 
@@ -23,13 +22,13 @@ export default function Contacts() {
   )
 
 }
-import { useIsFocused } from '@react-navigation/native';
+
 function Main({ navigation }) {
   const [Contacts, setContacts] = useState([])
   const [Search, setSearch] = useState([])
   const [ContactToRender, setContactToRender] = useState([])
-  const [modal1Visible, setModal1Visible] = useState(false);
-  const [modal2Visible, setModal2Visible] = useState(false);
+  const [modal1Visible, setModal1Visible] = useState(false);``
+  
   const PatientId = 779355403// will change when we finish context to get the patient id
   const isFocused = useIsFocused()
 
@@ -86,10 +85,7 @@ function Main({ navigation }) {
         <AddNewContact cancel={()=>{
           setModal1Visible(false)}} />
       </Modal>
-      <Modal animationType="slide" visible={modal2Visible}>
-        <AddNewContact cancel={()=>{
-          setModal2Visible(false)}} />
-      </Modal>
+     
       
       
 

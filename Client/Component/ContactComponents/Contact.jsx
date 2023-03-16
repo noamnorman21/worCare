@@ -56,9 +56,6 @@ export default function Contact({ route, navigation }) {
 
   const { contact } = route.params;
   const Cancel = () => {
-    if (!isChanged) {
-      return navigation.goBack();
-    }    
     Alert.alert(
       'Cancel Changes',
       'are you sure you want to Exit the Page? All changes will be lost',
@@ -151,7 +148,9 @@ export default function Contact({ route, navigation }) {
       ]
     );
   }
-  
+
+
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
