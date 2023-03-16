@@ -1,0 +1,458 @@
+{
+   "books": [
+      {
+         "id": 1,
+         "name": "Comic",
+         "selected": false
+      },
+      {
+         "id": 2,
+         "name": "Novel",
+         "selected": false
+      },
+      {
+         "id": 3,
+         "name": "Poetry",
+         "selected": false
+      },
+      {
+         "id": 4,
+         "name": "Science",
+         "selected": false
+      },
+      {
+         "id": 5,
+         "name": "History",
+         "selected": false
+      },
+      {
+         "id": 6,
+         "name": "Religion",
+         "selected": false
+      },
+      {
+         "id": 7,
+         "name": "Philosophy",
+         "selected": false
+      },
+      {
+         "id": 8,
+         "name": "Biography",
+         "selected": false
+      },
+      {
+         "id": 9,
+         "name": "Comedy",
+         "selected": false
+      },
+      {
+         "id": 10,
+         "name": "Drama",
+         "selected": false
+      },
+      {
+         "id": 11,
+         "name": "Horror",
+         "selected": false
+      },
+      {
+         "id": 12,
+         "name": "Romance",
+         "selected": false
+      },
+      {
+         "id": 13,
+         "name": "Mystery",
+         "selected": false
+      },
+      {
+         "id": 14,
+         "name": "Thriller",
+         "selected": false
+      },
+      {
+         "id": 15,
+         "name": "Fantasy",
+         "selected": false
+      }
+   ],
+   "music": [
+      {
+         "id": 1,
+         "name": "Rock",
+         "selected": false
+      },
+      {
+         "id": 2,
+         "name": "Pop",
+         "selected": false
+      },
+      {
+         "id": 3,
+         "name": "Rap",
+         "selected": false
+      },
+      {
+         "id": 4,
+         "name": "Country",
+         "selected": false
+      },
+      {
+         "id": 5,
+         "name": "Jazz",
+         "selected": false
+      },
+      {
+         "id": 6,
+         "name": "Classical",
+         "selected": false
+      },
+      {
+         "id": 7,
+         "name": "Blues",
+         "selected": false
+      },
+      {
+         "id": 8,
+         "name": "Opera",
+         "selected": false
+      }
+   ],
+   "movies": [
+      {
+         "id": 1,
+         "name": "Action",
+         "selected": false
+      },
+      {
+         "id": 2,
+         "name": "Adventure",
+         "selected": false
+      },
+      {
+         "id": 3,
+         "name": "Comedy",
+         "selected": false
+      },
+      {
+         "id": 4,
+         "name": "Drama",
+         "selected": false
+      },
+      {
+         "id": 5,
+         "name": "Horror",
+         "selected": false
+      },
+      {
+         "id": 6,
+         "name": "Romance",
+         "selected": false
+      },
+      {
+         "id": 7,
+         "name": "Mystery",
+         "selected": false
+      },
+      {
+         "id": 8,
+         "name": "Thriller",
+         "selected": false
+      },
+      {
+         "id": 9,
+         "name": "Fantasy",
+         "selected": false
+      }
+   ],
+   "tvShows": [
+      {
+         "id": 1,
+         "name": "Action",
+         "selected": false
+      },
+      {
+         "id": 2,
+         "name": "Adventure",
+         "selected": false
+      },
+      {
+         "id": 3,
+         "name": "Comedy",
+         "selected": false
+      },
+      {
+         "id": 4,
+         "name": "Drama",
+         "selected": false
+      },
+      {
+         "id": 5,
+         "name": "Horror",
+         "selected": false
+      },
+      {
+         "id": 6,
+         "name": "Romance",
+         "selected": false
+      },
+      {
+         "id": 7,
+         "name": "Mystery",
+         "selected": false
+      },
+      {
+         "id": 8,
+         "name": "Thriller",
+         "selected": false
+      },
+      {
+         "id": 9,
+         "name": "Fantasy",
+         "selected": false
+      }
+   ],
+   "radioChannel": [
+      {
+         "id": 1,
+         "name": "88.8",
+         "selected": false
+      },
+      {
+         "id": 2,
+         "name": "91",
+         "selected": false
+      },
+      {
+         "id": 3,
+         "name": "91.8",
+         "selected": false
+      },
+      {
+         "id": 4,
+         "name": "93.5",
+         "selected": false
+      },
+      {
+         "id": 5,
+         "name": "94",
+         "selected": false
+      },
+      {
+         "id": 6,
+         "name": "99.8",
+         "selected": false
+      },
+      {
+         "id": 7,
+         "name": "100",
+         "selected": false
+      },
+      {
+         "id": 8,
+         "name": "107",
+         "selected": false
+      }
+   ],
+   "food": [
+      {
+         "id": 1,
+         "name": "Chinese",
+         "selected": false
+      },
+      {
+         "id": 2,
+         "name": "Japanese",
+         "selected": false
+      },
+      {
+         "id": 3,
+         "name": "Korean",
+         "selected": false
+      },
+      {
+         "id": 4,
+         "name": "Thai",
+         "selected": false
+      },
+      {
+         "id": 5,
+         "name": "Indian",
+         "selected": false
+      },
+      {
+         "id": 6,
+         "name": "Italian",
+         "selected": false
+      },
+      {
+         "id": 7,
+         "name": "Mexican",
+         "selected": false
+      },
+      {
+         "id": 8,
+         "name": "American",
+         "selected": false
+      },
+      {
+         "id": 9,
+         "name": "Pizza",
+         "selected": false
+      },
+      {
+         "id": 10,
+         "name": "Burger",
+         "selected": false
+      },
+      {
+         "id": 11,
+         "name": "Pasta",
+         "selected": false
+      },
+      {
+         "id": 12,
+         "name": "Sandwich",
+         "selected": false
+      },
+      {
+         "id": 13,
+         "name": "Salad",
+         "selected": false
+      },
+      {
+         "id": 14,
+         "name": "Steak",
+         "selected": false
+      },
+      {
+         "id": 15,
+         "name": "Chicken",
+         "selected": false
+      },
+      {
+         "id": 16,
+         "name": "Fish",
+         "selected": false
+      },
+      {
+         "id": 17,
+         "name": "Sushi",
+         "selected": false
+      },
+      {
+         "id": 18,
+         "name": "Rice",
+         "selected": false
+      },
+      {
+         "id": 19,
+         "name": "Ravioli",
+         "selected": false
+      }
+   ],
+   "drink": [
+      {
+         "id": 1,
+         "name": "Coffee",
+         "selected": false
+      },
+      {
+         "id": 2,
+         "name": "Tea",
+         "selected": false
+      },
+      {
+         "id": 3,
+         "name": "Juice",
+         "selected": false
+      },
+      {
+         "id": 4,
+         "name": "Water",
+         "selected": false
+      },
+      {
+         "id": 5,
+         "name": "Milk",
+         "selected": false
+      },
+      {
+         "id": 6,
+         "name": "Soda",
+         "selected": false
+      },
+      {
+         "id": 7,
+         "name": "Beer",
+         "selected": false
+      },
+      {
+         "id": 8,
+         "name": "Wine",
+         "selected": false
+      }
+   ],
+   "hobbies": [
+      {
+         "id": 1,
+         "name": "Gardening",
+         "selected": false
+      },
+      {
+         "id": 2,
+         "name": "Cooking",
+         "selected": false
+      },
+      {
+         "id": 3,
+         "name": "Drawing",
+         "selected": false
+      },
+      {
+         "id": 4,
+         "name": "Painting",
+         "selected": false
+      },
+      {
+         "id": 5,
+         "name": "Sewing",
+         "selected": false
+      },
+      {
+         "id": 6,
+         "name": "Knitting",
+         "selected": false
+      },
+      {
+         "id": 7,
+         "name": "Photography",
+         "selected": false
+      },
+      {
+         "id": 8,
+         "name": "Sport",
+         "selected": false
+      },
+      {
+         "id": 9,
+         "name": "Dancing",
+         "selected": false
+      },
+      {
+         "id": 10,
+         "name": "Singing",
+         "selected": false
+      },
+      {
+         "id": 11,
+         "name": "Reading",
+         "selected": false
+      },
+      {
+         "id": 12,
+         "name": "Writing",
+         "selected": false
+      }
+   ]
+}
