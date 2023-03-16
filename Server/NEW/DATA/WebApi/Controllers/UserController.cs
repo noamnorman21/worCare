@@ -34,7 +34,7 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("GetEmail/{userEmail}")]
         public IHttpActionResult GetEmail(string userEmail)
         {
@@ -56,7 +56,7 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("GetUserForLogin")]
         public IHttpActionResult GetUserForLogin([FromBody] UserDTO userDTO)
         {
@@ -72,7 +72,7 @@ namespace WebApi.Controllers
                 UserDTO newUser = new UserDTO();
                 newUser.Id = user.First().Id;
                 newUser.Email = user.First().Email;
-                //newUser.Password = user.First().Password;
+                // newUser.Password = user.First().Password;
                 newUser.phoneNum = user.First().phoneNum;
                 newUser.userUri = user.First().userUri;
                 newUser.gender = user.First().gender;
@@ -85,7 +85,6 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
 
         // GET : Get all users (email and passwords) from DB for firebase authentication
         [HttpGet]
@@ -110,15 +109,20 @@ namespace WebApi.Controllers
         // insert user to db by calling Stored Prodecdure InsertUser
         [HttpPost]
         [Route("InsertUser")]
-        public IHttpActionResult InsertUser([FromBody] tblUser user)
+        public IHttpActionResult InsertUser([FromBody] UserDTO user)
         {
             try
             {
+                tblCalendarForUser calendarForUser = new tblCalendarForUser();
                 db.InsertUser(user.Email, user.Password, user.FirstName, user.LastName, user.gender, user.phoneNum, user.userUri);
                 db.SaveChanges();
-                //return the id from the new user
-                var newUser = db.tblUsers.Where(x => x.Email == user.Email).FirstOrDefault();
-                return Ok(newUser.Id);
+                var newUser = db.tblUsers.Where(x => x.Email == user.Email).First();
+                if (newUser == null)
+                    return NotFound();                
+                int result = calendarForUser.InsertCalendar(newUser.Id, user.Calendars);
+                if (result == -1)
+                    return BadRequest("Error in insert calendar for user");                
+                return Ok(newUser.Id);                
             }
             catch (Exception ex)
             {
@@ -126,7 +130,7 @@ namespace WebApi.Controllers
             }
         }
 
-        // update user to db by calling Function UpdateUser
+        // Update user to db by calling Function UpdateUser
         [HttpPut]
         [Route("UpdateUser")]
         public IHttpActionResult UpdateUser([FromBody] UserDTO userToUpdate)
@@ -148,7 +152,7 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
+        
         // Update user password by calling Function UpdateUserPassword
         [HttpPut]
         [Route("UpdateUserPassword")]
@@ -189,6 +193,5 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
     }
 }

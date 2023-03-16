@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, Modal, Dimensions, SafeAreaView } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, Modal, Dimensions, SafeAreaView, Keyboard, FlatList } from 'react-native';
 import { Entypo } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
 import HobbiesData from './Hobbies.json';
 const SCREEN_WIDTH = Dimensions.get('window').width;
+const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export default function SignUpHobbies({ navigation, route }) {
+  const [holidaysType, setHolidaysType] = useState([]);
   const [modal1Visible, setModal1Visible] = useState(false);
   const [modal2Visible, setModal2Visible] = useState(false);
   const [modal3Visible, setModal3Visible] = useState(false);
@@ -31,8 +33,13 @@ export default function SignUpHobbies({ navigation, route }) {
   const [moviesOther, setMoviesOther] = useState('');
   const [other, setOther] = useState('');
 
-  const hours = [...Array(25)].map((_, i) => `${i}:00`);
-  hours.unshift('Select...');
+  // Hours Night should start at 18:00 and end at 1:00
+  const hoursNight = [...Array(7)].map((_, i) => `${i + 18}:00`);
+  hoursNight.unshift('Select...');
+  // Hours Afternoon Naps should start at 13:00 and end at 18:00
+  const hoursAfternoonNaps = [...Array(6)].map((_, i) => `${i + 13}:00`);
+  hoursAfternoonNaps.unshift('Select...');
+
   const [selectedNightHour, setSelectedNightHour] = useState('');
   const [selectedAfterNoonNaps, setSelectedAfterNoonNaps] = useState('');
 
@@ -44,7 +51,7 @@ export default function SignUpHobbies({ navigation, route }) {
     const activeFood = food.filter((food) => food.selected).map((food) => food.name);
     const activeDrink = drink.filter((drink) => drink.selected).map((drink) => drink.name);
     const activeHobbies = hobbies.filter((hobby) => hobby.selected).map((hobby) => hobby.name);
-    const activeMovies = movies.filter((movie) => movie.selected).map((movie) => movie.name);   
+    const activeMovies = movies.filter((movie) => movie.selected).map((movie) => movie.name);
     if (booksOther !== '') {
       activeBooks.push(booksOther);
     }
@@ -69,21 +76,37 @@ export default function SignUpHobbies({ navigation, route }) {
     if (moviesOther !== '') {
       activeMovies.push(moviesOther);
     }
-    const tblHobbies = {
-      books: activeBooks,
-      music: activeMusic,
-      TVShow: activeTvShows,
-      radioChannel: activeRadioChannel,
-      food: activeFood,
-      drink: activeDrink,
-      specialHabits: activeHobbies,
-      movie: activeMovies,
+    // turns each array into a string with commas between each item without the last comma    
+    const activeBooksString = activeBooks.join(', ');
+    const activeMusicString = activeMusic.join(', ');
+    const activeTvShowsString = activeTvShows.join(', ');
+    const activeRadioChannelString = activeRadioChannel.join(', ');
+    const activeFoodString = activeFood.join(', ');
+    const activeDrinkString = activeDrink.join(', ');
+    const activeHobbiesString = activeHobbies.join(', ');
+    const activeMoviesString = activeMovies.join(', ');
+    
+    const HobbiesAndLimitationsData = {
+      patientId: route.params.tblPatient.Id,
+      books: activeBooksString,
+      music: activeMusicString,
+      TVShow: activeTvShowsString,
+      radioChannel: activeRadioChannelString,
+      food: activeFoodString,
+      drink: activeDrinkString,
+      specialHabits: activeHobbiesString,
+      movie: activeMoviesString,
       afternoonNap: selectedAfterNoonNaps,
       nightSleep: selectedNightHour,
-      other: other
-    };
-    const tblLimitations = route.params.tblLimitations;
-    navigation.navigate('SignUpFinish', { tblHobbies: tblHobbies, tblLimitations: tblLimitations });
+      otherH: other,
+      allergies: route.params.tblLimitations.allergies,
+      sensitivities: route.params.tblLimitations.sensitivities,
+      physicalAbilities: route.params.tblLimitations.physicalAbilities,
+      bathRoutine: route.params.tblLimitations.bathRoutine,
+      sensitivityToNoise: route.params.tblLimitations.sensitivityToNoise,
+      otherL: route.params.tblLimitations.otherL,
+    };    
+    navigation.navigate('SignUpFinish', { HobbiesAndLimitationsData: HobbiesAndLimitationsData, tblPatient: route.params.tblPatient , tblUser: route.params.tblUser });
   };
 
   return (
@@ -92,6 +115,7 @@ export default function SignUpHobbies({ navigation, route }) {
         <Text style={styles.header}>Add Patient’s Hobbies</Text>
         <View style={styles.line} />
       </View>
+
       {/* Books */}
       <TouchableOpacity
         style={styles.inputBox}
@@ -159,22 +183,25 @@ export default function SignUpHobbies({ navigation, route }) {
         <SafeAreaView style={styles.modal}>
           <Text style={styles.modalXSText}>Pick Radio Channel</Text>
           <View style={styles.doubleContainer}>
-            {radioChannel.map((radioChannel) => (
-              <TouchableOpacity
-                key={radioChannel.id}
-                style={[styles.XSInput, radioChannel.selected && { borderColor: '#548DFF' }]}
-                onPress={() => {
-                  const newRadioChannel = radioChannel.map((item) => {
-                    if (item.id === radioChannel.id) {
-                      return { ...item, selected: !item.selected };
-                    }
-                    return item;
-                  });
-                  setRadioChannel(newRadioChannel);
-                }}>
-                <Text style={styles.booksText}>{radioChannel.name}</Text>
-              </TouchableOpacity>
-            ))}
+            <FlatList
+              data={radioChannel}
+              keyExtractor={(item, index) => index.toString()}
+              numColumns={3}
+              renderItem={({ item, index }) => (
+                <View style={{ margin: 3 }}>
+                  <TouchableOpacity
+                    key={index}
+                    style={[styles.XSInput, item.selected && { borderColor: '#548DFF' }]}
+                    onPress={() => {
+                      const newRadioChannel = [...radioChannel];
+                      newRadioChannel[index].selected = !newRadioChannel[index].selected;
+                      setRadioChannel(newRadioChannel);
+                    }}>
+                    <Text style={styles.booksText}>{item.name}</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+            />
             <TextInput
               style={styles.inputOther}
               placeholder="Other..."
@@ -185,22 +212,25 @@ export default function SignUpHobbies({ navigation, route }) {
           </View>
           <Text style={styles.modalXSText}>Pick Music</Text>
           <View style={styles.doubleContainer}>
-            {music.map((music) => (
-              <TouchableOpacity
-                key={music.id}
-                style={[styles.XSInput, music.selected && { borderColor: '#548DFF' }]}
-                onPress={() => {
-                  const newMusic = music.map((item) => {
-                    if (item.id === music.id) {
-                      return { ...item, selected: !item.selected };
-                    }
-                    return item;
-                  });
-                  setMusic(newMusic);
-                }}>
-                <Text style={styles.booksText}>{music.name}</Text>
-              </TouchableOpacity>
-            ))}
+            <FlatList
+              data={music}
+              keyExtractor={(item, index) => index.toString()}
+              numColumns={3}
+              renderItem={({ item, index }) => (
+                <View style={{ margin: 3 }}>
+                  <TouchableOpacity
+                    key={index}
+                    style={[styles.XSInput, item.selected && { borderColor: '#548DFF' }]}
+                    onPress={() => {
+                      const newMusic = [...music];
+                      newMusic[index].selected = !newMusic[index].selected;
+                      setMusic(newMusic);
+                    }}>
+                    <Text style={styles.booksText}>{item.name}</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+            />
             <TextInput
               style={styles.inputOther}
               placeholder="Other..."
@@ -240,25 +270,29 @@ export default function SignUpHobbies({ navigation, route }) {
       {/* Tv Shows & Movies Modal*/}
       <Modal animationType="slide" visible={modal3Visible}>
         <View style={styles.modal}>
-          <Text style={styles.modalTextSecondRow}>Pick Tv Shows </Text>
-          <Text style={[styles.modalTextSecondRow, { marginBottom: 40 }]}>Abilities</Text>
-          <View style={styles.TVContainer}>
-            {tvShows.map((tvShows) => (
-              <TouchableOpacity
-                key={tvShows.id}
-                style={[styles.TV, tvShows.selected && { borderColor: '#548DFF' }]}
-                onPress={() => {
-                  const newTvShows = tvShows.map((item) => {
-                    if (item.id === tvShows.id) {
-                      return { ...item, selected: !item.selected };
-                    }
-                    return item;
-                  });
-                  setTvShows(newTvShows);
-                }}>
-                <Text style={styles.booksText}>{tvShows.name}</Text>
-              </TouchableOpacity>
-            ))}
+          <Text style={styles.modalXSText}>Pick Tv Shows </Text>
+          <View style={styles.doubleContainer}>
+            <FlatList
+              data={tvShows}
+              renderItem={({ item, index }) => (
+                <View style={{ margin: 3 }}>
+                  <TouchableOpacity
+                    key={index}
+                    style={[styles.XSInput, item.selected && { borderColor: '#548DFF' }]}
+                    onPress={() => {
+                      const newTvShows = [...tvShows];
+                      newTvShows[index].selected = !newTvShows[index].selected;
+                      setTvShows(newTvShows);
+                    }}>
+                    <Text style={styles.booksText}>{item.name}</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+              keyExtractor={(item, index) => index.toString()}
+              numColumns={3}
+            />
+
+
             <TextInput
               style={styles.inputOther}
               placeholder="Other..."
@@ -267,21 +301,19 @@ export default function SignUpHobbies({ navigation, route }) {
               onChangeText={(text) => setTvShowsOther(text)}
             />
           </View>
+
+          <Text style={styles.modalXSText}>Pick Movies </Text>
           <View style={styles.TVContainer}>
-            {movies.map((movies) => (
+            {movies.map((movie, index) => (
               <TouchableOpacity
-                key={movies.id}
-                style={[styles.TV, movies.selected && { borderColor: '#548DFF' }]}
+                key={index}
+                style={[styles.XSInput, movie.selected && { borderColor: '#548DFF' }]}
                 onPress={() => {
-                  const newMovies = movies.map((item) => {
-                    if (item.id === movies.id) {
-                      return { ...item, selected: !item.selected };
-                    }
-                    return item;
-                  });
+                  const newMovies = [...movies];
+                  newMovies[index].selected = !newMovies[index].selected;
                   setMovies(newMovies);
                 }}>
-                <Text style={styles.booksText}>{movies.name}</Text>
+                <Text style={styles.booksText}>{movie.name}</Text>
               </TouchableOpacity>
             ))}
             <TextInput
@@ -292,7 +324,6 @@ export default function SignUpHobbies({ navigation, route }) {
               onChangeText={(text) => setMoviesOther(text)}
             />
           </View>
-
 
           <View style={styles.btnModalContainer}>
             <TouchableOpacity
@@ -326,22 +357,25 @@ export default function SignUpHobbies({ navigation, route }) {
         <View style={styles.modal}>
           <Text style={styles.modalText}>Pick Food</Text>
           <View style={styles.doubleContainer}>
-            {food.map((food) => (
-              <TouchableOpacity
-                key={food.id}
-                style={[styles.Food, food.selected && { borderColor: '#548DFF' }]}
-                onPress={() => {
-                  const newFood = food.map((item) => {
-                    if (item.id === food.id) {
-                      return { ...item, selected: !item.selected };
-                    }
-                    return item;
-                  });
-                  setFood(newFood);
-                }}>
-                <Text style={styles.booksText}>{food.name}</Text>
-              </TouchableOpacity>
-            ))}
+            <FlatList
+              data={food}
+              keyExtractor={(item) => item.id - 1}
+              numColumns={3}
+              contentContainerStyle={styles.flatList}
+              renderItem={({ item }) => (
+                <View style={{ margin: 3 }}>
+                  <TouchableOpacity
+                    style={[styles.XSInput, item.selected && { borderColor: '#548DFF' }]}
+                    onPress={() => {
+                      const newFood = [...food];
+                      newFood[item.id - 1].selected = !newFood[item.id - 1].selected;
+                      setFood(newFood);
+                    }}>
+                    <Text style={styles.booksText}>{item.name}</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+            />
             <TextInput
               style={styles.inputOther}
               placeholder="Other..."
@@ -349,27 +383,29 @@ export default function SignUpHobbies({ navigation, route }) {
               value={foodOther}
               onChangeText={(text) => setFoodOther(text)}
             />
-
           </View>
 
           <Text style={styles.modalText}>Pick Drink</Text>
           <View style={styles.doubleContainer}>
-            {drink.map((drink) => (
-              <TouchableOpacity
-                key={drink.id}
-                style={[styles.Food, drink.selected && { borderColor: '#548DFF' }]}
-                onPress={() => {
-                  const newDrink = drink.map((item) => {
-                    if (item.id === drink.id) {
-                      return { ...item, selected: !item.selected };
-                    }
-                    return item;
-                  });
-                  setDrink(newDrink);
-                }}>
-                <Text style={styles.booksText}>{drink.name}</Text>
-              </TouchableOpacity>
-            ))}
+            <FlatList
+              data={drink}
+              keyExtractor={(item) => item.id - 1}
+              numColumns={3}
+              contentContainerStyle={styles.flatList}
+              renderItem={({ item }) => (
+                <View style={{ margin: 3 }}>
+                  <TouchableOpacity
+                    style={[styles.XSInput, item.selected && { borderColor: '#548DFF' }]}
+                    onPress={() => {
+                      const newDrink = [...drink];
+                      newDrink[item.id - 1].selected = !newDrink[item.id - 1].selected;
+                      setDrink(newDrink);
+                    }}>
+                    <Text style={styles.booksText}>{item.name}</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+            />
             <TextInput
               style={styles.inputOther}
               placeholder="Other..."
@@ -414,7 +450,7 @@ export default function SignUpHobbies({ navigation, route }) {
               onValueChange={itemValue => setSelectedNightHour(itemValue)}
               itemStyle={styles.pickerItem}
             >
-              {hours.map(hour => (
+              {hoursNight.map(hour => (
                 <Picker.Item key={hour} label={hour} value={hour} />
               ))}
             </Picker>
@@ -427,7 +463,7 @@ export default function SignUpHobbies({ navigation, route }) {
               onValueChange={itemValue => setSelectedAfterNoonNaps(itemValue)}
               itemStyle={styles.pickerItem}
             >
-              {hours.map(hour => (
+              {hoursAfternoonNaps.map(hour => (
                 <Picker.Item key={hour} label={hour} value={hour} />
               ))}
             </Picker>
@@ -463,20 +499,16 @@ export default function SignUpHobbies({ navigation, route }) {
         <View style={styles.modal}>
           <Text style={styles.modalText}>Pick Hobbies</Text>
           <View style={styles.FoodContainer}>
-            {hobbies.map((hobbies) => (
+            {hobbies.map((hobbie, index) => (
               <TouchableOpacity
-                key={hobbies.id}
-                style={[styles.Food, hobbies.selected && { borderColor: '#548DFF' }]}
+                key={index}
+                style={[styles.XSInput, hobbie.selected && { borderColor: '#548DFF' }]}
                 onPress={() => {
-                  const newHobbies = hobbies.map((item) => {
-                    if (item.id === hobbies.id) {
-                      return { ...item, selected: !item.selected };
-                    }
-                    return item;
-                  });
+                  const newHobbies = [...hobbies];
+                  newHobbies[index].selected = !newHobbies[index].selected;
                   setHobbies(newHobbies);
                 }}>
-                <Text style={styles.booksText}>{hobbies.name}</Text>
+                <Text style={styles.booksText}>{hobbie.name}</Text>
               </TouchableOpacity>
             ))}
             <TextInput
@@ -504,7 +536,6 @@ export default function SignUpHobbies({ navigation, route }) {
         </View>
       </Modal>
 
-
       {/* Other info */}
       <TextInput
         style={styles.comments}
@@ -512,7 +543,8 @@ export default function SignUpHobbies({ navigation, route }) {
         placeholderTextColor={'black'}
         onChangeText={setOther}
         value={other}
-        multiline={true}
+        multiline
+        editable
       />
 
       {/* Continue Button */}
@@ -535,6 +567,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  flatList: {
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: SCREEN_WIDTH * 1,
+  },
   headerContainer: {
     width: SCREEN_WIDTH * 1,
     alignItems: 'center',
@@ -547,12 +584,10 @@ const styles = StyleSheet.create({
     marginTop: 50,
   },
   doubleContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-around',
-    alignItems: 'center',
+    justifyContent: 'center',
     width: SCREEN_WIDTH * 1,
-    marginTop: 20,
+    alignItems: 'center',
+    height: SCREEN_HEIGHT * 0.27,
   },
   inputBox: {
     width: SCREEN_WIDTH * 0.9,
@@ -587,7 +622,7 @@ const styles = StyleSheet.create({
   modal: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   modalText: {
     fontSize: 25,
@@ -597,7 +632,7 @@ const styles = StyleSheet.create({
   modalXSText: {
     fontSize: 25,
     fontFamily: 'Urbanist-Bold',
-    marginTop: 20,
+    margin: 20,
   },
   saveButton: {
     width: SCREEN_WIDTH * 0.45,
@@ -702,14 +737,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  XSInput:{
+  XSInput: {
     width: SCREEN_WIDTH * 0.3,
     height: 50,
     borderRadius: 16,
     backgroundColor: '#fff',
     borderWidth: 1.5,
     borderColor: '#E6EBF2',
-    marginVertical: 7,
+    marginVertical: 5,
     justifyContent: 'center',
     alignItems: 'center',
   },

@@ -1,5 +1,5 @@
-import { SafeAreaView, View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native'
-import { useState } from 'react';
+import { SafeAreaView, View, Text, StyleSheet, TouchableOpacity, Dimensions ,Alert} from 'react-native'
+import { useState, useEffect } from 'react';
 import { OrLine, HaveAccount } from './FooterLine';
 import * as Font from 'expo-font';
 Font.loadAsync({
@@ -10,18 +10,17 @@ Font.loadAsync({
 });
 
 export default function SignUpLvl3({ navigation, route }) {
-  const userId = route.params.userId;
+  const userData = route.params.userData;
   const [role, setRole] = useState(''); // Caregiver or Patient's Family Member
 
   const NavigateToNextLvl = () => {
     if (role === 'Caregiver') {
-     navigation.navigate('SignUpCaregiverLVL4', { userId: userId })
-
+      navigation.navigate('SignUpCaregiverLVL4', { userData: userData, language: route.params.language, holidaysType: route.params.holidaysType, country: route.params.country })
     } else if (role === 'Patient’s Family Member') {
-      navigation.navigate('SignUpUserLVL4')
+      navigation.navigate('SignUpUserLVL4', { userData: userData, language: route.params.language, holidaysType: route.params.holidaysType })
     }
     else {
-      alert('Please select your role')
+      Alert.alert('Please select your role')
     }
   }
 

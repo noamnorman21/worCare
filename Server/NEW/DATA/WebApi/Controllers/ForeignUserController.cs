@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using WebApi.DTO;
+using System.Web.Http.Cors;
 
 namespace WebApi.Controllers
 {
@@ -13,49 +14,47 @@ namespace WebApi.Controllers
     public class ForeignUserController : ApiController
     {
         igroup194DB db = new igroup194DB();
-        // GET api/<controller>
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
-        // GET api/<controller>/5
-        public string Get(int id)
-        {
-            return "value";
-        }
-
         [HttpPost]
         [Route("InsertForeignUser")]
-        public IHttpActionResult Post([FromBody] ForeignUserDTO user)
-
+        public IHttpActionResult InsertForeignUser([FromBody] ForeignUserDTO user)
         {
             try
             {
-                tblUser userExist = db.tblUsers.Where(x => x.Id == user.Id).First();      
+                tblUser userExist = db.tblUsers.Where(x => x.Id == user.Id).First();
                 if (userExist == null)
                     return NotFound();
-
-                //add the jewish(id-24) calnder as primary calnder
-                db.InsertCalendarForUser(24, userExist.Id, true);
-                foreach (int item in user.Calendars)
-                {
-                    //here we will add all the calendars that the user choose 
-                    if (item!=24)
-                        db.InsertCalendarForUser(item, userExist.Id, false);           
-                }
-        
                 db.InsertForeignUser(user.Id, user.DateOfBirth, user.VisaExpirationDate, user.LanguageName_En, user.CountryName_En);
-                
+   
                 return Ok("Foreign user added");
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
-
-  
-
+        }
+        //function to link Foreign with patient        
+        [HttpPost]
+        [Route("InsertCaresForPatient")]
+        public IHttpActionResult InsertCaresForPatient([FromBody] CaresForPatientDTO CaresForPatientDTO)
+        {
+            try
+            {
+                foreach (tblCaresForPatient item in db.tblCaresForPatients)
+                {
+                    if (CaresForPatientDTO.workerId == item.workerId && CaresForPatientDTO.patientId == item.patientId &&item.status=="A")
+                    {
+                        return BadRequest("This worker already cares for this patient");
+                    }                   
+                }
+                //P is status pending, we will use triger to change it to A after the user will approve 
+                db.InsertCaresForPatient(CaresForPatientDTO.patientId, CaresForPatientDTO.workerId, "P", CaresForPatientDTO.linkTo);
+                db.SaveChanges();
+                return Ok("linked succesfuly");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }          
         }
 
         // PUT api/<controller>/5

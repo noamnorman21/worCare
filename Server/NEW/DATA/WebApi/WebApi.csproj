@@ -284,12 +284,16 @@
     <Compile Include="Controllers\ForeignUserController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LanguageCountryController.cs" />
+    <Compile Include="Controllers\PatientController.cs" />
     <Compile Include="Controllers\PayChecksController.cs" />
     <Compile Include="Controllers\PaymentRequestController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
+    <Compile Include="DTO\CaresForPatientDTO.cs" />
     <Compile Include="DTO\ContactDTO.cs" />
     <Compile Include="DTO\ForeignUserDTO.cs" />
+    <Compile Include="DTO\HobbiesAndLimitationsDTO.cs" />
+    <Compile Include="DTO\PatientDTO.cs" />
     <Compile Include="DTO\PayCheckDTO.cs" />
     <Compile Include="DTO\PaymentsRequestDTO.cs" />
     <Compile Include="DTO\UserDTO.cs" />

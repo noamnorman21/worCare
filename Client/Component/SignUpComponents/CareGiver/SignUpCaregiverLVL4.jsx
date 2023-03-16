@@ -11,104 +11,13 @@ Font.loadAsync({
   'Urbanist-Light': require('../../../assets/fonts/Urbanist-Light.ttf'),
   'Urbanist-Medium': require('../../../assets/fonts/Urbanist-Medium.ttf'),
 });
-
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function SignUpCaregiverLVL4({ navigation, route }) {
-  const [language, setLanguage] = useState([]);
-  const [country, setCountry] = useState([]);
-  const [holidaysType, setHolidaysType] = useState([]);
-  //we need to get the user data(most umporant is the id) from the previous screen
-  const userId = route.params.userId;
-  useEffect(() => {
-    let urlforLanguages = 'https://proj.ruppin.ac.il/cgroup94/test1/api/LanguageCountry/GetAllLanguages';
-    let urlforCountries = 'https://proj.ruppin.ac.il/cgroup94/test1/api/LanguageCountry/GetAllCountries';
-    let calendarUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Calendars/GetAllCalendars';
-    fetch(calendarUrl, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json; charset=UTF-8',
-        },
-    })
-        .then(res => {
-            if (res.ok) {
-                return res.json()
-            }
-            else {
-                console.log("not found")
-            }
-        })
-        .then(data => {
-            if (data != null) {
-
-                for (let i = 0; i < data.length; i++) {
-                    holidaysType.push({
-                        id: data[i].calendarNum,
-                        label: data[i].CalendarName,
-                    })
-                    
-                }
-            
-            }
-        })
-        .catch((error) => {
-            console.log("err=", error);
-        });
-    fetch(urlforCountries, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-    })
-      .then(res => {
-        if (res.ok) {
-          return res.json()
-        }
-        else {
-          console.log("not found")
-        }
-      })
-      .then(data => {
-        if (data != null) {
-          let coun = data.map((item) => {
-            return { label: item, value: item }
-          })
-          setCountry(coun);
-        }
-      })
-      .catch((error) => {
-        console.log("err=", error);
-      });
-
-
-    fetch(urlforLanguages, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-    })
-      .then(res => {
-        if (res.ok) {
-          return res.json()
-        }
-        else {
-          console.log("not found")
-        }
-      })
-      .then(data => {
-        if (data != null) {
-          let lang = data.map((item) => {
-            return { label: item.LanguageName_Origin, value: item.LanguageName_En }
-          })
-          setLanguage(lang);
-        }
-      })
-      .catch((error) => {
-        console.log("err=", error);
-      });
-
-
-  }, [])
+  const [language, setLanguage] = useState(route.params.language);
+  const [country, setCountry] = useState(route.params.country);
+  const [holidaysType, setHolidaysType] = useState(route.params.holidaysType);
+  const userData = route.params.userData;
 
   const getMinDate = () => {
     var date = new Date().getDate(); //Current Date
@@ -127,35 +36,52 @@ export default function SignUpCaregiverLVL4({ navigation, route }) {
 
   const [openCountry, setOpenCountry] = useState(false);
   const [valueCountry, setValueCountry] = useState(null);
- 
 
   const [openLanguage, setOpenLanguage] = useState(false);
   const [valueLanguage, setValueLanguage] = useState(null);
-  
 
   // send this data to next screen (SignUpCaregiverLVL5)
   const NavigateToNextScreen = () => {
     if (valueCountry == null) {
       Alert.alert("Please fill all the details");
-    } else {
-      const data = {
-        Id: route.params.userId,
+    }
+    else {
+      const newUser = {
+        FirstName: userData.FirstName,
+        LastName: userData.LastName,
+        Email: userData.Email,
+        Password: userData.Password,
+        gender: userData.gender,
+        phoneNum: userData.phoneNum,
+        userUri: userData.userUri,
+      }
+      // foreign user data testing 
+      // const newForeignUserData = {
+      //   CountryName_En: 'Egypt',
+      //   LanguageName_En: 'Arabic',
+      //   DateOfBirth: '1999-01-01',
+      //   VisaExpirationDate: '2025-01-01',
+      // };
+
+      //Foreign User Data
+      const newForeignUserData = {
         CountryName_En: valueCountry,
         LanguageName_En: valueLanguage,
         DateOfBirth: date,
         VisaExpirationDate: visaExpiration,
       };
-      navigation.navigate("SignUpCaregiverLVL5", { data:data,holidaysType:holidaysType });
+      navigation.navigate("SignUpCaregiverLVL5", { newForeignUserData: newForeignUserData, newUser: newUser, holidaysType: holidaysType , patientId: route.params.patientId});
     }
   };
 
   return (
     <SafeAreaView style={styles.container}>
-
+      {/* Header Text */}
       <View style={styles.headerContainer}>
         <Text style={styles.header}>Only few more details...</Text>
       </View>
 
+      {/* Input Container */}
       <View style={styles.inputContainer}>
         {/* Date Picker for birth-date */}
         <DatePicker
@@ -191,8 +117,9 @@ export default function SignUpCaregiverLVL4({ navigation, route }) {
           onDateChange={(date) => { setDate(date) }}
         />
       </View>
-      <View style={styles.inputContainer}>
 
+      {/* Input Container */}
+      <View style={styles.inputContainer}>
         {/* Date Picker for visa expiration min date should be today*/}
         <DatePicker
           iconComponent={<FontAwesome name="calendar-times-o" size={24} color="gray" />}
@@ -226,6 +153,7 @@ export default function SignUpCaregiverLVL4({ navigation, route }) {
           onDateChange={(date) => { setVisaExpiration(date) }}
         />
       </View>
+
       {/* Drop Down Picker for Country */}
       <View style={styles.listContainer}>
         <Dropdown
@@ -251,6 +179,7 @@ export default function SignUpCaregiverLVL4({ navigation, route }) {
           containerStyle={styles.containerStyle}
         />
       </View>
+
       {/* Drop Down Picker for Language */}
       <View style={styles.listContainer}>
         <Dropdown
@@ -282,9 +211,7 @@ export default function SignUpCaregiverLVL4({ navigation, route }) {
         <TouchableOpacity
           // if the drop down picker is open then display none the button
           style={[styles.button, { display: openCountry || openLanguage ? 'none' : 'flex' }]}
-
-          onPress={NavigateToNextScreen}
-        >
+          onPress={NavigateToNextScreen}>
           <Text style={styles.buttonText}>Continue</Text>
         </TouchableOpacity>
       </View>

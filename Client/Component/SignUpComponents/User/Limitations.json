@@ -57,7 +57,7 @@
       },
       {
          "id": 12,
-         "name": "Mold",
+         "name": "Chlorine",
          "selected": false
       },
       {
@@ -89,16 +89,6 @@
          "id": 18,
          "name": "Aspirin",
          "selected": false
-      },
-      {
-         "id": 19,
-         "name": "Chlorine",
-         "selected": false
-      },
-      {
-         "id": 20,
-         "name": "None",
-         "selected": false
       }
    ],
    "sensitivities":[
@@ -125,11 +115,6 @@
       {
          "id": 5,
          "name": "Hearing",
-         "selected": false
-      },
-      {
-         "id": 6,
-         "name": "None",
          "selected": false
       }
    ],
@@ -178,11 +163,6 @@
          "id": 9,
          "name": "Pulling",
          "selected": false
-      },
-      {
-         "id": 10,
-         "name": "None",
-         "selected": false
       }
    ],
    "bathRoutine":[
@@ -209,12 +189,7 @@
       {
          "id": 5,
          "name": "All",
-         "selected": false
-      },
-      {
-         "id": 6,
-         "name": "None",
-         "selected": false
+         "selected": false      
       }
    ]
 }

@@ -1,21 +1,43 @@
-import { SafeAreaView, Dimensions, View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Button, Keyboard, Alert, LayoutAnimation, Types } from 'react-native'
+import { SafeAreaView, Dimensions, View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Keyboard, Alert, LayoutAnimation } from 'react-native'
 import React from 'react'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState, useContext } from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons'
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { OrLine, NeedAccount } from './FooterLine'
-
+import * as Linking from 'expo-linking';
 // import * as Font from 'expo-font';
-
 const SCREEN_WIDTH = Dimensions.get('window').width;
-
+const SCREEN_HEIGHT = Dimensions.get('window').height;
 export default function LogIn({ navigation }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);//for password visibility
     const [keyboardOpen, setKeyboardOpen] = useState(false);//for keyboard visibility
     const [animation, setAnimation] = useState({});
+    const [userType, setUserType] = useState('User');
+    const [isChecked, setChecked] = useState(false);
 
-
+    const getInitialUrl = async () => {
+        // check if the app was opened from a link
+        const initialUrl = await Linking.getInitialURL();
+        //example of the url: exp://l4rfr8w.anonymous.19000.exp.direct/--/InvitedFrom/123456789/Noam
+        // Example of the real url: exp://l4rfr8w.anonymous.19000.exp.direct/
+        if (initialUrl === null || initialUrl === undefined) {
+            return;
+        }
+        else {
+            // if the app was opened from a link, navigate to the correct screen
+            const route = initialUrl.replace(/.*?:\/\//g, '');
+            const routeName = route.split('/')[2];
+            const patientId = route.split('/')[3];
+            const userName = route.split('/')[4];
+            if (routeName === 'InvitedFrom') {
+                setUserType('Caregiver');
+                navigation.navigate('Welcome', { patientId: patientId, userName: userName, userType: userType });
+            }
+        }
+    }
     //login function
     const logInBtn = () => {
         // check email is empty or not
@@ -28,42 +50,72 @@ export default function LogIn({ navigation }) {
             Alert.alert('Email is not valid');
             return;
         }
+        if (password === '') {
+            Alert.alert('Password is required');
+            return;
+        }
         //check password format, it should be password format
         if (!validatePassword(password)) {
             Alert.alert('Password is not valid');
             return;
         }
-        if (password === '') {
-            Alert.alert('Password is required');
-            return;
-        }
-
         const userData = {
-            email: email,
-            password: password,
+            Email: email,
+            Password: password,
         }
 
         //call api to login user
         LoginUser(userData);
     }
+    //function to save user email and password in async storage
+    const _storeData = async () => {
+        try {
+            const userToAsync = {
+                Email: email,
+                Password: password,
+            }
+            const jsonValue = JSON.stringify(userToAsync)
+            await AsyncStorage.setItem("user", jsonValue);
+            console.log('user saved');
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    const toggeleRememberMe = () => {
+        if (isChecked) {
+            setChecked(false);
+        }
+        else {
+            setChecked(true);
+        }
+    }
     //function to login user
     const LoginUser = (userData) => {
-     
-        fetch('', {
-            method: 'GET',
+        let userForLoginUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUserForLogin';
+        console.log(userData);
+
+        fetch(userForLoginUrl, {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ userData }),
+            body: JSON.stringify(userData),
         })
             .then((response) => response.json())
             .then((json) => {
-                if (json.status === 'success') {
-                    Alert.alert('Login Successful');
-                    
-                } else {
+                if (json === null) {
                     Alert.alert('Login Failed');
                 }
+                else {
+                    //save user email and password in async storage
+                    if (isChecked) {
+                        console.log('checked');
+                        _storeData();
+                    }
+                    navigation.navigate('CustomHeader');//navigate to home screen, we will add a necessary call to get user data from the server 
+                    console.log(json);
+                }
+
             }
             )
             .catch((error) => {
@@ -78,21 +130,19 @@ export default function LogIn({ navigation }) {
     }
     //function to check password format
     const validatePassword = (password) => {
-        var re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+        var re = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
         return re.test(password);
     }
-
     //navigate to sign up screen
     const NavigateToSignUp = () => {
-        navigation.navigate('SignUp')
+        navigation.navigate('SignUp', { userType: userType })
     }
-
     const NavigateToForgotPassword = () => {
         navigation.navigate('ForgotPassword')
     }
-
     //keyboard listener for animation
     useEffect(() => {
+        getInitialUrl();
         const keyboardDidShowListener = Keyboard.addListener(
             'keyboardDidShow',
             () => {
@@ -171,15 +221,13 @@ export default function LogIn({ navigation }) {
                 </View>
                 {/* remmeber me check box  in one line*/}
                 <View style={styles.rememberMeContainer}>
-
-                    {/* remember me check box */}
-                    <TouchableOpacity onPress={() => alert('Remember Me')}>
-                        <Icon
-                            name={'check-box-outline-blank'}
-                            size={20}
-                            color='#979797'
-                            style={styles.rememberMeIcon}
-                        />
+                    <TouchableOpacity onPress={toggeleRememberMe}>
+                        {!isChecked 
+                            ?
+                            <MaterialCommunityIcons style={styles.rememberMeIcon} name="checkbox-intermediate" size={24} color="#979797" />
+                            :
+                            <MaterialCommunityIcons style={styles.rememberMeIcon} name="checkbox-blank-outline" size={24} color="#979797" />
+                        }
                     </TouchableOpacity>
                     <Text style={styles.rememberMe}>Remember Me</Text>
 
@@ -293,13 +341,13 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     rememberMeIcon: {
-        marginTop: 10,
-        marginBottom: 10,
+        marginTop: SCREEN_HEIGHT * 0.01,
+        marginBottom: SCREEN_WIDTH * 0.01,
     },
     forgotPasswordContainer: {
         flexDirection: 'row',
         alignSelf: 'flex-end',
-        marginLeft: SCREEN_WIDTH * 0.275,
+        marginLeft: SCREEN_WIDTH * 0.25,
     },
     rememberMeContainer: {
         width: SCREEN_WIDTH * 0.9,

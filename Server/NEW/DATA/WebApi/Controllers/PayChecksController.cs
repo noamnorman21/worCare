@@ -18,15 +18,15 @@ namespace WebApi.Controllers
         [HttpGet]
         [Route("GetPaychecks/{id}")]
         public IHttpActionResult GetPaychecks(int id)
-        {          
+        {
 
             try
             {
                 var Contacts = db.tblPaychecks.Where(x => x.UserId == id).Select(y => new PayCheckDTO
-                {                    
-                    payCheckNum = y.payCheckNum,                   
-                    paycheckDate= y.paycheckDate,
-                    paycheckSummary= y.paycheckSummary,
+                {
+                    payCheckNum = y.payCheckNum,
+                    paycheckDate = y.paycheckDate,
+                    paycheckSummary = y.paycheckSummary,
                     paycheckComment = y.paycheckComment,
                     UserId = y.UserId,
                 }).ToList();
@@ -68,7 +68,7 @@ namespace WebApi.Controllers
             try
             {
                 int id = db.tblPaymentRequests.Max(x => x.requestId) + 1;
-                int num = db.tblPaychecks.Max(x => x.payCheckNum) +1 ;
+                int num = db.tblPaychecks.Max(x => x.payCheckNum) + 1;
                 db.NewPaycheck(num, pay.paycheckDate, pay.paycheckSummary, pay.paycheckComment, pay.UserId);
                 db.SaveChanges();
                 return Ok("Paycheck added successfully!");
@@ -93,7 +93,7 @@ namespace WebApi.Controllers
                     p.paycheckDate = pay.paycheckDate;
                     p.paycheckSummary = pay.paycheckSummary;
                     p.paycheckComment = pay.paycheckComment;
-                    p.UserId = pay.UserId;                    
+                    p.UserId = pay.UserId;
                     db.SaveChanges();
                     return Ok("Request added successfully!");
                 }
@@ -127,7 +127,7 @@ namespace WebApi.Controllers
                     db.tblPaychecks.Remove(p);
                     db.SaveChanges();
                     return Ok("Paycheck Deleted Successfully");
-                }               
+                }
             }
             catch (Exception ex)
             {

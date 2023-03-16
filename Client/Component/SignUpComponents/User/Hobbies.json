@@ -74,11 +74,6 @@
          "id": 15,
          "name": "Fantasy",
          "selected": false
-      },
-      {
-         "id": 16,
-         "name": "None",
-         "selected": false
       }
    ],
    "music": [
@@ -120,11 +115,6 @@
       {
          "id": 8,
          "name": "Opera",
-         "selected": false
-      },
-      {
-         "id": 9,
-         "name": "None",
          "selected": false
       }
    ],
@@ -173,11 +163,6 @@
          "id": 9,
          "name": "Fantasy",
          "selected": false
-      },
-      {
-         "id": 10,
-         "name": "None",
-         "selected": false
       }
    ],
    "tvShows": [
@@ -225,11 +210,6 @@
          "id": 9,
          "name": "Fantasy",
          "selected": false
-      },
-      {
-         "id": 10,
-         "name": "None",
-         "selected": false
       }
    ],
    "radioChannel": [
@@ -271,11 +251,6 @@
       {
          "id": 8,
          "name": "107",
-         "selected": false
-      },
-      {
-         "id": 9,
-         "name": "None",
          "selected": false
       }
    ],
@@ -374,11 +349,6 @@
          "id": 19,
          "name": "Ravioli",
          "selected": false
-      },
-      {
-         "id": 20,
-         "name": "None",
-         "selected": false
       }
    ],
    "drink": [
@@ -420,11 +390,6 @@
       {
          "id": 8,
          "name": "Wine",
-         "selected": false
-      },
-      {
-         "id": 9,
-         "name": "None",
          "selected": false
       }
    ],
@@ -487,11 +452,6 @@
       {
          "id": 12,
          "name": "Writing",
-         "selected": false
-      },
-      {
-         "id": 13,
-         "name": "None",
          "selected": false
       }
    ]

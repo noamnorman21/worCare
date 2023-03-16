@@ -1,15 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Schema Namespace="igroup194_prodModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-  <EntityType Name="sysdiagrams">
-    <Key>
-      <PropertyRef Name="diagram_id" />
-    </Key>
-    <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
-    <Property Name="principal_id" Type="int" Nullable="false" />
-    <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="version" Type="int" />
-    <Property Name="definition" Type="varbinary(max)" />
-  </EntityType>
   <EntityType Name="tblActualList">
     <Key>
       <PropertyRef Name="listId" />
@@ -553,6 +543,12 @@
     <Parameter Name="id" Type="int" Mode="In" />
     <Parameter Name="isPrimary" Type="bit" Mode="In" />
   </Function>
+  <Function Name="InsertCaresForPatient" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="patientId" Type="char" Mode="In" />
+    <Parameter Name="workerId" Type="int" Mode="In" />
+    <Parameter Name="status" Type="char" Mode="In" />
+    <Parameter Name="linkTo" Type="varchar" Mode="In" />
+  </Function>
   <Function Name="InsertForeignUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="Id" Type="int" Mode="In" />
     <Parameter Name="DateOfBirth" Type="date" Mode="In" />
@@ -609,6 +605,23 @@
     <Parameter Name="contactComment" Type="varchar" Mode="In" />
     <Parameter Name="patientId" Type="char" Mode="In" />
   </Function>
+  <Function Name="NewPaycheck" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="payCheckNum" Type="int" Mode="In" />
+    <Parameter Name="paycheckDate" Type="date" Mode="In" />
+    <Parameter Name="paycheckSummary" Type="nvarchar" Mode="In" />
+    <Parameter Name="paycheckComment" Type="varchar(max)" Mode="In" />
+    <Parameter Name="UserId" Type="int" Mode="In" />
+  </Function>
+  <Function Name="NewPaymentRequest" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="requestId" Type="int" Mode="In" />
+    <Parameter Name="requestSubject" Type="varchar" Mode="In" />
+    <Parameter Name="amountToPay" Type="float" Mode="In" />
+    <Parameter Name="requestDate" Type="date" Mode="In" />
+    <Parameter Name="requestProofDocument" Type="nvarchar" Mode="In" />
+    <Parameter Name="requestComment" Type="varchar(max)" Mode="In" />
+    <Parameter Name="requestStatus" Type="char" Mode="In" />
+    <Parameter Name="userId" Type="int" Mode="In" />
+  </Function>
   <Function Name="sp_alterdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
     <Parameter Name="owner_id" Type="int" Mode="In" />
@@ -640,7 +653,6 @@
   </Function>
   <Function Name="sp_upgraddiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <EntityContainer Name="igroup194_prodModelStoreContainer">
-    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="tblActualList" EntityType="Self.tblActualList" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="tblCalendarForUser" EntityType="Self.tblCalendarForUser" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="tblCalendarsType" EntityType="Self.tblCalendarsType" Schema="dbo" store:Type="Tables" />

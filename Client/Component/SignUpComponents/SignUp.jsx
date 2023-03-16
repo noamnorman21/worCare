@@ -13,10 +13,10 @@ Font.loadAsync({
 
 // Sign up Screen - level 1 - first + last name, email, phone number, password, image 
 // On submit, user is taken to SignUpLvl2 Screen - address, city, state, zip code, country
-export default function CreateUser({ navigation }) {
+export default function CreateUser({ navigation, route }) {
   const [showPassword, setShowPassword] = useState(false);//for password visibility
   const [keyboardOpen, setKeyboardOpen] = useState(false);//for keyboard visibility
-    
+  const [animation, setAnimation] = useState({});
   const [userImage, setUserImage] = useState(null)
   const [user, setUser] = useState({
     email: '',
@@ -25,8 +25,10 @@ export default function CreateUser({ navigation }) {
     lastName: '',
     phoneNum: '',
   })
+  const [patientId, setPatientId] = useState('');
 
   useEffect(() => {
+    setPatientId(route.params.patientId);
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
       () => {
@@ -57,7 +59,6 @@ export default function CreateUser({ navigation }) {
       keyboardDidShowListener.remove();
       keyboardDidHideListener.remove();
     }
-
   }, []);
 
   const handleCreateUser = () => {
@@ -84,8 +85,15 @@ export default function CreateUser({ navigation }) {
     if (!validatePhoneNum(phoneNum)) {
       return Alert.alert('Invalid Phone Number', 'Please enter a valid phone number')
     }
-
-
+    // for testing purposes
+    // const userTest = {
+    //   email: 'noam12232@gmail.com',
+    //   password: '12345678',
+    //   firstName: 'Noam',
+    //   lastName: 'Norman',
+    //   phoneNum: '0591277567',
+    //   imagePath: userImage,
+    // }
     const userData = {
       email: user.email,
       password: user.password,
@@ -94,16 +102,27 @@ export default function CreateUser({ navigation }) {
       phoneNum: user.phoneNum,
       imagePath: userImage,
     }
-    //console.log(userData)
 
-    navigation.navigate('SignUpLvl2', { user: userData })
+    // const userData = {
+    //   email: userTest.email,
+    //   password: userTest.password,
+    //   firstName: userTest.firstName,
+    //   lastName: userTest.lastName,
+    //   phoneNum: userTest.phoneNum,
+    //   imagePath: userTest.imagePath,
+    // }
+
+    console.log(userData)
+    if (route.params.userType === 'User') {
+      navigation.navigate('SignUpLvl2', { user: userData, userType: route.params.userType })
+    }
+    else {
+      navigation.navigate('SignUpLvl2', { user: userData, userType: route.params.userType, patientId: patientId })
+    }
   }
 
   const changeIMG = (imageFromUser) => {
-
     setUserImage(imageFromUser)
-
-
   }
 
   const validatePhoneNum = (phoneNum) => {
@@ -129,7 +148,6 @@ export default function CreateUser({ navigation }) {
   const NavigateToLogIn = () => {
     navigation.navigate('LogIn')
   }
-
 
   return (
     <SafeAreaView style={styles.container}>
@@ -162,12 +180,14 @@ export default function CreateUser({ navigation }) {
           keyboardType='ascii-capable'
           onChangeText={(value) => handleInputChange('email', value)}
         />
-
+        
         <View style={styles.phoneContainer}>
           <TextInput
             style={styles.input}
             placeholder="Phone Number"
             keyboardType='phone-pad'
+            // return button type in keyboard for ios devices
+            returnKeyType='done'
             onChangeText={(value) => handleInputChange('phoneNum', value)}
           />
         </View>

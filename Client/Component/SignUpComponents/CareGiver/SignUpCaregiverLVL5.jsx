@@ -1,8 +1,8 @@
 import { View, Text, SafeAreaView, StyleSheet, Dimensions, ScrollView, TouchableOpacity, Alert } from 'react-native'
-import { useState,useEffect } from 'react'
+import * as Linking from 'expo-linking';
+import { useState, useEffect } from 'react'
 import * as Font from 'expo-font';
 import Holidays from '../../HelpComponents/Holidays';
-
 Font.loadAsync({
   'Urbanist': require('../../../assets/fonts/Urbanist-Regular.ttf'),
   'Urbanist-Bold': require('../../../assets/fonts/Urbanist-Bold.ttf'),
@@ -12,37 +12,88 @@ Font.loadAsync({
 });
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
-export default function SignUpCaregiverLVL5({ navigation, route }, props) {
+export default function SignUpCaregiverLVL5({ navigation, route }) {
   const [selectedHolidays, setSelectedHolidays] = useState([]);
-  // const data = route.params.data;
-  // console.log(data);
-  const newForeignUser = route.params.data;
-  const holidaysType= route.params.holidaysType;
- 
-  //bring from DB all the holidays type
-  useEffect(() => {
-     
-  }, []);
+  const newForeignUserData = route.params.newForeignUserData;
+  const newUser = route.params.newUser;
+  const holidaysType = route.params.holidaysType;
+  const [linkTo, setLinkTo] = useState("");
 
-  const sendToDB = () => {
- 
-    newForeignUser.Calendars = selectedHolidays; //selectedHolidays is the array of the selected holidays,use them in data base with stored procedure "InsertCalendarForUser"
-    console.log(newForeignUser);
+
+  useEffect(() => {
+    getInitialUrl();
+  }, []);
+  const getInitialUrl = async () => {
+    setLinkTo( await Linking.getInitialURL());
+    console.log("link:", linkTo);
+  }
+
+
+  const createUserInDB = () => {
+    newUser.Calendars = selectedHolidays; //selectedHolidays is the array of the selected holidays,use them in data base with stored procedure "InsertCalendarForUser"    
+    fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/InsertUser', { //send the user data to the DB
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: JSON.stringify(newUser),
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        //save the id of the new user that we got from the DB 
+        newForeignUserData.Id = json; //save the id of the new user that we got from the DB
+        console.log(newForeignUserData.Id);
+        createForeignUserInDB() //create the foreign user in the DB
+      })
+      .catch((error) => {
+        console.error(error);
+      }
+      );
+  };
+
+  const createForeignUserInDB = () => {
+    console.log(newForeignUserData);
     fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/ForeignUser/InsertForeignUser', {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(newForeignUser),
+      body: JSON.stringify(newForeignUserData),
     })
       .then((response) => response.json())
       .then((json) => {
         console.log(json);
+        InsertCaresForPatient();
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+  const InsertCaresForPatient = () => {
+    const caresForPatient = {
+      patientId: route.params.patientId,
+      workerId: newForeignUserData.Id,
+      linkTo: linkTo,
+      status: "P"
+    };
+    console.log(caresForPatient);
+    fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/ForeignUser/InsertCaresForPatient', {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(caresForPatient),
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        console.log(json);
+
         Alert.alert("Great Job !", "You can login now", [
           {
             text: "OK",
             onPress: () => {
               navigation.navigate('LogIn');
+              //we will add to this stage a notification to the user that a new caregiver was added to his care team, and he will approve it
             }
           }
         ]);
@@ -50,28 +101,23 @@ export default function SignUpCaregiverLVL5({ navigation, route }, props) {
       .catch((error) => {
         console.error(error);
       });
-  
-      
   };
 
   const isItemSelected = (arr) => {
     setSelectedHolidays(arr); //arr is the array of the selected holidays
-    console.log("selectedHolidays=", selectedHolidays);
 
-    
   };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
         <Text style={styles.headerTxt}>Great Job !</Text>
       </View>
-      {/* <Text style={styles.headerSmallTxt}>You are almost done</Text> */}
       <Holidays holidaysType={holidaysType} sendHolidays={isItemSelected} />
-
       <View style={styles.btnContainer}>
         <TouchableOpacity
           style={styles.button}
-          onPress={sendToDB}
+          onPress={createUserInDB}
         >
           <Text style={styles.buttonText}>Sign Up</Text>
         </TouchableOpacity>

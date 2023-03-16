@@ -1,10 +1,10 @@
-import { View, Text } from 'react-native'
+import { View, Text, StyleSheet } from 'react-native'
 
 
 
 export default function Chats() {
   return (
-    <View >
+    <View style={styles.container}>
       <Text>Chats</Text>
     </View>
   )

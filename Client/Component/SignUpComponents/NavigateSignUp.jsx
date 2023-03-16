@@ -1,9 +1,10 @@
-import React from 'react'
-import { StyleSheet} from 'react-native';
+import { useState, useEffect } from 'react'
+import { StyleSheet } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { CustomHeader } from '../../Component/AppBarUp';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Importing the screens that will be used in the stack navigator
+import { CustomHeader } from '../../Component/AppBarUp';
 import LogIn from './LogIn';
 import SignUp from './SignUp';
 import SignUpLvl2 from './SignUpLvl2';
@@ -18,13 +19,35 @@ import SignUpUserLVL5 from './User/SignUpUserLVL5';
 import SignUpHobbies from './User/SignUpHobbies';
 import SignUpLimitations from './User/SignUpLimitations';
 import SignUpFinish from './User/SignUpFinish'
-
+import Welcome from '../Welcome';
 
 const Stack = createStackNavigator();
 
-export default function NavigateSignUp() {
+export default function NavigateSignUp(props) {
+  // const [defaultScreen, setDefaultScreen] = useState("LogIn");
+
+  // //function to get user email and password from async storage, it called when the app starts using useEffect
+  // const _retrieveData = async () => {
+  //   try {    
+  //     const value = await AsyncStorage.getItem('user');
+  //     console.log(value);
+  //     if (value !== null) {
+  //       // We have data!!
+  //       navigation.navigate("CustomHeader");
+  //       setDefaultScreen("CustomHeader");
+  //       console.log(defaultScreen)
+  //     }
+  //   } catch (error) {
+  //     // Error retrieving data
+  //   }
+  // }
+
+  // useEffect(() => {
+  //   _retrieveData();
+  // }, []);
+
   return (
-    <Stack.Navigator initialRouteName="LogIn" screenOptions={{ headerShown: false }}>
+    <Stack.Navigator initialRouteName={props.defaultScreen} screenOptions={{ headerShown: false }}>
 
       <Stack.Screen name="CustomHeader" component={CustomHeader} />
       <Stack.Screen name="LogIn" component={LogIn} />
@@ -33,6 +56,9 @@ export default function NavigateSignUp() {
       <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
       <Stack.Screen name="ForgotPasswordLvl2" component={ForgotPasswordLvl2} options={{ headerShown: true, headerTitle: '' }} />
       <Stack.Screen name="CreateNewPassword" component={CreateNewPassword} options={{ headerShown: true, headerTitle: '' }} />
+
+      {/* מסך לקישור המטפל למשפחת המטופל*/}
+      <Stack.Screen name="Welcome" component={Welcome} options={{ headerShown: false }} />
 
       {/* שלבים 1-3 בתהליך ההרשמה משותפים לשני סוגי המשתמשים */}
       <Stack.Screen name="SignUp" component={SignUp} />
@@ -50,7 +76,6 @@ export default function NavigateSignUp() {
       <Stack.Screen name="SignUpLimitations" component={SignUpLimitations} options={{ headerShown: true, headerTitle: '' }} />
       <Stack.Screen name="SignUpFinish" component={SignUpFinish} options={{ headerShown: true, headerTitle: '' }} />
       {/* כניסה למערכת */}
-
     </Stack.Navigator>
   )
 }

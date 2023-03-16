@@ -1,13 +1,14 @@
 {
-    "expo": {
+  "expo": {
     "name": "worcare",
+    "scheme": "worcare",
     "slug": "worcare",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./images/logo_New_Small.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./images/logo_New.png",      
+      "image": "./images/logo_New.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -18,7 +19,7 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true          
     },
     "android": {
       "adaptiveIcon": {

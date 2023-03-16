@@ -11,7 +11,7 @@ Font.loadAsync({
 const SCREEN_WIDTH = Dimensions.get('window').width;
 export default function Holidays(props) {
     const [selectedHolidays, setSelectedHolidays] = useState([]);
- 
+
     const isItemSelected = (id) => {
         return selectedHolidays.includes(id);
     };
@@ -22,7 +22,7 @@ export default function Holidays(props) {
         } else {
             setSelectedHolidays([...selectedHolidays, item.id]);
         }
-       props.sendHolidays(selectedHolidays);
+        props.sendHolidays(selectedHolidays);
     };
 
     return (
@@ -35,15 +35,15 @@ export default function Holidays(props) {
             </View>
 
             <ScrollView>
-            <View style={styles.bodyContainer}>
+                <View style={styles.bodyContainer}>
                     {props.holidaysType.map((item, index) => {
                         const selectedStyle = isItemSelected(item.id) ? styles.selectedItem : {};
                         return (
-                            <View style={[styles.itemBox, selectedStyle]} key={index}>
-                                <TouchableOpacity onPress={() => handleItemPress(item)}>
+                            <TouchableOpacity onPress={() => handleItemPress(item)}>
+                                <View style={[styles.itemBox, selectedStyle]} key={index}>
                                     <Text style={styles.item}>{item.label}</Text>
-                                </TouchableOpacity>
-                            </View>
+                                </View>
+                            </TouchableOpacity>
                         );
                     })}
                 </View>

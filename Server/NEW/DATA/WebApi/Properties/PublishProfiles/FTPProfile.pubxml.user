@@ -1,0 +1,531 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+https://go.microsoft.com/fwlink/?LinkID=208121.
+-->
+<Project>
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAA9BnK/6peBEu8J8wdjgZeAgAAAAACAAAAAAAQZgAAAAEAACAAAACbiM6AmLf6hw1eQuj4TgOOexb6beOh8yYpkLkvC/GzawAAAAAOgAAAAAIAACAAAAB46IejYCv6sx4hviZ4Gy6txsuE8PO85sApSg0Uk4M2XCAAAACX2f3R7oJXJjJkj1PN/CkOlzF7kfRiLsoxAi5Popm+r0AAAAAIJ2M77/AZmAlicRwcYGCor3lTG/lFKYwmi8Fub4/1aNj0FMsiF77zsYbcyLok74b1Yj+04rsOo7SThkVNgeFu</EncryptedPassword>
+    <_PublishTargetUrl>ftp://194.90.158.74/test1</_PublishTargetUrl>
+    <History>False|2023-03-10T15:32:37.6821277Z;True|2023-03-10T12:25:35.1725929+02:00;</History>
+    <LastFailureDetails />
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="Areas/HelpPage/HelpPage.css">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/Api.cshtml">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/ApiGroup.cshtml">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/CollectionModelDescription.cshtml">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/ComplexTypeModelDescription.cshtml">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/DictionaryModelDescription.cshtml">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/EnumTypeModelDescription.cshtml">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/HelpPageApiModel.cshtml">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/ImageSample.cshtml">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/InvalidSample.cshtml">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/KeyValuePairModelDescription.cshtml">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/ModelDescriptionLink.cshtml">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/Parameters.cshtml">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/Samples.cshtml">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/SimpleTypeModelDescription.cshtml">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/TextSample.cshtml">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/Index.cshtml">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/ResourceModel.cshtml">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Shared/_Layout.cshtml">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Web.config">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/_ViewStart.cshtml">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="bin/Antlr3.Runtime.dll">
+      <publishTime>03/08/2023 12:54:09</publishTime>
+    </File>
+    <File Include="bin/Antlr3.Runtime.pdb">
+      <publishTime>03/08/2023 12:54:09</publishTime>
+    </File>
+    <File Include="bin/DATA.dll">
+      <publishTime>03/10/2023 12:22:34</publishTime>
+    </File>
+    <File Include="bin/DATA.dll.config">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="bin/DATA.pdb">
+      <publishTime>03/10/2023 12:22:34</publishTime>
+    </File>
+    <File Include="bin/EntityFramework.dll">
+      <publishTime>03/08/2023 12:54:09</publishTime>
+    </File>
+    <File Include="bin/EntityFramework.SqlServer.dll">
+      <publishTime>03/08/2023 12:54:09</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AspNetCore.Authentication.Abstractions.dll">
+      <publishTime>03/08/2023 12:54:09</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AspNetCore.Authentication.Core.dll">
+      <publishTime>03/08/2023 12:54:09</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AspNetCore.Authorization.dll">
+      <publishTime>03/08/2023 12:54:09</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AspNetCore.Authorization.Policy.dll">
+      <publishTime>03/08/2023 12:54:09</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AspNetCore.Hosting.Abstractions.dll">
+      <publishTime>03/08/2023 12:54:09</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AspNetCore.Hosting.Server.Abstractions.dll">
+      <publishTime>03/08/2023 12:54:09</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AspNetCore.Http.Abstractions.dll">
+      <publishTime>03/08/2023 12:54:09</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AspNetCore.Http.dll">
+      <publishTime>03/08/2023 12:54:09</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AspNetCore.Http.Extensions.dll">
+      <publishTime>03/08/2023 12:54:09</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AspNetCore.Http.Features.dll">
+      <publishTime>03/08/2023 12:54:09</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AspNetCore.Mvc.Abstractions.dll">
+      <publishTime>03/08/2023 12:54:09</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AspNetCore.Mvc.Core.dll">
+      <publishTime>03/08/2023 12:54:09</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AspNetCore.ResponseCaching.Abstractions.dll">
+      <publishTime>03/08/2023 12:54:09</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AspNetCore.Routing.Abstractions.dll">
+      <publishTime>03/08/2023 12:54:09</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AspNetCore.Routing.dll">
+      <publishTime>03/08/2023 12:54:09</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AspNetCore.WebUtilities.dll">
+      <publishTime>03/08/2023 12:54:09</publishTime>
+    </File>
+    <File Include="bin/Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll">
+      <publishTime>03/08/2023 12:54:09</publishTime>
+    </File>
+    <File Include="bin/Microsoft.DotNet.PlatformAbstractions.dll">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Extensions.Configuration.Abstractions.dll">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Extensions.DependencyInjection.Abstractions.dll">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Extensions.DependencyInjection.dll">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Extensions.DependencyModel.dll">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Extensions.FileProviders.Abstractions.dll">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Extensions.Hosting.Abstractions.dll">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Extensions.Logging.Abstractions.dll">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Extensions.ObjectPool.dll">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Extensions.Options.dll">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Extensions.Primitives.dll">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Net.Http.Headers.dll">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Web.Infrastructure.dll">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/Newtonsoft.Json.dll">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/roslyn/csc.exe">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/roslyn/csc.exe.config">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/roslyn/csc.rsp">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/roslyn/csi.exe">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/roslyn/csi.exe.config">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/roslyn/csi.rsp">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.Build.Tasks.CodeAnalysis.dll">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.CodeAnalysis.CSharp.dll">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.CodeAnalysis.CSharp.Scripting.dll">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.CodeAnalysis.dll">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.CodeAnalysis.Scripting.dll">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.CodeAnalysis.VisualBasic.dll">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.CSharp.Core.targets">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.DiaSymReader.Native.amd64.dll">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.DiaSymReader.Native.x86.dll">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.Managed.Core.targets">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/roslyn/Microsoft.VisualBasic.Core.targets">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Buffers.dll">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Collections.Immutable.dll">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Memory.dll">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Numerics.Vectors.dll">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Reflection.Metadata.dll">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Runtime.CompilerServices.Unsafe.dll">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Text.Encoding.CodePages.dll">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/roslyn/System.Threading.Tasks.Extensions.dll">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/roslyn/vbc.exe">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/roslyn/vbc.exe.config">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/roslyn/vbc.rsp">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/roslyn/VBCSCompiler.exe">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/roslyn/VBCSCompiler.exe.config">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/System.Buffers.dll">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/System.ComponentModel.Annotations.dll">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/System.Diagnostics.DiagnosticSource.dll">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/System.Memory.dll">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/System.Net.Http.Formatting.dll">
+      <publishTime>03/08/2023 12:54:09</publishTime>
+    </File>
+    <File Include="bin/System.Numerics.Vectors.dll">
+      <publishTime>03/08/2023 12:54:10</publishTime>
+    </File>
+    <File Include="bin/System.Runtime.CompilerServices.Unsafe.dll">
+      <publishTime>03/08/2023 12:54:11</publishTime>
+    </File>
+    <File Include="bin/System.Text.Encodings.Web.dll">
+      <publishTime>03/08/2023 12:54:11</publishTime>
+    </File>
+    <File Include="bin/System.Threading.Tasks.Extensions.dll">
+      <publishTime>03/08/2023 12:54:11</publishTime>
+    </File>
+    <File Include="bin/System.Web.Cors.dll">
+      <publishTime>03/08/2023 12:54:09</publishTime>
+    </File>
+    <File Include="bin/System.Web.Helpers.dll">
+      <publishTime>03/08/2023 12:54:09</publishTime>
+    </File>
+    <File Include="bin/System.Web.Http.Cors.dll">
+      <publishTime>03/08/2023 12:54:09</publishTime>
+    </File>
+    <File Include="bin/System.Web.Http.dll">
+      <publishTime>03/08/2023 12:54:09</publishTime>
+    </File>
+    <File Include="bin/System.Web.Http.WebHost.dll">
+      <publishTime>03/08/2023 12:54:09</publishTime>
+    </File>
+    <File Include="bin/System.Web.Mvc.dll">
+      <publishTime>03/08/2023 12:54:09</publishTime>
+    </File>
+    <File Include="bin/System.Web.Optimization.dll">
+      <publishTime>03/08/2023 12:54:09</publishTime>
+    </File>
+    <File Include="bin/System.Web.Razor.dll">
+      <publishTime>03/08/2023 12:54:09</publishTime>
+    </File>
+    <File Include="bin/System.Web.WebPages.Deployment.dll">
+      <publishTime>03/08/2023 12:54:09</publishTime>
+    </File>
+    <File Include="bin/System.Web.WebPages.dll">
+      <publishTime>03/08/2023 12:54:09</publishTime>
+    </File>
+    <File Include="bin/System.Web.WebPages.Razor.dll">
+      <publishTime>03/08/2023 12:54:09</publishTime>
+    </File>
+    <File Include="bin/WebApi.dll">
+      <publishTime>03/10/2023 12:22:35</publishTime>
+    </File>
+    <File Include="bin/WebApi.pdb">
+      <publishTime>03/10/2023 12:22:35</publishTime>
+    </File>
+    <File Include="bin/WebGrease.dll">
+      <publishTime>03/08/2023 12:54:11</publishTime>
+    </File>
+    <File Include="Content/bootstrap-grid.css">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Content/bootstrap-grid.css.map">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Content/bootstrap-grid.min.css">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Content/bootstrap-grid.min.css.map">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Content/bootstrap-grid.rtl.css">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Content/bootstrap-grid.rtl.css.map">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Content/bootstrap-grid.rtl.min.css">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Content/bootstrap-grid.rtl.min.css.map">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Content/bootstrap-reboot.css">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Content/bootstrap-reboot.css.map">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Content/bootstrap-reboot.min.css">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Content/bootstrap-reboot.min.css.map">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Content/bootstrap-reboot.rtl.css">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Content/bootstrap-reboot.rtl.css.map">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Content/bootstrap-reboot.rtl.min.css">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Content/bootstrap-reboot.rtl.min.css.map">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Content/bootstrap-utilities.css">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Content/bootstrap-utilities.css.map">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Content/bootstrap-utilities.min.css">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Content/bootstrap-utilities.min.css.map">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Content/bootstrap-utilities.rtl.css">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Content/bootstrap-utilities.rtl.css.map">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Content/bootstrap-utilities.rtl.min.css">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Content/bootstrap-utilities.rtl.min.css.map">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Content/bootstrap.css">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Content/bootstrap.css.map">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Content/bootstrap.min.css">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Content/bootstrap.min.css.map">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Content/bootstrap.rtl.css">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Content/bootstrap.rtl.css.map">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Content/bootstrap.rtl.min.css">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Content/bootstrap.rtl.min.css.map">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Content/Site.css">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="favicon.ico">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Global.asax">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Scripts/bootstrap.bundle.js">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Scripts/bootstrap.bundle.js.map">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Scripts/bootstrap.bundle.min.js">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Scripts/bootstrap.bundle.min.js.map">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Scripts/bootstrap.esm.js">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Scripts/bootstrap.esm.js.map">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Scripts/bootstrap.esm.min.js">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Scripts/bootstrap.esm.min.js.map">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Scripts/bootstrap.js">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Scripts/bootstrap.js.map">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Scripts/bootstrap.min.js">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Scripts/bootstrap.min.js.map">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Scripts/jquery-3.6.3.js">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Scripts/jquery-3.6.3.min.js">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Scripts/jquery-3.6.3.min.map">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Scripts/jquery-3.6.3.slim.js">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Scripts/jquery-3.6.3.slim.min.js">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Scripts/jquery-3.6.3.slim.min.map">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Scripts/modernizr-2.8.3.js">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Views/Home/Index.cshtml">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Views/Shared/Error.cshtml">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Views/Shared/_Layout.cshtml">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Views/Web.config">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Views/_ViewStart.cshtml">
+      <publishTime>03/08/2023 12:54:08</publishTime>
+    </File>
+    <File Include="Web.config">
+      <publishTime>03/10/2023 17:31:54</publishTime>
+    </File>
+  </ItemGroup>
+</Project>

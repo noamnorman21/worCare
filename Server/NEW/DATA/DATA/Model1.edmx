@@ -5,16 +5,6 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="igroup194_prodModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <EntityType Name="sysdiagrams">
-          <Key>
-            <PropertyRef Name="diagram_id" />
-          </Key>
-          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
-          <Property Name="principal_id" Type="int" Nullable="false" />
-          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="version" Type="int" />
-          <Property Name="definition" Type="varbinary(max)" />
-        </EntityType>
         <EntityType Name="tblActualList">
           <Key>
             <PropertyRef Name="listId" />
@@ -558,6 +548,12 @@
           <Parameter Name="id" Type="int" Mode="In" />
           <Parameter Name="isPrimary" Type="bit" Mode="In" />
         </Function>
+        <Function Name="InsertCaresForPatient" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="patientId" Type="char" Mode="In" />
+          <Parameter Name="workerId" Type="int" Mode="In" />
+          <Parameter Name="status" Type="char" Mode="In" />
+          <Parameter Name="linkTo" Type="varchar" Mode="In" />
+        </Function>
         <Function Name="InsertForeignUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="Id" Type="int" Mode="In" />
           <Parameter Name="DateOfBirth" Type="date" Mode="In" />
@@ -662,7 +658,6 @@
         </Function>
         <Function Name="sp_upgraddiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <EntityContainer Name="igroup194_prodModelStoreContainer">
-          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tblActualList" EntityType="Self.tblActualList" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tblCalendarForUser" EntityType="Self.tblCalendarForUser" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tblCalendarsType" EntityType="Self.tblCalendarsType" Schema="dbo" store:Type="Tables" />
@@ -789,16 +784,6 @@
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="igroup194_prodModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityType Name="sysdiagram">
-          <Key>
-            <PropertyRef Name="diagram_id" />
-          </Key>
-          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="principal_id" Type="Int32" Nullable="false" />
-          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="version" Type="Int32" />
-          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
-        </EntityType>
         <EntityType Name="tblActualList">
           <Key>
             <PropertyRef Name="listId" />
@@ -909,7 +894,7 @@
           <NavigationProperty Name="tblPaymentRequests" Relationship="Self.FK__tblPaymen__userI__1EF99443" FromRole="tblForeignUser" ToRole="tblPaymentRequest" />
           <NavigationProperty Name="tblPrivateTasks" Relationship="Self.FK__tblPrivat__worke__7ABC33CD" FromRole="tblForeignUser" ToRole="tblPrivateTask" />
         </EntityType>
-        <EntityType Name="tblHobby">
+        <EntityType Name="tblHobbies">
           <Key>
             <PropertyRef Name="patientId" />
           </Key>
@@ -938,7 +923,7 @@
           <NavigationProperty Name="tblForeignUsers" Relationship="Self.FK__tblForeig__Langu__7226EDCC" FromRole="tblLanguage" ToRole="tblForeignUser" />
           <NavigationProperty Name="tblPatients" Relationship="Self.FK__tblPatien__Langu__58671BC9" FromRole="tblLanguage" ToRole="tblPatient" />
         </EntityType>
-        <EntityType Name="tblLimitation">
+        <EntityType Name="tblLimitations">
           <Key>
             <PropertyRef Name="patientId" />
           </Key>
@@ -1278,7 +1263,7 @@
           <End Role="tblPatient" Type="Self.tblPatient" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
-          <End Role="tblHobbies" Type="Self.tblHobby" Multiplicity="0..1" />
+          <End Role="tblHobbies" Type="igroup194_prodModel.tblHobbies" Multiplicity="0..1" />
           <ReferentialConstraint>
             <Principal Role="tblPatient">
               <PropertyRef Name="Id" />
@@ -1304,7 +1289,7 @@
           <End Role="tblPatient" Type="Self.tblPatient" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
-          <End Role="tblLimitations" Type="Self.tblLimitation" Multiplicity="0..1" />
+          <End Role="tblLimitations" Type="igroup194_prodModel.tblLimitations" Multiplicity="0..1" />
           <ReferentialConstraint>
             <Principal Role="tblPatient">
               <PropertyRef Name="Id" />
@@ -1375,7 +1360,6 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="igroup194DB" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
           <EntitySet Name="tblActualLists" EntityType="Self.tblActualList" />
           <EntitySet Name="tblCalendarForUsers" EntityType="Self.tblCalendarForUser" />
           <EntitySet Name="tblCalendarsTypes" EntityType="Self.tblCalendarsType" />
@@ -1385,9 +1369,9 @@
           <EntitySet Name="tblDrugs" EntityType="Self.tblDrug" />
           <EntitySet Name="tblDrugForPatients" EntityType="Self.tblDrugForPatient" />
           <EntitySet Name="tblForeignUsers" EntityType="Self.tblForeignUser" />
-          <EntitySet Name="tblHobbies" EntityType="Self.tblHobby" />
+          <EntitySet Name="tblHobbies1" EntityType="igroup194_prodModel.tblHobbies" />
           <EntitySet Name="tblLanguages" EntityType="Self.tblLanguage" />
-          <EntitySet Name="tblLimitations" EntityType="Self.tblLimitation" />
+          <EntitySet Name="tblLimitations1" EntityType="igroup194_prodModel.tblLimitations" />
           <EntitySet Name="tblLists" EntityType="Self.tblList" />
           <EntitySet Name="tblPatients" EntityType="Self.tblPatient" />
           <EntitySet Name="tblPatientTasks" EntityType="Self.tblPatientTask" />
@@ -1463,7 +1447,7 @@
           </AssociationSet>
           <AssociationSet Name="FK__tblHobbie__patie__5C37ACAD" Association="Self.FK__tblHobbie__patie__5C37ACAD">
             <End Role="tblPatient" EntitySet="tblPatients" />
-            <End Role="tblHobbies" EntitySet="tblHobbies" />
+            <End Role="tblHobbies" EntitySet="tblHobbies1" />
           </AssociationSet>
           <AssociationSet Name="FK__tblPatien__Langu__58671BC9" Association="Self.FK__tblPatien__Langu__58671BC9">
             <End Role="tblLanguage" EntitySet="tblLanguages" />
@@ -1471,7 +1455,7 @@
           </AssociationSet>
           <AssociationSet Name="FK__tblLimita__patie__5F141958" Association="Self.FK__tblLimita__patie__5F141958">
             <End Role="tblPatient" EntitySet="tblPatients" />
-            <End Role="tblLimitations" EntitySet="tblLimitations" />
+            <End Role="tblLimitations" EntitySet="tblLimitations1" />
           </AssociationSet>
           <AssociationSet Name="FK__tblProduc__listI__21D600EE" Association="Self.FK__tblProduc__listI__21D600EE">
             <End Role="tblList" EntitySet="tblLists" />
@@ -1588,6 +1572,13 @@
             <Parameter Name="sensitivityToNoise" Mode="In" Type="String" />
             <Parameter Name="other" Mode="In" Type="String" />
           </FunctionImport>
+          <FunctionImport Name="NewPaycheck">
+            <Parameter Name="payCheckNum" Mode="In" Type="Int32" />
+            <Parameter Name="paycheckDate" Mode="In" Type="DateTime" />
+            <Parameter Name="paycheckSummary" Mode="In" Type="String" />
+            <Parameter Name="paycheckComment" Mode="In" Type="String" />
+            <Parameter Name="UserId" Mode="In" Type="Int32" />
+          </FunctionImport>
           <FunctionImport Name="NewPaymentRequest">
             <Parameter Name="requestId" Mode="In" Type="Int32" />
             <Parameter Name="requestSubject" Mode="In" Type="String" />
@@ -1598,12 +1589,11 @@
             <Parameter Name="requestStatus" Mode="In" Type="String" />
             <Parameter Name="userId" Mode="In" Type="Int32" />
           </FunctionImport>
-          <FunctionImport Name="NewPaycheck">
-            <Parameter Name="payCheckNum" Mode="In" Type="Int32" />
-            <Parameter Name="paycheckDate" Mode="In" Type="DateTime" />
-            <Parameter Name="paycheckSummary" Mode="In" Type="String" />
-            <Parameter Name="paycheckComment" Mode="In" Type="String" />
-            <Parameter Name="UserId" Mode="In" Type="Int32" />
+          <FunctionImport Name="InsertCaresForPatient">
+            <Parameter Name="patientId" Mode="In" Type="String" />
+            <Parameter Name="workerId" Mode="In" Type="Int32" />
+            <Parameter Name="status" Mode="In" Type="String" />
+            <Parameter Name="linkTo" Mode="In" Type="String" />
           </FunctionImport>
         </EntityContainer>
         <ComplexType Name="sp_helpdiagramdefinition_Result">
@@ -1635,17 +1625,6 @@
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="igroup194_prodModelStoreContainer" CdmEntityContainer="igroup194DB">
-          <EntitySetMapping Name="sysdiagrams">
-            <EntityTypeMapping TypeName="igroup194_prodModel.sysdiagram">
-              <MappingFragment StoreEntitySet="sysdiagrams">
-                <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
-                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
-                <ScalarProperty Name="version" ColumnName="version" />
-                <ScalarProperty Name="definition" ColumnName="definition" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="tblActualLists">
             <EntityTypeMapping TypeName="igroup194_prodModel.tblActualList">
               <MappingFragment StoreEntitySet="tblActualList">
@@ -1742,8 +1721,8 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="tblHobbies">
-            <EntityTypeMapping TypeName="igroup194_prodModel.tblHobby">
+          <EntitySetMapping Name="tblHobbies1">
+            <EntityTypeMapping TypeName="igroup194_prodModel.tblHobbies">
               <MappingFragment StoreEntitySet="tblHobbies">
                 <ScalarProperty Name="patientId" ColumnName="patientId" />
                 <ScalarProperty Name="books" ColumnName="books" />
@@ -1770,8 +1749,8 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="tblLimitations">
-            <EntityTypeMapping TypeName="igroup194_prodModel.tblLimitation">
+          <EntitySetMapping Name="tblLimitations1">
+            <EntityTypeMapping TypeName="igroup194_prodModel.tblLimitations">
               <MappingFragment StoreEntitySet="tblLimitations">
                 <ScalarProperty Name="patientId" ColumnName="patientId" />
                 <ScalarProperty Name="allergies" ColumnName="allergies" />
@@ -1928,8 +1907,9 @@
           <FunctionImportMapping FunctionImportName="InsertPatient" FunctionName="igroup194_prodModel.Store.InsertPatient" />
           <FunctionImportMapping FunctionImportName="InsertPatientHobbies" FunctionName="igroup194_prodModel.Store.InsertPatientHobbies" />
           <FunctionImportMapping FunctionImportName="InsertPatientLimitations" FunctionName="igroup194_prodModel.Store.InsertPatientLimitations" />
-          <FunctionImportMapping FunctionImportName="NewPaymentRequest" FunctionName="igroup194_prodModel.Store.NewPaymentRequest" />
           <FunctionImportMapping FunctionImportName="NewPaycheck" FunctionName="igroup194_prodModel.Store.NewPaycheck" />
+          <FunctionImportMapping FunctionImportName="NewPaymentRequest" FunctionName="igroup194_prodModel.Store.NewPaymentRequest" />
+          <FunctionImportMapping FunctionImportName="InsertCaresForPatient" FunctionName="igroup194_prodModel.Store.InsertCaresForPatient" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

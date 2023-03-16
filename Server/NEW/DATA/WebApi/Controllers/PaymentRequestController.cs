@@ -17,10 +17,10 @@ namespace WebApi.Controllers
         [Route("GetPending/{id}")]
         [HttpGet]
         public IHttpActionResult GetPending(int id)
-        {       
+        {
             try
             {
-                
+
                 var Payments = db.tblPaymentRequests.Where(x => x.userId == id && x.requestStatus == "R").Select(y => new PaymentsRequestDTO
                 {
                     requestId = y.requestId,
@@ -30,7 +30,7 @@ namespace WebApi.Controllers
                     requestProofDocument = y.requestProofDocument,
                     requestComment = y.requestComment,
                     requestStatus = y.requestStatus,
-                    userId=y.userId,                    
+                    userId = y.userId,
                 }).ToList();
                 return Ok(Payments);
             }
@@ -66,12 +66,12 @@ namespace WebApi.Controllers
         }
         // GET: api/PaymentRequest/5
         [HttpGet]
-        [Route("GetSpecificPayments/{id}")]       
+        [Route("GetSpecificPayments/{id}")]
         public IHttpActionResult GetSpecificPayments(int id)
         {
             try
             {
-                
+
                 var Payment = db.tblPaymentRequests.Where(x => x.requestId == id).Select(y => new PaymentsRequestDTO
                 {
                     requestId = y.requestId,
@@ -81,7 +81,7 @@ namespace WebApi.Controllers
                     requestProofDocument = y.requestProofDocument,
                     requestComment = y.requestComment,
                     requestStatus = y.requestStatus,
-                    userId = y.userId,                    
+                    userId = y.userId,
                 }).FirstOrDefault();
                 if (Payment != null)
                 {
@@ -105,7 +105,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                int id = db.tblPaymentRequests.Max(x => x.requestId)+1;
+                int id = db.tblPaymentRequests.Max(x => x.requestId) + 1;
                 db.NewPaymentRequest(id, req.requestSubject, req.amountToPay, req.requestDate, req.requestProofDocument, req.requestComment, req.requestStatus, req.userId);
                 db.SaveChanges();
                 return Ok("Request added successfully!");
@@ -118,7 +118,7 @@ namespace WebApi.Controllers
 
         // PUT: api/PaymentRequest/5
         [HttpPut]
-        [Route("UpdateRequest")]
+        [Route("UpdateRequest")]  
         public IHttpActionResult UpdateRequest([FromBody] PaymentsRequestDTO req)
         {
             try
@@ -134,7 +134,7 @@ namespace WebApi.Controllers
                     p.requestStatus = req.requestStatus;
                     p.userId = req.userId;
                     db.SaveChanges();
-                    return Ok("Request Updated successfully!");                   
+                    return Ok("Request Updated successfully!");
                 }
                 else
                 {
@@ -169,6 +169,6 @@ namespace WebApi.Controllers
             }
 
         }
-       
+
     }
 }

@@ -1,16 +1,181 @@
-import { View, StyleSheet, Text, Image, TouchableOpacity, Dimensions, Modal } from 'react-native'
-import { useState } from 'react'
-
+import { View, StyleSheet, Text, Image, TouchableOpacity, Dimensions, Modal, Alert } from 'react-native'
+import { useState, useEffect } from 'react'
+import ContactsList from '../../HelpComponents/ContactsList';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
+import * as SMS from 'expo-sms';
+import * as Linking from 'expo-linking';
 
 export default function SignUpFinish({ navigation, route }) {
+    const tblPatient = route.params.tblPatient;
+    const [contactUser, setContactUser] = useState('');
     const [modalVisible, setModalVisible] = useState(false);
-    const tblHobbies = route.params.tblHobbies;
-    const tblLimitations = route.params.tblLimitations;    
+    const [contactVisible, setContactVisible] = useState(false);
+    const [contactNumber, setContactNumber] = useState('');
+    const [isAvailable, setIsAvailable] = useState(false);
+    const [message, setMessage] = useState('');
+    const [link, setLink] = useState('');
+    const [fromShare, setFromShare] = useState(false);
+    // link to the specific screen in the app and send the patient id to the screen as a parameter
+    // link to screen "Welcome" and send the patient id to the screen as a parameter
+    const deepLinkToApp = () => {
+        // , link);
+        console.log("link: ", link);
+    }
 
-    const sendToDB = () => {
-        console.log("Send to DB")
+    useEffect(() => {
+        (async () => {
+            setLink(Linking.createURL(`InvitedFrom/${tblPatient.Id}/${route.params.tblUser.FirstName}`));
+            const isAvailable = await SMS.isAvailableAsync();
+            setIsAvailable(isAvailable);
+            deepLinkToApp();
+        }
+        )();
+    }, []);
+
+    const btnSendSMS = async () => {
+
+        if (isAvailable) {
+            // do your SMS stuff here
+            const { result } = await SMS.sendSMSAsync([contactNumber], message);
+            if (result === 'sent') {
+                // Alert.alert('Invitation sent \n\n We will notify you when your friend will join');
+                setFromShare(true);
+                Alert.alert('Invitation sent', 'We will notify you when your friend will join', [
+                    {
+
+                        text: "OK",
+                        onPress: () => {setModalVisible(false), createNewUserInDB() },
+                        style: "cancel"
+
+                    },
+                ]);
+
+            }
+            else {
+
+                Alert.alert('Invitation Failed', 'Please try again', [
+                    {
+                        text: "OK",
+                        style: "cancel"
+                    },
+                ]);
+            }
+
+            // Alert.alert(result);
+        } else {
+            // misfortune... there's no SMS available on this device
+            Alert.alert('SMS is not available on this device');
+        }
+    }
+
+    const changeVisible = () => {
+        setModalVisible(false);
+        setContactVisible(true);
+    }
+
+    const sendVisible = () => {
+        setContactVisible(false);
+        setModalVisible(true);
+    }
+
+    const sendContact = (name, number) => {
+        if (name === '' || number === '') {
+            Alert.alert('Please fill all the fields');
+        }
+        // if name is only one word without space
+        if (name.indexOf(' ') === -1) {
+            console.log("1:", name);
+            setContactUser(name);
+        }
+        else {
+            console.log("2:", name.substring(0, name.indexOf(' ')));
+            name = name.substring(0, name.indexOf(' '));
+            setContactUser(name);
+        }
+        setContactNumber(number);
+        setMessage("Hello " + name + ",\n\n" +
+            "I would like to invite you to join worCare app.\n" +
+            "Please click on the link below to download the app and join worCare.\n\n" +
+            link +
+            "\n\n" + "Thank you,\n" + "worCare Team."
+        );
+    }
+
+    // InsertUser
+    const createNewUserInDB = () => {
+        fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/InsertUser', { //send the user data to the DB
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json; charset=UTF-8',
+            },
+            body: JSON.stringify(route.params.tblUser),
+        })
+            .then((response) => response.json())
+            .then((json) => {
+                //save the id of the new user that we got from the DB 
+                tblPatient.userId = json; //save the id of the new user that we got from the DB
+                createNewPatient() //create the foreign user in the DB
+            })
+            .catch((error) => {
+                console.error(error);
+            }
+            );
+    }
+
+    // InsertPatient
+    const createNewPatient = () => {
+        fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/InsertPatient', { //send the patient data to the DB
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json; charset=UTF-8',
+            },
+            body: JSON.stringify(tblPatient),
+        })
+            .then((response) => response.json())
+            .then((json) => {
+                addHobbiesAndLimitations()
+            })
+            .catch((error) => {
+                console.error(error);
+            }
+            );
+    }
+    // InsertPatientHobbiesAndLimitations
+    const addHobbiesAndLimitations = () => {
+        fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/InsertPatientHobbiesAndLimitations', { //send the user data to the DB
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json; charset=UTF-8',
+            },
+            body: JSON.stringify(route.params.HobbiesAndLimitationsData),
+        })
+            .then((response) => response.json())
+            .then((json) => {
+                if (!fromShare) {
+                    Alert.alert(
+                        "Great Job!",
+                        "You have successfully signed up to worCare!",
+                        [
+                            {
+                                text: "OK",
+                                onPress: () => navigation.navigate('LogIn', { tblUser: route.params.tblUser })
+                            }
+                        ],
+                        { cancelable: false }
+                    );
+                    console.log(json)
+                }
+                else {
+                    navigation.navigate('LogIn', { tblUser: route.params.tblUser })
+                }
+
+
+            })
+            .catch((error) => {
+                console.error(error);
+            }
+            );
     }
 
     return (
@@ -32,12 +197,11 @@ export default function SignUpFinish({ navigation, route }) {
                         <Text style={styles.btnShare}> Share My Code With Caregiver </Text>
                     </TouchableOpacity>
                 </View>
-                {/* <Text> Share your code with your friends and family to help them sign up. </Text> */}
 
                 <View style={styles.btnContainer}>
                     <TouchableOpacity
                         style={styles.button}
-                        onPress={sendToDB}
+                        onPress={createNewUserInDB}
                     >
                         <Text style={styles.buttonText}>Sign Up</Text>
                     </TouchableOpacity>
@@ -62,21 +226,26 @@ export default function SignUpFinish({ navigation, route }) {
                                 <Image source={require('../../../images/logo_New_Small.png')} style={styles.image} />
                                 <Text style={styles.modalText}>Invite a Caregiver</Text>
                                 <Text style={styles.modalSmallText}>
-                                    Please share this code with a caregiver.
+                                    Please invite a caregiver.
                                 </Text>
                                 <Text style={styles.modalSmallText}>
                                     Once they have joined, you will both be connected.
                                 </Text>
                             </View>
                             <View style={styles.modalHeader}>
-                                <TouchableOpacity style={styles.modalBtn1}>
-                                    <Text style={styles.modalBtnText}> YOURNAME-PATIENTID</Text>
-                                    <Text style={styles.modalBtnText1}>Copy Code</Text>
+                                <TouchableOpacity style={styles.modalBtn1}
+                                    onPress={changeVisible}
+                                >
+                                    <Text style={styles.modalBtnText}>
+                                        {/* if contactUser different then '' write Choose Caregiver Contact */}
+                                        {contactUser == '' ? 'Choose Caregiver Contact' : contactUser}
+                                    </Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity style={styles.modalBtn2}>
-                                    <Text style={styles.modalBtnText2}>Share Code</Text>
+                                <TouchableOpacity
+                                    onPress={btnSendSMS}
+                                    style={styles.modalBtn2}>
+                                    <Text style={styles.modalBtnText2}>Send Invitation</Text>
                                 </TouchableOpacity>
-
                                 <TouchableOpacity onPress={() => setModalVisible(false)}>
                                     <Text style={styles.modalBtnText3}>Done</Text>
                                 </TouchableOpacity>
@@ -85,6 +254,7 @@ export default function SignUpFinish({ navigation, route }) {
                     </View>
                 </View>
             </Modal>
+            <ContactsList sendVisible={sendVisible} contactVisible={contactVisible} sendContact={sendContact} />
         </View>
     )
 }
