@@ -1,12 +1,11 @@
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Alert } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Alert, Modal } from 'react-native'
 import { useEffect, useState } from 'react'
 import React from 'react'
 import { Searchbar } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import AddNewContact from './ContactComponents/AddNewContact'
-
-
+import { useIsFocused } from '@react-navigation/native';
 import Contact from './ContactComponents/Contact'
 
 
@@ -18,17 +17,18 @@ export default function Contacts() {
   return (
     <stack.Navigator initialRouteName='Main' screenOptions={{ headerShown: false} } >
       <stack.Screen name="Main" component={Main} options={{ headerShown: false }} />
-      <stack.Screen name="Contact" component={Contact}  options={{ headerShown: false,presentation: 'modal' }} />
-      <stack.Screen name="AddNewContact" component={AddNewContact} options={{ headerShown: false,presentation: 'modal' }}  />
+      <stack.Screen name="Contact" component={Contact}  options={{ headerShown: false }} />
     </stack.Navigator>
   )
 
 }
-import { useIsFocused } from '@react-navigation/native';
+
 function Main({ navigation }) {
   const [Contacts, setContacts] = useState([])
   const [Search, setSearch] = useState([])
   const [ContactToRender, setContactToRender] = useState([])
+  const [modal1Visible, setModal1Visible] = useState(false);``
+  
   const PatientId = 779355403// will change when we finish context to get the patient id
   const isFocused = useIsFocused()
 
@@ -56,7 +56,7 @@ function Main({ navigation }) {
       return item.contactName.includes(Search)
     })
     let contacts = temp.map((item) => {
-      return <ContactCard key={item.contactId}  contact={item} />
+      return <ContactCard key={item.contactId} contact={item} />
     })
     setContactToRender(contacts);
   }, [Search])
@@ -77,9 +77,14 @@ function Main({ navigation }) {
         icon="magnify"
       />
       {ContactToRender}
-      <TouchableOpacity style={styles.button} mode="fixed" onPress={() => navigation.navigate('AddNewContact')}>
+      <TouchableOpacity style={styles.button} mode="fixed" onPress={() => setModal1Visible(true)}>
         <Text style={styles.buttonText}>+</Text>
       </TouchableOpacity>
+      {/*NewContactModal*/}
+      <Modal animationType="slide" visible={modal1Visible}>
+        <AddNewContact cancel={()=>{
+          setModal1Visible(false); fetchContacts()}} />
+      </Modal>   
     </View>
   )
 }
@@ -91,63 +96,12 @@ function ContactCard(props) {
   return (
     <TouchableOpacity style={styles.contactcard} onPress={() => navigation.navigate('Contact', { contact: props.contact })}>
       <Text style={styles.name}>{props.contact.contactName}</Text>
-      <Text style={styles.number}>{props.contact.mobileNo}</Text>
+      <Text style={styles.number}>{props.contact.mobileNo}</Text>      
     </TouchableOpacity>
   )
 }
 
 
-// Path: Client\Component\Contact.jsx
-// Contact Page
-// function Contact({ route, navigation }) {
-//   const { contact } = route.params;
-//   const Cancel = () => {
-//     Alert.alert(
-//       'Cancel Changes',
-//       'are you sure you want to alose the app?',
-//       [
-//         { text: "Don't leave", style: 'cancel', onPress: () => {} },
-//         {
-//           text: 'Leave',
-//           style: 'destructive',
-//           // If the user confirmed, then we dispatch the action we blocked earlier
-//           // This will continue the action that had triggered the removal of the screen
-//           onPress: () => navigation.popToTop()
-//         },
-//       ]
-//     );
-//   }
-  
-//   const SaveChanges = () => {
-//     Alert.alert("Changes saved")
-//   }
-
-//   return (
-//     <SafeAreaView style={styles.contact}>
-//       <Text style={styles.contactheader}>{contact.contactName}</Text>
-//       <View style={styles.details}>
-//       <Text style={styles.detailsheader}>Phone number: </Text> 
-//       <Text style={styles.contacttext}>{contact.phoneNo} </Text> 
-//       <Text style={styles.detailsheader}>Mobile number: </Text>
-//       <Text style={styles.contacttext}>{contact.mobileNo}</Text>
-//       <Text style={styles.detailsheader}>Email: </Text>
-//       <Text style={styles.contacttext}>{contact.email}</Text>
-//       <Text style={styles.detailsheader}>Role: </Text>
-//       <Text style={styles.contacttext}>{contact.role}</Text>
-//       <Text style={styles.detailsheader}>Comment: </Text>
-//       <Text style={styles.contacttext}>{contact.contactComment}</Text>
-//       <View style={styles.bottom}>
-//       <TouchableOpacity style={styles.savebutton} onPress={SaveChanges}>
-//         <Text style={styles.savebuttonText}>Save</Text>
-//       </TouchableOpacity>
-//       <TouchableOpacity style={styles.cancelbutton} onPress={Cancel}>
-//         <Text style={styles.cancelbuttonText}>Cancel</Text>
-//       </TouchableOpacity>
-//       </View>
-//       </View>
-//     </SafeAreaView>
-//   )
-// }
 
 
 const styles = StyleSheet.create({
@@ -215,15 +169,14 @@ fontSize: 15,
     backgroundColor: '#E6EBF2',
     height: Dimensions.get('window').height * 0.06,
   },
-  button: {
-    margin: 10,
+  button: {    
     borderRadius: 54,
     backgroundColor: '#548DFF',
-    width: Dimensions.get('window').width * 0.2,
-    height: Dimensions.get('window').height * 0.1,
+    width: 64,
+    height: 64,
     position: 'absolute',
-    bottom: 0,
-    right: 0,
+    bottom: Platform.OS === 'ios' ? 40 : 10,
+    right:  Platform.OS === 'ios' ? 15: 10,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -279,3 +232,4 @@ fontSize: 15,
   },
 
 });
+

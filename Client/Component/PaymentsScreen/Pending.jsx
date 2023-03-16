@@ -1,69 +1,61 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, Animated } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, Animated, Modal } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { List } from 'react-native-paper';
-import { FlatList, ScrollView } from 'react-native-gesture-handler';
+import { ScrollView } from 'react-native-gesture-handler';
 import { Feather } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import NewPayment from './NewPayment';
+import EditPaymentScreen from './EditPaymentScreen';
 
 
 
-export default function Pending() {
+export default function Pending({navigation}) {
   const userId = 1 // יש להחליף למשתנה של המשתמש הנוכחי
-
-  // const [Pending, setPending] = useState(second)
-  // useEffect(() => {
-  //   if (isFocused) {
-  //     getPending()
-  //   }
-  // }, [isFocused])
-
-  // const getPending = async () => {
-  //   try {
-  //     const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/GetPending/' + userId, {
-  //       method: 'GET',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-
-  //       },
-  //     });
-  //     const data = await response.json();
-  //     console.log(data)
-  //     let data2 = data.map((item) => {
-  //       return {
-  //         id: item.id,
-  //         subject: item.subject,
-  //         amount: item.amount,
-  //         requestDate: item.requestDate,
-  //         proofofdocument: item.proofofdocument,
-  //         comment: item.comment,
-  //         status: item.status,
-  //       }
-  //     })
-  //     setPending(data)
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // }
+  const [modal1Visible, setModal1Visible] = useState(false);
   const [Pendings, setPendings] = useState()
-  const [list, setlist] = React.useState();
+  const [List, setList] = useState([])
   const isFocused = useIsFocused()
-  const Delete = (id) => {
-    Alert.alert(
-      "Delete",
-      "Are you sure you want to delete this request?",
-      [
-        {
-          text: "Cancel",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel"
+  
+  useEffect(() => {
+    if (isFocused) {
+      getPending()
+    }
+  }, [isFocused])
+
+  useEffect(() => {
+    if (!modal1Visible) {
+      getPending()
+    }
+  }, [modal1Visible])
+
+
+  const getPending = async () => {
+    try {
+      const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/GetPending/' + userId, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
         },
-        { text: "OK", onPress: () => console.log("OK Pressed") }
-      ],
-      { cancelable: false }
-    );
-  }
+      });
+      const data = await response.json();     
+      let arr = data.map((item) => {
+        return (
+          <Request key={item.requestId} getPending={getPending} data={item} id={item.requestId} Notofication={Notification} View={View} subject={item.requestSubject} amountToPay={item.amountToPay} date={item.requestDate} requestComment={item.requestComment} />
+        )
+      })
+      setPendings(arr)
+      
+      
+     
+    } catch (error) {
+      console.log(error)
+    }
+  } 
+  
+  
+  
 
   const Notification = (id) => {
     Alert.alert(
@@ -82,7 +74,7 @@ export default function Pending() {
   }
 
 
-  const View=(id)=>{
+  const View = (id, data) => {
     Alert.alert(
       "View",
       "Are you sure you want to view this request?",
@@ -98,62 +90,15 @@ export default function Pending() {
     );
   }
 
-  const temp = [ //will be replaced with fetch
-    {
-      "requestId": 121,
-      "requestSubject": "Web",
-      "amountToPay": 384.40220094490894,
-      "requestDate": "2022-04-27T00:00:00",
-      "requestProofDocument": "3YYZBG0PT165MQV0224GU10BIWDTYNX63XFTQRL6S13NH6PO6ZFXSN32YMGE26R53Z2OA19BHXNTYDTB7PNZ80EGTDV3A63LAXJI40D4P4GVZA4KT57DJRX3LMVX560AT1J0TB76BI93KIGJ8AA5ZQ2I0",
-      "requestComment": "Sed vantis. rarendum et quo egreddior quo quartu essit. et quo e novum egreddior et fecit. non quo nomen",
-      "requestStatus": "R",
-      "userId": 1
-    },
-    {
-      "requestId": 312,
-      "requestSubject": "Web",
-      "amountToPay": 360.416559856579,
-      "requestDate": "2022-07-22T00:00:00",
-      "requestProofDocument": "asdadwdsa",
-      "requestComment": "Et nomen linguens linguens e vobis Versus linguens fecundio, apparens quo, regit, novum Versus Versus Sed",
-      "requestStatus": "R",
-      "userId": 1
-    },
-    {
-      "requestId": 323,
-      "requestSubject": "SuperMarket",
-      "amountToPay": 826.74925412365667,
-      "requestDate": "2022-02-23T00:00:00",
-      "requestProofDocument": "asdadwdsa",
-      "requestComment": "in eudis vobis novum essit. eggredior. et fecit, glavans et vantis. Quad gravis travissimantor homo,",
-      "requestStatus": "R",
-      "userId": 1
-    }
-  ]
-  useEffect(() => {
-
-    let arr = temp.map((item) => {
-      return (
-        <Request key={item.requestId} data={item} id={item.requestId} Notofication={Notification} View={View} Delete={Delete} subject={item.requestSubject} amountToPay={item.amountToPay} date={item.requestDate} requestComment={item.requestComment} />
-      )
-    })
-    setPendings(arr)
-    setlist(temp)
-  }, [])
-
-
-  return (    
+  return (
     <ScrollView contentContainerStyle={styles.Pending}>
-      {/* <View style={styles.requestunFocused}>
-        <FlatList
-          data={temp}
-          renderItem={({ item }) => (
-            <Request key={item.requestId} data={item} id={item.requestId} Notofication={Notification} View={View} Delete={Delete} subject={item.requestSubject} amountToPay={item.amountToPay} date={item.requestDate} requestComment={item.requestComment} />
-            )}
-            keyExtractor={item => item.requestId}
-          />
-        </View> */}
       {Pendings}
+      <TouchableOpacity style={styles.addRequest} onPress={() => setModal1Visible(true)}>
+        <Text style={styles.addRequestText}>+</Text>
+      </TouchableOpacity>
+      <Modal animationType='slide' transparent={true} visible={modal1Visible}>
+       <NewPayment cancel={() => setModal1Visible(false)} />
+      </Modal>     
     </ScrollView>
   );
 }
@@ -161,9 +106,9 @@ export default function Pending() {
 function Request(props) {
   const [expanded, setExpanded] = React.useState(true);
   const animationController = useRef(new Animated.Value(0)).current;
-
+  const [modal1Visible, setModal1Visible] = useState(false);
   const toggle = () => {
-   const config = {
+    const config = {
       toValue: expanded ? 0 : 1,
       duration: 2000,
       useNativeDriver: true,
@@ -173,66 +118,49 @@ function Request(props) {
   };
 
 
-  const handlePress = () => setExpanded(!expanded);
+  
   return (
-
     <List.Accordion style={!expanded ? styles.request : styles.requestunFocused}
       theme={{ colors: { background: 'white' } }}
-      left={() => <View style={styles.requestHeader}>
-        <Text style={styles.requestHeaderText}>{props.date.substring(0, 10)}</Text>
-        <View style={styles.requesRight}>
-        <Text style={styles.requestHeaderText}>{props.subject}</Text>
-        <TouchableOpacity
-         onPress={() => {handlePress}}>
+      right={() => <View style={styles.requesRight}><Text style={styles.requestHeaderText}>{props.subject}</Text>
+      <TouchableOpacity 
+         onPress={()=>{}}>
+          <View>
         <Feather
         name="bell"
         size={18}
-        color={'#000000'}
+        color={'#000000'}        
         />
-        </TouchableOpacity>                            
         </View>
-     
+        </TouchableOpacity> 
+        </View>}
+      left={() => <View >
+        <Text style={styles.requestHeaderText}>{props.date.substring(0, 10)}</Text>      
       </View>}
+
       expanded={!expanded}
       onPress={toggle}
-      
-
     >
-      <View style={!expanded? styles.Focused: styles.unFocused}>
+      <View style={!expanded ? styles.Focused : styles.unFocused}>
+        <View>
         <List.Item title={() => <Text style={styles.itemsText}>Date: {props.date.substring(0, 10)} </Text>} />
         <List.Item title={() => <Text style={styles.itemsText}>Amount: {props.amountToPay} </Text>} />
-        <List.Item title={() => <Text style={styles.itemsText}>Comment: {props.requestComment} </Text>} />   
+        <List.Item title={() => <Text style={styles.itemsText}>Comment: {props.requestComment} </Text>} />
         <List.Item title={() =>
-             <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-          <TouchableOpacity style={[styles.itemsText, styles.viewButton]} onPress={!expanded ? () => props.View(props.id) : null}>
-            <Text style={styles.viewbuttonText}>View Document</Text>          
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.itemsText, styles.editButton]} onPress={!expanded ? () => props.Delete(props.id) : null}>
-            <Text style={styles.editbuttonText}>Edit</Text>
-          </TouchableOpacity>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <TouchableOpacity style={[styles.itemsText, styles.viewButton]} onPress={!expanded ? () =>{setModal1Visible(true)}:null}>
+              <Text style={styles.viewbuttonText}>View Document</Text>
+            </TouchableOpacity>
+            <Modal animationType='slide' transparent={true} visible={modal1Visible}>
+              <EditPaymentScreen cancel={() => {setModal1Visible(false);props.getPending()}} data={props.data} />
+            </Modal>
+            <TouchableOpacity style={[styles.itemsText, styles.editButton]} onPress={!expanded ? () =>{setModal1Visible(true)} : null}>
+              <Text style={styles.editbuttonText}>Edit</Text>
+            </TouchableOpacity>
           </View>} />
-        
+          </View>
       </View>
     </List.Accordion>
-
-    // <SafeAreaView style={!expanded ? styles.request : styles.requestunFocused}>      
-    //         <View style={styles.requestHeader}>
-    //         <Text style={styles.requestHeaderText}>{props.date.substring(0, 10)}</Text>
-    //           <View style={styles.requesRight}>
-    //             <Text style={styles.requestHeaderText}>{item.requestSubject}</Text>
-    //             <TouchableOpacity
-    //               onPress={() => { handlePress }}>
-    //               <Feather
-    //                 name="bell"
-    //                 size={18}
-    //                 color={'#000000'}
-    //               />
-    //             </TouchableOpacity>
-    //           </View>              
-    //         </View>
-        
-    // </SafeAreaView>
-    
   )
 }
 
@@ -242,25 +170,32 @@ const styles = StyleSheet.create({
 
   Pending: {
     alignItems: 'center',
-    backgroundColor: 'white',
-    height: Dimensions.get('screen').height * 1,
-    paddingTop:10
+    backgroundColor: 'white',    
+    paddingTop: 10,
+    flexGrow: 1,
   },
-  requestunFocused: {    
-    height: Dimensions.get('screen').height * 0.07,
+  requestunFocused: {
+    justifyContent: 'center',
     width: Dimensions.get('screen').width * 0.9,
-    margin: 10,  
-    marginBottom: 0,
-    flexDirection: 'row',
-    borderColor: '#E6EBF2',
+    height: Dimensions.get('screen').height * 0.073,
     borderRadius: 16,
     borderWidth: 1,
+    borderColor: '#E6EBF2',
+    marginBottom: 10,
+    backgroundColor: 'white',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    paddingLeft: 12,
+    
   },
-  request: {  
-    height: Dimensions.get('screen').height * 0.07,
+  request: {
+    justifyContent: 'center',
+    paddingLeft: 12,
     width: Dimensions.get('screen').width * 0.9,
-    margin: 10,  
-    marginBottom: 0,
+    height: Dimensions.get('screen').height * 0.073,   
     justifyContent: 'center',
     borderLeftColor: '#7DA9FF',
     borderLeftWidth: 1,
@@ -272,7 +207,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 16,
     borderBottomColor: '#9E9E9E',
     borderBottomWidth: 0.5,
-    borderBottomMargin: 10,   
+    borderBottomMargin: 10,  
   },
   requestHeaderText: {
     fontSize: 16,
@@ -293,16 +228,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     width: Dimensions.get('screen').width * 0.35,
   },
-  unFocused: {
-    borderWidth: 1,
-    borderColor: '#7DA9FF',
-    borderRadius: 16,      
-    width: Dimensions.get('screen').width * 0.9,
-    
-  },
-  Focused: { 
-    width: Dimensions.get('screen').width * 0.9,   
-    marginLeft: 10,
+  
+  Focused: {
     borderLeftColor: '#7DA9FF',
     borderLeftWidth: 1,
     borderBottomColor: '#7DA9FF',
@@ -312,14 +239,15 @@ const styles = StyleSheet.create({
     borderBottomColor: '#7DA9FF',
     borderBottomEndRadius: 16,
     borderBottomStartRadius: 16,
-    marginTop:0    
+    marginBottom: 10,
+    padding: 16,
   },
   itemsText: {
     fontSize: 16,
     fontWeight: '600',
     marginLeft:Dimensions.get('screen').width * -0.16,
-    marginRight:Dimensions.get('screen').width * 0.02,
-
+    marginRight:Dimensions.get('screen').width * 0.02,  
+   
   },
   viewButton: {
     alignItems: 'center',
@@ -327,8 +255,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#7DA9FF',
     height: 40,
     width: Dimensions.get('screen').width * 0.36,
-    borderRadius: 16,    
-    
+    borderRadius: 16,
+
   },
   editButton: {
     alignItems: 'center',
@@ -356,8 +284,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-
-
-
-
+  requestHeaderIcon: {
+    zIndex: 0,
+    position: 'absolute',
+    right: Dimensions.get('screen').width * 0,
+    backgroundColor: 'orange',
+  },
+  addRequest: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#7DA9FF',
+    height: 64,
+    width: 64,
+    borderRadius: 54,
+    position: 'absolute',
+    bottom: Platform.OS === 'ios' ? 40 : 10,
+    right:  Platform.OS === 'ios' ? 15: 10,
+    elevation: 5,
+  },
+  addRequestText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+  },
 })

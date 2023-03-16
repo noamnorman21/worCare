@@ -5,6 +5,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import Pending from './PaymentsScreen/Pending';
 import History from './PaymentsScreen/History';
+import EditPaymentScreen from './PaymentsScreen/EditPaymentScreen';
+import NewPayment from './PaymentsScreen/NewPayment';
 
 
 
@@ -39,6 +41,8 @@ export default function Finance() {
           presentation: 'stack',
           cardOverlayEnabled: true,
         })} />
+         
+       
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -46,10 +50,10 @@ export default function Finance() {
 
 function Choice({ navigation }) {
   return (
-    <View style={styles.container}>
+    <View style={styles.Choice}>
       <Image source={require('../images/logo_New.png')} style={styles.BigIMG} />
       <TouchableOpacity
-        activeOpacity={1}
+        
         style={styles.button}
         onPress={() => {
           navigation.navigate('Payments')
@@ -58,7 +62,7 @@ function Choice({ navigation }) {
         <Text style={styles.txt}>Payment</Text>
       </TouchableOpacity>
       <TouchableOpacity
-        activeOpacity={1}
+        
         style={styles.button}
         onPress={() => {
           navigation.navigate('Paychecks')
@@ -70,9 +74,11 @@ function Choice({ navigation }) {
   );
 }
 
+
 const Tab = createMaterialTopTabNavigator();
 function Payments() {
   return (
+    
     <Tab.Navigator initialRouteName="Pending"
       backBehavior='none'
      screenOptions={{
@@ -88,8 +94,9 @@ function Payments() {
     אשר סטטוס הבקשה שלהם אינו סומן כשולם*/}
       <Tab.Screen name="History" component={History} />
       { /*במעבר למסך היסטוריית התשלומים תבוצע םעולת גט אשר תשלוף את כלל בקשות התשלום אשר שמורות במסד הנתונים.
-    אשר סטטוס הבקשה שלהם סומן כשולם*/}
+    אשר סטטוס הבקשה שלהם סומן כשולם*/}    
     </Tab.Navigator>
+
   );
 }
 
@@ -103,21 +110,20 @@ function Paycheck() {
   );
 }
 
-function Request (props) {
-  return (
-    <View style={styles.request}>
-      <Text style={styles.requestText}>{props.date}</Text>
-      <Text style={styles.requestText}>{props.subject}</Text>
-    </View>
-  )
-}
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  container: {    
     alignItems: 'center',
     justifyContent: 'center',
+    height: Dimensions.get('screen').height * 1,
+    overflow: 'hidden',
   },
+  Choice: {
+    flex: 1,
+    alignItems: 'center',    
+    backgroundColor: 'white',
+  },
+
   Pending: {
     flex: 1,
     alignItems: 'center',
@@ -126,8 +132,7 @@ const styles = StyleSheet.create({
   },
 
   BigIMG: {
-    width: Dimensions.get('screen').width * 1,
-    resizeMode: 'contain',
+    height: Dimensions.get('screen').height * 0.55,
   },
   button: {
     alignItems: 'center',
@@ -137,6 +142,7 @@ const styles = StyleSheet.create({
     width: Dimensions.get('screen').width * 0.65,
     margin: 10,
     borderRadius: 25,
+    activeOpacity: 1,
   },
   txt: {
     color: 'white',
