@@ -26,9 +26,46 @@ export default function CreateUser({ navigation, route }) {
     phoneNum: '',
   })
   const [patientId, setPatientId] = useState('');
+  const [allPhonenumbers, setAllPhonenumbers] = useState([]);
+  const [allEmails, setAllEmails] = useState([]);
+  const GetAllUsersEmailPhoneNum = () => {
+    let GetAllUsersEmailAndPhoneNum = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetAllUsersEmailAndPhoneNum';
+    fetch(GetAllUsersEmailAndPhoneNum, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    })
+
+      .then(res => {
+        if (res.ok) {
+          return res.json()
+        }
+        else {
+          console.log("not found")
+        }
+      })
+      .then(data => {
+        if (data != null) {
+          for (let i = 0; i < data.length; i++) {
+            setAllPhonenumbers(allPhonenumbers => [...allPhonenumbers, data[i].phoneNum]);
+            setAllEmails(allEmails => [...allEmails, data[i].Email]);
+            console.log("allPhonenumbers=");
+          }
+        }
+      })
+      .catch((error) => {
+        console.log("err=", error);
+      });
+  }
+
 
   useEffect(() => {
+
     setPatientId(route.params.patientId);
+    //bring all emails and phone numbers from DB to check if they are already in use, because 
+    //to check it in the DB is too slow with Ruppin's wonderful server
+    GetAllUsersEmailPhoneNum();
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
       () => {
@@ -85,6 +122,21 @@ export default function CreateUser({ navigation, route }) {
     if (!validatePhoneNum(phoneNum)) {
       return Alert.alert('Invalid Phone Number', 'Please enter a valid phone number')
     }
+    if (allPhonenumbers.includes(phoneNum)) {
+      return Alert.alert('Phone Number already exists', 'Please enter a different phone number')
+    }
+    if (allEmails.includes(email)) {
+      return Alert.alert('Email already exists', 'Please enter a different email')
+    }
+
+    const userData = {
+      email: user.email,
+      password: user.password,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      phoneNum: user.phoneNum,
+      imagePath: userImage,
+    }
     // for testing purposes
     // const userTest = {
     //   email: 'noam12232@gmail.com',
@@ -94,15 +146,6 @@ export default function CreateUser({ navigation, route }) {
     //   phoneNum: '0591277567',
     //   imagePath: userImage,
     // }
-    const userData = {
-      email: user.email,
-      password: user.password,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      phoneNum: user.phoneNum,
-      imagePath: userImage,
-    }
-
     // const userData = {
     //   email: userTest.email,
     //   password: userTest.password,
@@ -179,8 +222,10 @@ export default function CreateUser({ navigation, route }) {
           placeholder="Email"
           keyboardType='ascii-capable'
           onChangeText={(value) => handleInputChange('email', value)}
+          autoCapitalize='none'
+
         />
-        
+
         <View style={styles.phoneContainer}>
           <TextInput
             style={styles.input}

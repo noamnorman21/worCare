@@ -11,8 +11,9 @@ export default function App() {
   const _retrieveData = async () => {
     try {
       const value = await AsyncStorage.getItem('user');
-      if (value !== null) {
+      if (value !== null& value !== undefined& value !== '') {
         // We have data!!
+        console.log(value);
         setDefaultScreen("CustomHeader");
       }
       else {
