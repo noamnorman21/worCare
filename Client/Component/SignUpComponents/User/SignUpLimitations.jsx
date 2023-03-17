@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, Modal, Dimensions, SafeAreaView } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, Modal, Dimensions, SafeAreaView,Keyboard } from 'react-native';
 import { Entypo } from '@expo/vector-icons';
 import { Dropdown } from 'react-native-element-dropdown';
 import LimitationsData from './Limitations.json';
@@ -192,6 +192,7 @@ export default function SignUpLimitations({ navigation, route }) {
               style={styles.inputOther}
               placeholder="Other..."
               placeholderTextColor={'#000'}
+              keyboardType="default"
               value={sensitivitiesOther}
               onChangeText={(text) => setSensitivitiesOther(text)}
             />
@@ -348,6 +349,13 @@ export default function SignUpLimitations({ navigation, route }) {
         onChangeText={setComments}
         value={comments}
         multiline={true}
+      //  keyboardType="default"
+        returnKeyType='done'
+        //close keyboard when pressing done
+        onSubmitEditing={Keyboard.dismiss}
+
+
+     
       />
 
       {/* Continue Button */}

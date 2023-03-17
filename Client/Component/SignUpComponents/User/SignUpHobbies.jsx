@@ -543,6 +543,8 @@ export default function SignUpHobbies({ navigation, route }) {
         placeholderTextColor={'black'}
         onChangeText={setOther}
         value={other}
+        keyboardType='default'
+        onSubmitEditing={() => Keyboard.dismiss()}
         multiline
         editable
       />
