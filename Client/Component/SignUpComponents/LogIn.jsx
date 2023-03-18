@@ -190,6 +190,7 @@ export default function LogIn({ navigation }) {
                     style={styles.input}
                     placeholder="Email"
                     value={email}
+                    autoCapitalize='none'
                     onChangeText={text => setEmail(text)}
                     keyboardType="email-address"
                     autoCorrect={false}

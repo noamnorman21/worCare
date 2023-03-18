@@ -88,7 +88,7 @@ namespace WebApi.Controllers
 
         // GET : Get all users (email and passwords) from DB for firebase authentication
         [HttpGet]
-        [Route("GetAllUsersFireBase")]
+        [Route("GetAllUsers")]
         public IHttpActionResult GetAllUsersFireBase()
         {
             try
@@ -105,6 +105,27 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        
+        [HttpGet]
+        [Route("GetAllUsersEmailAndPhoneNum")]
+        public IHttpActionResult GetAllUsersEmailAndPhoneNum()
+        {
+            try
+            {
+                var users = db.tblUsers.Select(x => new { x.Email, x.phoneNum }).ToList();
+                if (users == null)
+                {
+                    return NotFound();
+                }
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
 
         // insert user to db by calling Stored Prodecdure InsertUser
         [HttpPost]
@@ -114,11 +135,13 @@ namespace WebApi.Controllers
             try
             {
                 tblCalendarForUser calendarForUser = new tblCalendarForUser();
+                //the store procedure is checking if the user already exists in the db, if not, it will insert the user
                 db.InsertUser(user.Email, user.Password, user.FirstName, user.LastName, user.gender, user.phoneNum, user.userUri);
                 db.SaveChanges();
                 var newUser = db.tblUsers.Where(x => x.Email == user.Email).First();
                 if (newUser == null)
-                    return NotFound();                
+                    return NotFound();
+                //we using here partial class tblCalendarForUser to call the method InsertCalendar
                 int result = calendarForUser.InsertCalendar(newUser.Id, user.Calendars);
                 if (result == -1)
                     return BadRequest("Error in insert calendar for user");                

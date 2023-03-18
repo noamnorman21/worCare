@@ -90,6 +90,7 @@ export default function SignUpUserLVL5({ navigation, route }) {
           style={styles.inputFull}
           placeholder="Patient ID (9 Digits)"
           placeholderTextColor="gray"
+          returnKeyType="done"
           keyboardType="numeric"
           value={patientID}
           onChangeText={(patientID) => setPatientID(patientID)}

@@ -45,7 +45,7 @@ export default function SignUpFinish({ navigation, route }) {
                     {
 
                         text: "OK",
-                        onPress: () => {setModalVisible(false), createNewUserInDB() },
+                        onPress: () => { setModalVisible(false), createNewUserInDB() },
                         style: "cancel"
 
                     },
@@ -242,8 +242,10 @@ export default function SignUpFinish({ navigation, route }) {
                                     </Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity
+                                    disabled={contactUser == '' ? true : false}
+                                    
                                     onPress={btnSendSMS}
-                                    style={styles.modalBtn2}>
+                                    style={[styles.modalBtn2,contactUser == ''&&styles.modalBtn2disabled]}>
                                     <Text style={styles.modalBtnText2}>Send Invitation</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity onPress={() => setModalVisible(false)}>
@@ -420,6 +422,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         borderRadius: 16,
         marginVertical: 10,
+    },
+    modalBtn2disabled: {
+        opacity: 0.2,
     },
     modalBtnText1: {
         color: '#9E9E9E',
