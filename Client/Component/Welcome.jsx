@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text, SafeAreaView, Image, Dimensions, Alert } from 'react-native'
+import { StyleSheet, View, Text, SafeAreaView, Image, Dimensions, Alert, ActivityIndicator } from 'react-native'
 import {useEffect, useState} from 'react'
 
 const { width, height } = Dimensions.get('window')
@@ -30,6 +30,7 @@ export default function Welcome({ navigation, route }) {
         <SafeAreaView>
             <View style={styles.imageContainer}>
                 <Image source={require('../images/logo_New.png')} style={styles.image} />
+                <ActivityIndicator size="large" />
             </View>
         </SafeAreaView>
     )

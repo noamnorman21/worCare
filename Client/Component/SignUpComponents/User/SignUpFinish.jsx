@@ -18,17 +18,11 @@ export default function SignUpFinish({ navigation, route }) {
     const [fromShare, setFromShare] = useState(false);
     // link to the specific screen in the app and send the patient id to the screen as a parameter
     // link to screen "Welcome" and send the patient id to the screen as a parameter
-    const deepLinkToApp = () => {
-        // , link);
-        console.log("link: ", link);
-    }
-
     useEffect(() => {
         (async () => {
             setLink(Linking.createURL(`InvitedFrom/${tblPatient.Id}/${route.params.tblUser.FirstName}`));
             const isAvailable = await SMS.isAvailableAsync();
             setIsAvailable(isAvailable);
-            deepLinkToApp();
         }
         )();
     }, []);
@@ -43,17 +37,14 @@ export default function SignUpFinish({ navigation, route }) {
                 setFromShare(true);
                 Alert.alert('Invitation sent', 'We will notify you when your friend will join', [
                     {
-
                         text: "OK",
                         onPress: () => { setModalVisible(false), createNewUserInDB() },
                         style: "cancel"
 
                     },
                 ]);
-
             }
             else {
-
                 Alert.alert('Invitation Failed', 'Please try again', [
                     {
                         text: "OK",
@@ -61,7 +52,6 @@ export default function SignUpFinish({ navigation, route }) {
                     },
                 ]);
             }
-
             // Alert.alert(result);
         } else {
             // misfortune... there's no SMS available on this device
@@ -243,9 +233,9 @@ export default function SignUpFinish({ navigation, route }) {
                                 </TouchableOpacity>
                                 <TouchableOpacity
                                     disabled={contactUser == '' ? true : false}
-                                    
+
                                     onPress={btnSendSMS}
-                                    style={[styles.modalBtn2,contactUser == ''&&styles.modalBtn2disabled]}>
+                                    style={[styles.modalBtn2, contactUser == '' && styles.modalBtn2disabled]}>
                                     <Text style={styles.modalBtnText2}>Send Invitation</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity onPress={() => setModalVisible(false)}>

@@ -50,7 +50,6 @@ export default function CreateUser({ navigation, route }) {
           for (let i = 0; i < data.length; i++) {
             setAllPhonenumbers(allPhonenumbers => [...allPhonenumbers, data[i].phoneNum]);
             setAllEmails(allEmails => [...allEmails, data[i].Email]);
-            console.log("allPhonenumbers=");
           }
         }
       })

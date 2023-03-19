@@ -140,9 +140,10 @@ export default function LogIn({ navigation }) {
     const NavigateToForgotPassword = () => {
         navigation.navigate('ForgotPassword')
     }
-    //keyboard listener for animation
+
     useEffect(() => {
-        getInitialUrl();
+        getInitialUrl();        
+        //keyboard listener for animation
         const keyboardDidShowListener = Keyboard.addListener(
             'keyboardDidShow',
             () => {
@@ -223,7 +224,7 @@ export default function LogIn({ navigation }) {
                 {/* remmeber me check box  in one line*/}
                 <View style={styles.rememberMeContainer}>
                     <TouchableOpacity onPress={toggeleRememberMe}>
-                        {!isChecked 
+                        {isChecked
                             ?
                             <MaterialCommunityIcons style={styles.rememberMeIcon} name="checkbox-intermediate" size={24} color="#979797" />
                             :
