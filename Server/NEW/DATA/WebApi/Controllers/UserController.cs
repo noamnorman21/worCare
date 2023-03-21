@@ -85,6 +85,45 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpPost]
+        [Route("GetEmail")]
+        //check if email exist in DB
+        public IHttpActionResult GetEmail([FromBody] UserDTO userDTO)
+        {
+            try
+            {
+                var user = db.tblUsers.Where(x => x.Email == userDTO.Email).First();
+                if (user == null)
+                {
+                    return Ok("the email available");                   
+                }
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        //check if phone number exist in DB
+        [HttpPost]
+        [Route("GetPhoneNum")]
+        public IHttpActionResult GetPhoneNum([FromBody] UserDTO userDTO)
+        {
+            try
+            {
+                var user = db.tblUsers.Where(x => x.phoneNum == userDTO.phoneNum).First();
+                if (user == null)
+                {
+                    return Ok("the phone number available");
+                }
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
 
         // GET : Get all users (email and passwords) from DB for firebase authentication
         [HttpGet]

@@ -28,6 +28,8 @@ export default function CreateUser({ navigation, route }) {
   const [patientId, setPatientId] = useState('');
   const [allPhonenumbers, setAllPhonenumbers] = useState([]);
   const [allEmails, setAllEmails] = useState([]);
+  const [validateEmailInDB, setValidateEmailInDB] = useState(false);
+  const [validatePhoneInDB, setValidatePhoneInDB] = useState(false);
   const GetAllUsersEmailPhoneNum = () => {
     let GetAllUsersEmailAndPhoneNum = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetAllUsersEmailAndPhoneNum';
     fetch(GetAllUsersEmailAndPhoneNum, {
@@ -58,13 +60,68 @@ export default function CreateUser({ navigation, route }) {
       });
   }
 
+  const checkMailInDB = () => {
+    let checkMail = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetEmail';
+    let userDto = {
+      Email: user.email,
+    }
+    fetch(checkMail, {
+      method: 'POST',
+      body: JSON.stringify(userDto),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+      }
+
+    })
+      .then(res => {
+        if (res.ok) {
+          return res.json()
+        }
+        else {
+          console.log("not found")
+          setValidateEmailandPhone(true);
+
+        }
+      })
+
+      .catch((error) => {
+        console.log("err=", error);
+      });
+  }
+  const checkPhoneInDB = () => {
+    let checkPhone = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetPhoneNum';
+    let userDto = {
+      phoneNum: user.phoneNum,
+    }
+    fetch(checkPhone, {
+      method: 'POST',
+      body: JSON.stringify(userDto),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+      }
+    })
+      .then(res => {
+        if (res.ok) {
+          return res.json()
+        }
+        else {
+          console.log("not found")
+          setValidateEmailandPhone(true);
+        }
+      })
+      .catch((error) => {
+        console.log("err=", error);
+      });
+  }
+
+
 
   useEffect(() => {
 
     setPatientId(route.params.patientId);
     //bring all emails and phone numbers from DB to check if they are already in use, because 
     //to check it in the DB is too slow with Ruppin's wonderful server
-    GetAllUsersEmailPhoneNum();
+
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
       () => {
@@ -126,6 +183,12 @@ export default function CreateUser({ navigation, route }) {
     }
     if (allEmails.includes(email)) {
       return Alert.alert('Email already exists', 'Please enter a different email')
+    }
+    if (validateEmailInDB) {
+      return Alert.alert('Email already exists', 'Please enter a different email')
+    }
+    if (validatePhoneInDB) {
+      return Alert.alert('Phone Number already exists', 'Please enter a different phone number')
     }
 
     const userData = {
@@ -222,7 +285,14 @@ export default function CreateUser({ navigation, route }) {
           keyboardType='ascii-capable'
           onChangeText={(value) => handleInputChange('email', value)}
           autoCapitalize='none'
+          autoCorrect={false}
+          onBlur={() => {
+            
+            CheckEmailInDB()
+          }}
+     
 
+       
         />
 
         <View style={styles.phoneContainer}>
