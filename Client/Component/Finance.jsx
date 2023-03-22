@@ -7,6 +7,7 @@ import Pending from './PaymentsScreen/Pending';
 import History from './PaymentsScreen/History';
 import EditPaymentScreen from './PaymentsScreen/EditPaymentScreen';
 import NewPayment from './PaymentsScreen/NewPayment';
+import Paychecks from './Paychecks components/Paychecks';
 
 
 
@@ -36,7 +37,7 @@ export default function Finance() {
       בעת רנדור עמוד פנימי פנדינג ירונדרו בקשות לפי סטוטס בקשה אינו שולם,
       בעת רנדור מס היסטוריה ירונדרו בקשות אשר בעלות סטטוס שולמו.
       מידע אשר ישלף כלפי כל בקשה- id, sunject, amount, requestDate, proofofdocument, comment, status */}
-        <Stack.Screen name='Paychecks' component={Paycheck} options={() => ({
+        <Stack.Screen name='Paychecks' component={Paychecks} options={() => ({
           headerShown: false,
           presentation: 'stack',
           cardOverlayEnabled: true,
@@ -104,8 +105,8 @@ function Payments() {
 
 function Paycheck() {
   return (
-    <View>
-      <Text>History</Text>
+    <View style={styles.Paycheck}>
+      <Text>Bla</Text>
     </View>
   );
 }
@@ -165,5 +166,12 @@ const styles = StyleSheet.create({
   requestText: {
     fontSize: 16,
     fontWeight: '600',
-  }
+  },
+  Paycheck: {
+    flex: 1,
+    alignItems: 'center',
+    paddingTop: 20,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+  },
 })

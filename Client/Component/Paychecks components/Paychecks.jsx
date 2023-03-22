@@ -4,58 +4,47 @@ import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, Animated, 
 import { useIsFocused } from '@react-navigation/native';
 import { List } from 'react-native-paper';
 import { ScrollView } from 'react-native-gesture-handler';
-import NewPayment from './NewPayment';
-import EditPaymentScreen from './EditPaymentScreen';
+
+import NewPaycheck from './NewPaycheck';
+import EditPaymentScreen from '../PaymentsScreen/EditPaymentScreen';
+import EditPaycheck from './EditPaycheck';
 
 
 
-export default function History({navigation}) {
+
+export default function Paychecks({navigation}) {
   const userId = 1 // יש להחליף למשתנה של המשתמש הנוכחי
   const [History, setHistory] = useState()
   const isFocused = useIsFocused()
   const [modal1Visible, setModal1Visible] = useState(false);
 
-  const Edit = (id, data) => {
-    Alert.alert(
-      "Edit",
-      "Are you sure you want to Edit this request?",
-      [
-        {
-          text: "Cancel",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel"
-        },
-        { text: "OK", onPress: () => navigation.navigate('EditPaymentScreen', {id:id, data:data}) }
-      ],
-      { cancelable: false }
-    );
-  }
+  // const Edit = (id, data) => {
+  //   Alert.alert(
+  //     "Edit",
+  //     "Are you sure you want to Edit this request?",
+  //     [
+  //       {
+  //         text: "Cancel",
+  //         onPress: () => console.log("Cancel Pressed"),
+  //         style: "cancel"
+  //       },
+  //       { text: "OK", onPress: () => navigation.navigate('EditPaymentScreen', {id:id, data:data}) }
+  //     ],
+  //     { cancelable: false }
+  //   );
+  // }
 
-  const View = (id, item) => {
-    Alert.alert(
-      "View",
-      "Are you sure you want to view this request?",
-      [
-        {
-          text: "Cancel",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel"
-        },
-        { text: "OK", onPress: () =>navigation.navigate('EditPaymentScreen', {id:id, data: item }) }
-      ],
-      { cancelable: false }
-    );
-  }
+  
   
   useEffect(() => {
     if (isFocused) {
-      getHistory()
+      getPaychecks()
     }
   }, [isFocused])
 
-  const getHistory = async () => {
+  const getPaychecks = async () => {
     try {
-      const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/GetHistory/' + userId, {
+      const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/PayChecks/GetPaychecks/' + userId, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -65,7 +54,7 @@ export default function History({navigation}) {
       const data = await response.json();
       let arr = data.map((item) => {
         return (
-          <Request key={item.requestId} getHistory={getHistory} data={item} id={item.requestId} Notofication={Notification} View={View} Edit={Edit} subject={item.requestSubject} amountToPay={item.amountToPay} date={item.requestDate} requestComment={item.requestComment} />
+          <Request key={item.payCheckNum} getPaychecks={getPaychecks} data={item} id={item.payCheckNum} Notofication={Notification} View={View} Summary={item.paycheckSummary} date={item.paycheckDate} paycheckComment={item.paycheckComment} />
         )
       })
       setHistory(arr)  
@@ -110,14 +99,18 @@ export default function History({navigation}) {
 
 
   return (
-    <ScrollView contentContainerStyle={styles.Pending}>
+    <ScrollView contentContainerStyle={styles.Pending}>      
+       <View style={styles.headerText}>
+        <Text style={styles.header} >History</Text>
+        </View>  
       {History}
       <TouchableOpacity style={styles.addRequest} onPress={() => setModal1Visible(true)}>
         <Text style={styles.addRequestText}>+</Text>
       </TouchableOpacity>
       <Modal animationType='slide' transparent={true} visible={modal1Visible}>
-       <NewPayment cancel={() => setModal1Visible(false)} />
-      </Modal>     
+       <NewPaycheck cancel={() => {setModal1Visible(false);getPaychecks()} } />
+      </Modal>
+      
     </ScrollView>
   );
 }
@@ -141,28 +134,27 @@ function Request(props) {
   return (
     <List.Accordion style={!expanded ? styles.request : styles.requestunFocused}
     theme={{ colors: { background: 'white' } }}
-    right={() => <View style={styles.requesRight}><Text style={styles.requestHeaderText}>{props.subject}</Text>
-    
-      </View>}
+    right={() => <View ></View>}
+      
     left={() => <View >
-      <Text style={styles.requestHeaderText}>{props.date.substring(0, 10)}</Text>      
+      <Text style={styles.requestHeaderText}>{props.date.substring(0,7).replace("-","/")}</Text>      
     </View>}
 
     expanded={!expanded}
     onPress={toggle}
   >
-    <View style={!expanded ? styles.Focused : styles.unFocused}>
+    <View style={styles.Focused}>
       <View>
-      <List.Item title={() => <Text style={styles.itemsText}>Date: {props.date.substring(0, 10)} </Text>} />
-      <List.Item title={() => <Text style={styles.itemsText}>Amount: {props.amountToPay} </Text>} />
-      <List.Item title={() => <Text style={styles.itemsText}>Comment: {props.requestComment} </Text>} />
+      <List.Item title={() => <Text style={styles.itemsText}>Date: {props.date.substring(0, 10).replace(/-/g,"/" )} </Text>} />
+      <List.Item title={() => <Text style={styles.itemsText}>Summary: {props.Summary.substring(0, 100)}</Text>} />
+      <List.Item title={() => <Text style={styles.itemsText}>Comment: {props.paycheckComment} </Text>} />
       <List.Item title={() =>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <View style={styles.bottom}>
           <TouchableOpacity style={[styles.itemsText, styles.viewButton]} onPress={!expanded ? () =>{setModal1Visible(true)}:null}>
             <Text style={styles.viewbuttonText}>View Document</Text>
           </TouchableOpacity>
           <Modal animationType='slide' transparent={true} visible={modal1Visible}>
-            <EditPaymentScreen cancel={() => {setModal1Visible(false); props.getHistory()}} data={props.data} />
+            <EditPaycheck cancel={() => {setModal1Visible(false); props.getPaychecks()}} data={props.data} />
           </Modal>
           <TouchableOpacity style={[styles.itemsText, styles.editButton]} onPress={!expanded ? () =>{setModal1Visible(true)} : null}>
             <Text style={styles.editbuttonText}>Edit</Text>
@@ -178,11 +170,11 @@ function Request(props) {
 
 const styles = StyleSheet.create({
 
-  Pending: {
-    alignItems: 'center',
+  Pending: {  
     backgroundColor: 'white',
-   flexGrow: 1,
-    paddingTop: 10
+    flexGrow: 1,
+    paddingTop: 10,
+    alignItems: 'center',
   },
   requestunFocused: {
     justifyContent: 'center',
@@ -218,19 +210,11 @@ const styles = StyleSheet.create({
     borderBottomColor: '#9E9E9E',
     borderBottomWidth: 1,
     borderBottomMargin: 10,  
+    
   },
   requestHeaderText: {
     fontSize: 16,
     fontWeight: '600',
-  },
-  requestHeader: {
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: 'none',
-    height: Dimensions.get('screen').height * 0.08,
-    width: Dimensions.get('screen').width * 0.85,
-    flexDirection: 'row',
-    padding: 16,
   },
   Focused: {
     borderLeftColor: '#7DA9FF',
@@ -244,12 +228,16 @@ const styles = StyleSheet.create({
     borderBottomStartRadius: 16,
     marginBottom: 10,
     padding: 16,
+    maxHeight: Dimensions.get('screen').height * 0.8,
+    flexGrow: 0,
+    
   },
   itemsText: {
     fontSize: 16,
     fontWeight: '600',
     marginLeft:Dimensions.get('screen').width * -0.16,
-    marginRight:Dimensions.get('screen').width * 0.02,  
+    marginRight:Dimensions.get('screen').width * 0.02,
+    marginVertical:0,
    
   },
   viewButton: {
@@ -272,7 +260,6 @@ const styles = StyleSheet.create({
     borderColor: '#7DA9FF',
     marginLeft: 10,
   },
-
   viewbuttonText: {
     color: 'white',
     fontSize: 16,
@@ -286,12 +273,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  requestHeaderIcon: {
-    zIndex: 0,
-    position: 'absolute',
-    right: Dimensions.get('screen').width * 0,
-    backgroundColor: 'orange',
   },
   addRequest: {
     alignItems: 'center',
@@ -310,9 +291,19 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
-
-
-
-
+  headerText: {      
+    height: Dimensions.get('screen').height * 0.05,
+    width: Dimensions.get('screen').width * 0.85,
+    marginBottom: Dimensions.get('screen').height * 0.02,  
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: '700',  
+  },
+  bottom:{
+    flexDirection: 'row', justifyContent: 'space-between',
+    marginTop: 10,
+    
+  },
 
 })
