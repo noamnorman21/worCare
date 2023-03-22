@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
 import { StyleSheet } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
-// import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 // Importing the screens that will be used in the stack navigator
 import { CustomHeader } from '../../Component/AppBarUp';
 import LogIn from './LogIn';
@@ -23,59 +22,77 @@ import Welcome from '../Welcome';
 
 const Stack = createStackNavigator();
 
-export default function NavigateSignUp(props) {
-  // const [defaultScreen, setDefaultScreen] = useState("LogIn");
+export default function NavigateSignUp() {
 
-  // //function to get user email and password from async storage, it called when the app starts using useEffect
-  // const _retrieveData = async () => {
-  //   try {    
-  //     const value = await AsyncStorage.getItem('user');
-  //     console.log(value);
-  //     if (value !== null) {
-  //       // We have data!!
-  //       navigation.navigate("CustomHeader");
-  //       setDefaultScreen("CustomHeader");
-  //       console.log(defaultScreen)
-  //     }
-  //   } catch (error) {
-  //     // Error retrieving data
-  //   }
-  // }
+  const [isSigned, setIsSigned] = useState('bla');
+  const [isLoaded, setIsLoaded] = useState(false);
 
-  // useEffect(() => {
-  //   _retrieveData();
-  // }, []);
+  useEffect(() => {
+    loadStorageData();
+  }, []);
 
+  const loadStorageData = async () => {
+    try {
+      const storageUser = await AsyncStorage.getItem("user");
+      if (storageUser == null) {
+        console.log("user is not signed in", storageUser);
+        setIsSigned(false);
+      } else {
+        console.log("user is signed in", storageUser);
+        setIsSigned(true);
+      }
+    }
+    catch (error) {
+      console.log(error)
+    }
+    finally {
+      setIsLoaded(true);
+    }    
+  }
+
+  if (!isLoaded) {
+    return null;
+  }
+  
   return (
-    <Stack.Navigator initialRouteName={props.defaultScreen} screenOptions={{ headerShown: false }}>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      {/* wait few seconds and only then check if isSigned true or false*/}
+      {!isSigned ? (
+        <>
+          <Stack.Screen name="LogIn" component={LogIn} />
+          <Stack.Screen name="CustomHeader" component={CustomHeader} />
 
-      <Stack.Screen name="CustomHeader" component={CustomHeader} />
-      <Stack.Screen name="LogIn" component={LogIn} />
+          {/* שלבי שחזור סיסמה */}
+          <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+          <Stack.Screen name="ForgotPasswordLvl2" component={ForgotPasswordLvl2} options={{ headerShown: true, headerTitle: '' }} />
+          <Stack.Screen name="CreateNewPassword" component={CreateNewPassword} options={{ headerShown: true, headerTitle: '' }} />
 
-      {/* שלבי שחזור סיסמה */}
-      <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
-      <Stack.Screen name="ForgotPasswordLvl2" component={ForgotPasswordLvl2} options={{ headerShown: true, headerTitle: '' }} />
-      <Stack.Screen name="CreateNewPassword" component={CreateNewPassword} options={{ headerShown: true, headerTitle: '' }} />
+          {/* מסך לקישור המטפל למשפחת המטופל*/}
+          <Stack.Screen name="Welcome" component={Welcome} options={{ headerShown: false }} />
 
-      {/* מסך לקישור המטפל למשפחת המטופל*/}
-      <Stack.Screen name="Welcome" component={Welcome} options={{ headerShown: false }} />
+          {/* שלבים 1-3 בתהליך ההרשמה משותפים לשני סוגי המשתמשים */}
+          <Stack.Screen name="SignUp" component={SignUp} />
+          <Stack.Screen name="SignUpLvl2" component={SignUpLvl2} options={{ headerShown: true, headerTitle: '' }} />
+          <Stack.Screen name="SignUpLvl3" component={SignUpLvl3} options={{ headerShown: true, headerTitle: '' }} />
 
-      {/* שלבים 1-3 בתהליך ההרשמה משותפים לשני סוגי המשתמשים */}
-      <Stack.Screen name="SignUp" component={SignUp} />
-      <Stack.Screen name="SignUpLvl2" component={SignUpLvl2} options={{ headerShown: true, headerTitle: '' }} />
-      <Stack.Screen name="SignUpLvl3" component={SignUpLvl3} options={{ headerShown: true, headerTitle: '' }} />
+          {/* שלבי המשך עבור הרשמת המטפל */}
+          <Stack.Screen name="SignUpCaregiverLVL4" component={SignUpCaregiverLVL4} options={{ headerShown: true, headerTitle: '' }} />
+          <Stack.Screen name="SignUpCaregiverLVL5" component={SignUpCaregiverLVL5} options={{ headerShown: true, headerTitle: '' }} />
 
-      {/* שלבי המשך עבור הרשמת המטפל */}
-      <Stack.Screen name="SignUpCaregiverLVL4" component={SignUpCaregiverLVL4} options={{ headerShown: true, headerTitle: '' }} />
-      <Stack.Screen name="SignUpCaregiverLVL5" component={SignUpCaregiverLVL5} options={{ headerShown: true, headerTitle: '' }} />
-
-      {/* שלבי המשך עבור הרשמת מעורב בטיפול */}
-      <Stack.Screen name="SignUpUserLVL4" component={SignUpUserLVL4} options={{ headerShown: true, headerTitle: '' }} />
-      <Stack.Screen name="SignUpUserLVL5" component={SignUpUserLVL5} options={{ headerShown: true, headerTitle: '' }} />
-      <Stack.Screen name="SignUpHobbies" component={SignUpHobbies} options={{ headerShown: true, headerTitle: '' }} />
-      <Stack.Screen name="SignUpLimitations" component={SignUpLimitations} options={{ headerShown: true, headerTitle: '' }} />
-      <Stack.Screen name="SignUpFinish" component={SignUpFinish} options={{ headerShown: true, headerTitle: '' }} />
-      {/* כניסה למערכת */}
+          {/* שלבי המשך עבור הרשמת מעורב בטיפול */}
+          <Stack.Screen name="SignUpUserLVL4" component={SignUpUserLVL4} options={{ headerShown: true, headerTitle: '' }} />
+          <Stack.Screen name="SignUpUserLVL5" component={SignUpUserLVL5} options={{ headerShown: true, headerTitle: '' }} />
+          <Stack.Screen name="SignUpHobbies" component={SignUpHobbies} options={{ headerShown: true, headerTitle: '' }} />
+          <Stack.Screen name="SignUpLimitations" component={SignUpLimitations} options={{ headerShown: true, headerTitle: '' }} />
+          <Stack.Screen name="SignUpFinish" component={SignUpFinish} options={{ headerShown: true, headerTitle: '' }} />
+          {/* כניסה למערכת */}
+        </>
+      ) : (
+        <>
+          <Stack.Screen name="CustomHeader" component={CustomHeader} />
+          <Stack.Screen name="LogIn" component={LogIn} />
+        </>
+      )}
     </Stack.Navigator>
   )
 }

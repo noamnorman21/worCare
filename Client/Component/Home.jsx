@@ -81,11 +81,13 @@ export default function Home({ navigation }) {
       <View>
         <TouchableOpacity
           onPress={() => {
-            AsyncStorage.clear();
+            AsyncStorage.removeItem("user");
             Alert.alert('Log Out', 'You have been logged out', [
               {
                 text: 'OK',
-                onPress: () => navigation.navigate('LogIn'),
+                onPress: () =>{
+                  navigation.navigate('LogIn')
+                }
               },
             ]);            
           }}
