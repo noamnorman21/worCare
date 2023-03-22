@@ -18,7 +18,7 @@ export default function LogIn({ navigation }) {
     const [userType, setUserType] = useState('User');
     const [isChecked, setChecked] = useState(false);
 
-    const getInitialUrl = async () => {
+    const getInitialUrl = async () => {''
         // check if the app was opened from a link
         const initialUrl = await Linking.getInitialURL();
         //example of the url: exp://l4rfr8w.anonymous.19000.exp.direct/--/InvitedFrom/123456789/Noam

@@ -26,93 +26,8 @@ export default function CreateUser({ navigation, route }) {
     phoneNum: '',
   })
   const [patientId, setPatientId] = useState('');
-  const [allPhonenumbers, setAllPhonenumbers] = useState([]);
-  const [allEmails, setAllEmails] = useState([]);
   const [validateEmailInDB, setValidateEmailInDB] = useState(false);
   const [validatePhoneInDB, setValidatePhoneInDB] = useState(false);
-  const GetAllUsersEmailPhoneNum = () => {
-    let GetAllUsersEmailAndPhoneNum = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetAllUsersEmailAndPhoneNum';
-    fetch(GetAllUsersEmailAndPhoneNum, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-    })
-
-      .then(res => {
-        if (res.ok) {
-          return res.json()
-        }
-        else {
-          console.log("not found")
-        }
-      })
-      .then(data => {
-        if (data != null) {
-          for (let i = 0; i < data.length; i++) {
-            setAllPhonenumbers(allPhonenumbers => [...allPhonenumbers, data[i].phoneNum]);
-            setAllEmails(allEmails => [...allEmails, data[i].Email]);
-          }
-        }
-      })
-      .catch((error) => {
-        console.log("err=", error);
-      });
-  }
-
-  const checkMailInDB = () => {
-    let checkMail = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetEmail';
-    let userDto = {
-      Email: user.email,
-    }
-    fetch(checkMail, {
-      method: 'POST',
-      body: JSON.stringify(userDto),
-      headers: {
-        'Content-Type': 'application/json; charset=UTF-8',
-      }
-
-    })
-      .then(res => {
-        if (res.ok) {
-          return res.json()
-        }
-        else {
-          console.log("not found")
-          setValidateEmailandPhone(true);
-
-        }
-      })
-
-      .catch((error) => {
-        console.log("err=", error);
-      });
-  }
-  const checkPhoneInDB = () => {
-    let checkPhone = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetPhoneNum';
-    let userDto = {
-      phoneNum: user.phoneNum,
-    }
-    fetch(checkPhone, {
-      method: 'POST',
-      body: JSON.stringify(userDto),
-      headers: {
-        'Content-Type': 'application/json; charset=UTF-8',
-      }
-    })
-      .then(res => {
-        if (res.ok) {
-          return res.json()
-        }
-        else {
-          console.log("not found")
-          setValidateEmailandPhone(true);
-        }
-      })
-      .catch((error) => {
-        console.log("err=", error);
-      });
-  }
 
 
 
@@ -153,6 +68,57 @@ export default function CreateUser({ navigation, route }) {
       keyboardDidHideListener.remove();
     }
   }, []);
+  const CheckEmailInDB = () => {
+    let checkMail = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetEmail';
+    let userDto = {
+      Email: user.email,
+    }
+    fetch(checkMail, {
+      method: 'POST',
+      body: JSON.stringify(userDto),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+      }
+    })
+      .then(res => {
+        if (res.ok) {
+          return res.json()
+          console.log(res.status)
+        }
+        else {
+          setValidateEmailInDB(true);
+            
+        }
+      })
+      .catch((error) => {
+        console.log("err=", error);
+      });
+  }
+  const checkPhoneInDB = () => {
+    let checkPhone = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetPhoneNum';
+    let userDto = {
+      phoneNum: user.phoneNum,
+    }
+    fetch(checkPhone, {
+      method: 'POST',
+      body: JSON.stringify(userDto),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+      }
+    })
+      .then(res => {
+        if (res.ok) {
+          return res.json()
+        }
+        else {
+
+          validatePhoneInDB(true);
+        }
+      })
+      .catch((error) => {
+        console.log("err=", error);
+      });
+  }
 
   const handleCreateUser = () => {
     const { email, password, firstName, lastName, phoneNum } = user
@@ -178,12 +144,8 @@ export default function CreateUser({ navigation, route }) {
     if (!validatePhoneNum(phoneNum)) {
       return Alert.alert('Invalid Phone Number', 'Please enter a valid phone number')
     }
-    if (allPhonenumbers.includes(phoneNum)) {
-      return Alert.alert('Phone Number already exists', 'Please enter a different phone number')
-    }
-    if (allEmails.includes(email)) {
-      return Alert.alert('Email already exists', 'Please enter a different email')
-    }
+
+
     if (validateEmailInDB) {
       return Alert.alert('Email already exists', 'Please enter a different email')
     }
