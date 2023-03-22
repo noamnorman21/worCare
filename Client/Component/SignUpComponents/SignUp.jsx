@@ -30,6 +30,7 @@ export default function CreateUser({ navigation, route }) {
   const [allEmails, setAllEmails] = useState([]);
   const [validateEmailInDB, setValidateEmailInDB] = useState(false);
   const [validatePhoneInDB, setValidatePhoneInDB] = useState(false);
+  
   const GetAllUsersEmailPhoneNum = () => {
     let GetAllUsersEmailAndPhoneNum = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetAllUsersEmailAndPhoneNum';
     fetch(GetAllUsersEmailAndPhoneNum, {
