@@ -190,7 +190,7 @@ export default function NewPaycheck(props) {
             style={[styles.input, styles.comment] }
             placeholder='Add comment'
             keyboardType='ascii-capable'
-            onChangeText={(value) => handleInputChange('Comment', value)}
+            onChangeText={(value) => handleInputChange('paycheckComment', value)}
           />
           <TouchableOpacity style={styles.uploadButton} onPress={pickDocument}>
             <Text style={styles.buttonText}>Upload document</Text>

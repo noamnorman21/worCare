@@ -8,7 +8,7 @@ import * as DocumentPicker from 'expo-document-picker';
 
 export default function EditPaycheck(props) {
 
-  
+  const [isChanged, setisChanged] = useState(false);
   const [animation, setAnimation] = useState({});
   const [imageChanged, setimageChanged] = useState(false);  
   const [Paycheck, setPaycheck] = useState({
@@ -16,8 +16,9 @@ export default function EditPaycheck(props) {
     paycheckSummary: props.data.paycheckSummary,
     paycheckComment: props.data.paycheckComment,
     payCheckNumber: props.data.payCheckNum,    
-    userId: props.data.userId,
+    userId: props.data.UserId,
   })
+
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -68,7 +69,7 @@ export default function EditPaycheck(props) {
   }
 
   useEffect(() => {
-    console.log(props.data);
+    console.log(Paycheck);
   }, [])
 
 
@@ -76,23 +77,30 @@ export default function EditPaycheck(props) {
   
 
 const handleInputChange = (name, value) => {
-    setPaycheck({ ...Paycheck, [name]: value })    
+    setPaycheck({ ...Paycheck, [name]: value })  
+    if (!isChanged) {
+      setisChanged(true);
+    }  
   }
   const Cancel = () => {
-    Alert.alert(
-      'Cancel Changes',
-      'are you sure you want to Exit the Page? All changes will be lost',
-      [
-        { text: "Don't leave", style: 'cancel', onPress: () => { } },
-        {
-          text: 'Leave',
-          style: 'destructive',
-          // If the user confirmed, then we dispatch the action we blocked earlier
-          // This will continue the action that had triggered the removal of the screen
-          onPress: () => props.cancel()
-        },
-      ]
-    );
+    if (isChanged) {
+      Alert.alert(
+        'Cancel Changes',
+        'are you sure you want to Exit the Page? All changes will be lost',
+        [
+          { text: "Don't leave", style: 'cancel', onPress: () => { } },
+          {
+            text: 'Leave',
+            style: 'destructive',
+            // If the user confirmed, then we dispatch the action we blocked earlier
+            // This will continue the action that had triggered the removal of the screen
+            onPress: () => props.cancel()
+          },
+        ]
+      );
+    } else {
+      props.cancel();
+    }    
   }
 
   const Delete = () => {
@@ -159,18 +167,15 @@ const handleInputChange = (name, value) => {
 const savePaycheck = async (downloadURL) => {
   
   const temp = {
-    requestId: Paycheck.requestId,
-    amountToPay: Paycheck.amountToPay,
-    requestSubject: Paycheck.requestSubject,
-    requestDate: Paycheck.requestDate,
-    requestProofDocument: downloadURL,
-    requestComment: Paycheck.requestComment,
-    requestStatus: Paycheck.requestStatus,
-    userId: Paycheck.userId
+    paycheckDate: Paycheck.paycheckDate,
+    paycheckSummary: Paycheck.paycheckSummary,
+    paycheckComment: Paycheck.paycheckComment,
+    payCheckNum: Paycheck.payCheckNumber,    
+    userId: Paycheck.userId,
   }
   console.log(temp);
  
-    fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Paychecks/UpdateRequest', {
+    fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Paychecks/UpdatePayCheck', {
     method: 'PUT',
     body: JSON.stringify(temp),
     headers: new Headers({

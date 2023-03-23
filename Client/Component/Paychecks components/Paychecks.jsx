@@ -54,17 +54,16 @@ export default function Paychecks({navigation}) {
       const data = await response.json();
       let arr = data.map((item) => {
         return (
-          <Request key={item.payCheckNum} getPaychecks={getPaychecks} data={item} id={item.payCheckNum} Notofication={Notification} View={View} Summary={item.paycheckSummary} date={item.paycheckDate} paycheckComment={item.paycheckComment} />
+          <Paycheck key={item.payCheckNum} getPaychecks={getPaychecks} data={item}/>
         )
       })
-      setHistory(arr)  
+      setHistory(arr)
     } catch (error) {
       console.log(error)
     }
   }
  
-  const [list, setlist] = React.useState();
-  
+    
   const Delete = (id) => {
     Alert.alert(
       "Delete",
@@ -108,17 +107,24 @@ export default function Paychecks({navigation}) {
         <Text style={styles.addRequestText}>+</Text>
       </TouchableOpacity>
       <Modal animationType='slide' transparent={true} visible={modal1Visible}>
-       <NewPaycheck cancel={() => {setModal1Visible(false);getPaychecks()} } />
+       <NewPaycheck cancel={() => {setModal1Visible(false); getPaychecks()} } />
       </Modal>
       
     </ScrollView>
   );
 }
 
-function Request(props) {
+function Paycheck(props) {
   const [expanded, setExpanded] = React.useState(true);
   const animationController = useRef(new Animated.Value(0)).current;
   const [modal1Visible, setModal1Visible] = useState(false);
+  const [temp,settemp]= useState({
+    paycheckDate: props.data.paycheckDate,
+    paycheckSummary: props.data.paycheckSummary,
+    paycheckComment: props.data.paycheckComment,
+    paycheckNum: props.data.paycheckNum,
+  })
+ 
   const toggle = () => {
     const config = {
       toValue: expanded ? 0 : 1,
@@ -137,7 +143,7 @@ function Request(props) {
     right={() => <View ></View>}
       
     left={() => <View >
-      <Text style={styles.requestHeaderText}>{props.date.substring(0,7).replace("-","/")}</Text>      
+      <Text style={styles.requestHeaderText}>{temp.paycheckDate.substring(0,7).replace("-","/")}</Text>      
     </View>}
 
     expanded={!expanded}
@@ -145,16 +151,16 @@ function Request(props) {
   >
     <View style={styles.Focused}>
       <View>
-      <List.Item title={() => <Text style={styles.itemsText}>Date: {props.date.substring(0, 10).replace(/-/g,"/" )} </Text>} />
-      <List.Item title={() => <Text style={styles.itemsText}>Summary: {props.Summary.substring(0, 100)}</Text>} />
-      <List.Item title={() => <Text style={styles.itemsText}>Comment: {props.paycheckComment} </Text>} />
+      <List.Item title={() => <Text style={styles.itemsText}>Date: {temp.paycheckDate.substring(0, 10).replace(/-/g,"/" )} </Text>} />
+      <List.Item title={() => <Text style={styles.itemsText}>Summary: {temp.paycheckSummary.substring(0, 100)}</Text>} />
+      <List.Item title={() => <Text style={styles.itemsText}>Comment: {temp.paycheckComment} </Text>} />
       <List.Item title={() =>
         <View style={styles.bottom}>
           <TouchableOpacity style={[styles.itemsText, styles.viewButton]} onPress={!expanded ? () =>{setModal1Visible(true)}:null}>
             <Text style={styles.viewbuttonText}>View Document</Text>
           </TouchableOpacity>
           <Modal animationType='slide' transparent={true} visible={modal1Visible}>
-            <EditPaycheck cancel={() => {setModal1Visible(false); props.getPaychecks()}} data={props.data} />
+            <EditPaycheck cancel={() => {setModal1Visible(false); setExpanded(true) ; props.getPaychecks()}} data={props.data} />
           </Modal>
           <TouchableOpacity style={[styles.itemsText, styles.editButton]} onPress={!expanded ? () =>{setModal1Visible(true)} : null}>
             <Text style={styles.editbuttonText}>Edit</Text>
@@ -190,15 +196,12 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,
     shadowRadius: 2,
-    paddingLeft: 12,
-    
+    paddingLeft: 12,    
   },
   request: {
-    justifyContent: 'center',
     paddingLeft: 12,
     width: Dimensions.get('screen').width * 0.9,
     height: Dimensions.get('screen').height * 0.073,   
-    justifyContent: 'center',
     borderLeftColor: '#7DA9FF',
     borderLeftWidth: 2,
     borderTopLeftRadius: 16,
@@ -228,8 +231,8 @@ const styles = StyleSheet.create({
     borderBottomStartRadius: 16,
     marginBottom: 10,
     padding: 16,
-    maxHeight: Dimensions.get('screen').height * 0.8,
-    flexGrow: 0,
+    flexGrow: 0.35,
+   
     
   },
   itemsText: {
@@ -301,9 +304,8 @@ const styles = StyleSheet.create({
     fontWeight: '700',  
   },
   bottom:{
-    flexDirection: 'row', justifyContent: 'space-between',
-    marginTop: 10,
-    
+    flexDirection: 'row',
+     justifyContent: 'space-between',      
   },
 
 })
