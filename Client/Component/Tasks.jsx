@@ -2,6 +2,11 @@ import { View, Text, StyleSheet } from 'react-native'
 import React from 'react'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
+import Main from './TasksComponents/MainTasks';
+import General from './TasksComponents/GeneralTasks';
+import Shop from './TasksComponents/ShopTasks';
+import Medicine from './TasksComponents/MedicineTasks';
+
 const Tab = createMaterialTopTabNavigator();
 
 export default function Tasks() {
@@ -28,6 +33,7 @@ export default function Tasks() {
           height: 4,
         },
         tabStyle: { width: 'auto', marginLeft: 10, alignItems: 'center' },
+        AnimationEffect: 'none',
       }} >
       <Tab.Screen style={styles.container2} name="Main" component={Main} />
       <Tab.Screen name="General" component={General} />
@@ -37,37 +43,6 @@ export default function Tasks() {
   );
 }
 
-function Main() {
-  return (
-    <View>
-      <Text>Main</Text>
-    </View>
-  );
-}
-
-function General() {
-  return (
-    <View >
-      <Text>General</Text>
-    </View>
-  );
-}
-
-function Shop() {
-  return (
-    <View >
-      <Text>Shop</Text>
-    </View>
-  );
-}
-
-function Medicine() {
-  return (
-    <View >
-      <Text>Medicine</Text>
-    </View>
-  );
-}
 
 const styles = StyleSheet.create({
   container: {

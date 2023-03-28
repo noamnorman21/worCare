@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Alert } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // Importing the screens that will be used in the stack navigator
-import { CustomHeader } from '../../Component/AppBarUp';
+import { CustomHeader } from '../AppBar';
 import LogIn from './LogIn';
 import SignUp from './SignUp';
 import SignUpLvl2 from './SignUpLvl2';
@@ -35,10 +35,8 @@ export default function NavigateSignUp() {
     try {
       const storageUser = await AsyncStorage.getItem("user");
       if (storageUser == null) {
-        console.log("user is not signed in", storageUser);
         setIsSigned(false);
       } else {
-        console.log("user is signed in", storageUser);
         setIsSigned(true);
       }
     }
@@ -47,13 +45,13 @@ export default function NavigateSignUp() {
     }
     finally {
       setIsLoaded(true);
-    }    
+    }
   }
 
   if (!isLoaded) {
     return null;
   }
-  
+
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       {/* wait few seconds and only then check if isSigned true or false*/}

@@ -1,11 +1,10 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 
-export default function Rights() {
+export default function GeneralTasks() {
   return (
     <View>
-      <Text>Rights</Text>
+      <Text>GeneralTasks</Text>
     </View>
   )
 }
-

@@ -29,11 +29,14 @@
     "expo-checkbox": "~2.2.2",
     "expo-constants": "~14.0.2",
     "expo-contacts": "~11.0.1",
+    "expo-device": "~5.0.0",
     "expo-document-picker": "~11.0.1",
     "expo-firebase": "^0.0.0-alpha.0",
     "expo-image-picker": "~14.0.2",
     "expo-linking": "~3.3.1",
+    "expo-notifications": "~0.17.0",
     "expo-sms": "~11.0.0",
+    "expo-splash-screen": "~0.17.5",
     "expo-status-bar": "~1.4.2",
     "firebase": "^9.17.1",
     "react": "18.1.0",
@@ -58,9 +61,7 @@
     "react-native-screens": "~3.18.0",
     "react-native-vector-icons": "^9.2.0",
     "react-navigation": "^4.4.4",
-    "rn-country-picker": "^1.0.1",
-    "expo-notifications": "~0.17.0",
-    "expo-device": "~5.0.0"
+    "rn-country-picker": "^1.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"

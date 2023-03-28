@@ -3,13 +3,6 @@ import React, { useState, useEffect } from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import ImagePickerExample from '../HelpComponents/ImagePickerExample'
 import { OrLine, HaveAccount } from './FooterLine'
-import * as Font from 'expo-font';
-Font.loadAsync({
-  'Urbanist': require('../../assets/fonts/Urbanist-Regular.ttf'),
-  'Urbanist-Bold': require('../../assets/fonts/Urbanist-Bold.ttf'),
-  'Urbanist-Light': require('../../assets/fonts/Urbanist-Light.ttf'),
-  'Urbanist-Medium': require('../../assets/fonts/Urbanist-Medium.ttf'),
-});
 
 // Sign up Screen - level 1 - first + last name, email, phone number, password, image 
 // On submit, user is taken to SignUpLvl2 Screen - address, city, state, zip code, country
@@ -29,14 +22,10 @@ export default function CreateUser({ navigation, route }) {
   const [validateEmailInDB, setValidateEmailInDB] = useState(false);
   const [validatePhoneInDB, setValidatePhoneInDB] = useState(false);
 
-
-
   useEffect(() => {
-
     setPatientId(route.params.patientId);
     //bring all emails and phone numbers from DB to check if they are already in use, because 
     //to check it in the DB is too slow with Ruppin's wonderful server
-
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
       () => {
@@ -68,6 +57,7 @@ export default function CreateUser({ navigation, route }) {
       keyboardDidHideListener.remove();
     }
   }, []);
+
   const CheckEmailInDB = () => {
     let checkMail = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetEmail';
     let userDto = {
@@ -82,19 +72,18 @@ export default function CreateUser({ navigation, route }) {
     })
       .then(res => {
         if (res.ok) {
+          setValidateEmailInDB(true);
           return res.json()
-          console.log(res.status)
         }
         else {
-          setValidateEmailInDB(true);
-            
+          setValidateEmailInDB(false);
         }
       })
       .catch((error) => {
         console.log("err=", error);
       });
   }
-  const checkPhoneInDB = () => {
+  const CheckPhoneInDB = () => {
     let checkPhone = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetPhoneNum';
     let userDto = {
       phoneNum: user.phoneNum,
@@ -108,11 +97,11 @@ export default function CreateUser({ navigation, route }) {
     })
       .then(res => {
         if (res.ok) {
+          setValidatePhoneInDB(true);
           return res.json()
         }
         else {
-
-          validatePhoneInDB(true);
+          setValidatePhoneInDB(false);
         }
       })
       .catch((error) => {
@@ -125,27 +114,21 @@ export default function CreateUser({ navigation, route }) {
     if (!email || !password || !firstName || !lastName || !phoneNum) {
       return Alert.alert('Error', 'All fields are required')
     }
-
     if (!validateEmail(email)) {
       return Alert.alert('Invalid Email', 'Please enter a valid email')
     }
-
     if (!validatePassword(password)) {
       return Alert.alert('Invalid Password', 'Please enter a password with at least 8 characters, 1 letter, and 1 number')
     }
-
     if (firstName === '') {
       return Alert.alert('Invalid First Name', 'Please enter a valid first name')
     }
     if (lastName === '') {
       return Alert.alert('Invalid Last Name', 'Please enter a valid last name')
     }
-
     if (!validatePhoneNum(phoneNum)) {
       return Alert.alert('Invalid Phone Number', 'Please enter a valid phone number')
     }
-
-
     if (validateEmailInDB) {
       return Alert.alert('Email already exists', 'Please enter a different email')
     }
@@ -161,23 +144,6 @@ export default function CreateUser({ navigation, route }) {
       phoneNum: user.phoneNum,
       imagePath: userImage,
     }
-    // for testing purposes
-    // const userTest = {
-    //   email: 'noam12232@gmail.com',
-    //   password: '12345678',
-    //   firstName: 'Noam',
-    //   lastName: 'Norman',
-    //   phoneNum: '0591277567',
-    //   imagePath: userImage,
-    // }
-    // const userData = {
-    //   email: userTest.email,
-    //   password: userTest.password,
-    //   firstName: userTest.firstName,
-    //   lastName: userTest.lastName,
-    //   phoneNum: userTest.phoneNum,
-    //   imagePath: userTest.imagePath,
-    // }
 
     console.log(userData)
     if (route.params.userType === 'User') {
@@ -249,12 +215,8 @@ export default function CreateUser({ navigation, route }) {
           autoCapitalize='none'
           autoCorrect={false}
           onBlur={() => {
-            
             CheckEmailInDB()
           }}
-     
-
-       
         />
 
         <View style={styles.phoneContainer}>
@@ -265,6 +227,9 @@ export default function CreateUser({ navigation, route }) {
             // return button type in keyboard for ios devices
             returnKeyType='done'
             onChangeText={(value) => handleInputChange('phoneNum', value)}
+            onBlur={() => {
+              CheckPhoneInDB()
+            }}
           />
         </View>
         <View style={styles.passwordContainer}>

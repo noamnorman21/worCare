@@ -1,16 +1,19 @@
-import { View, TouchableOpacity, Image, Dimensions, StyleSheet } from 'react-native'
+import { View, TouchableOpacity, Image, Dimensions, StyleSheet, Alert } from 'react-native'
 import { Octicons, Ionicons, AntDesign, Feather } from '@expo/vector-icons';
+import { useEffect, useState } from 'react'
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import SettingScreen from './SettingScreen';
 import Contacts from './Contacts';
 import PushNotifications from './PushNotifications';
 
-import Home from '../Component/Home';
+import Home from './Home';
 import Finance from './Finance';
-import Chats from '../Component/Chats';
-import Tasks from '../Component/Tasks';
-import Rights from '../Component/Rights';
+import Chats from './Chats';
+import Tasks from './Tasks';
+import Rights from './Rights';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -23,10 +26,12 @@ function CustomHeader() {
                 component={AppBarDown}
                 options={({ navigation }) => ({
                     title: ' ',
+                    headerTitleAlign: 'center',
                     headerLeft: () => (
                         <View style={styles.headerLeft}>
                             <TouchableOpacity
-                                onPress={() => { navigation.navigate('SettingScreen') }}
+                            //on press send the function hideHeader and showHeader to the child component
+                                onPress={() => { navigation.navigate('SettingScreen') }}                                
                             >
                                 <Image
                                     source={require('../images/icons/Profile.png')}
@@ -64,16 +69,19 @@ function CustomHeader() {
                             source={require('../images/logo_New_Small.png')}
                             style={styles.headerLogo}
                         />
-                    ),
-                    headerTitleAlign: 'center',
+                    )
                 })}
             />
-            <Stack.Screen name='SettingScreen' component={SettingScreen}
+            <Stack.Screen name='SettingScreen'
+                component={SettingScreen}
                 options={() => ({
                     headerTitle: 'Settings',
                     presentation: 'stack',
                     cardOverlayEnabled: true,
-                })} />
+                    headerShown: true,
+                })}
+            />
+
             <Stack.Screen name='PushNotifications' component={PushNotifications}
                 options={() => ({
                     headerTitle: 'Notifications',
@@ -86,6 +94,47 @@ function CustomHeader() {
 }
 
 function AppBarDown() {
+    useEffect(() => {
+        const getData = async () => {
+            try {
+                const jsonValue = await AsyncStorage.getItem('user');
+                const userData = jsonValue != null ? JSON.parse(jsonValue) : null;
+                getDataFromDB(userData);
+                console.log('userData', userData);
+            } catch (e) {
+                console.log('error', e);
+            }
+        };
+        getData();
+    }, []);
+
+    const getDataFromDB = (userData) => {
+        let userForLoginUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUserForLogin';
+        fetch(userForLoginUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(userData),
+        })
+            .then((response) => response.json())
+            .then((json) => {
+                if (json === null) {
+                    Alert.alert('Login Failed');
+                }
+                else {
+                    console.log("user Data Home Screen: ", json);
+                    // save the user data in the storage
+                    AsyncStorage.setItem("userData", JSON.stringify(json));
+                }
+            }
+            )
+            .catch((error) => {
+                Alert.alert('Login Failed');
+            }
+            );
+    }
+
     return (
         <Tab.Navigator
             screenOptions={({ route }) => ({

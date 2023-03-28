@@ -1,11 +1,27 @@
-import { View, Text, StyleSheet, TouchableOpacity, Alert, SafeAreaView } from 'react-native';
-import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, SafeAreaView, Modal, Dimensions } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { NewTaskModal, AddBtn } from './HelpComponents/NewTaskModal';
 export default function Home({ navigation }) {
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const jsonValue = await AsyncStorage.getItem('userData');
+        const userData = jsonValue != null ? JSON.parse(jsonValue) : null;
+        const fullName = userData.FirstName + ' ' + userData.LastName;
+        const userImg = userData.userUri;
+        // console.log('fullName', fullName);
+        // console.log('userData', userData);        
+        // console.log('userImg', userImg);
+      } catch (e) {
+        console.log('error', e);
+      }
+    };
+    getData();
+  }, []);
+
   const [grid, setGrid] = useState([['', '', ''], ['', '', ''], ['', '', '']]);
   const [player, setPlayer] = useState('X');
-
   const onPress = (row, col) => {
     if (grid[row][col] !== '') {
       return;
@@ -26,7 +42,6 @@ export default function Home({ navigation }) {
     }
     setPlayer(player === 'X' ? 'O' : 'X');
   };
-
   const isGameOver = () => {
     // check rows
     for (let row = 0; row < 3; row++) {
@@ -59,10 +74,11 @@ export default function Home({ navigation }) {
     );
   };
 
+
   return (
     <SafeAreaView style={styles.container}>
       <Text style={{ fontSize: 21, textAlign: 'center', marginBottom: 10, color: 'red' }}> ברוכים הבאים למשחק של נועםםםםם</Text>
-      <Text style={styles.text}>Player {player}</Text>
+      {/* <Text style={{ fontSize: 24,}}>Hello, {fullName}</Text> */}
       <View style={styles.row}>
         {renderCell(0, 0)}
         {renderCell(0, 1)}
@@ -78,6 +94,11 @@ export default function Home({ navigation }) {
         {renderCell(2, 1)}
         {renderCell(2, 2)}
       </View>
+
+      <View style={styles.addBtnView}>
+        <AddBtn />
+      </View>
+
       <View>
         <TouchableOpacity
           onPress={() => {
@@ -85,15 +106,15 @@ export default function Home({ navigation }) {
             Alert.alert('Log Out', 'You have been logged out', [
               {
                 text: 'OK',
-                onPress: () =>{
+                onPress: () => {
                   navigation.navigate('LogIn')
                 }
               },
-            ]);            
+            ]);
           }}
         >
           <Text>Log Out</Text>
-        </TouchableOpacity>
+        </TouchableOpacity>        
       </View>
     </SafeAreaView>
   );
@@ -105,6 +126,34 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#fff',
+  },
+  addBtn: {
+    width: 54,
+    height: 54,
+    borderRadius: 54,
+    backgroundColor: '#548DFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+    // drop shadow
+    shadowColor: '#548DFF',
+    shadowOffset: {
+      width: 3,
+      height: 3,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  txtAddBtn: {
+    fontSize: 30,
+    color: '#fff',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  addBtnView: {
+    position: 'absolute',
+    bottom: 30,
+    right: 20,
   },
   row: {
     flexDirection: 'row',

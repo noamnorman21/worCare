@@ -1,9 +1,11 @@
 // External imports:
-import { StyleSheet, View, Text, Button, SafeAreaView, TouchableOpacity, Dimensions, Image } from 'react-native'
-import React, { useState } from 'react'
+import { StyleSheet, View, Text, Alert, SafeAreaView, TouchableOpacity, Dimensions, Image } from 'react-native'
+import React, { useState, useEffect } from 'react'
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AntDesign, Ionicons, SimpleLineIcons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 // Internal imports:
 import Profile from './SettingsComponents/Profile'
 import Notifications from './SettingsComponents/Notifications'
@@ -14,16 +16,34 @@ const Stack = createNativeStackNavigator();
 
 //this is the Setting Main screen, 
 //need to add the personal setting (יצירת פרופיל)
-function HomeScreen({ navigation }, props) {
+function HomeScreen({ navigation }) {
+    const [userImg, setUserImg] = useState(null);
+    const [userName, setUserName] = useState(null);
+
+    useEffect(() => {
+        const getData = async () => {
+            try {
+                const jsonValue = await AsyncStorage.getItem('userData');
+                const userData = jsonValue != null ? JSON.parse(jsonValue) : null;
+                setUserImg(userData.userUri);
+                setUserName(userData.FirstName);
+                console.log('Setting screen', userData);
+            } catch (e) {
+                console.log('error', e);
+            }
+        };
+        getData();
+    }, []);
+
     //the user name will be taken from the database
     //the user image will be taken from the database
-    const [userName, setUserName] = useState('Noam')
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.personalContainer}>
                 <View style={styles.imageContainer}>
                     {/* here will be the user name and image and the logo of the app */}
-                    <Image style={styles.image} source={require('../images/Avatar.png')} />
+                    <Image style={styles.image} source={{ uri: userImg }} />
+                    {/* <Image style={styles.image} source={require(`${userImg}`)} /> */}
                     <View style={styles.personalTextContainer}>
                         <Text style={styles.personalText}>Hello, {userName}</Text>
                         {/* <Text style={styles.personalText}></Text> */}
@@ -32,74 +52,71 @@ function HomeScreen({ navigation }, props) {
             </View>
 
             <View style={styles.btnContainer}>
-                <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Profile')}>
-                    <Ionicons
-                        style={{
-                            marginLeft: Dimensions.get('window').width * 0.03,
-                            marginRight: Dimensions.get('window').width * 0.06
-                        }}
-                        name='ios-person-outline'
-                        size={30}
-                        color='gray'
-                    />
+                <TouchableOpacity style={styles.btn} onPress={() => [navigation.navigate('Profile')]}>
+                    <Ionicons style={styles.logoStyle} name='ios-person-outline' size={30} color='gray' />
                     <Text style={styles.btnText}>Profile</Text>
-                    <AntDesign
-                        style={{
-                            position: 'absolute',
-                            right: Dimensions.get('window').width * 0.03,
-                        }}
-                        name="right"
-                        size={25}
-                        color="gray" />
+                    <AntDesign style={styles.arrowLogoStyle} name="right" size={25} color="gray" />
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Notifications')}>
-                    <SimpleLineIcons style={{
-                        marginLeft: Dimensions.get('window').width * 0.03,
-                        marginRight: Dimensions.get('window').width * 0.06
-
-                    }} name='bell' size={30} color='gray' />
+                    <SimpleLineIcons style={styles.logoStyle} name='bell' size={30} color='gray' />
                     <Text style={styles.btnText}>Notifications</Text>
-                    <AntDesign
-                        style={{
-                            position: 'absolute',
-                            right: Dimensions.get('window').width * 0.03,
-                        }} name="right" size={24} color="gray" />
+                    <AntDesign style={styles.arrowLogoStyle} name="right" size={24} color="gray" />
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Privacy')}>
-                    <Ionicons style={{
-                        marginLeft: Dimensions.get('window').width * 0.03,
-                        marginRight: Dimensions.get('window').width * 0.06
-
-                    }} name='key' size={30} color='gray' />
+                    <Ionicons style={styles.logoStyle} name='key' size={30} color='gray' />
                     <Text style={styles.btnText}>Privacy & My Account</Text>
-                    <AntDesign
-                        style={{
-                            position: 'absolute',
-                            right: Dimensions.get('window').width * 0.03,
-                        }} name="right" size={25} color="gray" />
-
+                    <AntDesign style={styles.arrowLogoStyle} name="right" size={25} color="gray" />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Contact Us')}>
-                    <Ionicons style={{
-                        marginLeft: Dimensions.get('window').width * 0.03,
-                        marginRight: Dimensions.get('window').width * 0.06
-
-                    }} name='send' size={30} color='gray' />
+                    <Ionicons style={styles.logoStyle} name='send' size={30} color='gray' />
                     <Text style={styles.btnText}>Contact Us</Text>
-                    <AntDesign
-                        style={{
-                            position: 'absolute',
-                            right: Dimensions.get('window').width * 0.03,
-                        }} name="right" size={25} color="gray" />
+                    <AntDesign style={styles.arrowLogoStyle} name="right" size={25} color="gray" />
                 </TouchableOpacity>
+                <View style={styles.ColorBtnContainer}>
+                    <TouchableOpacity style={styles.colorBtn1}
+                        onPress={() => {
+                            AsyncStorage.removeItem("user");
+                            Alert.alert('Log Out', 'You have been logged out', [
+                                {
+                                    text: 'OK',
+                                    onPress: () => {
+                                        navigation.navigate('LogIn')
+                                    }
+                                },
+                            ]);
+                        }}
+                    >
+                        <Text style={styles.btnText1}>Log Out</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.colorBtn2}
+                        onPress={() => {
+                            Alert.alert('Delete Account', 'Are you sure you want to delete your account?', [
+                                {
+                                    text: 'Cancel',
+                                    onPress: () => console.log('Cancel Pressed'),
+                                    style: 'cancel'
+                                },
+                                {
+                                    text: 'OK',
+                                    onPress: () => {
+                                        navigation.navigate('LogIn')
+                                    }
+                                },
+                            ]);
+                        }}
+                    >
+                        <Text style={styles.btnText2}>Delete Account</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         </SafeAreaView>
     );
 }
 
-export default function SettingScreen(props) {
+export default function SettingScreen({ navigation }) {    
     return (
         <NavigationContainer independent={true}>
             <Stack.Navigator
@@ -107,10 +124,6 @@ export default function SettingScreen(props) {
                     //this is the animation for the navigation
                     animation: 'slide_from_right',
                     headerBlurEffect: 'light',
-                    headerStyle: {
-                        backgroundColor: '#F5F5F5',
-                        height: Dimensions.get('window').height * 0.0,
-                    },
                     headerTintColor: '#548DFF',
                     headerTitleStyle: {
                         fontSize: 18,
@@ -118,10 +131,11 @@ export default function SettingScreen(props) {
                         marginLeft: Dimensions.get('window').width * 0.03,
                     },
                     headerBackTitleVisible: false,
-                }}
-            >
-                <Stack.Screen name="Settings" options={{ headerShown: false }} component={HomeScreen} />
-                <Stack.Screen name="Profile" component={Profile} />
+                    // how to hide the parent header in the child stack navigator   
+                    headerShown: false,
+                }}>
+                <Stack.Screen name="Settings" component={HomeScreen} options={() => ({ headerTitle: 'Settings', headerShown: false })} />
+                <Stack.Screen name="Profile" component={Profile} options={{ headerLeft: () => null }} />
                 <Stack.Screen name="Notifications" component={Notifications} />
                 <Stack.Screen name="Privacy" component={Privacy} options={{ headerTitle: 'Privacy & My Account' }} />
                 <Stack.Screen name="ContactUs" component={ContactUs} options={{ headerTitle: 'Contact Us' }} />
@@ -136,6 +150,39 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#F5F5F5',
     },
+    ColorBtnContainer: {
+        // flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: Dimensions.get('window').width * 0.95,
+        marginTop: Dimensions.get('window').height * 0.06,
+    },
+    colorBtn1: {
+        backgroundColor: '#548DFF',
+        width: Dimensions.get('window').width * 0.95,
+        height: 54,
+        borderRadius: 16,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    colorBtn2: {
+        width: Dimensions.get('window').width * 0.95,
+        height: 54,
+        borderRadius: 16,
+        borderWidth: 1.5,
+        backgroundColor: '#F5F8FF',
+        borderColor: '#548DFF',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: Dimensions.get('window').height * 0.02,
+    },
+    logoStyle: {
+        marginLeft: Dimensions.get('window').width * 0.03,
+        marginRight: Dimensions.get('window').width * 0.06
+    },
+    arrowLogoStyle: {
+        position: 'absolute',
+        right: Dimensions.get('window').width * 0.03,
+    },
     title: {
         //the title, it will be on the left side of the screen,just above the image
         fontSize: 25,
@@ -144,14 +191,13 @@ const styles = StyleSheet.create({
         marginRight: Dimensions.get('window').width * 0.6,
         marginTop: Dimensions.get('window').height * 0.03,
     },
-
     btnContainer: {
-        flex: 6,
+        flex: 4,
         alignItems: 'center',
         justifyContent: 'flex-start',
     },
     personalContainer: {
-        flex: 2.2,
+        flex: 1,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'flex-start',
@@ -197,6 +243,14 @@ const styles = StyleSheet.create({
         borderBottomColor: 'lightgray',
     },
     btnText: {
-        fontSize: 21,
+        fontSize: 18,
+    },
+    btnText2: {
+        fontSize: 18,
+        color: '#548DFF',
+    },
+    btnText1: {
+        fontSize: 18,
+        color: 'white',
     },
 });

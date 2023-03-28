@@ -1,14 +1,13 @@
 import { SafeAreaView, Dimensions, View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Keyboard, Alert, LayoutAnimation } from 'react-native'
-import React from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState, useContext } from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { OrLine, NeedAccount } from './FooterLine'
 import * as Linking from 'expo-linking';
-// import * as Font from 'expo-font';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
+
 export default function LogIn({ navigation }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -17,8 +16,9 @@ export default function LogIn({ navigation }) {
     const [animation, setAnimation] = useState({});
     const [userType, setUserType] = useState('User');
     const [isChecked, setChecked] = useState(false);
+    let animationInProgress = false;
 
-    const getInitialUrl = async () => {''
+    const getInitialUrl = async () => {
         // check if the app was opened from a link
         const initialUrl = await Linking.getInitialURL();
         //example of the url: exp://l4rfr8w.anonymous.19000.exp.direct/--/InvitedFrom/123456789/Noam
@@ -63,7 +63,6 @@ export default function LogIn({ navigation }) {
             Email: email,
             Password: password,
         }
-
         //call api to login user
         LoginUser(userData);
     }
@@ -93,7 +92,6 @@ export default function LogIn({ navigation }) {
     const LoginUser = (userData) => {
         let userForLoginUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUserForLogin';
         console.log(userData);
-
         fetch(userForLoginUrl, {
             method: 'POST',
             headers: {
@@ -103,6 +101,7 @@ export default function LogIn({ navigation }) {
         })
             .then((response) => response.json())
             .then((json) => {
+                console.log(json);
                 if (json === null) {
                     Alert.alert('Login Failed');
                 }
@@ -111,15 +110,18 @@ export default function LogIn({ navigation }) {
                     if (isChecked) {
                         console.log('checked');
                         _storeData();
-                    }
-                    navigation.navigate('CustomHeader');//navigate to home screen, we will add a necessary call to get user data from the server 
-                    console.log(json);
+                    }                    
+                    const jsonData = JSON.stringify(json);
+                    AsyncStorage.setItem('userData', jsonData);
+                    console.log("jsonData");
+                    console.log(jsonData);
+                    navigation.navigate('CustomHeader');//navigate to home screen, we will add a necessary call to get user data from the server                                         
                 }
-
             }
             )
             .catch((error) => {
-                Alert.alert('Login Failed');
+                // Alert.alert('Login Failed');
+                console.log(error);
             }
             );
     }
@@ -140,34 +142,41 @@ export default function LogIn({ navigation }) {
     const NavigateToForgotPassword = () => {
         navigation.navigate('ForgotPassword')
     }
-
     useEffect(() => {
-        getInitialUrl();        
+        getInitialUrl();
         //keyboard listener for animation
         const keyboardDidShowListener = Keyboard.addListener(
             'keyboardDidShow',
             () => {
-                LayoutAnimation.configureNext({
-                    update: {
-                        type: LayoutAnimation.Types.easeIn,
-                        duration: 200,
-                        useNativeDriver: true,
-                    },
-                });
-                setAnimation({ marginBottom: Dimensions.get('window').height * 0.3 });
+                if (!animationInProgress) {
+                    animationInProgress = true;
+                    LayoutAnimation.configureNext({
+                        update: {
+                            type: LayoutAnimation.Types.easeIn,
+                            duration: 200,
+                            useNativeDriver: true,
+                        },
+                    });
+                    setAnimation({ marginBottom: Dimensions.get('window').height * 0.3 });
+                    animationInProgress = false;
+                }
             }
         );
         const keyboardDidHideListener = Keyboard.addListener(
             'keyboardDidHide',
             () => {
-                LayoutAnimation.configureNext({
-                    update: {
-                        type: LayoutAnimation.Types.easeOut,
-                        duration: 200,
-                        useNativeDriver: true,
-                    },
-                });
-                setAnimation({ marginBottom: 0 });
+                if (!animationInProgress) {
+                    animationInProgress = true;
+                    LayoutAnimation.configureNext({
+                        update: {
+                            type: LayoutAnimation.Types.easeOut,
+                            duration: 200,
+                            useNativeDriver: true,
+                        },
+                    });
+                    setAnimation({ marginBottom: 0 });
+                    animationInProgress = false;
+                }
             }
         );
         return () => {
