@@ -1,10 +1,11 @@
-import { View, Text, StyleSheet, SafeAreaView, Modal, TouchableOpacity, Dimensions } from 'react-native'
+import { View, Text, StyleSheet, SafeAreaView, Modal, TouchableOpacity, Dimensions, TextInput } from 'react-native'
 import { useState } from 'react'
+const SCREEN_WIDTH = Dimensions.get('window').width;
 
-function AddBtn() {
+function AddBtn(props) {
    return (
       <View style={styles.addBtn}>
-         <TouchableOpacity>
+         <TouchableOpacity onPress={props.onPress}>
             <Text style={styles.addBtnTxt}>+</Text>
          </TouchableOpacity>
       </View>
@@ -12,29 +13,88 @@ function AddBtn() {
 }
 
 function NewTaskModal(props) {
-   const [ModalVisible, setModalVisible] = useState(false)
+   const [taskName, setTaskName] = useState('')
+   const [taskComment, setTaskComment] = useState('')
+   const [taskFromDate, setTaskFromDate] = useState('')
+   const [taskToDate, setTaskToDate] = useState('')
+   const [taskFrequency, setTaskFrequency] = useState('')
+   const [taskAssignee, setTaskAssignee] = useState('')
+   const [taskTime, setTaskTime] = useState('')
+   const [taskCategory, setTaskCategory] = useState([
+      { id: 1, name: 'General', color: '#FFC0CB' },
+      { id: 2, name: 'Shop', color: '#FFC0CB' },
+      { id: 3, name: 'Medicines', color: '#FFC0CB' },
+   ])
+
+   const addTask = () => {
+      console.log(taskName)
+      console.log(taskComment)
+      console.log(taskFromDate)
+      console.log(taskToDate)
+      console.log(taskFrequency)
+      console.log(taskAssignee)
+      console.log(taskTime)
+      console.log(taskCategory)
+   }
    return (
       <SafeAreaView>
-         <Modal visible={props.isVisible} presentationStyle='formSheet' animationType="slide" >
+         <Modal visible={props.isVisible} presentationStyle='formSheet' animationType='slide' onRequestClose={props.onClose}>
             <View style={styles.centeredView}>
                <View style={styles.modalView}>
-                  <Text style={styles.modalText}>Hello World!</Text>
+                  <Text style={styles.modalText}>Add new task</Text>
+                  <View style={styles.inputView}>
+                     <TextInput
+                        style={styles.input}
+                        placeholder='Task Name'
+                        placeholderTextColor='#9E9E9E'
+                        onChangeText={text => setTaskName(text)}
+                     />
+                     <TextInput
+                        style={styles.input}
+                        placeholder='Category'
+                        placeholderTextColor='#9E9E9E'
+                        onChangeText={text => setTaskCategory(text)}
+                     />
+                     <TextInput
+                        style={styles.input}
+                        placeholder='Start Date - End Date'
+                        placeholderTextColor='#9E9E9E'
+                     />
+                     <TextInput
+                        style={styles.input}
+                        placeholder='Time'
+                        placeholderTextColor='#9E9E9E'
+                        onChangeText={text => setTaskTime(text)}
+                     />
+                     <TextInput
+                        style={styles.input}
+                        placeholder='Frequency'
+                        placeholderTextColor='#9E9E9E'
+                        onChangeText={text => setTaskFrequency(text)}
+                     />
+                     <TextInput
+                        style={styles.input}
+                        placeholder='Assignees'
+                        placeholderTextColor='#9E9E9E'
+                        onChangeText={text => setTaskAssignee(text)}
+                     />
+                     <TextInput
+                        style={styles.commentInput}
+                        placeholder='Comment ( optional )'
+                        multiline={true}
+                        numberOfLines={4}
+                        placeholderTextColor='#9E9E9E'
+                        onChangeText={text => setTaskComment(text)}
+                     />
+
+
+                  </View>
                   <View style={styles.btnModal}>
-                     <TouchableOpacity
-                        style={styles.SaveBtn}
-                        onPress={() => {
-                           setModalVisible(!props.isVisible);
-                        }}
-                     >
+                     <TouchableOpacity style={styles.SaveBtn} onPress={[props.onClose, addTask]}>
                         <Text style={styles.textStyle}>Save</Text>
                      </TouchableOpacity>
 
-                     <TouchableOpacity
-                        style={styles.closeBtn}
-                        onPress={() => {
-                           setModalVisible(!props.isVisible);
-                        }}
-                     >
+                     <TouchableOpacity style={styles.closeBtn} onPress={props.onClose}>
                         <Text style={styles.closeTxt}>Cancel</Text>
                      </TouchableOpacity>
                   </View>
@@ -60,19 +120,19 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       alignItems: 'center',
       height: 44,
-      width: Dimensions.get('window').width * 0.45,
+      width: SCREEN_WIDTH * 0.45,
    },
    btnModal: {
       flexDirection: 'row',
       justifyContent: 'space-between',
       marginTop: 20,
-      width: Dimensions.get('window').width * 0.95,
+      width: SCREEN_WIDTH * 0.95,
    },
    closeBtn: {
       backgroundColor: '#F5F8FF',
       borderRadius: 16,
       height: 44,
-      width: Dimensions.get('window').width * 0.45,
+      width: SCREEN_WIDTH * 0.45,
       justifyContent: 'center',
       alignItems: 'center',
       borderWidth: 1.5,
@@ -80,17 +140,21 @@ const styles = StyleSheet.create({
    },
    textStyle: {
       color: 'white',
-      fontWeight: 'bold',
+      fontFamily: 'Urbanist-SemiBold',
       textAlign: 'center',
+      fontSize: 16,
    },
    modalText: {
       marginBottom: 15,
+      fontFamily: 'Urbanist-Bold',
+      fontSize: 24,
       textAlign: 'center',
    },
    closeTxt: {
       color: '#548DFF',
-      fontWeight: 'bold',
       textAlign: 'center',
+      fontFamily: 'Urbanist-SemiBold',
+      fontSize: 16,
    },
    addBtn: {
       backgroundColor: '#548DFF',
@@ -102,7 +166,34 @@ const styles = StyleSheet.create({
    },
    addBtnTxt: {
       color: 'white',
-      fontSize: 30,
-      fontWeight: 'bold',
+      fontSize: 28,
+      marginBottom: 2,
+      fontFamily: 'Urbanist-SemiBold',
+   },
+   inputView: {
+      width: SCREEN_WIDTH * 0.95,
+      marginTop: 20,
+   },
+   input: {
+      borderRadius: 16,
+      borderWidth: 1.5,
+      borderColor: '#E6EBF2',
+      height: 54,
+      width: SCREEN_WIDTH * 0.95,
+      marginBottom: 15,
+      paddingLeft: 20,
+      fontFamily: 'Urbanist-Light',
+      fontSize: 16,
+   },
+   commentInput: {
+      borderRadius: 16,
+      borderWidth: 1.5,
+      borderColor: '#E6EBF2',
+      height: 100,
+      width: SCREEN_WIDTH * 0.95,
+      marginBottom: 10,
+      paddingLeft: 20,
+      fontFamily: 'Urbanist-Light',
+      fontSize: 16,      
    }
 })

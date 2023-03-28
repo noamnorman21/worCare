@@ -10,15 +10,20 @@ export default function Home({ navigation }) {
         const userData = jsonValue != null ? JSON.parse(jsonValue) : null;
         const fullName = userData.FirstName + ' ' + userData.LastName;
         const userImg = userData.userUri;
-        // console.log('fullName', fullName);
-        // console.log('userData', userData);        
-        // console.log('userImg', userImg);
       } catch (e) {
         console.log('error', e);
       }
     };
     getData();
   }, []);
+  const handleAddBtnPress = () => {
+    setModalVisible(true);
+  };
+  const handleModalClose = () => {
+    setModalVisible(false);
+  };
+  const [modalVisible, setModalVisible] = useState(false);
+
 
   const [grid, setGrid] = useState([['', '', ''], ['', '', ''], ['', '', '']]);
   const [player, setPlayer] = useState('X');
@@ -74,7 +79,6 @@ export default function Home({ navigation }) {
     );
   };
 
-
   return (
     <SafeAreaView style={styles.container}>
       <Text style={{ fontSize: 21, textAlign: 'center', marginBottom: 10, color: 'red' }}> ברוכים הבאים למשחק של נועםםםםם</Text>
@@ -96,9 +100,9 @@ export default function Home({ navigation }) {
       </View>
 
       <View style={styles.addBtnView}>
-        <AddBtn />
+        <AddBtn onPress={handleAddBtnPress} />
       </View>
-
+      <NewTaskModal isVisible={modalVisible} onClose={handleModalClose} />
       <View>
         <TouchableOpacity
           onPress={() => {
@@ -114,7 +118,7 @@ export default function Home({ navigation }) {
           }}
         >
           <Text>Log Out</Text>
-        </TouchableOpacity>        
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -127,32 +131,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#fff',
   },
-  addBtn: {
-    width: 54,
-    height: 54,
-    borderRadius: 54,
-    backgroundColor: '#548DFF',
-    alignItems: 'center',
-    justifyContent: 'center',
-    // drop shadow
-    shadowColor: '#548DFF',
-    shadowOffset: {
-      width: 3,
-      height: 3,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  txtAddBtn: {
-    fontSize: 30,
-    color: '#fff',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   addBtnView: {
     position: 'absolute',
-    bottom: 30,
+    bottom: 20,
     right: 20,
   },
   row: {

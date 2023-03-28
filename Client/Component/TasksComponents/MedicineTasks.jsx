@@ -1,44 +1,26 @@
-import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Modal } from 'react-native'
+import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native'
 import { useState } from 'react'
+import { AddBtn, NewTaskModal } from '../HelpComponents/NewTaskModal'
 
 export default function MedicineTasks() {
    const [modalVisible, setModalVisible] = useState(false)
+   const handleAddBtnPress = () => {
+      setModalVisible(true);
+   };
+
+   const handleModalClose = () => {
+      setModalVisible(false);
+   };
+
    return (
       <SafeAreaView style={styles.container}>
          <View>
             <Text>Medicine Tasks</Text>
          </View>
-
          <View style={styles.addBtnView}>
-            <TouchableOpacity
-               style={styles.addBtn}
-               onPress={() =>
-                  setModalVisible(true)
-               }
-            >
-               <Text style={styles.txtAddBtn}>+</Text>
-            </TouchableOpacity>
+            <AddBtn onPress={handleAddBtnPress} />
          </View>
-
-         <Modal
-            animationType="slide"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => {
-               setModalVisible(!modalVisible)
-            }}
-         >
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-               <View style={{ width: 300, height: 300, backgroundColor: '#fff', borderRadius: 10 }}>
-                  <Text>Modal</Text>
-                  <TouchableOpacity
-                     onPress={() => setModalVisible(!modalVisible)}
-                  >
-                     <Text>Hide Modal</Text>
-                  </TouchableOpacity>
-               </View>
-            </View>
-         </Modal>         
+         <NewTaskModal isVisible={modalVisible} onClose={handleModalClose} />
       </SafeAreaView>
    )
 }
@@ -71,6 +53,7 @@ const styles = StyleSheet.create({
    txtAddBtn: {
       fontSize: 30,
       color: '#fff',
+      fontFamily: 'Urbanist-SemiBold',
       justifyContent: 'center',
       alignItems: 'center',
    },

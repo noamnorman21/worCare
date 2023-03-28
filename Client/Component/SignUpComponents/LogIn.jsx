@@ -101,7 +101,6 @@ export default function LogIn({ navigation }) {
         })
             .then((response) => response.json())
             .then((json) => {
-                console.log(json);
                 if (json === null) {
                     Alert.alert('Login Failed');
                 }
@@ -111,10 +110,18 @@ export default function LogIn({ navigation }) {
                         console.log('checked');
                         _storeData();
                     }                    
-                    const jsonData = JSON.stringify(json);
-                    AsyncStorage.setItem('userData', jsonData);
-                    console.log("jsonData");
-                    console.log(jsonData);
+                    //save user data in context
+                    const userContext = {
+                        UserId: json.UserId,
+                        FirstName: json.FirstName,
+                        LastName: json.LastName,
+                        Email: json.Email,
+                        gender: json.gender,
+                        phoneNum: json.phoneNum,
+                        userUri: json.userUri                        
+                    }
+                    const jsonValue = JSON.stringify(userContext)
+                    AsyncStorage.setItem('userData', jsonValue);                        
                     navigation.navigate('CustomHeader');//navigate to home screen, we will add a necessary call to get user data from the server                                         
                 }
             }

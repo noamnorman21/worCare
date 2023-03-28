@@ -21,6 +21,7 @@ export default function CreateUser({ navigation, route }) {
   const [patientId, setPatientId] = useState('');
   const [validateEmailInDB, setValidateEmailInDB] = useState(false);
   const [validatePhoneInDB, setValidatePhoneInDB] = useState(false);
+  let animationInProgress = false;
 
   useEffect(() => {
     setPatientId(route.params.patientId);
@@ -29,27 +30,35 @@ export default function CreateUser({ navigation, route }) {
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
       () => {
-        LayoutAnimation.configureNext({
-          update: {
-            type: LayoutAnimation.Types.easeIn,
-            duration: 200,
-            useNativeDriver: true,
-          },
-        });
-        setAnimation({ marginBottom: Dimensions.get('window').height * 0.32 });
+        if (!animationInProgress) {
+          animationInProgress = true;
+          LayoutAnimation.configureNext({
+            update: {
+              type: LayoutAnimation.Types.easeIn,
+              duration: 200,
+              useNativeDriver: true,
+            },
+          });
+          setAnimation({ marginBottom: Dimensions.get('window').height * 0.32 });
+          animationInProgress = false;
+        }
       }
     );
     const keyboardDidHideListener = Keyboard.addListener(
       'keyboardDidHide',
       () => {
-        LayoutAnimation.configureNext({
-          update: {
-            type: LayoutAnimation.Types.easeOut,
-            duration: 200,
-            useNativeDriver: true,
-          },
-        });
-        setAnimation({ marginBottom: 0 });
+        if (!animationInProgress) {
+          animationInProgress = true;
+          LayoutAnimation.configureNext({
+            update: {
+              type: LayoutAnimation.Types.easeOut,
+              duration: 200,
+              useNativeDriver: true,
+            },
+          });
+          setAnimation({ marginBottom: 0 });
+          animationInProgress = false;
+        }
       }
     );
     return () => {
@@ -108,7 +117,6 @@ export default function CreateUser({ navigation, route }) {
         console.log("err=", error);
       });
   }
-
   const handleCreateUser = () => {
     const { email, password, firstName, lastName, phoneNum } = user
     if (!email || !password || !firstName || !lastName || !phoneNum) {
@@ -153,35 +161,29 @@ export default function CreateUser({ navigation, route }) {
       navigation.navigate('SignUpLvl2', { user: userData, userType: route.params.userType, patientId: patientId })
     }
   }
-
   const changeIMG = (imageFromUser) => {
     setUserImage(imageFromUser)
   }
-
   const validatePhoneNum = (phoneNum) => {
     //only numbers allowed in phone number input - no spaces or dashes - 10 digits - starts with 0
     const phoneNumRegex = /^(0)[0-9]{9}$/
     return phoneNumRegex.test(phoneNum)
   }
-
   const validateEmail = (email) => {
     const emailRegex = /\S+@\S+\.\S+/
     return emailRegex.test(email)
   }
-
   const validatePassword = (password) => {
     const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/ //at least 8 characters, 1 letter, 1 number
     return passwordRegex.test(password)
   }
-
   const handleInputChange = (field, value) => {
     setUser({ ...user, [field]: value });
   }
-
   const NavigateToLogIn = () => {
     navigation.navigate('LogIn')
   }
-
+  
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
