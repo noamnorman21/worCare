@@ -11,8 +11,8 @@ export default function App() {
 
   return (
     <NavigationContainer independent={true}>
-      {/* <NavigateSignUp /> */}
-      <CustomHeader />
+      <NavigateSignUp />
+      {/* <CustomHeader /> */}
     </NavigationContainer>
   );
 }

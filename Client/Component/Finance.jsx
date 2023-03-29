@@ -103,15 +103,6 @@ function Payments() {
 
 
 
-function Paycheck() {
-  return (
-    <View style={styles.Paycheck}>
-      <Text>Bla</Text>
-    </View>
-  );
-}
-
-
 const styles = StyleSheet.create({
   container: {    
     alignItems: 'center',

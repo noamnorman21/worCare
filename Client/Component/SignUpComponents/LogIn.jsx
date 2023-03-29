@@ -17,6 +17,7 @@ export default function LogIn({ navigation }) {
     const [animation, setAnimation] = useState({});
     const [userType, setUserType] = useState('User');
     const [isChecked, setChecked] = useState(false);
+    const [userId, setUserId] = useState('');
 
     const getInitialUrl = async () => {
         // check if the app was opened from a link
@@ -68,17 +69,19 @@ export default function LogIn({ navigation }) {
         LoginUser(userData);
     }
     //function to save user email and password in async storage
-    const _storeData = async () => {
+    const _storeData = async (userId) => {
         try {
             const userToAsync = {
                 Email: email,
                 Password: password,
+                Id: userId,
             }
             const jsonValue = JSON.stringify(userToAsync)
             await AsyncStorage.setItem("user", jsonValue);
             console.log('user saved');
+            console.log(jsonValue);
         } catch (error) {
-            console.log(error);
+            console.log(userToAsync);
         }
     }
     const toggeleRememberMe = () => {
@@ -110,10 +113,11 @@ export default function LogIn({ navigation }) {
                     //save user email and password in async storage
                     if (isChecked) {
                         console.log('checked');
-                        _storeData();
+                        
+                        _storeData(json.Id);
                     }
                     navigation.navigate('CustomHeader');//navigate to home screen, we will add a necessary call to get user data from the server 
-                    console.log(json);
+                    console.log(json.Id);
                 }
 
             }

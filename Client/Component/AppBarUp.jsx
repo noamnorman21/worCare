@@ -86,6 +86,10 @@ function CustomHeader() {
 }
 
 function AppBarDown() {
+    function logout() {
+        console.log('logout')
+    }
+
     return (
         <Tab.Navigator
             screenOptions={({ route }) => ({
@@ -110,7 +114,7 @@ function AppBarDown() {
             }
             initialRouteName="Home"
         >
-            <Tab.Screen name="Home" component={Home} options={{ tabBarLabel: 'Home' }} />
+            <Tab.Screen name="Home" component={Home}  options={{ tabBarLabel: 'Home' }} />
             {/*בעת ניווט למסך הבית - תבוצע פעולת גט שתמשוך את הפרטים- לוח שנה למשתמש- סוג לוח שנה,
                 משימה אישית/משימה למטופל- מספר משימה, שם משימה, תאריך התחלה, תאריך סוף, הערות, סטטוס */}
             <Tab.Screen name="Finance" component={Finance} options={{ tabBarLabel: 'Finance', unmountOnBlur: true }} />
