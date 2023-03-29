@@ -82,7 +82,6 @@ export default function Home({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={{ fontSize: 21, textAlign: 'center', marginBottom: 10, color: 'red' }}> ברוכים הבאים למשחק של נועםםםםם</Text>
-      {/* <Text style={{ fontSize: 24,}}>Hello, {fullName}</Text> */}
       <View style={styles.row}>
         {renderCell(0, 0)}
         {renderCell(0, 1)}
@@ -98,7 +97,6 @@ export default function Home({ navigation }) {
         {renderCell(2, 1)}
         {renderCell(2, 2)}
       </View>
-
       <View style={styles.addBtnView}>
         <AddBtn onPress={handleAddBtnPress} />
       </View>

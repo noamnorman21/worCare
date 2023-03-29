@@ -99,17 +99,17 @@
             <PropertyRef Name="patientId" />
           </Key>
           <Property Name="patientId" Type="char" MaxLength="9" Nullable="false" />
-          <Property Name="books" Type="nvarchar" MaxLength="50" />
-          <Property Name="music" Type="nvarchar" MaxLength="50" />
-          <Property Name="TVShow" Type="nvarchar" MaxLength="50" />
-          <Property Name="radioChannel" Type="nvarchar" MaxLength="50" />
-          <Property Name="food" Type="nvarchar" MaxLength="50" />
-          <Property Name="drink" Type="nvarchar" MaxLength="50" />
-          <Property Name="movie" Type="nvarchar" MaxLength="50" />
-          <Property Name="specialHabits" Type="nvarchar" MaxLength="50" />
-          <Property Name="afternoonNap" Type="nvarchar" MaxLength="50" />
-          <Property Name="nightSleep" Type="nvarchar" MaxLength="50" />
-          <Property Name="other" Type="nvarchar" MaxLength="50" />
+          <Property Name="books" Type="nvarchar" MaxLength="255" />
+          <Property Name="music" Type="nvarchar" MaxLength="255" />
+          <Property Name="TVShow" Type="nvarchar" MaxLength="255" />
+          <Property Name="radioChannel" Type="nvarchar" MaxLength="255" />
+          <Property Name="food" Type="nvarchar" MaxLength="255" />
+          <Property Name="drink" Type="nvarchar" MaxLength="255" />
+          <Property Name="movie" Type="nvarchar" MaxLength="255" />
+          <Property Name="specialHabits" Type="nvarchar" MaxLength="255" />
+          <Property Name="afternoonNap" Type="nvarchar" MaxLength="255" />
+          <Property Name="nightSleep" Type="nvarchar" MaxLength="255" />
+          <Property Name="other" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="tblLanguage">
           <Key>
@@ -592,6 +592,16 @@
           <Parameter Name="sensitivityToNoise" Type="varchar" Mode="In" />
           <Parameter Name="other" Type="varchar" Mode="In" />
         </Function>
+        <Function Name="InsertPrivateTask" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="taskName" Type="varchar" Mode="In" />
+          <Parameter Name="taskFromDate" Type="date" Mode="In" />
+          <Parameter Name="taskToDate" Type="date" Mode="In" />
+          <Parameter Name="taskComment" Type="varchar(max)" Mode="In" />
+          <Parameter Name="status" Type="char" Mode="In" />
+          <Parameter Name="workerId" Type="int" Mode="In" />
+          <Parameter Name="TimeInDay" Type="time" Mode="In" />
+          <Parameter Name="period" Type="varchar" Mode="In" />
+        </Function>
         <Function Name="InsertUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="Email" Type="varchar" Mode="In" />
           <Parameter Name="Password" Type="varchar" Mode="In" />
@@ -657,6 +667,11 @@
           <Parameter Name="new_diagramname" Type="nvarchar" Mode="In" />
         </Function>
         <Function Name="sp_upgraddiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="updateStatusCaresForPatient" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="patientId" Type="char" Mode="In" />
+          <Parameter Name="workerId" Type="int" Mode="In" />
+          <Parameter Name="status" Type="char" Mode="In" />
+        </Function>
         <EntityContainer Name="igroup194_prodModelStoreContainer">
           <EntitySet Name="tblActualList" EntityType="Self.tblActualList" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tblCalendarForUser" EntityType="Self.tblCalendarForUser" Schema="dbo" store:Type="Tables" />
@@ -899,17 +914,17 @@
             <PropertyRef Name="patientId" />
           </Key>
           <Property Name="patientId" Type="String" MaxLength="9" FixedLength="true" Unicode="false" Nullable="false" />
-          <Property Name="books" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="music" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="TVShow" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="radioChannel" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="food" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="drink" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="movie" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="specialHabits" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="afternoonNap" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="nightSleep" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="other" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="books" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="music" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="TVShow" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="radioChannel" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="food" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="drink" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="movie" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="specialHabits" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="afternoonNap" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="nightSleep" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="other" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="tblPatient" Relationship="Self.FK__tblHobbie__patie__5C37ACAD" FromRole="tblHobbies" ToRole="tblPatient" />
         </EntityType>
         <EntityType Name="tblLanguage">
@@ -1595,6 +1610,21 @@
             <Parameter Name="status" Mode="In" Type="String" />
             <Parameter Name="linkTo" Mode="In" Type="String" />
           </FunctionImport>
+          <FunctionImport Name="InsertPrivateTask">
+            <Parameter Name="taskName" Mode="In" Type="String" />
+            <Parameter Name="taskFromDate" Mode="In" Type="DateTime" />
+            <Parameter Name="taskToDate" Mode="In" Type="DateTime" />
+            <Parameter Name="taskComment" Mode="In" Type="String" />
+            <Parameter Name="status" Mode="In" Type="String" />
+            <Parameter Name="workerId" Mode="In" Type="Int32" />
+            <Parameter Name="TimeInDay" Mode="In" Type="Time" />
+            <Parameter Name="period" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="updateStatusCaresForPatient">
+            <Parameter Name="patientId" Mode="In" Type="String" />
+            <Parameter Name="workerId" Mode="In" Type="Int32" />
+            <Parameter Name="status" Mode="In" Type="String" />
+          </FunctionImport>
         </EntityContainer>
         <ComplexType Name="sp_helpdiagramdefinition_Result">
           <Property Type="Int32" Name="version" Nullable="true" />
@@ -1910,6 +1940,8 @@
           <FunctionImportMapping FunctionImportName="NewPaycheck" FunctionName="igroup194_prodModel.Store.NewPaycheck" />
           <FunctionImportMapping FunctionImportName="NewPaymentRequest" FunctionName="igroup194_prodModel.Store.NewPaymentRequest" />
           <FunctionImportMapping FunctionImportName="InsertCaresForPatient" FunctionName="igroup194_prodModel.Store.InsertCaresForPatient" />
+          <FunctionImportMapping FunctionImportName="InsertPrivateTask" FunctionName="igroup194_prodModel.Store.InsertPrivateTask" />
+          <FunctionImportMapping FunctionImportName="updateStatusCaresForPatient" FunctionName="igroup194_prodModel.Store.updateStatusCaresForPatient" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

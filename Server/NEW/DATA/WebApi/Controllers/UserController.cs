@@ -164,8 +164,6 @@ namespace WebApi.Controllers
             }
         }
 
-
-
         // insert user to db by calling Stored Prodecdure InsertUser
         [HttpPost]
         [Route("InsertUser")]
@@ -199,7 +197,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                tblUser user = db.tblUsers.Where(x => x.Email == userToUpdate.Email).FirstOrDefault();
+                tblUser user = db.tblUsers.Where(x => x.Email == userToUpdate.Email).FirstOrDefault();                
                 user.phoneNum = userToUpdate.phoneNum;
                 user.FirstName = userToUpdate.FirstName;
                 user.LastName = userToUpdate.LastName;
@@ -243,9 +241,7 @@ namespace WebApi.Controllers
             {
                 var user = db.tblUsers.Where(x => x.Email == userToDelete.Email).FirstOrDefault();
                 if (user == null)
-                {
                     return NotFound();
-                }
                 db.tblUsers.Remove(user);
                 db.SaveChanges();
                 return Ok("User Deleted Successfully");

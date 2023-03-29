@@ -457,5 +457,59 @@ namespace DATA
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertCaresForPatient", patientIdParameter, workerIdParameter, statusParameter, linkToParameter);
         }
+    
+        public virtual int InsertPrivateTask(string taskName, Nullable<System.DateTime> taskFromDate, Nullable<System.DateTime> taskToDate, string taskComment, string status, Nullable<int> workerId, Nullable<System.TimeSpan> timeInDay, string period)
+        {
+            var taskNameParameter = taskName != null ?
+                new ObjectParameter("taskName", taskName) :
+                new ObjectParameter("taskName", typeof(string));
+    
+            var taskFromDateParameter = taskFromDate.HasValue ?
+                new ObjectParameter("taskFromDate", taskFromDate) :
+                new ObjectParameter("taskFromDate", typeof(System.DateTime));
+    
+            var taskToDateParameter = taskToDate.HasValue ?
+                new ObjectParameter("taskToDate", taskToDate) :
+                new ObjectParameter("taskToDate", typeof(System.DateTime));
+    
+            var taskCommentParameter = taskComment != null ?
+                new ObjectParameter("taskComment", taskComment) :
+                new ObjectParameter("taskComment", typeof(string));
+    
+            var statusParameter = status != null ?
+                new ObjectParameter("status", status) :
+                new ObjectParameter("status", typeof(string));
+    
+            var workerIdParameter = workerId.HasValue ?
+                new ObjectParameter("workerId", workerId) :
+                new ObjectParameter("workerId", typeof(int));
+    
+            var timeInDayParameter = timeInDay.HasValue ?
+                new ObjectParameter("TimeInDay", timeInDay) :
+                new ObjectParameter("TimeInDay", typeof(System.TimeSpan));
+    
+            var periodParameter = period != null ?
+                new ObjectParameter("period", period) :
+                new ObjectParameter("period", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertPrivateTask", taskNameParameter, taskFromDateParameter, taskToDateParameter, taskCommentParameter, statusParameter, workerIdParameter, timeInDayParameter, periodParameter);
+        }
+    
+        public virtual int updateStatusCaresForPatient(string patientId, Nullable<int> workerId, string status)
+        {
+            var patientIdParameter = patientId != null ?
+                new ObjectParameter("patientId", patientId) :
+                new ObjectParameter("patientId", typeof(string));
+    
+            var workerIdParameter = workerId.HasValue ?
+                new ObjectParameter("workerId", workerId) :
+                new ObjectParameter("workerId", typeof(int));
+    
+            var statusParameter = status != null ?
+                new ObjectParameter("status", status) :
+                new ObjectParameter("status", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("updateStatusCaresForPatient", patientIdParameter, workerIdParameter, statusParameter);
+        }
     }
 }

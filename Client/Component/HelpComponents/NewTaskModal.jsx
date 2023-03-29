@@ -1,5 +1,9 @@
 import { View, Text, StyleSheet, SafeAreaView, Modal, TouchableOpacity, Dimensions, TextInput } from 'react-native'
 import { useState } from 'react'
+import { AntDesign, Ionicons, SimpleLineIcons } from '@expo/vector-icons';
+import DatePicker from 'react-native-datepicker';
+import { Dropdown } from 'react-native-element-dropdown';
+
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 function AddBtn(props) {
@@ -51,10 +55,72 @@ function NewTaskModal(props) {
                      />
                      <TextInput
                         style={styles.input}
+                        placeholder='Assignees'
+                        placeholderTextColor='#9E9E9E'
+                        onChangeText={text => setTaskAssignee(text)}
+                     />
+                     <TextInput
+                        style={styles.input}
                         placeholder='Category'
                         placeholderTextColor='#9E9E9E'
                         onChangeText={text => setTaskCategory(text)}
                      />
+                     <DatePicker
+                        style={styles.halfInput}
+                        date={taskFromDate}
+                        mode="date"
+                        placeholder="Start Date"
+                        format="YYYY-MM-DD"
+                        minDate="2016-05-01"
+                        maxDate="2021-06-01"
+                        confirmBtnText="Confirm"
+                        cancelBtnText="Cancel"
+                        customStyles={{
+                           dateInput: {
+                              marginLeft: 0,
+                              alignItems: 'flex-left',
+                              borderWidth: 0,
+                           },
+                           dateIcon: {
+                              display: 'none'
+                           },
+                           placeholderText: {
+                              color: 'gray',
+                              fontFamily: 'Urbanist-Medium',
+                              fontSize: 16
+                           }
+                        }}
+                        onDateChange={(date) => { setTaskFromDate(date) }}
+                     />
+                     <DatePicker
+                        style={styles.halfInput}
+                        date={taskToDate}
+                        mode="date"
+                        placeholder="To Date"
+                        format="YYYY-MM-DD"
+                        minDate="2016-05-01"
+                        maxDate="2021-06-01"
+                        confirmBtnText="Confirm"
+                        cancelBtnText="Cancel"
+                        customStyles={{
+                           dateInput: {
+                              marginLeft: 0,
+                              alignItems: 'flex-left',
+                              borderWidth: 0,
+                           },
+                           dateIcon: {
+                              display: 'none'
+                           },
+                           placeholderText: {
+                              color: 'gray',
+                              fontFamily: 'Urbanist-Light',
+                              fontSize: 16
+                           }
+                        }}
+                        onDateChange={(date) => { setTaskToDate(date) }}
+                     />
+
+
                      <TextInput
                         style={styles.input}
                         placeholder='Start Date - End Date'
@@ -73,12 +139,6 @@ function NewTaskModal(props) {
                         onChangeText={text => setTaskFrequency(text)}
                      />
                      <TextInput
-                        style={styles.input}
-                        placeholder='Assignees'
-                        placeholderTextColor='#9E9E9E'
-                        onChangeText={text => setTaskAssignee(text)}
-                     />
-                     <TextInput
                         style={styles.commentInput}
                         placeholder='Comment ( optional )'
                         multiline={true}
@@ -86,8 +146,6 @@ function NewTaskModal(props) {
                         placeholderTextColor='#9E9E9E'
                         onChangeText={text => setTaskComment(text)}
                      />
-
-
                   </View>
                   <View style={styles.btnModal}>
                      <TouchableOpacity style={styles.SaveBtn} onPress={[props.onClose, addTask]}>
@@ -185,6 +243,17 @@ const styles = StyleSheet.create({
       fontFamily: 'Urbanist-Light',
       fontSize: 16,
    },
+   halfInput: {
+      borderRadius: 16,
+      borderWidth: 1.5,
+      borderColor: '#E6EBF2',
+      height: 54,
+      width: SCREEN_WIDTH * 0.45,
+      marginBottom: 15,
+      paddingLeft: 20,
+      fontFamily: 'Urbanist-Light',
+      fontSize: 16,
+   },
    commentInput: {
       borderRadius: 16,
       borderWidth: 1.5,
@@ -194,6 +263,6 @@ const styles = StyleSheet.create({
       marginBottom: 10,
       paddingLeft: 20,
       fontFamily: 'Urbanist-Light',
-      fontSize: 16,      
+      fontSize: 16,
    }
 })
