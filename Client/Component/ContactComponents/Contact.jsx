@@ -71,6 +71,17 @@ export default function Contact({ route, navigation }) {
       ]
     );
   }
+  const validatePhoneNum = (phoneNum) => {
+    //only numbers allowed in phone number input - no spaces or dashes - 10 digits - starts with 0
+    const phoneNumRegex = /^(0)[0-9]{9}$/
+    return phoneNumRegex.test(phoneNum)
+  }
+
+  const validateEmail = (email) => {
+    const emailRegex = /\S+@\S+\.\S+/
+    return emailRegex.test(email)
+  }
+
   const handleInputChange = (field, value) => {
     setContact({ ...Contact, [field]: value });
     if(!isChanged){
@@ -82,7 +93,8 @@ export default function Contact({ route, navigation }) {
     if (!mobileNo || !contactName) {
       return Alert.alert('Error', 'Email and Mobile Number are required')
     }
-    if (!email) {
+    if (email) {
+      console.log(email)
       if (!validateEmail(email)) {
         return Alert.alert('Invalid Email', 'Please enter a valid email')
       }
