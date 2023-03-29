@@ -1,5 +1,5 @@
 // External imports:
-import { StyleSheet, View, Text, Alert, SafeAreaView, TouchableOpacity, Dimensions, Image } from 'react-native'
+import { StyleSheet, View, Text, Alert, SafeAreaView, TouchableOpacity, Dimensions, Image, LogBox } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -16,9 +16,13 @@ const Stack = createNativeStackNavigator();
 
 //this is the Setting Main screen, 
 //need to add the personal setting (יצירת פרופיל)
-function HomeScreen({ navigation }) {
+function HomeScreen({ navigation, route }) {
     const [userImg, setUserImg] = useState(null);
     const [userName, setUserName] = useState(null);
+
+    LogBox.ignoreLogs([
+        'Non-serializable values were found in the navigation state',
+      ]);
 
     useEffect(() => {
         const getData = async () => {
@@ -69,7 +73,7 @@ function HomeScreen({ navigation }) {
                     <Text style={styles.btnText}>Privacy & My Account</Text>
                     <AntDesign style={styles.arrowLogoStyle} name="right" size={25} color="gray" />
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Contact Us')}>
+                <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('ContactUs')}>
                     <Ionicons style={styles.logoStyle} name='send' size={30} color='gray' />
                     <Text style={styles.btnText}>Contact Us</Text>
                     <AntDesign style={styles.arrowLogoStyle} name="right" size={25} color="gray" />
@@ -82,7 +86,7 @@ function HomeScreen({ navigation }) {
                                 {
                                     text: 'OK',
                                     onPress: () => {
-                                        navigation.navigate('LogIn')
+                                       route.params.logout();
                                     }
                                 },
                             ]);
@@ -117,6 +121,8 @@ function HomeScreen({ navigation }) {
 }
 
 export default function SettingScreen({ navigation }) {    
+
+
     return (
         <NavigationContainer independent={true}>
             <Stack.Navigator
@@ -134,7 +140,7 @@ export default function SettingScreen({ navigation }) {
                     // how to hide the parent header in the child stack navigator   
                     headerShown: false,
                 }}>
-                <Stack.Screen name="Settings" component={HomeScreen} options={() => ({ headerTitle: 'Settings', headerShown: false })} />
+                <Stack.Screen name="Settings" component={HomeScreen} options={() => ({ headerTitle: 'Settings', headerShown: false })} initialParams={{logout:()=>{navigation.navigate('LogIn')}}} />
                 <Stack.Screen name="Profile" component={Profile} options={{ headerLeft: () => null }} />
                 <Stack.Screen name="Notifications" component={Notifications} />
                 <Stack.Screen name="Privacy" component={Privacy} options={{ headerTitle: 'Privacy & My Account' }} />
