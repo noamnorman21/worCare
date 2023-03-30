@@ -25,9 +25,9 @@ function NewTaskModal(props) {
    const [taskTime, setTaskTime] = useState('')
    const [taskCategory, setTaskCategory] = useState('')
    const [isPrivate, setIsPrivate] = useState(false)//for the assignee
+   const [taskAssignee, setTaskAssignee] = useState('')
 
    const taskCategorys = [
-
       { id: 1, name: 'General', color: '#FFC0CB' },
       { id: 2, name: 'Shop', color: '#FFC0CB' },
       { id: 3, name: 'Medicines', color: '#FFC0CB' },
@@ -67,9 +67,11 @@ function NewTaskModal(props) {
                         placeholder="Assignees"
                         placeholderStyle={styles.placeholderStyle}
                         style={styles.input}
+                        value={taskAssignee}
                         maxHeight={300}
                         containerStyle={styles.containerStyle}
                         onChange={item => {
+                           setTaskAssignee(item.name)
                            if (item.name == 'Private') {
                               setIsPrivate(true)
                            } else {
@@ -85,11 +87,11 @@ function NewTaskModal(props) {
                               data={taskCategorys}
                               labelField="name"
                               valueField="name"
-
                               placeholder="Category"
                               placeholderStyle={styles.placeholderStyle}
                               style={styles.input}
                               maxHeight={300}
+                              value={taskCategory}
                               containerStyle={styles.containerStyle}
                               onChange={item => {
                                  setTaskCategory(item.name)
@@ -103,7 +105,7 @@ function NewTaskModal(props) {
                               value='General'
                               editable={false}
                            />
-                              
+
 
 
 
