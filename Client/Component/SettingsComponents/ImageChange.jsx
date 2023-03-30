@@ -58,6 +58,7 @@ export default function ImageChange({route}) {
 const userToUpdate = {
   Email: route.params.email,
   userUri: downloadURL,
+  Id: route.params.userId
 }
 
     fetch('http://proj.ruppin.ac.il/bgroup79/test1/tar1/api/User/UpdateUserImage', {

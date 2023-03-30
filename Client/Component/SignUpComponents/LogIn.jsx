@@ -118,7 +118,8 @@ export default function LogIn({ navigation }) {
                         Email: json.Email,
                         gender: json.gender,
                         phoneNum: json.phoneNum,
-                        userUri: json.userUri                        
+                        userUri: json.userUri,
+                        Password: password,                        
                     }
                     const jsonValue = JSON.stringify(userContext)
                     AsyncStorage.setItem('userData', jsonValue);                        

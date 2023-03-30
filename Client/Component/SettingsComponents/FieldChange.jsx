@@ -24,17 +24,25 @@ export default function FieldChange(props) {
 
   return (
     <View style={styles.container}>
-      <Text>Change {type}</Text>
+    <View style={styles.header}>
+        <Text style={styles.title}>Change {type}</Text>
+      </View>
+      <View style={styles.inputContainer}>
       <TextInput
+      style={[styles.input, styles.firstNameInput]}
       value={value}
-      onChangeText={text => setValue(text)}     
+      onChangeText={text => setValue(text)}
+      keyboardType={type === 'Phone Number' ? 'phone-pad' : 'default'}     
       />
+      </View>
+      <View style={styles.bottom}>
       <TouchableOpacity onPress={save} style={styles.button}>
-        <Text>Save</Text>
+        <Text style={styles.buttonText}>Save</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={props.cancel} style={styles.button}>
-        <Text>Cancel</Text>
+      <TouchableOpacity onPress={props.cancel} style={styles.cancelbutton}>
+        <Text style={styles.cancelbuttonText}>Cancel</Text>
       </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -60,7 +68,68 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 1,
     margin: 7,
+    height: 55,
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: '600',
+    fontSize: 16,
+  },
+  cancelbutton: {
+    width: Dimensions.get('window').width * 0.85,
+    backgroundColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: 'lightgray',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 1,
+    margin: 7,
+    height: 55,
+  },
+  cancelbuttonText: {
+    color: '#548DFF',
+    fontWeight: '600',
+    fontSize: 16,
+  },
+  input: {
+    width: Dimensions.get('window').width * 0.85,
+    padding: 10,
+    margin: 7,
+    alignItems: 'center',
+    borderRadius: 16,
+    borderWidth: 1,
+    backgroundColor: '#F5F5F5',
+    borderColor: 'lightgray',
+    shadowColor: '#000',
     height: 45,
   },
+  firstNameInput: {
+    marginRight: 10,
+    width: Dimensions.get('window').width * 0.85,
+  },
+  inputContainer: {
+    alignItems: 'center',
+   
+  },
+  header: {
+    marginTop: 20,
+    marginBottom: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 2,
+  },
+  title: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    color: '#000',
+  },
+  bottom: {
+    flex: 5,
+  }
 });
 

@@ -102,5 +102,27 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPut]
+        [Route("UpdateUser")]
+        public IHttpActionResult UpdateUser([FromBody] UserDTO userToUpdate)
+        {
+            try
+            {
+                tblUser user = db.tblUsers.Where(x => x.Email == userToUpdate.Email).FirstOrDefault();
+                user.phoneNum = userToUpdate.phoneNum;
+                user.FirstName = userToUpdate.FirstName;
+                user.LastName = userToUpdate.LastName;
+                user.gender = userToUpdate.gender;
+                user.userUri = userToUpdate.userUri;
+                db.SaveChanges();
+                return Ok("User Updated Successfully");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 }
