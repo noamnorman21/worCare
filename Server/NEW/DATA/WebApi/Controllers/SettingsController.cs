@@ -32,5 +32,75 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPut]
+        [Route("UpdateFirstName")]
+        public IHttpActionResult UpdateFirstName([FromBody] UserDTO userToChange)
+        {
+            try
+            {
+                var user = db.tblUsers.Where(x => x.Id == userToChange.Id).FirstOrDefault();
+                if (user == null)
+                {
+                    return NotFound();
+                }
+                user.FirstName = userToChange.FirstName;
+                db.SaveChanges();
+                return Ok("First Name Updated");
+
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut]
+        [Route("UpdateLastName")]
+        public IHttpActionResult UpdateLastName([FromBody] UserDTO userToChange)
+        {
+            try
+            {
+                var user = db.tblUsers.Where(x => x.Id == userToChange.Id).FirstOrDefault();
+                if (user == null)
+                {
+                    return NotFound();
+                }
+                user.LastName = userToChange.LastName   ;
+                db.SaveChanges();
+                return Ok("Last Name Updated");
+
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        [HttpPut]
+        [Route("UpdateGender")]
+        public IHttpActionResult UpdateGender([FromBody] UserDTO userToChange)
+        {
+            try
+            {
+                var user = db.tblUsers.Where(x => x.Id == userToChange.Id).FirstOrDefault();
+                if (user == null)
+                {
+                    return NotFound();
+                }
+                user.gender = userToChange.gender;
+                db.SaveChanges();
+                return Ok("Gender Updated");
+
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
