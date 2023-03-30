@@ -22,14 +22,21 @@ function NewTaskModal(props) {
    const [taskFromDate, setTaskFromDate] = useState('')
    const [taskToDate, setTaskToDate] = useState('')
    const [taskFrequency, setTaskFrequency] = useState('')
-   const [taskAssignee, setTaskAssignee] = useState('')
    const [taskTime, setTaskTime] = useState('')
-   const [taskCategory, setTaskCategory] = useState([
+   const [taskCategory, setTaskCategory] = useState('')
+   const [isPrivate, setIsPrivate] = useState(false)//for the assignee
+
+   const taskCategorys = [
+
       { id: 1, name: 'General', color: '#FFC0CB' },
       { id: 2, name: 'Shop', color: '#FFC0CB' },
       { id: 3, name: 'Medicines', color: '#FFC0CB' },
-   ])
+   ]
 
+   const privateOrPublic = [
+      { id: 1, name: 'Private' },
+      { id: 2, name: 'Public' },
+   ]
    const addTask = () => {
       console.log(taskName)
       console.log(taskComment)
@@ -53,18 +60,55 @@ function NewTaskModal(props) {
                         placeholderTextColor='#9E9E9E'
                         onChangeText={text => setTaskName(text)}
                      />
-                     <TextInput
+                     <Dropdown
+                        data={privateOrPublic}
+                        labelField="name"
+                        valueField="name"
+                        placeholder="Assignees"
+                        placeholderStyle={styles.placeholderStyle}
                         style={styles.input}
-                        placeholder='Assignees'
-                        placeholderTextColor='#9E9E9E'
-                        onChangeText={text => setTaskAssignee(text)}
+                        maxHeight={300}
+                        containerStyle={styles.containerStyle}
+                        onChange={item => {
+                           if (item.name == 'Private') {
+                              setIsPrivate(true)
+                           } else {
+                              setIsPrivate(false)
+                           }
+
+                        }}
                      />
-                     <TextInput
-                        style={styles.input}
-                        placeholder='Category'
-                        placeholderTextColor='#9E9E9E'
-                        onChangeText={text => setTaskCategory(text)}
-                     />
+                     {
+                        //if is private= true than display the category
+                        !isPrivate ?
+                           <Dropdown
+                              data={taskCategorys}
+                              labelField="name"
+                              valueField="name"
+
+                              placeholder="Category"
+                              placeholderStyle={styles.placeholderStyle}
+                              style={styles.input}
+                              maxHeight={300}
+                              containerStyle={styles.containerStyle}
+                              onChange={item => {
+                                 setTaskCategory(item.name)
+                              }
+                              }
+                           /> : //if is private= true than display like the user already choose the category of General
+                           <TextInput
+                              style={styles.input}
+                              placeholder='Category'
+                              placeholderTextColor='#9E9E9E'
+                              value='General'
+                              editable={false}
+                           />
+                              
+
+
+
+                     }
+
                      <DatePicker
                         style={styles.halfInput}
                         date={taskFromDate}
@@ -180,12 +224,18 @@ const styles = StyleSheet.create({
       height: 44,
       width: SCREEN_WIDTH * 0.45,
    },
+   placeholderStyle: {
+      color: '#9E9E9E',
+
+
+   },
    btnModal: {
       flexDirection: 'row',
       justifyContent: 'space-between',
       marginTop: 20,
       width: SCREEN_WIDTH * 0.95,
    },
+
    closeBtn: {
       backgroundColor: '#F5F8FF',
       borderRadius: 16,
@@ -203,7 +253,7 @@ const styles = StyleSheet.create({
       fontSize: 16,
    },
    modalText: {
-      marginBottom: 15,
+      marginBottom: 5,
       fontFamily: 'Urbanist-Bold',
       fontSize: 24,
       textAlign: 'center',
@@ -230,7 +280,7 @@ const styles = StyleSheet.create({
    },
    inputView: {
       width: SCREEN_WIDTH * 0.95,
-      marginTop: 20,
+      marginTop: 10,
    },
    input: {
       borderRadius: 16,
@@ -238,7 +288,7 @@ const styles = StyleSheet.create({
       borderColor: '#E6EBF2',
       height: 54,
       width: SCREEN_WIDTH * 0.95,
-      marginBottom: 15,
+      marginBottom: 10,
       paddingLeft: 20,
       fontFamily: 'Urbanist-Light',
       fontSize: 16,
@@ -249,7 +299,7 @@ const styles = StyleSheet.create({
       borderColor: '#E6EBF2',
       height: 54,
       width: SCREEN_WIDTH * 0.45,
-      marginBottom: 15,
+      marginBottom: 10,
       paddingLeft: 20,
       fontFamily: 'Urbanist-Light',
       fontSize: 16,
@@ -258,7 +308,7 @@ const styles = StyleSheet.create({
       borderRadius: 16,
       borderWidth: 1.5,
       borderColor: '#E6EBF2',
-      height: 100,
+      height: 90,
       width: SCREEN_WIDTH * 0.95,
       marginBottom: 10,
       paddingLeft: 20,
