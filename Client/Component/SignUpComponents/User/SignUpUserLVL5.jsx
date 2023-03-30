@@ -4,6 +4,8 @@ import { OrLine, HaveAccount } from '../FooterLine'
 import DatePicker from 'react-native-datepicker';
 import { Dropdown } from 'react-native-element-dropdown';
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
+import DateTimePicker from '@react-native-community/datetimepicker';
+
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 export default function SignUpUserLVL5({ navigation, route }) {
@@ -13,6 +15,29 @@ export default function SignUpUserLVL5({ navigation, route }) {
   const [patientID, setPatientID] = useState('');
   const [patientFirstName, setPatientFirstName] = useState('');
   const [patientLastName, setPatientLastName] = useState('');
+  const [mode, setMode] = useState('date');
+  const [show, setShow] = useState(false);
+
+
+  
+  const showMode = (currentMode) => {
+    if (Platform.OS === 'android') {
+      setShow(true);
+      // for iOS, add a button that closes the picker
+    }
+    setMode(currentMode);
+  };
+
+  const showDatePicker = () => {
+    showMode('date');
+  };
+
+  const showTimepicker = () => {
+    showMode('time');
+  };
+
+
+
   //  getMaxDate for age 21="2002-01-01" 
   const getMaxDate = () => {
     var date = new Date().getDate(); //Current Date
@@ -60,6 +85,9 @@ export default function SignUpUserLVL5({ navigation, route }) {
 
     navigation.navigate('SignUpLimitations', { patientData: patientData, tblUser: route.params.tblUser })
   }
+  
+
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
@@ -96,7 +124,7 @@ export default function SignUpUserLVL5({ navigation, route }) {
           onChangeText={(patientID) => setPatientID(patientID)}
         />
         {/* Date Picker for birth-date */}
-        <DatePicker
+        {/* <DatePicker
           useNativeDriver={'true'}
           iconComponent={<FontAwesome name="calendar-check-o" size={24} color="gray" />}
           style={styles.inputFull}
@@ -117,7 +145,7 @@ export default function SignUpUserLVL5({ navigation, route }) {
             },
             dateInput: {
               marginLeft: 0,
-              alignItems: 'flex-left',
+              alignItems: 'center',
               borderWidth: 0,
             },
             placeholderText: {
@@ -127,7 +155,19 @@ export default function SignUpUserLVL5({ navigation, route }) {
             }
           }}
           onDateChange={(date) => { setDate(date) }}
+        /> */}
+        <TouchableOpacity style={styles.inputFull} onPress={showDatePicker}>
+          <Text style={styles.inputText}>Date Of Birth</Text>
+        </TouchableOpacity>
+        {show && (
+        <DateTimePicker
+          testID="dateTimePicker"
+          value={new Date()}
+          mode={mode}
+          is24Hour={true}
+          onChange={(value)=> {setDate(value.nativeEvent.timestamp); setShow(false)}}
         />
+      )}
       </View>
 
       <View style={styles.listContainer}>

@@ -11,6 +11,7 @@ import Profile from './SettingsComponents/Profile'
 import Notifications from './SettingsComponents/Notifications'
 import Privacy from './SettingsComponents/Privacy'
 import ContactUs from './SettingsComponents/ContactUs'
+import ImageChange from './SettingsComponents/ImageChange'
 
 const Stack = createNativeStackNavigator();
 
@@ -19,6 +20,8 @@ const Stack = createNativeStackNavigator();
 function HomeScreen({ navigation, route }) {
     const [userImg, setUserImg] = useState(null);
     const [userName, setUserName] = useState(null);
+    const [userEmail, setuserEmail] = useState(null);
+
 
     LogBox.ignoreLogs([
         'Non-serializable values were found in the navigation state',
@@ -29,8 +32,9 @@ function HomeScreen({ navigation, route }) {
             try {
                 const jsonValue = await AsyncStorage.getItem('userData');
                 const userData = jsonValue != null ? JSON.parse(jsonValue) : null;
-                setUserImg(userData.userUri);
                 setUserName(userData.FirstName);
+                setuserEmail(userData.Email);
+                setUserImg(userData.userUri);
                 console.log('Setting screen', userData);
             } catch (e) {
                 console.log('error', e);
@@ -46,7 +50,10 @@ function HomeScreen({ navigation, route }) {
             <View style={styles.personalContainer}>
                 <View style={styles.imageContainer}>
                     {/* here will be the user name and image and the logo of the app */}
+                    <TouchableOpacity onPress={() => navigation.navigate("ImageChange",{email:userEmail, userImg:userImg})}>
+
                     <Image style={styles.image} source={{ uri: userImg }} />
+                    </TouchableOpacity>
                     {/* <Image style={styles.image} source={require(`${userImg}`)} /> */}
                     <View style={styles.personalTextContainer}>
                         <Text style={styles.personalText}>Hello, {userName}</Text>
@@ -140,9 +147,11 @@ export default function SettingScreen({ navigation }) {
                     // how to hide the parent header in the child stack navigator   
                     headerShown: false,
                 }}>
+
                 <Stack.Screen name="Settings" component={HomeScreen} options={() => ({ headerTitle: 'Settings', headerShown: false })} initialParams={{logout:()=>{navigation.navigate('LogIn')}}} />
                 <Stack.Screen name="Profile" component={Profile} options={{ headerLeft: () => null }} />
                 <Stack.Screen name="Notifications" component={Notifications} />
+                <Stack.Screen name="ImageChange" component={ImageChange} options={() => ({ headerTitle: 'Change Image', headerShown: false })} />
                 <Stack.Screen name="Privacy" component={Privacy} options={{ headerTitle: 'Privacy & My Account' }} />
                 <Stack.Screen name="ContactUs" component={ContactUs} options={{ headerTitle: 'Contact Us' }} />
             </Stack.Navigator>
