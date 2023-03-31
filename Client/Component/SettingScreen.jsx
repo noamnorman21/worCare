@@ -6,6 +6,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AntDesign, Ionicons, SimpleLineIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
+import { useUserContext } from '../UserContext';
 
 // Internal imports:
 import Profile from './SettingsComponents/Profile'
@@ -24,6 +25,7 @@ function HomeScreen({ navigation, route }) {
     const [userEmail, setuserEmail] = useState(null);
     const [userId, setUserId] = useState(null);
     const isFocused = useIsFocused();
+    const { user, setUser } = useUserContext();
 
 
     LogBox.ignoreLogs([
@@ -40,6 +42,7 @@ function HomeScreen({ navigation, route }) {
                 setUserImg(userData.userUri);
                 setUserId(userData.UserId);                
                 console.log('Setting screen', userData);
+                console.log('user', user.Id);
                 
             } catch (e) {
                 console.log('error', e);
@@ -91,6 +94,7 @@ function HomeScreen({ navigation, route }) {
                     <TouchableOpacity style={styles.colorBtn1}
                         onPress={() => {
                             AsyncStorage.removeItem("user");
+                            AsyncStorage.removeItem("userData");
                             Alert.alert('Log Out', 'You have been logged out', [
                                 {
                                     text: 'OK',
@@ -150,7 +154,7 @@ export default function SettingScreen({ navigation }) {
                     
                 }}>
 
-                <Stack.Screen name="Settings" component={HomeScreen} options={() => ({ headerTitle: 'Settings', headerShown: false })} initialParams={{logout:()=>{navigation.navigate('LogIn')}}} />
+                <Stack.Screen name="Settings" component={HomeScreen} options={() => ({ headerTitle: 'Settings', headerShown: false })} initialParams={{logout:()=>{ ;navigation.navigate('LogIn')}}} />
                 <Stack.Screen name="Profile" component={Profile} options={{ headerLeft: () => null }} />
                 <Stack.Screen name="Notifications" component={Notifications} />
                 <Stack.Screen name="Privacy" component={Privacy} options={{ headerTitle: 'Privacy & My Account' }} />

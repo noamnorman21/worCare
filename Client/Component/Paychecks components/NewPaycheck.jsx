@@ -3,10 +3,11 @@ import { View, Text, TextInput, Button, SafeAreaView, Alert, StyleSheet, Touchab
 import { storage } from '../../config/firebase';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import * as DocumentPicker from 'expo-document-picker';
+import { useUserContext } from '../../UserContext';
 
 export default function NewPaycheck(props) {
   const [animation, setAnimation] = useState({});
-  
+  const { user } = useUserContext();
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -47,7 +48,7 @@ export default function NewPaycheck(props) {
     paycheckYear:'',
     paycheckSummary: '',
     paycheckComment: '',    
-    userId: props.userId// will be changed to current user id,
+    userId: user.Id// will be changed to current user id,
   })
   
   const pickDocument = async () => {

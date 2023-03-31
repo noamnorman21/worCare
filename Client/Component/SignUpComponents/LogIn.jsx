@@ -5,6 +5,8 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { OrLine, NeedAccount } from './FooterLine'
 import * as Linking from 'expo-linking';
+import { useUserContext} from '../../UserContext';
+
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
@@ -17,6 +19,7 @@ export default function LogIn({ navigation }) {
     const [userType, setUserType] = useState('User');
     const [isChecked, setChecked] = useState(false);
     let animationInProgress = false;
+    const {singin} = useUserContext();
 
     const getInitialUrl = async () => {
         // check if the app was opened from a link
@@ -129,7 +132,8 @@ export default function LogIn({ navigation }) {
                         userType: json.userType, 
                         Password: password                   
                     }
-                    const jsonValue = JSON.stringify(userContext)                    
+                    const jsonValue = JSON.stringify(userContext) 
+                    singin(userContext);                   
                     AsyncStorage.setItem('userData', jsonValue);                        
                     navigation.navigate('CustomHeader',{screen: "Home"});//navigate to home screen, we will add a necessary call to get user data from the server                                         
                 }

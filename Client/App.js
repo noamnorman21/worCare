@@ -4,6 +4,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import SettingScreen from './Component/SettingScreen';
 import NavigateSignUp from './Component/SignUpComponents/NavigateSignUp';
 import * as Font from 'expo-font'; // Import Font from expo-font package
+import {UserProvider} from './UserContext';
+
 
 export default function App() {
   const [isReady, setIsReady] = useState(false); // Set state for font loading
@@ -26,9 +28,13 @@ export default function App() {
     return null;
   }      
   return (
+    
     <NavigationContainer independent={true} >
+      <UserProvider>
       <NavigateSignUp />
+     </UserProvider>
     </NavigationContainer>
+    
   );
 }
 
