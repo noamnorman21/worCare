@@ -109,10 +109,11 @@ export default function LogIn({ navigation }) {
                     if (isChecked) {
                         console.log('checked');
                         _storeData();
-                    }                    
+                    }  
+                                     
                     //save user data in context
                     const userContext = {
-                        UserId: json.UserId,
+                        UserId: json.Id,
                         FirstName: json.FirstName,
                         LastName: json.LastName,
                         Email: json.Email,

@@ -106,23 +106,7 @@ export default function Privacy({ navigation }) {
 
   }
 
-  const save = (downloadURL) => {
-    console.log('save');
 
-    const userToUpdate = {
-      Email: route.params.email,
-      userUri: downloadURL,
-      UserId: route.params.userId,
-      FirstName: firstName,
-      LastName: lastName,
-      gender: Gender,
-      phoneNum: Phonenum
-    }
-    console.log('userToUpdate', userToUpdate);
-
-    //save to db
-
-  }
 
   const cancel = () => {
     console.log('cancel');
