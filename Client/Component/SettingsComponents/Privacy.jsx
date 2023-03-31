@@ -38,6 +38,7 @@ export default function Privacy({ navigation }) {
       FirstName: firstName,
       LastName: lastName,
       Password: password,
+      UserId: userId
     }
 
     console.log('userToUpdate', userToUpdate);
@@ -111,7 +112,7 @@ export default function Privacy({ navigation }) {
     const userToUpdate = {
       Email: route.params.email,
       userUri: downloadURL,
-      Id: route.params.userId,
+      UserId: route.params.userId,
       FirstName: firstName,
       LastName: lastName,
       gender: Gender,
@@ -137,10 +138,10 @@ export default function Privacy({ navigation }) {
         const jsonValue = await AsyncStorage.getItem('userData');
         const userData = jsonValue != null ? JSON.parse(jsonValue) : null;
         console.log('userData', userData);
-        setUserId(userData.Id);
+        setUserId(userData.UserId);
         setFirstName(userData.FirstName);
         setLastName(userData.LastName);
-        saveGender(userData.gender)
+        setGender(userData.gender)
         setUserImg(userData.userUri)
         setPhonenum(userData.phoneNum)
         setEmail(userData.Email)
@@ -153,17 +154,7 @@ export default function Privacy({ navigation }) {
   }, []);
 
 
-  const saveGender = (Gender) => {
-    if (Gender == "M") {
-      setGender("Male")
-    }
-    else if (Gender == "F") {
-      setGender("Female")
-    }
-    else {
-      setGender("Other")
-    }
-  }
+  
 
 
 

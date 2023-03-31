@@ -38,9 +38,9 @@ function HomeScreen({ navigation, route }) {
                 setUserName(userData.FirstName);
                 setuserEmail(userData.Email);
                 setUserImg(userData.userUri);
-                setUserId(userData.Id);
-                
+                setUserId(userData.UserId);                
                 console.log('Setting screen', userData);
+                
             } catch (e) {
                 console.log('error', e);
             }

@@ -71,10 +71,9 @@ export default function Profile({ navigation }) {
       gender: Gender,
       FirstName: firstName,
       LastName: lastName, 
-      Id: userId,
+      UserId: userId,
       Password: password    
     }
-    console.log('userToUpdate', userToUpdate);
     const jsonValue = JSON.stringify(userToUpdate)
     AsyncStorage.setItem('userData', jsonValue);   
   
@@ -107,7 +106,17 @@ export default function Profile({ navigation }) {
 
   }
 
-
+const displayGender = () => {
+  if (Gender=="M"){
+    return "Male"
+  }
+  else if (Gender=="F"){
+    return "Female"
+  }
+  else{
+    return "Other"
+  }
+}
 
   const openModal = (type, value) => {
     setModalType(type);
@@ -127,7 +136,10 @@ export default function Profile({ navigation }) {
     else if (Field == "Last Name") {
       setLastName(value);
     }
-
+    else if (Field == "Phone Number") {
+      setPhonenum(value);
+    }
+    
   }
 
   const pickImage = async () => {
@@ -145,24 +157,7 @@ export default function Profile({ navigation }) {
 
   }
 
-  const save = (downloadURL) => {
-    console.log('save');
-
-    const userToUpdate = {
-      Email: route.params.email,
-      userUri: downloadURL,
-      Id: route.params.userId,
-      FirstName: firstName,
-      LastName: lastName,
-      gender: Gender,
-      phoneNum: Phonenum, 
-      Password: password
-    }
-    console.log('userToUpdate', userToUpdate);
-
-    //save to db
-
-  }
+  
 
   const cancel = () => {
     console.log('cancel');
@@ -178,10 +173,10 @@ export default function Profile({ navigation }) {
         const jsonValue = await AsyncStorage.getItem('userData');
         const userData = jsonValue != null ? JSON.parse(jsonValue) : null;
         console.log('userData', userData);
-        setUserId(userData.Id);
+        setUserId(userData.UserId);
         setFirstName(userData.FirstName);
         setLastName(userData.LastName);
-        saveGender(userData.gender)
+        setGender(userData.gender)
         setUserImg(userData.userUri)
         setPhonenum(userData.phoneNum)
         setEmail(userData.Email)
@@ -194,17 +189,7 @@ export default function Profile({ navigation }) {
   }, []);
 
 
-  const saveGender = (Gender) => {
-    if (Gender == "M") {
-      setGender("Male")
-    }
-    else if (Gender == "F") {
-      setGender("Female")
-    }
-    else {
-      setGender("Other")
-    }
-  }
+
 
 
 
@@ -227,7 +212,7 @@ export default function Profile({ navigation }) {
           <Text style={styles.fieldTxt}>{Phonenum}</Text>
         </TouchableOpacity>
         <TouchableOpacity underlayColor={'lightgrey'} style={styles.fields} onPress={() => openModal2(Gender)}>
-          <Text style={styles.fieldTxt}>{Gender}</Text>
+          <Text style={styles.fieldTxt}>{displayGender()}</Text>
         </TouchableOpacity>
         <View style={styles.bottom}>
           <TouchableOpacity onPress={() => ImageChange ? sendToFirebase(userImg): sendDataToNextDB()} style={styles.button}>
@@ -241,7 +226,7 @@ export default function Profile({ navigation }) {
           <FieldChange userId={userId} type={modalType} value={modalValue} cancel={() => setModalVisible(false)} Save={(Field, value) => Update(Field, value)} />
         </Modal>
         <Modal animationType="slide" visible={modal2Visible}>
-          <GenderChange userId={userId} cancel={() => setModal2Visible(false)} Save={(Gender) => { setModal2Visible(false); saveGender(Gender) }} />
+          <GenderChange userId={userId} cancel={() => setModal2Visible(false)} Save={(Gender) => { setModal2Visible(false); setGender(Gender) }} />
         </Modal>
       </View>
     </View>
