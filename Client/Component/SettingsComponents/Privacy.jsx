@@ -116,8 +116,6 @@ export default function Privacy({ navigation }) {
   }
 
 
-
-
   useEffect(() => {
     const getData = async () => {
       try {
@@ -138,10 +136,7 @@ export default function Privacy({ navigation }) {
       }
     };
     getData();
-  }, []);
-
-
-  
+  }, []); 
 
 
 
@@ -183,14 +178,13 @@ const styles = StyleSheet.create({
   },
   header: {
     marginTop: 20,
-
     alignItems: 'center',
     justifyContent: 'center',
   },
   title: {
     fontSize: 30,
-    fontWeight: 'bold',
     color: '#000',
+    fontFamily:'Urbanist-Bold'
   },
   smallTitle: {
     fontSize: 15,
@@ -208,6 +202,11 @@ const styles = StyleSheet.create({
     padding: 10,
 
   },
+  fieldTxt: {
+    fontSize: 20,
+    fontFamily:'Urbanist-Medium',
+    color: '#000',
+  },
   imageContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -220,8 +219,6 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width * 0.3,
     height: Dimensions.get('window').height * 0.15,
     borderRadius: 100,
-
-
   },
   bottom: {
     flex: 5,
@@ -243,8 +240,8 @@ const styles = StyleSheet.create({
     height: 55,
   },
   buttonText: {
-    color: 'white',
-    fontWeight: '600',
+    color: 'white',    
+    fontFamily:'Urbanist-Bold',
     fontSize: 16,
   },
   cancelbutton: {
@@ -265,14 +262,10 @@ const styles = StyleSheet.create({
   },
   cancelbuttonText: {
     color: '#548DFF',
-    fontWeight: '600',
+    fontFamily:'Urbanist-Bold',
     fontSize: 16,
   },
-  fieldTxt: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#000',
-  },
+  
   FieldContainer: {
     flex: 1,
     alignItems: 'center',

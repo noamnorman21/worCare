@@ -107,6 +107,7 @@ export default function FieldChange(props) {
       color: 'white',
       fontWeight: '600',
       fontSize: 16,
+      fontFamily:'Urbanist-SemiBold'
     },
     cancelbutton: {
       width: Dimensions.get('window').width * 0.85,
@@ -128,6 +129,7 @@ export default function FieldChange(props) {
       color: '#548DFF',
       fontWeight: '600',
       fontSize: 16,
+      fontFamily:'Urbanist-SemiBold'
     },
     input: {
       width: Dimensions.get('window').width * 0.85,
@@ -140,10 +142,13 @@ export default function FieldChange(props) {
       borderColor: 'lightgray',
       shadowColor: '#000',
       height: 45,
+      fontFamily:'Urbanist-SemiBold'
     },
     firstNameInput: {
       marginRight: 10,
       width: Dimensions.get('window').width * 0.85,
+      fontFamily:'Urbanist'
+      
     },
     inputContainer: {
       alignItems: 'center',
@@ -158,8 +163,8 @@ export default function FieldChange(props) {
     },
     title: {
       fontSize: 30,
-      fontWeight: 'bold',
       color: '#000',
+      fontFamily:'Urbanist-SemiBold'
     },
     bottom: {
       flex: 5,

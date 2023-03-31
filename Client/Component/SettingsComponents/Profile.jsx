@@ -245,14 +245,13 @@ const styles = StyleSheet.create({
   },
   header: {
     marginTop: 20,
-
     alignItems: 'center',
     justifyContent: 'center',
   },
   title: {
-    fontSize: 30,
-    fontWeight: 'bold',
+    fontSize: 35,    
     color: '#000',
+    fontFamily: 'Urbanist-Bold',
   },
   smallTitle: {
     fontSize: 15,
@@ -307,7 +306,8 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontWeight: '600',
-    fontSize: 16,
+    fontSize: 18,
+    fontFamily: 'Urbanist-Bold',
   },
   cancelbutton: {
     width: Dimensions.get('window').width * 0.85,
@@ -328,12 +328,13 @@ const styles = StyleSheet.create({
   cancelbuttonText: {
     color: '#548DFF',
     fontWeight: '600',
-    fontSize: 16,
+    fontSize: 18,
+    fontFamily: 'Urbanist-Bold',
   },
   fieldTxt: {
     fontSize: 20,
-    fontWeight: 'bold',
     color: '#000',
+    fontFamily: 'Urbanist-Medium',
   },
   FieldContainer: {
     flex: 1,

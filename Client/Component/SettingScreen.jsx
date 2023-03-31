@@ -202,10 +202,10 @@ const styles = StyleSheet.create({
     title: {
         //the title, it will be on the left side of the screen,just above the image
         fontSize: 25,
-        fontWeight: 'bold',
         marginLeft: Dimensions.get('window').width * 0.03,
         marginRight: Dimensions.get('window').width * 0.6,
         marginTop: Dimensions.get('window').height * 0.03,
+        fontFamily:'Urbanist-Bold'
     },
     btnContainer: {
         flex: 4,
@@ -218,6 +218,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'flex-start',
         width: Dimensions.get('window').width * 1,
+        
         // paddingVertical: Dimensions.get('window').height * 0.04,
     },
     imageContainer: {
@@ -228,10 +229,10 @@ const styles = StyleSheet.create({
         marginTop: Dimensions.get('window').height * 0.02,
     },
     personalText: {
-        fontSize: 20,
-        fontWeight: 'bold',
+        fontSize: 25,        
         marginRight: Dimensions.get('window').width * 0.03,
         marginLeft: Dimensions.get('window').width * 0.03,
+        fontFamily:'Urbanist-Bold',
     },
     logo: {
         width: Dimensions.get('window').width * 0.2,
@@ -259,14 +260,17 @@ const styles = StyleSheet.create({
         borderBottomColor: 'lightgray',
     },
     btnText: {
-        fontSize: 18,
+        fontSize: 20,
+        fontFamily:'Urbanist'
     },
     btnText2: {
         fontSize: 18,
         color: '#548DFF',
+        fontFamily:'Urbanist-SemiBold',        
     },
     btnText1: {
         fontSize: 18,
         color: 'white',
+        fontFamily:'Urbanist-SemiBold'
     },
 });
