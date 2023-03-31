@@ -23,7 +23,8 @@ function AddBtn(props) {
 function NewTaskModal(props) {
    const [userData, setUserData] = useState('');
    const [userId, setUserId] = useState('');
-   const userType = userData.userType;
+   const [userType, setUserType] = useState('');
+
    const [taskName, setTaskName] = useState('')
    const [taskComment, setTaskComment] = useState('')
    const [taskFromDate, setTaskFromDate] = useState('')
@@ -56,6 +57,7 @@ function NewTaskModal(props) {
          const userData = JSON.parse(user);
          setUserId(userData.Id);
          setUserData(userData);
+         setUserType(userData.userType);
       }
       getUserData();
    }, []);
@@ -103,6 +105,22 @@ function NewTaskModal(props) {
             console.log('Error=', error);
          }
          );
+   }
+   const addTask = () => {
+      //if it caregiver than check if the task is private or public
+      if (userType == "Caregiver") {
+         if (isPrivate) {
+            addPrivateTask();
+         } else {
+            addPublicTask();
+         }
+      } else {
+         addPublicTask();
+      }
+   }
+   const addPublicTask = () => {
+      Alert.alert("Add Public Task");
+
    }
    return (
       <SafeAreaView>
@@ -289,7 +307,7 @@ function NewTaskModal(props) {
                      />
                   </View>
                   <View style={styles.btnModal}>
-                     <TouchableOpacity style={styles.SaveBtn} onPress={() => { addPrivateTask(); props.onClose }}>
+                     <TouchableOpacity style={styles.SaveBtn} onPress={() => { addTask(); props.onClose }}>
                         <Text style={styles.textStyle}>Create</Text>
                      </TouchableOpacity>
 
