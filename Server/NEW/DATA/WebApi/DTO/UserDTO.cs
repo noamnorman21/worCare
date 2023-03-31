@@ -16,5 +16,7 @@ namespace WebApi.DTO
         public string phoneNum { get; set; }
         public string userUri { get; set; }
         public int[] Calendars { get; set; }
+
+        public string userType { get; set; }
     }
 }

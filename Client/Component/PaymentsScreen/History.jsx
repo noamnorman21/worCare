@@ -6,13 +6,11 @@ import { List } from 'react-native-paper';
 import { ScrollView } from 'react-native-gesture-handler';
 import NewPayment from './NewPayment';
 import EditPaymentScreen from './EditPaymentScreen';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
 
 
 
 export default function History({navigation}) {
-  const [userId, setUserId] = useState(1)// יש להחליף למשתנה של המשתמש הנוכחי
+  const userId = 1 // יש להחליף למשתנה של המשתמש הנוכחי
   const [History, setHistory] = useState()
   const isFocused = useIsFocused()
   const [modal1Visible, setModal1Visible] = useState(false);
@@ -48,32 +46,16 @@ export default function History({navigation}) {
       { cancelable: false }
     );
   }
-
-  // const loadStorageData = async () => {
-  //   try {
-  //     const storageUser = await AsyncStorage.getItem("user");
-  //     const user = JSON.parse(storageUser);
-  //     // Alert.alert(user.Id)
-  //     // setUserId(user.Id);
-      
-  //   }
-  //   catch (error) {
-  //     console.log(error)
-  //   }
-  //   finally {
-  //     getHistory();
-  //   }    
-  // }
   
   useEffect(() => {
     if (isFocused) {
-    getHistory();
+      getHistory()
     }
   }, [isFocused])
 
   const getHistory = async () => {
     try {
-        const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/GetHistory/' + userId, {
+      const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/GetHistory/' + userId, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -135,7 +117,8 @@ export default function History({navigation}) {
       </TouchableOpacity>
       <Modal animationType='slide' transparent={true} visible={modal1Visible}>
        <NewPayment cancel={() => setModal1Visible(false)} />
-      </Modal>     
+      </Modal>
+      
     </ScrollView>
   );
 }
@@ -226,15 +209,15 @@ const styles = StyleSheet.create({
     height: Dimensions.get('screen').height * 0.073,   
     justifyContent: 'center',
     borderLeftColor: '#7DA9FF',
-    borderLeftWidth: 2,
+    borderLeftWidth: 1,
     borderTopLeftRadius: 16,
     borderTopColor: '#7DA9FF',
-    borderTopWidth: 2,
+    borderTopWidth: 1,
     borderRightColor: '#7DA9FF',
-    borderRightWidth: 2,
+    borderRightWidth: 1,
     borderTopRightRadius: 16,
     borderBottomColor: '#9E9E9E',
-    borderBottomWidth: 1,
+    borderBottomWidth: 0.5,
     borderBottomMargin: 10,  
   },
   requestHeaderText: {
@@ -252,11 +235,11 @@ const styles = StyleSheet.create({
   },
   Focused: {
     borderLeftColor: '#7DA9FF',
-    borderLeftWidth: 2,
+    borderLeftWidth: 1,
     borderBottomColor: '#7DA9FF',
-    borderBottomWidth: 2,
+    borderBottomWidth: 1,
     borderRightColor: '#7DA9FF',
-    borderRightWidth: 2,
+    borderRightWidth: 1,
     borderBottomColor: '#7DA9FF',
     borderBottomEndRadius: 16,
     borderBottomStartRadius: 16,

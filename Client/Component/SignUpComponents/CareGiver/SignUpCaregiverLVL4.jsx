@@ -4,13 +4,7 @@ import { FontAwesome, Entypo, MaterialIcons, AntDesign } from '@expo/vector-icon
 import DatePicker from 'react-native-datepicker';
 import { Dropdown } from 'react-native-element-dropdown';
 import { OrLine, HaveAccount } from '../FooterLine';
-import * as Font from 'expo-font';
-Font.loadAsync({
-  'Urbanist': require('../../../assets/fonts/Urbanist-Regular.ttf'),
-  'Urbanist-Bold': require('../../../assets/fonts/Urbanist-Bold.ttf'),
-  'Urbanist-Light': require('../../../assets/fonts/Urbanist-Light.ttf'),
-  'Urbanist-Medium': require('../../../assets/fonts/Urbanist-Medium.ttf'),
-});
+
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function SignUpCaregiverLVL4({ navigation, route }) {

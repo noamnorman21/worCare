@@ -15,15 +15,10 @@ import Chats from './Chats';
 import Tasks from './Tasks';
 import Rights from './Rights';
 
-import { useRoute } from '@react-navigation/native';
-
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 function CustomHeader() {
-
-const route = useRoute();
-
     return (
         <Stack.Navigator>
             <Stack.Screen
@@ -36,7 +31,7 @@ const route = useRoute();
                         <View style={styles.headerLeft}>
                             <TouchableOpacity
                             //on press send the function hideHeader and showHeader to the child component
-                                onPress={() => { navigation.navigate('SettingScreen')}}                                
+                                onPress={() => { navigation.navigate('SettingScreen') }}                                
                             >
                                 <Image
                                     source={require('../images/icons/Profile.png')}
@@ -74,18 +69,16 @@ const route = useRoute();
                             source={require('../images/logo_New_Small.png')}
                             style={styles.headerLogo}
                         />
-                    ),
-                    unmountOnBlur: true,
+                    )
                 })}
             />
             <Stack.Screen name='SettingScreen'
                 component={SettingScreen}
-                options={(root) => ({
+                options={() => ({
                     headerTitle: 'Settings',
                     presentation: 'stack',
                     cardOverlayEnabled: true,
-                    headerShown: true,   
-                    unmountOnBlur: true                
+                    headerShown: true,
                 })}
             />
 

@@ -94,7 +94,6 @@ export default function SignUpFinish({ navigation, route }) {
 
     // InsertUser
     const createNewUserInDB = () => {
-        Alert.alert(route.params.tblUser.Id);
         fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/InsertUser', { //send the user data to the DB
             method: 'POST',
             headers: {
@@ -104,7 +103,6 @@ export default function SignUpFinish({ navigation, route }) {
         })
             .then((response) => response.json())
             .then((json) => {
-              
                 //save the id of the new user that we got from the DB 
                 tblPatient.userId = json; //save the id of the new user that we got from the DB
                 createNewPatient() //create the foreign user in the DB
@@ -128,7 +126,7 @@ export default function SignUpFinish({ navigation, route }) {
             .then((json) => {
                 addHobbiesAndLimitations()
             })
-            .catch((error) => {               
+            .catch((error) => {
                 console.error(error);
             }
             );

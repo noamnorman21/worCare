@@ -1,17 +1,23 @@
 import { View, Text, StyleSheet, TouchableOpacity, Alert, SafeAreaView, Modal, Dimensions } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { NewTaskModal, AddBtn } from './HelpComponents/NewTaskModal';
+import { AddBtn, NewTaskModal } from './HelpComponents/AddNewTask'
+
 export default function Home({ navigation }) {
+  const [userData, setUserData] = useState(''); // [1]
+  const [modalVisible, setModalVisible] = useState(false);
+
   useEffect(() => {
     const getData = async () => {
       try {
-        const jsonValue = await AsyncStorage.getItem('userData');
-        const userData = jsonValue != null ? JSON.parse(jsonValue) : null;
-        const fullName = userData.FirstName + ' ' + userData.LastName;
-        const userImg = userData.userUri;
-      } catch (e) {
-        console.log('error', e);
+        const jsonValue = await AsyncStorage.getItem('userData')
+        if (jsonValue != null) {
+          const json = JSON.parse(jsonValue);
+          setUserData(json);
+        }
+      }
+      catch (e) {
+        console.log(e);
       }
     };
     getData();
@@ -22,8 +28,6 @@ export default function Home({ navigation }) {
   const handleModalClose = () => {
     setModalVisible(false);
   };
-  const [modalVisible, setModalVisible] = useState(false);
-
 
   const [grid, setGrid] = useState([['', '', ''], ['', '', ''], ['', '', '']]);
   const [player, setPlayer] = useState('X');
@@ -82,7 +86,7 @@ export default function Home({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={{ fontSize: 21, textAlign: 'center', marginBottom: 10, color: 'red' }}> ברוכים הבאים למשחק של נועםםםםם</Text>
-      {/* <Text style={{ fontSize: 24,}}>Hello, {fullName}</Text> */}
+      <Text style={{ fontSize: 21, textAlign: 'center', marginBottom: 10, color: 'red' }}> {userData.userType}</Text>
       <View style={styles.row}>
         {renderCell(0, 0)}
         {renderCell(0, 1)}
@@ -98,7 +102,6 @@ export default function Home({ navigation }) {
         {renderCell(2, 1)}
         {renderCell(2, 2)}
       </View>
-
       <View style={styles.addBtnView}>
         <AddBtn onPress={handleAddBtnPress} />
       </View>
@@ -107,6 +110,7 @@ export default function Home({ navigation }) {
         <TouchableOpacity
           onPress={() => {
             AsyncStorage.removeItem("user");
+            AsyncStorage.removeItem("userData");
             Alert.alert('Log Out', 'You have been logged out', [
               {
                 text: 'OK',

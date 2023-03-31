@@ -6,9 +6,7 @@ import { storage } from '../../config/firebase';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export default function ImagePickerExample(props) {
-  const [image, setImage] = useState(props.userImg ? props.userImg : null);
-
-  
+  const [image, setImage] = useState(null);
 
   useEffect(() => {
     (async () => {

@@ -197,12 +197,17 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
- 
+  header: {
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
   title: {
     color: '#000',
-    fontSize: 24,
+    fontSize: 18,
     padding: 20,
-    fontWeight: '700',
   },
   inputContainer: {
     padding: 20,
