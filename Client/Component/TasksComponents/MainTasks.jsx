@@ -1,6 +1,6 @@
 import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native'
 import { useState } from 'react'
-import { AddBtn, NewTaskModal } from '../HelpComponents/NewTaskModal'
+import { AddBtn, NewTaskModal } from '../HelpComponents/AddNewTask'
 
 export default function MainTasks() {
   const [modalVisible, setModalVisible] = useState(false)
@@ -33,5 +33,5 @@ const styles = StyleSheet.create({
     bottom: 20,
     right: 20,
   },
-  
+
 });

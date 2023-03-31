@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, SafeAreaView, Modal, LayoutAnimation, TouchableOpacity, Keyboard, Dimensions, TextInput } from 'react-native'
+import { Alert, View, Text, StyleSheet, SafeAreaView, Modal, LayoutAnimation, TouchableOpacity, Keyboard, Dimensions, TextInput } from 'react-native'
 import { useState, useEffect } from 'react'
 import { AntDesign, Ionicons, SimpleLineIcons } from '@expo/vector-icons';
 import DatePicker from 'react-native-datepicker';
@@ -6,7 +6,6 @@ import { Dropdown } from 'react-native-element-dropdown';
 import DateRangePicker from "rn-select-date-range";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from "moment";
-import { Alert } from 'react-native';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -417,7 +416,7 @@ const styles = StyleSheet.create({
       height: 54,
       width: SCREEN_WIDTH * 0.95,
       marginBottom: 10,
-      paddingLeft: 20,
+      paddingHorizontal: 10,
       fontFamily: 'Urbanist-Light',
       fontSize: 16,
       justifyContent: 'center',

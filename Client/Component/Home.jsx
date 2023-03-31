@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, TouchableOpacity, Alert, SafeAreaView, Modal, Dimensions } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { NewTaskModal, AddBtn } from './HelpComponents/NewTaskModal';
+import { AddBtn, NewTaskModal } from './HelpComponents/AddNewTask'
 
 export default function Home({ navigation }) {
   const [userData, setUserData] = useState(''); // [1]

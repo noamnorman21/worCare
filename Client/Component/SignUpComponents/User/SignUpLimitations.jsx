@@ -352,10 +352,7 @@ export default function SignUpLimitations({ navigation, route }) {
       //  keyboardType="default"
         returnKeyType='done'
         //close keyboard when pressing done
-        onSubmitEditing={Keyboard.dismiss}
-
-
-     
+        onSubmitEditing={Keyboard.dismiss}     
       />
 
       {/* Continue Button */}
