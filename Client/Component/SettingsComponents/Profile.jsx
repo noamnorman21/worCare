@@ -71,7 +71,7 @@ export default function Profile({ navigation }) {
       gender: Gender,
       FirstName: firstName,
       LastName: lastName, 
-      UserId: userId,
+      Id: userId,
       Password: password    
     }
     const jsonValue = JSON.stringify(userToUpdate)
@@ -172,8 +172,8 @@ const displayGender = () => {
       try {
         const jsonValue = await AsyncStorage.getItem('userData');
         const userData = jsonValue != null ? JSON.parse(jsonValue) : null;
-        console.log('userData', userData);
-        setUserId(userData.UserId);
+        console.log('Profie', userData);
+        setUserId(userData.Id);
         setFirstName(userData.FirstName);
         setLastName(userData.LastName);
         setGender(userData.gender)

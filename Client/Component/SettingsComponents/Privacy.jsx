@@ -38,7 +38,7 @@ export default function Privacy({ navigation }) {
       FirstName: firstName,
       LastName: lastName,
       Password: password,
-      UserId: userId
+      Id: userId
     }
 
     console.log('userToUpdate', userToUpdate);
@@ -121,8 +121,8 @@ export default function Privacy({ navigation }) {
       try {
         const jsonValue = await AsyncStorage.getItem('userData');
         const userData = jsonValue != null ? JSON.parse(jsonValue) : null;
-        console.log('userData', userData);
-        setUserId(userData.UserId);
+        console.log('Privacy', userData);
+        setUserId(userData.Id);
         setFirstName(userData.FirstName);
         setLastName(userData.LastName);
         setGender(userData.gender)
