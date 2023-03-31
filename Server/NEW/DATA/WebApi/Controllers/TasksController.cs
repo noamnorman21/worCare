@@ -23,7 +23,7 @@ namespace WebApi.Controllers
             {
                 db.InsertPrivateTask(taskDTO.taskName, taskDTO.taskFromDate, taskDTO.taskToDate, taskDTO.taskComment, taskDTO.status, taskDTO.workerId,taskDTO.TimeInDay, taskDTO.period);
                 db.SaveChanges();
-                return Ok();
+                return Ok(taskDTO);
             }
             catch (Exception ex)
             {
@@ -80,7 +80,7 @@ namespace WebApi.Controllers
                 tblPrivate.TimeInDay = taskDTO.TimeInDay;
                 tblPrivate.period = taskDTO.period;
                 db.SaveChanges();
-                return Ok();
+                return Ok(taskDTO);
             }
             catch (Exception ex)
             {

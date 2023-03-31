@@ -1,15 +1,7 @@
 import { View, Text, SafeAreaView, StyleSheet, Dimensions, ScrollView, TouchableOpacity, Alert } from 'react-native'
 import * as Linking from 'expo-linking';
 import { useState, useEffect } from 'react'
-import * as Font from 'expo-font';
 import Holidays from '../../HelpComponents/Holidays';
-Font.loadAsync({
-  'Urbanist': require('../../../assets/fonts/Urbanist-Regular.ttf'),
-  'Urbanist-Bold': require('../../../assets/fonts/Urbanist-Bold.ttf'),
-  'Urbanist-Light': require('../../../assets/fonts/Urbanist-Light.ttf'),
-  'Urbanist-Medium': require('../../../assets/fonts/Urbanist-Medium.ttf'),
-  'Urbanist-SemiBold': require('../../../assets/fonts/Urbanist-SemiBold.ttf'),
-});
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 export default function SignUpCaregiverLVL5({ navigation, route }) {

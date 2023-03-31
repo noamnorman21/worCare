@@ -20,7 +20,7 @@ namespace WebApi.Controllers
         igroup194DB db = new igroup194DB();
 
         [HttpGet]
-        [Route("GetUser/{id}")]     
+        [Route("GetUser/{id}")]
         public IHttpActionResult GetUser(int id)
         {
             try
@@ -69,15 +69,26 @@ namespace WebApi.Controllers
                 {
                     return NotFound();
                 }
+
                 UserDTO newUser = new UserDTO();
                 newUser.Id = user.First().Id;
                 newUser.Email = user.First().Email;
-                // newUser.Password = user.First().Password;
                 newUser.phoneNum = user.First().phoneNum;
                 newUser.userUri = user.First().userUri;
                 newUser.gender = user.First().gender;
                 newUser.FirstName = user.First().FirstName;
                 newUser.LastName = user.First().LastName;
+                var userRole = from r in db.tblForeignUsers
+                               where r.Id == newUser.Id
+                               select r.Id;
+                if (userRole.Count() > 0)
+                {
+                    newUser.userType = "Caregiver";
+                }
+                else
+                {
+                    newUser.userType = "User";
+                }
                 return Ok(newUser);
             }
             catch (Exception ex)
@@ -95,7 +106,7 @@ namespace WebApi.Controllers
                 var user = db.tblUsers.Where(x => x.Email == userDTO.Email).First();
                 if (user == null)
                 {
-                    return Ok("the email available");                   
+                    return Ok("the email available");
                 }
                 return NotFound();
             }
@@ -144,7 +155,7 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        
+
         [HttpGet]
         [Route("GetAllUsersEmailAndPhoneNum")]
         public IHttpActionResult GetAllUsersEmailAndPhoneNum()
@@ -181,8 +192,8 @@ namespace WebApi.Controllers
                 //we using here partial class tblCalendarForUser to call the method InsertCalendar
                 int result = calendarForUser.InsertCalendar(newUser.Id, user.Calendars);
                 if (result == -1)
-                    return BadRequest("Error in insert calendar for user");                
-                return Ok(newUser.Id);                
+                    return BadRequest("Error in insert calendar for user");
+                return Ok(newUser.Id);
             }
             catch (Exception ex)
             {
@@ -197,7 +208,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                tblUser user = db.tblUsers.Where(x => x.Email == userToUpdate.Email).FirstOrDefault();                
+                tblUser user = db.tblUsers.Where(x => x.Email == userToUpdate.Email).FirstOrDefault();
                 user.phoneNum = userToUpdate.phoneNum;
                 user.FirstName = userToUpdate.FirstName;
                 user.LastName = userToUpdate.LastName;
@@ -212,7 +223,7 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        
+
         // Update user password by calling Function UpdateUserPassword
         [HttpPut]
         [Route("UpdateUserPassword")]

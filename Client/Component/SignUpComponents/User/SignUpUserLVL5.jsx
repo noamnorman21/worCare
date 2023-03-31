@@ -42,22 +42,6 @@ export default function SignUpUserLVL5({ navigation, route }) {
       LanguageName_En: valueLanguage
     }
 
-    // for testing purposes
-    // const patientTest = {
-    //   FirstName: 'test',
-    //   LastName: 'test',
-    //   Id: '123456789',
-    //   DateOfBirth: '2002-01-01',
-    //   LanguageName_En: 'English'
-    // }
-    // const patientData = {
-    //   FirstName: patientTest.FirstName,
-    //   LastName: patientTest.LastName,
-    //   Id: patientTest.Id,
-    //   DateOfBirth: patientTest.DateOfBirth,
-    //   LanguageName_En: patientTest.LanguageName_En
-    // }
-
     navigation.navigate('SignUpLimitations', { patientData: patientData, tblUser: route.params.tblUser })
   }
   return (

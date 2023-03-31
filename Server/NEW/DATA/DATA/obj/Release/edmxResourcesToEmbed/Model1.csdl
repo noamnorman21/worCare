@@ -160,7 +160,7 @@
     <Property Name="listName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
     <Property Name="listFromDate" Type="DateTime" Nullable="false" Precision="0" />
     <Property Name="listToDate" Type="DateTime" Precision="0" />
-    <Property Name="listComment" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="listComment" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
     <NavigationProperty Name="tblActualList" Relationship="Self.FK__tblActual__listI__558AAF1E" FromRole="tblList" ToRole="tblActualList" />
     <NavigationProperty Name="tblProductLists" Relationship="Self.FK__tblProduc__listI__21D600EE" FromRole="tblList" ToRole="tblProductList" />
   </EntityType>
@@ -191,7 +191,7 @@
     <Property Name="taskName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
     <Property Name="taskFromDate" Type="DateTime" Nullable="false" Precision="0" />
     <Property Name="taskToDate" Type="DateTime" Precision="0" />
-    <Property Name="taskComment" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="taskComment" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
     <Property Name="taskStatus" Type="String" MaxLength="1" FixedLength="true" Unicode="false" Nullable="false" />
     <Property Name="patientId" Type="String" MaxLength="9" FixedLength="true" Unicode="false" Nullable="false" />
     <Property Name="workerId" Type="Int32" Nullable="false" />
@@ -825,6 +825,30 @@
       <Parameter Name="patientId" Mode="In" Type="String" />
       <Parameter Name="workerId" Mode="In" Type="Int32" />
       <Parameter Name="status" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="InsertList">
+      <Parameter Name="listName" Mode="In" Type="String" />
+      <Parameter Name="listFromDate" Mode="In" Type="DateTime" />
+      <Parameter Name="listToDate" Mode="In" Type="DateTime" />
+      <Parameter Name="listComment" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="InsertPatientTask">
+      <Parameter Name="taskName" Mode="In" Type="String" />
+      <Parameter Name="taskFromDate" Mode="In" Type="DateTime" />
+      <Parameter Name="taskToDate" Mode="In" Type="DateTime" />
+      <Parameter Name="taskComment" Mode="In" Type="String" />
+      <Parameter Name="taskStatus" Mode="In" Type="String" />
+      <Parameter Name="patientId" Mode="In" Type="String" />
+      <Parameter Name="workerId" Mode="In" Type="Int32" />
+      <Parameter Name="userId" Mode="In" Type="Int32" />
+      <Parameter Name="listId" Mode="In" Type="Int32" />
+      <Parameter Name="TimeInDay" Mode="In" Type="Time" />
+      <Parameter Name="period" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="InsertProduct">
+      <Parameter Name="productName" Mode="In" Type="String" />
+      <Parameter Name="productQuantity" Mode="In" Type="Int32" />
+      <Parameter Name="commentForProduct" Mode="In" Type="String" />
     </FunctionImport>
   </EntityContainer>
   <ComplexType Name="sp_helpdiagramdefinition_Result">

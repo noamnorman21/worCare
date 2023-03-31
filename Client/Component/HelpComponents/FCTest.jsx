@@ -40,10 +40,10 @@ export default function ContactListModal() {
       return false;
     }
     //throw the phone number is null
-    if (contact.phoneNumbers === null || contact.phoneNumbers === undefined ) {
+    if (contact.phoneNumbers === null || contact.phoneNumbers === undefined) {
       return false;
     }
-    return contactName.toLowerCase().includes(search.toLowerCase());    
+    return contactName.toLowerCase().includes(search.toLowerCase());
   });
 
   const handleSelectContact = (contact) => {
@@ -68,6 +68,62 @@ export default function ContactListModal() {
   };
   return (
     <SafeAreaView>
+      <DatePicker
+        style={styles.halfInput}
+        date={taskFromDate}
+        mode="date"
+        placeholder="Start Date"
+        format="YYYY-MM-DD"
+        minDate="2016-05-01"
+        maxDate="2021-06-01"
+        confirmBtnText="Confirm"
+        cancelBtnText="Cancel"
+        customStyles={{
+          dateInput: {
+            marginLeft: 0,
+            alignItems: 'flex-left',
+            borderWidth: 0,
+          },
+          dateIcon: {
+            display: 'none'
+          },
+          placeholderText: {
+            color: 'gray',
+            fontFamily: 'Urbanist-Medium',
+            fontSize: 16
+          }
+        }}
+        onDateChange={(date) => { setTaskFromDate(date) }}
+      />
+      <DatePicker
+        style={styles.halfInput}
+        date={taskToDate}
+        mode="date"
+        placeholder="To Date"
+        format="YYYY-MM-DD"
+        minDate="2016-05-01"
+        maxDate="2021-06-01"
+        confirmBtnText="Confirm"
+        cancelBtnText="Cancel"
+        customStyles={{
+          dateInput: {
+            marginLeft: 0,
+            alignItems: 'flex-left',
+            justifyContent: 'center',
+            borderWidth: 0,
+          },
+          dateIcon: {
+            display: 'none'
+          },
+          placeholderText: {
+            color: 'gray',
+            fontFamily: 'Urbanist-Light',
+            fontSize: 16
+          }
+        }}
+        onDateChange={(date) => { setTaskToDate(date) }}
+      />
+
       <View>
         <TouchableOpacity onPress={() => setVisible(true)}>
           <Text>Choose Contact</Text>

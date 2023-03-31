@@ -1,22 +1,30 @@
-import { View, Text, StyleSheet, SafeAreaView, Modal, TouchableOpacity, Dimensions, TextInput } from 'react-native'
-import { useState } from 'react'
+import { View, Text, StyleSheet, SafeAreaView, Modal, LayoutAnimation, TouchableOpacity, Keyboard, Dimensions, TextInput } from 'react-native'
+import { useState, useEffect } from 'react'
 import { AntDesign, Ionicons, SimpleLineIcons } from '@expo/vector-icons';
 import DatePicker from 'react-native-datepicker';
 import { Dropdown } from 'react-native-element-dropdown';
+import DateRangePicker from "rn-select-date-range";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import moment from "moment";
+import { Alert } from 'react-native';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
+const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 function AddBtn(props) {
    return (
-      <View style={styles.addBtn}>
-         <TouchableOpacity onPress={props.onPress}>
+      <TouchableOpacity onPress={props.onPress}>
+         <View style={styles.addBtn}>
             <Text style={styles.addBtnTxt}>+</Text>
-         </TouchableOpacity>
-      </View>
+         </View>
+      </TouchableOpacity>
    );
 }
 
 function NewTaskModal(props) {
+   const [userData, setUserData] = useState('');
+   const [userId, setUserId] = useState('');
+   const userType = userData.userType;
    const [taskName, setTaskName] = useState('')
    const [taskComment, setTaskComment] = useState('')
    const [taskFromDate, setTaskFromDate] = useState('')
@@ -26,60 +34,116 @@ function NewTaskModal(props) {
    const [taskCategory, setTaskCategory] = useState('')
    const [isPrivate, setIsPrivate] = useState(false)//for the assignee
    const [taskAssignee, setTaskAssignee] = useState('')
+   const [selectedRange, setRange] = useState({});
+   const [taskNameBorder, setTaskNameBorder] = useState('')
+   const [modalVisibleDate, setModalVisibleDate] = useState(false);
 
    const taskCategorys = [
       { id: 1, name: 'General', color: '#FFC0CB' },
       { id: 2, name: 'Shop', color: '#FFC0CB' },
       { id: 3, name: 'Medicines', color: '#FFC0CB' },
    ]
+   const taskFrequencies = [
+      { id: 0, name: 'Once' },
+      { id: 1, name: 'Daily' },
+      { id: 2, name: 'Weekly' },
+      { id: 3, name: 'Monthly' },
+      { id: 4, name: 'Yearly' },
+   ]
+
+   useEffect(() => {
+      const getUserData = async () => {
+         const user = await AsyncStorage.getItem('userData');
+         const userData = JSON.parse(user);
+         setUserId(userData.Id);
+         setUserData(userData);
+      }
+      getUserData();
+   }, []);
+
+   const changeDateFormat = (date) => {
+      return moment(date).format('DD/MM/YYYY');
+   }
 
    const privateOrPublic = [
       { id: 1, name: 'Private' },
       { id: 2, name: 'Public' },
    ]
-   const addTask = () => {
-      console.log(taskName)
-      console.log(taskComment)
-      console.log(taskFromDate)
-      console.log(taskToDate)
-      console.log(taskFrequency)
-      console.log(taskAssignee)
-      console.log(taskTime)
-      console.log(taskCategory)
+   const addPrivateTask = () => {
+      let taskUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/InsertPrivateTask';
+      let taskData = {
+         taskName: taskName,
+         taskFromDate: taskFromDate,
+         taskToDate: taskToDate,
+         taskComment: taskComment,
+         status: 'P',
+         workerId: userId,
+         TimeInDay: taskTime,
+         period: taskFrequency
+      }
+
+      console.log("taskData= ", taskData);
+      fetch(taskUrl, {
+         method: 'POST',
+         body: JSON.stringify(taskData),
+         headers: new Headers({
+            'Content-Type': 'application/json; charset=UTF-8',
+         })
+      })
+         .then(res => {
+            return res.json()
+         }
+         )
+         .then(
+            (result) => {
+               console.log("fetch POST= ", result);
+               props.onClose();
+            }
+         )
+         .catch((error) => {
+            console.log('Error=', error);
+         }
+         );
    }
    return (
       <SafeAreaView>
          <Modal visible={props.isVisible} presentationStyle='formSheet' animationType='slide' onRequestClose={props.onClose}>
             <View style={styles.centeredView}>
                <View style={styles.modalView}>
-                  <Text style={styles.modalText}>Add new task</Text>
+                  <Text style={styles.modalText}>Add new task </Text>
                   <View style={styles.inputView}>
                      <TextInput
-                        style={styles.input}
+                        style={[styles.input, taskNameBorder && { borderColor: '#000' }]}
                         placeholder='Task Name'
                         placeholderTextColor='#9E9E9E'
+                        value={taskName}
+                        returnKeyType='done'
                         onChangeText={text => setTaskName(text)}
+                        onEndEditing={() => { setTaskNameBorder(taskName) }}
                      />
-                     <Dropdown
-                        data={privateOrPublic}
-                        labelField="name"
-                        valueField="name"
-                        placeholder="Assignees"
-                        placeholderStyle={styles.placeholderStyle}
-                        style={styles.input}
-                        value={taskAssignee}
-                        maxHeight={300}
-                        containerStyle={styles.containerStyle}
-                        onChange={item => {
-                           setTaskAssignee(item.name)
-                           if (item.name == 'Private') {
-                              setIsPrivate(true)
-                           } else {
-                              setIsPrivate(false)
-                           }
-
-                        }}
-                     />
+                     { // if the user is a caregiver than display the assignee
+                        userType == "Caregiver" ?
+                           <Dropdown
+                              data={privateOrPublic}
+                              labelField="name"
+                              valueField="name"
+                              placeholder="Assignees"
+                              placeholderStyle={styles.placeholderStyle}
+                              style={[styles.input, taskAssignee && { borderColor: '#000' }]}
+                              value={taskAssignee}
+                              maxHeight={300}
+                              containerStyle={styles.containerStyle}
+                              onChange={item => {
+                                 setTaskAssignee(item.name)
+                                 if (item.name == 'Private') {
+                                    setIsPrivate(true)
+                                 } else {
+                                    setIsPrivate(false)
+                                 }
+                              }}
+                           />
+                           : null
+                     }
                      {
                         //if is private= true than display the category
                         !isPrivate ?
@@ -89,7 +153,7 @@ function NewTaskModal(props) {
                               valueField="name"
                               placeholder="Category"
                               placeholderStyle={styles.placeholderStyle}
-                              style={styles.input}
+                              style={[styles.input, taskCategory && { borderColor: '#000' }]}
                               maxHeight={300}
                               value={taskCategory}
                               containerStyle={styles.containerStyle}
@@ -99,112 +163,157 @@ function NewTaskModal(props) {
                               }
                            /> : //if is private= true than display like the user already choose the category of General
                            <TextInput
-                              style={styles.input}
+                              style={[styles.input, { borderColor: '#000' }]}
                               placeholder='Category'
                               placeholderTextColor='#9E9E9E'
                               value='General'
                               editable={false}
                            />
-
-
-
-
                      }
 
+                     <TouchableOpacity onPress={() => { setModalVisibleDate(true); }}>
+                        {
+                           taskFromDate && taskToDate ?
+                              <View style={[styles.input, { borderColor: '#000' }]}>
+                                 <Text style={[styles.regularTxt, { color: '#000', fontFamily: 'Urbanist-SemiBold' }]}>
+                                    {changeDateFormat(taskFromDate)} - {changeDateFormat(taskToDate)}
+                                 </Text>
+                              </View>
+                              :
+                              <View style={styles.input}>
+                                 <Text style={[styles.regularTxt, { color: '#9E9E9E' }]}>
+                                    Start Date - End Date
+                                 </Text>
+                              </View>
+                        }
+                     </TouchableOpacity>
+
+                     <Modal visible={modalVisibleDate} transparent={true} style={styles.modalDate} animationType='slide' onRequestClose={() => setModalVisibleDate(false)}>
+                        <View style={styles.modalDateView}>
+                           <DateRangePicker
+                              onSelectDateRange={(range) => { setRange(range); }}
+                              blockSingleDateSelection={true}
+                              responseFormat="YYYY-MM-DD"
+                              maxDate={moment().add(3, "year")}
+                              minDate={moment()}
+                              confirmBtnTitle=""
+                              clearBtnTitle=""
+                              selectedDateContainerStyle={styles.selectedDateContainerStyle}
+                              selectedDateStyle={styles.selectedDateStyle}
+                              selectedDateTextStyle={styles.selectedDateTextStyle}
+                              font='Urbanist-SemiBold'
+                           />
+
+                           <View style={{ height: 30 }}>
+                              {selectedRange.firstDate && selectedRange.secondDate && (
+                                 <Text style={styles.textStyleDate}>Selected Date: {selectedRange.firstDate} - {selectedRange.secondDate}</Text>
+                              )}
+                           </View>
+
+                           <View style={styles.btnModalDate}>
+                              <TouchableOpacity
+                                 style={styles.saveBtnDate}
+                                 onPress={() => {
+                                    setTaskFromDate(selectedRange.firstDate)
+                                    setTaskToDate(selectedRange.secondDate)
+                                    setModalVisibleDate(false);
+                                 }}
+                              >
+                                 <Text style={styles.textStyle}>Save</Text>
+                              </TouchableOpacity>
+                              <TouchableOpacity
+                                 style={styles.closeBtnDate}
+                                 onPress={() => {
+                                    setRange({});
+                                    setModalVisibleDate(false);
+                                 }}
+                              >
+                                 <Text style={styles.closeTxt}>Cancel</Text>
+                              </TouchableOpacity>
+                           </View>
+                        </View>
+                     </Modal>
+
                      <DatePicker
-                        style={styles.halfInput}
-                        date={taskFromDate}
-                        mode="date"
-                        placeholder="Start Date"
-                        format="YYYY-MM-DD"
-                        minDate="2016-05-01"
-                        maxDate="2021-06-01"
+                        style={[styles.input, taskTime != '' && { borderColor: '#000' }]}
+                        date={taskTime}
+                        mode="time"
+                        placeholder="Time"
+                        format="HH:mm"
+                        is24Hour={true}
                         confirmBtnText="Confirm"
                         cancelBtnText="Cancel"
                         customStyles={{
-                           dateInput: {
-                              marginLeft: 0,
-                              alignItems: 'flex-left',
-                              borderWidth: 0,
-                           },
                            dateIcon: {
-                              display: 'none'
+                              display: 'none',
+                           },
+                           dateInput: {
+                              borderWidth: 0,
+                              alignItems: 'flex-start',
                            },
                            placeholderText: {
-                              color: 'gray',
-                              fontFamily: 'Urbanist-Medium',
-                              fontSize: 16
-                           }
-                        }}
-                        onDateChange={(date) => { setTaskFromDate(date) }}
-                     />
-                     <DatePicker
-                        style={styles.halfInput}
-                        date={taskToDate}
-                        mode="date"
-                        placeholder="To Date"
-                        format="YYYY-MM-DD"
-                        minDate="2016-05-01"
-                        maxDate="2021-06-01"
-                        confirmBtnText="Confirm"
-                        cancelBtnText="Cancel"
-                        customStyles={{
-                           dateInput: {
-                              marginLeft: 0,
-                              alignItems: 'flex-left',
-                              borderWidth: 0,
-                           },
-                           dateIcon: {
-                              display: 'none'
-                           },
-                           placeholderText: {
-                              color: 'gray',
+                              color: '#9E9E9E',
+                              fontSize: 16,
                               fontFamily: 'Urbanist-Light',
-                              fontSize: 16
-                           }
+                           },
+                           dateText: {
+                              color: '#000',
+                              fontSize: 16,
+                              fontFamily: 'Urbanist-SemiBold',
+                           },
                         }}
-                        onDateChange={(date) => { setTaskToDate(date) }}
+                        onDateChange={(date) => { setTaskTime(date) }}
+                     />
+                     <Dropdown
+                        data={taskFrequencies}
+                        labelField="name"
+                        valueField="name"
+                        placeholder="Frequency"
+                        placeholderStyle={styles.placeholderStyle}
+                        style={[styles.input, taskFrequency && { borderColor: '#000' }]}
+                        maxHeight={200}
+                        value={taskFrequency}
+                        containerStyle={styles.containerStyle}
+                        onChange={item => { setTaskFrequency(item.name) }}
                      />
 
-
                      <TextInput
-                        style={styles.input}
-                        placeholder='Start Date - End Date'
-                        placeholderTextColor='#9E9E9E'
-                     />
-                     <TextInput
-                        style={styles.input}
-                        placeholder='Time'
-                        placeholderTextColor='#9E9E9E'
-                        onChangeText={text => setTaskTime(text)}
-                     />
-                     <TextInput
-                        style={styles.input}
-                        placeholder='Frequency'
-                        placeholderTextColor='#9E9E9E'
-                        onChangeText={text => setTaskFrequency(text)}
-                     />
-                     <TextInput
-                        style={styles.commentInput}
+                        style={[styles.commentInput, taskComment != '' && { borderColor: '#000' }]}
                         placeholder='Comment ( optional )'
-                        multiline={true}
+                        value={taskComment}
                         numberOfLines={4}
+                        returnKeyType='done'
+                        keyboardType='default'
+                        onSubmitEditing={() => Keyboard.dismiss()}
                         placeholderTextColor='#9E9E9E'
                         onChangeText={text => setTaskComment(text)}
                      />
                   </View>
                   <View style={styles.btnModal}>
-                     <TouchableOpacity style={styles.SaveBtn} onPress={[props.onClose, addTask]}>
-                        <Text style={styles.textStyle}>Save</Text>
+                     <TouchableOpacity style={styles.SaveBtn} onPress={() => { addPrivateTask(); props.onClose }}>
+                        <Text style={styles.textStyle}>Create</Text>
                      </TouchableOpacity>
 
-                     <TouchableOpacity style={styles.closeBtn} onPress={props.onClose}>
+                     <TouchableOpacity style={styles.closeBtn} onPress={() => {
+                        setTaskName('')
+                        setTaskNameBorder('')
+                        setTaskCategory('')
+                        setTaskAssignee('')
+                        setTaskFromDate('')
+                        setTaskToDate('')
+                        setTaskTime('')
+                        setTaskFrequency('')
+                        setTaskComment('')
+                        setIsPrivate(false)
+                        props.onClose()
+                     }}>
                         <Text style={styles.closeTxt}>Cancel</Text>
                      </TouchableOpacity>
                   </View>
                </View>
             </View>
          </Modal>
+
       </SafeAreaView>
    )
 }
@@ -218,6 +327,12 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       marginTop: 22,
    },
+   containerStyle: {
+      width: SCREEN_WIDTH * 0.95,
+      borderRadius: 16,
+      borderWidth: 1,
+      borderColor: '#F5F8FF',
+   },
    SaveBtn: {
       backgroundColor: '#548DFF',
       borderRadius: 16,
@@ -228,8 +343,20 @@ const styles = StyleSheet.create({
    },
    placeholderStyle: {
       color: '#9E9E9E',
-
-
+      fontSize: 16,
+      fontFamily: 'Urbanist-Light',
+   },
+   textStyleDate: {
+      padding: 10,
+      color: 'black',
+      fontFamily: 'Urbanist-SemiBold',
+      textAlign: 'left',
+      fontSize: 16,
+   },
+   regularTxt: {
+      fontFamily: 'Urbanist-Light',
+      textAlign: 'left',
+      fontSize: 16,
    },
    btnModal: {
       flexDirection: 'row',
@@ -237,7 +364,6 @@ const styles = StyleSheet.create({
       marginTop: 20,
       width: SCREEN_WIDTH * 0.95,
    },
-
    closeBtn: {
       backgroundColor: '#F5F8FF',
       borderRadius: 16,
@@ -294,17 +420,7 @@ const styles = StyleSheet.create({
       paddingLeft: 20,
       fontFamily: 'Urbanist-Light',
       fontSize: 16,
-   },
-   halfInput: {
-      borderRadius: 16,
-      borderWidth: 1.5,
-      borderColor: '#E6EBF2',
-      height: 54,
-      width: SCREEN_WIDTH * 0.45,
-      marginBottom: 10,
-      paddingLeft: 20,
-      fontFamily: 'Urbanist-Light',
-      fontSize: 16,
+      justifyContent: 'center',
    },
    commentInput: {
       borderRadius: 16,
@@ -316,5 +432,70 @@ const styles = StyleSheet.create({
       paddingLeft: 20,
       fontFamily: 'Urbanist-Light',
       fontSize: 16,
-   }
+      textAlignVertical: 'top',
+   },
+   modalDateView: {
+      marginTop: SCREEN_HEIGHT * 0.2,
+      backgroundColor: 'white',
+      borderRadius: 16,
+      padding: 20,
+      shadowColor: '#000',
+      shadowOffset: {
+         width: 0,
+         height: 2
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      width: SCREEN_WIDTH * 0.95,
+      height: SCREEN_HEIGHT * 0.65,
+      position: 'absolute',
+      top: SCREEN_HEIGHT * 0.025,
+      left: SCREEN_WIDTH * 0.025,
+   },
+   btnModalDate: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      marginTop: 20,
+      width: '100%',
+   },
+   // selectedDateContainerStyle: {
+   //    width: SCREEN_WIDTH * 1,
+   // },
+   saveBtnDate: {
+      backgroundColor: '#548DFF',
+      borderRadius: 16,
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: 44,
+      width: SCREEN_WIDTH * 0.4,
+   },
+   closeBtnDate: {
+      backgroundColor: '#F5F8FF',
+      borderRadius: 16,
+      height: 44,
+      width: SCREEN_WIDTH * 0.4,
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderWidth: 1.5,
+      borderColor: '#548DFF',
+   },
+   selectedDateTxt: {
+      color: 'white',
+      textAlign: 'center',
+      fontFamily: 'Urbanist-SemiBold',
+      fontSize: 16,
+   },
+   selectedDateStyle: {
+      fontFamily: 'Urbanist-SemiBold',
+      fontSize: 16,
+      color: '#fff',
+   },
+   selectedDateContainerStyle: {
+      backgroundColor: '#548DFF',
+      borderRadius: 30,
+      height: 35,
+      width: 35,
+      alignItems: "center",
+      justifyContent: "center",
+   },
 })

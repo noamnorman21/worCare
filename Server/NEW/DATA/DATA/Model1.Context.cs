@@ -511,5 +511,92 @@ namespace DATA
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("updateStatusCaresForPatient", patientIdParameter, workerIdParameter, statusParameter);
         }
+    
+        public virtual int InsertList(string listName, Nullable<System.DateTime> listFromDate, Nullable<System.DateTime> listToDate, string listComment)
+        {
+            var listNameParameter = listName != null ?
+                new ObjectParameter("listName", listName) :
+                new ObjectParameter("listName", typeof(string));
+    
+            var listFromDateParameter = listFromDate.HasValue ?
+                new ObjectParameter("listFromDate", listFromDate) :
+                new ObjectParameter("listFromDate", typeof(System.DateTime));
+    
+            var listToDateParameter = listToDate.HasValue ?
+                new ObjectParameter("listToDate", listToDate) :
+                new ObjectParameter("listToDate", typeof(System.DateTime));
+    
+            var listCommentParameter = listComment != null ?
+                new ObjectParameter("listComment", listComment) :
+                new ObjectParameter("listComment", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertList", listNameParameter, listFromDateParameter, listToDateParameter, listCommentParameter);
+        }
+    
+        public virtual int InsertPatientTask(string taskName, Nullable<System.DateTime> taskFromDate, Nullable<System.DateTime> taskToDate, string taskComment, string taskStatus, string patientId, Nullable<int> workerId, Nullable<int> userId, Nullable<int> listId, Nullable<System.TimeSpan> timeInDay, string period)
+        {
+            var taskNameParameter = taskName != null ?
+                new ObjectParameter("taskName", taskName) :
+                new ObjectParameter("taskName", typeof(string));
+    
+            var taskFromDateParameter = taskFromDate.HasValue ?
+                new ObjectParameter("taskFromDate", taskFromDate) :
+                new ObjectParameter("taskFromDate", typeof(System.DateTime));
+    
+            var taskToDateParameter = taskToDate.HasValue ?
+                new ObjectParameter("taskToDate", taskToDate) :
+                new ObjectParameter("taskToDate", typeof(System.DateTime));
+    
+            var taskCommentParameter = taskComment != null ?
+                new ObjectParameter("taskComment", taskComment) :
+                new ObjectParameter("taskComment", typeof(string));
+    
+            var taskStatusParameter = taskStatus != null ?
+                new ObjectParameter("taskStatus", taskStatus) :
+                new ObjectParameter("taskStatus", typeof(string));
+    
+            var patientIdParameter = patientId != null ?
+                new ObjectParameter("patientId", patientId) :
+                new ObjectParameter("patientId", typeof(string));
+    
+            var workerIdParameter = workerId.HasValue ?
+                new ObjectParameter("workerId", workerId) :
+                new ObjectParameter("workerId", typeof(int));
+    
+            var userIdParameter = userId.HasValue ?
+                new ObjectParameter("userId", userId) :
+                new ObjectParameter("userId", typeof(int));
+    
+            var listIdParameter = listId.HasValue ?
+                new ObjectParameter("listId", listId) :
+                new ObjectParameter("listId", typeof(int));
+    
+            var timeInDayParameter = timeInDay.HasValue ?
+                new ObjectParameter("TimeInDay", timeInDay) :
+                new ObjectParameter("TimeInDay", typeof(System.TimeSpan));
+    
+            var periodParameter = period != null ?
+                new ObjectParameter("period", period) :
+                new ObjectParameter("period", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertPatientTask", taskNameParameter, taskFromDateParameter, taskToDateParameter, taskCommentParameter, taskStatusParameter, patientIdParameter, workerIdParameter, userIdParameter, listIdParameter, timeInDayParameter, periodParameter);
+        }
+    
+        public virtual int InsertProduct(string productName, Nullable<int> productQuantity, string commentForProduct)
+        {
+            var productNameParameter = productName != null ?
+                new ObjectParameter("productName", productName) :
+                new ObjectParameter("productName", typeof(string));
+    
+            var productQuantityParameter = productQuantity.HasValue ?
+                new ObjectParameter("productQuantity", productQuantity) :
+                new ObjectParameter("productQuantity", typeof(int));
+    
+            var commentForProductParameter = commentForProduct != null ?
+                new ObjectParameter("commentForProduct", commentForProduct) :
+                new ObjectParameter("commentForProduct", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertProduct", productNameParameter, productQuantityParameter, commentForProductParameter);
+        }
     }
 }

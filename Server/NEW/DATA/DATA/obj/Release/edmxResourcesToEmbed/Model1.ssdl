@@ -135,7 +135,7 @@
     <Property Name="listName" Type="varchar" MaxLength="20" Nullable="false" />
     <Property Name="listFromDate" Type="date" Nullable="false" />
     <Property Name="listToDate" Type="date" />
-    <Property Name="listComment" Type="varchar" MaxLength="50" />
+    <Property Name="listComment" Type="varchar(max)" />
   </EntityType>
   <EntityType Name="tblPatient">
     <Key>
@@ -156,7 +156,7 @@
     <Property Name="taskName" Type="varchar" MaxLength="20" Nullable="false" />
     <Property Name="taskFromDate" Type="date" Nullable="false" />
     <Property Name="taskToDate" Type="date" />
-    <Property Name="taskComment" Type="varchar" MaxLength="50" />
+    <Property Name="taskComment" Type="varchar(max)" />
     <Property Name="taskStatus" Type="char" MaxLength="1" Nullable="false" />
     <Property Name="patientId" Type="char" MaxLength="9" Nullable="false" />
     <Property Name="workerId" Type="int" Nullable="false" />
@@ -556,6 +556,12 @@
     <Parameter Name="LanguageName_En" Type="varchar" Mode="In" />
     <Parameter Name="CountryName_En" Type="varchar" Mode="In" />
   </Function>
+  <Function Name="InsertList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="listName" Type="varchar" Mode="In" />
+    <Parameter Name="listFromDate" Type="date" Mode="In" />
+    <Parameter Name="listToDate" Type="date" Mode="In" />
+    <Parameter Name="listComment" Type="varchar(max)" Mode="In" />
+  </Function>
   <Function Name="InsertPatient" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="Id" Type="char" Mode="In" />
     <Parameter Name="FirstName" Type="varchar" Mode="In" />
@@ -587,6 +593,19 @@
     <Parameter Name="sensitivityToNoise" Type="varchar" Mode="In" />
     <Parameter Name="other" Type="varchar" Mode="In" />
   </Function>
+  <Function Name="InsertPatientTask" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="taskName" Type="varchar" Mode="In" />
+    <Parameter Name="taskFromDate" Type="date" Mode="In" />
+    <Parameter Name="taskToDate" Type="date" Mode="In" />
+    <Parameter Name="taskComment" Type="varchar(max)" Mode="In" />
+    <Parameter Name="taskStatus" Type="char" Mode="In" />
+    <Parameter Name="patientId" Type="char" Mode="In" />
+    <Parameter Name="workerId" Type="int" Mode="In" />
+    <Parameter Name="userId" Type="int" Mode="In" />
+    <Parameter Name="listId" Type="int" Mode="In" />
+    <Parameter Name="TimeInDay" Type="time" Mode="In" />
+    <Parameter Name="period" Type="varchar" Mode="In" />
+  </Function>
   <Function Name="InsertPrivateTask" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="taskName" Type="varchar" Mode="In" />
     <Parameter Name="taskFromDate" Type="date" Mode="In" />
@@ -596,6 +615,11 @@
     <Parameter Name="workerId" Type="int" Mode="In" />
     <Parameter Name="TimeInDay" Type="time" Mode="In" />
     <Parameter Name="period" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="InsertProduct" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="productName" Type="varchar" Mode="In" />
+    <Parameter Name="productQuantity" Type="int" Mode="In" />
+    <Parameter Name="commentForProduct" Type="varchar(max)" Mode="In" />
   </Function>
   <Function Name="InsertUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="Email" Type="varchar" Mode="In" />
