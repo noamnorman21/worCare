@@ -99,7 +99,14 @@ export default function LogIn({ navigation }) {
             },
             body: JSON.stringify(userData),
         })
-            .then((response) => response.json())
+        .then(res => {
+            if (res.ok) {
+                return res.json()
+            }
+            else {
+                Alert.alert("Email or Password inncorrect")
+            }
+        })
             .then((json) => {
                 if (json === null) {
                     Alert.alert('Login Failed');

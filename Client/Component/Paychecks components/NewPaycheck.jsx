@@ -47,7 +47,7 @@ export default function NewPaycheck(props) {
     paycheckYear:'',
     paycheckSummary: '',
     paycheckComment: '',    
-    userId: 1// will be changed to current user id,
+    userId: props.userId// will be changed to current user id,
   })
   
   const pickDocument = async () => {

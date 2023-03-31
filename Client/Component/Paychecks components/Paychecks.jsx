@@ -12,8 +12,8 @@ import EditPaycheck from './EditPaycheck';
 
 
 
-export default function Paychecks({navigation}) {
-  const userId = 1 // יש להחליף למשתנה של המשתמש הנוכחי
+export default function Paychecks({navigation, route}) {
+  const userId = route.params.userId // יש להחליף למשתנה של המשתמש הנוכחי
   const [History, setHistory] = useState()
   const isFocused = useIsFocused()
   const [modal1Visible, setModal1Visible] = useState(false);
@@ -43,6 +43,7 @@ export default function Paychecks({navigation}) {
   }, [isFocused])
 
   const getPaychecks = async () => {
+    console.log(userId)
     try {
       const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/PayChecks/GetPaychecks/' + userId, {
         method: 'GET',
@@ -107,7 +108,7 @@ export default function Paychecks({navigation}) {
         <Text style={styles.addRequestText}>+</Text>
       </TouchableOpacity>
       <Modal animationType='slide' transparent={true} visible={modal1Visible}>
-       <NewPaycheck cancel={() => {setModal1Visible(false); getPaychecks()} } />
+       <NewPaycheck cancel={() => {setModal1Visible(false); getPaychecks()} } userId={userId} />
       </Modal>
       
     </ScrollView>

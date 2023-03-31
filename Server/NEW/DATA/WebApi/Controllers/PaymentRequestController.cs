@@ -148,6 +148,32 @@ namespace WebApi.Controllers
             }
         }
 
+
+        [HttpPut]
+        [Route("UpdateStatus")]
+        public IHttpActionResult UpdateStatus([FromBody] int id)
+        {
+            try
+            {
+                var p = db.tblPaymentRequests.Where(x => x.requestId == id).FirstOrDefault();
+                if (p != null)
+                {
+                    p.requestStatus = "C";
+                    db.SaveChanges();
+                    return Ok("Status Updated successfully!");
+                }
+                else
+                {
+                    return BadRequest("requset not found");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+                throw;
+            }
+        }
+
         [HttpDelete]
         [Route("DeletePayment/{id}")]
         public IHttpActionResult DeletePayment(int id)
