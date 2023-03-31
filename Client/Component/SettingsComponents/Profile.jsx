@@ -20,6 +20,7 @@ export default function Profile({ navigation }) {
   const [Phonenum, setPhonenum] = useState(null);
   const [userImg, setUserImg] = useState(null);
   const [Email, setEmail] = useState(null);
+  const [password, setPassword] = useState(null);
   const [ImageChange, setImageChange] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalType, setModalType] = useState('');
@@ -69,10 +70,14 @@ export default function Profile({ navigation }) {
       phoneNum: Phonenum,
       gender: Gender,
       FirstName: firstName,
-      LastName: lastName,
+      LastName: lastName, 
+      Id: userId,
+      Password: password    
     }
-
     console.log('userToUpdate', userToUpdate);
+    const jsonValue = JSON.stringify(userToUpdate)
+    AsyncStorage.setItem('userData', jsonValue);   
+  
 
     // fetch('http://proj.ruppin.ac.il/bgroup79/test1/tar1/api/Settings/UpdateUser', {
     //   method: 'PUT',
@@ -97,6 +102,8 @@ export default function Profile({ navigation }) {
     //     console.log('Error:', error.message);
     //   }
     //   );
+
+    navigation.goBack();
 
   }
 
@@ -148,7 +155,8 @@ export default function Profile({ navigation }) {
       FirstName: firstName,
       LastName: lastName,
       gender: Gender,
-      phoneNum: Phonenum
+      phoneNum: Phonenum, 
+      Password: password
     }
     console.log('userToUpdate', userToUpdate);
 
@@ -177,6 +185,7 @@ export default function Profile({ navigation }) {
         setUserImg(userData.userUri)
         setPhonenum(userData.phoneNum)
         setEmail(userData.Email)
+        setPassword(userData.Password)
       } catch (e) {
         console.log('error', e);
       }
@@ -222,10 +231,10 @@ export default function Profile({ navigation }) {
         </TouchableOpacity>
         <View style={styles.bottom}>
           <TouchableOpacity onPress={() => ImageChange ? sendToFirebase(userImg): sendDataToNextDB()} style={styles.button}>
-            <Text style={styles.buttonText}>Save</Text>
+            <Text style={styles.buttonText}>Save to DB</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={cancel} style={styles.cancelbutton}>
-            <Text style={styles.cancelbuttonText}>Cancel</Text>
+            <Text style={styles.cancelbuttonText}>Cancel All Changes</Text>
           </TouchableOpacity>
         </View>
         <Modal animationType="slide" visible={modalVisible}>

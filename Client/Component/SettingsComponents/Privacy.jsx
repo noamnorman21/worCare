@@ -27,53 +27,23 @@ export default function Privacy({ navigation }) {
   const [modalValue, setModalValue] = useState('');
   const [modal2Visible, setModal2Visible] = useState(false);
 
-  const sendToFirebase = async (image) => {
+  
 
-    // if the user didn't upload an image, we will use the default image
-    if (userImg === null) {
-      //זה תמונה מכוערת -נועם תחליף אותה
-      let defultImage = "https://png.pngtree.com/element_our/20200610/ourmid/pngtree-character-default-avatar-image_2237203.jpg"
-      sendDataToNextDB(defultImage);
-    }
-    const filename = image.substring(image.lastIndexOf('/') + 1);
-    const storageRef = ref(storage, "images/" + filename);
-    const blob = await fetch(image).then(response => response.blob());
-    try {
-      const uploadTask = uploadBytesResumable(storageRef, blob);
-      uploadTask.on('state_changed',
-        snapshot => {
-          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log(`Upload is ${progress}% complete`);
-        },
-        error => {
-          console.error(error);
-          Alert.alert('Upload Error', 'Sorry, there was an error uploading your image. Please try again later.');
-        },
-        () => {
-          getDownloadURL(storageRef).then(downloadURL => {
-            console.log('File available at', downloadURL);
-            sendDataToNextDB(downloadURL);
-          });
-        }
-      );
-    } catch (error) {
-      console.error(error);
-      Alert.alert('Upload Error', 'Sorry, there was an error uploading your image. Please try again later.');
-      sendDataToNextDB();
-    }
-  }
-
-  const sendDataToNextDB = (downloadURL) => {
+  const sendDataToNextDB = () => {
     const userToUpdate = {
       Email: Email,
-      userUri: downloadURL == null ? userImg : downloadURL,
+      userUri: userImg,
       phoneNum: Phonenum,
       gender: Gender,
       FirstName: firstName,
       LastName: lastName,
+      Password: password,
     }
 
     console.log('userToUpdate', userToUpdate);
+    const jsonValue = JSON.stringify(userToUpdate)
+    AsyncStorage.setItem('userData', jsonValue);   
+    navigation.goBack();
 
     // fetch('http://proj.ruppin.ac.il/bgroup79/test1/tar1/api/Settings/UpdateUser', {
     //   method: 'PUT',
@@ -211,10 +181,10 @@ export default function Privacy({ navigation }) {
         </TouchableOpacity>
         <View style={styles.bottom}>
           <TouchableOpacity onPress={() => sendDataToNextDB()} style={styles.button}>
-            <Text style={styles.buttonText}>Save</Text>
+            <Text style={styles.buttonText}>Save to DB</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={cancel} style={styles.cancelbutton}>
-            <Text style={styles.cancelbuttonText}>Cancel</Text>
+            <Text style={styles.cancelbuttonText}>Cancel All Changes</Text>
           </TouchableOpacity>
         </View>
         <Modal animationType="slide" visible={modalVisible}>

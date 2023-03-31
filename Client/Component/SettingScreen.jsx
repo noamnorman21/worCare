@@ -5,6 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AntDesign, Ionicons, SimpleLineIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useIsFocused } from '@react-navigation/native';
 
 // Internal imports:
 import Profile from './SettingsComponents/Profile'
@@ -22,6 +23,7 @@ function HomeScreen({ navigation, route }) {
     const [userName, setUserName] = useState(null);
     const [userEmail, setuserEmail] = useState(null);
     const [userId, setUserId] = useState(null);
+    const isFocused = useIsFocused();
 
 
     LogBox.ignoreLogs([
@@ -37,13 +39,14 @@ function HomeScreen({ navigation, route }) {
                 setuserEmail(userData.Email);
                 setUserImg(userData.userUri);
                 setUserId(userData.Id);
+                
                 console.log('Setting screen', userData);
             } catch (e) {
                 console.log('error', e);
             }
         };
         getData();
-    }, []);
+    }, [isFocused]);
 
     //the user name will be taken from the database
     //the user image will be taken from the database
@@ -79,7 +82,7 @@ function HomeScreen({ navigation, route }) {
                     <Text style={styles.btnText}>Privacy & My Account</Text>
                     <AntDesign style={styles.arrowLogoStyle} name="right" size={25} color="gray" />
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('ContactUs')}>
+                <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('ContactUs', {userImg:userImg})}>
                     <Ionicons style={styles.logoStyle} name='send' size={30} color='gray' />
                     <Text style={styles.btnText}>Contact Us</Text>
                     <AntDesign style={styles.arrowLogoStyle} name="right" size={25} color="gray" />
