@@ -91,7 +91,7 @@ export default function LogIn({ navigation }) {
     //function to login user
     const LoginUser = (userData) => {
         let userForLoginUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUserForLogin';
-        console.log(userData);
+        console.log("user sdaData",userData);
         fetch(userForLoginUrl, {
             method: 'POST',
             headers: {
@@ -110,10 +110,10 @@ export default function LogIn({ navigation }) {
                         console.log('checked');
                         _storeData();
                     }  
-                                     
+                    console.log('json', json)                  
                     //save user data in context
                     const userContext = {
-                        UserId: json.Id,
+                        UserId: json.UserId,
                         FirstName: json.FirstName,
                         LastName: json.LastName,
                         Email: json.Email,
@@ -123,6 +123,7 @@ export default function LogIn({ navigation }) {
                         Password: password,                        
                     }
                     const jsonValue = JSON.stringify(userContext)
+                    console.log('userContext', userContext);
                     AsyncStorage.setItem('userData', jsonValue);                        
                     navigation.navigate('CustomHeader');//navigate to home screen, we will add a necessary call to get user data from the server                                         
                 }
