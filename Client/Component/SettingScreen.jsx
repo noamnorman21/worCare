@@ -1,39 +1,52 @@
 // External imports:
-import { StyleSheet, View, Text, Alert, SafeAreaView, TouchableOpacity, Dimensions, Image } from 'react-native'
+import { StyleSheet, View, Text, Alert, SafeAreaView, TouchableOpacity, Dimensions, Image, LogBox } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AntDesign, Ionicons, SimpleLineIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useIsFocused } from '@react-navigation/native';
 
 // Internal imports:
 import Profile from './SettingsComponents/Profile'
 import Notifications from './SettingsComponents/Notifications'
 import Privacy from './SettingsComponents/Privacy'
 import ContactUs from './SettingsComponents/ContactUs'
+import ImageChange from './SettingsComponents/ImageChange'
 
 const Stack = createNativeStackNavigator();
 
 //this is the Setting Main screen, 
 //need to add the personal setting (יצירת פרופיל)
-function HomeScreen({ navigation }) {
+function HomeScreen({ navigation, route }) {
     const [userImg, setUserImg] = useState(null);
     const [userName, setUserName] = useState(null);
+    const [userEmail, setuserEmail] = useState(null);
+    const [userId, setUserId] = useState(null);
+    const isFocused = useIsFocused();
+
+
+    LogBox.ignoreLogs([
+        'Non-serializable values were found in the navigation state',
+      ]);
 
     useEffect(() => {
         const getData = async () => {
             try {
                 const jsonValue = await AsyncStorage.getItem('userData');
                 const userData = jsonValue != null ? JSON.parse(jsonValue) : null;
-                setUserImg(userData.userUri);
                 setUserName(userData.FirstName);
+                setuserEmail(userData.Email);
+                setUserImg(userData.userUri);
+                setUserId(userData.UserId);                
                 console.log('Setting screen', userData);
+                
             } catch (e) {
                 console.log('error', e);
             }
         };
         getData();
-    }, []);
+    }, [isFocused]);
 
     //the user name will be taken from the database
     //the user image will be taken from the database
@@ -52,7 +65,7 @@ function HomeScreen({ navigation }) {
             </View>
 
             <View style={styles.btnContainer}>
-                <TouchableOpacity style={styles.btn} onPress={() => [navigation.navigate('Profile')]}>
+                <TouchableOpacity style={styles.btn} onPress={() => [navigation.navigate('Profile', {email:userEmail})]}>
                     <Ionicons style={styles.logoStyle} name='ios-person-outline' size={30} color='gray' />
                     <Text style={styles.btnText}>Profile</Text>
                     <AntDesign style={styles.arrowLogoStyle} name="right" size={25} color="gray" />
@@ -69,7 +82,7 @@ function HomeScreen({ navigation }) {
                     <Text style={styles.btnText}>Privacy & My Account</Text>
                     <AntDesign style={styles.arrowLogoStyle} name="right" size={25} color="gray" />
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('ContactUs')}>
+                <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('ContactUs', {userImg:userImg})}>
                     <Ionicons style={styles.logoStyle} name='send' size={30} color='gray' />
                     <Text style={styles.btnText}>Contact Us</Text>
                     <AntDesign style={styles.arrowLogoStyle} name="right" size={25} color="gray" />
@@ -82,7 +95,7 @@ function HomeScreen({ navigation }) {
                                 {
                                     text: 'OK',
                                     onPress: () => {
-                                        navigation.navigate('LogIn')
+                                       route.params.logout();
                                     }
                                 },
                             ]);
@@ -117,6 +130,8 @@ function HomeScreen({ navigation }) {
 }
 
 export default function SettingScreen({ navigation }) {    
+
+
     return (
         <NavigationContainer independent={true}>
             <Stack.Navigator
@@ -132,10 +147,11 @@ export default function SettingScreen({ navigation }) {
                     },
                     headerBackTitleVisible: false,
                     // how to hide the parent header in the child stack navigator   
-                    // headerShown: false,
+                    
                 }}>
-                <Stack.Screen name="Settings" component={HomeScreen} options={() => ({ headerTitle: 'Settings', headerShown: false })} />
-                <Stack.Screen name="Profile" component={Profile} />
+
+                <Stack.Screen name="Settings" component={HomeScreen} options={() => ({ headerTitle: 'Settings', headerShown: false })} initialParams={{logout:()=>{navigation.navigate('LogIn')}}} />
+                <Stack.Screen name="Profile" component={Profile} options={{ headerLeft: () => null }} />
                 <Stack.Screen name="Notifications" component={Notifications} />
                 <Stack.Screen name="Privacy" component={Privacy} options={{ headerTitle: 'Privacy & My Account' }} />
                 <Stack.Screen name="ContactUs" component={ContactUs} options={{ headerTitle: 'Contact Us' }} />
