@@ -189,6 +189,7 @@ const styles = StyleSheet.create({
     borderColor: 'lightgray',
     shadowColor: '#000',
     height: 45,
+    fontFamily:'Urbanist',
   },
   numInput: {
     width: Dimensions.get('window').width * 0.43,
@@ -229,13 +230,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   savebuttonText: {
-    color: 'white',
-    fontWeight: '600',
+    color: 'white',    
     fontSize: 16,
+    fontFamily:'Urbanist-Bold',    
   },
   cancelbuttonText: {
     color: '#548DFF',
-    fontWeight: '600',
+    fontFamily:'Urbanist-Bold',
     fontSize: 16,
   },
   title: {

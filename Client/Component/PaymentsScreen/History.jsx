@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
   },
   requestHeaderText: {
     fontSize: 16,
-    fontWeight: '600',
+    fontFamily:'Urbanist-Bold',
   },
   requestHeader: {
     alignItems: 'center',
@@ -232,6 +232,12 @@ const styles = StyleSheet.create({
     width: Dimensions.get('screen').width * 0.85,
     flexDirection: 'row',
     padding: 16,
+  },
+  requestHeaderIcon: {
+    zIndex: 0,
+    position: 'absolute',
+    right: Dimensions.get('screen').width * 0,
+    backgroundColor: 'orange',
   },
   Focused: {
     borderLeftColor: '#7DA9FF',
@@ -251,6 +257,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginLeft:Dimensions.get('screen').width * -0.16,
     marginRight:Dimensions.get('screen').width * 0.02,  
+    fontFamily:'Urbanist',
    
   },
   viewButton: {
@@ -277,39 +284,34 @@ const styles = StyleSheet.create({
   viewbuttonText: {
     color: 'white',
     fontSize: 16,
-    fontWeight: '600',
+    fontFamily:'Urbanist-Bold',
     alignItems: 'center',
     justifyContent: 'center',
   },
   editbuttonText: {
     color: '#7DA9FF',
     fontSize: 16,
-    fontWeight: '600',
+    fontFamily:'Urbanist-Bold',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  requestHeaderIcon: {
-    zIndex: 0,
-    position: 'absolute',
-    right: Dimensions.get('screen').width * 0,
-    backgroundColor: 'orange',
-  },
+  }, 
   addRequest: {
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#7DA9FF',
-    height:64,
-    width: 64,
+    backgroundColor: '#548DFF',
+    height: 54,
+    width: 54,
     borderRadius: 54,
     position: 'absolute',
     bottom: Platform.OS === 'ios' ? 40 : 10,
     right:  Platform.OS === 'ios' ? 15: 10,
-    elevation: 5,    
+    elevation: 5,
   },
   addRequestText: {
     color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 26,
+    marginBottom: 2,
+    fontFamily: 'Urbanist-SemiBold',
   },
 
 

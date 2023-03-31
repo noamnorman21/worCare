@@ -158,10 +158,12 @@ fontSize: 15,
   name: {
     fontSize: 17,
     color: '#000',
+    fontFamily:'Urbanist',
   },
   number: {
     fontSize: 14,
     color: '#8A8A8D',
+    fontFamily:'Urbanist',
   },
   searchBar: {
     margin: 10,

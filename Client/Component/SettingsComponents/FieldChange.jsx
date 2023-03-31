@@ -1,7 +1,7 @@
 import React from 'react';
 import { useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
-import { TextInput } from 'react-native-paper';
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions, TextInput } from 'react-native';
+
 
 
 export default function FieldChange(props) {
@@ -67,6 +67,7 @@ export default function FieldChange(props) {
             onChangeText={text => setValue(text)}
             keyboardType={type === 'Phone Number' ? 'phone-pad' : 'default'}
           />
+          
         </View>
         <View style={styles.bottom}>
           <TouchableOpacity onPress={save} style={styles.button}>
@@ -133,6 +134,7 @@ export default function FieldChange(props) {
     },
     input: {
       width: Dimensions.get('window').width * 0.85,
+      height: 65,
       padding: 10,
       margin: 7,
       alignItems: 'center',
@@ -141,18 +143,15 @@ export default function FieldChange(props) {
       backgroundColor: '#F5F5F5',
       borderColor: 'lightgray',
       shadowColor: '#000',
-      height: 45,
-      fontFamily:'Urbanist-SemiBold'
+      fontSize: 16,
+      fontFamily:'Urbanist',
+      textAlign: 'center',
     },
-    firstNameInput: {
-      marginRight: 10,
-      width: Dimensions.get('window').width * 0.85,
-      fontFamily:'Urbanist'
-      
-    },
+    
     inputContainer: {
+ 
       alignItems: 'center',
-
+     
     },
     header: {
       marginTop: 20,

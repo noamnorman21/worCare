@@ -311,11 +311,13 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: '600',
     fontSize: 16,
+    fontFamily:'Urbanist-Bold',
   },
   cancelbuttonText: {
     color: '#548DFF',
     fontWeight: '600',
     fontSize: 16,
+    fontFamily:'Urbanist-Bold',
   },
   title: {
     fontSize: 26,

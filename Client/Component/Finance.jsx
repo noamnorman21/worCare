@@ -151,7 +151,8 @@ const styles = StyleSheet.create({
   txt: {
     color: 'white',
     fontSize: 16,
-    fontWeight: 'bold',
+    fontFamily:'Urbanist-SemiBold'
+
   },
   request: {
     alignItems: 'center',

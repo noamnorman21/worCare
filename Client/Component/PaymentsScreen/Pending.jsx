@@ -123,8 +123,7 @@ function Request(props) {
     <List.Accordion style={!expanded ? styles.request : styles.requestunFocused}
       theme={{ colors: { background: 'white' } }}
       right={() => <View style={styles.requesRight}><Text style={styles.requestHeaderText}>{props.subject}</Text>
-      <TouchableOpacity 
-         onPress={()=>{}}>
+      <TouchableOpacity>
           <View>
         <Feather
         name="bell"
@@ -210,8 +209,14 @@ const styles = StyleSheet.create({
     borderBottomMargin: 10,  
   },
   requestHeaderText: {
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 17,
+    fontFamily:'Urbanist-Bold'
+  },
+  requestHeaderIcon: {
+    zIndex: 0,
+    position: 'absolute',
+    right: Dimensions.get('screen').width * 0,
+    backgroundColor: 'orange',
   },
   requestHeader: {
     alignItems: 'center',
@@ -246,8 +251,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     marginLeft:Dimensions.get('screen').width * -0.16,
-    marginRight:Dimensions.get('screen').width * 0.02,  
-   
+    marginRight:Dimensions.get('screen').width * 0.02,
+    fontFamily:'Urbanist',
   },
   viewButton: {
     alignItems: 'center',
@@ -256,7 +261,6 @@ const styles = StyleSheet.create({
     height: 40,
     width: Dimensions.get('screen').width * 0.36,
     borderRadius: 16,
-
   },
   editButton: {
     alignItems: 'center',
@@ -269,33 +273,27 @@ const styles = StyleSheet.create({
     borderColor: '#7DA9FF',
     marginLeft: 10,
   },
-
   viewbuttonText: {
     color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 16,   
     alignItems: 'center',
     justifyContent: 'center',
+    fontFamily:'Urbanist-Bold'
   },
   editbuttonText: {
     color: '#7DA9FF',
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 16,    
     alignItems: 'center',
     justifyContent: 'center',
+    fontFamily:'Urbanist-Bold'
   },
-  requestHeaderIcon: {
-    zIndex: 0,
-    position: 'absolute',
-    right: Dimensions.get('screen').width * 0,
-    backgroundColor: 'orange',
-  },
+  
   addRequest: {
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#7DA9FF',
-    height: 64,
-    width: 64,
+    backgroundColor: '#548DFF',
+    height: 54,
+    width: 54,
     borderRadius: 54,
     position: 'absolute',
     bottom: Platform.OS === 'ios' ? 40 : 10,
@@ -304,7 +302,8 @@ const styles = StyleSheet.create({
   },
   addRequestText: {
     color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 26,
+    marginBottom: 2,
+    fontFamily: 'Urbanist-SemiBold',
   },
 })

@@ -216,8 +216,8 @@ const styles = StyleSheet.create({
     
   },
   requestHeaderText: {
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 17,
+    fontFamily:'Urbanist-Bold'
   },
   Focused: {
     borderLeftColor: '#7DA9FF',
@@ -240,8 +240,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginLeft:Dimensions.get('screen').width * -0.16,
     marginRight:Dimensions.get('screen').width * 0.02,
-    marginVertical:0,
-   
+    fontFamily:'Urbanist',
   },
   viewButton: {
     alignItems: 'center',
@@ -280,28 +279,31 @@ const styles = StyleSheet.create({
   addRequest: {
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#7DA9FF',
-    height:64,
-    width: 64,
+    backgroundColor: '#548DFF',
+    height: 54,
+    width: 54,
     borderRadius: 54,
     position: 'absolute',
     bottom: Platform.OS === 'ios' ? 40 : 10,
     right:  Platform.OS === 'ios' ? 15: 10,
-    elevation: 5,    
+    elevation: 5,
   },
   addRequestText: {
     color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 26,
+    marginBottom: 2,
+    fontFamily: 'Urbanist-SemiBold',
   },
   headerText: {      
     height: Dimensions.get('screen').height * 0.05,
     width: Dimensions.get('screen').width * 0.85,
     marginBottom: Dimensions.get('screen').height * 0.02,  
+   
   },
   header: {
-    fontSize: 24,
-    fontWeight: '700',  
+    fontSize: 30,
+    fontFamily: 'Urbanist-Bold',
+    textAlign:'center'
   },
   bottom:{
     flexDirection: 'row',
