@@ -122,7 +122,7 @@ export default function LogIn({ navigation }) {
                         userType: json.userType, 
                         Password: password                   
                     }
-                    const jsonValue = JSON.stringify(userContext)
+                    const jsonValue = JSON.stringify(userContext)                    
                     AsyncStorage.setItem('userData', jsonValue);                        
                     navigation.navigate('CustomHeader');//navigate to home screen, we will add a necessary call to get user data from the server                                         
                 }
