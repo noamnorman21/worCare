@@ -20,6 +20,7 @@ export default function Privacy({ navigation }) {
   const [Phonenum, setPhonenum] = useState(null);
   const [userImg, setUserImg] = useState(null);
   const [Email, setEmail] = useState(null);
+  const [userType, setUserType] = useState(null);
   const [password, setPassword] = useState(null);
   const [ImageChange, setImageChange] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -38,7 +39,8 @@ export default function Privacy({ navigation }) {
       FirstName: firstName,
       LastName: lastName,
       Password: password,
-      Id: userId
+      Id: userId,
+      userType: userType
     }
 
     console.log('userToUpdate', userToUpdate);
@@ -130,6 +132,7 @@ export default function Privacy({ navigation }) {
         setPhonenum(userData.phoneNum)
         setEmail(userData.Email)
         setPassword(userData.Password)
+        setUserType(userData.userType)
       } catch (e) {
         console.log('error', e);
       }

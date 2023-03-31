@@ -9,8 +9,8 @@ import EditPaymentScreen from './EditPaymentScreen';
 
 
 
-export default function History({navigation}) {
-  const userId = 1 // יש להחליף למשתנה של המשתמש הנוכחי
+export default function History({navigation, route}) {
+  const userId = route.params.userId // יש להחליף למשתנה של המשתמש הנוכחי
   const [History, setHistory] = useState()
   const isFocused = useIsFocused()
   const [modal1Visible, setModal1Visible] = useState(false);

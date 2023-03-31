@@ -20,6 +20,7 @@ export default function Profile({ navigation }) {
   const [Phonenum, setPhonenum] = useState(null);
   const [userImg, setUserImg] = useState(null);
   const [Email, setEmail] = useState(null);
+  const [userType, setUserType] = useState(null);
   const [password, setPassword] = useState(null);
   const [ImageChange, setImageChange] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -72,7 +73,8 @@ export default function Profile({ navigation }) {
       FirstName: firstName,
       LastName: lastName, 
       Id: userId,
-      Password: password    
+      Password: password,
+      userType: userType  
     }
     const jsonValue = JSON.stringify(userToUpdate)
     AsyncStorage.setItem('userData', jsonValue);   
@@ -181,6 +183,7 @@ const displayGender = () => {
         setPhonenum(userData.phoneNum)
         setEmail(userData.Email)
         setPassword(userData.Password)
+        setUserType(userData.userType)
       } catch (e) {
         console.log('error', e);
       }

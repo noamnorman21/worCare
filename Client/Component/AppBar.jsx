@@ -98,8 +98,7 @@ function AppBarDown() {
         const getData = async () => {
             try {
                 const jsonValue = await AsyncStorage.getItem('userData');
-                const userData = jsonValue != null ? JSON.parse(jsonValue) : null;
-               
+                const userData = jsonValue != null ? JSON.parse(jsonValue) : null;               
                 console.log('userData', userData);
             } catch (e) {
                 console.log('error', e);

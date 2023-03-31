@@ -7,6 +7,9 @@ import Pending from './PaymentsScreen/Pending';
 import History from './PaymentsScreen/History';
 import EditPaymentScreen from './PaymentsScreen/EditPaymentScreen';
 import NewPayment from './PaymentsScreen/NewPayment';
+import Paychecks from './Paychecks components/Paychecks';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useEffect, useState } from 'react';
 
 
 
@@ -36,7 +39,7 @@ export default function Finance() {
       בעת רנדור עמוד פנימי פנדינג ירונדרו בקשות לפי סטוטס בקשה אינו שולם,
       בעת רנדור מס היסטוריה ירונדרו בקשות אשר בעלות סטטוס שולמו.
       מידע אשר ישלף כלפי כל בקשה- id, sunject, amount, requestDate, proofofdocument, comment, status */}
-        <Stack.Screen name='Paychecks' component={Paycheck} options={() => ({
+        <Stack.Screen name='Paychecks' component={Paychecks} options={() => ({
           headerShown: false,
           presentation: 'stack',
           cardOverlayEnabled: true,
@@ -49,6 +52,16 @@ export default function Finance() {
 }
 
 function Choice({ navigation }) {
+
+  const [userId,setUserId] = useState(null);
+
+  useEffect(() => {
+    AsyncStorage.getItem('userData').then((value) => {
+      const data = JSON.parse(value);
+      setUserId(data.Id)
+    })
+  }, [])
+
   return (
     <View style={styles.Choice}>
       <Image source={require('../images/logo_New.png')} style={styles.BigIMG} />
@@ -56,7 +69,7 @@ function Choice({ navigation }) {
         
         style={styles.button}
         onPress={() => {
-          navigation.navigate('Payments')
+          navigation.navigate('Payments', { userId: userId })
         }}
       >
         <Text style={styles.txt}>Payment</Text>
@@ -65,7 +78,7 @@ function Choice({ navigation }) {
         
         style={styles.button}
         onPress={() => {
-          navigation.navigate('Paychecks')
+          navigation.navigate('Paychecks',  { userId: userId })
         }}
       >
         <Text style={styles.txt}>Paycheck</Text>
@@ -76,7 +89,7 @@ function Choice({ navigation }) {
 
 
 const Tab = createMaterialTopTabNavigator();
-function Payments() {
+function Payments({ route}) {
   return (
     
     <Tab.Navigator initialRouteName="Pending"
@@ -89,10 +102,10 @@ function Payments() {
       tabBarStyle: { backgroundColor: '#fff' },      
      }}
     >
-      <Tab.Screen name="Pending" component={Pending}  />
+      <Tab.Screen name="Pending" component={Pending} initialParams={{userId: route.params.userId}}  />
       {/*במעבר למסך תשלומים ממתינים תבוצע םעולת גט אשר תשלוף את כלל בקשות התשלום אשר שמורות במסד הנתונים.
     אשר סטטוס הבקשה שלהם אינו סומן כשולם*/}
-      <Tab.Screen name="History" component={History} />
+      <Tab.Screen name="History" component={History} initialParams={{userId: route.params.userId}} />
       { /*במעבר למסך היסטוריית התשלומים תבוצע םעולת גט אשר תשלוף את כלל בקשות התשלום אשר שמורות במסד הנתונים.
     אשר סטטוס הבקשה שלהם סומן כשולם*/}    
     </Tab.Navigator>
@@ -100,15 +113,6 @@ function Payments() {
   );
 }
 
-
-
-function Paycheck() {
-  return (
-    <View>
-      <Text>History</Text>
-    </View>
-  );
-}
 
 
 const styles = StyleSheet.create({
@@ -165,5 +169,12 @@ const styles = StyleSheet.create({
   requestText: {
     fontSize: 16,
     fontWeight: '600',
-  }
+  },
+  Paycheck: {
+    flex: 1,
+    alignItems: 'center',
+    paddingTop: 20,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+  },
 })

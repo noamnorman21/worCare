@@ -3,26 +3,10 @@ import { View, Text, TextInput, Button, SafeAreaView, Alert, StyleSheet, Touchab
 import { storage } from '../../config/firebase';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import * as DocumentPicker from 'expo-document-picker';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function NewPayment(props) {
+export default function NewPaycheck(props) {
   const [animation, setAnimation] = useState({});
-  const [payment, setPayment] = useState({
-    amountToPay: '',
-    requestSubject: '',
-    requestDate: new Date(),
-    requestProofDocument: '',
-    requestComment: '',
-    requestStatus: 'R',
-    userId: null // will be changed to current user id,
-  })
-
-  useEffect(() => {
-    AsyncStorage.getItem('userData').then((value) => {
-      const data = JSON.parse(value);
-      setPayment({ ...payment, userId: data.Id });
-    });
-  }, []);
+  
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -57,6 +41,14 @@ export default function NewPayment(props) {
     }
 
   }, []);
+
+  const [PayCheck, setPayCheck] = useState({
+    paycheckMonth: '',
+    paycheckYear:'',
+    paycheckSummary: '',
+    paycheckComment: '',    
+    userId: 1// will be changed to current user id,
+  })
   
   const pickDocument = async () => {
 
@@ -67,16 +59,16 @@ export default function NewPayment(props) {
     });    
     alert(result.uri);    
     console.log(result);
-    changeIMG(result.uri);
+    // changeIMG(result.uri);
     
   };
 
   const changeIMG = (imageFromUser) => {
-   setPayment({ ...payment, requestProofDocument: imageFromUser });
+   setPayment({ ...PayCheck, requestProofDocument: imageFromUser });
   }
 
   const handleInputChange = (name, value) => {
-    setPayment({ ...payment, [name]: value });
+    setPayCheck({ ...PayCheck, [name]: value });
   };
 
   const sendToFirebase = async (image) => {   
@@ -97,7 +89,7 @@ export default function NewPayment(props) {
     }
     console.log('image', image);
      const filename = image.substring(image.lastIndexOf('/') + 1);
-     const storageRef = ref(storage, "requests/" + filename);
+     const storageRef = ref(storage, "Paychecks/" + filename);
      const blob = await fetch(image).then(response => response.blob());
     try {
       const uploadTask = uploadBytesResumable(storageRef, blob);
@@ -124,21 +116,30 @@ export default function NewPayment(props) {
     }
   };
 
-  const savePayment = async (downloadURL) => {
-    const NewPayment = {
-      amountToPay: payment.amountToPay,
-      requestSubject: payment.requestSubject,
-      requestDate: payment.requestDate,
-      requestProofDocument: downloadURL,
-      requestComment: payment.requestComment,
-      requestStatus: payment.requestStatus,
-      userId: payment.userId
-    } 
-    console.log('NewPayment', NewPayment);
-  
-      fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/NewRequest', {
+  const savePaycheck = async () => {
+    const Newcheck = {     
+      paycheckDate: new Date(PayCheck.paycheckYear, PayCheck.paycheckMonth,1),
+      paycheckSummary: PayCheck.paycheckSummary,
+      paycheckComment: PayCheck.paycheckComment,   
+      userId: PayCheck.userId
+    }    
+    if (PayCheck.paycheckMonth === '') {
+      Alert.alert('Please enter paycheckMonth');
+      return;
+    }
+    if (PayCheck.paycheckYear === '') {
+      Alert.alert('Please enter paycheckYear');
+      return;
+    }
+    if (Newcheck.paycheckSummary === '') {
+      Alert.alert('Please enter paycheckSummary');
+      return;
+    }    
+    console.log("Newcheck", Newcheck);
+    
+      fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/PayChecks/NewPayCheck', {
       method: 'POST',
-      body: JSON.stringify(NewPayment),
+      body: JSON.stringify(Newcheck),
       headers: new Headers({
         'Content-Type': 'application/json; charset=UTF-8',
       })
@@ -154,40 +155,48 @@ export default function NewPayment(props) {
         (error) => {
           console.log("err post=", error);
         });
-    }
+    
+  }
   
 
   
   return (  
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.title}>New Payment</Text>
+          <Text style={styles.title}>New Paycheck</Text>
         </View>
         <View style={[styles.inputContainer, animation]}>
           <TextInput
             style={styles.input}
-            placeholder='Reason'
-            keyboardType='ascii-capable'
-            onChangeText={(value) => handleInputChange('requestSubject', value)}
+            placeholder='month'
+            keyboardType='decimal-pad'
+            onChangeText={(value) => handleInputChange('paycheckMonth', value)}
           />
           <TextInput
             style={[styles.input]}
-            placeholder='Amount'
+            placeholder='year'
             keyboardType='decimal-pad'
-            onChangeText={(value) => handleInputChange('amountToPay', value)}
+            onChangeText={(value) => handleInputChange('paycheckYear', value)}
+            inputMode='decimal'
+          />
+            <TextInput
+            style={[styles.input]}
+            placeholder='summary'
+            keyboardType='decimal-pad'
+            onChangeText={(value) => handleInputChange('paycheckSummary', value)}
             inputMode='decimal'
           />
           <TextInput
-            style={styles.input}
-            placeholder='Enter comment'
+            style={[styles.input, styles.comment] }
+            placeholder='Add comment'
             keyboardType='ascii-capable'
-            onChangeText={(value) => handleInputChange('requestComment', value)}
+            onChangeText={(value) => handleInputChange('paycheckComment', value)}
           />
           <TouchableOpacity style={styles.uploadButton} onPress={pickDocument}>
             <Text style={styles.buttonText}>Upload document</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.uploadButton} onPress={()=> sendToFirebase(payment.requestProofDocument)}>
-            <Text style={styles.buttonText}>Upload request</Text>
+          <TouchableOpacity style={styles.uploadButton} onPress={()=> savePaycheck()}>
+            <Text style={styles.buttonText}>Upload Paycheck</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.uploadButton} onPress={props.cancel}>
             <Text style={styles.buttonText}>Cancel</Text>
@@ -204,17 +213,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-  header: {
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
+ 
   title: {
     color: '#000',
-    fontSize: 18,
+    fontSize: 24,
     padding: 20,
+    fontWeight: '700',
   },
   inputContainer: {
     padding: 20,
@@ -249,4 +253,5 @@ const styles = StyleSheet.create({
     fontWeight: '700',
    
   },
+  comment: { height: 200, textAlignVertical: 'top', padding:10 },
 });
