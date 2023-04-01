@@ -55,7 +55,6 @@ function NewTaskModal(props) {
    ]
 
    useEffect(() => {
-
       getUserData();
       //use Keyboard.addListener to detect if the keyboard is open or not, if so add layout animation with margin bottom
       Keyboard.addListener('keyboardDidShow', () => {

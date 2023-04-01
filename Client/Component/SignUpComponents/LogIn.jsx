@@ -14,7 +14,6 @@ export default function LogIn({ navigation }) {
     const [userType, setUserType] = useState('User');
     const [isChecked, setChecked] = useState(false);
     const [showPassword, setShowPassword] = useState(false);//for password visibility
-
     // Keyboard animation 
     const [keyboardOpen, setKeyboardOpen] = useState(false);//for keyboard visibility
     const [animation, setAnimation] = useState({}); //for animation
@@ -103,7 +102,14 @@ export default function LogIn({ navigation }) {
             },
             body: JSON.stringify(userData),
         })
-            .then((response) => response.json())
+            .then((response) => {
+                if (response.status === 200) {
+                    return response.json();
+                }
+                else {
+                    return null;
+                }
+            })
             .then((json) => {
                 if (json === null) {
                     Alert.alert('Login Failed');
@@ -207,7 +213,6 @@ export default function LogIn({ navigation }) {
                     source={require('../../images/logo_New.png')}
                 />
             </View>
-
             <View style={[styles.inputContainer, animation]}>
                 {/* userName */}
                 <TextInput
