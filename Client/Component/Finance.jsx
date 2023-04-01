@@ -1,4 +1,5 @@
 import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions } from 'react-native'
+import React from 'react'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
@@ -6,11 +7,13 @@ import Pending from './PaymentsScreen/Pending';
 import History from './PaymentsScreen/History';
 import EditPaymentScreen from './PaymentsScreen/EditPaymentScreen';
 import NewPayment from './PaymentsScreen/NewPayment';
-import Paychecks from './PaychecksComponents/Paychecks';
+import Paychecks from './Paychecks components/Paychecks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
 
-const Tab = createMaterialTopTabNavigator();
+
+
+
 const Stack = createStackNavigator();
 
 // Big Image and 2 Buttons that will navigate to 2 different screens
@@ -30,6 +33,7 @@ export default function Finance() {
           style: {
             flex: 1,
           },
+
         })} />
         {/*בעת ניווט למסך התשלומים, תתבצע פעולת גט אשר תשלוף את בקשות התשלומים אשר קיימות במסד הנתונים.
       בעת רנדור עמוד פנימי פנדינג ירונדרו בקשות לפי סטוטס בקשה אינו שולם,
@@ -40,6 +44,8 @@ export default function Finance() {
           presentation: 'stack',
           cardOverlayEnabled: true,
         })} />
+         
+       
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -47,7 +53,7 @@ export default function Finance() {
 
 function Choice({ navigation }) {
 
-  const [userId, setUserId] = useState(null);
+  const [userId,setUserId] = useState(null);
 
   useEffect(() => {
     AsyncStorage.getItem('userData').then((value) => {
@@ -60,7 +66,7 @@ function Choice({ navigation }) {
     <View style={styles.Choice}>
       <Image source={require('../images/logo_New.png')} style={styles.BigIMG} />
       <TouchableOpacity
-
+        
         style={styles.button}
         onPress={() => {
           navigation.navigate('Payments', { userId: userId })
@@ -69,10 +75,10 @@ function Choice({ navigation }) {
         <Text style={styles.txt}>Payment</Text>
       </TouchableOpacity>
       <TouchableOpacity
-
+        
         style={styles.button}
         onPress={() => {
-          navigation.navigate('Paychecks', { userId: userId })
+          navigation.navigate('Paychecks',  { userId: userId })
         }}
       >
         <Text style={styles.txt}>Paycheck</Text>
@@ -82,30 +88,35 @@ function Choice({ navigation }) {
 }
 
 
-function Payments({ route }) {
+const Tab = createMaterialTopTabNavigator();
+function Payments({ route}) {
   return (
+    
     <Tab.Navigator initialRouteName="Pending"
       backBehavior='none'
-      screenOptions={{
-        tabBarActiveTintColor: '#548DFF',
-        tabBarInactiveTintColor: 'grey',
-        tabBarIndicatorStyle: { height: 4, marginLeft: 5, marginRight: 5, width: '45%', borderRadius: 16, },
-        tabBarLabelStyle: { fontSize: 24, fontWeight: 'bold', fontFamily: 'sans-serif', textTransform: 'none' },
-        tabBarStyle: { backgroundColor: '#fff' },
-      }}
+     screenOptions={{
+      tabBarActiveTintColor: '#548DFF',
+      tabBarInactiveTintColor: 'grey',
+      tabBarIndicatorStyle: { height: 4, marginLeft:5, marginRight:5, width: '45%', borderRadius: 16,},
+      tabBarLabelStyle: { fontSize: 24, fontWeight: 'bold', fontFamily: 'sans-serif', textTransform: 'none' },
+      tabBarStyle: { backgroundColor: '#fff' },      
+     }}
     >
-      <Tab.Screen name="Pending" component={Pending} initialParams={{ userId: route.params.userId }} />
+      <Tab.Screen name="Pending" component={Pending} initialParams={{userId: route.params.userId}}  />
       {/*במעבר למסך תשלומים ממתינים תבוצע םעולת גט אשר תשלוף את כלל בקשות התשלום אשר שמורות במסד הנתונים.
     אשר סטטוס הבקשה שלהם אינו סומן כשולם*/}
-      <Tab.Screen name="History" component={History} initialParams={{ userId: route.params.userId }} />
+      <Tab.Screen name="History" component={History} initialParams={{userId: route.params.userId}} />
       { /*במעבר למסך היסטוריית התשלומים תבוצע םעולת גט אשר תשלוף את כלל בקשות התשלום אשר שמורות במסד הנתונים.
-    אשר סטטוס הבקשה שלהם סומן כשולם*/}
+    אשר סטטוס הבקשה שלהם סומן כשולם*/}    
     </Tab.Navigator>
+
   );
 }
 
+
+
 const styles = StyleSheet.create({
-  container: {
+  container: {    
     alignItems: 'center',
     justifyContent: 'center',
     height: Dimensions.get('screen').height * 1,
@@ -113,15 +124,17 @@ const styles = StyleSheet.create({
   },
   Choice: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: 'center',    
     backgroundColor: 'white',
   },
+
   Pending: {
     flex: 1,
     alignItems: 'center',
     paddingTop: 20,
     backgroundColor: 'white',
   },
+
   BigIMG: {
     height: Dimensions.get('screen').height * 0.55,
   },
@@ -138,7 +151,8 @@ const styles = StyleSheet.create({
   txt: {
     color: 'white',
     fontSize: 16,
-    fontFamily: 'Urbanist-SemiBold'
+    fontFamily:'Urbanist-SemiBold'
+
   },
   request: {
     alignItems: 'center',
@@ -146,12 +160,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'none',
     height: 54,
     width: Dimensions.get('screen').width * 0.9,
-    margin: 10,
+    margin: 10,   
     borderWidth: 1,
     borderColor: '#9E9E9E',
     borderRadius: 16,
-    flexDirection: 'row',
-    padding: 16,
+    flexDirection: 'row', 
+    padding: 16,  
   },
   requestText: {
     fontSize: 16,

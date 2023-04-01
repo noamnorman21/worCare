@@ -7,7 +7,7 @@ import { useUserContext } from '../../UserContext';
 
 export default function NewPaycheck(props) {
   const [animation, setAnimation] = useState({});
-  const { userContext } = useUserContext();
+  const { user } = useUserContext();
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -48,7 +48,7 @@ export default function NewPaycheck(props) {
     paycheckYear:'',
     paycheckSummary: '',
     paycheckComment: '',    
-    userId: userContext.Id// will be changed to current user id,
+    userId: user.Id// will be changed to current user id,
   })
   
   const pickDocument = async () => {
@@ -60,7 +60,8 @@ export default function NewPaycheck(props) {
     });    
     alert(result.uri);    
     console.log(result);
-    // changeIMG(result.uri);    
+    // changeIMG(result.uri);
+    
   };
 
   const changeIMG = (imageFromUser) => {
@@ -154,8 +155,11 @@ export default function NewPaycheck(props) {
         },
         (error) => {
           console.log("err post=", error);
-        }); 
+        });
+    
   }
+  
+
   
   return (  
       <SafeAreaView style={styles.container}>
@@ -200,7 +204,9 @@ export default function NewPaycheck(props) {
           </TouchableOpacity>
         </View>
       </SafeAreaView>
+  
   );
+
 }
 
 const styles = StyleSheet.create({
@@ -245,7 +251,8 @@ const styles = StyleSheet.create({
   buttonText: {
     textAlign: 'center',
     color: '#fff',
-    fontWeight: '700',  
+    fontWeight: '700',
+   
   },
   comment: { height: 200, textAlignVertical: 'top', padding:10 },
 });

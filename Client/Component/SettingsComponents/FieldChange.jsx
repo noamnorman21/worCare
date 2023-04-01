@@ -47,7 +47,7 @@ export default function FieldChange(props) {
    return (
       <View style={styles.container}>
          <View style={styles.header}>
-            <Text style={styles.title}>Change {type}</Text>
+            {type=="Password"?<Text style={styles.title}>Set New {type}</Text>:<Text style={styles.title}>Change {type}</Text>}
          </View>
          <View style={styles.inputContainer}>
             <TextInput

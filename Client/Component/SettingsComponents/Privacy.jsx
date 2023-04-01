@@ -114,7 +114,7 @@ export default function Privacy({ navigation }) {
           <Text style={styles.fieldTxt}>{Email}</Text>
         </TouchableOpacity>
         <TouchableOpacity underlayColor={'lightgrey'} style={styles.fields} onPress={() => openModal("Password", password)}>
-          <Text style={styles.fieldTxt}>Edit Password</Text>
+          <Text style={styles.fieldTxt}>Set New Password</Text>
         </TouchableOpacity>
         <View style={styles.bottom}>
           <TouchableOpacity onPress={() => sendDataToNextDB()} style={styles.button}>
