@@ -1,4 +1,4 @@
-import { useState, useEffect, createContext, useContext } from 'react'
+import { useState, useEffect, createContext, useContext,  } from 'react'
 import React from 'react'
 
 //--ruppin api server--
@@ -78,6 +78,7 @@ export function UserProvider({ children }) {
         setuserUri(userData.userUri);
         setBirthDate(userData.BirthDate);
         setGender(userData.Gender)
+        console.log(userData.Id);
 
         let usertoSync = {
             Id: userData.Id,

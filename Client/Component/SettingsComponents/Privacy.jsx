@@ -25,12 +25,10 @@ export default function Privacy({ navigation }) {
       phoneNum: Phonenum,
       gender: Gender,
       FirstName: firstName,
-      LastName: lastName,
-      Password: password,
+      LastName: lastName,      
       Id: userId,
       userType: userType
     }
-
     console.log('userToUpdate', userToUpdate);
     const jsonValue = JSON.stringify(userToUpdate)
     AsyncStorage.setItem('userData', jsonValue);
@@ -114,7 +112,7 @@ export default function Privacy({ navigation }) {
           <Text style={styles.fieldTxt}>{Email}</Text>
         </TouchableOpacity>
         <TouchableOpacity underlayColor={'lightgrey'} style={styles.fields} onPress={() => openModal("Password", password)}>
-          <Text style={styles.fieldTxt}>Edit Password</Text>
+          <Text style={styles.fieldTxt}>Set New Password</Text>
         </TouchableOpacity>
         <View style={styles.bottom}>
           <TouchableOpacity onPress={() => sendDataToNextDB()} style={styles.button}>

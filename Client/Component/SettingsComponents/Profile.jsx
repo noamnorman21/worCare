@@ -74,7 +74,6 @@ export default function Profile({ navigation }) {
       FirstName: firstName,
       LastName: lastName,
       Id: userId,
-      Password: password,
       userType: userType
     }
     updateUserContext(userToUpdate)

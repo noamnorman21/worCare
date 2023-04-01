@@ -1,24 +1,22 @@
-import { useState, useEffect, useRef } from 'react';
-import { ScrollView, SafeAreaView, View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, Animated, Modal } from 'react-native';
+
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, Animated, Modal, ScrollView } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { List } from 'react-native-paper';
 import { Feather } from '@expo/vector-icons';
 import NewPayment from './NewPayment';
 import EditPaymentScreen from './EditPaymentScreen';
-import { AddBtn } from '../HelpComponents/AddNewTask';
+import { useUserContext } from '../../UserContext';
 
-const SCREEN_WIDTH = Dimensions.get('window').width;
-const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export default function Pending({ route }) {
-  const userId = route.params.userId // יש להחליף למשתנה של המשתמש הנוכחי
+  const {userContext} = useUserContext()
   const [modal1Visible, setModal1Visible] = useState(false);
   const [Pendings, setPendings] = useState()
   const [List, setList] = useState([])
   const isFocused = useIsFocused()
 
   useEffect(() => {
-    console.log('Pending', userId)
     if (isFocused) {
       getPending()
     }
@@ -31,9 +29,9 @@ export default function Pending({ route }) {
   }, [modal1Visible])
 
 
-  const getPending = async () => {
+  const getPending = async () => {    
     try {
-      const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/GetPending/' + userId, {
+      const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/GetPending/' + userContext.Id, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -67,6 +65,7 @@ export default function Pending({ route }) {
     );
   }
 
+
   const View = (id, data) => {
     Alert.alert(
       "View",
@@ -86,7 +85,9 @@ export default function Pending({ route }) {
   return (
     <ScrollView contentContainerStyle={styles.pending}>
       {Pendings}
-      <AddBtn onPress={() => setModal1Visible(true)} />
+      <TouchableOpacity style={styles.addRequest} onPress={() => setModal1Visible(true)}>
+        <Text style={styles.addRequestText}>+</Text>
+      </TouchableOpacity>
       <Modal animationType='slide' transparent={true} visible={modal1Visible}>
         <NewPayment cancel={() => setModal1Visible(false)} />
       </Modal>
@@ -131,14 +132,18 @@ function Request(props) {
       right={() => <View style={styles.requesRight}><Text style={styles.requestHeaderText}>{props.subject}</Text>
         <TouchableOpacity>
           <View>
-            <Feather name="bell" size={18} color={'#000'} />
+            <Feather
+              name="bell"
+              size={18}
+              color={'#000000'}
+            />
           </View>
         </TouchableOpacity>
       </View>}
-      left={() =>
-        <View >
-          <Text style={styles.requestHeaderText}>{props.date.substring(0, 10)}</Text>
-        </View>}
+      left={() => <View >
+        <Text style={styles.requestHeaderText}>{props.date.substring(0, 10)}</Text>
+      </View>}
+
       expanded={!expanded}
       onPress={toggle}
     >
@@ -147,23 +152,23 @@ function Request(props) {
           <List.Item title={() => <Text style={styles.itemsText}>Date: {props.date.substring(0, 10)} </Text>} />
           <List.Item title={() => <Text style={styles.itemsText}>Amount: {props.amountToPay} </Text>} />
           <List.Item title={() => <Text style={styles.itemsText}>Comment: {props.requestComment} </Text>} />
-          <List.Item title={() => <View>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-              <TouchableOpacity style={[styles.itemsText, styles.viewButton]} onPress={!expanded ? () => { setModal1Visible(true) } : null}>
-                <Text style={styles.viewbuttonText}>View Document</Text>
-              </TouchableOpacity>
-              <Modal animationType='slide' transparent={true} visible={modal1Visible}>
-                <EditPaymentScreen cancel={() => { setModal1Visible(false); props.getPending() }} data={props.data} />
-              </Modal>
-              <TouchableOpacity style={[styles.itemsText, styles.editButton]} onPress={!expanded ? () => { setModal1Visible(true) } : null}>
-                <Text style={styles.editbuttonText}>Edit</Text>
-              </TouchableOpacity>
+          <List.Item title={() =><View>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <TouchableOpacity style={[styles.itemsText, styles.viewButton]} onPress={!expanded ? () =>{setModal1Visible(true)}:null}>
+              <Text style={styles.viewbuttonText}>View Document</Text>
+            </TouchableOpacity>
+            <Modal animationType='slide' transparent={true} visible={modal1Visible}>
+              <EditPaymentScreen cancel={() => {setModal1Visible(false);props.getPending()}} data={props.data} />
+            </Modal>
+            <TouchableOpacity style={[styles.itemsText, styles.editButton]} onPress={!expanded ? () =>{setModal1Visible(true)} : null}>
+              <Text style={styles.editbuttonText}>Edit</Text>
+            </TouchableOpacity>
             </View>
             <View>
-              <TouchableOpacity style={[styles.itemsText, styles.SaveButton]} onPress={!expanded ? () => { saveStatus(props.data.requestId) } : null}>
-                <Text style={styles.editbuttonText}>Save as Payed</Text>
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity style={[styles.itemsText, styles.SaveButton]} onPress={!expanded ? () =>{saveStatus(props.data.requestId)} : null}>
+              <Text style={styles.editbuttonText}>Save as Payed</Text>
+            </TouchableOpacity>
+          </View>
           </View>} />
         </View>
       </View>
@@ -171,17 +176,20 @@ function Request(props) {
   )
 }
 
+
+
 const styles = StyleSheet.create({
+
   pending: {
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: 'white',
     paddingTop: 10,
     flexGrow: 1,
   },
   requestunFocused: {
     justifyContent: 'center',
-    width: SCREEN_WIDTH * 0.9,
-    height: SCREEN_HEIGHT * 0.073,
+    width: Dimensions.get('screen').width * 0.9,
+    height: Dimensions.get('screen').height * 0.073,
     borderRadius: 16,
     borderWidth: 1,
     borderColor: '#E6EBF2',
@@ -193,12 +201,13 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.8,
     shadowRadius: 2,
     paddingLeft: 12,
+
   },
   request: {
     justifyContent: 'center',
     paddingLeft: 12,
-    width: SCREEN_WIDTH * 0.9,
-    height: SCREEN_HEIGHT * 0.073,
+    width: Dimensions.get('screen').width * 0.9,
+    height: Dimensions.get('screen').height * 0.073,
     justifyContent: 'center',
     borderLeftColor: '#7DA9FF',
     borderLeftWidth: 1,
@@ -219,14 +228,15 @@ const styles = StyleSheet.create({
   requestHeaderIcon: {
     zIndex: 0,
     position: 'absolute',
-    right: SCREEN_WIDTH * 0,
+    right: Dimensions.get('screen').width * 0,
+    backgroundColor: 'orange',
   },
   requestHeader: {
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: 'none',
-    height: SCREEN_HEIGHT * 0.08,
-    width: SCREEN_WIDTH * 0.85,
+    height: Dimensions.get('screen').height * 0.08,
+    width: Dimensions.get('screen').width * 0.85,
     flexDirection: 'row',
     padding: 16,
   },
@@ -234,8 +244,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    width: SCREEN_WIDTH * 0.35,
+    width: Dimensions.get('screen').width * 0.35,
   },
+
   Focused: {
     borderLeftColor: '#7DA9FF',
     borderLeftWidth: 1,
@@ -251,16 +262,17 @@ const styles = StyleSheet.create({
   },
   itemsText: {
     fontSize: 16,
-    marginLeft: SCREEN_WIDTH * -0.16, // FIX THIS
-    marginRight: SCREEN_WIDTH * 0.02,
-    fontFamily: 'Urbanist-SemiBold',
+    fontWeight: '600',
+    marginLeft: Dimensions.get('screen').width * -0.16,
+    marginRight: Dimensions.get('screen').width * 0.02,
+    fontFamily: 'Urbanist',
   },
   viewButton: {
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#7DA9FF',
     height: 40,
-    width: SCREEN_WIDTH * 0.36,
+    width: Dimensions.get('screen').width * 0.36,
     borderRadius: 16,
   },
   editButton: {
@@ -268,7 +280,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'white',
     height: 40,
-    width: SCREEN_WIDTH * 0.36,
+    width: Dimensions.get('screen').width * 0.36,
     borderRadius: 16,
     borderWidth: 1,
     borderColor: '#7DA9FF',
@@ -276,13 +288,13 @@ const styles = StyleSheet.create({
   },
   SaveButton: {
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center',    
     height: 40,
-    width: SCREEN_WIDTH * 0.765,
+    width: Dimensions.get('screen').width * 0.765,
     borderRadius: 16,
     borderWidth: 1,
     borderColor: '#7DA9FF',
-    marginTop: 10,
+    marginTop: 10,    
   },
   viewbuttonText: {
     color: 'white',

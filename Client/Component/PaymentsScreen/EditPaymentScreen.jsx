@@ -167,8 +167,7 @@ const savePayment = async (downloadURL) => {
     requestStatus: Payment.requestStatus,
     userId: Payment.userId
   }
-  console.log(temp);
- 
+  console.log(temp); 
     fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/UpdateRequest', {
     method: 'PUT',
     body: JSON.stringify(temp),
@@ -188,12 +187,8 @@ const savePayment = async (downloadURL) => {
         console.log("err post=", error);
       });
   }
-
-
-
   
-  return (
-    
+  return (    
     <ScrollView>
      <SafeAreaView style={styles.container}>
      <View style={styles.header}>
@@ -240,8 +235,7 @@ const savePayment = async (downloadURL) => {
           <Text style={styles.cancelbuttonText}>Delete</Text>
         </TouchableOpacity>
     </SafeAreaView>
-    </ScrollView>
- 
+    </ScrollView> 
   );
 }
 
@@ -318,7 +312,6 @@ const styles = StyleSheet.create({
     elevation: 1,
     margin: 7,
     height: 45,
-
   },
   bottom: {
     flexDirection: 'row',
