@@ -13,9 +13,11 @@ import Profile from './SettingsComponents/Profile'
 import Notifications from './SettingsComponents/Notifications'
 import Privacy from './SettingsComponents/Privacy'
 import ContactUs from './SettingsComponents/ContactUs'
-
+import ImageChange from './SettingsComponents/ImageChange'
 
 const Stack = createNativeStackNavigator();
+const SCREEN_WIDTH = Dimensions.get('window').width;
+const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 //this is the Setting Main screen, 
 //need to add the personal setting (יצירת פרופיל)
@@ -24,25 +26,22 @@ function HomeScreen({ navigation, route }) {
     const [userName, setUserName] = useState(null);
     const [userEmail, setuserEmail] = useState(null);
     const [userId, setUserId] = useState(null);
-    const { user, setUser } = useUserContext();
     const isFocused = useIsFocused();
-
-
+    const { userContext, setUserContext } = useUserContext();
 
     LogBox.ignoreLogs([
         'Non-serializable values were found in the navigation state',
-      ]);
+    ]);
 
     useEffect(() => {
         const getData = async () => {
             try {
                 const jsonValue = await AsyncStorage.getItem('userData');
                 const userData = jsonValue != null ? JSON.parse(jsonValue) : null;
-                setUserName(user.FirstName);
+                setUserName(userContext.FirstName);
                 setuserEmail(userData.Email);
                 setUserImg(userData.userUri);
                 setUserId(userData.UserId);  
-                            
             } catch (e) {
                 console.log('error', e);
             }
@@ -58,7 +57,6 @@ function HomeScreen({ navigation, route }) {
                 <View style={styles.imageContainer}>
                     {/* here will be the user name and image and the logo of the app */}
                     <Image style={styles.image} source={{ uri: userImg }} />
-                    {/* <Image style={styles.image} source={require(`${userImg}`)} /> */}
                     <View style={styles.personalTextContainer}>
                         <Text style={styles.personalText}>Hello, {userName}</Text>
                         {/* <Text style={styles.personalText}></Text> */}
@@ -67,22 +65,24 @@ function HomeScreen({ navigation, route }) {
             </View>
 
             <View style={styles.btnContainer}>
-                <TouchableOpacity style={styles.btn} onPress={() => [navigation.navigate('Profile', {email:userEmail})]}>
+                <TouchableOpacity style={styles.btn} onPress={() => [navigation.navigate('Profile', { email: userEmail })]}>
                     <Ionicons style={styles.logoStyle} name='ios-person-outline' size={30} color='gray' />
                     <Text style={styles.btnText}>Profile</Text>
                     <AntDesign style={styles.arrowLogoStyle} name="right" size={25} color="gray" />
                 </TouchableOpacity>
+
                 <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Notifications')}>
                     <SimpleLineIcons style={styles.logoStyle} name='bell' size={30} color='gray' />
                     <Text style={styles.btnText}>Notifications</Text>
                     <AntDesign style={styles.arrowLogoStyle} name="right" size={24} color="gray" />
                 </TouchableOpacity>
+
                 <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Privacy')}>
                     <Ionicons style={styles.logoStyle} name='key' size={30} color='gray' />
                     <Text style={styles.btnText}>Privacy & My Account</Text>
                     <AntDesign style={styles.arrowLogoStyle} name="right" size={25} color="gray" />
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('ContactUs', {userImg:userImg})}>
+                <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('ContactUs', { userImg: userImg })}>
                     <Ionicons style={styles.logoStyle} name='send' size={30} color='gray' />
                     <Text style={styles.btnText}>Contact Us</Text>
                     <AntDesign style={styles.arrowLogoStyle} name="right" size={25} color="gray" />
@@ -96,7 +96,7 @@ function HomeScreen({ navigation, route }) {
                                 {
                                     text: 'OK',
                                     onPress: () => {
-                                       route.params.logout();
+                                        route.params.logout();
                                     }
                                 },
                             ]);
@@ -104,6 +104,7 @@ function HomeScreen({ navigation, route }) {
                     >
                         <Text style={styles.btnText1}>Log Out</Text>
                     </TouchableOpacity>
+
                     <TouchableOpacity style={styles.colorBtn2}
                         onPress={() => {
                             Alert.alert('Delete Account', 'Are you sure you want to delete your account?', [
@@ -129,9 +130,7 @@ function HomeScreen({ navigation, route }) {
     );
 }
 
-export default function SettingScreen({ navigation }) {    
-
-
+export default function SettingScreen({ navigation }) {
     return (
         <NavigationContainer independent={true}>
             <Stack.Navigator
@@ -143,15 +142,13 @@ export default function SettingScreen({ navigation }) {
                     headerTitleStyle: {
                         fontSize: 18,
                         color: 'black',
-                        marginLeft: Dimensions.get('window').width * 0.03,
+                        marginLeft: SCREEN_WIDTH * 0.03,
                     },
                     headerBackTitleVisible: false,
-                    // how to hide the parent header in the child stack navigator   
-                    
                 }}>
 
-                <Stack.Screen name="Settings" component={HomeScreen} options={() => ({ headerTitle: 'Settings', headerShown: false })} initialParams={{logout:()=>{ ;navigation.navigate('LogIn')}}} />
-                <Stack.Screen name="Profile" component={Profile} options={{ headerLeft: () => null }} />
+                <Stack.Screen name="Settings" component={HomeScreen} options={() => ({ headerTitle: 'Settings', headerShown: false })} initialParams={{ logout: () => { ; navigation.navigate('LogIn') } }} />
+                <Stack.Screen name="Profile" component={Profile} />
                 <Stack.Screen name="Notifications" component={Notifications} />
                 <Stack.Screen name="Privacy" component={Privacy} options={{ headerTitle: 'Privacy & My Account' }} />
                 <Stack.Screen name="ContactUs" component={ContactUs} options={{ headerTitle: 'Contact Us' }} />
@@ -167,21 +164,20 @@ const styles = StyleSheet.create({
         backgroundColor: '#F5F5F5',
     },
     ColorBtnContainer: {
-        // flexDirection: 'row',
         justifyContent: 'space-between',
-        width: Dimensions.get('window').width * 0.95,
-        marginTop: Dimensions.get('window').height * 0.06,
+        width: SCREEN_WIDTH * 0.95,
+        marginTop: SCREEN_HEIGHT * 0.06,
     },
     colorBtn1: {
         backgroundColor: '#548DFF',
-        width: Dimensions.get('window').width * 0.95,
+        width: SCREEN_WIDTH * 0.95,
         height: 54,
         borderRadius: 16,
         alignItems: 'center',
         justifyContent: 'center',
     },
     colorBtn2: {
-        width: Dimensions.get('window').width * 0.95,
+        width: SCREEN_WIDTH * 0.95,
         height: 54,
         borderRadius: 16,
         borderWidth: 1.5,
@@ -189,23 +185,23 @@ const styles = StyleSheet.create({
         borderColor: '#548DFF',
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: Dimensions.get('window').height * 0.02,
+        marginTop: SCREEN_HEIGHT * 0.02,
     },
     logoStyle: {
-        marginLeft: Dimensions.get('window').width * 0.03,
-        marginRight: Dimensions.get('window').width * 0.06
+        marginLeft: SCREEN_WIDTH * 0.03,
+        marginRight: SCREEN_WIDTH * 0.06
     },
     arrowLogoStyle: {
         position: 'absolute',
-        right: Dimensions.get('window').width * 0.03,
+        right: SCREEN_WIDTH * 0.03,
     },
     title: {
         //the title, it will be on the left side of the screen,just above the image
         fontSize: 25,
-        marginLeft: Dimensions.get('window').width * 0.03,
-        marginRight: Dimensions.get('window').width * 0.6,
-        marginTop: Dimensions.get('window').height * 0.03,
-        fontFamily:'Urbanist-Bold'
+        marginLeft: SCREEN_WIDTH * 0.03,
+        marginRight: SCREEN_WIDTH * 0.6,
+        marginTop: SCREEN_HEIGHT * 0.03,
+        fontFamily: 'Urbanist-Bold'
     },
     btnContainer: {
         flex: 4,
@@ -217,60 +213,59 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'flex-start',
-        width: Dimensions.get('window').width * 1,
-        
-        // paddingVertical: Dimensions.get('window').height * 0.04,
+        width: SCREEN_WIDTH * 1,
+        // paddingVertical: SCREEN_HEIGHT * 0.04,
     },
     imageContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        marginLeft: Dimensions.get('window').width * 0.0,
-        marginTop: Dimensions.get('window').height * 0.02,
+        marginLeft: SCREEN_WIDTH * 0.0,
+        marginTop: SCREEN_HEIGHT * 0.02,
     },
     personalText: {
-        fontSize: 25,        
-        marginRight: Dimensions.get('window').width * 0.03,
-        marginLeft: Dimensions.get('window').width * 0.03,
-        fontFamily:'Urbanist-Bold',
+        fontSize: 25,
+        marginRight: SCREEN_WIDTH * 0.03,
+        marginLeft: SCREEN_WIDTH * 0.03,
+        fontFamily: 'Urbanist-Bold',
     },
     logo: {
-        width: Dimensions.get('window').width * 0.2,
-        height: Dimensions.get('window').height * 0.1,
+        width: SCREEN_WIDTH * 0.2,
+        height: SCREEN_HEIGHT * 0.1,
         borderRadius: 100,
         backgroundColor: 'transparent',
-        marginRight: Dimensions.get('window').width * 0.03,
-        marginTop: Dimensions.get('window').height * 0.03,
-        marginBottom: Dimensions.get('window').height * 0.0,
+        marginRight: SCREEN_WIDTH * 0.03,
+        marginTop: SCREEN_HEIGHT * 0.03,
+        marginBottom: SCREEN_HEIGHT * 0.0,
     },
     image: {
-        width: Dimensions.get('window').width * 0.20,
-        height: Dimensions.get('window').height * 0.09,
+        width: SCREEN_WIDTH * 0.20,
+        height: SCREEN_HEIGHT * 0.09,
         borderRadius: 100,
-        marginTop: Dimensions.get('window').height * 0.022,
-        marginLeft: Dimensions.get('window').width * 0.05,
+        marginTop: SCREEN_HEIGHT * 0.022,
+        marginLeft: SCREEN_WIDTH * 0.05,
     },
     btn: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'flex-start',
-        width: Dimensions.get('window').width * 1,
-        height: Dimensions.get('window').height * 0.08,
+        width: SCREEN_WIDTH * 1,
+        height: SCREEN_HEIGHT * 0.08,
         borderBottomWidth: 1,
         borderBottomColor: 'lightgray',
     },
     btnText: {
         fontSize: 20,
-        fontFamily:'Urbanist'
+        fontFamily: 'Urbanist'
     },
     btnText2: {
         fontSize: 18,
         color: '#548DFF',
-        fontFamily:'Urbanist-SemiBold',        
+        fontFamily: 'Urbanist-SemiBold',
     },
     btnText1: {
         fontSize: 18,
         color: 'white',
-        fontFamily:'Urbanist-SemiBold'
+        fontFamily: 'Urbanist-SemiBold'
     },
 });

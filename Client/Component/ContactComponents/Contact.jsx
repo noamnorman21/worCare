@@ -1,13 +1,12 @@
 // Path: Client\Component\Contact.jsx
 // Contact Page
-
 import { View, Keyboard, LayoutAnimation, Text, TouchableOpacity, StyleSheet, Dimensions, Alert, TextInput } from 'react-native'
 import { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-
 export default function Contact({ route, navigation }) {
   const [animation, setAnimation] = useState({});
+  const { contact } = route.params;
   const [isChanged, setIsChanged] = useState(false);
   const [Contact, setContact] = useState({
     contactId: route.params.contact.contactId,
@@ -54,7 +53,6 @@ export default function Contact({ route, navigation }) {
 
   }, []);
 
-  const { contact } = route.params;
   const Cancel = () => {
     Alert.alert(
       'Cancel Changes',
@@ -73,11 +71,11 @@ export default function Contact({ route, navigation }) {
   }
   const handleInputChange = (field, value) => {
     setContact({ ...Contact, [field]: value });
-    if(!isChanged){
+    if (!isChanged) {
       setIsChanged(true);
     }
   }
-  const SaveChanges = () => {
+  const validateInput = () => {
     const { email, mobileNo, contactName } = Contact
     if (!mobileNo || !contactName) {
       return Alert.alert('Error', 'Email and Mobile Number are required')
@@ -93,12 +91,14 @@ export default function Contact({ route, navigation }) {
     if (!validatePhoneNum(mobileNo)) {
       return Alert.alert('Invalid Phone Number', 'Please enter a valid phone number')
     }
-    fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/UpdateContact/' + Contact.contactId, {
+    SaveChanges(Contact);
+  }
+  const SaveChanges = (Contact) => {
+    let urlContact = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/UpdateContact/' + Contact.contactId;
+    fetch(urlContact, {
       method: 'PUT',
       body: JSON.stringify(Contact),
-      headers: new Headers({
-        'Content-Type': 'application/json; charset=UTF-8',
-      })
+      headers: new Headers({ 'Content-Type': 'application/json; charset=UTF-8', })
     })
       .then(res => {
         return res.json()
@@ -112,9 +112,8 @@ export default function Contact({ route, navigation }) {
           console.log("err post=", error);
         });
   }
-
   const DeleteContact = () => {
-    Alert.alert( 
+    Alert.alert(
       'Delete Contact',
       'Are you sure you want to delete this contact?',
       [
@@ -148,9 +147,6 @@ export default function Contact({ route, navigation }) {
       ]
     );
   }
-
-
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -206,22 +202,20 @@ export default function Contact({ route, navigation }) {
           onChangeText={(value) => handleInputChange('contactComment', value)}
         />
       </View>
-
       <View style={styles.bottom}>
-        <TouchableOpacity style={styles.savebutton} onPress={SaveChanges}>
+        <TouchableOpacity style={styles.savebutton} onPress={validateInput}>
           <Text style={styles.savebuttonText}>Save</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.cancelbutton} onPress={Cancel}>
           <Text style={styles.cancelbuttonText}>Cancel</Text>
-        </TouchableOpacity>        
+        </TouchableOpacity>
       </View>
       <TouchableOpacity style={styles.Deletebutton} onPress={DeleteContact}>
-          <Text style={styles.cancelbuttonText}>Delete</Text>
-        </TouchableOpacity>
+        <Text style={styles.cancelbuttonText}>Delete</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   )
 }
-
 
 const styles = StyleSheet.create({
   container: {
@@ -229,15 +223,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#F5F5F5',
-    marginTop: -50,
-
+    marginTop: -50, // NEVER DO THIS !!!!
   },
   inputContainer: {
     width: Dimensions.get('window').width * 1,
     height: Dimensions.get('window').height * 1,
     flex: 4,
     textAlign: 'left',
-    marginTop: -20,
+    marginTop: -20, // NEVER DO THIS !!!!
   },
   input: {
     width: Dimensions.get('window').width * 0.95,
@@ -302,7 +295,6 @@ const styles = StyleSheet.create({
     elevation: 1,
     margin: 7,
     height: 45,
-
   },
   bottom: {
     flexDirection: 'row',
@@ -311,13 +303,13 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: '600',
     fontSize: 16,
-    fontFamily:'Urbanist-Bold',
+    fontFamily: 'Urbanist-Bold',
   },
   cancelbuttonText: {
     color: '#548DFF',
     fontWeight: '600',
     fontSize: 16,
-    fontFamily:'Urbanist-Bold',
+    fontFamily: 'Urbanist-Bold',
   },
   title: {
     fontSize: 26,
@@ -335,6 +327,5 @@ const styles = StyleSheet.create({
   },
   numbersInput: {
     flexDirection: 'row',
-  },
-
+  }
 });

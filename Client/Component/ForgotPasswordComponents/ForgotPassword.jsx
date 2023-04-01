@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width * 0.9,
         padding: 10,
         margin: 10,
-        alignItems: 'center',
+        alignItems: 'flex-left',
         borderRadius: 16,
         borderWidth: 1,
         backgroundColor: '#F5F5F5',

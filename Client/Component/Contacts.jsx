@@ -158,19 +158,16 @@ fontSize: 15,
   name: {
     fontSize: 17,
     color: '#000',
-    fontFamily:'Urbanist',
   },
   number: {
     fontSize: 14,
     color: '#8A8A8D',
-    fontFamily:'Urbanist',
   },
   searchBar: {
     margin: 10,
     borderRadius: 16,
     backgroundColor: '#E6EBF2',
     height: Dimensions.get('window').height * 0.06,
-    fontFamily:'Urbanist',
   },
   button: {    
     borderRadius: 54,

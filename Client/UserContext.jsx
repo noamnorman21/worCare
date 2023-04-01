@@ -39,7 +39,7 @@ export function useUserContext() {
 }
 
 export function UserProvider({ children }) {
-const [user, setUser] = useState(null)
+    const [userContext, setUserContext] = useState(null)
     const [userType, setUserType] = useState(null)
     const [userLanguage, setUserLanguage] = useState(null)
     const [userCountry, setUserCountry] = useState(null)
@@ -54,13 +54,12 @@ const [user, setUser] = useState(null)
     const [FirstName, setFirstName] = useState(null)
     const [LastName, setLastName] = useState(null)
     const [Email, setEmail] = useState(null)
-    const [Password, setPassword] = useState(null)
     const [phoneNum, setPhone] = useState(null)
     const [userUri, setuserUri] = useState(null)
     const [BirthDate, setBirthDate] = useState(null)
-    const [gender, setGender] = useState(null)   
+    const [gender, setGender] = useState(null)
 
-    function singin (userData) {        
+    function logInContext(userData) {
         setUserType(userData.userType);
         setUserLanguage(userData.Language);
         setUserCountry(userData.Country);
@@ -75,7 +74,6 @@ const [user, setUser] = useState(null)
         setFirstName(userData.FirstName);
         setEmail(userData.Email);
         setLastName(userData.LastName);
-        setPassword(userData.Password);
         setPhone(userData.Phone);
         setuserUri(userData.userUri);
         setBirthDate(userData.BirthDate);
@@ -87,34 +85,30 @@ const [user, setUser] = useState(null)
             FirstName: userData.FirstName,
             LastName: userData.LastName,
             Email: userData.Email,
-            Password: userData.Password,
             phoneNum: userData.phoneNum,
             userUri: userData.userUri,
-            gender: userData.gender,    
+            gender: userData.gender,
         }
-        console.log("dfg",usertoSync);
-        setUser(usertoSync);        
+        setUserContext(usertoSync);
     }
 
-    function signout() {
-        setUser(null)
+    function logOutContext() {
+        setUserContext(null)
     }
 
-    function updateUser(user) {
-        console.log("updateUser",user);
-        setUser(user)
+    function updateUserContext(userContext) {
+        console.log("updateUser", userContext);
+        setUserContext(userContext)
     }
 
-    
-    const value={user,singin,signout,updateUser}   
-        return (
-            <UserContext.Provider value={value}>
-                {children}
-            </UserContext.Provider>
-        )
-    }
+    const value = { userContext, logInContext, logOutContext, updateUserContext }
+    return (
+        <UserContext.Provider value={value}>
+            {children}
+        </UserContext.Provider>
+    )
+}
 
-    export default UserContext;
+export default UserContext;
 
 
-   

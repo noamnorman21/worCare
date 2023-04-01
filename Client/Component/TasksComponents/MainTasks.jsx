@@ -2,9 +2,14 @@ import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-na
 import { useState } from 'react'
 import { AddBtn, NewTaskModal } from '../HelpComponents/AddNewTask'
 
-export default function MainTasks() {
+export default function MainTasks(props) {
   const [modalVisible, setModalVisible] = useState(false)
+  //get all tasks from route.params
+  const allPrivateTasks = props.allPrivateTasks;
+
   const handleAddBtnPress = () => {
+    console.log('add btn pressed')
+    console.log('allPrivateTasks=', allPrivateTasks);
     setModalVisible(true);
   };
 
@@ -14,6 +19,19 @@ export default function MainTasks() {
   return (
     <View style={styles.container}>
       <Text>Main Tasks</Text>
+      {
+        //all private tasks, just for test now
+        allPrivateTasks.map((task, index) => {
+          return (
+            <Text key={index}>"test"{index}: {task.taskName},
+              {task.TimeInDay}, {task.taskDate}, {task.taskToDate}, {task.period}
+              ----------------------------------------------------------------
+            </Text>
+          )
+        })
+
+      }
+
       <View style={styles.addBtnView}>
         <AddBtn onPress={handleAddBtnPress} />
       </View>

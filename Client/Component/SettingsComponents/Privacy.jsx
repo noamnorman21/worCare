@@ -1,16 +1,7 @@
-import { View, Text, SafeAreaView, StyleSheet, Alert, TouchableOpacity, Dimensions, Image } from 'react-native'
-import React from 'react'
+import { View, Text, SafeAreaView, StyleSheet, Alert, TouchableOpacity, Dimensions, Modal } from 'react-native'
 import { useState, useEffect } from 'react';
-import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Modal } from 'react-native';
 import FieldChange from './FieldChange';
-import GenderChange from './GenderChange';
-
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { storage } from '../../config/firebase';
-import ImageChange from './ImageChange';
-
 
 export default function Privacy({ navigation }) {
   const [userId, setUserId] = useState(null);
@@ -22,13 +13,10 @@ export default function Privacy({ navigation }) {
   const [Email, setEmail] = useState(null);
   const [userType, setUserType] = useState(null);
   const [password, setPassword] = useState(null);
-  const [ImageChange, setImageChange] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalType, setModalType] = useState('');
   const [modalValue, setModalValue] = useState('');
   const [modal2Visible, setModal2Visible] = useState(false);
-
-  
 
   const sendDataToNextDB = () => {
     const userToUpdate = {
@@ -45,7 +33,7 @@ export default function Privacy({ navigation }) {
 
     console.log('userToUpdate', userToUpdate);
     const jsonValue = JSON.stringify(userToUpdate)
-    AsyncStorage.setItem('userData', jsonValue);   
+    AsyncStorage.setItem('userData', jsonValue);
     navigation.goBack();
 
     // fetch('http://proj.ruppin.ac.il/bgroup79/test1/tar1/api/Settings/UpdateUser', {
@@ -71,16 +59,13 @@ export default function Privacy({ navigation }) {
     //     console.log('Error:', error.message);
     //   }
     //   );
-
   }
-
-
 
   const openModal = (type, value) => {
     setModalType(type);
     setModalValue(value);
     setModalVisible(true);
-  } 
+  }
 
   const Update = (Field, value) => {
     setModalVisible(false);
@@ -90,31 +75,12 @@ export default function Privacy({ navigation }) {
     else if (Field == "Password") {
       setPassword(value);
     }
-
   }
-
-  const pickImage = async () => {
-    // No permissions request is necessary for launching the image library
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-    if (!result.canceled) {
-      setUserImg(result.assets[0].uri);
-      setImageChange(true)
-    }
-
-  }
-
-
 
   const cancel = () => {
     console.log('cancel');
     navigation.goBack();
   }
-
 
   useEffect(() => {
     const getData = async () => {
@@ -136,16 +102,14 @@ export default function Privacy({ navigation }) {
       }
     };
     getData();
-  }, []); 
-
-
+  }, []);
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Privacy</Text>
       </View>
-      <View style={styles.FieldContainer}>
+      <View style={styles.fieldContainer}>
         <TouchableOpacity underlayColor={'lightgrey'} style={styles.fields} onPress={() => openModal("Email", Email)}>
           <Text style={styles.fieldTxt}>{Email}</Text>
         </TouchableOpacity>
@@ -163,7 +127,6 @@ export default function Privacy({ navigation }) {
         <Modal animationType="slide" visible={modalVisible}>
           <FieldChange userId={userId} type={modalType} value={modalValue} cancel={() => setModalVisible(false)} Save={(Field, value) => Update(Field, value)} />
         </Modal>
-       
       </View>
     </View>
   )
@@ -174,7 +137,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
-
   },
   header: {
     marginTop: 20,
@@ -184,7 +146,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 30,
     color: '#000',
-    fontFamily:'Urbanist-Bold'
+    fontFamily: 'Urbanist-Bold'
   },
   smallTitle: {
     fontSize: 15,
@@ -200,11 +162,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: 'lightgrey',
     padding: 10,
-
   },
   fieldTxt: {
     fontSize: 20,
-    fontFamily:'Urbanist-Medium',
+    fontFamily: 'Urbanist-Medium',
     color: '#000',
   },
   imageContainer: {
@@ -240,8 +201,8 @@ const styles = StyleSheet.create({
     height: 55,
   },
   buttonText: {
-    color: 'white',    
-    fontFamily:'Urbanist-Bold',
+    color: 'white',
+    fontFamily: 'Urbanist-Bold',
     fontSize: 16,
   },
   cancelbutton: {
@@ -262,11 +223,10 @@ const styles = StyleSheet.create({
   },
   cancelbuttonText: {
     color: '#548DFF',
-    fontFamily:'Urbanist-Bold',
+    fontFamily: 'Urbanist-Bold',
     fontSize: 16,
   },
-  
-  FieldContainer: {
+  fieldContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',

@@ -64,7 +64,7 @@ export default function SignUpCaregiverLVL4({ navigation, route }) {
         DateOfBirth: date,
         VisaExpirationDate: visaExpiration,
       };
-      navigation.navigate("SignUpCaregiverLVL5", { newForeignUserData: newForeignUserData, newUser: newUser, holidaysType: holidaysType , patientId: route.params.patientId});
+      navigation.navigate("SignUpCaregiverLVL5", { newForeignUserData: newForeignUserData, newUser: newUser, holidaysType: holidaysType, patientId: route.params.patientId });
     }
   };
 
@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
     height: 40,
     width: SCREEN_WIDTH * 0.8,
     fontSize: 16,
-    fontFamily: 'Urbanist',
+    fontFamily: 'Urbanist-Regular',
     borderRadius: 16,
     color: 'gray',
   },
@@ -265,10 +265,9 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   headerContainer: {
-    alignItems: 'flex-start',
+    alignItems: 'flex-start', 
+    // how to align the text for android
     justifyContent: 'center',
-    // paddingHorizontal: 10,
-    // marginBottom: 10,
     flex: 1
   },
   inputContainer: {

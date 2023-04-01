@@ -81,7 +81,6 @@ function CustomHeader() {
                     headerShown: true,
                 })}
             />
-
             <Stack.Screen name='PushNotifications' component={PushNotifications}
                 options={() => ({
                     headerTitle: 'Notifications',
@@ -94,21 +93,6 @@ function CustomHeader() {
 }
 
 function AppBarDown() {
-    useEffect(() => {
-        const getData = async () => {
-            try {
-                const jsonValue = await AsyncStorage.getItem('userData');
-                const userData = jsonValue != null ? JSON.parse(jsonValue) : null;               
-                console.log('userData', userData);
-            } catch (e) {
-                console.log('error', e);
-            }
-        };
-        getData();
-    }, []);
-
-    
-
     return (
         <Tab.Navigator
             screenOptions={({ route }) => ({
