@@ -6,7 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Modal } from 'react-native';
 import FieldChange from './FieldChange';
 import GenderChange from './GenderChange';
-import {useUserContext} from '../../UserContext';
+import { useUserContext } from '../../UserContext';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from '../../config/firebase';
 import ImageChange from './ImageChange';
@@ -27,7 +27,9 @@ export default function Profile({ navigation }) {
   const [modalType, setModalType] = useState('');
   const [modalValue, setModalValue] = useState('');
   const [modal2Visible, setModal2Visible] = useState(false);
-const {updateUser} = useUserContext(); 
+  const { updateUser, user, setUser } = useUserContext();
+  
+
   const sendToFirebase = async (image) => {
 
     // if the user didn't upload an image, we will use the default image
@@ -71,15 +73,15 @@ const {updateUser} = useUserContext();
       phoneNum: Phonenum,
       gender: Gender,
       FirstName: firstName,
-      LastName: lastName, 
+      LastName: lastName,
       Id: userId,
       Password: password,
-      userType: userType  
+      userType: userType
     }
     updateUser(userToUpdate)
     const jsonValue = JSON.stringify(userToUpdate)
-    AsyncStorage.setItem('userData', jsonValue);   
-  
+    AsyncStorage.setItem('userData', jsonValue);
+
 
     // fetch('http://proj.ruppin.ac.il/bgroup79/test1/tar1/api/Settings/UpdateUser', {
     //   method: 'PUT',
@@ -109,17 +111,17 @@ const {updateUser} = useUserContext();
 
   }
 
-const displayGender = () => {
-  if (Gender=="M"){
-    return "Male"
+  const displayGender = () => {
+    if (Gender == "M") {
+      return "Male"
+    }
+    else if (Gender == "F") {
+      return "Female"
+    }
+    else {
+      return "Other"
+    }
   }
-  else if (Gender=="F"){
-    return "Female"
-  }
-  else{
-    return "Other"
-  }
-}
 
   const openModal = (type, value) => {
     setModalType(type);
@@ -142,7 +144,7 @@ const displayGender = () => {
     else if (Field == "Phone Number") {
       setPhonenum(value);
     }
-    
+
   }
 
   const pickImage = async () => {
@@ -160,7 +162,7 @@ const displayGender = () => {
 
   }
 
-  
+
 
   const cancel = () => {
     console.log('cancel');
@@ -172,19 +174,18 @@ const displayGender = () => {
 
   useEffect(() => {
     const getData = async () => {
-      try {
-        const jsonValue = await AsyncStorage.getItem('userData');
-        const userData = jsonValue != null ? JSON.parse(jsonValue) : null;
-        console.log('Profie', userData);
-        setUserId(userData.Id);
-        setFirstName(userData.FirstName);
-        setLastName(userData.LastName);
-        setGender(userData.gender)
-        setUserImg(userData.userUri)
-        setPhonenum(userData.phoneNum)
-        setEmail(userData.Email)
-        setPassword(userData.Password)
-        setUserType(userData.userType)
+      try {        
+        console.log('Profie', user);
+        setUserId(user.Id);
+        setFirstName(user.FirstName);
+        setLastName(user.LastName);
+        setGender(user.gender)
+        setUserImg(user.userUri)
+        setPhonenum(user.phoneNum)
+        setEmail(user.Email)
+        setPassword(user.Password)
+        setUserType(user.userType)
+       console.log('userType1',user.userType)
       } catch (e) {
         console.log('error', e);
       }
@@ -219,7 +220,7 @@ const displayGender = () => {
           <Text style={styles.fieldTxt}>{displayGender()}</Text>
         </TouchableOpacity>
         <View style={styles.bottom}>
-          <TouchableOpacity onPress={() => ImageChange ? sendToFirebase(userImg): sendDataToNextDB()} style={styles.button}>
+          <TouchableOpacity onPress={() => ImageChange ? sendToFirebase(userImg) : sendDataToNextDB()} style={styles.button}>
             <Text style={styles.buttonText}>Save to DB</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={cancel} style={styles.cancelbutton}>
@@ -250,7 +251,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   title: {
-    fontSize: 35,    
+    fontSize: 35,
     color: '#000',
     fontFamily: 'Urbanist-Bold',
   },

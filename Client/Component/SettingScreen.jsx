@@ -24,6 +24,7 @@ function HomeScreen({ navigation, route }) {
     const [userName, setUserName] = useState(null);
     const [userEmail, setuserEmail] = useState(null);
     const [userId, setUserId] = useState(null);
+    const { user, setUser } = useUserContext();
     const isFocused = useIsFocused();
 
 
@@ -37,10 +38,11 @@ function HomeScreen({ navigation, route }) {
             try {
                 const jsonValue = await AsyncStorage.getItem('userData');
                 const userData = jsonValue != null ? JSON.parse(jsonValue) : null;
-                setUserName(userData.FirstName);
+                setUserName(user.FirstName);
                 setuserEmail(userData.Email);
                 setUserImg(userData.userUri);
-                setUserId(userData.UserId);              
+                setUserId(userData.UserId);  
+                            
             } catch (e) {
                 console.log('error', e);
             }
