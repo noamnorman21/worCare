@@ -11,13 +11,16 @@ const SCREEN_HEIGHT = Dimensions.get('window').height;
 export default function LogIn({ navigation }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [showPassword, setShowPassword] = useState(false);//for password visibility
-    const [keyboardOpen, setKeyboardOpen] = useState(false);//for keyboard visibility
-    const [animation, setAnimation] = useState({});
     const [userType, setUserType] = useState('User');
     const [isChecked, setChecked] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);//for password visibility
+
+    // Keyboard animation 
+    const [keyboardOpen, setKeyboardOpen] = useState(false);//for keyboard visibility
+    const [animation, setAnimation] = useState({}); //for animation
     let animationInProgress = false;
 
+    // function to check from where the app was opened from a invintation link or not  
     const getInitialUrl = async () => {
         // check if the app was opened from a link
         const initialUrl = await Linking.getInitialURL();
@@ -80,6 +83,7 @@ export default function LogIn({ navigation }) {
             console.log(error);
         }
     }
+    //function to toggle remember me checkbox
     const toggeleRememberMe = () => {
         if (isChecked) {
             setChecked(false);
@@ -109,7 +113,7 @@ export default function LogIn({ navigation }) {
                     if (isChecked) {
                         console.log('checked');
                         _storeData();
-                    }                    
+                    }
                     //save user data in context
                     const userContext = {
                         UserId: json.UserId,
@@ -119,10 +123,10 @@ export default function LogIn({ navigation }) {
                         gender: json.gender,
                         phoneNum: json.phoneNum,
                         userUri: json.userUri,
-                        userType: json.userType,                    
+                        userType: json.userType,
                     }
                     const jsonValue = JSON.stringify(userContext)
-                    AsyncStorage.setItem('userData', jsonValue);                        
+                    AsyncStorage.setItem('userData', jsonValue);
                     navigation.navigate('CustomHeader');//navigate to home screen, we will add a necessary call to get user data from the server                                         
                 }
             }
@@ -147,9 +151,11 @@ export default function LogIn({ navigation }) {
     const NavigateToSignUp = () => {
         navigation.navigate('SignUp', { userType: userType })
     }
+    //navigate to forgot password screen
     const NavigateToForgotPassword = () => {
         navigation.navigate('ForgotPassword')
     }
+
     useEffect(() => {
         getInitialUrl();
         //keyboard listener for animation
@@ -226,16 +232,9 @@ export default function LogIn({ navigation }) {
                         onChangeText={text => setPassword(text)}
                     />
                     {/* password visibility button */}
-                    <TouchableOpacity
-                        style={styles.passwordButton}
-                        onPress={() => setShowPassword(!showPassword)}
-                    >
+                    <TouchableOpacity style={styles.passwordButton} onPress={() => setShowPassword(!showPassword)}>
                         {/* Icon button For changing password input visibility */}
-                        <Icon
-                            name={showPassword ? 'visibility' : 'visibility-off'}
-                            size={20}
-                            color='#979797'
-                        />
+                        <Icon name={showPassword ? 'visibility' : 'visibility-off'} size={20} color='#979797' />
                     </TouchableOpacity>
                 </View>
                 {/* remmeber me check box  in one line*/}
@@ -247,16 +246,14 @@ export default function LogIn({ navigation }) {
                             :
                             <MaterialCommunityIcons style={styles.rememberMeIcon} name="checkbox-blank-outline" size={24} color="#979797" />
                         }
+                        <Text style={styles.rememberMe}>Remember Me</Text>
                     </TouchableOpacity>
-                    <Text style={styles.rememberMe}>Remember Me</Text>
-
                     {/* forgot password button */}
-                    <View style={styles.forgotPasswordContainer}>
-                        {/* forgot password button */}
-                        <TouchableOpacity onPress={NavigateToForgotPassword}>
+                    <TouchableOpacity onPress={NavigateToForgotPassword}>
+                        <View style={styles.forgotPasswordContainer}>
                             <Text style={styles.btnForgotPassword}>Forgot Password?</Text>
-                        </TouchableOpacity>
-                    </View>
+                        </View>
+                    </TouchableOpacity>
                 </View>
                 {/* login button */}
                 <TouchableOpacity onPress={logInBtn} style={styles.button}>
@@ -266,7 +263,7 @@ export default function LogIn({ navigation }) {
             {/* footer line */}
             <OrLine />
             <NeedAccount NavigateToSignUp={NavigateToSignUp} />
-        </SafeAreaView>
+        </SafeAreaView >
     )
 }
 

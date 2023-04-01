@@ -1,6 +1,5 @@
-import { Alert, View, Text, StyleSheet, SafeAreaView, KeyboardAvoidingView, Modal, LayoutAnimation, TouchableOpacity, Keyboard, Dimensions, TextInput } from 'react-native'
+import { Alert, View, Text, StyleSheet, SafeAreaView, Modal, TouchableOpacity, Dimensions, TextInput } from 'react-native'
 import { useState, useEffect } from 'react'
-import { AntDesign, Ionicons, SimpleLineIcons } from '@expo/vector-icons';
 import DatePicker from 'react-native-datepicker';
 import { Dropdown } from 'react-native-element-dropdown';
 import DateRangePicker from "rn-select-date-range";
@@ -21,6 +20,9 @@ function AddBtn(props) {
 }
 
 function NewTaskModal(props) {
+   // let animationInProgress = false;
+   // const [keyboardOpen, setKeyboardOpen] = useState(false);//for keyboard visibility
+   // const [animation, setAnimation] = useState({}); //for the animation
    const [userData, setUserData] = useState('');
    const [userId, setUserId] = useState('');
    const [userType, setUserType] = useState('');
@@ -37,9 +39,9 @@ function NewTaskModal(props) {
    const [taskNameBorder, setTaskNameBorder] = useState('')
    const [modalVisibleDate, setModalVisibleDate] = useState(false);
    const taskCategorys = [
-      { id: 1, name: 'General', color: '#FFC0CB' },
-      { id: 2, name: 'Shop', color: '#FFC0CB' },
-      { id: 3, name: 'Medicines', color: '#FFC0CB' },
+      { id: 1, name: 'General' },
+      { id: 2, name: 'Shop' },
+      { id: 3, name: 'Medicines' },
    ]
    const taskFrequencies = [
       { id: 0, name: 'Once' },
@@ -48,7 +50,13 @@ function NewTaskModal(props) {
       { id: 3, name: 'Monthly' },
       { id: 4, name: 'Yearly' },
    ]
-
+   const privateOrPublic = [
+      { id: 1, name: 'Private' },
+      { id: 2, name: 'Public' },
+   ]
+   const changeDateFormat = (date) => {
+      return moment(date).format('DD/MM/YYYY');
+   }
    useEffect(() => {
       const getUserData = async () => {
          const user = await AsyncStorage.getItem('userData');
@@ -59,7 +67,6 @@ function NewTaskModal(props) {
       }
       getUserData();
    }, []);
-
    const clearOnClose = () => {
       setTaskName('')
       setTaskNameBorder('')
@@ -72,15 +79,6 @@ function NewTaskModal(props) {
       setTaskComment('')
       setIsPrivate(false)
    }
-
-   const changeDateFormat = (date) => {
-      return moment(date).format('DD/MM/YYYY');
-   }
-
-   const privateOrPublic = [
-      { id: 1, name: 'Private' },
-      { id: 2, name: 'Public' },
-   ]
    const addPrivateTask = () => {
       let taskUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/InsertPrivateTask';
       let taskData = {
@@ -93,8 +91,6 @@ function NewTaskModal(props) {
          TimeInDay: taskTime,
          period: taskFrequency
       }
-
-      console.log("taskData= ", taskData);
       fetch(taskUrl, {
          method: 'POST',
          body: JSON.stringify(taskData),
@@ -132,25 +128,12 @@ function NewTaskModal(props) {
    }
    const addPublicTask = () => {
       Alert.alert("Add Public Task");
-
    }
+
    return (
       <SafeAreaView>
-
-         <Modal visible={props.isVisible} presentationStyle='formSheet' animationType='slide' onRequestClose={props.onClose}>
-            <View style={[styles.centeredView,
-            keyboardOpen && {
-               transform: [{ translateY: -SCREEN_HEIGHT * 0.15 },
-                  
-                  { translateX: 0 },
-               //do it slow
-               { scale: 1 },
-
-               
-               ]
-
-            }
-            ]}>
+         <Modal visible={props.isVisible} animationType='slide' presentationStyle='formSheet' onRequestClose={props.onClose}>
+            <View style={styles.centeredView}>
                <View style={styles.modalView}>
                   <Text style={styles.modalText}>Add new task </Text>
                   <View style={styles.inputView}>
@@ -170,6 +153,8 @@ function NewTaskModal(props) {
                               labelField="name"
                               valueField="name"
                               placeholder="Assignees"
+                              selectedTextStyle={{ fontFamily: 'Urbanist-SemiBold', fontSize: 16, color: '#000' }}
+                              itemTextStyle={{ fontFamily: 'Urbanist-Regular', fontSize: 16, color: '#9E9E9E' }}
                               placeholderStyle={styles.placeholderStyle}
                               style={[styles.input, taskAssignee && { borderColor: '#000' }]}
                               value={taskAssignee}
@@ -177,11 +162,7 @@ function NewTaskModal(props) {
                               containerStyle={styles.containerStyle}
                               onChange={item => {
                                  setTaskAssignee(item.name)
-                                 if (item.name == 'Private') {
-                                    setIsPrivate(true)
-                                 } else {
-                                    setIsPrivate(false)
-                                 }
+                                 if (item.name == 'Private') { setIsPrivate(true) } else { setIsPrivate(false) }
                               }}
                            />
                            : null
@@ -194,15 +175,14 @@ function NewTaskModal(props) {
                               labelField="name"
                               valueField="name"
                               placeholder="Category"
-                              placeholderStyle={styles.placeholderStyle}
-                              style={[styles.input, taskCategory && { borderColor: '#000' }]}
                               maxHeight={300}
                               value={taskCategory}
+                              selectedTextStyle={{ fontFamily: 'Urbanist-SemiBold', fontSize: 16, color: '#000' }}
+                              itemTextStyle={{ fontFamily: 'Urbanist-Regular', fontSize: 16, color: '#9E9E9E' }}
+                              placeholderStyle={styles.placeholderStyle}
+                              style={[styles.input, taskCategory && { borderColor: '#000' }]}
                               containerStyle={styles.containerStyle}
-                              onChange={item => {
-                                 setTaskCategory(item.name)
-                              }
-                              }
+                              onChange={item => { setTaskCategory(item.name) }}
                            /> : //if is private= true than display like the user already choose the category of General
                            <TextInput
                               style={[styles.input, { borderColor: '#000' }]}
@@ -240,10 +220,10 @@ function NewTaskModal(props) {
                               minDate={moment()}
                               confirmBtnTitle=""
                               clearBtnTitle=""
+                              font='Urbanist-SemiBold'
                               selectedDateContainerStyle={styles.selectedDateContainerStyle}
                               selectedDateStyle={styles.selectedDateStyle}
                               selectedDateTextStyle={styles.selectedDateTextStyle}
-                              font='Urbanist-SemiBold'
                            />
 
                            <View style={{ height: 30 }}>
@@ -285,10 +265,8 @@ function NewTaskModal(props) {
                         is24Hour={true}
                         confirmBtnText="Confirm"
                         cancelBtnText="Cancel"
+                        showIcon={false}
                         customStyles={{
-                           dateIcon: {
-                              display: 'none',
-                           },
                            dateInput: {
                               borderWidth: 0,
                               alignItems: 'flex-start',
@@ -311,21 +289,20 @@ function NewTaskModal(props) {
                         labelField="name"
                         valueField="name"
                         placeholder="Frequency"
-                        placeholderStyle={styles.placeholderStyle}
-                        style={[styles.input, taskFrequency && { borderColor: '#000' }]}
                         maxHeight={200}
                         value={taskFrequency}
+                        selectedTextStyle={{ fontFamily: 'Urbanist-SemiBold', fontSize: 16, color: '#000' }}
+                        itemTextStyle={{ fontFamily: 'Urbanist-Regular', fontSize: 16, color: '#9E9E9E' }}
+                        placeholderStyle={styles.placeholderStyle}
+                        style={[styles.input, taskFrequency && { borderColor: '#000' }]}
                         containerStyle={styles.containerStyle}
                         onChange={item => { setTaskFrequency(item.name) }}
                      />
-
                      <TextInput
-                        style={[styles.commentInput, taskComment != '' && { borderColor: '#000' }
-
-                        ]}
+                        style={[styles.commentInput, taskComment != '' && { borderColor: '#000' }]}
                         placeholder='Comment ( optional )'
                         value={taskComment}
-                        numberOfLines={4}
+                        // numberOfLines={4}
                         multiline={true}
                         returnKeyType='done'
                         keyboardType='default'
@@ -337,7 +314,6 @@ function NewTaskModal(props) {
                      <TouchableOpacity style={styles.SaveBtn} onPress={() => { addTask(); props.onClose }}>
                         <Text style={styles.textStyle}>Create</Text>
                      </TouchableOpacity>
-
                      <TouchableOpacity style={styles.closeBtn} onPress={() => {
                         props.onClose()
                         clearOnClose()
@@ -348,8 +324,7 @@ function NewTaskModal(props) {
                </View>
             </View>
          </Modal>
-
-      </SafeAreaView>
+      </SafeAreaView >
    )
 }
 
