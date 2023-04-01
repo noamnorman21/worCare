@@ -60,6 +60,19 @@ function NewTaskModal(props) {
       getUserData();
    }, []);
 
+   const clearOnClose = () => {
+      setTaskName('')
+      setTaskNameBorder('')
+      setTaskCategory('')
+      setTaskAssignee('')
+      setTaskFromDate('')
+      setTaskToDate('')
+      setTaskTime('')
+      setTaskFrequency('')
+      setTaskComment('')
+      setIsPrivate(false)
+   }
+
    const changeDateFormat = (date) => {
       return moment(date).format('DD/MM/YYYY');
    }
@@ -96,6 +109,7 @@ function NewTaskModal(props) {
          .then(
             (result) => {
                console.log("fetch POST= ", result);
+               clearOnClose();
                props.onClose();
             }
          )
@@ -281,9 +295,9 @@ function NewTaskModal(props) {
                         placeholder='Comment ( optional )'
                         value={taskComment}
                         numberOfLines={4}
+                        multiline={true}
                         returnKeyType='done'
                         keyboardType='default'
-                        onSubmitEditing={() => Keyboard.dismiss()}
                         placeholderTextColor='#9E9E9E'
                         onChangeText={text => setTaskComment(text)}
                      />
@@ -294,17 +308,8 @@ function NewTaskModal(props) {
                      </TouchableOpacity>
 
                      <TouchableOpacity style={styles.closeBtn} onPress={() => {
-                        setTaskName('')
-                        setTaskNameBorder('')
-                        setTaskCategory('')
-                        setTaskAssignee('')
-                        setTaskFromDate('')
-                        setTaskToDate('')
-                        setTaskTime('')
-                        setTaskFrequency('')
-                        setTaskComment('')
-                        setIsPrivate(false)
                         props.onClose()
+                        clearOnClose()
                      }}>
                         <Text style={styles.closeTxt}>Cancel</Text>
                      </TouchableOpacity>
@@ -324,7 +329,7 @@ const styles = StyleSheet.create({
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
-      marginTop: 22,
+      // marginTop: 22,
    },
    containerStyle: {
       width: SCREEN_WIDTH * 0.95,
@@ -380,7 +385,7 @@ const styles = StyleSheet.create({
       fontSize: 16,
    },
    modalText: {
-      marginBottom: 5,
+      marginBottom: 20,
       fontFamily: 'Urbanist-Bold',
       fontSize: 24,
       textAlign: 'center',
@@ -428,8 +433,8 @@ const styles = StyleSheet.create({
       height: 90,
       width: SCREEN_WIDTH * 0.95,
       marginBottom: 10,
-      paddingLeft: 20,
       fontFamily: 'Urbanist-Light',
+      paddingHorizontal: 10,
       fontSize: 16,
       textAlignVertical: 'top',
    },
@@ -455,11 +460,7 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       justifyContent: 'space-between',
       marginTop: 20,
-      width: '100%',
    },
-   // selectedDateContainerStyle: {
-   //    width: SCREEN_WIDTH * 1,
-   // },
    saveBtnDate: {
       backgroundColor: '#548DFF',
       borderRadius: 16,

@@ -32,8 +32,6 @@ export default function Tasks() {
           height: 3,
           borderRadius: 50,
         },
-        //  WARN  Sending `onAnimatedValueUpdate` with no listeners registered.        
-
       }}
     >
       <Tab.Screen name="Main" component={Main} options={{ tabBarLabel: 'Main' }} />

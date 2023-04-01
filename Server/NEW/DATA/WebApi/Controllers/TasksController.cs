@@ -53,7 +53,6 @@ namespace WebApi.Controllers
                     taskDTO.TimeInDay = item.TimeInDay;
                     taskDTO.period = item.period;
                     privateTasks.Add(taskDTO);
-
                 }
                 return Ok(privateTasks);
             }
