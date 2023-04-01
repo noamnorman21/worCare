@@ -255,8 +255,9 @@ export default function LogIn({ navigation }) {
                             :
                             <MaterialCommunityIcons style={styles.rememberMeIcon} name="checkbox-blank-outline" size={24} color="#979797" />
                         }
-                        <Text style={styles.rememberMe}>Remember Me</Text>
+                     
                     </TouchableOpacity>
+                    <Text style={styles.rememberMe}>Remember Me</Text>
                     {/* forgot password button */}
                     <TouchableOpacity onPress={NavigateToForgotPassword}>
                         <View style={styles.forgotPasswordContainer}>
@@ -368,6 +369,7 @@ const styles = StyleSheet.create({
     rememberMeIcon: {
         marginTop: SCREEN_HEIGHT * 0.01,
         marginBottom: SCREEN_WIDTH * 0.01,
+      
     },
     forgotPasswordContainer: {
         flexDirection: 'row',
@@ -376,6 +378,7 @@ const styles = StyleSheet.create({
     },
     rememberMeContainer: {
         width: SCREEN_WIDTH * 0.9,
-        flexDirection: 'row'
+        flexDirection: 'row',
+     
     }
 });
