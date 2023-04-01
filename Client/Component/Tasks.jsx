@@ -34,7 +34,7 @@ export default function Tasks() {
     let getAllPrivateTasksUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/GetAllPrivateTasks';
     try {
       const response = await fetch(getAllPrivateTasksUrl, {
-        method: 'post',
+        method: 'POST',
         headers: new Headers({ 'Content-Type': 'application/json; charset=UTF-8', }),
         body: JSON.stringify({ Id: IdToSend }),
       });
@@ -85,6 +85,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     backgroundColor: 'none',
-    fontFamily: 'Urbanist',
+    fontFamily: 'Urbanist-Regular',
   }
 })

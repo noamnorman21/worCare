@@ -27,7 +27,7 @@ function HomeScreen({ navigation, route }) {
     const [userEmail, setuserEmail] = useState(null);
     const [userId, setUserId] = useState(null);
     const isFocused = useIsFocused();
-    const { user, setUser } = useUserContext();
+    const { userContext, setUserContext } = useUserContext();
 
     LogBox.ignoreLogs([
         'Non-serializable values were found in the navigation state',
@@ -38,7 +38,7 @@ function HomeScreen({ navigation, route }) {
             try {
                 const jsonValue = await AsyncStorage.getItem('userData');
                 const userData = jsonValue != null ? JSON.parse(jsonValue) : null;
-                setUserName(user.FirstName);
+                setUserName(userContext.FirstName);
                 setuserEmail(userData.Email);
                 setUserImg(userData.userUri);
                 setUserId(userData.UserId);  

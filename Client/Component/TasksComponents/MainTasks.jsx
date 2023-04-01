@@ -1,51 +1,15 @@
 import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { AddBtn, NewTaskModal } from '../HelpComponents/AddNewTask'
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function MainTasks() {
-  const [userId, setUserId] = useState('');
-  useEffect(() => {
-    const getUserId = async () => {
-      const user = await AsyncStorage.getItem('userData');
-      const userData = JSON.parse(user);
-      setUserId(userData.Id);
-      console.log('userId= ', userId);
-    }
-    const getTasks = () => {
-      const userDto = { Id: userId };
-      console.log('userDto= ', userDto);
-      const urlGet = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/GetAllPrivateTasks';
-      fetch(urlGet, {
-        method: 'POST',
-        headers: new Headers({
-          'Content-Type': 'application/json; charset=UTF-8',
-        }),
-        body: JSON.stringify({ userDto }),
-      })
-        .then((res) => {
-          return res.json();
-        }
-        )
-        .then((result) => {
-          result.map((task) => {
-            console.log('task= ', task);
-          });
-          // console.log(result);
-        }
-        )
-        .catch((error) => {
-          console.log('Error=', error);
-        }
-        );
-    };
-
-    getUserId();
-    getTasks();
-  }, []);
-
+export default function MainTasks(props) {
   const [modalVisible, setModalVisible] = useState(false)
+  //get all tasks from route.params
+  const allPrivateTasks = props.allPrivateTasks;
+
   const handleAddBtnPress = () => {
+    console.log('add btn pressed')
+    console.log('allPrivateTasks=', allPrivateTasks);
     setModalVisible(true);
   };
 
@@ -55,6 +19,19 @@ export default function MainTasks() {
   return (
     <View style={styles.container}>
       <Text>Main Tasks</Text>
+      {
+        //all private tasks, just for test now
+        allPrivateTasks.map((task, index) => {
+          return (
+            <Text key={index}>"test"{index}: {task.taskName},
+              {task.TimeInDay}, {task.taskDate}, {task.taskToDate}, {task.period}
+              ----------------------------------------------------------------
+            </Text>
+          )
+        })
+
+      }
+
       <View style={styles.addBtnView}>
         <AddBtn onPress={handleAddBtnPress} />
       </View>

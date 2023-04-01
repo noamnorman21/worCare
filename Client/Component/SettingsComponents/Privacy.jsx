@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, StyleSheet, Alert, TouchableOpacity, Dimensions ,Modal } from 'react-native'
+import { View, Text, SafeAreaView, StyleSheet, Alert, TouchableOpacity, Dimensions, Modal } from 'react-native'
 import { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FieldChange from './FieldChange';
@@ -33,7 +33,7 @@ export default function Privacy({ navigation }) {
 
     console.log('userToUpdate', userToUpdate);
     const jsonValue = JSON.stringify(userToUpdate)
-    AsyncStorage.setItem('userData', jsonValue);   
+    AsyncStorage.setItem('userData', jsonValue);
     navigation.goBack();
 
     // fetch('http://proj.ruppin.ac.il/bgroup79/test1/tar1/api/Settings/UpdateUser', {
@@ -59,14 +59,13 @@ export default function Privacy({ navigation }) {
     //     console.log('Error:', error.message);
     //   }
     //   );
-
   }
 
   const openModal = (type, value) => {
     setModalType(type);
     setModalValue(value);
     setModalVisible(true);
-  } 
+  }
 
   const Update = (Field, value) => {
     setModalVisible(false);
@@ -103,7 +102,7 @@ export default function Privacy({ navigation }) {
       }
     };
     getData();
-  }, []); 
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -128,7 +127,6 @@ export default function Privacy({ navigation }) {
         <Modal animationType="slide" visible={modalVisible}>
           <FieldChange userId={userId} type={modalType} value={modalValue} cancel={() => setModalVisible(false)} Save={(Field, value) => Update(Field, value)} />
         </Modal>
-       
       </View>
     </View>
   )
@@ -148,7 +146,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 30,
     color: '#000',
-    fontFamily:'Urbanist-Bold'
+    fontFamily: 'Urbanist-Bold'
   },
   smallTitle: {
     fontSize: 15,
@@ -167,7 +165,7 @@ const styles = StyleSheet.create({
   },
   fieldTxt: {
     fontSize: 20,
-    fontFamily:'Urbanist-Medium',
+    fontFamily: 'Urbanist-Medium',
     color: '#000',
   },
   imageContainer: {
@@ -203,8 +201,8 @@ const styles = StyleSheet.create({
     height: 55,
   },
   buttonText: {
-    color: 'white',    
-    fontFamily:'Urbanist-Bold',
+    color: 'white',
+    fontFamily: 'Urbanist-Bold',
     fontSize: 16,
   },
   cancelbutton: {
@@ -225,7 +223,7 @@ const styles = StyleSheet.create({
   },
   cancelbuttonText: {
     color: '#548DFF',
-    fontFamily:'Urbanist-Bold',
+    fontFamily: 'Urbanist-Bold',
     fontSize: 16,
   },
   fieldContainer: {

@@ -27,11 +27,10 @@ export default function Profile({ navigation }) {
   const [modalType, setModalType] = useState('');
   const [modalValue, setModalValue] = useState('');
   const [modal2Visible, setModal2Visible] = useState(false);
-  const { updateUser, user, setUser } = useUserContext();
-  
+  const { updateUserContext, userContext, setUserContext } = useUserContext();
+
 
   const sendToFirebase = async (image) => {
-
     // if the user didn't upload an image, we will use the default image
     if (userImg === null) {
       //זה תמונה מכוערת -נועם תחליף אותה
@@ -78,7 +77,7 @@ export default function Profile({ navigation }) {
       Password: password,
       userType: userType
     }
-    updateUser(userToUpdate)
+    updateUserContext(userToUpdate)
     const jsonValue = JSON.stringify(userToUpdate)
     AsyncStorage.setItem('userData', jsonValue);
     // fetch('http://proj.ruppin.ac.il/bgroup79/test1/tar1/api/Settings/UpdateUser', {
@@ -162,18 +161,17 @@ export default function Profile({ navigation }) {
   }
   useEffect(() => {
     const getData = async () => {
-      try {        
-        console.log('Profie', user);
-        setUserId(user.Id);
-        setFirstName(user.FirstName);
-        setLastName(user.LastName);
-        setGender(user.gender)
-        setUserImg(user.userUri)
-        setPhonenum(user.phoneNum)
-        setEmail(user.Email)
-        setPassword(user.Password)
-        setUserType(user.userType)
-       console.log('userType1',user.userType)
+      try {
+        console.log('Profie', userContext);
+        setUserId(userContext.Id);
+        setFirstName(userContext.FirstName);
+        setLastName(userContext.LastName);
+        setGender(userContext.gender)
+        setUserImg(userContext.userUri)
+        setPhonenum(userContext.phoneNum)
+        setEmail(userContext.Email)
+        setUserType(userContext.userType)
+        console.log('userType1', userContext.userType)
       } catch (e) {
         console.log('error', e);
       }

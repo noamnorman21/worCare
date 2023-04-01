@@ -6,6 +6,7 @@ import { Feather } from '@expo/vector-icons';
 import NewPayment from './NewPayment';
 import EditPaymentScreen from './EditPaymentScreen';
 import { AddBtn } from '../HelpComponents/AddNewTask';
+
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
@@ -17,6 +18,7 @@ export default function Pending({ route }) {
   const isFocused = useIsFocused()
 
   useEffect(() => {
+    console.log('Pending', userId)
     if (isFocused) {
       getPending()
     }

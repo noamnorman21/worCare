@@ -1,4 +1,5 @@
-import { UserContext, useState, useEffect } from 'react'
+import { useState, useEffect, createContext, useContext } from 'react'
+import React from 'react'
 
 //--ruppin api server--
 //login
@@ -31,24 +32,14 @@ let newRequest = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/NewReque
 let getPending = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/GetPending/';//+userId
 
 const UserContext = React.createContext()
-
-
+const UserUpdateContext = React.createContext()
 
 export function useUserContext() {
     return useContext(UserContext)
 }
 
-
-
-
-
-
-
-
-
-
 export function UserProvider({ children }) {
-    const [user, setUser] = useState(null)
+    const [userContext, setUserContext] = useState(null)
     const [userType, setUserType] = useState(null)
     const [userLanguage, setUserLanguage] = useState(null)
     const [userCountry, setUserCountry] = useState(null)
@@ -57,21 +48,60 @@ export function UserProvider({ children }) {
     const [userLimitations, setUserLimitations] = useState(null)
     const [userCaresFor, setUserCaresFor] = useState(null)
     const [userContacts, setUserContacts] = useState(null)
-    const [userPayments, setUserPayments] = useState(null)
+    const [userPaychecks, setUserPaychecks] = useState(null)
     const [userPendingPayments, setUserPendingPayments] = useState(null)
     const [userHistoryPayments, setUserHistoryPayments] = useState(null)
-    const [userName, setUserName] = useState(null)
-    const [userEmail, setUserEmail] = useState(null)
-    const [userPassword, setUserPassword] = useState(null)
-    const [userPhone, setUserPhone] = useState(null)
-    const [userImage, setUserImage] = useState(null)
-    const [userBirthDate, setUserBirthDate] = useState(null)
-    const [userGender, setUserGender] = useState(null)
+    const [FirstName, setFirstName] = useState(null)
+    const [LastName, setLastName] = useState(null)
+    const [Email, setEmail] = useState(null)
+    const [phoneNum, setPhone] = useState(null)
+    const [userUri, setuserUri] = useState(null)
+    const [BirthDate, setBirthDate] = useState(null)
+    const [gender, setGender] = useState(null)
 
-    const value = {
-        user,
-        setUser
+    function logInContext(userData) {
+        setUserType(userData.userType);
+        setUserLanguage(userData.Language);
+        setUserCountry(userData.Country);
+        setUserCalendar(userData.Calendar);
+        setUserHobbies(userData.Hobbies);
+        setUserLimitations(userData.Limitations);
+        setUserCaresFor(userData.CaresFor);
+        setUserContacts(userData.Contacts);
+        setUserPaychecks(userData.Paychecks);
+        setUserPendingPayments(userData.PendingPayments);
+        setUserHistoryPayments(userData.HistoryPayments);
+        setFirstName(userData.FirstName);
+        setEmail(userData.Email);
+        setLastName(userData.LastName);
+        setPhone(userData.Phone);
+        setuserUri(userData.userUri);
+        setBirthDate(userData.BirthDate);
+        setGender(userData.Gender)
+
+        let usertoSync = {
+            Id: userData.Id,
+            userType: userData.userType,
+            FirstName: userData.FirstName,
+            LastName: userData.LastName,
+            Email: userData.Email,
+            phoneNum: userData.phoneNum,
+            userUri: userData.userUri,
+            gender: userData.gender,
+        }
+        setUserContext(usertoSync);
     }
+
+    function logOutContext() {
+        setUserContext(null)
+    }
+
+    function updateUserContext(userContext) {
+        console.log("updateUser", userContext);
+        setUserContext(userContext)
+    }
+
+    const value = { userContext, logInContext, logOutContext, updateUserContext }
     return (
         <UserContext.Provider value={value}>
             {children}
@@ -80,3 +110,5 @@ export function UserProvider({ children }) {
 }
 
 export default UserContext;
+
+

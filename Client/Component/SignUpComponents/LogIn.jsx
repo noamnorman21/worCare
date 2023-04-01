@@ -5,6 +5,8 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { OrLine, NeedAccount } from './FooterLine'
 import * as Linking from 'expo-linking';
+import { useUserContext } from '../../UserContext';
+
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
@@ -18,6 +20,7 @@ export default function LogIn({ navigation }) {
     const [keyboardOpen, setKeyboardOpen] = useState(false);//for keyboard visibility
     const [animation, setAnimation] = useState({}); //for animation
     let animationInProgress = false;
+    const { logInContext } = useUserContext();
 
     // function to check from where the app was opened from a invintation link or not  
     const getInitialUrl = async () => {
@@ -133,6 +136,7 @@ export default function LogIn({ navigation }) {
                     }
                     const jsonValue = JSON.stringify(userContext)
                     AsyncStorage.setItem('userData', jsonValue);
+                    logInContext(userContext);
                     navigation.navigate('CustomHeader');//navigate to home screen, we will add a necessary call to get user data from the server                                         
                 }
             }
@@ -311,7 +315,7 @@ const styles = StyleSheet.create({
         borderColor: 'lightgray',
         shadowColor: '#000',
         height: 54,
-        fontFamily: 'Urbanist',
+        fontFamily: 'Urbanist-Regular',
         fontSize: 14
     },
     button: {
@@ -350,14 +354,14 @@ const styles = StyleSheet.create({
     btnForgotPassword: {
         color: '#548DFF',
         fontSize: 14,
-        fontFamily: 'Urbanist',
+        fontFamily: 'Urbanist-Regular',
         marginTop: 10,
         marginBottom: 10,
     },
     rememberMe: {
         color: '#979797',
         fontSize: 14,
-        fontFamily: 'Urbanist',
+        fontFamily: 'Urbanist-Regular',
         marginTop: 10,
         marginBottom: 10,
     },

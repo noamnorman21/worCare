@@ -81,7 +81,6 @@ function CustomHeader() {
                     headerShown: true,
                 })}
             />
-
             <Stack.Screen name='PushNotifications' component={PushNotifications}
                 options={() => ({
                     headerTitle: 'Notifications',
@@ -94,47 +93,6 @@ function CustomHeader() {
 }
 
 function AppBarDown() {
-    useEffect(() => {
-        const getData = async () => {
-            try {
-                const jsonValue = await AsyncStorage.getItem('user');
-                const userData = jsonValue != null ? JSON.parse(jsonValue) : null;
-                getDataFromDB(userData);
-                console.log('userData', userData);
-            } catch (e) {
-                console.log('error', e);
-            }
-        };
-        getData();
-    }, []);
-
-    const getDataFromDB = (userData) => {
-        let userForLoginUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUserForLogin';
-        fetch(userForLoginUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(userData),
-        })
-            .then((response) => response.json())
-            .then((json) => {
-                if (json === null) {
-                    Alert.alert('Login Failed');
-                }
-                else {
-                    console.log("user Data Home Screen: ", json);
-                    // save the user data in the storage
-                    AsyncStorage.setItem("userData", JSON.stringify(json));
-                }
-            }
-            )
-            .catch((error) => {
-                Alert.alert('Login Failed');
-            }
-            );
-    }
-
     return (
         <Tab.Navigator
             screenOptions={({ route }) => ({

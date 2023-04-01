@@ -61,38 +61,34 @@ function NewTaskModal(props) {
          if (!animationInProgress) {
             animationInProgress = true;
             LayoutAnimation.configureNext({
-                update: {
-                    type: LayoutAnimation.Types.easeIn,
-                    duration: 250,
-                    useNativeDriver: true,
-                },
+               update: {
+                  type: LayoutAnimation.Types.easeIn,
+                  duration: 250,
+                  useNativeDriver: true,
+               },
             });
-            setAnimation({ marginBottom: Dimensions.get('window').height * 0.355
-          });
+            setAnimation({
+               marginBottom: Dimensions.get('window').height * 0.355
+            });
             animationInProgress = false;
-        }
+         }
       }
       );
       Keyboard.addListener('keyboardDidHide', () => {
          if (!animationInProgress) {
             animationInProgress = true;
             LayoutAnimation.configureNext({
-                update: {
-                    type: LayoutAnimation.Types.easeOut,
-                    duration: 250,
-                    useNativeDriver: true,
-                },
+               update: {
+                  type: LayoutAnimation.Types.easeOut,
+                  duration: 250,
+                  useNativeDriver: true,
+               },
             });
             setAnimation({ marginBottom: 0 });
             animationInProgress = false;
-        }
+         }
       }
       );
-      
-
-
-
-
    }, []);
    const getUserData = async () => {
       const user = await AsyncStorage.getItem('userData');
@@ -130,16 +126,11 @@ function NewTaskModal(props) {
             'Content-Type': 'application/json; charset=UTF-8',
          })
       })
-         .then(res => {
-            return res.json()
-         }
-         )
+         .then(res => { return res.json() })
          .then(
             (result) => {
                console.log("fetch POST= ", result);
-
-               props.onClose();
-
+               clearInputs();
             }
          )
          .catch((error) => {
@@ -161,15 +152,24 @@ function NewTaskModal(props) {
    }
    const addPublicTask = () => {
       Alert.alert("Add Public Task");
-
+   }
+   const clearInputs = () => {
+      setTaskName('')
+      setTaskNameBorder('')
+      setTaskCategory('')
+      setTaskAssignee('')
+      setTaskFromDate('')
+      setTaskToDate('')
+      setTaskTime('')
+      setTaskFrequency('')
+      setTaskComment('')
+      setIsPrivate(false)
+      props.onClose()
    }
    return (
       <SafeAreaView>
-
          <Modal visible={props.isVisible} presentationStyle='formSheet' animationType='slide' onRequestClose={props.onClose}>
             <View style={[styles.centeredView, animation]}>
-
-         
                <View style={styles.modalView}>
                   <Text style={styles.modalText}>Add new task </Text>
                   <View style={styles.inputView}>
@@ -218,10 +218,7 @@ function NewTaskModal(props) {
                               maxHeight={300}
                               value={taskCategory}
                               containerStyle={styles.containerStyle}
-                              onChange={item => {
-                                 setTaskCategory(item.name)
-                              }
-                              }
+                              onChange={item => { setTaskCategory(item.name) }}
                            /> : //if is private= true than display like the user already choose the category of General
                            <TextInput
                               style={[styles.input, { borderColor: '#000' }]}
@@ -242,15 +239,13 @@ function NewTaskModal(props) {
                               </View>
                               :
                               <View style={styles.input}>
-                                 <Text style={[styles.regularTxt, { color: '#9E9E9E' }]}>
-                                    Start Date - End Date
-                                 </Text>
+                                 <Text style={[styles.regularTxt, { color: '#9E9E9E' }]}>Start Date - End Date</Text>
                               </View>
                         }
                      </TouchableOpacity>
 
                      <Modal visible={modalVisibleDate}
-                      transparent={true} style={styles.modalDate} animationType='slide' onRequestClose={() => setModalVisibleDate(false)}>
+                        transparent={true} style={styles.modalDate} animationType='slide' onRequestClose={() => setModalVisibleDate(false)}>
                         <View style={styles.modalDateView}>
                            <DateRangePicker
                               onSelectDateRange={(range) => { setRange(range); }}
@@ -305,10 +300,8 @@ function NewTaskModal(props) {
                         is24Hour={true}
                         confirmBtnText="Confirm"
                         cancelBtnText="Cancel"
+                        showIcon={false}
                         customStyles={{
-                           dateIcon: {
-                              display: 'none',
-                           },
                            dateInput: {
                               borderWidth: 0,
                               alignItems: 'flex-start',
@@ -340,9 +333,7 @@ function NewTaskModal(props) {
                      />
 
                      <TextInput
-                        style={[styles.commentInput, taskComment != '' && { borderColor: '#000' }
-
-                        ]}
+                        style={[styles.commentInput, taskComment != '' && { borderColor: '#000' }]}
                         placeholder='Comment ( optional )'
                         value={taskComment}
                         numberOfLines={4}
@@ -354,23 +345,11 @@ function NewTaskModal(props) {
                      />
                   </View>
                   <View style={styles.btnModal}>
-                     <TouchableOpacity style={styles.SaveBtn} onPress={() => { addTask(); props.onClose }}>
+                     <TouchableOpacity style={styles.SaveBtn} onPress={addTask}>
                         <Text style={styles.textStyle}>Create</Text>
                      </TouchableOpacity>
 
-                     <TouchableOpacity style={styles.closeBtn} onPress={() => {
-                        setTaskName('')
-                        setTaskNameBorder('')
-                        setTaskCategory('')
-                        setTaskAssignee('')
-                        setTaskFromDate('')
-                        setTaskToDate('')
-                        setTaskTime('')
-                        setTaskFrequency('')
-                        setTaskComment('')
-                        setIsPrivate(false)
-                        props.onClose()
-                     }}>
+                     <TouchableOpacity style={styles.closeBtn} onPress={clearInputs}>
                         <Text style={styles.closeTxt}>Cancel</Text>
                      </TouchableOpacity>
                   </View>
