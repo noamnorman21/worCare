@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
     color: '#000',
     fontSize: 24,
     padding: 20,
-    fontWeight: '700',
+    fontFamily:'Urbanist-Bold'
   },
   inputContainer: {
     padding: 20,
@@ -234,6 +234,7 @@ const styles = StyleSheet.create({
     borderColor: '#E6EBF2',
     borderRadius: 16,
     borderWidth: 1,
+    fontFamily:'Urbanist-Regular'
   }, 
   Savebutton: {
     backgroundColor: '#000',
@@ -251,8 +252,7 @@ const styles = StyleSheet.create({
   buttonText: {
     textAlign: 'center',
     color: '#fff',
-    fontWeight: '700',
-   
+    fontFamily:'Urbanist-Bold'   
   },
   comment: { height: 200, textAlignVertical: 'top', padding:10 },
 });

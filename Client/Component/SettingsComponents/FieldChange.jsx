@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
       borderColor: 'lightgray',
       shadowColor: '#000',
       fontSize: 16,
-      fontFamily: 'Urbanist',
+      fontFamily: 'Urbanist-Regular',
       textAlign: 'center',
    },
    inputContainer: {

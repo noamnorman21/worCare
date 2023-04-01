@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
     borderColor: 'lightgray',
     shadowColor: '#000',
     height: 45,
-    fontFamily: 'Urbanist',
+    fontFamily: 'Urbanist-Regular',
   },
   numInput: {
     width: Dimensions.get('window').width * 0.43,

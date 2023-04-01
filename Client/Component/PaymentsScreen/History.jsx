@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginLeft:Dimensions.get('screen').width * -0.16,
     marginRight:Dimensions.get('screen').width * 0.02,  
-    fontFamily:'Urbanist',
+    fontFamily:'Urbanist-Regular',
    
   },
   viewButton: {

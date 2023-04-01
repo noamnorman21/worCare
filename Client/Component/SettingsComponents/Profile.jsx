@@ -9,7 +9,7 @@ import GenderChange from './GenderChange';
 import { useUserContext } from '../../UserContext';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from '../../config/firebase';
-import ImageChange from './ImageChange';
+
 
 
 export default function Profile({ navigation }) {
