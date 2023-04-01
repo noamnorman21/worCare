@@ -170,6 +170,7 @@ fontSize: 15,
     borderRadius: 16,
     backgroundColor: '#E6EBF2',
     height: Dimensions.get('window').height * 0.06,
+    fontFamily:'Urbanist',
   },
   button: {    
     borderRadius: 54,

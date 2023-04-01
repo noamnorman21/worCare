@@ -13,7 +13,7 @@ import Profile from './SettingsComponents/Profile'
 import Notifications from './SettingsComponents/Notifications'
 import Privacy from './SettingsComponents/Privacy'
 import ContactUs from './SettingsComponents/ContactUs'
-import ImageChange from './SettingsComponents/ImageChange'
+
 
 const Stack = createNativeStackNavigator();
 
@@ -25,7 +25,7 @@ function HomeScreen({ navigation, route }) {
     const [userEmail, setuserEmail] = useState(null);
     const [userId, setUserId] = useState(null);
     const isFocused = useIsFocused();
-    const { user, setUser } = useUserContext();
+
 
 
     LogBox.ignoreLogs([
@@ -40,10 +40,7 @@ function HomeScreen({ navigation, route }) {
                 setUserName(userData.FirstName);
                 setuserEmail(userData.Email);
                 setUserImg(userData.userUri);
-                setUserId(userData.UserId);                
-                console.log('Setting screen', userData);
-                console.log('user', user.Id);
-                
+                setUserId(userData.UserId);              
             } catch (e) {
                 console.log('error', e);
             }
@@ -73,13 +70,11 @@ function HomeScreen({ navigation, route }) {
                     <Text style={styles.btnText}>Profile</Text>
                     <AntDesign style={styles.arrowLogoStyle} name="right" size={25} color="gray" />
                 </TouchableOpacity>
-
                 <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Notifications')}>
                     <SimpleLineIcons style={styles.logoStyle} name='bell' size={30} color='gray' />
                     <Text style={styles.btnText}>Notifications</Text>
                     <AntDesign style={styles.arrowLogoStyle} name="right" size={24} color="gray" />
                 </TouchableOpacity>
-
                 <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Privacy')}>
                     <Ionicons style={styles.logoStyle} name='key' size={30} color='gray' />
                     <Text style={styles.btnText}>Privacy & My Account</Text>
@@ -107,7 +102,6 @@ function HomeScreen({ navigation, route }) {
                     >
                         <Text style={styles.btnText1}>Log Out</Text>
                     </TouchableOpacity>
-
                     <TouchableOpacity style={styles.colorBtn2}
                         onPress={() => {
                             Alert.alert('Delete Account', 'Are you sure you want to delete your account?', [

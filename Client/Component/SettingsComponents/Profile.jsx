@@ -6,7 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Modal } from 'react-native';
 import FieldChange from './FieldChange';
 import GenderChange from './GenderChange';
-
+import {useUserContext} from '../../UserContext';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from '../../config/firebase';
 import ImageChange from './ImageChange';
@@ -27,7 +27,7 @@ export default function Profile({ navigation }) {
   const [modalType, setModalType] = useState('');
   const [modalValue, setModalValue] = useState('');
   const [modal2Visible, setModal2Visible] = useState(false);
-
+const {updateUser} = useUserContext(); 
   const sendToFirebase = async (image) => {
 
     // if the user didn't upload an image, we will use the default image
@@ -76,6 +76,7 @@ export default function Profile({ navigation }) {
       Password: password,
       userType: userType  
     }
+    updateUser(userToUpdate)
     const jsonValue = JSON.stringify(userToUpdate)
     AsyncStorage.setItem('userData', jsonValue);   
   

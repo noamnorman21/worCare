@@ -58,9 +58,7 @@ const [user, setUser] = useState(null)
     const [phoneNum, setPhone] = useState(null)
     const [userUri, setuserUri] = useState(null)
     const [BirthDate, setBirthDate] = useState(null)
-    const [gender, setGender] = useState(null)
-
-    
+    const [gender, setGender] = useState(null)   
 
     function singin (userData) {        
         setUserType(userData.userType);
@@ -102,8 +100,13 @@ const [user, setUser] = useState(null)
         setUser(null)
     }
 
+    function updateUser(user) {
+        console.log("updateUser",user);
+        setUser(user)
+    }
+
     
-    const value={user,singin,signout}   
+    const value={user,singin,signout,updateUser}   
         return (
             <UserContext.Provider value={value}>
                 {children}
