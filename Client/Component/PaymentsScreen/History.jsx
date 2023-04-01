@@ -109,7 +109,6 @@ export default function History({navigation, route}) {
     );
   }
 
-
   return (
     <ScrollView contentContainerStyle={styles.pending}>
       {History}
