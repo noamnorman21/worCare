@@ -25,12 +25,10 @@ export default function Privacy({ navigation }) {
       phoneNum: Phonenum,
       gender: Gender,
       FirstName: firstName,
-      LastName: lastName,
-      Password: password,
+      LastName: lastName,      
       Id: userId,
       userType: userType
     }
-
     console.log('userToUpdate', userToUpdate);
     const jsonValue = JSON.stringify(userToUpdate)
     AsyncStorage.setItem('userData', jsonValue);

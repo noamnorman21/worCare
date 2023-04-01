@@ -1,16 +1,12 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, Animated, Modal } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, Animated, Modal, ScrollView } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { List } from 'react-native-paper';
-import { ScrollView } from 'react-native-gesture-handler';
 import { Feather } from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import NewPayment from './NewPayment';
 import EditPaymentScreen from './EditPaymentScreen';
 import { useUserContext } from '../../UserContext';
-
-
 
 
 export default function Pending({ route }) {
@@ -53,9 +49,6 @@ export default function Pending({ route }) {
     }
   }
 
-
-
-
   const Notification = (id) => {
     Alert.alert(
       "Notification",
@@ -90,7 +83,7 @@ export default function Pending({ route }) {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.Pending}>
+    <ScrollView contentContainerStyle={styles.pending}>
       {Pendings}
       <TouchableOpacity style={styles.addRequest} onPress={() => setModal1Visible(true)}>
         <Text style={styles.addRequestText}>+</Text>
@@ -132,9 +125,6 @@ function Request(props) {
       console.log(error)
     }
   }
-  
-
-
 
   return (
     <List.Accordion style={!expanded ? styles.request : styles.requestunFocused}
@@ -190,7 +180,7 @@ function Request(props) {
 
 const styles = StyleSheet.create({
 
-  Pending: {
+  pending: {
     alignItems: 'center',
     backgroundColor: 'white',
     paddingTop: 10,
@@ -306,7 +296,6 @@ const styles = StyleSheet.create({
     borderColor: '#7DA9FF',
     marginTop: 10,    
   },
-
   viewbuttonText: {
     color: 'white',
     fontSize: 16,
@@ -321,7 +310,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     fontFamily: 'Urbanist-Bold'
   },
-
   addRequest: {
     alignItems: 'center',
     justifyContent: 'center',

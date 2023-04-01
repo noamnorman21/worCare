@@ -154,9 +154,7 @@ export default function NewPayment(props) {
         (error) => {
           console.log("err post=", error);
         });
-    }
-  
-
+    } 
   
   return (  
       <SafeAreaView style={styles.container}>
@@ -196,7 +194,6 @@ export default function NewPayment(props) {
       </SafeAreaView>
   
   );
-
 }
 
 const styles = StyleSheet.create({

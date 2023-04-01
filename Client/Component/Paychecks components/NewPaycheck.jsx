@@ -7,7 +7,7 @@ import { useUserContext } from '../../UserContext';
 
 export default function NewPaycheck(props) {
   const [animation, setAnimation] = useState({});
-  const { user } = useUserContext();
+  const { userContext } = useUserContext();
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -48,7 +48,7 @@ export default function NewPaycheck(props) {
     paycheckYear:'',
     paycheckSummary: '',
     paycheckComment: '',    
-    userId: user.Id// will be changed to current user id,
+    userId: userContext.Id
   })
   
   const pickDocument = async () => {

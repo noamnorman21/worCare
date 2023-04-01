@@ -6,11 +6,7 @@ import { List } from 'react-native-paper';
 import { ScrollView } from 'react-native-gesture-handler';
 
 import NewPaycheck from './NewPaycheck';
-import EditPaymentScreen from '../PaymentsScreen/EditPaymentScreen';
 import EditPaycheck from './EditPaycheck';
-
-
-
 
 export default function Paychecks({navigation, route}) {
   const userId = route.params.userId // יש להחליף למשתנה של המשתמש הנוכחי
@@ -99,7 +95,7 @@ export default function Paychecks({navigation, route}) {
 
 
   return (
-    <ScrollView contentContainerStyle={styles.Pending}>      
+    <ScrollView contentContainerStyle={styles.pending}>      
        <View style={styles.headerText}>
         <Text style={styles.header} >History</Text>
         </View>  
@@ -109,8 +105,7 @@ export default function Paychecks({navigation, route}) {
       </TouchableOpacity>
       <Modal animationType='slide' transparent={true} visible={modal1Visible}>
        <NewPaycheck cancel={() => {setModal1Visible(false); getPaychecks()} } userId={userId} />
-      </Modal>
-      
+      </Modal>      
     </ScrollView>
   );
 }
@@ -135,18 +130,14 @@ function Paycheck(props) {
     Animated.timing(animationController, config).start();
     setExpanded(!expanded);
   };
-
-
   
   return (
     <List.Accordion style={!expanded ? styles.request : styles.requestunFocused}
     theme={{ colors: { background: 'white' } }}
-    right={() => <View ></View>}
-      
+    right={() => <View ></View>}      
     left={() => <View >
       <Text style={styles.requestHeaderText}>{temp.paycheckDate.substring(0,7).replace("-","/")}</Text>      
     </View>}
-
     expanded={!expanded}
     onPress={toggle}
   >
@@ -176,8 +167,7 @@ function Paycheck(props) {
 
 
 const styles = StyleSheet.create({
-
-  Pending: {  
+  pending: {  
     backgroundColor: 'white',
     flexGrow: 1,
     paddingTop: 10,
@@ -232,8 +222,7 @@ const styles = StyleSheet.create({
     borderBottomStartRadius: 16,
     marginBottom: 10,
     padding: 16,
-    flexGrow: 0.35,
-   
+    flexGrow: 0.35,   
     
   },
   itemsText: {
@@ -250,7 +239,6 @@ const styles = StyleSheet.create({
     height: 40,
     width: Dimensions.get('screen').width * 0.36,
     borderRadius: 16,
-
   },
   editButton: {
     alignItems: 'center',
@@ -298,8 +286,7 @@ const styles = StyleSheet.create({
   headerText: {      
     height: Dimensions.get('screen').height * 0.05,
     width: Dimensions.get('screen').width * 0.85,
-    marginBottom: Dimensions.get('screen').height * 0.02,  
-   
+    marginBottom: Dimensions.get('screen').height * 0.02,     
   },
   header: {
     fontSize: 30,
