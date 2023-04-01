@@ -26,11 +26,8 @@ export default function Tasks() {
     setUserType(userData.userType);
     if (userData.userType === 'Caregiver') {
       console.log('userType is caregiver');
-
       getAllPrivateTasks(userData.Id);
-
     }
-
   }
   const getAllPrivateTasks = async (IdToSend) => {
     console.log('getAllPrivateTasks');
@@ -38,28 +35,16 @@ export default function Tasks() {
     try {
       const response = await fetch(getAllPrivateTasksUrl, {
         method: 'post',
-        headers: new Headers({
-          'Content-Type': 'application/json; charset=UTF-8',
-        }),
-        body: JSON.stringify({
-          Id: IdToSend,
-        }),
+        headers: new Headers({ 'Content-Type': 'application/json; charset=UTF-8', }),
+        body: JSON.stringify({ Id: IdToSend }),
       });
       const result = await response.json();
       setAllPrivateTasks(result);
       console.log('allPrivateTasks=', allPrivateTasks);
     } catch (error) {
       console.log('err post=', error);
-
-
     }
   }
-
-
-
-
-
-
 
   return (
     <Tab.Navigator
@@ -88,9 +73,6 @@ export default function Tasks() {
         //send allPrivateTasks to MainTasks, if userType is caregiver
         children={() => <Main allPrivateTasks={allPrivateTasks} />}
       />
-
-
-
       <Tab.Screen name="General" component={General} />
       <Tab.Screen name="Shop" component={Shop} />
       <Tab.Screen name="Medicine" component={Medicine} />

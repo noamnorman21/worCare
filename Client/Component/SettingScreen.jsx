@@ -38,12 +38,10 @@ function HomeScreen({ navigation, route }) {
             try {
                 const jsonValue = await AsyncStorage.getItem('userData');
                 const userData = jsonValue != null ? JSON.parse(jsonValue) : null;
-                setUserName(userData.FirstName);
+                setUserName(user.FirstName);
                 setuserEmail(userData.Email);
                 setUserImg(userData.userUri);
-                setUserId(userData.UserId);
-                console.log('Setting screen', userData);
-                console.log('user', user.Id);
+                setUserId(userData.UserId);  
             } catch (e) {
                 console.log('error', e);
             }
