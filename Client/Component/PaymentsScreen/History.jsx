@@ -1,11 +1,14 @@
 
-import React, { useState, useEffect, useRef, ScrollView } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, Animated, Modal } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { List } from 'react-native-paper';
+import { ScrollView } from 'react-native-gesture-handler';
 import NewPayment from './NewPayment';
 import EditPaymentScreen from './EditPaymentScreen';
 import { useUserContext } from '../../UserContext';
+
+
 
 export default function History({navigation, route}) {
   const {userContext} = useUserContext();// יש להחליף למשתנה של המשתמש הנוכחי
@@ -72,7 +75,7 @@ export default function History({navigation, route}) {
     }
   }
  
-
+  const [list, setlist] = React.useState();
   
   const Delete = (id) => {
     Alert.alert(
@@ -105,6 +108,8 @@ export default function History({navigation, route}) {
       { cancelable: false }
     );
   }
+
+
   return (
     <ScrollView contentContainerStyle={styles.pending}>
       {History}
@@ -172,6 +177,7 @@ function Request(props) {
 
 
 const styles = StyleSheet.create({
+
   pending: {
     alignItems: 'center',
     backgroundColor: 'white',
@@ -250,7 +256,8 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginLeft:Dimensions.get('screen').width * -0.16,
     marginRight:Dimensions.get('screen').width * 0.02,  
-    fontFamily:'Urbanist-Regular',   
+    fontFamily:'Urbanist',
+   
   },
   viewButton: {
     alignItems: 'center',
@@ -272,6 +279,7 @@ const styles = StyleSheet.create({
     borderColor: '#7DA9FF',
     marginLeft: 10,
   },
+
   viewbuttonText: {
     color: 'white',
     fontSize: 16,
