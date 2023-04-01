@@ -1,4 +1,4 @@
-import { Alert, View,Keyboard, StyleSheet, Text, SafeAreaView, TextInput, Dimensions ,TouchableOpacity, LayoutAnimation } from "react-native"
+import { Alert, View, Keyboard, StyleSheet, Text, SafeAreaView, TextInput, Dimensions, TouchableOpacity, LayoutAnimation } from "react-native"
 import { useState, useEffect } from "react"
 
 export default function AddNewContact(props) {
@@ -12,6 +12,7 @@ export default function AddNewContact(props) {
     contactComment: '',
     patientId: 779355403 // will change when we finish context to get the patient id
   })
+
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
@@ -46,27 +47,27 @@ export default function AddNewContact(props) {
 
   }, []);
 
-
   const handleInputChange = (field, value) => {
     setContact({ ...Contact, [field]: value });
   }
 
-  const sendToDB = () => {
-  
+  const validateInput = () => {
     if (!Contact.mobileNo || !Contact.contactName) {
       return Alert.alert('Error', 'Email and Mobile Number are required')
     }
-    if (Contact.email !== null) {
-      if(!validateEmail(Contact.email)){
+    if (Contact.email !== null && !validateEmail(Contact.email)) {
       return Alert.alert('Invalid Email', 'Please enter a valid email')
     }
-  }
     if (Contact.contactName === '') {
       return Alert.alert('Invalid Contact Name', 'Please enter a valid contact name')
-    }  
+    }
     if (!validatePhoneNum(Contact.mobileNo)) {
       return Alert.alert('Invalid Phone Number', 'Please enter a valid phone number')
     }
+    sendToDB();
+  }
+
+  const sendToDB = () => {
     fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/NewContact', {
       method: 'POST',
       body: JSON.stringify(Contact),
@@ -75,12 +76,12 @@ export default function AddNewContact(props) {
       })
     })
       .then(res => {
-          return res.json()
+        return res.json()
       })
       .then(
         (result) => {
           console.log("fetch POST= ", result);
-          alert("Contact added successfully");
+          Alert.alert("Contact added successfully");
           props.cancel();
         },
         (error) => {
@@ -113,24 +114,24 @@ export default function AddNewContact(props) {
             onChangeText={(value) => handleInputChange('contactName', value)}
           />
           <View style={styles.numbersInput}>
-          <TextInput
-           style={[styles.input, styles.numInput]}
-            placeholder="Phone Numner"
-            keyboardType='decimal-pad'
-            onChangeText={(value) => handleInputChange('phoneNo', value)}
-            returnKeyType='done'
-            inputMode='numeric'
-          />
-          <TextInput 
-            style={[styles.input, styles.numInput]}
-            placeholder="Mobile Numner"
-            keyboardType='decimal-pad'
-            onChangeText={(value) => handleInputChange('mobileNo', value)}
-            returnKeyType='done'
-            inputMode='numeric'
-          />
+            <TextInput
+              style={[styles.input, styles.numInput]}
+              placeholder="Phone Numner"
+              keyboardType='decimal-pad'
+              onChangeText={(value) => handleInputChange('phoneNo', value)}
+              returnKeyType='done'
+              inputMode='numeric'
+            />
+            <TextInput
+              style={[styles.input, styles.numInput]}
+              placeholder="Mobile Numner"
+              keyboardType='decimal-pad'
+              onChangeText={(value) => handleInputChange('mobileNo', value)}
+              returnKeyType='done'
+              inputMode='numeric'
+            />
           </View>
-             <TextInput
+          <TextInput
             style={styles.input}
             placeholder="Role"
             keyboardType='ascii-capable'
@@ -142,7 +143,6 @@ export default function AddNewContact(props) {
             keyboardType='ascii-capable'
             onChangeText={(value) => handleInputChange('email', value)}
           />
-       
           <TextInput
             style={styles.input}
             placeholder="Comment"
@@ -152,12 +152,12 @@ export default function AddNewContact(props) {
         </View>
       </View>
       <View style={styles.bottom}>
-      <TouchableOpacity style={styles.savebutton} onPress={sendToDB}>
-        <Text style={styles.savebuttonText}>Save</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.cancelbutton} onPress={props.cancel}>
-        <Text style={styles.cancelbuttonText}>Cancel</Text>
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.savebutton} onPress={validateInput}>
+          <Text style={styles.savebuttonText}>Save</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.cancelbutton} onPress={props.cancel}>
+          <Text style={styles.cancelbuttonText}>Cancel</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   )
@@ -176,7 +176,6 @@ const styles = StyleSheet.create({
     height: Dimensions.get('window').height * 1,
     alignItems: 'center',
     flex: 4,
-
   },
   input: {
     width: Dimensions.get('window').width * 0.9,
@@ -189,6 +188,7 @@ const styles = StyleSheet.create({
     borderColor: 'lightgray',
     shadowColor: '#000',
     height: 45,
+    fontFamily: 'Urbanist',
   },
   numInput: {
     width: Dimensions.get('window').width * 0.43,
@@ -230,12 +230,12 @@ const styles = StyleSheet.create({
   },
   savebuttonText: {
     color: 'white',
-    fontWeight: '600',
     fontSize: 16,
+    fontFamily: 'Urbanist-Bold',
   },
   cancelbuttonText: {
     color: '#548DFF',
-    fontWeight: '600',
+    fontFamily: 'Urbanist-Bold',
     fontSize: 16,
   },
   title: {
@@ -248,9 +248,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  numbersInput: { 
+  numbersInput: {
     flexDirection: 'row',
-   
   },
-
 });
