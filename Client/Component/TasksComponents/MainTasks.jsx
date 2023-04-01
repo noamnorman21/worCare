@@ -10,7 +10,7 @@ export default function MainTasks(props) {
   const handleAddBtnPress = () => {
     console.log('add btn pressed')
     console.log('allPrivateTasks=', allPrivateTasks);
-    // setModalVisible(true);
+     setModalVisible(true);
   };
 
   const handleModalClose = () => {
@@ -20,23 +20,24 @@ export default function MainTasks(props) {
     <View style={styles.container}>
       <Text>
         Main Tasks
-        {
-          //all tasks, Use the index as a key
-          allPrivateTasks.map((task, index) => {
+      </Text>
+      {
+        //all private tasks, just for test now
+        allPrivateTasks.map((task, index) => {
 
-            return <Text  key={index}>"test"{index}: {task.taskName},
+          return <Text key={index}>"test"{index}: {task.taskName},
             {task.TimeInDay}, {task.taskDate}, {task.taskToDate}, {task.period}
             ----------------------------------------------------------------
-            
-            
-            </Text>
-
-          })
-
-        }
 
 
-      </Text>
+          </Text>
+
+        })
+
+      }
+
+
+
       <View style={styles.addBtnView}>
         <AddBtn onPress={handleAddBtnPress} />
       </View>

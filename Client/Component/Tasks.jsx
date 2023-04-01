@@ -25,10 +25,10 @@ export default function Tasks() {
     setUserData(userData);
     setUserType(userData.userType);
     if (userData.userType === 'Caregiver') {
-      console.log('userType is caregiver');  
-      console.log('userData.Id=', userData.Id);
+      console.log('userType is caregiver');
+
       getAllPrivateTasks(userData.Id);
-      
+
     }
 
   }
@@ -49,12 +49,12 @@ export default function Tasks() {
       setAllPrivateTasks(result);
       console.log('allPrivateTasks=', allPrivateTasks);
     } catch (error) {
-      console.log('err post=', error); 
-      
-      
+      console.log('err post=', error);
+
+
     }
   }
-  
+
 
 
 
@@ -87,12 +87,12 @@ export default function Tasks() {
       }}
     >
       <Tab.Screen name="Main"
-       //send allPrivateTasks to MainTasks, if userType is caregiver
+        //send allPrivateTasks to MainTasks, if userType is caregiver
         children={() => <Main allPrivateTasks={allPrivateTasks} />}
       />
 
 
-        
+
       <Tab.Screen name="General" component={General} />
       <Tab.Screen name="Shop" component={Shop} />
       <Tab.Screen name="Medicine" component={Medicine} />

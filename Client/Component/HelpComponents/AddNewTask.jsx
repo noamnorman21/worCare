@@ -1,4 +1,4 @@
-import { Alert, View, Text, StyleSheet, SafeAreaView, Modal, LayoutAnimation, TouchableOpacity, Keyboard, Dimensions, TextInput } from 'react-native'
+import { Alert, View, Text, StyleSheet, SafeAreaView, KeyboardAvoidingView, Modal, LayoutAnimation, TouchableOpacity, Keyboard, Dimensions, TextInput } from 'react-native'
 import { useState, useEffect } from 'react'
 import { AntDesign, Ionicons, SimpleLineIcons } from '@expo/vector-icons';
 import DatePicker from 'react-native-datepicker';
@@ -37,7 +37,7 @@ function NewTaskModal(props) {
    const [selectedRange, setRange] = useState({});
    const [taskNameBorder, setTaskNameBorder] = useState('')
    const [modalVisibleDate, setModalVisibleDate] = useState(false);
-
+   const [keyboardOpen, setKeyboardOpen] = useState(false);
    const taskCategorys = [
       { id: 1, name: 'General', color: '#FFC0CB' },
       { id: 2, name: 'Shop', color: '#FFC0CB' },
@@ -52,6 +52,14 @@ function NewTaskModal(props) {
    ]
 
    useEffect(() => {
+      Keyboard.addListener('keyboardDidShow', () => setKeyboardOpen(true));
+      Keyboard.addListener('keyboardDidHide', () => setKeyboardOpen(false));
+      // cleanup function
+      return () => {
+         Keyboard.removeAllListeners('keyboardDidShow');
+         Keyboard.removeAllListeners('keyboardDidHide');
+      };
+
       const getUserData = async () => {
          const user = await AsyncStorage.getItem('userData');
          const userData = JSON.parse(user);
@@ -98,7 +106,9 @@ function NewTaskModal(props) {
          .then(
             (result) => {
                console.log("fetch POST= ", result);
+
                props.onClose();
+
             }
          )
          .catch((error) => {
@@ -124,8 +134,21 @@ function NewTaskModal(props) {
    }
    return (
       <SafeAreaView>
+
          <Modal visible={props.isVisible} presentationStyle='formSheet' animationType='slide' onRequestClose={props.onClose}>
-            <View style={styles.centeredView}>
+            <View style={[styles.centeredView,
+            keyboardOpen && {
+               transform: [{ translateY: -SCREEN_HEIGHT * 0.15 },
+                  
+                  { translateX: 0 },
+               //do it slow
+               { scale: 1 },
+
+               
+               ]
+
+            }
+            ]}>
                <View style={styles.modalView}>
                   <Text style={styles.modalText}>Add new task </Text>
                   <View style={styles.inputView}>
@@ -295,7 +318,9 @@ function NewTaskModal(props) {
                      />
 
                      <TextInput
-                        style={[styles.commentInput, taskComment != '' && { borderColor: '#000' }]}
+                        style={[styles.commentInput, taskComment != '' && { borderColor: '#000' }
+
+                        ]}
                         placeholder='Comment ( optional )'
                         value={taskComment}
                         numberOfLines={4}
