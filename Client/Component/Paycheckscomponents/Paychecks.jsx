@@ -4,7 +4,6 @@ import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, Animated, 
 import { useIsFocused } from '@react-navigation/native';
 import { List } from 'react-native-paper';
 import { ScrollView } from 'react-native-gesture-handler';
-
 import NewPaycheck from './NewPaycheck';
 import EditPaycheck from './EditPaycheck';
 
