@@ -20,9 +20,9 @@ namespace WebApi.Controllers
         igroup194DB db = new igroup194DB();
         
         // GET: api/Contacts
-        [Route("GetContacts/{id}")]
-        [HttpGet]
-        public IHttpActionResult GetContacts(int id)
+        [Route("GetContacts")]
+        [HttpPost]
+        public IHttpActionResult GetContacts([FromBody]int id)
         {
             try
             {
@@ -89,7 +89,7 @@ namespace WebApi.Controllers
         
         // PUT: api/Contacts/{id}
         [HttpPut]
-        [Route("UpdateContact/{id}")]
+        [Route("UpdateContact")]
         public IHttpActionResult UpdateContact([FromBody] ContactDTO value)
         {
             try

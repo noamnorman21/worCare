@@ -13,7 +13,7 @@ export default function NewPayment(props) {
     requestDate: new Date(),
     requestProofDocument: '',
     requestComment: '',
-    requestStatus: 'R',
+    requestStatus: 'P',
     userId: null // will be changed to current user id,
   })
 
@@ -65,7 +65,6 @@ export default function NewPayment(props) {
       aspect: [4, 3],
       quality: 0.1,
     });    
-    alert(result.uri);    
     console.log(result);
     changeIMG(result.uri);
     

@@ -31,13 +31,27 @@ export default function Pending({ route }) {
 
   const getPending = async () => {    
     try {
-      const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/GetPending/' + userContext.Id, {
-        method: 'GET',
+      const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/GetPending/' , {
+        method: 'Post',
         headers: {
           'Content-Type': 'application/json',
         },
+        body: JSON.stringify(userContext.Id)
       });
-      const data = await response.json();
+      // const data = await response.json();
+      const data= [
+        { 
+          "requestId": 520,
+          "requestSubject": "Bla",
+          "amountToPay": 150.0,
+          "requestDate": "2023-04-02T00:00:00",
+          "requestProofDocument": "https://firebasestorage.googleapis.com/v0/b/worcare-3df72.appspot.com/o/requests%2F63af359f-e288-4d8a-9dfb-38753dd830ec.jpeg?alt=media&token=8ad4d0f0-3a42-4907-bbb2-1f4689b48a7f",
+          "requestComment": "Skcisn",
+          "requestStatus": "P",
+          "userId": 155,
+          "fId": 0
+      },
+      ]
       let arr = data.map((item) => {
         return (
           <Request key={item.requestId} getPending={getPending} data={item} id={item.requestId} Notofication={Notification} View={View} subject={item.requestSubject} amountToPay={item.amountToPay} date={item.requestDate} requestComment={item.requestComment} />
@@ -166,7 +180,7 @@ function Request(props) {
             </View>
             <View>
             <TouchableOpacity style={[styles.itemsText, styles.SaveButton]} onPress={!expanded ? () =>{saveStatus(props.data.requestId)} : null}>
-              <Text style={styles.editbuttonText}>Save as Payed</Text>
+              <Text style={styles.editbuttonText}>Update Status to finished</Text>
             </TouchableOpacity>
           </View>
           </View>} />

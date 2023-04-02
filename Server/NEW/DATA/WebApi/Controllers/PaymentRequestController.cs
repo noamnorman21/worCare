@@ -14,14 +14,14 @@ namespace WebApi.Controllers
     {
         igroup194DB db = new igroup194DB();
         // GET: api/PaymentRequest
-        [Route("GetPending/{id}")]
-        [HttpGet]
-        public IHttpActionResult GetPending(int id)
+        [Route("GetPending")]
+        [HttpPost]
+        public IHttpActionResult GetPending([FromBody] int id)
         {
             try
             {
 
-                var Payments = db.tblPaymentRequests.Where(x => x.userId == id && x.requestStatus == "R").Select(y => new PaymentsRequestDTO
+                var Payments = db.tblPaymentRequests.Where(x => x.userId == id && x.requestStatus == "P").Select(y => new PaymentsRequestDTO
                 {
                     requestId = y.requestId,
                     requestSubject = y.requestSubject,
@@ -40,13 +40,13 @@ namespace WebApi.Controllers
             }
         }
 
-        [Route("GetHistory/{id}")]
-        [HttpGet]
-        public IHttpActionResult GetHistory(int id)
+        [Route("GetHistory/")]
+        [HttpPost]
+        public IHttpActionResult GetHistory([FromBody] int id)
         {
             try
             {
-                var Payments = db.tblPaymentRequests.Where(x => x.userId == id && x.requestStatus == "C").Select(y => new PaymentsRequestDTO
+                var Payments = db.tblPaymentRequests.Where(x => x.userId == id && x.requestStatus!= "P" ).Select(y => new PaymentsRequestDTO
                 {
                     requestId = y.requestId,
                     requestSubject = y.requestSubject,
@@ -67,11 +67,10 @@ namespace WebApi.Controllers
         // GET: api/PaymentRequest/5
         [HttpGet]
         [Route("GetSpecificPayments/{id}")]
-        public IHttpActionResult GetSpecificPayments(int id)
+        public IHttpActionResult GetSpecificPayments([FromBody] int id)
         {
             try
             {
-
                 var Payment = db.tblPaymentRequests.Where(x => x.requestId == id).Select(y => new PaymentsRequestDTO
                 {
                     requestId = y.requestId,
@@ -148,6 +147,31 @@ namespace WebApi.Controllers
             }
         }
 
+        [HttpPut]
+        [Route("UpdateStatus")]
+        public IHttpActionResult UpdateStatus([FromBody] int requestId)
+        {
+            try
+            {
+                var p = db.tblPaymentRequests.Where(x => x.requestId == requestId).FirstOrDefault();
+                if (p != null)
+                {
+                    p.requestStatus = "F";
+                    db.SaveChanges();
+                    return Ok("Status Updated successfully!");
+                }
+                else
+                {
+                    return BadRequest("requset not found");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+                throw;
+            }
+        }
+
         [HttpDelete]
         [Route("DeletePayment/{id}")]
         public IHttpActionResult DeletePayment(int id)
@@ -167,7 +191,6 @@ namespace WebApi.Controllers
             {
                 return BadRequest(ex.Message);
             }
-
         }
 
     }

@@ -49,6 +49,31 @@ function Main({ navigation }) {
         console.error(error);
       }
       );
+console.log(PatientId)
+
+//replace the fetch with this when the server is ready
+      // fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/GetContacts/', {
+      //   method: 'POST',
+      //   headers: {
+      //     Accept: 'application/json',
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify(PatientId),
+      // })
+      // .then((response) => response.json())
+      // .then(json => {
+      //   if (json != null) {
+      //       let contacts = json.map((item) => {
+      //       return <ContactCard key={item.contactId} contact={item}  />
+      //     })
+      //     setContacts(json);
+      //     setContactToRender(contacts);
+      //   }
+      // })
+      // .catch((error) => {
+      //   console.error(error);
+      // }
+      // );
   }
 
    useEffect(() => {
