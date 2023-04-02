@@ -7,6 +7,7 @@ import { Feather } from '@expo/vector-icons';
 import NewPayment from './NewPayment';
 import EditPaymentScreen from './EditPaymentScreen';
 import { useUserContext } from '../../UserContext';
+import { AddBtn } from '../HelpComponents/AddNewTask';
 
 
 export default function Pending({ route }) {
@@ -80,28 +81,12 @@ export default function Pending({ route }) {
   }
 
 
-  const View = (id, data) => {
-    Alert.alert(
-      "View",
-      "Are you sure you want to view this request?",
-      [
-        {
-          text: "Cancel",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel"
-        },
-        { text: "OK", onPress: () => console.log("OK Pressed") }
-      ],
-      { cancelable: false }
-    );
-  }
+  
 
   return (
     <ScrollView contentContainerStyle={styles.pending}>
       {Pendings}
-      <TouchableOpacity style={styles.addRequest} onPress={() => setModal1Visible(true)}>
-        <Text style={styles.addRequestText}>+</Text>
-      </TouchableOpacity>
+      {userContext.userType=="Caregiver"?<View style={styles.addBtnView}><AddBtn onPress={() => setModal1Visible(true)}/></View>: null}
       <Modal animationType='slide' transparent={true} visible={modal1Visible}>
         <NewPayment cancel={() => setModal1Visible(false)} />
       </Modal>
@@ -157,7 +142,6 @@ function Request(props) {
       left={() => <View >
         <Text style={styles.requestHeaderText}>{props.date.substring(0, 10)}</Text>
       </View>}
-
       expanded={!expanded}
       onPress={toggle}
     >
@@ -324,22 +308,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     fontFamily: 'Urbanist-Bold'
   },
-  addRequest: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#548DFF',
-    height: 54,
-    width: 54,
-    borderRadius: 54,
+  addBtnView: {
     position: 'absolute',
-    bottom: Platform.OS === 'ios' ? 40 : 10,
-    right: Platform.OS === 'ios' ? 15 : 10,
-    elevation: 5,
+    bottom: 20,
+    right: 20,
   },
   addRequestText: {
     color: 'white',
     fontSize: 26,
     marginBottom: 2,
     fontFamily: 'Urbanist-SemiBold',
+
   },
 })

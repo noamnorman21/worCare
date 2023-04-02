@@ -7,6 +7,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import NewPayment from './NewPayment';
 import EditPaymentScreen from './EditPaymentScreen';
 import { useUserContext } from '../../UserContext';
+import { AddBtn } from '../HelpComponents/AddNewTask';
 
 
 
@@ -32,21 +33,7 @@ export default function History({navigation, route}) {
     );
   }
 
-  const View = (id, item) => {
-    Alert.alert(
-      "View",
-      "Are you sure you want to view this request?",
-      [
-        {
-          text: "Cancel",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel"
-        },
-        { text: "OK", onPress: () =>navigation.navigate('EditPaymentScreen', {id:id, data: item }) }
-      ],
-      { cancelable: false }
-    );
-  }
+  
   
   useEffect(() => {
     if (isFocused) {
@@ -136,21 +123,7 @@ export default function History({navigation, route}) {
  
   const [list, setlist] = React.useState();
   
-  const Delete = (id) => {
-    Alert.alert(
-      "Delete",
-      "Are you sure you want to delete this request?",
-      [
-        {
-          text: "Cancel",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel"
-        },
-        { text: "OK", onPress: () => console.log("OK Pressed") }
-      ],
-      { cancelable: false }
-    );
-  }
+  
 
   const Notification = (id) => {
     Alert.alert(
@@ -171,9 +144,7 @@ export default function History({navigation, route}) {
   return (
     <ScrollView contentContainerStyle={styles.pending}>
       {History}
-      <TouchableOpacity style={styles.addRequest} onPress={() => setModal1Visible(true)}>
-        <Text style={styles.addRequestText}>+</Text>
-      </TouchableOpacity>
+      {userContext.userType=="Caregiver"?<View style={styles.addBtnView}><AddBtn onPress={() => setModal1Visible(true)}/></View>: null}
       <Modal animationType='slide' transparent={true} visible={modal1Visible}>
        <NewPayment cancel={() => setModal1Visible(false)} />
       </Modal>
@@ -390,17 +361,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   }, 
-  addRequest: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#548DFF',
-    height: 54,
-    width: 54,
-    borderRadius: 54,
+  addBtnView: {
     position: 'absolute',
-    bottom: Platform.OS === 'ios' ? 40 : 10,
-    right:  Platform.OS === 'ios' ? 15: 10,
-    elevation: 5,
+    bottom: 20,
+    right: 20,
   },
   addRequestText: {
     color: 'white',
