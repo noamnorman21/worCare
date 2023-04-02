@@ -5,7 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import Pending from './PaymentsScreen/Pending';
 import History from './PaymentsScreen/History';
-import Paychecks from './Paycheckscomponents/Paychecks';
+import Paychecks from './Paycheckcomponents/Paychecks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
 

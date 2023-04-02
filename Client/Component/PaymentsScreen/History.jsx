@@ -8,6 +8,8 @@ import NewPayment from './NewPayment';
 import EditPaymentScreen from './EditPaymentScreen';
 import { useUserContext } from '../../UserContext';
 import { AddBtn } from '../HelpComponents/AddNewTask';
+import * as FileSystem from 'expo-file-system';
+
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
@@ -186,6 +188,48 @@ function Request(props) {
     }
   }
 
+  const Download = () => {
+    const url = props.data.requestProofDocument;
+    const filename = props.data.requestId + "Doc.jpeg";
+    console.log(filename)
+    const downloadDest = `${FileSystem.documentDirectory}Worcare/requests${filename}`;
+    console.log("Download Dest",downloadDest)
+    const { uri } = FileSystem.getInfoAsync(downloadDest); 
+      
+    if (!uri) {
+      console.log('Downloading to ', downloadDest);
+      FileSystem.makeDirectoryAsync(downloadDest, { intermediates: true });
+      
+    }
+    return
+
+    
+    FileSystem.downloadAsync(
+      url,
+      uri
+    )
+
+      .then(({ uri }) => {
+        console.log('Finished downloading to ', uri);
+        FileSystem.getContentUriAsync(uri)
+          .then((contentUri) => {
+            console.log(contentUri)
+            Sharing.shareAsync(contentUri)
+              .then((result) => console.log(result))
+              .catch((errorMsg) => console.log(errorMsg));
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
+      )
+      .catch((error) => {
+        console.error(error);
+      }
+      );
+
+  }
+
 
   return (
     <List.Accordion style={!expanded ? (status == "F" ? [styles.requestFocused, styles.finishedRequestFocused] : [styles.requestFocused, styles.notCompleteRequestFocused]) : styles.requestunFocused}
@@ -218,17 +262,17 @@ function Request(props) {
               </Modal>
               <Modal animationType='slide' transparent={true} visible={modal2Visible}>
                 <View style={styles.documentview}>
-                <Image source={{ uri: props.data.requestProofDocument }} style={styles.documentImg} />
-                <Text>{props.data.requestProofDocument}</Text>
-                <TouchableOpacity style={styles.documentDownloadButton} >
-                  <Text style={styles.documentButtonText}>Download</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.documentCancelButton} onPress={()=>setModal2Visible(false)}>
-                  <Text style={styles.documentCancelText}>Go Back</Text>
-                </TouchableOpacity>
+                  <Image source={{ uri: props.data.requestProofDocument }} style={styles.documentImg} />
+                  <Text>{props.data.requestProofDocument}</Text>
+                  <TouchableOpacity style={styles.documentDownloadButton} onPress={Download} >
+                    <Text style={styles.documentButtonText}>Download</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.documentCancelButton} onPress={() => setModal2Visible(false)}>
+                    <Text style={styles.documentCancelText}>Go Back</Text>
+                  </TouchableOpacity>
                 </View>
               </Modal>
-            
+
             </View>} />
         </View>
       </View>
@@ -276,7 +320,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 16,
     borderBottomWidth: 1,
     borderBottomMargin: 10,
-    
+
   },
   finishedRequestFocused: {
     borderTopColor: '#7DA9FF',
@@ -392,47 +436,51 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     alignContent: 'center',
-    backgroundColor: 'white',       
+    backgroundColor: 'white',
     flex: 1,
-    
+
   },
-  documentImg:{
+  documentImg: {
     height: SCREEN_HEIGHT * 0.5,
     width: SCREEN_WIDTH * 0.9,
     borderRadius: 16,
   },
-  documentDownloadButton: {    
+  documentDownloadButton: {
     fontSize: 16,
     borderRadius: 16,
-    backgroundColor: '#7DA9FF',   
+    backgroundColor: '#7DA9FF',
+    fontFamily: 'Urbanist-Bold',
     alignItems: 'center',
-    justifyContent: 'center',   
+    justifyContent: 'center',
     width: SCREEN_WIDTH * 0.9,
     height: SCREEN_HEIGHT * 0.06,
     marginBottom: 10,
   },
-  documentCancelButton: {    
+  documentCancelButton: {
     fontSize: 16,
     borderRadius: 16,
+    borderColor: '#7DA9FF',
     borderWidth: 1,
+    fontFamily: 'Urbanist-Bold',
     alignItems: 'center',
-    justifyContent: 'center',   
+    justifyContent: 'center',
     width: SCREEN_WIDTH * 0.9,
-    height: SCREEN_HEIGHT * 0.06,      
-    backgroundColor:'#F5F8FF',
-    borderColor:'#548DFF',
+    height: SCREEN_HEIGHT * 0.06,
+    borderWidth: 1.5,
+    backgroundColor: '#F5F8FF',
+    borderColor: '#548DFF',
   },
   documentButtonText: {
     color: '#fff',
     fontSize: 16,
-    fontFamily: 'Urbanist-SemiBold',
+    fontFamily: 'Urbanist-Bold',
     alignItems: 'center',
   },
   documentCancelText: {
     color: '#7DA9FF',
     fontSize: 16,
-    fontFamily: 'Urbanist-SemiBold',
+    fontFamily: 'Urbanist-Bold',
     alignItems: 'center',
   },
-  
+
 })
