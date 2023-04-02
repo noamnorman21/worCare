@@ -73,7 +73,9 @@ export default function Tasks() {
         //send allPrivateTasks to MainTasks, if userType is caregiver
         children={() => <Main allPrivateTasks={allPrivateTasks} />}
       />
-      <Tab.Screen name="General" component={General} />
+      <Tab.Screen name="General"
+        children={() => <General allPrivateTasks={allPrivateTasks} />}
+      />
       <Tab.Screen name="Shop" component={Shop} />
       <Tab.Screen name="Medicine" component={Medicine} />
     </Tab.Navigator>

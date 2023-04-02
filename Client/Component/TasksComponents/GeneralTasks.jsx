@@ -1,19 +1,21 @@
 import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native'
 import { useState } from 'react'
 import { AddBtn, NewTaskModal } from '../HelpComponents/AddNewTask'
+import TaskCheckBox from '../HelpComponents/TaskCheckBox';
 
-export default function GeneralTasks() {
+export default function GeneralTasks(props) {
   const [modalVisible, setModalVisible] = useState(false)
+  const allPrivateTasks = props.allPrivateTasks;
+
   const handleAddBtnPress = () => {
     setModalVisible(true);
   };
-
   const handleModalClose = () => {
     setModalVisible(false);
   };
+
   return (
     <View style={styles.container}>
-      <Text>General Tasks</Text>
       <View style={styles.addBtnView}>
         <AddBtn onPress={handleAddBtnPress} />
       </View>
