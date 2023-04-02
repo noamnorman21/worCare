@@ -195,28 +195,26 @@ function Request(props) {
     const downloadDest = `${FileSystem.documentDirectory}Worcare/requests${filename}`;
     console.log("Download Dest",downloadDest)
     const { uri } = FileSystem.getInfoAsync(downloadDest); 
-      
-    if (!uri) {
-      console.log('Downloading to ', downloadDest);
-      FileSystem.makeDirectoryAsync(downloadDest, { intermediates: true });
-      
-    }
-    return
+    // console.log("New Urlli",uri)
+    // if (!uri) {
+    //   console.log('Downloading to ', downloadDest);
+    //   FileSystem.makeDirectoryAsync(downloadDest, { intermediates: true });
+    //   let uri = FileSystem.getInfoAsync(downloadDest)
+    //   console.log("New Uri",uri)
+    // }  
 
-    
     FileSystem.downloadAsync(
       url,
-      uri
+      downloadDest
     )
+    
 
       .then(({ uri }) => {
         console.log('Finished downloading to ', uri);
         FileSystem.getContentUriAsync(uri)
           .then((contentUri) => {
             console.log(contentUri)
-            Sharing.shareAsync(contentUri)
-              .then((result) => console.log(result))
-              .catch((errorMsg) => console.log(errorMsg));
+           
           })
           .catch((error) => {
             console.error(error);
