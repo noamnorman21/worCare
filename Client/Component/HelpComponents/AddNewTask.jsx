@@ -1,6 +1,6 @@
 import { Alert, View, Text, StyleSheet, SafeAreaView, KeyboardAvoidingView, Modal, LayoutAnimation, TouchableOpacity, Keyboard, Dimensions, TextInput } from 'react-native'
 import { useState, useEffect } from 'react'
-import { AntDesign, Ionicons, SimpleLineIcons } from '@expo/vector-icons';
+import { Octicons } from '@expo/vector-icons';
 import DatePicker from 'react-native-datepicker';
 import { Dropdown } from 'react-native-element-dropdown';
 import DateRangePicker from "rn-select-date-range";
@@ -14,7 +14,8 @@ function AddBtn(props) {
    return (
       <TouchableOpacity onPress={props.onPress}>
          <View style={styles.addBtn}>
-            <Text style={styles.addBtnTxt}>+</Text>
+            <Octicons name="plus" size={26} color="#fff" />
+            {/* <Text style={styles.addBtnTxt}>+</Text> */}
          </View>
       </TouchableOpacity>
    );
