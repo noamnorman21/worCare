@@ -554,7 +554,6 @@ function AddNewMedicine(props) {
          </View>
       </Modal>
    </SafeAreaView>
-
 }
 
 export { NewTaskModal, AddBtn, AddNewMedicine }
