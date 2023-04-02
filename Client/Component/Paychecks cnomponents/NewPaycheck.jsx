@@ -6,43 +6,8 @@ import * as DocumentPicker from 'expo-document-picker';
 import { useUserContext } from '../../UserContext';
 
 export default function NewPaycheck(props) {
-  const [animation, setAnimation] = useState({});
+ 
   const { userContext } = useUserContext();
-
-  useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener(
-      'keyboardDidShow',
-      () => {
-        LayoutAnimation.configureNext({
-          update: {
-            type: LayoutAnimation.Types.easeIn,
-            duration: 300,
-            useNativeDriver: true,
-          },
-        });
-        setAnimation({ marginBottom: Dimensions.get('window').height * 0.32 });
-      }
-    );
-    const keyboardDidHideListener = Keyboard.addListener(
-      'keyboardDidHide',
-      () => {
-        LayoutAnimation.configureNext({
-          update: {
-            type: LayoutAnimation.Types.easeOut,
-            duration: 300,
-            useNativeDriver: true,
-          },
-        });
-        setAnimation({ marginBottom: 0 });
-      }
-    );
-    return () => {
-      keyboardDidShowListener.remove();
-      keyboardDidHideListener.remove();
-    }
-
-  }, []);
-
   const [PayCheck, setPayCheck] = useState({
     paycheckMonth: '',
     paycheckYear:'',
@@ -50,6 +15,45 @@ export default function NewPaycheck(props) {
     paycheckComment: '',    
     userId: userContext.Id
   })
+  const [animation, setAnimation] = useState({});
+  let animationInProgress = false;
+
+  useEffect(() => {
+    Keyboard.addListener('keyboardDidShow', () => {
+      if (!animationInProgress) {
+         animationInProgress = true;
+         LayoutAnimation.configureNext({
+            update: {
+               type: LayoutAnimation.Types.easeIn,
+               duration: 250,
+               useNativeDriver: true,
+            },
+         });
+         setAnimation({
+            marginBottom: Dimensions.get('window').height * 0.6
+         });
+         animationInProgress = false;
+      }
+   }
+   );
+   Keyboard.addListener('keyboardDidHide', () => {
+      if (!animationInProgress) {
+         animationInProgress = true;
+         LayoutAnimation.configureNext({
+            update: {
+               type: LayoutAnimation.Types.easeOut,
+               duration: 250,
+               useNativeDriver: true,
+            },
+         });
+         setAnimation({ marginBottom: 0 });
+         animationInProgress = false;
+      }
+   }
+   );
+  }, []);
+
+ 
   
   const pickDocument = async () => {
 
@@ -199,8 +203,8 @@ export default function NewPaycheck(props) {
           <TouchableOpacity style={styles.uploadButton} onPress={()=> savePaycheck()}>
             <Text style={styles.buttonText}>Upload Paycheck</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.uploadButton} onPress={props.cancel}>
-            <Text style={styles.buttonText}>Cancel</Text>
+          <TouchableOpacity style={styles.cnlButton} onPress={props.cancel}>
+            <Text style={styles.closeTxt}>Cancel</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -213,8 +217,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-  },
- 
+  }, 
   title: {
     color: '#000',
     fontSize: 24,
@@ -224,6 +227,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     padding: 20,
     backgroundColor: '#fff',
+    
   },
   input: {
     height: Dimensions.get('window').height *0.07,
@@ -249,10 +253,28 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor:'#548DFF'
   },
+  cnlButton: {
+    paddingVertical: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignContent: 'center',
+    marginBottom: 20,
+    borderRadius: 16,
+    borderWidth: 1.5,
+    backgroundColor:'#F5F8FF',
+    borderColor:'#548DFF',
+  },
   buttonText: {
     textAlign: 'center',
-    color: '#fff',
-    fontFamily:'Urbanist-Bold'   
+    color: '#fff',    
+    fontFamily: 'Urbanist-SemiBold',
+    fontSize: 16,  
   },
+   closeTxt: {
+    color: '#548DFF',
+    textAlign: 'center',
+    fontFamily: 'Urbanist-SemiBold',
+    fontSize: 16,
+ },
   comment: { height: 200, textAlignVertical: 'top', padding:10 },
 });

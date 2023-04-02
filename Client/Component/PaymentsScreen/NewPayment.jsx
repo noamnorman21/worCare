@@ -5,8 +5,8 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import * as DocumentPicker from 'expo-document-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function NewPayment(props) {
-  const [animation, setAnimation] = useState({});
+export default function NewPayment(props) { 
+ 
   const [payment, setPayment] = useState({
     amountToPay: '',
     requestSubject: '',
@@ -16,45 +16,47 @@ export default function NewPayment(props) {
     requestStatus: 'P',
     userId: null // will be changed to current user id,
   })
+  const [animation, setAnimation] = useState({});
+  let animationInProgress = false;
 
   useEffect(() => {
     AsyncStorage.getItem('userData').then((value) => {
       const data = JSON.parse(value);
       setPayment({ ...payment, userId: data.Id });
-    });
-  }, []);
+    })
 
-  useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener(
-      'keyboardDidShow',
-      () => {
-        LayoutAnimation.configureNext({
-          update: {
-            type: LayoutAnimation.Types.easeIn,
-            duration: 300,
-            useNativeDriver: true,
-          },
-        });
-        setAnimation({ marginBottom: Dimensions.get('window').height * 0.32 });
+    Keyboard.addListener('keyboardDidShow', () => {
+      if (!animationInProgress) {
+         animationInProgress = true;
+         LayoutAnimation.configureNext({
+            update: {
+               type: LayoutAnimation.Types.easeIn,
+               duration: 250,
+               useNativeDriver: true,
+            },
+         });
+         setAnimation({
+            marginBottom: Dimensions.get('window').height * 0.355
+         });
+         animationInProgress = false;
       }
-    );
-    const keyboardDidHideListener = Keyboard.addListener(
-      'keyboardDidHide',
-      () => {
-        LayoutAnimation.configureNext({
-          update: {
-            type: LayoutAnimation.Types.easeOut,
-            duration: 300,
-            useNativeDriver: true,
-          },
-        });
-        setAnimation({ marginBottom: 0 });
+   }
+   );
+   Keyboard.addListener('keyboardDidHide', () => {
+      if (!animationInProgress) {
+         animationInProgress = true;
+         LayoutAnimation.configureNext({
+            update: {
+               type: LayoutAnimation.Types.easeOut,
+               duration: 250,
+               useNativeDriver: true,
+            },
+         });
+         setAnimation({ marginBottom: 0 });
+         animationInProgress = false;
       }
-    );
-    return () => {
-      keyboardDidShowListener.remove();
-      keyboardDidHideListener.remove();
-    }
+   }
+   );
 
   }, []);
   
@@ -186,10 +188,10 @@ export default function NewPayment(props) {
           <TouchableOpacity style={styles.uploadButton} onPress={()=> sendToFirebase(payment.requestProofDocument)}>
             <Text style={styles.buttonText}>Upload request</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.uploadButton} onPress={props.cancel}>
-            <Text style={styles.buttonText}>Cancel</Text>
+          <TouchableOpacity style={styles.closeBtn} onPress={props.cancel}>
+            <Text style={styles.closeTxt}>Cancel</Text>
           </TouchableOpacity>
-        </View>
+          </View>
       </SafeAreaView>
   
   );
@@ -241,9 +243,27 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor:'#548DFF'
   },
+  closeBtn: {
+    paddingVertical: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignContent: 'center',
+    marginBottom: 20,
+    borderRadius: 16,
+    backgroundColor:'#F5F8FF',
+    borderWidth: 1.5,
+    borderColor: '#548DFF',
+  },
+  closeTxt: {
+    color: '#548DFF',
+    textAlign: 'center',
+    fontFamily: 'Urbanist-SemiBold',
+    fontSize: 16,
+ },  
   buttonText: {
     textAlign: 'center',
-    color: '#fff',    
-    fontFamily:'Urbanist-Bold'   
+    fontFamily: 'Urbanist-SemiBold',
+    fontSize: 16,
+    color: '#fff',         
   },
 });

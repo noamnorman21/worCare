@@ -161,7 +161,6 @@ export default function Profile({ navigation }) {
   useEffect(() => {
     const getData = async () => {
       try {
-        console.log('Profie', userContext);
         setUserId(userContext.Id);
         setFirstName(userContext.FirstName);
         setLastName(userContext.LastName);
@@ -170,7 +169,6 @@ export default function Profile({ navigation }) {
         setPhonenum(userContext.phoneNum)
         setEmail(userContext.Email)
         setUserType(userContext.userType)
-        console.log('userType1', userContext.userType)
       } catch (e) {
         console.log('error', e);
       }

@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, Animated, Modal } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, Animated, Modal, Image } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { List } from 'react-native-paper';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -8,11 +8,13 @@ import NewPayment from './NewPayment';
 import EditPaymentScreen from './EditPaymentScreen';
 import { useUserContext } from '../../UserContext';
 import { AddBtn } from '../HelpComponents/AddNewTask';
+const SCREEN_WIDTH = Dimensions.get('window').width;
+const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 
 
-export default function History({navigation, route}) {
-  const {userContext} = useUserContext();// יש להחליף למשתנה של המשתמש הנוכחי
+export default function History({ navigation, route }) {
+  const { userContext } = useUserContext();// יש להחליף למשתנה של המשתמש הנוכחי
   const [History, setHistory] = useState()
   const isFocused = useIsFocused()
   const [modal1Visible, setModal1Visible] = useState(false);
@@ -27,14 +29,14 @@ export default function History({navigation, route}) {
           onPress: () => console.log("Cancel Pressed"),
           style: "cancel"
         },
-        { text: "OK", onPress: () => navigation.navigate('EditPaymentScreen', {id:id, data:data}) }
+        { text: "OK", onPress: () => navigation.navigate('EditPaymentScreen', { id: id, data: data }) }
       ],
       { cancelable: false }
     );
   }
 
-  
-  
+
+
   useEffect(() => {
     if (isFocused) {
       getHistory()
@@ -52,8 +54,8 @@ export default function History({navigation, route}) {
       });
       // const data = await response.json();
       const data =
-      [
-        {
+        [
+          {
             "requestId": 121,
             "requestSubject": "Webb",
             "amountToPay": 384.40220094490894,
@@ -63,8 +65,8 @@ export default function History({navigation, route}) {
             "requestStatus": "R",
             "userId": 1,
             "fId": 0
-        },
-        {
+          },
+          {
             "requestId": 181,
             "requestSubject": "Cutomer",
             "amountToPay": 86.207947105266129,
@@ -74,8 +76,8 @@ export default function History({navigation, route}) {
             "requestStatus": "F",
             "userId": 1,
             "fId": 0
-        },
-        {
+          },
+          {
             "requestId": 186,
             "requestSubject": "Marketing",
             "amountToPay": 436.25614079006772,
@@ -85,8 +87,8 @@ export default function History({navigation, route}) {
             "requestStatus": "F",
             "userId": 1,
             "fId": 0
-        },
-        {
+          },
+          {
             "requestId": 226,
             "requestSubject": "Cutomer",
             "amountToPay": 720.026788474073,
@@ -96,34 +98,34 @@ export default function History({navigation, route}) {
             "requestStatus": "C",
             "userId": 1,
             "fId": 0
-        },
-        {
+          },
+          {
             "requestId": 504,
             "requestSubject": "Shelbi",
             "amountToPay": 10.0,
             "requestDate": "2023-03-17T00:00:00",
-            "requestProofDocument": "https://firebasestorage.googleapis.com/v0/b/worcare-3df72.appspot.com/o/requests%2F02FAD487-6B9A-4FD4-BBE7-CAD7910F80A3.pdf?alt=media&token=969cc8f5-eacc-46df-b904-a93999e5cabc",
+            "requestProofDocument": "https://firebasestorage.googleapis.com/v0/b/worcare-3df72.appspot.com/o/images%2F08398a46-36b6-4d66-b3d8-c9b380d55a9b.jpeg?alt=media&token=169c7cad-e86a-4db4-abdd-59284c40a0b2",
             "requestComment": "Sh",
             "requestStatus": "R",
             "userId": 1,
             "fId": 0
-        }
-    ] 
+          }
+        ]
 
       let arr = data.map((item) => {
         return (
           <Request key={item.requestId} getHistory={getHistory} data={item} id={item.requestId} Notofication={Notification} View={View} Edit={Edit} subject={item.requestSubject} amountToPay={item.amountToPay} date={item.requestDate} requestComment={item.requestComment} />
         )
       })
-      setHistory(arr)  
+      setHistory(arr)
     } catch (error) {
       console.log(error)
     }
   }
- 
+
   const [list, setlist] = React.useState();
-  
-  
+
+
 
   const Notification = (id) => {
     Alert.alert(
@@ -144,11 +146,11 @@ export default function History({navigation, route}) {
   return (
     <ScrollView contentContainerStyle={styles.pending}>
       {History}
-      {userContext.userType=="Caregiver"?<View style={styles.addBtnView}><AddBtn onPress={() => setModal1Visible(true)}/></View>: null}
+      {userContext.userType == "Caregiver" ? <View style={styles.addBtnView}><AddBtn onPress={() => setModal1Visible(true)} /></View> : null}
       <Modal animationType='slide' transparent={true} visible={modal1Visible}>
-       <NewPayment cancel={() => setModal1Visible(false)} />
+        <NewPayment cancel={() => setModal1Visible(false)} />
       </Modal>
-      
+
     </ScrollView>
   );
 }
@@ -157,6 +159,7 @@ function Request(props) {
   const [expanded, setExpanded] = React.useState(true);
   const animationController = useRef(new Animated.Value(0)).current;
   const [modal1Visible, setModal1Visible] = useState(false);
+  const [modal2Visible, setModal2Visible] = useState(false);
   const status = props.data.requestStatus;
   const toggle = () => {
     const config = {
@@ -183,40 +186,53 @@ function Request(props) {
     }
   }
 
-  
+
   return (
-    <List.Accordion style={!expanded ? (status=="F"?[ styles.requestFocused,styles.finishedRequestFocused]: [ styles.requestFocused,styles.notCompleteRequestFocused]): styles.requestunFocused}
-    theme={{ colors: { background: 'white' } }}
-    right={() => <View style={styles.requesRight}><Text style={styles.requestHeaderText}>{props.subject}</Text>
-    
+    <List.Accordion style={!expanded ? (status == "F" ? [styles.requestFocused, styles.finishedRequestFocused] : [styles.requestFocused, styles.notCompleteRequestFocused]) : styles.requestunFocused}
+      theme={{ colors: { background: 'white' } }}
+      right={() => <View style={styles.requesRight}><Text style={styles.requestHeaderText}>{props.subject}</Text>
+
       </View>}
-    left={() => <View >
-      <Text style={styles.requestHeaderText}>{props.date.substring(0, 10)}</Text>      
-    </View>}
-    expanded={!expanded}
-    onPress={toggle}
-  >
-    <View style={!expanded ? status=="F"? ([styles.Focused,styles.completeFocused]): ([styles.Focused,styles.notCompleteFocused]) :null }>
-      <View>
-      <List.Item title={() => <Text style={styles.itemsText}>Date: {props.date.substring(0, 10)} </Text>} />
-      <List.Item title={() => <Text style={styles.itemsText}>Amount: {props.amountToPay} </Text>} />
-      <List.Item title={() => <Text style={styles.itemsText}>Comment: {props.requestComment} </Text>} />
-      <List.Item title={() => <Text style={styles.itemsText}>Status: {displayStatus()} </Text>} />
-      <List.Item title={() =>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <TouchableOpacity style={[styles.itemsText, styles.viewButton]} onPress={!expanded ? () =>{setModal1Visible(true)}:null}>
-            <Text style={styles.viewbuttonText}>View Document</Text>
-          </TouchableOpacity>
-          <Modal animationType='slide' transparent={true} visible={modal1Visible}>
-            <EditPaymentScreen cancel={() => {setModal1Visible(false); props.getHistory()}} data={props.data} />
-          </Modal>
-          <TouchableOpacity style={[styles.itemsText, styles.editButton]} onPress={!expanded ? () =>{setModal1Visible(true)} : null}>
-            <Text style={styles.editbuttonText}>Edit</Text>
-          </TouchableOpacity>
-        </View>} />
+      left={() => <View >
+        <Text style={styles.requestHeaderText}>{props.date.substring(0, 10)}</Text>
+      </View>}
+      expanded={!expanded}
+      onPress={toggle}
+    >
+      <View style={!expanded ? status == "F" ? ([styles.Focused, styles.completeFocused]) : ([styles.Focused, styles.notCompleteFocused]) : null}>
+        <View>
+          <List.Item title={() => <Text style={styles.itemsText}>Date: {props.date.substring(0, 10)} </Text>} />
+          <List.Item title={() => <Text style={styles.itemsText}>Amount: {props.amountToPay} </Text>} />
+          <List.Item title={() => <Text style={styles.itemsText}>Comment: {props.requestComment} </Text>} />
+          <List.Item title={() => <Text style={styles.itemsText}>Status: {displayStatus()} </Text>} />
+          <List.Item title={() =>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              <TouchableOpacity style={[styles.itemsText, styles.viewButton]} onPress={!expanded ? () => { setModal2Visible(true) } : null}>
+                <Text style={styles.viewbuttonText}>View Document</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.itemsText, styles.editButton]} onPress={!expanded ? () => { setModal1Visible(true) } : null}>
+                <Text style={styles.editbuttonText}>Edit</Text>
+              </TouchableOpacity>
+              <Modal animationType='slide' transparent={true} visible={modal1Visible}>
+                <EditPaymentScreen cancel={() => { setModal1Visible(false); props.getHistory() }} data={props.data} />
+              </Modal>
+              <Modal animationType='slide' transparent={true} visible={modal2Visible}>
+                <View style={styles.documentview}>
+                <Image source={{ uri: props.data.requestProofDocument }} style={styles.documentImg} />
+                <Text>{props.data.requestProofDocument}</Text>
+                <TouchableOpacity style={styles.documentDownloadButton} >
+                  <Text style={styles.documentButtonText}>Download</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.documentCancelButton} onPress={()=>setModal2Visible(false)}>
+                  <Text style={styles.documentCancelText}>Go Back</Text>
+                </TouchableOpacity>
+                </View>
+              </Modal>
+            
+            </View>} />
         </View>
-    </View>
-  </List.Accordion>
+      </View>
+    </List.Accordion>
   )
 }
 
@@ -227,13 +243,13 @@ const styles = StyleSheet.create({
   pending: {
     alignItems: 'center',
     backgroundColor: 'white',
-   flexGrow: 1,
+    flexGrow: 1,
     paddingTop: 10
   },
   requestunFocused: {
     justifyContent: 'center',
-    width: Dimensions.get('screen').width * 0.9,
-    height: Dimensions.get('screen').height * 0.073,
+    width: SCREEN_WIDTH * 0.9,
+    height: SCREEN_HEIGHT * 0.073,
     borderRadius: 16,
     borderWidth: 1,
     borderColor: '#E6EBF2',
@@ -245,59 +261,59 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.8,
     shadowRadius: 2,
     paddingLeft: 12,
-    
+
   },
   requestFocused: {
     justifyContent: 'center',
     paddingLeft: 12,
-    width: Dimensions.get('screen').width * 0.9,
-    height: Dimensions.get('screen').height * 0.073,   
+    width: SCREEN_WIDTH * 0.9,
+    height: SCREEN_HEIGHT * 0.073,
     justifyContent: 'center',
-    borderLeftWidth: 1,
+    borderLeftWidth: 2,
     borderTopLeftRadius: 16,
-    borderTopWidth: 1,   
-    borderRightWidth: 1,
-    borderTopRightRadius: 16,  
-    borderBottomWidth: 0.5,
-    borderBottomMargin: 10,  
+    borderTopWidth: 2,
+    borderRightWidth: 2,
+    borderTopRightRadius: 16,
+    borderBottomWidth: 1,
+    borderBottomMargin: 10,
+    
   },
   finishedRequestFocused: {
     borderTopColor: '#7DA9FF',
     borderLeftColor: '#7DA9FF',
     borderRightColor: '#7DA9FF',
-    borderBottomColor: '#7DA9FF',   
+    borderBottomColor: '#7DA9FF',
+    shadowColor: '#000',
   },
   notCompleteRequestFocused: {
     borderTopColor: '#E6EBF2',
     borderLeftColor: '#E6EBF2',
     borderRightColor: '#E6EBF2',
     borderBottomColor: '#E6EBF2',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
   },
   requestHeaderText: {
     fontSize: 16,
-    fontFamily:'Urbanist-Bold',
+    fontFamily: 'Urbanist-Bold',
   },
   requestHeader: {
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: 'none',
-    height: Dimensions.get('screen').height * 0.08,
-    width: Dimensions.get('screen').width * 0.85,
+    height: SCREEN_HEIGHT * 0.08,
+    width: SCREEN_WIDTH * 0.85,
     flexDirection: 'row',
     padding: 16,
   },
   requestHeaderIcon: {
     zIndex: 0,
     position: 'absolute',
-    right: Dimensions.get('screen').width * 0,
+    right: SCREEN_WIDTH * 0,
     backgroundColor: 'orange',
   },
   Focused: {
-    borderLeftWidth: 1,  
-    borderBottomWidth: 1, 
-    borderRightWidth: 1, 
+    borderLeftWidth: 2,
+    borderBottomWidth: 2,
+    borderRightWidth: 2,
     borderBottomEndRadius: 16,
     borderBottomStartRadius: 16,
     marginBottom: 10,
@@ -322,16 +338,16 @@ const styles = StyleSheet.create({
   itemsText: {
     fontSize: 16,
     fontWeight: '600',
-    marginLeft:Dimensions.get('screen').width * -0.16,
-    marginRight:Dimensions.get('screen').width * 0.02,  
-    fontFamily:'Urbanist-Regular',   
+    marginLeft: SCREEN_WIDTH * -0.16, //NEED TO CHANGE
+    marginRight: SCREEN_WIDTH * 0.02,
+    fontFamily: 'Urbanist-Regular',
   },
   viewButton: {
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#7DA9FF',
     height: 40,
-    width: Dimensions.get('screen').width * 0.36,
+    width: SCREEN_WIDTH * 0.36,
     borderRadius: 16,
 
   },
@@ -340,7 +356,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'white',
     height: 40,
-    width: Dimensions.get('screen').width * 0.36,
+    width: SCREEN_WIDTH * 0.36,
     borderRadius: 16,
     borderWidth: 1,
     borderColor: '#7DA9FF',
@@ -350,17 +366,17 @@ const styles = StyleSheet.create({
   viewbuttonText: {
     color: 'white',
     fontSize: 16,
-    fontFamily:'Urbanist-Bold',
+    fontFamily: 'Urbanist-Bold',
     alignItems: 'center',
     justifyContent: 'center',
   },
   editbuttonText: {
     color: '#7DA9FF',
     fontSize: 16,
-    fontFamily:'Urbanist-Bold',
+    fontFamily: 'Urbanist-Bold',
     alignItems: 'center',
     justifyContent: 'center',
-  }, 
+  },
   addBtnView: {
     position: 'absolute',
     bottom: 20,
@@ -372,4 +388,51 @@ const styles = StyleSheet.create({
     marginBottom: 2,
     fontFamily: 'Urbanist-SemiBold',
   },
+  documentview: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignContent: 'center',
+    backgroundColor: 'white',       
+    flex: 1,
+    
+  },
+  documentImg:{
+    height: SCREEN_HEIGHT * 0.5,
+    width: SCREEN_WIDTH * 0.9,
+    borderRadius: 16,
+  },
+  documentDownloadButton: {    
+    fontSize: 16,
+    borderRadius: 16,
+    backgroundColor: '#7DA9FF',   
+    alignItems: 'center',
+    justifyContent: 'center',   
+    width: SCREEN_WIDTH * 0.9,
+    height: SCREEN_HEIGHT * 0.06,
+    marginBottom: 10,
+  },
+  documentCancelButton: {    
+    fontSize: 16,
+    borderRadius: 16,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',   
+    width: SCREEN_WIDTH * 0.9,
+    height: SCREEN_HEIGHT * 0.06,      
+    backgroundColor:'#F5F8FF',
+    borderColor:'#548DFF',
+  },
+  documentButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontFamily: 'Urbanist-SemiBold',
+    alignItems: 'center',
+  },
+  documentCancelText: {
+    color: '#7DA9FF',
+    fontSize: 16,
+    fontFamily: 'Urbanist-SemiBold',
+    alignItems: 'center',
+  },
+  
 })
