@@ -123,5 +123,43 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);        
             }
         }
+
+
+
+
+        [HttpPost]
+        [Route("InsertActualList")] 
+        public IHttpActionResult InsertActualList([FromBody] string type)
+        {
+            if (type=="Medicine")
+            {
+                try
+                {
+         
+                    
+
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+            }
+            else
+            {
+                try
+                {
+                    db.InsertActualList(type);
+                    db.SaveChanges();
+                    return Ok();
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+
+
+            }
+    
+        }
     }
 }
