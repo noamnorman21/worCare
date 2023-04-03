@@ -57,7 +57,7 @@ export function UserProvider({ children }) {
     const [phoneNum, setPhone] = useState(null)
     const [userUri, setuserUri] = useState(null)
     const [BirthDate, setBirthDate] = useState(null)
-    const [userGender, setuserGender] = useState(null)
+    const [userGender, setuserGender] = useState(null)    
 
     function logInContext(userData) {
         setUserType(userData.userType);
@@ -107,9 +107,13 @@ export function UserProvider({ children }) {
         setUserContext(userContext)
     }
 
+    function updateuserContacts(Contacts) {
+       setUserContacts(Contacts)
+    }
+
     
 
-    const value = { userContext, logInContext, logOutContext, updateUserContext }
+    const value = { userContext,userContacts, logInContext, logOutContext, updateUserContext, updateuserContacts }
     return (
         <UserContext.Provider value={value}>
             {children}

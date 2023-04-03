@@ -1,6 +1,6 @@
 // Path: Client\Component\Contact.jsx
 // Contact Page
-import { View, Keyboard, LayoutAnimation, Text, TouchableOpacity, StyleSheet, Dimensions, Alert, TextInput } from 'react-native'
+import { View, Keyboard, LayoutAnimation, Text, TouchableOpacity, StyleSheet, Dimensions, Alert, TextInput, LogBox } from 'react-native'
 import { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -18,6 +18,11 @@ export default function Contact({ route, navigation }) {
     contactComment: route.params.contact.contactComment,
     patientId: route.params.contact.patientId // will change when we finish context to get the patient id
   })
+
+   LogBox.ignoreLogs([
+        'Non-serializable values were found in the navigation state',
+    ]);
+
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -118,6 +123,7 @@ export default function Contact({ route, navigation }) {
       .then(
         (result) => {
           console.log("fetch POST= ", result);
+          
           navigation.goBack();
         },
         (error) => {
@@ -136,24 +142,25 @@ export default function Contact({ route, navigation }) {
           // If the user confirmed, then we dispatch the action we blocked earlier
           // This will continue the action that had triggered the removal of the screen
           onPress: () => {
-            fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/DeleteContact/', {
-              method: 'DELETE',
-              body: JSON.stringify(Contact),
-              headers: new Headers({
-                'Content-Type': 'application/json; charset=UTF-8',
-              })
-            })
-              .then(res => {
-                return res.json()
-              })
-              .then(
-                (result) => {
-                  console.log("fetch POST= ", result);
-                  navigation.goBack();
-                },
-                (error) => {
-                  console.log("err post=", error);
-                });
+            // fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/DeleteContact/', {
+            //   method: 'DELETE',
+            //   body: JSON.stringify(Contact),
+            //   headers: new Headers({
+            //     'Content-Type': 'application/json; charset=UTF-8',
+            //   })
+            // })
+            //   .then(res => {
+            //     return res.json()
+            //   })
+            //   .then(
+            //     (result) => {
+            //       console.log("fetch POST= ", result);
+            //       navigation.goBack();
+            //     },
+            //     (error) => {
+            //       console.log("err post=", error);
+            //     });
+            navigation.goBack();           
           }
         },
       ]
