@@ -94,6 +94,7 @@ export default function SignUpFinish({ navigation, route }) {
 
     // InsertUser
     const createNewUserInDB = () => {
+        console.log("createNewUserInDB");
         fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/InsertUser', { //send the user data to the DB
             method: 'POST',
             headers: {
@@ -101,7 +102,14 @@ export default function SignUpFinish({ navigation, route }) {
             },
             body: JSON.stringify(route.params.tblUser),
         })
-            .then((response) => response.json())
+        .then(res => {
+            if (res.ok) {
+                return res.json()
+            }
+            else {
+                Alert.alert("Email or Password inncorrect")
+            }
+        })
             .then((json) => {
                 //save the id of the new user that we got from the DB 
                 tblPatient.userId = json; //save the id of the new user that we got from the DB
@@ -115,6 +123,7 @@ export default function SignUpFinish({ navigation, route }) {
 
     // InsertPatient
     const createNewPatient = () => {
+        console.log("createNewPatient", tblPatient);
         fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/InsertPatient', { //send the patient data to the DB
             method: 'POST',
             headers: {
@@ -122,7 +131,14 @@ export default function SignUpFinish({ navigation, route }) {
             },
             body: JSON.stringify(tblPatient),
         })
-            .then((response) => response.json())
+            .then((res) => {
+                if (res.ok) {
+                    return res.json()
+                }
+                else {
+                    return Alert.alert("Email or Password inncorrect")
+                }
+            })            
             .then((json) => {
                 addHobbiesAndLimitations()
             })

@@ -9,6 +9,8 @@ import EditPaymentScreen from './EditPaymentScreen';
 import { useUserContext } from '../../UserContext';
 import { AddBtn } from '../HelpComponents/AddNewTask';
 import * as FileSystem from 'expo-file-system';
+import { shareAsync } from 'expo-sharing';
+import * as MediaLibrary from 'expo-media-library';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -188,45 +190,42 @@ function Request(props) {
     }
   }
 
-  const Download = () => {
+  const Download = async () => {
     const url = props.data.requestProofDocument;
-    const filename = props.data.requestId + "Doc.jpeg";
-    console.log(filename)
-    const downloadDest = `${FileSystem.documentDirectory}Worcare/requests${filename}`;
-    console.log("Download Dest",downloadDest)
-    const { uri } = FileSystem.getInfoAsync(downloadDest); 
-    // console.log("New Urlli",uri)
-    // if (!uri) {
-    //   console.log('Downloading to ', downloadDest);
-    //   FileSystem.makeDirectoryAsync(downloadDest, { intermediates: true });
-    //   let uri = FileSystem.getInfoAsync(downloadDest)
-    //   console.log("New Uri",uri)
-    // }  
-
-    FileSystem.downloadAsync(
-      url,
-      downloadDest
-    )
+    const dot = url.lastIndexOf(".");
+    const questionMark = url.lastIndexOf("?");
+    const type = url.substring(dot, questionMark);
+    console.log("Type", type)
     
+    const filename = props.data.requestId+type;
+    console.log(filename)
+    const downloadDest = `${FileSystem.documentDirectory}${filename}`;
+    console.log("Download Dest", downloadDest)
+    const { uri } = FileSystem.getInfoAsync(downloadDest);
+    console.log("New Urlli",uri)
+    if (!uri) {
+      console.log('Downloading to ', downloadDest);
+      FileSystem.makeDirectoryAsync(downloadDest, { intermediates: true });
+      let uri = FileSystem.getInfoAsync(downloadDest)
+      console.log("New Uri",uri)
+    }  
 
-      .then(({ uri }) => {
-        console.log('Finished downloading to ', uri);
-        FileSystem.getContentUriAsync(uri)
-          .then((contentUri) => {
-            console.log(contentUri)
-           
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      }
-      )
-      .catch((error) => {
-        console.error(error);
-      }
-      );
+    const res = await FileSystem.downloadAsync(url,downloadDest)
+    console.log("res", res)
 
+    saveFile(res);
   }
+
+
+  const saveFile = async (res) => {
+    console.log("Uri1", res)
+    const asset = await MediaLibrary.createAssetAsync(res.uri);
+    console.log("Asset1", asset)
+    await MediaLibrary.createAlbumAsync('Downloads', asset, false);
+    Alert.alert("Downloaded Successfully")
+  }
+
+
 
 
   return (

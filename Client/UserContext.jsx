@@ -57,7 +57,7 @@ export function UserProvider({ children }) {
     const [phoneNum, setPhone] = useState(null)
     const [userUri, setuserUri] = useState(null)
     const [BirthDate, setBirthDate] = useState(null)
-    const [gender, setGender] = useState(null)
+    const [userGender, setuserGender] = useState(null)
 
     function logInContext(userData) {
         setUserType(userData.userType);
@@ -77,7 +77,7 @@ export function UserProvider({ children }) {
         setPhone(userData.Phone);
         setuserUri(userData.userUri);
         setBirthDate(userData.BirthDate);
-        setGender(userData.Gender)
+        setuserGender(userData.Gender)
         console.log(userData.Id);
 
         let usertoSync = {
@@ -101,6 +101,13 @@ export function UserProvider({ children }) {
         console.log("updateUser", userContext);
         setUserContext(userContext)
     }
+
+    function updaterememberUserContext(userContext) {
+        console.log("updateUser", userContext);
+        setUserContext(userContext)
+    }
+
+    
 
     const value = { userContext, logInContext, logOutContext, updateUserContext }
     return (

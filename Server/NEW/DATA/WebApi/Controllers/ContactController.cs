@@ -18,7 +18,27 @@ namespace WebApi.Controllers
     public class ContactController : ApiController
     {
         igroup194DB db = new igroup194DB();
-        
+
+
+        [Route("GetPatients")]
+        [HttpPost]
+        public IHttpActionResult GetPatients([FromBody] int id)
+        {
+            try
+            {
+                var Patients = db.tblPatients.Where(x => x.userId == id).Select(y => new PatientDTO
+                {
+                    Id = y.Id,                    
+                }).ToList();
+                
+                return Ok(Patients);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         // GET: api/Contacts
         [Route("GetContacts")]
         [HttpPost]
@@ -26,23 +46,36 @@ namespace WebApi.Controllers
         {
             try
             {
-                var Contacts = db.tblContacts.Where(x => x.patientId == id.ToString()).Select(y => new ContactDTO
+                
+                var Patients = db.tblPatients.Where(x => x.userId == id).Select(y => new PatientDTO
                 {
-                    contactId = y.contactId,
-                    contactName = y.contactName,
-                    phoneNo = y.phoneNo,
-                    mobileNo = y.mobileNo,
-                    email = y.email,
-                    role = y.role,
-                    contactComment = y.contactComment,
+                    Id = y.Id,
                 }).ToList();
-                return Ok(Contacts);
+                var patientContacts = new List<dynamic>();
+                foreach (var item in Patients)
+                {
+                    var Contacts = db.tblContacts.Where(x => x.patientId == item.Id.ToString()).Select(y => new ContactDTO
+                    {
+                        contactId = y.contactId,
+                        contactName = y.contactName,
+                        phoneNo = y.phoneNo,
+                        mobileNo = y.mobileNo,
+                        email = y.email,
+                        role = y.role,
+                        contactComment = y.contactComment,
+                        patientId= y.patientId
+                    }).ToList();
+                    patientContacts.Add(Contacts);
+                }               
+                return Ok(patientContacts);
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
         }
+
+        
 
         // GET: api/Contacts/{id}
         [HttpGet]

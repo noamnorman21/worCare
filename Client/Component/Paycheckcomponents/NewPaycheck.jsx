@@ -5,8 +5,7 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import * as DocumentPicker from 'expo-document-picker';
 import { useUserContext } from '../../UserContext';
 
-export default function NewPaycheck(props) {
- 
+export default function NewPaycheck(props) { 
   const { userContext } = useUserContext();
   const [PayCheck, setPayCheck] = useState({
     paycheckMonth: '',
@@ -16,41 +15,40 @@ export default function NewPaycheck(props) {
     userId: userContext.Id
   })
   const [animation, setAnimation] = useState({});
-  let animationInProgress = false;
+  
 
   useEffect(() => {
-    Keyboard.addListener('keyboardDidShow', () => {
-      if (!animationInProgress) {
-         animationInProgress = true;
-         LayoutAnimation.configureNext({
-            update: {
-               type: LayoutAnimation.Types.easeIn,
-               duration: 250,
-               useNativeDriver: true,
-            },
-         });
-         setAnimation({
-            marginBottom: Dimensions.get('window').height * 0.6
-         });
-         animationInProgress = false;
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        LayoutAnimation.configureNext({
+          update: {
+            type: LayoutAnimation.Types.easeIn,
+            duration: 200,
+            useNativeDriver: true,
+          },
+        });
+        setAnimation({ marginBottom: Dimensions.get('window').height * 0.3 });
       }
-   }
-   );
-   Keyboard.addListener('keyboardDidHide', () => {
-      if (!animationInProgress) {
-         animationInProgress = true;
-         LayoutAnimation.configureNext({
-            update: {
-               type: LayoutAnimation.Types.easeOut,
-               duration: 250,
-               useNativeDriver: true,
-            },
-         });
-         setAnimation({ marginBottom: 0 });
-         animationInProgress = false;
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        LayoutAnimation.configureNext({
+          update: {
+            type: LayoutAnimation.Types.easeOut,
+            duration: 200,
+            useNativeDriver: true,
+          },
+        });
+        setAnimation({ marginBottom: 0 });
       }
-   }
-   );
+    );
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    }
+
   }, []);
 
  
