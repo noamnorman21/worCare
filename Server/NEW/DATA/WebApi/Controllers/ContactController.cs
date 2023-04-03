@@ -42,19 +42,31 @@ namespace WebApi.Controllers
         // GET: api/Contacts
         [Route("GetContacts")]
         [HttpPost]
-        public IHttpActionResult GetContacts([FromBody]int id)
+        public IHttpActionResult GetContacts([FromBody]UserDTO user)
         {
             try
             {
-                
-                var Patients = db.tblPatients.Where(x => x.userId == id).Select(y => new PatientDTO
+                var Patients = new List<PatientDTO>();
+                if (user.userType == "User")
                 {
-                    Id = y.Id,
-                }).ToList();
+                    var Temp= db.tblPatients.Where(x => x.userId == user.Id).Select(y => new PatientDTO
+                    {
+                        Id = y.Id,
+                    }).ToList();
+                    Patients = Temp;
+                }
+                else
+                {
+                    var Temp = db.tblCaresForPatients.Where(x=> x.workerId == user.Id).Select(y => new PatientDTO
+                    {
+                        Id = y.patientId,
+                    }).ToList();
+                    Patients = Temp;
+                }
                 var patientContacts = new List<dynamic>();
                 foreach (var item in Patients)
                 {
-                    var Contacts = db.tblContacts.Where(x => x.patientId == item.Id.ToString()).Select(y => new ContactDTO
+                    var Contacts = db.tblContacts.Where(x => x.patientId == item.Id).Select(y => new ContactDTO
                     {
                         contactId = y.contactId,
                         contactName = y.contactName,

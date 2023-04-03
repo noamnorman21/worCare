@@ -123,6 +123,11 @@ function Main({ navigation }) {
 
   const onChangeSearch = query => setSearch(query);
   const fetchContacts = async () => {
+  const user = {
+    Id: userContext.Id,
+    userType: userContext.userType,
+  } 
+  console.log(user)
     fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/GetContacts/' + PatientId)
       .then((response) => response.json())
       .then(json => {
@@ -156,7 +161,7 @@ function Main({ navigation }) {
     //     Accept: 'application/json',
     //     'Content-Type': 'application/json',
     //   },
-    //   body: JSON.stringify(userContext.Id),
+    //   body: JSON.stringify(userContext.Id, userContext.userType),
     // })
     // .then((response) => response.json())
     // . .then(json => {

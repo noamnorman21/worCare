@@ -1,6 +1,7 @@
 import { Alert, View, Keyboard, StyleSheet, Text, SafeAreaView, TextInput, Dimensions, TouchableOpacity, LayoutAnimation } from "react-native"
 import { useState, useEffect } from "react"
 import { Dropdown } from 'react-native-element-dropdown';
+import { useUserContext } from "../../UserContext";
 
 export default function AddNewContact(props) {
   const [animation, setAnimation] = useState({});
@@ -179,7 +180,7 @@ export default function AddNewContact(props) {
             maxHeight={200}
             value={0}
             containerStyle={styles.containerStyle}
-            onChange={value => {setContact({ ...Contact, patientId: value })  }}
+            onChange={value => {setContact({ ...Contact, patientId: value.id })  }}
           />
         </View>
       </View>
