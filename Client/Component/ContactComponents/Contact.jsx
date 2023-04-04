@@ -110,6 +110,7 @@ export default function Contact({ route, navigation }) {
     }
     SaveChanges(Contact);
   }
+
   const SaveChanges = (Contact) => {
     let urlContact = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/UpdateContact/' + Contact.contactId;
     fetch(urlContact, {
@@ -142,25 +143,25 @@ export default function Contact({ route, navigation }) {
           // If the user confirmed, then we dispatch the action we blocked earlier
           // This will continue the action that had triggered the removal of the screen
           onPress: () => {
-            // fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/DeleteContact/', {
-            //   method: 'DELETE',
-            //   body: JSON.stringify(Contact),
-            //   headers: new Headers({
-            //     'Content-Type': 'application/json; charset=UTF-8',
-            //   })
-            // })
-            //   .then(res => {
-            //     return res.json()
-            //   })
-            //   .then(
-            //     (result) => {
-            //       console.log("fetch POST= ", result);
-            //       navigation.goBack();
-            //     },
-            //     (error) => {
-            //       console.log("err post=", error);
-            //     });
-            navigation.goBack();           
+            fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/DeleteContact/', {
+              method: 'DELETE',
+              body: JSON.stringify(Contact),
+              headers: new Headers({
+                'Content-Type': 'application/json; charset=UTF-8',
+              })
+            })
+              .then(res => {
+                return res.json()
+              })
+              .then(
+                (result) => {
+                  console.log("fetch POST= ", result);
+                  navigation.goBack();
+                },
+                (error) => {
+                  console.log("err post=", error);
+                });
+                       
           }
         },
       ]
@@ -219,8 +220,7 @@ export default function Contact({ route, navigation }) {
           value={Contact.contactComment}
           keyboardType='ascii-capable'
           onChangeText={(value) => handleInputChange('contactComment', value)}
-        />
-      
+        />      
       <View style={styles.bottom}>
         <TouchableOpacity style={styles.savebutton} onPress={validateInput}>
           <Text style={styles.savebuttonText}>Save</Text>

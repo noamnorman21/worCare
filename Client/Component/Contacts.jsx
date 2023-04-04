@@ -35,90 +35,80 @@ function Main({ navigation }) {
   const isFocused = useIsFocused()
   const [list, setList] = useState([
     [
-      {
-        "contactId": 1,
-        "contactName": "Eugen",
-        "phoneNo": "123424",
-        "mobileNo": "0543122662",
-        "email": "C3P9VDO@IKEJ1PV.V57CXJAMSA9LH8",
-        "role": "4BVQEDUCIM6V1K6RMO8PZ2PM7TPAU6OESMH37NIT2",
-        "contactComment": "sed Tam eudis quad apparens regit, brevens, e",
-        "patientId": "151515151"
-      },
-      {
-        "contactId": 3,
-        "contactName": "Gail",
-        "phoneNo": null,
-        "mobileNo": "4721674483",
-        "email": "I9GSSGNO2A@1VMX0MW.YRCNMBC",
-        "role": "23JY6ENHQLBM4W1Z5MFGEGHX4X5I0",
-        "contactComment": "quad sed Versus non Sed ut imaginator sed quo",
-        "patientId": "151515151"
-      },
-      {
-        "contactId": 4,
-        "contactName": "Elton0",
-        "phoneNo": null,
-        "mobileNo": "2530595961",
-        "email": "KP5XQRUO2A@B80E6MF.4OO8FK8X2FNJOGZ",
-        "role": "5JIAP5B2VKOQB0XWGRIH6BCL0MMLU894GPFS4U7WO2RVRO4GZ",
-        "contactComment": "novum fecundio, dolorum plorum non plurissimum",
-        "patientId": "151515151"
-      },
-      {
-        "contactId": 6,
-        "contactName": "Joey0",
-        "phoneNo": "4346035632",
-        "mobileNo": "0705001916",
-        "email": "T67NX7F@P5RXYI1.A0Y6S5X",
-        "role": "L7J3DZU4L7EIVUGUSEQPA",
-        "contactComment": "glavans Versus fecit, Pro sed in et nomen e Multum",
-        "patientId": "151515151"
-      },
-      {
-        "contactId": 8,
-        "contactName": "William",
-        "phoneNo": null,
-        "mobileNo": "8384575168",
-        "email": "FGAE1H94CLSC0ZEI@94MLSTC.03WRG7DDMA2SRW",
-        "role": "2G8TAFULX0AR6W4P769U3",
-        "contactComment": "et eggredior. Tam si quartu et quartu volcans",
-        "patientId": "151515151"
-      }
+        {
+            "contactId": 1,
+            "contactName": "Eugen",
+            "phoneNo": "123424",
+            "mobileNo": "0543122662",
+            "email": "C3P9VDO@IKEJ1PV.V57CXJAMSA9LH8",
+            "role": "4BVQEDUCIM6V1K6RMO8PZ2PM7TPAU6OESMH37NIT2",
+            "contactComment": "sed Tam eudis quad apparens regit, brevens, e",
+            "patientId": "151515151"
+        },
+        {
+            "contactId": 3,
+            "contactName": "Gail",
+            "phoneNo": null,
+            "mobileNo": "4721674483",
+            "email": "I9GSSGNO2A@1VMX0MW.YRCNMBC",
+            "role": "23JY6ENHQLBM4W1Z5MFGEGHX4X5I0",
+            "contactComment": "quad sed Versus non Sed ut imaginator sed quo",
+            "patientId": "151515151"
+        },
+        {
+            "contactId": 4,
+            "contactName": "Elton0",
+            "phoneNo": null,
+            "mobileNo": "2530595961",
+            "email": "KP5XQRUO2A@B80E6MF.4OO8FK8X2FNJOGZ",
+            "role": "5JIAP5B2VKOQB0XWGRIH6BCL0MMLU894GPFS4U7WO2RVRO4GZ",
+            "contactComment": "novum fecundio, dolorum plorum non plurissimum",
+            "patientId": "151515151"
+        },
+        {
+            "contactId": 8,
+            "contactName": "William",
+            "phoneNo": null,
+            "mobileNo": "8384575168",
+            "email": "FGAE1H94CLSC0ZEI@94MLSTC.03WRG7DDMA2SRW",
+            "role": "2G8TAFULX0AR6W4P769U3",
+            "contactComment": "et eggredior. Tam si quartu et quartu volcans",
+            "patientId": "151515151"
+        }
     ],
     [
-      {
-        "contactId": 16,
-        "contactName": "Dominick115",
-        "phoneNo": "2023260473",
-        "mobileNo": "3130484901",
-        "email": "KQ043O8@FS34BH4.PTYRHZS2ZIPYM",
-        "role": "214JSEV94S9",
-        "contactComment": "apparens Quad manifestum brevens, regit, quantare",
-        "patientId": "162701067"
-      },
-      {
-        "contactId": 24,
-        "contactName": "Mason44",
-        "phoneNo": null,
-        "mobileNo": "1810027947",
-        "email": "VSN0JS8@LA8BR8N97O.DDHV9531AUGASGX",
-        "role": "TBY9MAO1BZ2L6VBZB23FRJL8E5EYHDKGS0652T4XNJDJJT368S",
-        "contactComment": "linguens fecundio, egreddior funem. et pars",
-        "patientId": "162701067"
-      },
-      {
-        "contactId": 37,
-        "contactName": "Shauna985",
-        "phoneNo": null,
-        "mobileNo": "9799683376",
-        "email": "0455ODU@S13UOAD.QBZ3ZGU",
-        "role": "W8WJ4O6ZI87LO4RNUEHJSRLQY1JHBEPYKPG5G",
-        "contactComment": "rarendum et novum transit. Sed non gravis",
-        "patientId": "162701067"
-      }
+        {
+            "contactId": 16,
+            "contactName": "Dominick115",
+            "phoneNo": "2023260473",
+            "mobileNo": "3130484901",
+            "email": "KQ043O8@FS34BH4.PTYRHZS2ZIPYM",
+            "role": "214JSEV94S9",
+            "contactComment": "apparens Quad manifestum brevens, regit, quantare",
+            "patientId": "162701067"
+        },
+        {
+            "contactId": 24,
+            "contactName": "Mason44",
+            "phoneNo": null,
+            "mobileNo": "1810027947",
+            "email": "VSN0JS8@LA8BR8N97O.DDHV9531AUGASGX",
+            "role": "TBY9MAO1BZ2L6VBZB23FRJL8E5EYHDKGS0652T4XNJDJJT368S",
+            "contactComment": "linguens fecundio, egreddior funem. et pars",
+            "patientId": "162701067"
+        },
+        {
+            "contactId": 37,
+            "contactName": "Shauna985",
+            "phoneNo": null,
+            "mobileNo": "9799683376",
+            "email": "0455ODU@S13UOAD.QBZ3ZGU",
+            "role": "W8WJ4O6ZI87LO4RNUEHJSRLQY1JHBEPYKPG5G",
+            "contactComment": "rarendum et novum transit. Sed non gravis",
+            "patientId": "162701067"
+        }
     ]
-  ])
+])
 
 
   const onChangeSearch = query => setSearch(query);
@@ -127,7 +117,15 @@ function Main({ navigation }) {
     Id: userContext.Id,
     userType: userContext.userType,
   } 
-  console.log(user)
+  // new part when server is uploaded
+    // fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/GetContacts/' + PatientId,
+    //   {
+    //     method: 'POST',
+    //     headers: new Headers({
+    //       'Content-Type': 'application/json; charset=UTF-8',
+    //       }),
+    //     body: JSON.stringify(user)
+    //   })
     fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/GetContacts/' + PatientId)
       .then((response) => response.json())
       .then(json => {
@@ -218,9 +216,9 @@ function Main({ navigation }) {
         icon="magnify"
       />
       {ContactToRender}
-      <TouchableOpacity style={styles.button} mode="fixed" onPress={() => setModal1Visible(true)}>
+      {userContext.userType=="User"? <TouchableOpacity style={styles.button} mode="fixed" onPress={() => setModal1Visible(true)}>
         <Text style={styles.buttonText}>+</Text>
-      </TouchableOpacity>
+      </TouchableOpacity>: null}
       {/*NewContactModal*/}
       <Modal animationType="slide" visible={modal1Visible}>
         <AddNewContact cancel={() => {

@@ -53,14 +53,13 @@ export default function AddNewContact(props) {
   }, []);
 
   const transformArr = (arr) => {
-    console.log("arr", arr);
     let newArr = [];
     arr.forEach(element => {
       element.forEach(item => {       
           let obj = { key: item, id: item, name: item.toString() };
           if (newArr.find((o) => o.id === obj.id) === undefined) {
             console.log("obj", obj);
-          newArr.push(obj);
+            newArr.push(obj);
         }
     });
     });

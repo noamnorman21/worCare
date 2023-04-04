@@ -1,4 +1,4 @@
-import { useState, useEffect, createContext, useContext,  } from 'react'
+import { useState, useEffect, createContext, useContext, } from 'react'
 import React from 'react'
 
 //--ruppin api server--
@@ -57,7 +57,7 @@ export function UserProvider({ children }) {
     const [phoneNum, setPhone] = useState(null)
     const [userUri, setuserUri] = useState(null)
     const [BirthDate, setBirthDate] = useState(null)
-    const [userGender, setuserGender] = useState(null)    
+    const [userGender, setuserGender] = useState(null)
 
     function logInContext(userData) {
         setUserType(userData.userType);
@@ -93,8 +93,28 @@ export function UserProvider({ children }) {
         setUserContext(usertoSync);
     }
 
+
+
     function logOutContext() {
         setUserContext(null)
+    }
+
+    async function getPaymentsHistory() {
+        try {
+            const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/GetHistory/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(userContext.Id)
+            });
+            const data = await response.json();
+            console.log(data);
+            setUserHistoryPayments(data);
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
 
     function updateUserContext(userContext) {
@@ -108,12 +128,12 @@ export function UserProvider({ children }) {
     }
 
     function updateuserContacts(Contacts) {
-       setUserContacts(Contacts)
+        setUserContacts(Contacts)
     }
 
-    
 
-    const value = { userContext,userContacts, logInContext, logOutContext, updateUserContext, updateuserContacts }
+
+    const value = { userContext, userContacts, logInContext, logOutContext, updateUserContext, updateuserContacts }
     return (
         <UserContext.Provider value={value}>
             {children}

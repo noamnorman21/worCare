@@ -32,12 +32,16 @@ export default function Pending({ route }) {
 
   const getPending = async () => {    
     try {
+      const user= {
+        id: userContext.Id,
+        userType: userContext.userType,
+      }
       const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/GetPending/' , {
         method: 'Post',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(userContext.Id)
+        body: JSON.stringify(user)
       });
       // const data = await response.json();
       const data= [
