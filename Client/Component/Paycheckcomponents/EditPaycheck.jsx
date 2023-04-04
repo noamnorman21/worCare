@@ -251,10 +251,11 @@ const savePaycheck = async (downloadURL) => {
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#F5F5F5',    
+    backgroundColor: '#F5F5F5',
+    height: Dimensions.get('window').height,    
   },
    inputContainer: {
     padding: 20,  

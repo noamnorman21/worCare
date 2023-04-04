@@ -38,7 +38,7 @@ export default function Paychecks({navigation, route}) {
   }, [isFocused])
 
   const getPaychecks = async () => {
-    console.log(userId)
+    console.log("UerID",userId)
     try {
       const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/PayChecks/GetPaychecks/' + userId, {
         method: 'GET',

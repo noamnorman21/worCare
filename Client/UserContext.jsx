@@ -1,5 +1,6 @@
-import { useState, useEffect, createContext, useContext, } from 'react'
+import { useState, useEffect, createContext, useContext, useRef} from 'react'
 import React from 'react'
+import { PendingRequest } from './Component/HelpComponents/Paymentrequests';
 
 //--ruppin api server--
 //login
@@ -91,6 +92,7 @@ export function UserProvider({ children }) {
             gender: userData.gender,
         }
         setUserContext(usertoSync);
+       
     }
 
 
@@ -99,24 +101,9 @@ export function UserProvider({ children }) {
         setUserContext(null)
     }
 
-    async function getPaymentsHistory() {
-        try {
-            const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/GetHistory/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(userContext.Id)
-            });
-            const data = await response.json();
-            console.log(data);
-            setUserHistoryPayments(data);
-        }
-        catch (error) {
-            console.log(error);
-        }
-    }
+    
 
+      
     function updateUserContext(userContext) {
         console.log("updateUser", userContext);
         setUserContext(userContext)
@@ -131,9 +118,13 @@ export function UserProvider({ children }) {
         setUserContacts(Contacts)
     }
 
+    function UpdatePendings (pendings){
+        setUserPendingPayments(pendings);
+    }
 
 
-    const value = { userContext, userContacts, logInContext, logOutContext, updateUserContext, updateuserContacts }
+
+    const value = { userContext, userContacts, logInContext, logOutContext, updateUserContext, updateuserContacts, UpdatePendings }
     return (
         <UserContext.Provider value={value}>
             {children}
