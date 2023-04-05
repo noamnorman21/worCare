@@ -101,7 +101,7 @@ export default function SignUpUserLVL5({ navigation, route }) {
             },
             dateInput: {
               marginLeft: 0,
-              alignItems: 'flex-left',
+              alignItems: 'flex-start',
               borderWidth: 0,
             },
             placeholderText: {

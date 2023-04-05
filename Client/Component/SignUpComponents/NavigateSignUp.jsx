@@ -37,7 +37,7 @@ export default function NavigateSignUp() {
       const storageUser = await AsyncStorage.getItem("user");
       if (storageUser == null) {
         setIsSigned(false);
-      } else {
+      } else { // if the user is signed in- if he is, update the context
         setIsSigned(true);
         const storageUser2 = await AsyncStorage.getItem("userData");    
         updateUserContext(JSON.parse(storageUser2))
