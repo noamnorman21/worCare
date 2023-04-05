@@ -1,10 +1,12 @@
 import { Alert, View, Text, StyleSheet, TouchableOpacity, Dimensions, TextInput } from 'react-native';
 import { useEffect, useState } from 'react';
 
+
 export default function FieldChange(props) {
    const [type, setType] = useState();
    const [value, setValue] = useState(props.value);
    const [userId, setUserId] = useState(props.userId);
+   
 
    useEffect(() => {
       setType(props.type);
@@ -12,26 +14,52 @@ export default function FieldChange(props) {
    }, [])
 
    const validatePhoneNum = (phoneNum) => {
-      //only numbers allowed in phone number input - no spaces or dashes - 10 digits - starts with 0
       const phoneNumRegex = /^(0)[0-9]{9}$/
       return phoneNumRegex.test(phoneNum)
    }
 
    const validatePassword = (password) => {
+      console.log('password', password);
       const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/ //at least 8 characters, 1 letter, 1 number
       return passwordRegex.test(password);
    }
 
    const save = () => {
-      if (type === 'Password') {
-         if (validatePassword(value)) {
+      if (type === 'Password' && validatePassword(value)) {
+         console.log('password is valid')         
+         let userToUpdate = {
+            Id: userId,
+            password: value
+         }
+         console.log('userToUpdate', userToUpdate);
+         fetch('http://proj.ruppin.ac.il/bgroup79/test1/tar1/api/Settings/SetNewPassword', {
+            method: 'PUT',
+            headers: new Headers({
+               'Content-Type': 'application/json; charset=UTF-8',
+               'Accept': 'application/json; charset=UTF-8',
+            }),
+            body: JSON.stringify(userToUpdate)
+         })
+            .then(res => {
+               return res.json()
+            }
+            )
+            .then(
+               (result) => {
+                  console.log("fetch POST= ", result);
+                  Alert.alert('Password Changed', 'Your password has been changed successfully');
+               }
+            )
+            .catch((error) => {
+               console.log('Error:', error.message);
+            }
+            )
             props.Save(type, value);
-         }
-         else {
-            return alert('Password must be at least 8 characters, 1 letter, 1 number');
-         }
       }
-      if (type === 'Phone Number') {
+      else if (type === 'Password' && !validatePassword(value)) {
+         return Alert.alert('Password must be at least 8 characters, 1 letter and 1 number');
+      }
+      else if (type === 'Phone Number') {
          console.log('phone number')
          if (validatePhoneNum(value)) {
             console.log('phone number is valid')
@@ -47,7 +75,7 @@ export default function FieldChange(props) {
    return (
       <View style={styles.container}>
          <View style={styles.header}>
-            {type=="Password"?<Text style={styles.title}>Set New {type}</Text>:<Text style={styles.title}>Change {type}</Text>}
+            {type == "Password" ? <Text style={styles.title}>Set New {type}</Text> : <Text style={styles.title}>Change {type}</Text>}
          </View>
          <View style={styles.inputContainer}>
             <TextInput
@@ -132,7 +160,7 @@ const styles = StyleSheet.create({
       borderColor: 'lightgray',
       shadowColor: '#000',
       fontSize: 16,
-      fontFamily: 'Urbanist',
+      fontFamily: 'Urbanist-Regular',
       textAlign: 'center',
    },
    inputContainer: {

@@ -1,8 +1,7 @@
 import { useIsFocused } from "@react-navigation/native";
-import { View,Text, StyleSheet, Alert, SafeAreaView, animation, TouchableOpacity, Dimensions, Keyboard, LayoutAnimation} from "react-native";
+import { TextInput ,View,Text, StyleSheet, Alert, SafeAreaView, animation, TouchableOpacity, Dimensions, Keyboard, LayoutAnimation} from "react-native";
 import { useEffect } from "react";
 import { useState } from "react";
-import { TextInput } from "react-native-paper";
 import { ScrollView } from "react-native-gesture-handler";
 import * as DocumentPicker from 'expo-document-picker';
 
@@ -252,11 +251,11 @@ const savePaycheck = async (downloadURL) => {
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#F5F5F5', 
-    height: Dimensions.get('window').height *1     
+    backgroundColor: '#F5F5F5',
+    height: Dimensions.get('window').height,    
   },
    inputContainer: {
     padding: 20,  
@@ -271,7 +270,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 1,
     width: Dimensions.get('window').width * 0.9,
-    underlindColorAndroid: 'transparent',
+
   },
   numInput: {
     width: Dimensions.get('window').width * 0.455,
@@ -365,5 +364,4 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor:'#548DFF'
   },
-
 });

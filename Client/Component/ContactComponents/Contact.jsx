@@ -1,6 +1,6 @@
 // Path: Client\Component\Contact.jsx
 // Contact Page
-import { View, Keyboard, LayoutAnimation, Text, TouchableOpacity, StyleSheet, Dimensions, Alert, TextInput } from 'react-native'
+import { View, Keyboard, LayoutAnimation, Text, TouchableOpacity, StyleSheet, Dimensions, Alert, TextInput, LogBox } from 'react-native'
 import { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -16,8 +16,13 @@ export default function Contact({ route, navigation }) {
     email: route.params.contact.email,
     role: route.params.contact.role,
     contactComment: route.params.contact.contactComment,
-    patientId: 779355403 // will change when we finish context to get the patient id
+    patientId: route.params.contact.patientId // will change when we finish context to get the patient id
   })
+
+   LogBox.ignoreLogs([
+        'Non-serializable values were found in the navigation state',
+    ]);
+
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -30,7 +35,7 @@ export default function Contact({ route, navigation }) {
             useNativeDriver: true,
           },
         });
-        setAnimation({ marginBottom: Dimensions.get('window').height * 0.1 });
+        setAnimation({ marginBottom: Dimensions.get('window').height * 0.3 });
       }
     );
     const keyboardDidHideListener = Keyboard.addListener(
@@ -69,6 +74,18 @@ export default function Contact({ route, navigation }) {
       ]
     );
   }
+  const validateEmail = (email) => {
+    const emailRegex = /\S+@\S+\.\S+/
+    return emailRegex.test(email)
+  }
+
+  const validatePhoneNum = (phoneNum) => {
+    //only numbers allowed in phone number input - no spaces or dashes - 10 digits - starts with 0
+    const phoneNumRegex = /^(0)[0-9]{9}$/
+    return phoneNumRegex.test(phoneNum)
+  }
+
+
   const handleInputChange = (field, value) => {
     setContact({ ...Contact, [field]: value });
     if (!isChanged) {
@@ -93,6 +110,7 @@ export default function Contact({ route, navigation }) {
     }
     SaveChanges(Contact);
   }
+
   const SaveChanges = (Contact) => {
     let urlContact = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/UpdateContact/' + Contact.contactId;
     fetch(urlContact, {
@@ -106,6 +124,7 @@ export default function Contact({ route, navigation }) {
       .then(
         (result) => {
           console.log("fetch POST= ", result);
+          
           navigation.goBack();
         },
         (error) => {
@@ -142,6 +161,7 @@ export default function Contact({ route, navigation }) {
                 (error) => {
                   console.log("err post=", error);
                 });
+                       
           }
         },
       ]
@@ -200,8 +220,7 @@ export default function Contact({ route, navigation }) {
           value={Contact.contactComment}
           keyboardType='ascii-capable'
           onChangeText={(value) => handleInputChange('contactComment', value)}
-        />
-      </View>
+        />      
       <View style={styles.bottom}>
         <TouchableOpacity style={styles.savebutton} onPress={validateInput}>
           <Text style={styles.savebuttonText}>Save</Text>
@@ -213,6 +232,7 @@ export default function Contact({ route, navigation }) {
       <TouchableOpacity style={styles.Deletebutton} onPress={DeleteContact}>
         <Text style={styles.cancelbuttonText}>Delete</Text>
       </TouchableOpacity>
+      </View>
     </SafeAreaView>
   )
 }
@@ -243,13 +263,12 @@ const styles = StyleSheet.create({
     borderColor: 'lightgray',
     shadowColor: '#000',
     height: 45,
-    fontFamily: 'Urbanist',
+    fontFamily: 'Urbanist-Regular',
   },
   numInput: {
     width: Dimensions.get('window').width * 0.455,
   },
-  savebutton: {
-    width: Dimensions.get('window').width * 0.4,
+  savebutton: {    
     backgroundColor: '#548DFF',
     alignItems: 'center',
     justifyContent: 'center',
@@ -263,25 +282,27 @@ const styles = StyleSheet.create({
     elevation: 1,
     margin: 7,
     height: 45,
+    flex: 3,
   },
   cancelbutton: {
-    width: Dimensions.get('window').width * 0.4,
+    flex: 3,
     backgroundColor: 'white',
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: '#548DFF',
+    borderColor: 'lightgray',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 3,
     elevation: 1,
-    margin: 7,
+    marginRight: 12,
+    marginTop: 7,
     height: 45,
   },
   Deletebutton: {
-    width: Dimensions.get('window').width * 0.85,
+    width: Dimensions.get('window').width * 0.95,
     backgroundColor: 'white',
     alignItems: 'center',
     justifyContent: 'center',
@@ -307,8 +328,7 @@ const styles = StyleSheet.create({
   },
   cancelbuttonText: {
     color: '#548DFF',
-    fontWeight: '600',
-    fontSize: 16,
+    fontSize: 18,
     fontFamily: 'Urbanist-Bold',
   },
   title: {

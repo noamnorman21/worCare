@@ -4,7 +4,6 @@ import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, Animated, 
 import { useIsFocused } from '@react-navigation/native';
 import { List } from 'react-native-paper';
 import { ScrollView } from 'react-native-gesture-handler';
-
 import NewPaycheck from './NewPaycheck';
 import EditPaycheck from './EditPaycheck';
 
@@ -39,7 +38,7 @@ export default function Paychecks({navigation, route}) {
   }, [isFocused])
 
   const getPaychecks = async () => {
-    console.log(userId)
+    console.log("UerID",userId)
     try {
       const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/PayChecks/GetPaychecks/' + userId, {
         method: 'GET',
@@ -230,7 +229,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginLeft:Dimensions.get('screen').width * -0.16,
     marginRight:Dimensions.get('screen').width * 0.02,
-    fontFamily:'Urbanist',
+    fontFamily:'Urbanist-Regular',
   },
   viewButton: {
     alignItems: 'center',

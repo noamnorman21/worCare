@@ -13,7 +13,7 @@ import Profile from './SettingsComponents/Profile'
 import Notifications from './SettingsComponents/Notifications'
 import Privacy from './SettingsComponents/Privacy'
 import ContactUs from './SettingsComponents/ContactUs'
-import ImageChange from './SettingsComponents/ImageChange'
+
 
 const Stack = createNativeStackNavigator();
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -67,24 +67,24 @@ function HomeScreen({ navigation, route }) {
             <View style={styles.btnContainer}>
                 <TouchableOpacity style={styles.btn} onPress={() => [navigation.navigate('Profile', { email: userEmail })]}>
                     <Ionicons style={styles.logoStyle} name='ios-person-outline' size={30} color='gray' />
-                    <Text style={styles.btnText}>Profile</Text>
+                    <Text style={styles.editbtnText}>Profile</Text>
                     <AntDesign style={styles.arrowLogoStyle} name="right" size={25} color="gray" />
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Notifications')}>
                     <SimpleLineIcons style={styles.logoStyle} name='bell' size={30} color='gray' />
-                    <Text style={styles.btnText}>Notifications</Text>
+                    <Text style={styles.editbtnText}>Notifications</Text>
                     <AntDesign style={styles.arrowLogoStyle} name="right" size={24} color="gray" />
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Privacy')}>
                     <Ionicons style={styles.logoStyle} name='key' size={30} color='gray' />
-                    <Text style={styles.btnText}>Privacy & My Account</Text>
+                    <Text style={styles.editbtnText}>Privacy & My Account</Text>
                     <AntDesign style={styles.arrowLogoStyle} name="right" size={25} color="gray" />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('ContactUs', { userImg: userImg })}>
                     <Ionicons style={styles.logoStyle} name='send' size={30} color='gray' />
-                    <Text style={styles.btnText}>Contact Us</Text>
+                    <Text style={styles.editbtnText}>Contact Us</Text>
                     <AntDesign style={styles.arrowLogoStyle} name="right" size={25} color="gray" />
                 </TouchableOpacity>
                 <View style={styles.ColorBtnContainer}>
@@ -254,18 +254,18 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: 'lightgray',
     },
-    btnText: {
+    editbtnText: {
         fontSize: 20,
-        fontFamily: 'Urbanist'
+        fontFamily: 'Urbanist-Regular'
     },
     btnText2: {
         fontSize: 18,
         color: '#548DFF',
-        fontFamily: 'Urbanist-SemiBold',
+        fontFamily: 'Urbanist-Bold',
     },
     btnText1: {
         fontSize: 18,
         color: 'white',
-        fontFamily: 'Urbanist-SemiBold'
+        fontFamily: 'Urbanist-Bold'
     },
 });

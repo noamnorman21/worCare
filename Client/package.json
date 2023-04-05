@@ -64,7 +64,9 @@
     "react-native-vector-icons": "^9.2.0",
     "react-navigation": "^4.4.4",
     "rn-country-picker": "^1.0.1",
-    "rn-select-date-range": "^5.0.0"
+    "rn-select-date-range": "^5.0.0",
+    "expo-sharing": "~11.0.1",
+    "expo-media-library": "~15.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"

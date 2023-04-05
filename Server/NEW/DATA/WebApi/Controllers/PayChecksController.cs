@@ -15,9 +15,9 @@ namespace WebApi.Controllers
         igroup194DB db = new igroup194DB();
 
         // GET: api/PayChecks
-        [HttpGet]
-        [Route("GetPaychecks/{id}")]
-        public IHttpActionResult GetPaychecks(int id)
+        [HttpPost]
+        [Route("GetPaychecks")]
+        public IHttpActionResult GetPaychecks([FromBody] int id)
         {
 
             try

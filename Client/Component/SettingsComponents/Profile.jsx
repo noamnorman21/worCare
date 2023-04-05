@@ -9,7 +9,7 @@ import GenderChange from './GenderChange';
 import { useUserContext } from '../../UserContext';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from '../../config/firebase';
-import ImageChange from './ImageChange';
+
 
 
 export default function Profile({ navigation }) {
@@ -161,7 +161,6 @@ export default function Profile({ navigation }) {
   useEffect(() => {
     const getData = async () => {
       try {
-        console.log('Profie', userContext);
         setUserId(userContext.Id);
         setFirstName(userContext.FirstName);
         setLastName(userContext.LastName);
@@ -170,7 +169,6 @@ export default function Profile({ navigation }) {
         setPhonenum(userContext.phoneNum)
         setEmail(userContext.Email)
         setUserType(userContext.userType)
-        console.log('userType1', userContext.userType)
       } catch (e) {
         console.log('error', e);
       }
@@ -210,7 +208,7 @@ export default function Profile({ navigation }) {
           <FieldChange userId={userId} type={modalType} value={modalValue} cancel={() => setModalVisible(false)} Save={(Field, value) => Update(Field, value)} />
         </Modal>
         <Modal animationType="slide" visible={modal2Visible}>
-          <GenderChange userId={userId} cancel={() => setModal2Visible(false)} Save={(Gender) => { setModal2Visible(false); setGender(Gender) }} />
+          <GenderChange userId={userId} Gender={Gender} cancel={() => setModal2Visible(false)} Save={(Gender) => { setModal2Visible(false); setGender(Gender) }} />
         </Modal>
       </View>
     </View>

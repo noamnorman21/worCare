@@ -7,35 +7,37 @@ import { Feather } from '@expo/vector-icons';
 import NewPayment from './NewPayment';
 import EditPaymentScreen from './EditPaymentScreen';
 import { useUserContext } from '../../UserContext';
+import { AddBtn } from '../HelpComponents/AddNewTask';
 
 
 export default function Pending({ route }) {
-  const {userContext} = useUserContext()
+  const {userContext, userPendingPayments} = useUserContext()
   const [modal1Visible, setModal1Visible] = useState(false);
   const [Pendings, setPendings] = useState()
   const [List, setList] = useState([])
   const isFocused = useIsFocused()
 
   useEffect(() => {
-    if (isFocused) {
+    if (isFocused || !modal1Visible) {
       getPending()
     }
   }, [isFocused])
 
-  useEffect(() => {
-    if (!modal1Visible) {
-      getPending()
-    }
-  }, [modal1Visible])
+  
 
 
-  const getPending = async () => {    
+  const getPending = async () => {   
     try {
-      const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/GetPending/' + userContext.Id, {
-        method: 'GET',
+      const user={
+        Id: userContext.Id,
+        userType: userContext.userType
+      }
+      const response = await fetch('https://proj.ruppin.ac.il/cgroup94/prod/api/Payments/GetPending/', {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        body: JSON.stringify(user)
       });
       const data = await response.json();
       let arr = data.map((item) => {
@@ -66,28 +68,12 @@ export default function Pending({ route }) {
   }
 
 
-  const View = (id, data) => {
-    Alert.alert(
-      "View",
-      "Are you sure you want to view this request?",
-      [
-        {
-          text: "Cancel",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel"
-        },
-        { text: "OK", onPress: () => console.log("OK Pressed") }
-      ],
-      { cancelable: false }
-    );
-  }
+  
 
   return (
     <ScrollView contentContainerStyle={styles.pending}>
       {Pendings}
-      <TouchableOpacity style={styles.addRequest} onPress={() => setModal1Visible(true)}>
-        <Text style={styles.addRequestText}>+</Text>
-      </TouchableOpacity>
+      {userContext.userType=="Caregiver"?<View style={styles.addBtnView}><AddBtn onPress={() => setModal1Visible(true)}/></View>: null}
       <Modal animationType='slide' transparent={true} visible={modal1Visible}>
         <NewPayment cancel={() => setModal1Visible(false)} />
       </Modal>
@@ -143,7 +129,6 @@ function Request(props) {
       left={() => <View >
         <Text style={styles.requestHeaderText}>{props.date.substring(0, 10)}</Text>
       </View>}
-
       expanded={!expanded}
       onPress={toggle}
     >
@@ -166,7 +151,7 @@ function Request(props) {
             </View>
             <View>
             <TouchableOpacity style={[styles.itemsText, styles.SaveButton]} onPress={!expanded ? () =>{saveStatus(props.data.requestId)} : null}>
-              <Text style={styles.editbuttonText}>Save as Payed</Text>
+              <Text style={styles.editbuttonText}>Update Status to finished</Text>
             </TouchableOpacity>
           </View>
           </View>} />
@@ -265,7 +250,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginLeft: Dimensions.get('screen').width * -0.16,
     marginRight: Dimensions.get('screen').width * 0.02,
-    fontFamily: 'Urbanist',
+    fontFamily: 'Urbanist-Regular',
   },
   viewButton: {
     alignItems: 'center',
@@ -310,22 +295,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     fontFamily: 'Urbanist-Bold'
   },
-  addRequest: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#548DFF',
-    height: 54,
-    width: 54,
-    borderRadius: 54,
+  addBtnView: {
     position: 'absolute',
-    bottom: Platform.OS === 'ios' ? 40 : 10,
-    right: Platform.OS === 'ios' ? 15 : 10,
-    elevation: 5,
+    bottom: 20,
+    right: 20,
   },
   addRequestText: {
     color: 'white',
     fontSize: 26,
     marginBottom: 2,
     fontFamily: 'Urbanist-SemiBold',
+
   },
 })
