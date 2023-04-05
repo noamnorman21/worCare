@@ -20,7 +20,7 @@ export default function SignUpFinish({ navigation, route }) {
     // link to screen "Welcome" and send the patient id to the screen as a parameter
     useEffect(() => {
         (async () => {
-            setLink(Linking.createURL(`InvitedFrom/${tblPatient.Id}/${route.params.tblUser.FirstName}`));
+            setLink(Linking.createURL(`InvitedFrom/${tblPatient.patientId}/${route.params.tblUser.FirstName}`));
             const isAvailable = await SMS.isAvailableAsync();
             setIsAvailable(isAvailable);
         }
@@ -159,8 +159,6 @@ export default function SignUpFinish({ navigation, route }) {
                 else {
                     navigation.navigate('LogIn', { tblUser: route.params.tblUser })
                 }
-
-
             })
             .catch((error) => {
                 console.error(error);

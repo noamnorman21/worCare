@@ -12,7 +12,7 @@ namespace WebApi.Controllers
     public class LanguageCountryController : ApiController
     {
         // GET api/<controller>
-        igroup194DB db = new igroup194DB();
+        igroup194Db db = new igroup194Db();
 
         [HttpGet]
         [Route("GetAllLanguages")]
@@ -20,14 +20,12 @@ namespace WebApi.Controllers
         {
             try
             {
-                var languages = from l in db.tblLanguages
+                var languages = from l in db.tblLanguage
                                 select new
                                 {
                                    LanguageName_En = l.LanguageName_En,
                                    LanguageName_Origin = l.LanguageName_Origin,
-                                };
-
-                                       
+                                };                                       
                 return Ok(languages);
             }
             catch (Exception ex)
@@ -42,7 +40,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                var countries = from c in db.tblCountries
+                var countries = from c in db.tblCountry
                                 select c.CountryName_En;
                 return Ok(countries);
             }
@@ -50,21 +48,6 @@ namespace WebApi.Controllers
             {
                 return BadRequest(ex.Message);
             }
-        }
-
-        // POST api/<controller>
-        public void Post([FromBody] string value)
-        {
-        }
-
-        // PUT api/<controller>/5
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<controller>/5
-        public void Delete(int id)
-        {
         }
     }
 }

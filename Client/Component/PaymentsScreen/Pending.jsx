@@ -29,7 +29,7 @@ export default function Pending({ route }) {
   const getPending = async () => {   
     try {
       const user={
-        Id: userContext.Id,
+        userId: userContext.userId,
         userType: userContext.userType
       }
       const response = await fetch('https://proj.ruppin.ac.il/cgroup94/prod/api/Payments/GetPending/', {

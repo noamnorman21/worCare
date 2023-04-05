@@ -11,8 +11,8 @@ namespace WebApi.Controllers
     [RoutePrefix("api/Calendars")]
     public class CalendarsController : ApiController
     {
-        igroup194DB db = new igroup194DB();
-        
+        igroup194Db db = new igroup194Db();
+
         //get all calendars types
         [HttpGet]
         [Route("GetAllCalendars")]
@@ -20,7 +20,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                var calendars = from c in db.tblCalendarsTypes
+                var calendars = from c in db.tblCalendarsType
                                 select new
                                 {
                                     calendarNum = c.calendarNum,
@@ -32,23 +32,6 @@ namespace WebApi.Controllers
             {
                 return BadRequest(ex.Message);
             }
-        }
-
-        // add user calendar
-        public void Post([FromBody] int id)
-        {
-            
-        }
-
-        // PUT api/<controller>/5
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<controller>/5
-        public void Delete(int id)
-        {
-            
         }
     }
 }

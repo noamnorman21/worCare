@@ -17,7 +17,7 @@ namespace WebApi.Controllers
     [RoutePrefix("api/Contacts")]
     public class ContactController : ApiController
     {
-        igroup194DB db = new igroup194DB();
+        igroup194Db db = new igroup194Db();
 
 
         [Route("GetPatients")]
@@ -26,9 +26,9 @@ namespace WebApi.Controllers
         {
             try
             {
-                var Patients = db.tblPatients.Where(x => x.userId == id).Select(y => new PatientDTO
+                var Patients = db.tblPatient.Where(x => x.userId == id).Select(y => new PatientDTO
                 {
-                    Id = y.Id,
+                    patientId = y.patientId,
                 }).ToList();
 
                 return Ok(Patients);
@@ -49,24 +49,24 @@ namespace WebApi.Controllers
                 var Patients = new List<PatientDTO>();
                 if (user.userType == "User")
                 {
-                    var Temp = db.tblPatients.Where(x => x.userId == user.Id).Select(y => new PatientDTO
+                    var Temp = db.tblPatient.Where(x => x.userId == user.userId).Select(y => new PatientDTO
                     {
-                        Id = y.Id,
+                        patientId = y.patientId,
                     }).ToList();
                     Patients = Temp;
                 }
                 else
                 {
-                    var Temp = db.tblCaresForPatients.Where(x => x.workerId == user.Id).Select(y => new PatientDTO
+                    var Temp = db.tblCaresForPatient.Where(x => x.workerId == user.userId).Select(y => new PatientDTO
                     {
-                        Id = y.patientId,
+                        patientId = y.patientId,
                     }).ToList();
                     Patients = Temp;
                 }
                 var patientContacts = new List<dynamic>();
                 foreach (var item in Patients)
                 {
-                    var Contacts = db.tblContacts.Where(x => x.patientId == item.Id).Select(y => new ContactDTO
+                    var Contacts = db.tblContacts.Where(x => x.patientId == item.patientId).Select(y => new ContactDTO
                     {
                         contactId = y.contactId,
                         contactName = y.contactName,
@@ -139,7 +139,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                tblContact c = db.tblContacts.Where(x => x.contactId == value.contactId).FirstOrDefault();
+                tblContacts c = db.tblContacts.Where(x => x.contactId == value.contactId).FirstOrDefault();
                 c.contactName = value.contactName;
                 c.phoneNo = value.phoneNo;
                 c.mobileNo = value.mobileNo;

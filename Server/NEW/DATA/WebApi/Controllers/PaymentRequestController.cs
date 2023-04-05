@@ -12,7 +12,7 @@ namespace WebApi.Controllers
     [RoutePrefix("api/Payments")]
     public class PaymentRequestController : ApiController
     {
-        igroup194DB db = new igroup194DB();
+        igroup194Db db = new igroup194Db();
         // GET: api/PaymentRequest
         [Route("GetPending")]
         [HttpPost]
@@ -24,10 +24,10 @@ namespace WebApi.Controllers
                 if (user.userType == "User")
                 {
                     List<List<ForeignUserDTO>> careId = new List<List<ForeignUserDTO>>();
-                    var PatientId = db.tblPatients.Where(x => x.userId == user.Id).Select(y => y.Id).ToList();
+                    var PatientId = db.tblPatient.Where(x => x.userId == user.userId).Select(y => y.patientId).ToList();
                     foreach (var patient in PatientId)
                     {
-                        var Carers = db.tblCaresForPatients.Where(x => x.patientId == patient).Select(y => new ForeignUserDTO
+                        var Carers = db.tblCaresForPatient.Where(x => x.patientId == patient).Select(y => new ForeignUserDTO
                         {
                             Id = y.workerId,
                         }).ToList();
@@ -38,7 +38,7 @@ namespace WebApi.Controllers
                     {
                         foreach (var item in carer)
                         {
-                            temp.Add(db.tblPaymentRequests.Where(x => x.userId == item.Id && x.requestStatus == "P").Select(y => new PaymentsRequestDTO
+                            temp.Add(db.tblPaymentRequest.Where(x => x.userId == item.Id && x.requestStatus == "P").Select(y => new PaymentsRequestDTO
                             {
                                 requestId = y.requestId,
                                 requestSubject = y.requestSubject,
@@ -64,8 +64,8 @@ namespace WebApi.Controllers
                 }
                 else
                 {
-                    id = user.Id;
-                    var Payments = db.tblPaymentRequests.Where(x => x.userId == id && x.requestStatus == "P").Select(y => new PaymentsRequestDTO
+                    id = user.userId;
+                    var Payments = db.tblPaymentRequest.Where(x => x.userId == id && x.requestStatus == "P").Select(y => new PaymentsRequestDTO
                     {
                         requestId = y.requestId,
                         requestSubject = y.requestSubject,
@@ -97,10 +97,10 @@ namespace WebApi.Controllers
                 if (user.userType == "User")
                 {
                     List<List<ForeignUserDTO>> careId = new List<List<ForeignUserDTO>>();
-                    var PatientId = db.tblPatients.Where(x => x.userId == user.Id).Select(y => y.Id).ToList();
+                    var PatientId = db.tblPatient.Where(x => x.userId == user.userId).Select(y => y.patientId).ToList();
                     foreach (var patient in PatientId)
                     {
-                        var Carers = db.tblCaresForPatients.Where(x => x.patientId == patient).Select(y => new ForeignUserDTO
+                        var Carers = db.tblCaresForPatient.Where(x => x.patientId == patient).Select(y => new ForeignUserDTO
                         {
                             Id = y.workerId,
                         }).ToList();
@@ -111,7 +111,7 @@ namespace WebApi.Controllers
                     {
                         foreach (var item in carer)
                         {
-                            temp.Add(db.tblPaymentRequests.Where(x => x.userId == item.Id && x.requestStatus != "P").Select(y => new PaymentsRequestDTO
+                            temp.Add(db.tblPaymentRequest.Where(x => x.userId == item.Id && x.requestStatus != "P").Select(y => new PaymentsRequestDTO
                             {
                                 requestId = y.requestId,
                                 requestSubject = y.requestSubject,
@@ -137,8 +137,8 @@ namespace WebApi.Controllers
                 }
                 else
                 {
-                    id = user.Id;
-                    var Payments = db.tblPaymentRequests.Where(x => x.userId == id && x.requestStatus != "P").Select(y => new PaymentsRequestDTO
+                    id = user.userId;
+                    var Payments = db.tblPaymentRequest.Where(x => x.userId == id && x.requestStatus != "P").Select(y => new PaymentsRequestDTO
                     {
                         requestId = y.requestId,
                         requestSubject = y.requestSubject,
@@ -165,7 +165,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                int id = db.tblPaymentRequests.Max(x => x.requestId) + 1;
+                int id = db.tblPaymentRequest.Max(x => x.requestId) + 1;
                 db.NewPaymentRequest(id, req.requestSubject, req.amountToPay, req.requestDate, req.requestProofDocument, req.requestComment, req.requestStatus, req.userId);
                 db.SaveChanges();
                 return Ok("Request added successfully!");
@@ -183,7 +183,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                var p = db.tblPaymentRequests.Where(x => x.requestId == req.requestId).FirstOrDefault();
+                var p = db.tblPaymentRequest.Where(x => x.requestId == req.requestId).FirstOrDefault();
                 if (p != null)
                 {
                     p.requestSubject = req.requestSubject;
@@ -214,7 +214,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                var p = db.tblPaymentRequests.Where(x => x.requestId == requestId).FirstOrDefault();
+                var p = db.tblPaymentRequest.Where(x => x.requestId == requestId).FirstOrDefault();
                 if (p != null)
                 {
                     p.requestStatus = "F";
@@ -239,12 +239,12 @@ namespace WebApi.Controllers
         {
             try
             {
-                var request = db.tblPaymentRequests.Where(x => x.requestId == id).FirstOrDefault();
+                var request = db.tblPaymentRequest.Where(x => x.requestId == id).FirstOrDefault();
                 if (request == null)
                 {
                     return NotFound();
                 }
-                db.tblPaymentRequests.Remove(request);
+                db.tblPaymentRequest.Remove(request);
                 db.SaveChanges();
                 return Ok("Payment Request Deleted Successfully");
             }

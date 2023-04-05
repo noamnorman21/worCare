@@ -12,7 +12,7 @@ namespace WebApi.Controllers
     [RoutePrefix("api/Settings")]
     public class SettingsController : ApiController
     {
-        igroup194DB db = new igroup194DB();
+        igroup194Db db = new igroup194Db();
 
         [HttpPut]
         [Route("UpdateImage")]
@@ -20,7 +20,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                var user = db.tblUsers.Where(x => x.Email == userToChange.Email).FirstOrDefault();
+                var user = db.tblUser.Where(x => x.Email == userToChange.Email).FirstOrDefault();
                 user.userUri = userToChange.userUri;
                 db.SaveChanges();
                 return Ok("Image Updated");
@@ -37,7 +37,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                var user = db.tblUsers.Where(x => x.Id == userToChange.Id).FirstOrDefault();
+                var user = db.tblUser.Where(x => x.userId == userToChange.userId).FirstOrDefault();
                 if (user == null)
                 {
                     return NotFound();
@@ -60,7 +60,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                var user = db.tblUsers.Where(x => x.Id == userToChange.Id).FirstOrDefault();
+                var user = db.tblUser.Where(x => x.userId == userToChange.userId).FirstOrDefault();
                 if (user == null)
                 {
                     return NotFound();
@@ -84,7 +84,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                var user = db.tblUsers.Where(x => x.Id == userToChange.Id).FirstOrDefault();
+                var user = db.tblUser.Where(x => x.userId == userToChange.userId).FirstOrDefault();
                 if (user == null)
                 {
                     return NotFound();
@@ -107,7 +107,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                tblUser user = db.tblUsers.Where(x => x.Email == userToUpdate.Email).FirstOrDefault();
+                tblUser user = db.tblUser.Where(x => x.Email == userToUpdate.Email).FirstOrDefault();
                 user.phoneNum = userToUpdate.phoneNum;
                 user.FirstName = userToUpdate.FirstName;
                 user.LastName = userToUpdate.LastName;
@@ -128,7 +128,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                tblUser user = db.tblUsers.Where(x => x.Id == userToUpdate.Id).FirstOrDefault();
+                tblUser user = db.tblUser.Where(x => x.userId == userToUpdate.userId).FirstOrDefault();
                 user.Email = userToUpdate.Email;
                 db.SaveChanges();
                 return Ok("Email Updated Successfully");
@@ -146,7 +146,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                tblUser user = db.tblUsers.Where(x => x.Id == userToUpdate.Id).FirstOrDefault();
+                tblUser user = db.tblUser.Where(x => x.userId == userToUpdate.userId).FirstOrDefault();
                 user.Password = userToUpdate.Password;
                 db.SaveChanges();
                 return Ok("Password Updated Successfully");

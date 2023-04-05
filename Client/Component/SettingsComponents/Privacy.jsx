@@ -12,12 +12,12 @@ export default function Privacy({ navigation }) {
   const [Phonenum, setPhonenum] = useState(null);
   const [userImg, setUserImg] = useState(null);
   const [Email, setEmail] = useState(null);
-  const [userType, setUserType] = useState(null);  
+  const [userType, setUserType] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalType, setModalType] = useState('');
   const [modalValue, setModalValue] = useState('');
-  const {userContext, updateUserContext} = useUserContext();
-  
+  const { userContext, updateUserContext } = useUserContext();
+
 
   const sendDataToNextDB = () => {
     const userToUpdate = {
@@ -26,15 +26,11 @@ export default function Privacy({ navigation }) {
       phoneNum: Phonenum,
       gender: Gender,
       FirstName: firstName,
-      LastName: lastName,      
-      Id: userId,
+      LastName: lastName,
+      userId: userId,
       userType: userType
     }
-    console.log('userToUpdate', userToUpdate);
-    updateUserContext(userToUpdate);
-    const jsonValue = JSON.stringify(userToUpdate)
-    AsyncStorage.setItem('userData', jsonValue);
-    navigation.goBack();
+
     console.log('userToUpdate', userToUpdate)
 
     fetch('https://proj.ruppin.ac.il/cgroup94/prod/api/Settings/UpdateUserEmail', {
@@ -52,13 +48,18 @@ export default function Privacy({ navigation }) {
       .then(
         (result) => {
           console.log("fetch POST= ", result);
-          Alert.alert('Image Changed', 'Your image has been changed successfully');
+          Alert.alert('Email Updated', 'Your Email has been changed successfully');
         }
       )
       .catch((error) => {
         console.log('Error:', error.message);
       }
       );
+
+    updateUserContext(userToUpdate);
+    const jsonValue = JSON.stringify(userToUpdate)
+    AsyncStorage.setItem('userData', jsonValue);
+    navigation.goBack();
   }
 
   const openModal = (type, value) => {
@@ -72,7 +73,7 @@ export default function Privacy({ navigation }) {
     if (Field == "Email") {
       setEmail(value)
     }
-    
+
   }
 
   const savePassword = (value) => {
@@ -87,13 +88,13 @@ export default function Privacy({ navigation }) {
   useEffect(() => {
     const getData = async () => {
       try {
-        setUserId(userContext.Id);
+        setUserId(userContext.userId);
         setFirstName(userContext.FirstName);
         setLastName(userContext.LastName);
         setGender(userContext.gender)
         setUserImg(userContext.userUri)
         setPhonenum(userContext.phoneNum)
-        setEmail(userContext.Email)        
+        setEmail(userContext.Email)
         setUserType(userContext.userType)
       } catch (e) {
         console.log('error', e);

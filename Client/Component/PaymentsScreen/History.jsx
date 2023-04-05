@@ -50,9 +50,10 @@ export default function History({ navigation, route }) {
   const getHistory = async () => {
     try {
       const user={
-        Id: userContext.Id,
+        userId: userContext.userId,
         userType: userContext.userType
       }
+      console.log(user)
       const response = await fetch('https://proj.ruppin.ac.il/cgroup94/prod/api/Payments/GetHistory/', {
         method: 'POST',
         headers: {
@@ -61,6 +62,7 @@ export default function History({ navigation, route }) {
         body: JSON.stringify(user)
       });
       const data = await response.json();
+      console.log("Data",data)
       let arr = data.map((item) => {
         return (
           <Request key={item.requestId} getHistory={getHistory} data={item} id={item.requestId} Notofication={Notification} View={View} Edit={Edit} subject={item.requestSubject} amountToPay={item.amountToPay} date={item.requestDate} requestComment={item.requestComment} />

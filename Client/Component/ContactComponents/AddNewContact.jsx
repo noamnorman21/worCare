@@ -53,6 +53,7 @@ export default function AddNewContact(props) {
   }, []);
 
   const transformArr = (arr) => {
+    console.log("arr", arr);
     let newArr = [];
     arr.forEach(element => {
       element.forEach(item => {       

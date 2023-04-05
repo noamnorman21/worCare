@@ -3,14 +3,6 @@ import React from 'react'
 import { useState, useEffect } from 'react'
 import Holidays from '../../HelpComponents/Holidays'
 import { HaveAccount, OrLine } from '../FooterLine'
-import * as Font from 'expo-font';
-Font.loadAsync({
-  'Urbanist': require('../../../assets/fonts/Urbanist-Regular.ttf'),
-  'Urbanist-Bold': require('../../../assets/fonts/Urbanist-Bold.ttf'),
-  'Urbanist-Light': require('../../../assets/fonts/Urbanist-Light.ttf'),
-  'Urbanist-Medium': require('../../../assets/fonts/Urbanist-Medium.ttf'),
-  'Urbanist-SemiBold': require('../../../assets/fonts/Urbanist-SemiBold.ttf'),
-});
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 export default function SignUpUserLVL4({ navigation , route}, props) {
@@ -19,7 +11,6 @@ export default function SignUpUserLVL4({ navigation , route}, props) {
   
   const isItemSelected = (arr) => {
     setSelectedHolidays(arr); //arr is the array of the selected holidays
-    console.log("selectedHolidays=", selectedHolidays);
   };
 
   const NavigateToNextLVL = () => {

@@ -95,7 +95,7 @@ export default function Profile({ navigation }) {
       .then(
         (result) => {
           console.log("fetch POST= ", result);
-          Alert.alert('Image Changed', 'Your image has been changed successfully');
+          Alert.alert('User Updated', 'Your User has been Updated successfully');
         }
       )
       .catch((error) => {

@@ -17,13 +17,13 @@ namespace DATA
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public tblUser()
         {
-            this.tblCalendarForUsers = new HashSet<tblCalendarForUser>();
-            this.tblPatientTasks = new HashSet<tblPatientTask>();
-            this.tblPaychecks = new HashSet<tblPaycheck>();
-            this.tblPatients = new HashSet<tblPatient>();
+            this.tblCalendarForUser = new HashSet<tblCalendarForUser>();
+            this.tblPatient = new HashSet<tblPatient>();
+            this.tblPatientTask = new HashSet<tblPatientTask>();
+            this.tblPaycheck = new HashSet<tblPaycheck>();
         }
     
-        public int Id { get; set; }
+        public int userId { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
         public string FirstName { get; set; }
@@ -33,13 +33,13 @@ namespace DATA
         public string userUri { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tblCalendarForUser> tblCalendarForUsers { get; set; }
+        public virtual ICollection<tblCalendarForUser> tblCalendarForUser { get; set; }
         public virtual tblForeignUser tblForeignUser { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tblPatientTask> tblPatientTasks { get; set; }
+        public virtual ICollection<tblPatient> tblPatient { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tblPaycheck> tblPaychecks { get; set; }
+        public virtual ICollection<tblPatientTask> tblPatientTask { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tblPatient> tblPatients { get; set; }
+        public virtual ICollection<tblPaycheck> tblPaycheck { get; set; }
     }
 }

@@ -17,14 +17,11 @@ namespace DATA
         public int listId { get; set; }
         public System.DateTime fromDate { get; set; }
         public System.DateTime toDate { get; set; }
-        public byte numOfTimes { get; set; }
-        public string comment { get; set; }
+        public byte dosage { get; set; }
+        public Nullable<int> qtyInBox { get; set; }
+        public Nullable<byte> minQuantity { get; set; }
         public int drugId { get; set; }
         public string patientId { get; set; }
-        public string period { get; set; }
-        public Nullable<int> quantity { get; set; }
-        public Nullable<int> minQuantity { get; set; }
-        public Nullable<System.TimeSpan> TimeInDay { get; set; }
     
         public virtual tblActualList tblActualList { get; set; }
         public virtual tblDrug tblDrug { get; set; }

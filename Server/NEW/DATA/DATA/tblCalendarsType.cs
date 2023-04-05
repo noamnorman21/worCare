@@ -17,7 +17,7 @@ namespace DATA
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public tblCalendarsType()
         {
-            this.tblCalendarForUsers = new HashSet<tblCalendarForUser>();
+            this.tblCalendarForUser = new HashSet<tblCalendarForUser>();
         }
     
         public int calendarNum { get; set; }
@@ -25,6 +25,6 @@ namespace DATA
         public string calendarUrl { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tblCalendarForUser> tblCalendarForUsers { get; set; }
+        public virtual ICollection<tblCalendarForUser> tblCalendarForUser { get; set; }
     }
 }
