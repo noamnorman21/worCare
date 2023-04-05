@@ -79,29 +79,29 @@ export default function Profile({ navigation }) {
     updateUserContext(userToUpdate)
     const jsonValue = JSON.stringify(userToUpdate)
     AsyncStorage.setItem('userData', jsonValue);
-    // fetch('http://proj.ruppin.ac.il/bgroup79/test1/tar1/api/Settings/UpdateUser', {
-    //   method: 'PUT',
-    //   headers: new Headers({
-    //     'Content-Type': 'application/json; charset=UTF-8',
-    //     'Accept': 'application/json; charset=UTF-8',
+    fetch('https://proj.ruppin.ac.il/cgroup94/prod/api/Settings/UpdateUserProfile', {
+      method: 'PUT',
+      headers: new Headers({
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': 'application/json; charset=UTF-8',
 
-    //   }),
-    //   body: JSON.stringify(userToUpdate)
-    // })
-    //   .then(res => {
-    //     return res.json()
-    //   }
-    //   )
-    //   .then(
-    //     (result) => {
-    //       console.log("fetch POST= ", result);
-    //       Alert.alert('Image Changed', 'Your image has been changed successfully');
-    //     }
-    //   )
-    //   .catch((error) => {
-    //     console.log('Error:', error.message);
-    //   }
-    //   );
+      }),
+      body: JSON.stringify(userToUpdate)
+    })
+      .then(res => {
+        return res.json()
+      }
+      )
+      .then(
+        (result) => {
+          console.log("fetch POST= ", result);
+          Alert.alert('Image Changed', 'Your image has been changed successfully');
+        }
+      )
+      .catch((error) => {
+        console.log('Error:', error.message);
+      }
+      );
 
     navigation.goBack();
   }
@@ -158,6 +158,7 @@ export default function Profile({ navigation }) {
     console.log('cancel');
     navigation.goBack();
   }
+
   useEffect(() => {
     const getData = async () => {
       try {

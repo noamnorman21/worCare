@@ -32,7 +32,7 @@ export default function FieldChange(props) {
             password: value
          }
          console.log('userToUpdate', userToUpdate);
-         fetch('http://proj.ruppin.ac.il/bgroup79/test1/tar1/api/Settings/SetNewPassword', {
+         fetch('https://proj.ruppin.ac.il/cgroup94/prod/api/Settings/SetNewPassword', {
             method: 'PUT',
             headers: new Headers({
                'Content-Type': 'application/json; charset=UTF-8',

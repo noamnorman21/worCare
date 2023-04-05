@@ -24,8 +24,6 @@ namespace WebApi.Controllers
                 user.userUri = userToChange.userUri;
                 db.SaveChanges();
                 return Ok("Image Updated");
-
-
             }
             catch (Exception ex)
             {

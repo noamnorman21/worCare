@@ -128,7 +128,6 @@ function Main({ navigation }) {
       })
       .then((response) => response.json())
       .then(json => {
-        console.log('json',json)
         if (json != null) {
           let contacts = json.map((patient) => {
             return patient.map((item) => {

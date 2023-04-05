@@ -35,30 +35,30 @@ export default function Privacy({ navigation }) {
     const jsonValue = JSON.stringify(userToUpdate)
     AsyncStorage.setItem('userData', jsonValue);
     navigation.goBack();
+    console.log('userToUpdate', userToUpdate)
 
-    // fetch('http://proj.ruppin.ac.il/bgroup79/test1/tar1/api/Settings/UpdateUser', {
-    //   method: 'PUT',
-    //   headers: new Headers({
-    //     'Content-Type': 'application/json; charset=UTF-8',
-    //     'Accept': 'application/json; charset=UTF-8',
-
-    //   }),
-    //   body: JSON.stringify(userToUpdate)
-    // })
-    //   .then(res => {
-    //     return res.json()
-    //   }
-    //   )
-    //   .then(
-    //     (result) => {
-    //       console.log("fetch POST= ", result);
-    //       Alert.alert('Image Changed', 'Your image has been changed successfully');
-    //     }
-    //   )
-    //   .catch((error) => {
-    //     console.log('Error:', error.message);
-    //   }
-    //   );
+    fetch('https://proj.ruppin.ac.il/cgroup94/prod/api/Settings/UpdateUserEmail', {
+      method: 'PUT',
+      headers: new Headers({
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': 'application/json; charset=UTF-8',
+      }),
+      body: JSON.stringify(userToUpdate)
+    })
+      .then(res => {
+        return res.json()
+      }
+      )
+      .then(
+        (result) => {
+          console.log("fetch POST= ", result);
+          Alert.alert('Image Changed', 'Your image has been changed successfully');
+        }
+      )
+      .catch((error) => {
+        console.log('Error:', error.message);
+      }
+      );
   }
 
   const openModal = (type, value) => {
