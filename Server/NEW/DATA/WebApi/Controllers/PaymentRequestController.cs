@@ -12,8 +12,7 @@ namespace WebApi.Controllers
     [RoutePrefix("api/Payments")]
     public class PaymentRequestController : ApiController
     {
-        igroup194DB db = new igroup194DB();
-        // GET: api/PaymentRequest
+        igroup194Db db = new igroup194Db();
         [Route("GetPending/{id}")]
         [HttpGet]
         public IHttpActionResult GetPending(int id)
@@ -21,7 +20,7 @@ namespace WebApi.Controllers
             try
             {
 
-                var Payments = db.tblPaymentRequests.Where(x => x.userId == id && x.requestStatus == "R").Select(y => new PaymentsRequestDTO
+                var Payments = db.tblPaymentRequest.Where(x => x.userId == id && x.requestStatus == "R").Select(y => new PaymentsRequestDTO
                 {
                     requestId = y.requestId,
                     requestSubject = y.requestSubject,
@@ -46,7 +45,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                var Payments = db.tblPaymentRequests.Where(x => x.userId == id && x.requestStatus == "C").Select(y => new PaymentsRequestDTO
+                var Payments = db.tblPaymentRequest.Where(x => x.userId == id && x.requestStatus == "C").Select(y => new PaymentsRequestDTO
                 {
                     requestId = y.requestId,
                     requestSubject = y.requestSubject,
@@ -71,8 +70,7 @@ namespace WebApi.Controllers
         {
             try
             {
-
-                var Payment = db.tblPaymentRequests.Where(x => x.requestId == id).Select(y => new PaymentsRequestDTO
+                var Payment = db.tblPaymentRequest.Where(x => x.requestId == id).Select(y => new PaymentsRequestDTO
                 {
                     requestId = y.requestId,
                     requestSubject = y.requestSubject,
@@ -105,7 +103,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                int id = db.tblPaymentRequests.Max(x => x.requestId) + 1;
+                int id = db.tblPaymentRequest.Max(x => x.requestId) + 1;
                 db.NewPaymentRequest(id, req.requestSubject, req.amountToPay, req.requestDate, req.requestProofDocument, req.requestComment, req.requestStatus, req.userId);
                 db.SaveChanges();
                 return Ok("Request added successfully!");
@@ -123,7 +121,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                var p = db.tblPaymentRequests.Where(x => x.requestId == req.requestId).FirstOrDefault();
+                var p = db.tblPaymentRequest.Where(x => x.requestId == req.requestId).FirstOrDefault();
                 if (p != null)
                 {
                     p.requestSubject = req.requestSubject;
@@ -144,7 +142,6 @@ namespace WebApi.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
-                throw;
             }
         }
 
@@ -154,12 +151,12 @@ namespace WebApi.Controllers
         {
             try
             {
-                var request = db.tblPaymentRequests.Where(x => x.requestId == id).FirstOrDefault();
+                var request = db.tblPaymentRequest.Where(x => x.requestId == id).FirstOrDefault();
                 if (request == null)
                 {
                     return NotFound();
                 }
-                db.tblPaymentRequests.Remove(request);
+                db.tblPaymentRequest.Remove(request);
                 db.SaveChanges();
                 return Ok("Payment Request Deleted Successfully");
             }
@@ -167,8 +164,6 @@ namespace WebApi.Controllers
             {
                 return BadRequest(ex.Message);
             }
-
         }
-
     }
 }

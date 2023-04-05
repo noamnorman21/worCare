@@ -13,14 +13,14 @@ namespace WebApi.Controllers
     [RoutePrefix("api/ForeignUser")]
     public class ForeignUserController : ApiController
     {
-        igroup194DB db = new igroup194DB();
+        igroup194Db db = new igroup194Db();
         [HttpPost]
         [Route("InsertForeignUser")]
         public IHttpActionResult InsertForeignUser([FromBody] ForeignUserDTO user)
         {
             try
             {
-                tblUser userExist = db.tblUsers.Where(x => x.Id == user.Id).First();
+                tblUser userExist = db.tblUser.Where(x => x.userId == user.Id).First();
                 if (userExist == null)
                     return NotFound();
                 db.InsertForeignUser(user.Id, user.DateOfBirth, user.VisaExpirationDate, user.LanguageName_En, user.CountryName_En);
@@ -39,7 +39,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                foreach (tblCaresForPatient item in db.tblCaresForPatients)
+                foreach (tblCaresForPatient item in db.tblCaresForPatient)
                 {
                     if (CaresForPatientDTO.workerId == item.workerId && CaresForPatientDTO.patientId == item.patientId &&item.status=="A")
                     {

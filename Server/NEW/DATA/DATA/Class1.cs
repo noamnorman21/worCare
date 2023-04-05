@@ -11,22 +11,22 @@ namespace DATA
 {
     public partial class tblCalendarForUser
     {
-        igroup194DB db = new igroup194DB();
+        igroup194Db db = new igroup194Db();
 
         public int InsertCalendar(int id, int[] calendarsTypeArr)
         {
             try
             {
-                tblUser userExist = db.tblUsers.Where(x => x.Id == id).First();
+                tblUser userExist = db.tblUser.Where(x => x.userId == id).First();
                 if (userExist == null)
                     return -1;
                 //24 mean the Jewish calendar, its hard coded because all users have the Jewish calendar as primary calendar
-                db.InsertCalendarForUser(24, userExist.Id, true);
+                db.InsertCalendarForUser(24, userExist.userId, true);
                 foreach (int item in calendarsTypeArr)
                 {
                     //here we will add all the calendars that the user choose 
                     if (item != 24)
-                        db.InsertCalendarForUser(item, userExist.Id, false);
+                        db.InsertCalendarForUser(item, userExist.userId, false);
                 }
                 return 1;
             }

@@ -5,14 +5,6 @@ import { OrLine, ReturnToLogin } from '../SignUpComponents/FooterLine';
 import emailjs from '@emailjs/browser';
 // import { SendEmail } from '../HelpComponents/UserContext';
 
-import * as Font from 'expo-font'
-Font.loadAsync({
-    'Urbanist': require('../../assets/fonts/Urbanist-Regular.ttf'),
-    'Urbanist-Bold': require('../../assets/fonts/Urbanist-Bold.ttf'),
-    'Urbanist-Light': require('../../assets/fonts/Urbanist-Light.ttf'),
-    'Urbanist-Medium': require('../../assets/fonts/Urbanist-Medium.ttf'),
-});
-
 const GenerateCode = () => {
     let codeTemp = '';
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';

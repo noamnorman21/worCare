@@ -125,7 +125,7 @@ export default function LogIn({ navigation }) {
                     }
                     //save user data in context
                     const userContext = {
-                        Id: json.Id,
+                        userId: json.Id,
                         FirstName: json.FirstName,
                         LastName: json.LastName,
                         Email: json.Email,

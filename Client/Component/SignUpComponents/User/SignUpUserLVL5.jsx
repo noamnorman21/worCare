@@ -13,14 +13,7 @@ export default function SignUpUserLVL5({ navigation, route }) {
   const [patientID, setPatientID] = useState('');
   const [patientFirstName, setPatientFirstName] = useState('');
   const [patientLastName, setPatientLastName] = useState('');
-  //  getMaxDate for age 21="2002-01-01" 
-  const getMaxDate = () => {
-    var date = new Date().getDate(); //Current Date
-    var month = new Date().getMonth() + 1; //Current Month
-    var year = new Date().getFullYear() - 21; //Current Year
-    return year + '-' + month + '-' + date;
-  }
-
+ 
   const handleInputAndContinue = () => {
     if (patientFirstName === '' || patientLastName === '' || patientID === '' || date === '' || valueLanguage === null) {
       Alert.alert('Please fill all the fields')
@@ -30,14 +23,12 @@ export default function SignUpUserLVL5({ navigation, route }) {
       Alert.alert('Patient ID must be 9 digits')
       return
     }
-
-    
     // after all the checks, we can navigate to the next screen and pass the data 
     // after all ready uncomment the following lines and delete the lines below it
     const patientData = {
       FirstName: patientFirstName,
       LastName: patientLastName,
-      Id: patientID,
+      patientId: patientID,
       DateOfBirth: date,
       LanguageName_En: valueLanguage
     }

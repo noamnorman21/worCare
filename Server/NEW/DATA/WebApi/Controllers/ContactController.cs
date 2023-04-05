@@ -17,8 +17,8 @@ namespace WebApi.Controllers
     [RoutePrefix("api/Contacts")]
     public class ContactController : ApiController
     {
-        igroup194DB db = new igroup194DB();
-        
+        igroup194Db db = new igroup194Db();
+
         // GET: api/Contacts
         [Route("GetContacts/{id}")]
         [HttpGet]
@@ -94,7 +94,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                tblContact c = db.tblContacts.Where(x => x.contactId == value.contactId).FirstOrDefault();
+                tblContacts c = db.tblContacts.Where(x => x.contactId == value.contactId).FirstOrDefault();
                 c.contactName = value.contactName;
                 c.phoneNo = value.phoneNo;
                 c.mobileNo = value.mobileNo;

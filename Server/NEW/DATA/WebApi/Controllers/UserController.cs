@@ -17,7 +17,7 @@ namespace WebApi.Controllers
     [RoutePrefix("api/User")]
     public class UserController : ApiController
     {
-        igroup194DB db = new igroup194DB();
+        igroup194Db db = new igroup194Db();
 
         [HttpGet]
         [Route("GetUser/{id}")]
@@ -25,7 +25,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                var user = db.tblUsers.Where(x => x.Id == id).FirstOrDefault();
+                var user = db.tblUser.Where(x => x.userId == id).FirstOrDefault();
                 return Ok(user.FirstName + " " + user.LastName + " - Email:" + user.Email);
             }
             catch (Exception ex)
@@ -34,13 +34,13 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("GetEmail/{userEmail}")]
         public IHttpActionResult GetEmail(string userEmail)
         {
             try
             {
-                var user = db.tblUsers.Where(x => x.Email == userEmail).First();
+                var user = db.tblUser.Where(x => x.Email == userEmail).First();
                 if (user == null)
                 {
                     return NotFound();
@@ -62,7 +62,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                var user = from u in db.tblUsers
+                var user = from u in db.tblUser
                            where u.Email == userDTO.Email && u.Password == userDTO.Password
                            select u;
                 if (user == null)
@@ -71,15 +71,15 @@ namespace WebApi.Controllers
                 }
 
                 UserDTO newUser = new UserDTO();
-                newUser.Id = user.First().Id;
+                newUser.userId = user.First().userId;
                 newUser.Email = user.First().Email;
                 newUser.phoneNum = user.First().phoneNum;
                 newUser.userUri = user.First().userUri;
                 newUser.gender = user.First().gender;
                 newUser.FirstName = user.First().FirstName;
                 newUser.LastName = user.First().LastName;
-                var userRole = from r in db.tblForeignUsers
-                               where r.Id == newUser.Id
+                var userRole = from r in db.tblForeignUser
+                               where r.Id == newUser.userId
                                select r.Id;
                 if (userRole.Count() > 0)
                 {
@@ -103,7 +103,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                var user = db.tblUsers.Where(x => x.Email == userDTO.Email).First();
+                var user = db.tblUser.Where(x => x.Email == userDTO.Email).First();
                 if (user == null)
                 {
                     return Ok("the email available");
@@ -122,7 +122,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                var user = db.tblUsers.Where(x => x.phoneNum == userDTO.phoneNum).First();
+                var user = db.tblUser.Where(x => x.phoneNum == userDTO.phoneNum).First();
                 if (user == null)
                 {
                     return Ok("the phone number available");
@@ -143,7 +143,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                var users = db.tblUsers.Select(x => new { x.Email, x.Password }).ToList();
+                var users = db.tblUser.Select(x => new { x.Email, x.Password }).ToList();
                 if (users == null)
                 {
                     return NotFound();
@@ -162,7 +162,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                var users = db.tblUsers.Select(x => new { x.Email, x.phoneNum }).ToList();
+                var users = db.tblUser.Select(x => new { x.Email, x.phoneNum }).ToList();
                 if (users == null)
                 {
                     return NotFound();
@@ -186,14 +186,14 @@ namespace WebApi.Controllers
                 //the store procedure is checking if the user already exists in the db, if not, it will insert the user
                 db.InsertUser(user.Email, user.Password, user.FirstName, user.LastName, user.gender, user.phoneNum, user.userUri);
                 db.SaveChanges();
-                var newUser = db.tblUsers.Where(x => x.Email == user.Email).First();
+                var newUser = db.tblUser.Where(x => x.Email == user.Email).First();
                 if (newUser == null)
                     return NotFound();
                 //we using here partial class tblCalendarForUser to call the method InsertCalendar
-                int result = calendarForUser.InsertCalendar(newUser.Id, user.Calendars);
+                int result = calendarForUser.InsertCalendar(newUser.userId, user.Calendars);
                 if (result == -1)
                     return BadRequest("Error in insert calendar for user");
-                return Ok(newUser.Id);
+                return Ok(newUser.userId);
             }
             catch (Exception ex)
             {
@@ -208,7 +208,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                tblUser user = db.tblUsers.Where(x => x.Email == userToUpdate.Email).FirstOrDefault();
+                tblUser user = db.tblUser.Where(x => x.Email == userToUpdate.Email).FirstOrDefault();
                 user.phoneNum = userToUpdate.phoneNum;
                 user.FirstName = userToUpdate.FirstName;
                 user.LastName = userToUpdate.LastName;
@@ -231,7 +231,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                tblUser user = db.tblUsers.Where(x => x.Email == userToUpdate.Email).FirstOrDefault();
+                tblUser user = db.tblUser.Where(x => x.Email == userToUpdate.Email).FirstOrDefault();
                 user.Password = userToUpdate.Password;
                 db.SaveChanges();
                 return Ok("User Password Updated Successfully");
@@ -250,10 +250,10 @@ namespace WebApi.Controllers
         {
             try
             {
-                var user = db.tblUsers.Where(x => x.Email == userToDelete.Email).FirstOrDefault();
+                var user = db.tblUser.Where(x => x.Email == userToDelete.Email).FirstOrDefault();
                 if (user == null)
                     return NotFound();
-                db.tblUsers.Remove(user);
+                db.tblUser.Remove(user);
                 db.SaveChanges();
                 return Ok("User Deleted Successfully");
             }

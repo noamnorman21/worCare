@@ -13,15 +13,14 @@ namespace WebApi.Controllers
     [RoutePrefix("api/Patient")]
     public class PatientController : ApiController
     {
-        igroup194DB db = new igroup194DB();
-
+        igroup194Db db = new igroup194Db();
         [HttpGet]
         [Route("GetPatient/{id}")]
         public IHttpActionResult GetPatient(string id)
         {
             try
             {
-                var patient = db.tblPatients.Where(x => x.Id == id).FirstOrDefault();
+                var patient = db.tblPatient.Where(x => x.patientId == id).FirstOrDefault();
                 return Ok(patient.FirstName + " " + patient.LastName);
             }
             catch (Exception ex)
@@ -37,10 +36,10 @@ namespace WebApi.Controllers
             try
             {
                 // {"BirthDate": "01-08-1927", "FirstName": "Sara", "Id": "577042518", "Language": "Arabic", "LastName": "Bibi", "userId": 147}
-                var patientExist = db.tblPatients.Where(x => x.Id == patient.Id).FirstOrDefault();
+                var patientExist = db.tblPatient.Where(x => x.patientId == patient.patientId).FirstOrDefault();
                 if (patientExist == null)
                 {
-                    db.InsertPatient(patient.Id, patient.FirstName, patient.LastName, patient.DateOfBirth, patient.userId, patient.LanguageName_En);
+                    db.InsertPatient(patient.patientId, patient.FirstName, patient.LastName, patient.DateOfBirth, patient.userId, patient.LanguageName_En);
                     db.SaveChanges();
                     return Ok("Patient added successfully");
                 }
@@ -61,7 +60,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                tblPatient patientExist = db.tblPatients.Where(x => x.Id == patient.patientId).First();
+                tblPatient patientExist = db.tblPatient.Where(x => x.patientId == patient.patientId).First();
                 if (patientExist == null)
                     return BadRequest("Patient does not exist");
                 string books = patient.books;

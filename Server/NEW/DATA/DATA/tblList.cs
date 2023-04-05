@@ -17,17 +17,14 @@ namespace DATA
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public tblList()
         {
-            this.tblProductLists = new HashSet<tblProductList>();
+            this.tblProductList = new HashSet<tblProductList>();
         }
     
         public int listId { get; set; }
         public string listName { get; set; }
-        public System.DateTime listFromDate { get; set; }
-        public Nullable<System.DateTime> listToDate { get; set; }
-        public string listComment { get; set; }
     
         public virtual tblActualList tblActualList { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tblProductList> tblProductLists { get; set; }
+        public virtual ICollection<tblProductList> tblProductList { get; set; }
     }
 }

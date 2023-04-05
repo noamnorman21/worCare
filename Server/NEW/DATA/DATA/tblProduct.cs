@@ -17,7 +17,7 @@ namespace DATA
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public tblProduct()
         {
-            this.tblProductLists = new HashSet<tblProductList>();
+            this.tblProductList = new HashSet<tblProductList>();
         }
     
         public int productId { get; set; }
@@ -26,6 +26,6 @@ namespace DATA
         public string commentForProduct { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<tblProductList> tblProductLists { get; set; }
+        public virtual ICollection<tblProductList> tblProductList { get; set; }
     }
 }

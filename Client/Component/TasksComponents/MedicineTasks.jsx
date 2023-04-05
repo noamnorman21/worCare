@@ -1,6 +1,6 @@
-import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, SafeAreaView, StyleSheet } from 'react-native'
 import { useState } from 'react'
-import { AddBtn, NewTaskModal } from '../HelpComponents/AddNewTask'
+import { AddBtn, AddNewMedicine } from '../HelpComponents/AddNewTask'
 
 export default function MedicineTasks() {
    const [modalVisible, setModalVisible] = useState(false)
@@ -20,7 +20,7 @@ export default function MedicineTasks() {
          <View style={styles.addBtnView}>
             <AddBtn onPress={handleAddBtnPress} />
          </View>
-         <NewTaskModal isVisible={modalVisible} onClose={handleModalClose} />
+         <AddNewMedicine isMedVisible={modalVisible} onClose={handleModalClose} />
       </SafeAreaView>
    )
 }

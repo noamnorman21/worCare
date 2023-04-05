@@ -12,9 +12,7 @@ namespace WebApi.Controllers
     [RoutePrefix("api/PayChecks")]
     public class PayChecksController : ApiController
     {
-        igroup194DB db = new igroup194DB();
-
-        // GET: api/PayChecks
+        igroup194Db db = new igroup194Db();
         [HttpGet]
         [Route("GetPaychecks/{id}")]
         public IHttpActionResult GetPaychecks(int id)
@@ -22,7 +20,7 @@ namespace WebApi.Controllers
 
             try
             {
-                var Contacts = db.tblPaychecks.Where(x => x.UserId == id).Select(y => new PayCheckDTO
+                var Contacts = db.tblPaycheck.Where(x => x.UserId == id).Select(y => new PayCheckDTO
                 {
                     payCheckNum = y.payCheckNum,
                     paycheckDate = y.paycheckDate,
@@ -44,7 +42,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                var Contacts = db.tblPaychecks.Where(x => x.payCheckNum == num).Select(y => new PayCheckDTO
+                var Contacts = db.tblPaycheck.Where(x => x.payCheckNum == num).Select(y => new PayCheckDTO
                 {
                     payCheckNum = y.payCheckNum,
                     paycheckDate = y.paycheckDate,
@@ -67,8 +65,8 @@ namespace WebApi.Controllers
         {
             try
             {
-                int id = db.tblPaymentRequests.Max(x => x.requestId) + 1;
-                int num = db.tblPaychecks.Max(x => x.payCheckNum) + 1;
+                int id = db.tblPaymentRequest.Max(x => x.requestId) + 1;
+                int num = db.tblPaycheck.Max(x => x.payCheckNum) + 1;
                 db.NewPaycheck(num, pay.paycheckDate, pay.paycheckSummary, pay.paycheckComment, pay.UserId);
                 db.SaveChanges();
                 return Ok("Paycheck added successfully!");
@@ -86,7 +84,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                tblPaycheck p = db.tblPaychecks.Where(x => x.payCheckNum == pay.payCheckNum).FirstOrDefault();
+                tblPaycheck p = db.tblPaycheck.Where(x => x.payCheckNum == pay.payCheckNum).FirstOrDefault();
                 if (p != null)
                 {
                     p.payCheckNum = pay.payCheckNum;
@@ -117,14 +115,14 @@ namespace WebApi.Controllers
         {
             try
             {
-                var p = db.tblPaychecks.Where(x => x.payCheckNum == num).FirstOrDefault();
+                var p = db.tblPaycheck.Where(x => x.payCheckNum == num).FirstOrDefault();
                 if (p == null)
                 {
                     return NotFound();
                 }
                 else
                 {
-                    db.tblPaychecks.Remove(p);
+                    db.tblPaycheck.Remove(p);
                     db.SaveChanges();
                     return Ok("Paycheck Deleted Successfully");
                 }
@@ -133,7 +131,6 @@ namespace WebApi.Controllers
             {
                 return BadRequest(ex.Message);
             }
-
         }
     }
 }

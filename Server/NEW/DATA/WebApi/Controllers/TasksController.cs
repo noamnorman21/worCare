@@ -13,7 +13,7 @@ namespace WebApi.Controllers
     [RoutePrefix("api/Task")]
     public class TasksController : ApiController
     {
-        igroup194DB db = new igroup194DB();
+        igroup194Db db = new igroup194Db();
         //Private Task section    
         [HttpPost]
         [Route("InsertPrivateTask")] //Insert new private task by foreign user
@@ -21,7 +21,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                db.InsertPrivateTask(taskDTO.taskName, taskDTO.taskFromDate, taskDTO.taskToDate, taskDTO.taskComment, taskDTO.status, taskDTO.workerId,taskDTO.TimeInDay, taskDTO.period);
+                db.InsertPrivateTask(taskDTO.taskName, taskDTO.taskFromDate, taskDTO.taskToDate, taskDTO.taskComment, taskDTO.status, taskDTO.workerId, taskDTO.TimeInDay, taskDTO.frequency);
                 db.SaveChanges();
                 return Ok(taskDTO);
             }
@@ -38,7 +38,7 @@ namespace WebApi.Controllers
             List<PrivateTaskDTO> privateTasks = new List<PrivateTaskDTO>();
             try
             {
-                var tasks = from t in db.tblPrivateTasks
+                var tasks = from t in db.tblPrivateTask
                             where t.workerId == userDTO.Id
                             select t;
                 foreach (var item in tasks)
@@ -51,7 +51,7 @@ namespace WebApi.Controllers
                     taskDTO.status = item.status;
                     taskDTO.workerId = item.workerId;
                     taskDTO.TimeInDay = item.TimeInDay;
-                    taskDTO.period = item.period;
+                    taskDTO.frequency = item.frequency;
                     privateTasks.Add(taskDTO);
                 }
                 return Ok(privateTasks);
@@ -69,7 +69,7 @@ namespace WebApi.Controllers
             try
             {
                 //Update the task and save the changes
-                tblPrivateTask tblPrivate = db.tblPrivateTasks.Where(x => x.taskName == taskDTO.taskName).First();
+                tblPrivateTask tblPrivate = db.tblPrivateTask.Where(x => x.taskName == taskDTO.taskName).First();
                 tblPrivate.taskName = taskDTO.taskName;
                 tblPrivate.taskFromDate = taskDTO.taskFromDate;
                 tblPrivate.taskToDate = taskDTO.taskToDate;
@@ -77,7 +77,7 @@ namespace WebApi.Controllers
                 tblPrivate.status = taskDTO.status;
                 tblPrivate.workerId = taskDTO.workerId;
                 tblPrivate.TimeInDay = taskDTO.TimeInDay;
-                tblPrivate.period = taskDTO.period;
+                tblPrivate.frequency = taskDTO.frequency;
                 db.SaveChanges();
                 return Ok(taskDTO);
             }
@@ -87,7 +87,6 @@ namespace WebApi.Controllers
             }
         }
 
-
         //Public Task section     
         [HttpPost]
         [Route("GetAllTasks")] //GET ALL TASKS BY PATIENT ID
@@ -96,8 +95,8 @@ namespace WebApi.Controllers
             List<PatientTaskDTO> tasks = new List<PatientTaskDTO>();
             try
             {
-                var task = from t in db.tblPatientTasks
-                           where t.patientId == patient.Id
+                var task = from t in db.tblPatientTask
+                           where t.patientId == patient.patientId
                            select t;
                 foreach (var item in task)
                 {
@@ -107,13 +106,10 @@ namespace WebApi.Controllers
                     taskDTO.taskFromDate = item.taskFromDate;
                     taskDTO.taskToDate = item.taskToDate;
                     taskDTO.taskComment = item.taskComment;
-                    taskDTO.taskStatus = item.taskStatus;
                     taskDTO.patientId = item.patientId;
                     taskDTO.workerId = item.workerId;
                     taskDTO.userId = item.userId;
                     taskDTO.listId = item.listId;
-                    taskDTO.TimeInDay = item.TimeInDay;
-                    taskDTO.period = item.period;
                     tasks.Add(taskDTO);
                 }
                 return Ok(tasks);
@@ -123,9 +119,6 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);        
             }
         }
-
-
-
 
         [HttpPost]
         [Route("InsertActualList")] 
@@ -148,7 +141,7 @@ namespace WebApi.Controllers
             {
                 try
                 {
-                    db.InsertActualList(type);
+                    //db.InsertActualList(type);
                     db.SaveChanges();
                     return Ok();
                 }
@@ -156,10 +149,8 @@ namespace WebApi.Controllers
                 {
                     return BadRequest(ex.Message);
                 }
-
-
             }
-    
+            return Ok();
         }
     }
 }

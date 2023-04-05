@@ -11,7 +11,7 @@ namespace WebApi.Controllers
     [RoutePrefix("api/Drug")]
     public class DrugController : ApiController
     {
-        igroup194DB db = new igroup194DB();
+        igroup194Db db = new igroup194Db();
         //get all drugs for show in search 
         [HttpGet]
         [Route("GetAllDrugs")]
@@ -19,7 +19,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                var drugs = from d in db.tblDrugs
+                var drugs = from d in db.tblDrug
                             select new
                             {
                                 drugId = d.drugId,
