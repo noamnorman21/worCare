@@ -18,76 +18,31 @@ namespace WebApi.Controllers
     public class ContactController : ApiController
     {
         igroup194DB db = new igroup194DB();
-
-
-        [Route("GetPatients")]
-        [HttpPost]
-        public IHttpActionResult GetPatients([FromBody] int id)
-        {
-            try
-            {
-                var Patients = db.tblPatients.Where(x => x.userId == id).Select(y => new PatientDTO
-                {
-                    Id = y.Id,                    
-                }).ToList();
-                
-                return Ok(Patients);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        // GET: api/Contacts
-        [Route("GetContacts")]
-        [HttpPost]
-        public IHttpActionResult GetContacts([FromBody]UserDTO user)
-        {
-            try
-            {
-                var Patients = new List<PatientDTO>();
-                if (user.userType == "User")
-                {
-                    var Temp= db.tblPatients.Where(x => x.userId == user.Id).Select(y => new PatientDTO
-                    {
-                        Id = y.Id,
-                    }).ToList();
-                    Patients = Temp;
-                }
-                else
-                {
-                    var Temp = db.tblCaresForPatients.Where(x=> x.workerId == user.Id).Select(y => new PatientDTO
-                    {
-                        Id = y.patientId,
-                    }).ToList();
-                    Patients = Temp;
-                }
-                var patientContacts = new List<dynamic>();
-                foreach (var item in Patients)
-                {
-                    var Contacts = db.tblContacts.Where(x => x.patientId == item.Id).Select(y => new ContactDTO
-                    {
-                        contactId = y.contactId,
-                        contactName = y.contactName,
-                        phoneNo = y.phoneNo,
-                        mobileNo = y.mobileNo,
-                        email = y.email,
-                        role = y.role,
-                        contactComment = y.contactComment,
-                        patientId= y.patientId
-                    }).ToList();
-                    patientContacts.Add(Contacts);
-                }               
-                return Ok(patientContacts);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
         
+        // GET: api/Contacts
+        [Route("GetContacts/{id}")]
+        [HttpGet]
+        public IHttpActionResult GetContacts(int id)
+        {
+            try
+            {
+                var Contacts = db.tblContacts.Where(x => x.patientId == id.ToString()).Select(y => new ContactDTO
+                {
+                    contactId = y.contactId,
+                    contactName = y.contactName,
+                    phoneNo = y.phoneNo,
+                    mobileNo = y.mobileNo,
+                    email = y.email,
+                    role = y.role,
+                    contactComment = y.contactComment,
+                }).ToList();
+                return Ok(Contacts);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
         // GET: api/Contacts/{id}
         [HttpGet]
@@ -134,7 +89,7 @@ namespace WebApi.Controllers
         
         // PUT: api/Contacts/{id}
         [HttpPut]
-        [Route("UpdateContact")]
+        [Route("UpdateContact/{id}")]
         public IHttpActionResult UpdateContact([FromBody] ContactDTO value)
         {
             try

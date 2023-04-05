@@ -2,7 +2,6 @@ import { View, Text, SafeAreaView, StyleSheet, Alert, TouchableOpacity, Dimensio
 import { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FieldChange from './FieldChange';
-import { useUserContext } from '../../UserContext';
 
 export default function Privacy({ navigation }) {
   const [userId, setUserId] = useState(null);
@@ -12,12 +11,12 @@ export default function Privacy({ navigation }) {
   const [Phonenum, setPhonenum] = useState(null);
   const [userImg, setUserImg] = useState(null);
   const [Email, setEmail] = useState(null);
-  const [userType, setUserType] = useState(null);  
+  const [userType, setUserType] = useState(null);
+  const [password, setPassword] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalType, setModalType] = useState('');
   const [modalValue, setModalValue] = useState('');
-  const {userContext, updateUserContext} = useUserContext();
-  
+  const [modal2Visible, setModal2Visible] = useState(false);
 
   const sendDataToNextDB = () => {
     const userToUpdate = {
@@ -31,7 +30,6 @@ export default function Privacy({ navigation }) {
       userType: userType
     }
     console.log('userToUpdate', userToUpdate);
-    updateUserContext(userToUpdate);
     const jsonValue = JSON.stringify(userToUpdate)
     AsyncStorage.setItem('userData', jsonValue);
     navigation.goBack();
@@ -72,11 +70,9 @@ export default function Privacy({ navigation }) {
     if (Field == "Email") {
       setEmail(value)
     }
-    
-  }
-
-  const savePassword = (value) => {
-    console.log(value)
+    else if (Field == "Password") {
+      setPassword(value);
+    }
   }
 
   const cancel = () => {
@@ -87,14 +83,18 @@ export default function Privacy({ navigation }) {
   useEffect(() => {
     const getData = async () => {
       try {
-        setUserId(userContext.Id);
-        setFirstName(userContext.FirstName);
-        setLastName(userContext.LastName);
-        setGender(userContext.gender)
-        setUserImg(userContext.userUri)
-        setPhonenum(userContext.phoneNum)
-        setEmail(userContext.Email)        
-        setUserType(userContext.userType)
+        const jsonValue = await AsyncStorage.getItem('userData');
+        const userData = jsonValue != null ? JSON.parse(jsonValue) : null;
+        console.log('Privacy', userData);
+        setUserId(userData.Id);
+        setFirstName(userData.FirstName);
+        setLastName(userData.LastName);
+        setGender(userData.gender)
+        setUserImg(userData.userUri)
+        setPhonenum(userData.phoneNum)
+        setEmail(userData.Email)
+        setPassword(userData.Password)
+        setUserType(userData.userType)
       } catch (e) {
         console.log('error', e);
       }
@@ -111,7 +111,7 @@ export default function Privacy({ navigation }) {
         <TouchableOpacity underlayColor={'lightgrey'} style={styles.fields} onPress={() => openModal("Email", Email)}>
           <Text style={styles.fieldTxt}>{Email}</Text>
         </TouchableOpacity>
-        <TouchableOpacity underlayColor={'lightgrey'} style={styles.fields} onPress={() => openModal("Password")}>
+        <TouchableOpacity underlayColor={'lightgrey'} style={styles.fields} onPress={() => openModal("Password", password)}>
           <Text style={styles.fieldTxt}>Set New Password</Text>
         </TouchableOpacity>
         <View style={styles.bottom}>

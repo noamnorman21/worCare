@@ -1,6 +1,5 @@
-import { useState, useEffect, createContext, useContext, useRef} from 'react'
+import { useState, useEffect, createContext, useContext,  } from 'react'
 import React from 'react'
-import { PendingRequest } from './Component/HelpComponents/Paymentrequests';
 
 //--ruppin api server--
 //login
@@ -58,7 +57,7 @@ export function UserProvider({ children }) {
     const [phoneNum, setPhone] = useState(null)
     const [userUri, setuserUri] = useState(null)
     const [BirthDate, setBirthDate] = useState(null)
-    const [userGender, setuserGender] = useState(null)
+    const [gender, setGender] = useState(null)
 
     function logInContext(userData) {
         setUserType(userData.userType);
@@ -78,7 +77,7 @@ export function UserProvider({ children }) {
         setPhone(userData.Phone);
         setuserUri(userData.userUri);
         setBirthDate(userData.BirthDate);
-        setuserGender(userData.Gender)
+        setGender(userData.Gender)
         console.log(userData.Id);
 
         let usertoSync = {
@@ -92,39 +91,18 @@ export function UserProvider({ children }) {
             gender: userData.gender,
         }
         setUserContext(usertoSync);
-       
     }
-
-
 
     function logOutContext() {
         setUserContext(null)
     }
 
-    
-
-      
     function updateUserContext(userContext) {
         console.log("updateUser", userContext);
         setUserContext(userContext)
     }
 
-    function updaterememberUserContext(userContext) {
-        console.log("updateUser", userContext);
-        setUserContext(userContext)
-    }
-
-    function updateuserContacts(Contacts) {
-        setUserContacts(Contacts)
-    }
-
-    function UpdatePendings (pendings){
-        setUserPendingPayments(pendings);
-    }
-
-
-
-    const value = { userContext, userContacts, logInContext, logOutContext, updateUserContext, updateuserContacts, UpdatePendings }
+    const value = { userContext, logInContext, logOutContext, updateUserContext }
     return (
         <UserContext.Provider value={value}>
             {children}

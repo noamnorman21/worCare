@@ -14,72 +14,25 @@ namespace WebApi.Controllers
     {
         igroup194DB db = new igroup194DB();
         // GET: api/PaymentRequest
-        [Route("GetPending")]
-        [HttpPost]
-        public IHttpActionResult GetPending([FromBody] UserDTO user)
+        [Route("GetPending/{id}")]
+        [HttpGet]
+        public IHttpActionResult GetPending(int id)
         {
             try
             {
-                int id;              
-                if (user.userType=="User")
+
+                var Payments = db.tblPaymentRequests.Where(x => x.userId == id && x.requestStatus == "R").Select(y => new PaymentsRequestDTO
                 {
-                    List<List<ForeignUserDTO>> careId = new List<List<ForeignUserDTO>>();
-                    var PatientId = db.tblPatients.Where(x => x.userId == user.Id).Select(y => y.Id).ToList();
-                    foreach (var patient in PatientId)
-                    {
-                        var Carers = db.tblCaresForPatients.Where(x => x.patientId == patient).Select(y => new ForeignUserDTO
-                        {
-                            Id = y.workerId,
-                        }).ToList();
-                        careId.Add(Carers);
-                    }                   
-                    var temp = new List<dynamic>();
-                    foreach (var carer in careId)
-                    {
-                        foreach (var item in carer)
-                        {
-                            temp.Add(db.tblPaymentRequests.Where(x => x.userId == item.Id && x.requestStatus == "P").Select(y => new PaymentsRequestDTO
-                            {
-                                requestId = y.requestId,
-                                requestSubject = y.requestSubject,
-                                amountToPay = y.amountToPay,
-                                requestDate = y.requestDate,
-                                requestProofDocument = y.requestProofDocument,
-                                requestComment = y.requestComment,
-                                requestStatus = y.requestStatus,
-                                userId = y.userId,
-                            }));
-                        }
-                                                
-                    }
-                    var Requests = new List<PaymentsRequestDTO>();
-                    foreach (var worker in temp)
-                    {
-                        foreach (var item in worker)
-                        {
-                            Requests.Add(item);
-                        }
-                    }
-                    return Ok(Requests);
-                }
-                else
-                {
-                    id = user.Id;
-                    var Payments = db.tblPaymentRequests.Where(x => x.userId == id && x.requestStatus == "P").Select(y => new PaymentsRequestDTO
-                    {
-                        requestId = y.requestId,
-                        requestSubject = y.requestSubject,
-                        amountToPay = y.amountToPay,
-                        requestDate = y.requestDate,
-                        requestProofDocument = y.requestProofDocument,
-                        requestComment = y.requestComment,
-                        requestStatus = y.requestStatus,
-                        userId = y.userId,
-                    }).ToList();
-                    return Ok(Payments);
-                }
-               
-                
+                    requestId = y.requestId,
+                    requestSubject = y.requestSubject,
+                    amountToPay = y.amountToPay,
+                    requestDate = y.requestDate,
+                    requestProofDocument = y.requestProofDocument,
+                    requestComment = y.requestComment,
+                    requestStatus = y.requestStatus,
+                    userId = y.userId,
+                }).ToList();
+                return Ok(Payments);
             }
             catch (Exception ex)
             {
@@ -87,69 +40,56 @@ namespace WebApi.Controllers
             }
         }
 
-        [Route("GetHistory/")]
-        [HttpPost]
-        public IHttpActionResult GetHistory([FromBody] UserDTO user)
+        [Route("GetHistory/{id}")]
+        [HttpGet]
+        public IHttpActionResult GetHistory(int id)
         {
             try
             {
-                int id;
-                if (user.userType == "User")
+                var Payments = db.tblPaymentRequests.Where(x => x.userId == id && x.requestStatus == "C").Select(y => new PaymentsRequestDTO
                 {
-                    List<List<ForeignUserDTO>> careId = new List<List<ForeignUserDTO>>();
-                    var PatientId = db.tblPatients.Where(x => x.userId == user.Id).Select(y => y.Id).ToList();
-                    foreach (var patient in PatientId)
-                    {
-                        var Carers = db.tblCaresForPatients.Where(x => x.patientId == patient).Select(y => new ForeignUserDTO
-                        {
-                            Id = y.workerId,
-                        }).ToList();
-                        careId.Add(Carers);
-                    }
-                    var temp = new List<dynamic>();
-                    foreach (var carer in careId)
-                    {
-                        foreach (var item in carer)
-                        {
-                            temp.Add(db.tblPaymentRequests.Where(x => x.userId == item.Id && x.requestStatus != "P").Select(y => new PaymentsRequestDTO
-                            {
-                                requestId = y.requestId,
-                                requestSubject = y.requestSubject,
-                                amountToPay = y.amountToPay,
-                                requestDate = y.requestDate,
-                                requestProofDocument = y.requestProofDocument,
-                                requestComment = y.requestComment,
-                                requestStatus = y.requestStatus,
-                                userId = y.userId,
-                            }));
-                        }
+                    requestId = y.requestId,
+                    requestSubject = y.requestSubject,
+                    amountToPay = y.amountToPay,
+                    requestDate = y.requestDate,
+                    requestProofDocument = y.requestProofDocument,
+                    requestComment = y.requestComment,
+                    requestStatus = y.requestStatus,
+                    userId = y.userId,
+                }).ToList();
+                return Ok(Payments);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        // GET: api/PaymentRequest/5
+        [HttpGet]
+        [Route("GetSpecificPayments/{id}")]
+        public IHttpActionResult GetSpecificPayments(int id)
+        {
+            try
+            {
 
-                    }
-                    var Requests = new List<PaymentsRequestDTO>();
-                    foreach (var worker in temp)
-                    {
-                        foreach (var item in worker)
-                        {
-                            Requests.Add(item);
-                        }
-                    }
-                    return Ok(Requests);
+                var Payment = db.tblPaymentRequests.Where(x => x.requestId == id).Select(y => new PaymentsRequestDTO
+                {
+                    requestId = y.requestId,
+                    requestSubject = y.requestSubject,
+                    amountToPay = y.amountToPay,
+                    requestDate = y.requestDate,
+                    requestProofDocument = y.requestProofDocument,
+                    requestComment = y.requestComment,
+                    requestStatus = y.requestStatus,
+                    userId = y.userId,
+                }).FirstOrDefault();
+                if (Payment != null)
+                {
+                    return Ok(Payment);
                 }
                 else
                 {
-                    id = user.Id;
-                    var Payments = db.tblPaymentRequests.Where(x => x.userId == id && x.requestStatus != "P").Select(y => new PaymentsRequestDTO
-                    {
-                        requestId = y.requestId,
-                        requestSubject = y.requestSubject,
-                        amountToPay = y.amountToPay,
-                        requestDate = y.requestDate,
-                        requestProofDocument = y.requestProofDocument,
-                        requestComment = y.requestComment,
-                        requestStatus = y.requestStatus,
-                        userId = y.userId,
-                    }).ToList();
-                    return Ok(Payments);
+                    return BadRequest("Payment not found!");
                 }
             }
             catch (Exception ex)
@@ -208,31 +148,6 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpPut]
-        [Route("UpdateStatus")]
-        public IHttpActionResult UpdateStatus([FromBody] int requestId)
-        {
-            try
-            {
-                var p = db.tblPaymentRequests.Where(x => x.requestId == requestId).FirstOrDefault();
-                if (p != null)
-                {
-                    p.requestStatus = "F";
-                    db.SaveChanges();
-                    return Ok("Status Updated successfully!");
-                }
-                else
-                {
-                    return BadRequest("requset not found");
-                }
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-                throw;
-            }
-        }
-
         [HttpDelete]
         [Route("DeletePayment/{id}")]
         public IHttpActionResult DeletePayment(int id)
@@ -252,6 +167,7 @@ namespace WebApi.Controllers
             {
                 return BadRequest(ex.Message);
             }
+
         }
 
     }

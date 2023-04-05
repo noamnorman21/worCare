@@ -281,13 +281,13 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\CalendarsController.cs" />
     <Compile Include="Controllers\ContactController.cs" />
+    <Compile Include="Controllers\DrugController.cs" />
     <Compile Include="Controllers\ForeignUserController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LanguageCountryController.cs" />
     <Compile Include="Controllers\PatientController.cs" />
     <Compile Include="Controllers\PayChecksController.cs" />
     <Compile Include="Controllers\PaymentRequestController.cs" />
-    <Compile Include="Controllers\SettingsController.cs" />
     <Compile Include="Controllers\TasksController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />

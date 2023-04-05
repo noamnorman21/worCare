@@ -20,6 +20,7 @@ namespace DATA
                 tblUser userExist = db.tblUsers.Where(x => x.Id == id).First();
                 if (userExist == null)
                     return -1;
+                //24 mean the Jewish calendar, its hard coded because all users have the Jewish calendar as primary calendar
                 db.InsertCalendarForUser(24, userExist.Id, true);
                 foreach (int item in calendarsTypeArr)
                 {

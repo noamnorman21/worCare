@@ -21,7 +21,8 @@ namespace DATA
         public string requestProofDocument { get; set; }
         public string requestComment { get; set; }
         public string requestStatus { get; set; }
-        public int userId { get; set; }    
+        public int userId { get; set; }
+    
         public virtual tblForeignUser tblForeignUser { get; set; }
     }
 }
