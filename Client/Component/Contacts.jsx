@@ -118,19 +118,19 @@ function Main({ navigation }) {
     userType: userContext.userType,
   } 
   // new part when server is uploaded
-    // fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/GetContacts/' + PatientId,
-    //   {
-    //     method: 'POST',
-    //     headers: new Headers({
-    //       'Content-Type': 'application/json; charset=UTF-8',
-    //       }),
-    //     body: JSON.stringify(user)
-    //   })
-    fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/GetContacts/' + PatientId)
+    fetch('https://proj.ruppin.ac.il/cgroup94/prod/api/Contacts/GetContacts' ,
+      {
+        method: 'POST',
+        headers: new Headers({
+          'Content-Type': 'application/json; charset=UTF-8',
+          }),
+        body: JSON.stringify(user)
+      })
       .then((response) => response.json())
       .then(json => {
+        console.log('json',json)
         if (json != null) {
-          let contacts = list.map((patient) => {
+          let contacts = json.map((patient) => {
             return patient.map((item) => {
               return <ContactCard key={item.contactId} contact={item} />
             })
