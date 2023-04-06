@@ -103,9 +103,9 @@ export default function Paychecks({navigation, route}) {
         <Text style={styles.header} >History</Text>
         </View>  
       {History}
-      <TouchableOpacity style={styles.addRequest} onPress={() => setModal1Visible(true)}>
+      {userContext.userType=="User"?<TouchableOpacity style={styles.addRequest} onPress={() => setModal1Visible(true)}>
         <Text style={styles.addRequestText}>+</Text>
-      </TouchableOpacity>
+      </TouchableOpacity>:null}
       <Modal animationType='slide' transparent={true} visible={modal1Visible}>
        <NewPaycheck cancel={() => {setModal1Visible(false); getPaychecks()} } userId={userContext.userId} />
       </Modal>      
