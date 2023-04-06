@@ -5,6 +5,7 @@ import { AddBtn, AddNewMedicine } from '../HelpComponents/AddNewTask'
 export default function MedicineTasks() {
    const [modalVisible, setModalVisible] = useState(false)
    const handleAddBtnPress = () => {
+   
       setModalVisible(true);
    };
 
@@ -20,7 +21,7 @@ export default function MedicineTasks() {
          <View style={styles.addBtnView}>
             <AddBtn onPress={handleAddBtnPress} />
          </View>
-         <AddNewMedicine isMedVisible={modalVisible} onClose={handleModalClose} />
+         <AddNewMedicine isVisible={modalVisible} onClose={handleModalClose} />
       </SafeAreaView>
    )
 }
@@ -32,6 +33,7 @@ const styles = StyleSheet.create({
       flex: 1,
       alignItems: 'center',
       justifyContent: 'center',
+
    },
    addBtn: {
       width: 54,
