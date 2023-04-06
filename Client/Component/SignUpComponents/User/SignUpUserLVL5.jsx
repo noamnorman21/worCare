@@ -9,7 +9,7 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 export default function SignUpUserLVL5({ navigation, route }) {
   const [language, setLanguage] = useState(route.params.language);
   const [valueLanguage, setValueLanguage] = useState(null);
-  const [date, setDate] = useState(new Date(2020,1,1));
+  const [date, setDate] = useState('');
   const [patientID, setPatientID] = useState('');
   const [patientFirstName, setPatientFirstName] = useState('');
   const [patientLastName, setPatientLastName] = useState('');
@@ -92,7 +92,7 @@ export default function SignUpUserLVL5({ navigation, route }) {
             },
             dateInput: {
               marginLeft: 0,
-              alignItems: 'center',
+              alignItems: 'center', //change to center for android
               borderWidth: 0,
             },
             placeholderText: {

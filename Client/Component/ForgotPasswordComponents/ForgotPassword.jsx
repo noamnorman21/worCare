@@ -5,14 +5,6 @@ import { OrLine, ReturnToLogin } from '../SignUpComponents/FooterLine';
 import emailjs from '@emailjs/browser';
 // import { SendEmail } from '../HelpComponents/UserContext';
 
-import * as Font from 'expo-font'
-Font.loadAsync({
-    'Urbanist': require('../../assets/fonts/Urbanist-Regular.ttf'),
-    'Urbanist-Bold': require('../../assets/fonts/Urbanist-Bold.ttf'),
-    'Urbanist-Light': require('../../assets/fonts/Urbanist-Light.ttf'),
-    'Urbanist-Medium': require('../../assets/fonts/Urbanist-Medium.ttf'),
-});
-
 const GenerateCode = () => {
     let codeTemp = '';
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -139,7 +131,7 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width * 0.9,
         padding: 10,
         margin: 10,
-        alignItems: 'center', // change to center for android
+        alignItems: 'flex-left',
         borderRadius: 16,
         borderWidth: 1,
         backgroundColor: '#F5F5F5',

@@ -67,8 +67,16 @@ namespace WebApi.Controllers
         {
             try
             {
-                int id = db.tblPaymentRequest.Max(x => x.requestId) + 1;
-                int num = db.tblPaycheck.Max(x => x.payCheckNum) + 1;
+                int num;
+                int rows = db.tblPaycheck.Count();
+                if (rows > 0)
+                {
+                    num = db.tblPaycheck.Max(x => x.payCheckNum) + 1;
+                }
+                else
+                {
+                    num = 1;
+                }
                 db.NewPaycheck(num, pay.paycheckDate, pay.paycheckSummary, pay.paycheckComment, pay.UserId);
                 db.SaveChanges();
                 return Ok("Paycheck added successfully!");

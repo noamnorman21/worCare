@@ -12,7 +12,7 @@ export default function NewPaycheck(props) {
     paycheckYear:'',
     paycheckSummary: '',
     paycheckComment: '',    
-    userId: userContext.Id
+    userId: userContext.userId
   })
   const [animation, setAnimation] = useState({});
   
@@ -125,7 +125,8 @@ export default function NewPaycheck(props) {
       paycheckSummary: PayCheck.paycheckSummary,
       paycheckComment: PayCheck.paycheckComment,   
       userId: PayCheck.userId
-    }    
+    }   
+    console.log("Newcheck", Newcheck); 
     if (PayCheck.paycheckMonth === '') {
       Alert.alert('Please enter paycheckMonth');
       return;

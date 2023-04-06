@@ -2,7 +2,6 @@ import { StyleSheet } from 'react-native';
 import { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import SettingScreen from './Component/SettingScreen';
-import SignUpCaregiverLVL4 from './Component/SignUpComponents/CareGiver/SignUpCaregiverLVL4';
 import NavigateSignUp from './Component/SignUpComponents/NavigateSignUp';
 import * as Font from 'expo-font'; // Import Font from expo-font package
 import { UserProvider } from './UserContext';

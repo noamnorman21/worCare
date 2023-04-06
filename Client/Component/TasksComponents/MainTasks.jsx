@@ -29,7 +29,6 @@ export default function MainTasks(props) {
             </Text>
           )
         })
-
       }
 
       <View style={styles.addBtnView}>
@@ -51,5 +50,4 @@ const styles = StyleSheet.create({
     bottom: 20,
     right: 20,
   },
-
 });

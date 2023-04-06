@@ -14,7 +14,7 @@ export default function ShopTasks() {
 
   return (
     <View style={styles.container}>
-      <Text>ShopTasks</Text>
+      <Text>Shop Tasks</Text>
       <View style={styles.addBtnView}>
         <AddBtn onPress={handleAddBtnPress} />
       </View>

@@ -18,11 +18,12 @@ export default function Pending({ route }) {
   const isFocused = useIsFocused()
 
   useEffect(() => {
-    if (isFocused || !modal1Visible) {
+    if (isFocused) {
       getPending()
     }
   }, [isFocused])
 
+ 
   
 
 
@@ -32,6 +33,7 @@ export default function Pending({ route }) {
         userId: userContext.userId,
         userType: userContext.userType
       }
+      console.log(user)
       const response = await fetch('https://proj.ruppin.ac.il/cgroup94/prod/api/Payments/GetPending/', {
         method: 'POST',
         headers: {
@@ -40,6 +42,7 @@ export default function Pending({ route }) {
         body: JSON.stringify(user)
       });
       const data = await response.json();
+      console.log(data)
       let arr = data.map((item) => {
         return (
           <Request key={item.requestId} getPending={getPending} data={item} id={item.requestId} Notofication={Notification} View={View} subject={item.requestSubject} amountToPay={item.amountToPay} date={item.requestDate} requestComment={item.requestComment} />

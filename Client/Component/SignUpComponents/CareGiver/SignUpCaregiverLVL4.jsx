@@ -99,7 +99,7 @@ export default function SignUpCaregiverLVL4({ navigation, route }) {
             },
             dateInput: {
               marginLeft: 0,
-              alignItems: 'center',
+              alignItems: 'flex-left',
               borderWidth: 0,
             },
             placeholderText: {
@@ -135,7 +135,7 @@ export default function SignUpCaregiverLVL4({ navigation, route }) {
             },
             dateInput: {
               marginLeft: 0,
-              alignItems: 'center',
+              alignItems: 'flex-left',
               borderWidth: 0,
             },
             placeholderText: {

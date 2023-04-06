@@ -13,6 +13,7 @@ namespace WebApi.Controllers
     public class PaymentRequestController : ApiController
     {
         igroup194Db db = new igroup194Db();
+        
         // GET: api/PaymentRequest
         [Route("GetPending")]
         [HttpPost]

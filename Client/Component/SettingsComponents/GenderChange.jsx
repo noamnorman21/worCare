@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, Image, SafeAreaView, Dimensions, Alert } from 'react-native'
 
 export default function GenderChange(props) {
-   const [userGender, setUserGender] = useState(props.Gender);
+   const [userGender, setUserGender] = useState('O');
    const Save = () => {
       const userToUpdate = {
          Id: props.userId,

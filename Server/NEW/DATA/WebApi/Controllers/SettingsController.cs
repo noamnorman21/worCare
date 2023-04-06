@@ -65,7 +65,7 @@ namespace WebApi.Controllers
                 {
                     return NotFound();
                 }
-                user.LastName = userToChange.LastName   ;
+                user.LastName = userToChange.LastName;
                 db.SaveChanges();
                 return Ok("Last Name Updated");
 
