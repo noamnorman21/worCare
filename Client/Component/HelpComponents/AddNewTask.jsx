@@ -6,6 +6,7 @@ import { Dropdown } from 'react-native-element-dropdown';
 import DateRangePicker from "rn-select-date-range";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from "moment";
+import { useUserContext } from '../../UserContext';
 
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -24,6 +25,7 @@ function AddBtn(props) {
 function AddNewMedicine(props) {
    const [userData, setUserData] = useState('');
    const [userId, setUserId] = useState('');
+   const [userType, setUserType] = useState('');
    const [medkName, setMedName] = useState('')
    const [medComment, setMedComment] = useState('')
    const [medFromDate, setMedFromDate] = useState('')
@@ -33,6 +35,8 @@ function AddNewMedicine(props) {
    const [taskNameBorder, setTaskNameBorder] = useState('')
    const [modalVisibleDate, setModalVisibleDate] = useState(false);
    const [allDrugs, setAllDrugs] = useState([]);//we will use this to get all the drugs from the server
+   const {userContext} = useUserContext();
+   const [valueLanguage, setValueLanguage] = useState('English');
 
    //const [keyboardOpen, setKeyboardOpen] = useState(false);
    const [animation, setAnimation] = useState({});
@@ -114,9 +118,10 @@ function AddNewMedicine(props) {
    const getUserData = async () => {
       const user = await AsyncStorage.getItem('userData');
       const userData = JSON.parse(user);
-      setUserId(userData.Id);
+      setUserId(userContext.userId);
       setUserData(userData);
-      setUserType(userData.userType);
+      setUserType(userContext.userType);
+      console.log("userContext",userContext)
    }
    const changeDateFormat = (date) => {
       return moment(date).format('DD/MM/YYYY');
