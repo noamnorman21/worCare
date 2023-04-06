@@ -43,7 +43,6 @@ function Main({ navigation }) {
     userType: userContext.userType,
   } 
   // new part when server is uploaded
-  console.log("User:",user)
   const response = await fetch('https://proj.ruppin.ac.il/cgroup94/prod/api/Contacts/GetContacts', {
     method: 'POST',
     headers: {
@@ -57,15 +56,13 @@ function Main({ navigation }) {
               return <ContactCard key={item.contactId} contact={item} />
             })
           })
-          console.log(contacts)
           let idarr = data.map((patient) => {
             return patient.map((item) => {
               return item.patientId
             })
-          })
-          console.log("Arr",idarr)
+          })          
           setidArr(idarr);
-          setContacts(contacts);
+          setContacts(data);
           setContactToRender(contacts);
       }
       

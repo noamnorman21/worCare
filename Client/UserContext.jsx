@@ -79,7 +79,7 @@ export function UserProvider({ children }) {
         setuserUri(userData.userUri);
         setBirthDate(userData.BirthDate);
         setuserGender(userData.Gender)
-        console.log(userData.Id);
+
 
         let usertoSync = {
             userId: userData.userId,
@@ -91,7 +91,7 @@ export function UserProvider({ children }) {
             userUri: userData.userUri,
             gender: userData.gender,
         }
-        console.log('user',usertoSync)
+
         setUserContext(usertoSync);
        
     }

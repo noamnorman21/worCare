@@ -4,8 +4,10 @@ import { storage } from '../../config/firebase';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import * as DocumentPicker from 'expo-document-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useUserContext } from '../../UserContext';
 
-export default function NewPayment(props) { 
+export default function NewPayment(props) {
+  const { userContext } = useUserContext();
  
   const [payment, setPayment] = useState({
     amountToPay: '',
@@ -22,7 +24,7 @@ export default function NewPayment(props) {
   useEffect(() => {
     AsyncStorage.getItem('userData').then((value) => {
       const data = JSON.parse(value);
-      setPayment({ ...payment, userId: data.Id });
+      setPayment({ ...payment, userId: userContext.userId });
     })
 
     Keyboard.addListener('keyboardDidShow', () => {

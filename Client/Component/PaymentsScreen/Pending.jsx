@@ -75,7 +75,7 @@ export default function Pending({ route }) {
       {Pendings}
       {userContext.userType=="Caregiver"?<View style={styles.addBtnView}><AddBtn onPress={() => setModal1Visible(true)}/></View>: null}
       <Modal animationType='slide' transparent={true} visible={modal1Visible}>
-        <NewPayment cancel={() => setModal1Visible(false)} />
+        <NewPayment cancel={() => {setModal1Visible(false);getPending()}} />
       </Modal>
     </ScrollView>
   );
@@ -96,9 +96,12 @@ function Request(props) {
   };
 
   const saveStatus = async (id) => {
-    return console.log(id)
+    let request={
+      requestId: id,
+      requestStatus: "F"
+    }
     try {
-      const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/UpdateStatus/', {
+      const response = await fetch('https://proj.ruppin.ac.il/cgroup94/prod/api/Payments/UpdateStatus/', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -107,6 +110,7 @@ function Request(props) {
       });
       const data = await response.json();
       console.log(data)
+      props.getPending()
     } catch (error) {
       console.log(error)
     }

@@ -53,7 +53,6 @@ export default function History({ navigation, route }) {
         userId: userContext.userId,
         userType: userContext.userType
       }
-      console.log(user)
       const response = await fetch('https://proj.ruppin.ac.il/cgroup94/prod/api/Payments/GetHistory/', {
         method: 'POST',
         headers: {
@@ -62,7 +61,6 @@ export default function History({ navigation, route }) {
         body: JSON.stringify(user)
       });
       const data = await response.json();
-      console.log("Data",data)
       let arr = data.map((item) => {
         return (
           <Request key={item.requestId} getHistory={getHistory} data={item} id={item.requestId} Notofication={Notification} View={View} Edit={Edit} subject={item.requestSubject} amountToPay={item.amountToPay} date={item.requestDate} requestComment={item.requestComment} />
@@ -237,7 +235,7 @@ const styles = StyleSheet.create({
   requestunFocused: {
     justifyContent: 'center',
     width: SCREEN_WIDTH * 0.9,
-    height: SCREEN_HEIGHT * 0.073,
+    height: SCREEN_HEIGHT * 0.08,
     borderRadius: 16,
     borderWidth: 1,
     borderColor: '#E6EBF2',

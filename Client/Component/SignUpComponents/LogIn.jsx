@@ -68,7 +68,7 @@ export default function LogIn({ navigation }) {
             Email: email,
             Password: password,
         }
-        console.log("UserDate",userData);
+
         //call api to login user
         LoginUser(userData);
     }
@@ -134,7 +134,6 @@ export default function LogIn({ navigation }) {
                         userUri: json.userUri,
                         userType: json.userType,
                     }
-                    console.log(userContext);
                     const jsonValue = JSON.stringify(userContext)
                     AsyncStorage.setItem('userData', jsonValue);
                     logInContext(userContext);
