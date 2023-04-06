@@ -153,7 +153,6 @@ function AddNewMedicine(props) {
                               <Text style={styles.doubleRowItem}>2</Text>
                            </View>
                            <View style={styles.doubleRow}>
-
                               <Text style={styles.doubleRowItem}>3</Text>
                               <Text style={styles.doubleRowItem}>4</Text>
                            </View>
@@ -648,6 +647,24 @@ function NewTaskModal(props) {
 }
 
 export { NewTaskModal, AddBtn, AddNewMedicine }
+
+
+const stylesN = StyleSheet.create({
+   container: {
+      flexDirection: 'row',
+      alignItems: 'center',
+   },
+   icon: {
+      padding: 8,
+      borderRadius: 4,
+   },
+   upIcon: {
+      marginBottom: 8,
+   },
+   downIcon: {
+      marginTop: 8,
+   },
+});
 
 const styles = StyleSheet.create({
    container: {
