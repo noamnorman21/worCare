@@ -6,7 +6,8 @@ import { Dropdown } from 'react-native-element-dropdown';
 import DateRangePicker from "rn-select-date-range";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from "moment";
-import { Searchbar } from 'react-native-paper';
+
+import { Dropdown } from 'react-native-element-dropdown';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
@@ -38,7 +39,7 @@ function AddNewMedicine(props) {
    let animationInProgress = false;
 
 
-    
+
    const medFrequencies = [
       { id: 0, name: 'Once' },
       { id: 1, name: 'Daily' },
@@ -51,30 +52,30 @@ function AddNewMedicine(props) {
 
       let allDrugsUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Drug/GetAllDrugs';
       fetch(allDrugsUrl, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
+         method: 'GET',
+         headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+         },
       })
-        .then(res => {
-          if (res.ok) {
-            return res.json()
-          }
-          else {
-            console.log("not found")
-          }
-        })
-        .then(data => {
-          if (data != null) {
-            //exmaple of data object: {drugId:1, drugName:"פרסקוטיקס", drugUrl:"https://www.drugs.com/images/pills/augmentin.jpg", modifyDate:"2021-05-05T00:00:00",Type:"pills"} 
-            setAllDrugs(data);
-            console.log(allDrugs);
+         .then(res => {
+            if (res.ok) {
+               return res.json()
+            }
+            else {
+               console.log("not found")
+            }
+         })
+         .then(data => {
+            if (data != null) {
+               //exmaple of data object: {drugId:1, drugName:"פרסקוטיקס", drugUrl:"https://www.drugs.com/images/pills/augmentin.jpg", modifyDate:"2021-05-05T00:00:00",Type:"pills"} 
+               setAllDrugs(data);
+               console.log(allDrugs);
 
-          }
-        })
-        .catch((error) => {
-          console.log("err=", error);
-        });
+            }
+         })
+         .catch((error) => {
+            console.log("err=", error);
+         });
       getUserData();
       //use Keyboard.addListener to detect if the keyboard is open or not, if so add layout animation with margin bottom
       Keyboard.addListener('keyboardDidShow', () => {
@@ -121,7 +122,7 @@ function AddNewMedicine(props) {
       return moment(date).format('DD/MM/YYYY');
    }
    const addMed = () => {
-         Alert.alert('add med name');
+      Alert.alert('add med name');
    }
 
    const clearInputs = () => {
@@ -139,7 +140,29 @@ function AddNewMedicine(props) {
                <View style={styles.modalView}>
                   <Text style={styles.modalText}>Add new Med </Text>
                   <View style={styles.inputView}>
-                     
+                     <Dropdown
+                        style={styles.dropdown}
+                        placeholder="Select Language"
+                        placeholderStyle={styles.placeholderStyle}
+                        selectedTextStyle={styles.selectedTextStyle}
+                        inputSearchStyle={styles.inputSearchStyle}
+                        iconStyle={styles.iconStyle}
+                        data={allDrugs}
+                        search={true}
+                        maxHeight={300}
+                        labelField="label"
+                        valueField="value"
+                        searchPlaceholder="Search..."
+                        value={valueLanguage}
+                        onChange={item => {
+                           setValueLanguage(item.value);
+                        }}
+                        renderRightIcon={() => (
+                           <MaterialIcons name="translate" size={24} color="gray" />
+                        )}
+                        containerStyle={styles.containerStyle}
+                     />
+
                      {/* <TextInput
                         style={[styles.input, taskNameBorder && { borderColor: '#000' }]}
                         placeholder='Task Name'
