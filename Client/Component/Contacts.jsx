@@ -8,9 +8,6 @@ import AddNewContact from './ContactComponents/AddNewContact'
 import { useIsFocused } from '@react-navigation/native';
 import Contact from './ContactComponents/Contact'
 
-
-
-
 export default function Contacts() {
   const stack = createStackNavigator();
 
