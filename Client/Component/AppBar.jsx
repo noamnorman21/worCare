@@ -69,7 +69,8 @@ function CustomHeader() {
                             source={require('../images/logo_New_Small.png')}
                             style={styles.headerLogo}
                         />
-                    )
+                    ),
+                    unmountOnBlur: true,
                 })}
             />
             <Stack.Screen name='SettingScreen'

@@ -19,17 +19,11 @@ namespace WebApi.Controllers
     {
         igroup194Db db = new igroup194Db();
 
-<<<<<<< HEAD
-        // GET: api/Contacts
-        [Route("GetContacts/{id}")]
-        [HttpGet]
-        public IHttpActionResult GetContacts(int id)
-=======
+
 
         [Route("GetPatients")]
         [HttpPost]
         public IHttpActionResult GetPatients([FromBody] int id)
->>>>>>> 12d71edbeb8a217a97cfc076f851e81f7fea37eb
         {
             try
             {

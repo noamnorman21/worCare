@@ -85,6 +85,10 @@ export default function AddNewContact(props) {
     if (!validatePhoneNum(Contact.mobileNo)) {
       return Alert.alert('Invalid Phone Number', 'Please enter a valid phone number')
     }
+    if (Contact.patientId === null || Contact.patientId ===  undefined) {
+      return Alert.alert('Invalid Patient Id', 'Please Choose Patient Id')
+    }
+
     sendToDB();
   }
 
@@ -289,4 +293,9 @@ const styles = StyleSheet.create({
     color: '#8e8e8e',
     fontSize: 14,
   },
+  containerStyle: {
+    borderRadius: 16,
+    fontFamily: 'Urbanist-Regular',
+    
+  }
 });
