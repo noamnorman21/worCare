@@ -1,10 +1,12 @@
-import { Alert, View, Keyboard, StyleSheet, Text, SafeAreaView, TextInput, Dimensions, TouchableOpacity, LayoutAnimation } from "react-native"
+import { Alert, View, StyleSheet, Text, SafeAreaView, TextInput, Dimensions, TouchableOpacity } from "react-native"
+import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { useState, useEffect } from "react"
-import { Dropdown } from 'react-native-element-dropdown';
 import { useUserContext } from "../../UserContext";
 
+const SCREEN_WIDTH = Dimensions.get('window').width;
+const SCREEN_HEIGHT = Dimensions.get('window').height;
+
 export default function AddNewContact(props) {
-  const [animation, setAnimation] = useState({});
   const [Contact, setContact] = useState({
     contactName: '',
     phoneNo: '',
@@ -14,59 +16,6 @@ export default function AddNewContact(props) {
     contactComment: '',
     patientId: null // will change when we finish context to get the patient id
   })
-  const [idArr, setIdArr] = useState(props.idArr);
-
-  useEffect(() => {
-    console.log("idArr", idArr);
-    transformArr(idArr);
-    const keyboardDidShowListener = Keyboard.addListener(
-      'keyboardDidShow',
-      () => {
-        LayoutAnimation.configureNext({
-          update: {
-            type: LayoutAnimation.Types.easeIn,
-            duration: 200,
-            useNativeDriver: true,
-          },
-        });
-        setAnimation({ marginBottom: Dimensions.get('window').height * 0.32 });
-      }
-    );
-    const keyboardDidHideListener = Keyboard.addListener(
-      'keyboardDidHide',
-      () => {
-        LayoutAnimation.configureNext({
-          update: {
-            type: LayoutAnimation.Types.easeOut,
-            duration: 200,
-            useNativeDriver: true,
-          },
-        });
-        setAnimation({ marginBottom: 0 });
-      }
-    );
-    return () => {
-      keyboardDidShowListener.remove();
-      keyboardDidHideListener.remove();
-    }
-
-  }, []);
-
-  const transformArr = (arr) => {
-    console.log("arr", arr);
-    let newArr = [];
-    arr.forEach(element => {
-      element.forEach(item => {       
-          let obj = { key: item, id: item, name: item.toString() };
-          if (newArr.find((o) => o.id === obj.id) === undefined) {
-            console.log("obj", obj);
-            newArr.push(obj);
-        }
-    });
-    });
-    console.log("newArr", newArr);
-    setIdArr(newArr);
-  }
 
   const handleInputChange = (field, value) => {
     setContact({ ...Contact, [field]: value });
@@ -85,10 +34,9 @@ export default function AddNewContact(props) {
     if (!validatePhoneNum(Contact.mobileNo)) {
       return Alert.alert('Invalid Phone Number', 'Please enter a valid phone number')
     }
-    if (Contact.patientId === null || Contact.patientId ===  undefined) {
+    if (Contact.patientId === null || Contact.patientId === undefined) {
       return Alert.alert('Invalid Patient Id', 'Please Choose Patient Id')
     }
-
     sendToDB();
   }
 
@@ -127,143 +75,146 @@ export default function AddNewContact(props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Add New Contact</Text>
-      </View>
-      <View style={[styles.inputContainer, animation]}>
-        <View>
-          <TextInput
-            style={styles.input}
-            placeholder="Contact Name"
-            keyboardType='ascii-capable'
-            onChangeText={(value) => handleInputChange('contactName', value)}
-          />
-          <View style={styles.numbersInput}>
-            <TextInput
-              style={[styles.input, styles.numInput]}
-              placeholder="Phone Numner"
-              keyboardType='decimal-pad'
-              onChangeText={(value) => handleInputChange('phoneNo', value)}
-              returnKeyType='done'
-              inputMode='numeric'
-            />
-            <TextInput
-              style={[styles.input, styles.numInput]}
-              placeholder="Mobile Numner"
-              keyboardType='decimal-pad'
-              onChangeText={(value) => handleInputChange('mobileNo', value)}
-              returnKeyType='done'
-              inputMode='numeric'
-            />
+      <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
+          <View style={styles.centeredView}>
+            <View>
+              <Text style={styles.title}>Add New Contact</Text>
+              <View style={styles.inputContainer}>
+                <View >
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Contact Name"
+                    keyboardType='ascii-capable'
+                    onChangeText={(value) => handleInputChange('contactName', value)}
+                  />
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Phone Number"
+                    keyboardType='decimal-pad'
+                    onChangeText={(value) => handleInputChange('phoneNo', value)}
+                    returnKeyType='done'
+                    inputMode='numeric'
+                  />
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Mobile Number"
+                    keyboardType='decimal-pad'
+                    onChangeText={(value) => handleInputChange('mobileNo', value)}
+                    returnKeyType='done'
+                    inputMode='numeric'
+                  />
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Role"
+                    keyboardType='ascii-capable'
+                    onChangeText={(value) => handleInputChange('role', value)}
+                  />
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Email (optional)"
+                    keyboardType='ascii-capable'
+                    onChangeText={(value) => handleInputChange('email', value)}
+                  />
+                  <TextInput
+                    multiline={true}
+                    returnKeyType='done'
+                    numberOfLines={6}
+                    maxHeight={100}
+                    style={styles.commentInput}
+                    placeholder="Comment ( optional )"
+                    keyboardType='ascii-capable'
+                    onChangeText={(value) => handleInputChange('contactComment', value)}
+                  />
+                </View>
+              </View>
+              <View style={styles.bottom}>
+                <TouchableOpacity style={styles.savebutton} onPress={validateInput}>
+                  <Text style={styles.savebuttonText}>Create</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.cancelbutton} onPress={props.cancel}>
+                  <Text style={styles.cancelbuttonText}>Close</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
           </View>
-          <TextInput
-            style={styles.input}
-            placeholder="Role"
-            keyboardType='ascii-capable'
-            onChangeText={(value) => handleInputChange('role', value)}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Email (optional)"
-            keyboardType='ascii-capable'
-            onChangeText={(value) => handleInputChange('email', value)}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Comment"
-            keyboardType='ascii-capable'
-            onChangeText={(value) => handleInputChange('contactComment', value)}
-          />
-          <Dropdown
-            data={idArr}
-            labelField="name"
-            valueField="name"
-            placeholder="PateintID"
-            placeholderStyle={styles.placeholderStyle}
-            style={[styles.input]}
-            maxHeight={200}
-            value={0}
-            containerStyle={styles.containerStyle}
-            onChange={value => {setContact({ ...Contact, patientId: value.id })  }}
-          />
-        </View>
-      </View>
-      <View style={styles.bottom}>
-        <TouchableOpacity style={styles.savebutton} onPress={validateInput}>
-          <Text style={styles.savebuttonText}>Save</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.cancelbutton} onPress={props.cancel}>
-          <Text style={styles.cancelbuttonText}>Cancel</Text>
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+    </SafeAreaView >
   )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
+  },
+  centeredView: {
+    flex: 1,
     justifyContent: 'center',
-    flexDirection: 'column',
-    backgroundColor: 'white',
+    alignItems: 'center',
+    position: 'relative',
   },
   inputContainer: {
-    width: Dimensions.get('window').width * 1,
-    height: Dimensions.get('window').height * 1,
-    alignItems: 'center',
-    flex: 4,
+    width: SCREEN_WIDTH * 0.95,
+    marginTop: 10,
   },
   input: {
-    width: Dimensions.get('window').width * 0.9,
-    padding: 10,
-    margin: 7,
+    width: Dimensions.get('window').width * 0.95,
+    marginBottom: 10,
+    paddingLeft: 20,
     alignItems: 'center',
     borderRadius: 16,
-    borderWidth: 1,
-    backgroundColor: '#F5F5F5',
-    borderColor: 'lightgray',
+    borderWidth: 1.5,
+    borderColor: '#E6EBF2',
     shadowColor: '#000',
-    height: 45,
-    fontFamily: 'Urbanist-Regular',
+    height: 54,
+    fontFamily: 'Urbanist-Light',
+    fontSize: 16,
   },
-  numInput: {
-    width: Dimensions.get('window').width * 0.43,
+  commentInput: {
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: '#E6EBF2',
+    height: 90,
+    width: Dimensions.get('window').width * 0.95,
+    marginBottom: 10,
+    paddingLeft: 20,
+    fontFamily: 'Urbanist-Light',
+    fontSize: 16,
   },
   savebutton: {
-    width: Dimensions.get('window').width * 0.4,
     backgroundColor: '#548DFF',
-    alignItems: 'center',
-    justifyContent: 'center',
     borderRadius: 16,
-    borderWidth: 1,
-    borderColor: 'lightgray',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 45,
+    width: SCREEN_WIDTH * 0.45,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 3,
     elevation: 1,
-    margin: 7,
-    height: 45,
   },
   cancelbutton: {
-    width: Dimensions.get('window').width * 0.4,
-    backgroundColor: 'white',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: '#F5F8FF',
     borderRadius: 16,
-    borderWidth: 1,
+    height: 45,
+    width: SCREEN_WIDTH * 0.45,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1.5,
     borderColor: '#548DFF',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 3,
     elevation: 1,
-    margin: 7,
-    height: 45,
   },
   bottom: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: SCREEN_WIDTH * 0.95,
+    bottom: -50, //to make the buttons appear above the keyboard 
   },
   savebuttonText: {
     color: 'white',
@@ -272,30 +223,14 @@ const styles = StyleSheet.create({
   },
   cancelbuttonText: {
     color: '#548DFF',
-    fontFamily: 'Urbanist-Bold',
+    textAlign: 'center',
+    fontFamily: 'Urbanist-SemiBold',
     fontSize: 16,
   },
   title: {
     fontSize: 26,
     fontFamily: 'Urbanist-Bold',
-    marginBottom: 7,
+    margin: 20,
+    textAlign: 'center',
   },
-  header: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  numbersInput: {
-    flexDirection: 'row',
-  },
-  placeholderStyle: {
-    fontFamily: 'Urbanist-Regular',
-    color: '#8e8e8e',
-    fontSize: 14,
-  },
-  containerStyle: {
-    borderRadius: 16,
-    fontFamily: 'Urbanist-Regular',
-    
-  }
 });

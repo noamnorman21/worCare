@@ -36,40 +36,6 @@ export default function ImagePickerExample(props) {
     }
   };
 
-  // const { canceled, assets } = result;
-
-  // if (!canceled) {
-  //   const { uri } = assets[0];
-  //   const filename = uri.substring(uri.lastIndexOf('/') + 1);
-  // }
-  //   const storageRef = ref(storage, "images/" + filename);
-  //   const blob = await fetch(uri).then(response => response.blob());
-
-  //   try {
-  //     const uploadTask = uploadBytesResumable(storageRef, blob);
-  //     uploadTask.on('state_changed', 
-  //       snapshot => {
-  //         const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-  //         console.log(`Upload is ${progress}% complete`);
-  //       }, 
-  //       error => {
-  //         console.error(error);
-  //         Alert.alert('Upload Error', 'Sorry, there was an error uploading your image. Please try again later.');
-  //       }, 
-  //       () => {
-  //         getDownloadURL(storageRef).then(downloadURL => {
-  //           console.log('File available at', downloadURL);
-  //           setImage(downloadURL);
-  //         });
-  //       }
-  //     );
-  //   } catch (error) {
-  //     console.error(error);
-  //     Alert.alert('Upload Error', 'Sorry, there was an error uploading your image. Please try again later.');
-  //   }
-  // }
-  // };
-
   return (
     <View style={{ position: 'absolute' }}>
       <TouchableOpacity onPress={pickImage} >
