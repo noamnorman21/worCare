@@ -5,9 +5,17 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import * as DocumentPicker from 'expo-document-picker';
 import { useUserContext } from '../../UserContext';
 
-export default function NewPaycheck(props) {
-  const [animation, setAnimation] = useState({});
+export default function NewPaycheck(props) { 
   const { userContext } = useUserContext();
+  const [PayCheck, setPayCheck] = useState({
+    paycheckMonth: '',
+    paycheckYear:'',
+    paycheckSummary: '',
+    paycheckComment: '',    
+    userId: userContext.userId
+  })
+  const [animation, setAnimation] = useState({});
+  
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -16,11 +24,11 @@ export default function NewPaycheck(props) {
         LayoutAnimation.configureNext({
           update: {
             type: LayoutAnimation.Types.easeIn,
-            duration: 300,
+            duration: 200,
             useNativeDriver: true,
           },
         });
-        setAnimation({ marginBottom: Dimensions.get('window').height * 0.32 });
+        setAnimation({ marginBottom: Dimensions.get('window').height * 0.3 });
       }
     );
     const keyboardDidHideListener = Keyboard.addListener(
@@ -29,7 +37,7 @@ export default function NewPaycheck(props) {
         LayoutAnimation.configureNext({
           update: {
             type: LayoutAnimation.Types.easeOut,
-            duration: 300,
+            duration: 200,
             useNativeDriver: true,
           },
         });
@@ -43,13 +51,7 @@ export default function NewPaycheck(props) {
 
   }, []);
 
-  const [PayCheck, setPayCheck] = useState({
-    paycheckMonth: '',
-    paycheckYear:'',
-    paycheckSummary: '',
-    paycheckComment: '',    
-    userId: userContext.Id
-  })
+ 
   
   const pickDocument = async () => {
 
@@ -123,7 +125,8 @@ export default function NewPaycheck(props) {
       paycheckSummary: PayCheck.paycheckSummary,
       paycheckComment: PayCheck.paycheckComment,   
       userId: PayCheck.userId
-    }    
+    }   
+    console.log("Newcheck", Newcheck); 
     if (PayCheck.paycheckMonth === '') {
       Alert.alert('Please enter paycheckMonth');
       return;
@@ -199,8 +202,8 @@ export default function NewPaycheck(props) {
           <TouchableOpacity style={styles.uploadButton} onPress={()=> savePaycheck()}>
             <Text style={styles.buttonText}>Upload Paycheck</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.uploadButton} onPress={props.cancel}>
-            <Text style={styles.buttonText}>Cancel</Text>
+          <TouchableOpacity style={styles.cnlButton} onPress={props.cancel}>
+            <Text style={styles.closeTxt}>Cancel</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -213,17 +216,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-  },
- 
+  }, 
   title: {
     color: '#000',
     fontSize: 24,
     padding: 20,
-    fontWeight: '700',
+    fontFamily:'Urbanist-Bold'
   },
   inputContainer: {
     padding: 20,
     backgroundColor: '#fff',
+    
   },
   input: {
     height: Dimensions.get('window').height *0.07,
@@ -234,6 +237,7 @@ const styles = StyleSheet.create({
     borderColor: '#E6EBF2',
     borderRadius: 16,
     borderWidth: 1,
+    fontFamily:'Urbanist-Regular'
   }, 
   Savebutton: {
     backgroundColor: '#000',
@@ -248,11 +252,28 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor:'#548DFF'
   },
+  cnlButton: {
+    paddingVertical: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignContent: 'center',
+    marginBottom: 20,
+    borderRadius: 16,
+    borderWidth: 1.5,
+    backgroundColor:'#F5F8FF',
+    borderColor:'#548DFF',
+  },
   buttonText: {
     textAlign: 'center',
-    color: '#fff',
-    fontWeight: '700',
-   
+    color: '#fff',    
+    fontFamily: 'Urbanist-SemiBold',
+    fontSize: 16,  
   },
+   closeTxt: {
+    color: '#548DFF',
+    textAlign: 'center',
+    fontFamily: 'Urbanist-SemiBold',
+    fontSize: 16,
+ },
   comment: { height: 200, textAlignVertical: 'top', padding:10 },
 });

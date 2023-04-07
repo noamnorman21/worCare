@@ -68,6 +68,7 @@ export default function LogIn({ navigation }) {
             Email: email,
             Password: password,
         }
+
         //call api to login user
         LoginUser(userData);
     }
@@ -97,7 +98,6 @@ export default function LogIn({ navigation }) {
     //function to login user
     const LoginUser = (userData) => {
         let userForLoginUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUserForLogin';
-        console.log(userData);
         fetch(userForLoginUrl, {
             method: 'POST',
             headers: {
@@ -125,7 +125,11 @@ export default function LogIn({ navigation }) {
                     }
                     //save user data in context
                     const userContext = {
+<<<<<<< HEAD
                         userId: json.Id,
+=======
+                        userId: json.userId,
+>>>>>>> 12d71edbeb8a217a97cfc076f851e81f7fea37eb
                         FirstName: json.FirstName,
                         LastName: json.LastName,
                         Email: json.Email,

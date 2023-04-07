@@ -7,62 +7,90 @@ import { createStackNavigator } from '@react-navigation/stack';
 import AddNewContact from './ContactComponents/AddNewContact'
 import { useIsFocused } from '@react-navigation/native';
 import Contact from './ContactComponents/Contact'
+import { useUserContext } from '../UserContext'
 
 export default function Contacts() {
   const stack = createStackNavigator();
 
   return (
-    <stack.Navigator initialRouteName='Main' screenOptions={{ headerShown: false} } >
+    <stack.Navigator initialRouteName='Main' screenOptions={{ headerShown: false }} >
       <stack.Screen name="Main" component={Main} options={{ headerShown: false }} />
-      <stack.Screen name="Contact" component={Contact}  options={{ headerShown: false }} />
+      <stack.Screen name="Contact" component={Contact} options={{ headerShown: false }} />
     </stack.Navigator>
   )
 
 }
 
 function Main({ navigation }) {
+  const [idArr, setidArr] = useState([])
   const [Contacts, setContacts] = useState([])
   const [Search, setSearch] = useState([])
   const [ContactToRender, setContactToRender] = useState([])
-  const [modal1Visible, setModal1Visible] = useState(false);``
-  
+  const [modal1Visible, setModal1Visible] = useState(false);
+  const { userContext, userContacts, setuserContacts, updateuserContacts } = useUserContext()
   const PatientId = 779355403// will change when we finish context to get the patient id
   const isFocused = useIsFocused()
 
+
+
   const onChangeSearch = query => setSearch(query);
   const fetchContacts = async () => {
-    fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/GetContacts/' + PatientId)
-      .then((response) => response.json())
-      .then(json => {
-        if (json != null) {
-            let contacts = json.map((item) => {
-            return <ContactCard key={item.contactId} contact={item}  />
+  const user = {
+    userId: userContext.userId,
+    userType: userContext.userType,
+  } 
+  // new part when server is uploaded
+  const response = await fetch('https://proj.ruppin.ac.il/cgroup94/prod/api/Contacts/GetContacts', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(user)
+  });
+      const data= await response.json()    
+          let contacts = data.map((patient) => {
+            return patient.map((item) => {
+              return <ContactCard key={item.contactId} contact={item} />
+            })
           })
-          setContacts(json);
+          let idarr = data.map((patient) => {
+            return patient.map((item) => {
+              return item.patientId
+            })
+          })          
+          setidArr(idarr);
+          setContacts(data);
           setContactToRender(contacts);
-        }
-      })
-      .catch((error) => {
-        console.error(error);
       }
-      );
-  }
+      
 
-   useEffect(() => {
-    let temp = Contacts.filter((item) => {
-      return item.contactName.includes(Search)
+
+   
+  
+
+  useEffect(() => {
+    let temp = Contacts.map((patient) => {
+      return patient.filter((item) => {
+        return item.contactName.includes(Search)
+      })
     })
-    let contacts = temp.map((item) => {
-      return <ContactCard key={item.contactId} contact={item} />
+    let contacts = temp.map((patient) => {
+      return patient.map((item) => {
+        return <ContactCard key={item.contactId} contact={item} />
+      })
     })
     setContactToRender(contacts);
   }, [Search])
 
   useEffect(() => {
-    if(isFocused){
-     fetchContacts()
+    if (isFocused) {      
+        fetchContacts();  
     }
-}, [isFocused])
+  }, [isFocused])
+
+   
+
+
 
 
   return (
@@ -74,14 +102,15 @@ function Main({ navigation }) {
         icon="magnify"
       />
       {ContactToRender}
-      <TouchableOpacity style={styles.button} mode="fixed" onPress={() => setModal1Visible(true)}>
+      {userContext.userType=="User"? <TouchableOpacity style={styles.button} mode="fixed" onPress={() => setModal1Visible(true)}>
         <Text style={styles.buttonText}>+</Text>
-      </TouchableOpacity>
+      </TouchableOpacity>: null}
       {/*NewContactModal*/}
       <Modal animationType="slide" visible={modal1Visible}>
-        <AddNewContact cancel={()=>{
-          setModal1Visible(false); fetchContacts()}} />
-      </Modal>   
+        <AddNewContact cancel={() => {
+          setModal1Visible(false); fetchContacts()
+        }} idArr={idArr} />
+      </Modal>
     </View>
   )
 }
@@ -93,7 +122,7 @@ function ContactCard(props) {
   return (
     <TouchableOpacity style={styles.contactcard} onPress={() => navigation.navigate('Contact', { contact: props.contact })}>
       <Text style={styles.name}>{props.contact.contactName}</Text>
-      <Text style={styles.number}>{props.contact.mobileNo}</Text>      
+      <Text style={styles.number}>{props.contact.mobileNo}</Text>
     </TouchableOpacity>
   )
 }
@@ -106,18 +135,18 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-  contact:{
-    justifyContent:'center',
+  contact: {
+    justifyContent: 'center',
   },
-  details:{
+  details: {
     marginTop: -20,
     margin: 10,
     padding: 10,
     textAlign: 'left',
   },
-detailsheader:{
-fontSize: 15,
-},
+  detailsheader: {
+    fontSize: 15,
+  },
   contactheader: {
     fontSize: 18,
     color: '#000',
@@ -126,20 +155,20 @@ fontSize: 15,
     borderRadius: 10,
     margin: 10,
     padding: 10,
-    textAlign: 'left',   
+    textAlign: 'left',
   },
- 
+
   contacttext: {
     fontSize: 14,
     textAlign: 'left',
     paddingTop: 10,
     paddingBottom: 10,
     borderBottomColor: '#B9B9B9',
-    borderBottomWidth: 0.4,    
+    borderBottomWidth: 0.4,
     marginTop: 10,
-    marginLeft:0,
+    marginLeft: 0,
     backgroundColor: '#fff',
-    borderRadius: 16,    
+    borderRadius: 16,
   },
 
   contactcard: {
@@ -155,10 +184,12 @@ fontSize: 15,
   name: {
     fontSize: 17,
     color: '#000',
+    fontFamily: 'Urbanist-Medium',
   },
   number: {
     fontSize: 14,
     color: '#8A8A8D',
+    fontFamily: 'Urbanist-Regular',
   },
   searchBar: {
     margin: 10,
@@ -166,14 +197,14 @@ fontSize: 15,
     backgroundColor: '#E6EBF2',
     height: Dimensions.get('window').height * 0.06,
   },
-  button: {    
+  button: {
     borderRadius: 54,
     backgroundColor: '#548DFF',
     width: 64,
     height: 64,
     position: 'absolute',
     bottom: Platform.OS === 'ios' ? 40 : 10,
-    right:  Platform.OS === 'ios' ? 15: 10,
+    right: Platform.OS === 'ios' ? 15 : 10,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -227,6 +258,4 @@ fontSize: 15,
     fontWeight: '600',
     fontSize: 16,
   },
-
 });
-

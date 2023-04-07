@@ -19,11 +19,12 @@ import SignUpHobbies from './User/SignUpHobbies';
 import SignUpLimitations from './User/SignUpLimitations';
 import SignUpFinish from './User/SignUpFinish'
 import Welcome from '../Welcome';
+import { useUserContext } from '../../UserContext';
 
 const Stack = createStackNavigator();
 
 export default function NavigateSignUp() {
-
+  const{updateUserContext}=useUserContext();
   const [isSigned, setIsSigned] = useState('bla');
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -36,8 +37,10 @@ export default function NavigateSignUp() {
       const storageUser = await AsyncStorage.getItem("user");
       if (storageUser == null) {
         setIsSigned(false);
-      } else {
+      } else { // if the user is signed in- if he is, update the context
         setIsSigned(true);
+        const storageUser2 = await AsyncStorage.getItem("userData");    
+        updateUserContext(JSON.parse(storageUser2))
       }
     }
     catch (error) {

@@ -4,12 +4,13 @@ import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, Animated, 
 import { useIsFocused } from '@react-navigation/native';
 import { List } from 'react-native-paper';
 import { ScrollView } from 'react-native-gesture-handler';
-
 import NewPaycheck from './NewPaycheck';
 import EditPaycheck from './EditPaycheck';
+import { useUserContext } from '../../UserContext';
 
 export default function Paychecks({navigation, route}) {
-  const userId = route.params.userId // יש להחליף למשתנה של המשתמש הנוכחי
+  const { userContext } = useUserContext();
+ 
   const [History, setHistory] = useState()
   const isFocused = useIsFocused()
   const [modal1Visible, setModal1Visible] = useState(false);
@@ -39,9 +40,9 @@ export default function Paychecks({navigation, route}) {
   }, [isFocused])
 
   const getPaychecks = async () => {
-    console.log(userId)
+
     try {
-      const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/PayChecks/GetPaychecks/' + userId, {
+      const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/PayChecks/GetPaychecks/' + userContext.userId, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -49,12 +50,14 @@ export default function Paychecks({navigation, route}) {
         },
       });
       const data = await response.json();
+      if(data!=null && data.length!=undefined) {
       let arr = data.map((item) => {
         return (
           <Paycheck key={item.payCheckNum} getPaychecks={getPaychecks} data={item}/>
         )
       })
       setHistory(arr)
+    }
     } catch (error) {
       console.log(error)
     }
@@ -104,7 +107,7 @@ export default function Paychecks({navigation, route}) {
         <Text style={styles.addRequestText}>+</Text>
       </TouchableOpacity>
       <Modal animationType='slide' transparent={true} visible={modal1Visible}>
-       <NewPaycheck cancel={() => {setModal1Visible(false); getPaychecks()} } userId={userId} />
+       <NewPaycheck cancel={() => {setModal1Visible(false); getPaychecks()} } userId={userContext.userId} />
       </Modal>      
     </ScrollView>
   );
@@ -230,7 +233,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginLeft:Dimensions.get('screen').width * -0.16,
     marginRight:Dimensions.get('screen').width * 0.02,
-    fontFamily:'Urbanist',
+    fontFamily:'Urbanist-Regular',
   },
   viewButton: {
     alignItems: 'center',
@@ -297,5 +300,4 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
      justifyContent: 'space-between',      
   },
-
 })

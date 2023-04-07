@@ -2,6 +2,7 @@ import { View, Text, SafeAreaView, StyleSheet, Alert, TouchableOpacity, Dimensio
 import { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FieldChange from './FieldChange';
+import { useUserContext } from '../../UserContext';
 
 export default function Privacy({ navigation }) {
   const [userId, setUserId] = useState(null);
@@ -12,11 +13,11 @@ export default function Privacy({ navigation }) {
   const [userImg, setUserImg] = useState(null);
   const [Email, setEmail] = useState(null);
   const [userType, setUserType] = useState(null);
-  const [password, setPassword] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalType, setModalType] = useState('');
   const [modalValue, setModalValue] = useState('');
-  const [modal2Visible, setModal2Visible] = useState(false);
+  const { userContext, updateUserContext } = useUserContext();
+
 
   const sendDataToNextDB = () => {
     const userToUpdate = {
@@ -25,38 +26,40 @@ export default function Privacy({ navigation }) {
       phoneNum: Phonenum,
       gender: Gender,
       FirstName: firstName,
-      LastName: lastName,      
-      Id: userId,
+      LastName: lastName,
+      userId: userId,
       userType: userType
     }
-    console.log('userToUpdate', userToUpdate);
+
+    console.log('userToUpdate', userToUpdate)
+
+    fetch('https://proj.ruppin.ac.il/cgroup94/prod/api/Settings/UpdateUserEmail', {
+      method: 'PUT',
+      headers: new Headers({
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': 'application/json; charset=UTF-8',
+      }),
+      body: JSON.stringify(userToUpdate)
+    })
+      .then(res => {
+        return res.json()
+      }
+      )
+      .then(
+        (result) => {
+          console.log("fetch POST= ", result);
+          Alert.alert('Email Updated', 'Your Email has been changed successfully');
+        }
+      )
+      .catch((error) => {
+        console.log('Error:', error.message);
+      }
+      );
+
+    updateUserContext(userToUpdate);
     const jsonValue = JSON.stringify(userToUpdate)
     AsyncStorage.setItem('userData', jsonValue);
     navigation.goBack();
-
-    // fetch('http://proj.ruppin.ac.il/bgroup79/test1/tar1/api/Settings/UpdateUser', {
-    //   method: 'PUT',
-    //   headers: new Headers({
-    //     'Content-Type': 'application/json; charset=UTF-8',
-    //     'Accept': 'application/json; charset=UTF-8',
-
-    //   }),
-    //   body: JSON.stringify(userToUpdate)
-    // })
-    //   .then(res => {
-    //     return res.json()
-    //   }
-    //   )
-    //   .then(
-    //     (result) => {
-    //       console.log("fetch POST= ", result);
-    //       Alert.alert('Image Changed', 'Your image has been changed successfully');
-    //     }
-    //   )
-    //   .catch((error) => {
-    //     console.log('Error:', error.message);
-    //   }
-    //   );
   }
 
   const openModal = (type, value) => {
@@ -70,9 +73,11 @@ export default function Privacy({ navigation }) {
     if (Field == "Email") {
       setEmail(value)
     }
-    else if (Field == "Password") {
-      setPassword(value);
-    }
+
+  }
+
+  const savePassword = (value) => {
+    console.log(value)
   }
 
   const cancel = () => {
@@ -83,18 +88,14 @@ export default function Privacy({ navigation }) {
   useEffect(() => {
     const getData = async () => {
       try {
-        const jsonValue = await AsyncStorage.getItem('userData');
-        const userData = jsonValue != null ? JSON.parse(jsonValue) : null;
-        console.log('Privacy', userData);
-        setUserId(userData.Id);
-        setFirstName(userData.FirstName);
-        setLastName(userData.LastName);
-        setGender(userData.gender)
-        setUserImg(userData.userUri)
-        setPhonenum(userData.phoneNum)
-        setEmail(userData.Email)
-        setPassword(userData.Password)
-        setUserType(userData.userType)
+        setUserId(userContext.userId);
+        setFirstName(userContext.FirstName);
+        setLastName(userContext.LastName);
+        setGender(userContext.gender)
+        setUserImg(userContext.userUri)
+        setPhonenum(userContext.phoneNum)
+        setEmail(userContext.Email)
+        setUserType(userContext.userType)
       } catch (e) {
         console.log('error', e);
       }
@@ -111,7 +112,7 @@ export default function Privacy({ navigation }) {
         <TouchableOpacity underlayColor={'lightgrey'} style={styles.fields} onPress={() => openModal("Email", Email)}>
           <Text style={styles.fieldTxt}>{Email}</Text>
         </TouchableOpacity>
-        <TouchableOpacity underlayColor={'lightgrey'} style={styles.fields} onPress={() => openModal("Password", password)}>
+        <TouchableOpacity underlayColor={'lightgrey'} style={styles.fields} onPress={() => openModal("Password")}>
           <Text style={styles.fieldTxt}>Set New Password</Text>
         </TouchableOpacity>
         <View style={styles.bottom}>

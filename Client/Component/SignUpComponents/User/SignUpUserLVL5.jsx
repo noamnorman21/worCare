@@ -92,7 +92,7 @@ export default function SignUpUserLVL5({ navigation, route }) {
             },
             dateInput: {
               marginLeft: 0,
-              alignItems: 'flex-left',
+              alignItems: 'center', //change to center for android
               borderWidth: 0,
             },
             placeholderText: {

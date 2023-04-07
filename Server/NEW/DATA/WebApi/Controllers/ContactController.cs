@@ -19,30 +19,82 @@ namespace WebApi.Controllers
     {
         igroup194Db db = new igroup194Db();
 
+<<<<<<< HEAD
         // GET: api/Contacts
         [Route("GetContacts/{id}")]
         [HttpGet]
         public IHttpActionResult GetContacts(int id)
+=======
+
+        [Route("GetPatients")]
+        [HttpPost]
+        public IHttpActionResult GetPatients([FromBody] int id)
+>>>>>>> 12d71edbeb8a217a97cfc076f851e81f7fea37eb
         {
             try
             {
-                var Contacts = db.tblContacts.Where(x => x.patientId == id.ToString()).Select(y => new ContactDTO
+                var Patients = db.tblPatient.Where(x => x.userId == id).Select(y => new PatientDTO
                 {
-                    contactId = y.contactId,
-                    contactName = y.contactName,
-                    phoneNo = y.phoneNo,
-                    mobileNo = y.mobileNo,
-                    email = y.email,
-                    role = y.role,
-                    contactComment = y.contactComment,
+                    patientId = y.patientId,
                 }).ToList();
-                return Ok(Contacts);
+
+                return Ok(Patients);
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
         }
+
+        // GET: api/Contacts
+        [Route("GetContacts")]
+        [HttpPost]
+        public IHttpActionResult GetContacts([FromBody] UserDTO user)
+        {
+            try
+            {
+                var Patients = new List<PatientDTO>();
+                if (user.userType == "User")
+                {
+                    var Temp = db.tblPatient.Where(x => x.userId == user.userId).Select(y => new PatientDTO
+                    {
+                        patientId = y.patientId,
+                    }).ToList();
+                    Patients = Temp;
+                }
+                else
+                {
+                    var Temp = db.tblCaresForPatient.Where(x => x.workerId == user.userId).Select(y => new PatientDTO
+                    {
+                        patientId = y.patientId,
+                    }).ToList();
+                    Patients = Temp;
+                }
+                var patientContacts = new List<dynamic>();
+                foreach (var item in Patients)
+                {
+                    var Contacts = db.tblContacts.Where(x => x.patientId == item.patientId).Select(y => new ContactDTO
+                    {
+                        contactId = y.contactId,
+                        contactName = y.contactName,
+                        phoneNo = y.phoneNo,
+                        mobileNo = y.mobileNo,
+                        email = y.email,
+                        role = y.role,
+                        contactComment = y.contactComment,
+                        patientId = y.patientId
+                    }).ToList();
+                    patientContacts.Add(Contacts);
+                }
+                return Ok(patientContacts);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
 
         // GET: api/Contacts/{id}
         [HttpGet]
@@ -86,10 +138,10 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        
+
         // PUT: api/Contacts/{id}
         [HttpPut]
-        [Route("UpdateContact/{id}")]
+        [Route("UpdateContact")]
         public IHttpActionResult UpdateContact([FromBody] ContactDTO value)
         {
             try

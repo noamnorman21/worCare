@@ -1,8 +1,8 @@
 import { useIsFocused } from "@react-navigation/native";
-import { View,Text, StyleSheet, Alert, SafeAreaView, animation, TouchableOpacity, Dimensions, Keyboard, LayoutAnimation} from "react-native";
+import {TextInput, View,Text, StyleSheet, Alert, SafeAreaView, animation, TouchableOpacity, Dimensions, Keyboard, LayoutAnimation} from "react-native";
 import { useEffect } from "react";
 import { useState } from "react";
-import { TextInput } from "react-native-paper";
+
 import { ScrollView } from "react-native-gesture-handler";
 import * as DocumentPicker from 'expo-document-picker';
 
@@ -201,6 +201,13 @@ const savePayment = async (downloadURL) => {
             placeholder='Reason'
             keyboardType='ascii-capable'
             onChangeText={(value) => handleInputChange('requestSubject', value)}
+          />
+           <TextInput
+            style={styles.input}
+            value={Payment.requestDate.substring(0, 10)}
+            placeholder='Reason'
+            keyboardType='ascii-capable'
+            onChangeText={(value) => handleInputChange('requestDate', value)}
           />
           <TextInput
             style={[styles.input]}

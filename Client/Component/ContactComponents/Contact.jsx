@@ -75,6 +75,19 @@ export default function Contact({ route, navigation }) {
       setIsChanged(true);
     }
   }
+
+  const validatePhoneNum = (phoneNum) => {
+    //only numbers allowed in phone number input - no spaces or dashes - 10 digits - starts with 0
+    const phoneNumRegex = /^(0)[0-9]{9}$/
+    return phoneNumRegex.test(phoneNum)
+  }
+  const validateEmail = (email) => {
+    const emailRegex = /\S+@\S+\.\S+/
+    return emailRegex.test(email)
+  }
+
+
+
   const validateInput = () => {
     const { email, mobileNo, contactName } = Contact
     if (!mobileNo || !contactName) {

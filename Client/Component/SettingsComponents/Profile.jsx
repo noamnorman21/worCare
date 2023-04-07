@@ -9,7 +9,7 @@ import GenderChange from './GenderChange';
 import { useUserContext } from '../../UserContext';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from '../../config/firebase';
-import ImageChange from './ImageChange';
+
 
 
 export default function Profile({ navigation }) {
@@ -79,29 +79,29 @@ export default function Profile({ navigation }) {
     updateUserContext(userToUpdate)
     const jsonValue = JSON.stringify(userToUpdate)
     AsyncStorage.setItem('userData', jsonValue);
-    // fetch('http://proj.ruppin.ac.il/bgroup79/test1/tar1/api/Settings/UpdateUser', {
-    //   method: 'PUT',
-    //   headers: new Headers({
-    //     'Content-Type': 'application/json; charset=UTF-8',
-    //     'Accept': 'application/json; charset=UTF-8',
+    fetch('https://proj.ruppin.ac.il/cgroup94/prod/api/Settings/UpdateUserProfile', {
+      method: 'PUT',
+      headers: new Headers({
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': 'application/json; charset=UTF-8',
 
-    //   }),
-    //   body: JSON.stringify(userToUpdate)
-    // })
-    //   .then(res => {
-    //     return res.json()
-    //   }
-    //   )
-    //   .then(
-    //     (result) => {
-    //       console.log("fetch POST= ", result);
-    //       Alert.alert('Image Changed', 'Your image has been changed successfully');
-    //     }
-    //   )
-    //   .catch((error) => {
-    //     console.log('Error:', error.message);
-    //   }
-    //   );
+      }),
+      body: JSON.stringify(userToUpdate)
+    })
+      .then(res => {
+        return res.json()
+      }
+      )
+      .then(
+        (result) => {
+          console.log("fetch POST= ", result);
+          Alert.alert('User Updated', 'Your User has been Updated successfully');
+        }
+      )
+      .catch((error) => {
+        console.log('Error:', error.message);
+      }
+      );
 
     navigation.goBack();
   }
@@ -158,10 +158,10 @@ export default function Profile({ navigation }) {
     console.log('cancel');
     navigation.goBack();
   }
+
   useEffect(() => {
     const getData = async () => {
       try {
-        console.log('Profie', userContext);
         setUserId(userContext.Id);
         setFirstName(userContext.FirstName);
         setLastName(userContext.LastName);
@@ -170,7 +170,6 @@ export default function Profile({ navigation }) {
         setPhonenum(userContext.phoneNum)
         setEmail(userContext.Email)
         setUserType(userContext.userType)
-        console.log('userType1', userContext.userType)
       } catch (e) {
         console.log('error', e);
       }
@@ -210,7 +209,7 @@ export default function Profile({ navigation }) {
           <FieldChange userId={userId} type={modalType} value={modalValue} cancel={() => setModalVisible(false)} Save={(Field, value) => Update(Field, value)} />
         </Modal>
         <Modal animationType="slide" visible={modal2Visible}>
-          <GenderChange userId={userId} cancel={() => setModal2Visible(false)} Save={(Gender) => { setModal2Visible(false); setGender(Gender) }} />
+          <GenderChange userId={userId} Gender={Gender} cancel={() => setModal2Visible(false)} Save={(Gender) => { setModal2Visible(false); setGender(Gender) }} />
         </Modal>
       </View>
     </View>

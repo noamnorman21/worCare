@@ -1,5 +1,7 @@
 import { Alert, View, Keyboard, StyleSheet, Text, SafeAreaView, TextInput, Dimensions, TouchableOpacity, LayoutAnimation } from "react-native"
 import { useState, useEffect } from "react"
+import { Dropdown } from 'react-native-element-dropdown';
+import { useUserContext } from "../../UserContext";
 
 export default function AddNewContact(props) {
   const [animation, setAnimation] = useState({});
@@ -10,10 +12,13 @@ export default function AddNewContact(props) {
     email: null,
     role: '',
     contactComment: '',
-    patientId: 779355403 // will change when we finish context to get the patient id
+    patientId: null // will change when we finish context to get the patient id
   })
+  const [idArr, setIdArr] = useState(props.idArr);
 
   useEffect(() => {
+    console.log("idArr", idArr);
+    transformArr(idArr);
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
       () => {
@@ -46,6 +51,22 @@ export default function AddNewContact(props) {
     }
 
   }, []);
+
+  const transformArr = (arr) => {
+    console.log("arr", arr);
+    let newArr = [];
+    arr.forEach(element => {
+      element.forEach(item => {       
+          let obj = { key: item, id: item, name: item.toString() };
+          if (newArr.find((o) => o.id === obj.id) === undefined) {
+            console.log("obj", obj);
+            newArr.push(obj);
+        }
+    });
+    });
+    console.log("newArr", newArr);
+    setIdArr(newArr);
+  }
 
   const handleInputChange = (field, value) => {
     setContact({ ...Contact, [field]: value });
@@ -149,6 +170,18 @@ export default function AddNewContact(props) {
             keyboardType='ascii-capable'
             onChangeText={(value) => handleInputChange('contactComment', value)}
           />
+          <Dropdown
+            data={idArr}
+            labelField="name"
+            valueField="name"
+            placeholder="PateintID"
+            placeholderStyle={styles.placeholderStyle}
+            style={[styles.input]}
+            maxHeight={200}
+            value={0}
+            containerStyle={styles.containerStyle}
+            onChange={value => {setContact({ ...Contact, patientId: value.id })  }}
+          />
         </View>
       </View>
       <View style={styles.bottom}>
@@ -188,7 +221,7 @@ const styles = StyleSheet.create({
     borderColor: 'lightgray',
     shadowColor: '#000',
     height: 45,
-    fontFamily: 'Urbanist',
+    fontFamily: 'Urbanist-Regular',
   },
   numInput: {
     width: Dimensions.get('window').width * 0.43,
@@ -250,5 +283,10 @@ const styles = StyleSheet.create({
   },
   numbersInput: {
     flexDirection: 'row',
+  },
+  placeholderStyle: {
+    fontFamily: 'Urbanist-Regular',
+    color: '#8e8e8e',
+    fontSize: 14,
   },
 });
