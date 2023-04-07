@@ -1,9 +1,5 @@
-<<<<<<< HEAD
 import { Alert, View, Text, StyleSheet, SafeAreaView, Modal, TouchableOpacity, Keyboard, Dimensions, TextInput } from 'react-native'
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback } from 'react-native';
-=======
-import { Alert, View, Text, StyleSheet, SafeAreaView, Modal, LayoutAnimation, TouchableOpacity, Keyboard, Dimensions, TextInput } from 'react-native'
->>>>>>> 12d71edbeb8a217a97cfc076f851e81f7fea37eb
 import { useState, useEffect } from 'react'
 import { AntDesign, Octicons } from '@expo/vector-icons';
 
@@ -12,8 +8,6 @@ import { Dropdown } from 'react-native-element-dropdown';
 import DateRangePicker from "rn-select-date-range";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from "moment";
-import { useUserContext } from '../../UserContext';
-
 
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -32,7 +26,6 @@ function AddBtn(props) {
 function AddNewMedicine(props) {
    const [userData, setUserData] = useState('');
    const [userId, setUserId] = useState('');
-<<<<<<< HEAD
    const [numberPerDay, setNumberPerDay] = useState(0)
    const [quantity, setQuantity] = useState(0)
    const [capacity, setCapacity] = useState(0)
@@ -49,25 +42,6 @@ function AddNewMedicine(props) {
    const [allDrugs, setAllDrugs] = useState([]);//we will use this to get all the drugs from the server
    const [selectedDrugName, setSelectedDrugName] = useState('');//we will use this to get the selected drug from the user
    const [editMode, setEditMode] = useState(true);
-=======
-   const [userType, setUserType] = useState('');
-   const [medkName, setMedName] = useState('')
-   const [medComment, setMedComment] = useState('')
-   const [medFromDate, setMedFromDate] = useState('')
-   const [medToDate, setMedToDate] = useState('')
-   const [medFrequency, setMedFrequency] = useState('')
-   const [selectedRange, setRange] = useState({});
-   const [taskNameBorder, setTaskNameBorder] = useState('')
-   const [modalVisibleDate, setModalVisibleDate] = useState(false);
-   const [allDrugs, setAllDrugs] = useState([]);//we will use this to get all the drugs from the server
-   const {userContext} = useUserContext();
-   const [valueLanguage, setValueLanguage] = useState('English');
-
-   //const [keyboardOpen, setKeyboardOpen] = useState(false);
-   const [animation, setAnimation] = useState({});
-   let animationInProgress = false;
-
->>>>>>> 12d71edbeb8a217a97cfc076f851e81f7fea37eb
 
 
    const medFrequencies = [
@@ -79,10 +53,6 @@ function AddNewMedicine(props) {
    ]
 
    useEffect(() => {
-<<<<<<< HEAD
-=======
-
->>>>>>> 12d71edbeb8a217a97cfc076f851e81f7fea37eb
       let allDrugsUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Drug/GetAllDrugs';
       fetch(allDrugsUrl, {
          method: 'GET',
@@ -102,18 +72,12 @@ function AddNewMedicine(props) {
             if (data != null) {
                //exmaple of data object: {drugId:1, drugName:"פרסקוטיקס", drugUrl:"https://www.drugs.com/images/pills/augmentin.jpg", modifyDate:"2021-05-05T00:00:00",Type:"pills"} 
                setAllDrugs(data);
-<<<<<<< HEAD
-=======
-               console.log(allDrugs);
-
->>>>>>> 12d71edbeb8a217a97cfc076f851e81f7fea37eb
             }
          })
          .catch((error) => {
             console.log("err=", error);
          });
       getUserData();
-<<<<<<< HEAD
    }, []);
 
    const getUserData = async () => {
@@ -121,55 +85,11 @@ function AddNewMedicine(props) {
       const userData = JSON.parse(user);
       setUserId(userData.Id);
       setUserData(userData);
-=======
-      //use Keyboard.addListener to detect if the keyboard is open or not, if so add layout animation with margin bottom
-      Keyboard.addListener('keyboardDidShow', () => {
-         if (!animationInProgress) {
-            animationInProgress = true;
-            LayoutAnimation.configureNext({
-               update: {
-                  type: LayoutAnimation.Types.easeIn,
-                  duration: 250,
-                  useNativeDriver: true,
-               },
-            });
-            setAnimation({
-               marginBottom: Dimensions.get('window').height * 0.355
-            });
-            animationInProgress = false;
-         }
-      }
-      );
-      Keyboard.addListener('keyboardDidHide', () => {
-         if (!animationInProgress) {
-            animationInProgress = true;
-            LayoutAnimation.configureNext({
-               update: {
-                  type: LayoutAnimation.Types.easeOut,
-                  duration: 250,
-                  useNativeDriver: true,
-               },
-            });
-            setAnimation({ marginBottom: 0 });
-            animationInProgress = false;
-         }
-      }
-      );
-   }, []);
-   const getUserData = async () => {
-      const user = await AsyncStorage.getItem('userData');
-      const userData = JSON.parse(user);
-      setUserId(userContext.userId);
-      setUserData(userData);
-      setUserType(userContext.userType);
-      console.log("userContext",userContext)
->>>>>>> 12d71edbeb8a217a97cfc076f851e81f7fea37eb
    }
    const changeDateFormat = (date) => {
       return moment(date).format('DD/MM/YYYY');
    }
    const addMed = () => {
-<<<<<<< HEAD
       // Alert.alert('add med name');
       console.log(selectedDrugName.Type);
    }
@@ -337,58 +257,6 @@ function AddNewMedicine(props) {
 
 
                            {/* 
-=======
-      Alert.alert('add med name');
-   }
-
-   const clearInputs = () => {
-      setMedName('');
-      setMedComment('');
-      setMedFromDate('');
-      setMedToDate('');
-      setMedFrequency('');
-      props.onClose()
-   }
-   return (
-      <SafeAreaView>
-         <Modal visible={props.isVisible} presentationStyle='formSheet' animationType='slide' onRequestClose={props.onClose}>
-            <View style={[styles.centeredView, animation]}>
-               <View style={styles.modalView}>
-                  <Text style={styles.modalText}>Add new Med </Text>
-                  <View style={styles.inputView}>
-                     <Dropdown
-                        style={styles.dropdown}
-                        placeholder="Select Language"
-                        placeholderStyle={styles.placeholderStyle}
-                        selectedTextStyle={styles.selectedTextStyle}
-                        inputSearchStyle={styles.inputSearchStyle}
-                        iconStyle={styles.iconStyle}
-                        data={allDrugs}
-                        search={true}
-                        maxHeight={300}
-                        labelField="label"
-                        valueField="value"
-                        searchPlaceholder="Search..."
-                        value={valueLanguage}
-                        onChange={item => {
-                           setValueLanguage(item.value);
-                        }}
-                        renderRightIcon={() => (
-                           <MaterialIcons name="translate" size={24} color="gray" />
-                        )}
-                        containerStyle={styles.containerStyle}
-                     />
-
-                     {/* <TextInput
-                        style={[styles.input, taskNameBorder && { borderColor: '#000' }]}
-                        placeholder='Task Name'
-                        placeholderTextColor='#9E9E9E'
-                        value={taskName}
-                        returnKeyType='done'
-                        onChangeText={text => setTaskName(text)}
-                        onEndEditing={() => { setTaskNameBorder(taskName) }}
-                     />
->>>>>>> 12d71edbeb8a217a97cfc076f851e81f7fea37eb
                      { // if the user is a caregiver than display the assignee
                         userType == "Caregiver" ?
                            <Dropdown
@@ -500,13 +368,8 @@ function AddNewMedicine(props) {
                      </Modal>
 
                      <DatePicker
-<<<<<<< HEAD
                         style={[styles.input, medTime != '' && { borderColor: '#000' }]}
                         date={medTime}
-=======
-                        style={[styles.input, taskTime != '' && { borderColor: '#000' }]}
-                        date={taskTime}
->>>>>>> 12d71edbeb8a217a97cfc076f851e81f7fea37eb
                         mode="time"
                         placeholder="Time"
                         format="HH:mm"
@@ -530,11 +393,7 @@ function AddNewMedicine(props) {
                               fontFamily: 'Urbanist-SemiBold',
                            },
                         }}
-<<<<<<< HEAD
                         onDateChange={(date) => { setMedDate(date) }}
-=======
-                        onDateChange={(date) => { setTaskTime(date) }}
->>>>>>> 12d71edbeb8a217a97cfc076f851e81f7fea37eb
                      />
                      <Dropdown
                         data={taskFrequencies}
@@ -548,10 +407,6 @@ function AddNewMedicine(props) {
                         containerStyle={styles.containerStyle}
                         onChange={item => { setTaskFrequency(item.name) }}
                      />
-<<<<<<< HEAD
-=======
-
->>>>>>> 12d71edbeb8a217a97cfc076f851e81f7fea37eb
                      <TextInput
                         style={[styles.commentInput, taskComment != '' && { borderColor: '#000' }]}
                         placeholder='Comment ( optional )'
@@ -563,7 +418,6 @@ function AddNewMedicine(props) {
                         placeholderTextColor='#9E9E9E'
                         onChangeText={text => setTaskComment(text)}
                      /> */}
-<<<<<<< HEAD
                         </View>
 
                         <View style={styles.btnModal}>
@@ -580,21 +434,6 @@ function AddNewMedicine(props) {
             </KeyboardAvoidingView>
          </Modal>
       </SafeAreaView >
-=======
-                  </View>
-                  <View style={styles.btnModal}>
-                     <TouchableOpacity style={styles.SaveBtn} onPress={addMed}>
-                        <Text style={styles.textStyle}>Save</Text>
-                     </TouchableOpacity>
-                     <TouchableOpacity style={styles.closeBtn} onPress={clearInputs}>
-                        <Text style={styles.closeTxt}>Cancel</Text>
-                     </TouchableOpacity>
-                  </View>
-               </View>
-            </View>
-         </Modal>
-      </SafeAreaView>
->>>>>>> 12d71edbeb8a217a97cfc076f851e81f7fea37eb
    )
 
 }
@@ -710,67 +549,12 @@ function NewTaskModal(props) {
    return (
       <SafeAreaView>
          <Modal visible={props.isVisible} presentationStyle='formSheet' animationType='slide' onRequestClose={props.onClose}>
-<<<<<<< HEAD
             <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
                <TouchableWithoutFeedback>
                   <View style={styles.centeredView}>
                      <View style={styles.modalView}>
                         <Text style={styles.modalText}>Add new task </Text>
                         <View style={styles.inputView}>
-=======
-            <View style={[styles.centeredView, animation]}>
-               <View style={styles.modalView}>
-                  <Text style={styles.modalText}>Add new task </Text>
-                  <View style={styles.inputView}>
-                     <TextInput
-                        style={[styles.input, taskNameBorder && { borderColor: '#000' }]}
-                        placeholder='Task Name'
-                        placeholderTextColor='#9E9E9E'
-                        value={taskName}
-                        returnKeyType='done'
-                        onChangeText={text => setTaskName(text)}
-                        onEndEditing={() => { setTaskNameBorder(taskName) }}
-                     />
-                     { // if the user is a caregiver than display the assignee
-                        userType == "Caregiver" ?
-                           <Dropdown
-                              data={privateOrPublic}
-                              labelField="name"
-                              valueField="name"
-                              placeholder="Assignees"
-                              itemTextStyle={styles.itemStyle}
-                              placeholderStyle={styles.placeholderStyle}
-                              containerStyle={styles.containerStyle}
-                              style={[styles.input, taskAssignee && { borderColor: '#000' }]}
-                              value={taskAssignee}
-                              maxHeight={300}
-                              onChange={item => {
-                                 setTaskAssignee(item.name)
-                                 if (item.name == 'Private') {
-                                    setIsPrivate(true)
-                                 } else {
-                                    setIsPrivate(false)
-                                 }
-                              }}
-                           />
-                           : null
-                     }
-                     {
-                        //if is private= true than display the category
-                        !isPrivate ?
-                           <Dropdown
-                              data={taskCategorys}
-                              labelField="name"
-                              valueField="name"
-                              placeholder="Category"
-                              placeholderStyle={styles.placeholderStyle}
-                              style={[styles.input, taskCategory && { borderColor: '#000' }]}
-                              containerStyle={styles.containerStyle}
-                              maxHeight={300}
-                              value={taskCategory}
-                              onChange={item => { setTaskCategory(item.name) }}
-                           /> : //if is private= true than display like the user already choose the category of General
->>>>>>> 12d71edbeb8a217a97cfc076f851e81f7fea37eb
                            <TextInput
                               style={[styles.input, taskNameBorder && { borderColor: '#000' }]}
                               placeholder='Task Name'
@@ -1021,10 +805,7 @@ const styles = StyleSheet.create({
       fontSize: 16,
       fontFamily: 'Urbanist',
    },
-<<<<<<< HEAD
 
-=======
->>>>>>> 12d71edbeb8a217a97cfc076f851e81f7fea37eb
    placeholderStyle: {
       color: '#9E9E9E',
       fontSize: 16,
