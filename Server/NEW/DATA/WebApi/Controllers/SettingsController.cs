@@ -14,95 +14,10 @@ namespace WebApi.Controllers
     {
         igroup194Db db = new igroup194Db();
 
+        // gets all user details and updates them - if only one field is changed,
+        // the other fields will be updated to the same value as before
         [HttpPut]
-        [Route("UpdateImage")]
-        public IHttpActionResult UpdateImage([FromBody] UserDTO userToChange)
-        {
-            try
-            {
-                var user = db.tblUser.Where(x => x.Email == userToChange.Email).FirstOrDefault();
-                user.userUri = userToChange.userUri;
-                db.SaveChanges();
-                return Ok("Image Updated");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpPut]
-        [Route("UpdateFirstName")]
-        public IHttpActionResult UpdateFirstName([FromBody] UserDTO userToChange)
-        {
-            try
-            {
-                var user = db.tblUser.Where(x => x.userId == userToChange.userId).FirstOrDefault();
-                if (user == null)
-                {
-                    return NotFound();
-                }
-                user.FirstName = userToChange.FirstName;
-                db.SaveChanges();
-                return Ok("First Name Updated");
-
-
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpPut]
-        [Route("UpdateLastName")]
-        public IHttpActionResult UpdateLastName([FromBody] UserDTO userToChange)
-        {
-            try
-            {
-                var user = db.tblUser.Where(x => x.userId == userToChange.userId).FirstOrDefault();
-                if (user == null)
-                {
-                    return NotFound();
-                }
-                user.LastName = userToChange.LastName;
-                db.SaveChanges();
-                return Ok("Last Name Updated");
-
-
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-
-        [HttpPut]
-        [Route("UpdateGender")]
-        public IHttpActionResult UpdateGender([FromBody] UserDTO userToChange)
-        {
-            try
-            {
-                var user = db.tblUser.Where(x => x.userId == userToChange.userId).FirstOrDefault();
-                if (user == null)
-                {
-                    return NotFound();
-                }
-                user.gender = userToChange.gender;
-                db.SaveChanges();
-                return Ok("Gender Updated");
-
-
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpPut]
-        [Route("UpdateUserProfile")]
+        [Route("UpdateUserProfile")] 
         public IHttpActionResult UpdateUserProfile([FromBody] UserDTO userToUpdate)
         {
             try
@@ -139,7 +54,6 @@ namespace WebApi.Controllers
             }
         }
 
-
         [HttpPut]
         [Route("SetNewPassword")]
         public IHttpActionResult SetNewPassword([FromBody] UserDTO userToUpdate)
@@ -156,6 +70,5 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
     }
 }

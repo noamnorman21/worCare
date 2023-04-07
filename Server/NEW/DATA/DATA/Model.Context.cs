@@ -403,12 +403,8 @@ namespace DATA
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("NewContact", contactNameParameter, phoneNoParameter, mobileNoParameter, emailParameter, roleParameter, contactCommentParameter, patientIdParameter);
         }
     
-        public virtual int NewPaycheck(Nullable<int> payCheckNum, Nullable<System.DateTime> paycheckDate, string paycheckSummary, string paycheckComment, Nullable<int> userId)
+        public virtual int NewPaycheck(Nullable<System.DateTime> paycheckDate, string paycheckSummary, string paycheckComment, Nullable<int> userId)
         {
-            var payCheckNumParameter = payCheckNum.HasValue ?
-                new ObjectParameter("payCheckNum", payCheckNum) :
-                new ObjectParameter("payCheckNum", typeof(int));
-    
             var paycheckDateParameter = paycheckDate.HasValue ?
                 new ObjectParameter("paycheckDate", paycheckDate) :
                 new ObjectParameter("paycheckDate", typeof(System.DateTime));
@@ -425,15 +421,11 @@ namespace DATA
                 new ObjectParameter("UserId", userId) :
                 new ObjectParameter("UserId", typeof(int));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("NewPaycheck", payCheckNumParameter, paycheckDateParameter, paycheckSummaryParameter, paycheckCommentParameter, userIdParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("NewPaycheck", paycheckDateParameter, paycheckSummaryParameter, paycheckCommentParameter, userIdParameter);
         }
     
-        public virtual int NewPaymentRequest(Nullable<int> requestId, string requestSubject, Nullable<double> amountToPay, Nullable<System.DateTime> requestDate, string requestProofDocument, string requestComment, string requestStatus, Nullable<int> userId)
+        public virtual int NewPaymentRequest(string requestSubject, Nullable<double> amountToPay, Nullable<System.DateTime> requestDate, string requestProofDocument, string requestComment, string requestStatus, Nullable<int> userId)
         {
-            var requestIdParameter = requestId.HasValue ?
-                new ObjectParameter("requestId", requestId) :
-                new ObjectParameter("requestId", typeof(int));
-    
             var requestSubjectParameter = requestSubject != null ?
                 new ObjectParameter("requestSubject", requestSubject) :
                 new ObjectParameter("requestSubject", typeof(string));
@@ -462,7 +454,7 @@ namespace DATA
                 new ObjectParameter("userId", userId) :
                 new ObjectParameter("userId", typeof(int));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("NewPaymentRequest", requestIdParameter, requestSubjectParameter, amountToPayParameter, requestDateParameter, requestProofDocumentParameter, requestCommentParameter, requestStatusParameter, userIdParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("NewPaymentRequest", requestSubjectParameter, amountToPayParameter, requestDateParameter, requestProofDocumentParameter, requestCommentParameter, requestStatusParameter, userIdParameter);
         }
     
         public virtual int sp_alterdiagram(string diagramname, Nullable<int> owner_id, Nullable<int> version, byte[] definition)

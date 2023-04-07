@@ -14,109 +14,85 @@ namespace WebApi.Controllers
     {
         igroup194Db db = new igroup194Db();
 
-        // GET: api/PayChecks
-        [HttpPost]
-        [Route("GetPaychecks")]
-        public IHttpActionResult GetPaychecks([FromBody] UserDTO user)
-        {
-            try
-            {
-                if (user.userType == "User")
-                {
-                    var Contacts = db.tblPaycheck.Where(x => x.UserId == user.userId).Select(y => new PayCheckDTO
-                    {
-                        payCheckNum = y.payCheckNum,
-                        paycheckDate = y.paycheckDate,
-                        paycheckSummary = y.paycheckSummary,
-                        paycheckComment = y.paycheckComment,
-                        UserId = y.UserId,
-                    }).ToList();
-                    return Ok(Contacts);
-                }
-                else
-                {
-                    var Patients = db.tblCaresForPatient.Where(x => x.workerId == user.userId).Select(y => y.patientId).ToList();
-                    var users= new List<List<UserDTO>>();
-                    foreach (var patient in Patients)
-                    {
-                        var tempo = db.tblPatient.Where(x => x.patientId == patient).Select(y => new UserDTO{
-                            userId= y.userId,
-                            }).ToList();
-                        users.Add(tempo);
-                    }
-                    var temp = new List<dynamic>();
-                    foreach (var item in users)
-                    {
-                        foreach (var item2 in item)
-                        {
-                            var Paycheks = db.tblPaycheck.Where(x => x.UserId == item2.userId).Select(y => new PayCheckDTO
-                            {
-                                payCheckNum = y.payCheckNum,
-                                paycheckDate = y.paycheckDate,
-                                paycheckSummary = y.paycheckSummary,
-                                paycheckComment = y.paycheckComment,
-                                UserId = y.UserId,
-                            }).ToList();
-                            foreach (var paycheck in Paycheks)
-                            {
-                                temp.Add(paycheck);
-                            }
-                        }
-                    }                    
-                    return Ok(temp);
-                }
+        // GET: api/PayChecks -- > לתקן לפי מטופל בודד ומטפל בודד
+        //[HttpPost]
+        //[Route("GetPaychecks")]
+        //public IHttpActionResult GetPaychecks([FromBody] UserDTO user)
+        //{
+        //    try
+        //    {
+        //        if (user.userType == "User")
+        //        {
+        //            var Patients = db.tblCaresForPatient.Where(x => x.workerId == user.userId).Select(y => y.patientId).ToList();
+        //            var users = new List<List<UserDTO>>();
+                    
+        //            var Contacts = db.tblPaycheck.Where(x => x.UserId == user.userId).Select(y => new PayCheckDTO
+        //            {
+        //                payCheckNum = y.payCheckNum,
+        //                paycheckDate = y.paycheckDate,
+        //                paycheckSummary = y.paycheckSummary,
+        //                paycheckComment = y.paycheckComment,
+        //                UserId = y.UserId,
+        //            }).ToList();
+        //            return Ok(Contacts);
+        //        }
+        //        else
+        //        {
+        //            foreach (var patient in Patients)
+        //            {
+        //                var tempo = db.tblPatient.Where(x => x.patientId == patient).Select(y => new UserDTO{
+        //                    userId= y.userId,
+        //                    }).ToList();
+        //                users.Add(tempo);
+        //            }
+        //            var temp = new List<dynamic>();
+        //            foreach (var item in users)
+        //            {
+        //                foreach (var item2 in item)
+        //                {
+        //                    var Paycheks = db.tblPaycheck.Where(x => x.UserId == item2.userId).Select(y => new PayCheckDTO
+        //                    {
+        //                        payCheckNum = y.payCheckNum,
+        //                        paycheckDate = y.paycheckDate,
+        //                        paycheckSummary = y.paycheckSummary,
+        //                        paycheckComment = y.paycheckComment,
+        //                        UserId = y.UserId,
+        //                    }).ToList();
+        //                    foreach (var paycheck in Paycheks)
+        //                    {
+        //                        temp.Add(paycheck);
+        //                    }
+        //                }
+        //            }                    
+        //            return Ok(temp);
+        //        }
 
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-
-        [HttpGet]
-        [Route("GetSpecificPayCheck/{num}")]
-        public IHttpActionResult GetSpecificPayCheck(int num)
-        {
-            try
-            {
-                var Contacts = db.tblPaycheck.Where(x => x.payCheckNum == num).Select(y => new PayCheckDTO
-                {
-                    payCheckNum = y.payCheckNum,
-                    paycheckDate = y.paycheckDate,
-                    paycheckSummary = y.paycheckSummary,
-                    paycheckComment = y.paycheckComment,
-                    UserId = y.UserId,
-                }).FirstOrDefault();
-                return Ok(Contacts);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
 
         // POST: api/PayChecks
+        
         [HttpPost]
-        [Route("NewPayCheck")]
+        [Route("NewPayCheck")] // פונקציה להוספת פייקצ'ק חדש
         public IHttpActionResult NewPayCheck([FromBody] PayCheckDTO pay)
         {
             try
             {
-                int id = db.tblPaymentRequest.Max(x => x.requestId) + 1;
-                int num = db.tblPaycheck.Max(x => x.payCheckNum) + 1;
-                db.NewPaycheck(num, pay.paycheckDate, pay.paycheckSummary, pay.paycheckComment, pay.UserId);
+                db.NewPaycheck(pay.paycheckDate, pay.paycheckSummary, pay.paycheckComment, pay.UserId);
                 db.SaveChanges();
                 return Ok("Paycheck added successfully!");
-
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
         }
-        // PUT: api/PayChecks/UpdatePayCheck
-        [HttpPut]
+        
+        [HttpPut] // PUT: api/PayChecks/UpdatePayCheck
         [Route("UpdatePayCheck")]
         public IHttpActionResult UpdatePayCheck([FromBody] PayCheckDTO pay)
         {
@@ -125,7 +101,6 @@ namespace WebApi.Controllers
                 tblPaycheck p = db.tblPaycheck.Where(x => x.payCheckNum == pay.payCheckNum).FirstOrDefault();
                 if (p != null)
                 {
-                    p.payCheckNum = pay.payCheckNum;
                     p.paycheckDate = pay.paycheckDate;
                     p.paycheckSummary = pay.paycheckSummary;
                     p.paycheckComment = pay.paycheckComment;
@@ -141,7 +116,6 @@ namespace WebApi.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
-                throw;
             }
         }
 

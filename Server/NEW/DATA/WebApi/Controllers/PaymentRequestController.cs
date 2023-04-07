@@ -14,160 +14,161 @@ namespace WebApi.Controllers
     {
         igroup194Db db = new igroup194Db();
 
-        // GET: api/PaymentRequest
-        [Route("GetPending")]
-        [HttpPost]
-        public IHttpActionResult GetPending([FromBody] UserDTO user)
-        {
-            try
-            {
-                int id;
-                if (user.userType == "User")
-                {
-                    List<List<ForeignUserDTO>> careId = new List<List<ForeignUserDTO>>();
-                    var PatientId = db.tblPatient.Where(x => x.userId == user.userId).Select(y => y.patientId).ToList();
-                    foreach (var patient in PatientId)
-                    {
-                        var Carers = db.tblCaresForPatient.Where(x => x.patientId == patient).Select(y => new ForeignUserDTO
-                        {
-                            Id = y.workerId,
-                        }).ToList();
-                        careId.Add(Carers);
-                    }
-                    var temp = new List<dynamic>();
-                    foreach (var carer in careId)
-                    {
-                        foreach (var item in carer)
-                        {
-                            temp.Add(db.tblPaymentRequest.Where(x => x.userId == item.Id && x.requestStatus == "P").Select(y => new PaymentsRequestDTO
-                            {
-                                requestId = y.requestId,
-                                requestSubject = y.requestSubject,
-                                amountToPay = y.amountToPay,
-                                requestDate = y.requestDate,
-                                requestProofDocument = y.requestProofDocument,
-                                requestComment = y.requestComment,
-                                requestStatus = y.requestStatus,
-                                userId = y.userId,
-                            }));
-                        }
+        // GET: api/PaymentRequest לתקן כמו בפייצ'ק
+        //[Route("GetPending")]
+        //[HttpPost]
+        //public IHttpActionResult GetPending([FromBody] UserDTO user)
+        //{
+        //    try
+        //    {
+        //        int id;
+        //        if (user.userType == "User")
+        //        {
+        //            List<List<ForeignUserDTO>> careId = new List<List<ForeignUserDTO>>();
+        //            var PatientId = db.tblPatient.Where(x => x.userId == user.userId).Select(y => y.patientId).ToList();
+        //            foreach (var patient in PatientId)
+        //            {
+        //                var Carers = db.tblCaresForPatient.Where(x => x.patientId == patient).Select(y => new ForeignUserDTO
+        //                {
+        //                    Id = y.workerId,
+        //                }).ToList();
+        //                careId.Add(Carers);
+        //            }
+        //            var temp = new List<dynamic>();
+        //            foreach (var carer in careId)
+        //            {
+        //                foreach (var item in carer)
+        //                {
+        //                    temp.Add(db.tblPaymentRequest.Where(x => x.userId == item.Id && x.requestStatus == "P").Select(y => new PaymentsRequestDTO
+        //                    {
+        //                        requestId = y.requestId,
+        //                        requestSubject = y.requestSubject,
+        //                        amountToPay = y.amountToPay,
+        //                        requestDate = y.requestDate,
+        //                        requestProofDocument = y.requestProofDocument,
+        //                        requestComment = y.requestComment,
+        //                        requestStatus = y.requestStatus,
+        //                        userId = y.userId,
+        //                    }));
+        //                }
 
-                    }
-                    var Requests = new List<PaymentsRequestDTO>();
-                    foreach (var worker in temp)
-                    {
-                        foreach (var item in worker)
-                        {
-                            Requests.Add(item);
-                        }
-                    }
-                    return Ok(Requests);
-                }
-                else
-                {
-                    id = user.userId;
-                    var Payments = db.tblPaymentRequest.Where(x => x.userId == id && x.requestStatus == "P").Select(y => new PaymentsRequestDTO
-                    {
-                        requestId = y.requestId,
-                        requestSubject = y.requestSubject,
-                        amountToPay = y.amountToPay,
-                        requestDate = y.requestDate,
-                        requestProofDocument = y.requestProofDocument,
-                        requestComment = y.requestComment,
-                        requestStatus = y.requestStatus,
-                        userId = y.userId,
-                    }).ToList();
-                    return Ok(Payments);
-                }
+        //            }
+        //            var Requests = new List<PaymentsRequestDTO>();
+        //            foreach (var worker in temp)
+        //            {
+        //                foreach (var item in worker)
+        //                {
+        //                    Requests.Add(item);
+        //                }
+        //            }
+        //            return Ok(Requests);
+        //        }
+        //        else
+        //        {
+        //            id = user.userId;
+        //            var Payments = db.tblPaymentRequest.Where(x => x.userId == id && x.requestStatus == "P").Select(y => new PaymentsRequestDTO
+        //            {
+        //                requestId = y.requestId,
+        //                requestSubject = y.requestSubject,
+        //                amountToPay = y.amountToPay,
+        //                requestDate = y.requestDate,
+        //                requestProofDocument = y.requestProofDocument,
+        //                requestComment = y.requestComment,
+        //                requestStatus = y.requestStatus,
+        //                userId = y.userId,
+        //            }).ToList();
+        //            return Ok(Payments);
+        //        }
 
 
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
 
-        [Route("GetHistory/")]
-        [HttpPost]
-        public IHttpActionResult GetHistory([FromBody] UserDTO user)
-        {
-            try
-            {
-                int id;
-                if (user.userType == "User")
-                {
-                    List<List<ForeignUserDTO>> careId = new List<List<ForeignUserDTO>>();
-                    var PatientId = db.tblPatient.Where(x => x.userId == user.userId).Select(y => y.patientId).ToList();
-                    foreach (var patient in PatientId)
-                    {
-                        var Carers = db.tblCaresForPatient.Where(x => x.patientId == patient).Select(y => new ForeignUserDTO
-                        {
-                            Id = y.workerId,
-                        }).ToList();
-                        careId.Add(Carers);
-                    }
-                    var temp = new List<dynamic>();
-                    foreach (var carer in careId)
-                    {
-                        foreach (var item in carer)
-                        {
-                            temp.Add(db.tblPaymentRequest.Where(x => x.userId == item.Id && x.requestStatus != "P").Select(y => new PaymentsRequestDTO
-                            {
-                                requestId = y.requestId,
-                                requestSubject = y.requestSubject,
-                                amountToPay = y.amountToPay,
-                                requestDate = y.requestDate,
-                                requestProofDocument = y.requestProofDocument,
-                                requestComment = y.requestComment,
-                                requestStatus = y.requestStatus,
-                                userId = y.userId,
-                            }));
-                        }
+        
+        //[Route("GetHistory/")] לתקן כמו בפייצ'ק
+        //[HttpPost]
+        //public IHttpActionResult GetHistory([FromBody] UserDTO user)
+        //{
+        //    try
+        //    {
+        //        int id;
+        //        if (user.userType == "User")
+        //        {
+        //            List<List<ForeignUserDTO>> careId = new List<List<ForeignUserDTO>>();
+        //            var PatientId = db.tblPatient.Where(x => x.userId == user.userId).Select(y => y.patientId).ToList();
+        //            foreach (var patient in PatientId)
+        //            {
+        //                var Carers = db.tblCaresForPatient.Where(x => x.patientId == patient).Select(y => new ForeignUserDTO
+        //                {
+        //                    Id = y.workerId,
+        //                }).ToList();
+        //                careId.Add(Carers);
+        //            }
+        //            var temp = new List<dynamic>();
+        //            foreach (var carer in careId)
+        //            {
+        //                foreach (var item in carer)
+        //                {
+        //                    temp.Add(db.tblPaymentRequest.Where(x => x.userId == item.Id && x.requestStatus != "P").Select(y => new PaymentsRequestDTO
+        //                    {
+        //                        requestId = y.requestId,
+        //                        requestSubject = y.requestSubject,
+        //                        amountToPay = y.amountToPay,
+        //                        requestDate = y.requestDate,
+        //                        requestProofDocument = y.requestProofDocument,
+        //                        requestComment = y.requestComment,
+        //                        requestStatus = y.requestStatus,
+        //                        userId = y.userId,
+        //                    }));
+        //                }
 
-                    }
-                    var Requests = new List<PaymentsRequestDTO>();
-                    foreach (var worker in temp)
-                    {
-                        foreach (var item in worker)
-                        {
-                            Requests.Add(item);
-                        }
-                    }
-                    return Ok(Requests);
-                }
-                else
-                {
-                    id = user.userId;
-                    var Payments = db.tblPaymentRequest.Where(x => x.userId == id && x.requestStatus != "P").Select(y => new PaymentsRequestDTO
-                    {
-                        requestId = y.requestId,
-                        requestSubject = y.requestSubject,
-                        amountToPay = y.amountToPay,
-                        requestDate = y.requestDate,
-                        requestProofDocument = y.requestProofDocument,
-                        requestComment = y.requestComment,
-                        requestStatus = y.requestStatus,
-                        userId = y.userId,
-                    }).ToList();
-                    return Ok(Payments);
-                }
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+        //            }
+        //            var Requests = new List<PaymentsRequestDTO>();
+        //            foreach (var worker in temp)
+        //            {
+        //                foreach (var item in worker)
+        //                {
+        //                    Requests.Add(item);
+        //                }
+        //            }
+        //            return Ok(Requests);
+        //        }
+        //        else
+        //        {
+        //            id = user.userId;
+        //            var Payments = db.tblPaymentRequest.Where(x => x.userId == id && x.requestStatus != "P").Select(y => new PaymentsRequestDTO
+        //            {
+        //                requestId = y.requestId,
+        //                requestSubject = y.requestSubject,
+        //                amountToPay = y.amountToPay,
+        //                requestDate = y.requestDate,
+        //                requestProofDocument = y.requestProofDocument,
+        //                requestComment = y.requestComment,
+        //                requestStatus = y.requestStatus,
+        //                userId = y.userId,
+        //            }).ToList();
+        //            return Ok(Payments);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
 
         // POST: api/PaymentRequest
+        
         [HttpPost]
         [Route("NewRequest")]
         public IHttpActionResult NewRequest([FromBody] PaymentsRequestDTO req)
         {
             try
             {
-                int id = db.tblPaymentRequest.Max(x => x.requestId) + 1;
-                db.NewPaymentRequest(id, req.requestSubject, req.amountToPay, req.requestDate, req.requestProofDocument, req.requestComment, req.requestStatus, req.userId);
+                db.NewPaymentRequest( req.requestSubject, req.amountToPay, req.requestDate, req.requestProofDocument, req.requestComment, req.requestStatus, req.userId);
                 db.SaveChanges();
                 return Ok("Request added successfully!");
             }
@@ -205,7 +206,6 @@ namespace WebApi.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
-                throw;
             }
         }
 
@@ -230,7 +230,6 @@ namespace WebApi.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
-                throw;
             }
         }
 
@@ -254,6 +253,5 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
     }
 }

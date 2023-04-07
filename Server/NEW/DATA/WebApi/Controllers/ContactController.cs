@@ -19,28 +19,7 @@ namespace WebApi.Controllers
     {
         igroup194Db db = new igroup194Db();
 
-
-
-        [Route("GetPatients")]
-        [HttpPost]
-        public IHttpActionResult GetPatients([FromBody] int id)
-        {
-            try
-            {
-                var Patients = db.tblPatient.Where(x => x.userId == id).Select(y => new PatientDTO
-                {
-                    patientId = y.patientId,
-                }).ToList();
-
-                return Ok(Patients);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        // GET: api/Contacts
+        // GET: api/Contacts לתקן כמו שצריך
         [Route("GetContacts")]
         [HttpPost]
         public IHttpActionResult GetContacts([FromBody] UserDTO user)
@@ -81,33 +60,6 @@ namespace WebApi.Controllers
                     patientContacts.Add(Contacts);
                 }
                 return Ok(patientContacts);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-
-
-        // GET: api/Contacts/{id}
-        [HttpGet]
-        [Route("GetSpecificContact/{id}")]
-        public IHttpActionResult GetSpecificContact(int id)
-        {
-            try
-            {
-                var Contact = db.tblContacts.Where(x => x.contactId == id).Select(y => new ContactDTO
-                {
-                    contactId = y.contactId,
-                    contactName = y.contactName,
-                    phoneNo = y.phoneNo,
-                    mobileNo = y.mobileNo,
-                    email = y.email,
-                    role = y.role,
-                    contactComment = y.contactComment,
-                }).FirstOrDefault();
-                return Ok(Contact);
             }
             catch (Exception ex)
             {
