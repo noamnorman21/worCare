@@ -23,12 +23,12 @@ export default function Contacts() {
 
 function Main({ navigation }) {
   const [idArr, setidArr] = useState([])
+  const [patientId, setpatientId] = useState()
   const [Contacts, setContacts] = useState([])
   const [Search, setSearch] = useState([])
   const [ContactToRender, setContactToRender] = useState([])
   const [modal1Visible, setModal1Visible] = useState(false);
-  const { userContext, userContacts, setuserContacts, updateuserContacts } = useUserContext()
-  const PatientId = 779355403// will change when we finish context to get the patient id
+  const { userContext, userContacts, setuserContacts, updateuserContacts } = useUserContext()  
   const isFocused = useIsFocused()
 
   const onChangeSearch = query => setSearch(query);
@@ -45,32 +45,35 @@ function Main({ navigation }) {
       },
       body: JSON.stringify(user)
     });
-    const data = await response.json()
-    let contacts = data.map((patient) => {
-      return patient.map((item) => {
-        return <ContactCard key={item.contactId} contact={item} />
-      })
+    const data = [
+      {
+          "contactId": 1,
+          "contactName": "Egunns",
+          "phoneNo": "0545445444",
+          "mobileNo": "0540540540",
+          "email": "Egun@gmail.com",
+          "role": "bla",
+          "contactComment": "blaaaa",
+          "patientId": "205920592"
+      }
+  ]
+    let contacts = data.map((item) => {      
+        return <ContactCard key={item.contactId} contact={item} />  
     })
-    let idarr = data.map((patient) => {
-      return patient.map((item) => {
+    let idarr = data.map((item) => {      
         return item.patientId
-      })
     })
-    setidArr(idarr);
+    setpatientId(idarr[0]);    
     setContacts(data);
     setContactToRender(contacts);
   }
 
   useEffect(() => {
-    let temp = Contacts.map((patient) => {
-      return patient.filter((item) => {
+    let temp = Contacts.filter((item) => {     
         return item.contactName.includes(Search)
-      })
     })
-    let contacts = temp.map((patient) => {
-      return patient.map((item) => {
+    let contacts = temp.map((item) => {
         return <ContactCard key={item.contactId} contact={item} />
-      })
     })
     setContactToRender(contacts);
   }, [Search])
@@ -97,7 +100,7 @@ function Main({ navigation }) {
       </TouchableOpacity>
       {/*NewContactModal*/}
       <Modal animationType="slide" visible={modal1Visible}>
-        <AddNewContact cancel={() => { setModal1Visible(false); fetchContacts() }} />
+        <AddNewContact patientId={patientId}cancel={() => { setModal1Visible(false); fetchContacts() }} />
       </Modal>
     </View>
   )

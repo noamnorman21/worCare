@@ -848,14 +848,12 @@
       <Parameter Name="patientId" Mode="In" Type="String" />
     </FunctionImport>
     <FunctionImport Name="NewPaycheck">
-      <Parameter Name="payCheckNum" Mode="In" Type="Int32" />
       <Parameter Name="paycheckDate" Mode="In" Type="DateTime" />
       <Parameter Name="paycheckSummary" Mode="In" Type="String" />
       <Parameter Name="paycheckComment" Mode="In" Type="String" />
       <Parameter Name="UserId" Mode="In" Type="Int32" />
     </FunctionImport>
     <FunctionImport Name="NewPaymentRequest">
-      <Parameter Name="requestId" Mode="In" Type="Int32" />
       <Parameter Name="requestSubject" Mode="In" Type="String" />
       <Parameter Name="amountToPay" Mode="In" Type="Double" />
       <Parameter Name="requestDate" Mode="In" Type="DateTime" />

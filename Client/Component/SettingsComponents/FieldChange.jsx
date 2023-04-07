@@ -28,11 +28,11 @@ export default function FieldChange(props) {
       if (type === 'Password' && validatePassword(value)) {
          console.log('password is valid')         
          let userToUpdate = {
-            Id: userId,
-            password: value
+            userId: userId,
+            Password: value
          }
          console.log('userToUpdate', userToUpdate);
-         fetch('https://proj.ruppin.ac.il/cgroup94/prod/api/Settings/SetNewPassword', {
+         fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Settings/SetNewPassword', {
             method: 'PUT',
             headers: new Headers({
                'Content-Type': 'application/json; charset=UTF-8',

@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { ScrollView } from "react-native-gesture-handler";
 import * as DocumentPicker from 'expo-document-picker';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 export default function EditPaycheck(props) {
 
@@ -17,6 +18,8 @@ export default function EditPaycheck(props) {
     payCheckNumber: props.data.payCheckNum,    
     userId: props.data.UserId,
   })
+  const [show, setShow] = useState(false);
+  const [mode, setMode] = useState('date');
 
 
   useEffect(() => {
@@ -72,11 +75,39 @@ export default function EditPaycheck(props) {
   }, [])
 
 
+  const showMode = (currentMode) => {
+    if (Platform.OS === 'android') {
+      setShow(true);
+      // for iOS, add a button that closes the picker
+    }
+    setMode(currentMode);
+  };
+
+  const showDatepicker = () => {
+    showMode('date');
+  };
+
+  const onChangeDate = (selectedDate) => {   
+   
+  
+    const currentDate = new Date(selectedDate.nativeEvent.timestamp).toLocaleDateString();    
+    console.log("Date",currentDate);
+    setShow(false);
+    handleInputChange('paycheckDate', currentDate);
+  };
+
+
+
 
   
 
 const handleInputChange = (name, value) => {
+  console.log(name, value);
     setPaycheck({ ...Paycheck, [name]: value })  
+    if (name == 'paycheckDate') {
+      setShow(false);
+      console.log('date changed');
+    }
     if (!isChanged) {
       setisChanged(true);
     }  
@@ -205,15 +236,18 @@ const savePaycheck = async (downloadURL) => {
           <Text style={styles.title}>Edit Paycheck {Paycheck.payCheckNumber}</Text>
         </View>
         <View style={[styles.inputContainer, animation]}>
-        
-          <TextInput
-            style={[styles.input]}
-            placeholder='Date'
-            value={Paycheck.paycheckDate.substring(0, 10)}
-            keyboardType='ascii-capable'
-            onChangeText={(value) => handleInputChange('paycheckDate', value)}
-            inputMode='decimal'
-          />
+          <TouchableOpacity style={styles.datePicker} onPress={showDatepicker}>
+            <Text style={styles.TextInput}>{Paycheck.paycheckDate.substring(0, 10)}</Text>
+          </TouchableOpacity>
+          {show && (
+        <DateTimePicker
+          testID="dateTimePicker"
+          value={new Date(Paycheck.paycheckDate)}
+          mode={mode}
+          is24Hour={true}
+          onChange={(value)=>onChangeDate(value)}
+        />
+      )}         
             <TextInput
             style={styles.input}
             value={Paycheck.paycheckSummary}           
@@ -224,6 +258,7 @@ const savePaycheck = async (downloadURL) => {
             style={styles.input}            
             value={Paycheck.paycheckComment}
             keyboardType='ascii-capable'
+            placeholder="Comment"
             onChangeText={(value) => handleInputChange('paycheckComment', value)}
           />
           <TouchableOpacity style={styles.uploadButton} onPress={pickDocument}>
@@ -364,4 +399,16 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor:'#548DFF'
   },
+  datePicker: {
+    paddingVertical: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignContent: 'center',
+    marginBottom: 20,
+    borderRadius: 16,
+    backgroundColor:'#fff',
+    borderColor: '#E6EBF2',
+    borderWidth: 1,
+  },
+  
 });

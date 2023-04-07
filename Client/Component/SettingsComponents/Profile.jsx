@@ -79,7 +79,7 @@ export default function Profile({ navigation }) {
     updateUserContext(userToUpdate)
     const jsonValue = JSON.stringify(userToUpdate)
     AsyncStorage.setItem('userData', jsonValue);
-    fetch('https://proj.ruppin.ac.il/cgroup94/prod/api/Settings/UpdateUserProfile', {
+    fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Settings/UpdateUserProfile', {
       method: 'PUT',
       headers: new Headers({
         'Content-Type': 'application/json; charset=UTF-8',
