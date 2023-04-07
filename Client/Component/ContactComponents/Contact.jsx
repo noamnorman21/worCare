@@ -85,9 +85,6 @@ export default function Contact({ route, navigation }) {
     const emailRegex = /\S+@\S+\.\S+/
     return emailRegex.test(email)
   }
-
-
-
   const validateInput = () => {
     const { email, mobileNo, contactName } = Contact
     if (!mobileNo || !contactName) {
@@ -106,12 +103,12 @@ export default function Contact({ route, navigation }) {
     }
     SaveChanges(Contact);
   }
-  const SaveChanges = (Contact) => {
-    let urlContact = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/UpdateContact/' + Contact.contactId;
+  const SaveChanges = () => {
+    let urlContact = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/UpdateContact/';
     fetch(urlContact, {
       method: 'PUT',
       body: JSON.stringify(Contact),
-      headers: new Headers({ 'Content-Type': 'application/json; charset=UTF-8', })
+      headers: new Headers({ 'Content-Type': 'application/json; charset=UTF-8' })
     })
       .then(res => {
         return res.json()
@@ -122,7 +119,7 @@ export default function Contact({ route, navigation }) {
           navigation.goBack();
         },
         (error) => {
-          console.log("err post=", error);
+          console.log("err post2=", error);
         });
   }
   const DeleteContact = () => {

@@ -8,7 +8,7 @@ import AddNewContact from './ContactComponents/AddNewContact'
 import { useIsFocused } from '@react-navigation/native';
 import Contact from './ContactComponents/Contact'
 import { useUserContext } from '../UserContext'
-
+import { Octicons } from '@expo/vector-icons';
 export default function Contacts() {
   const stack = createStackNavigator();
 
@@ -31,42 +31,35 @@ function Main({ navigation }) {
   const PatientId = 779355403// will change when we finish context to get the patient id
   const isFocused = useIsFocused()
 
-
-
   const onChangeSearch = query => setSearch(query);
   const fetchContacts = async () => {
-  const user = {
-    userId: userContext.userId,
-    userType: userContext.userType,
-  } 
-  // new part when server is uploaded
-  const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/GetContacts', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(user)
-  });
-      const data= await response.json()    
-          let contacts = data.map((patient) => {
-            return patient.map((item) => {
-              return <ContactCard key={item.contactId} contact={item} />
-            })
-          })
-          let idarr = data.map((patient) => {
-            return patient.map((item) => {
-              return item.patientId
-            })
-          })          
-          setidArr(idarr);
-          setContacts(data);
-          setContactToRender(contacts);
-      }
-      
-
-
-   
-  
+    const user = {
+      userId: userContext.userId,
+      userType: userContext.userType,
+    }
+    // new part when server is uploaded
+    const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/GetContacts', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(user)
+    });
+    const data = await response.json()
+    let contacts = data.map((patient) => {
+      return patient.map((item) => {
+        return <ContactCard key={item.contactId} contact={item} />
+      })
+    })
+    let idarr = data.map((patient) => {
+      return patient.map((item) => {
+        return item.patientId
+      })
+    })
+    setidArr(idarr);
+    setContacts(data);
+    setContactToRender(contacts);
+  }
 
   useEffect(() => {
     let temp = Contacts.map((patient) => {
@@ -83,39 +76,32 @@ function Main({ navigation }) {
   }, [Search])
 
   useEffect(() => {
-    if (isFocused) {      
-        fetchContacts();  
+    if (isFocused) {
+      fetchContacts();
     }
   }, [isFocused])
-
-   
-
-
-
 
   return (
     <View style={styles.container}>
       <Searchbar style={styles.searchBar}
-        placeholder="Search"
+        placeholder="Search..."
         onChangeText={onChangeSearch}
         value={Search}
-        icon="magnify"
+        icon={(() => (<Octicons name="search" size={28} color="#808080" />))}
+        inputStyle={{ fontFamily: 'Urbanist-Medium', fontSize: 18 }}
+        placeholderTextColor="#808080"
       />
       {ContactToRender}
-      {userContext.userType=="User"? <TouchableOpacity style={styles.button} mode="fixed" onPress={() => setModal1Visible(true)}>
+      <TouchableOpacity style={styles.button} mode="fixed" onPress={() => setModal1Visible(true)}>
         <Text style={styles.buttonText}>+</Text>
-      </TouchableOpacity>: null}
+      </TouchableOpacity>
       {/*NewContactModal*/}
       <Modal animationType="slide" visible={modal1Visible}>
-        <AddNewContact cancel={() => {
-          setModal1Visible(false); fetchContacts()
-        }} idArr={idArr} />
+        <AddNewContact cancel={() => { setModal1Visible(false); fetchContacts() }} />
       </Modal>
     </View>
   )
 }
-
-
 
 function ContactCard(props) {
   const navigation = useNavigation();
@@ -127,9 +113,6 @@ function ContactCard(props) {
   )
 }
 
-
-
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -139,7 +122,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   details: {
-    marginTop: -20,
+    marginTop: -20, // fix style
     margin: 10,
     padding: 10,
     textAlign: 'left',
@@ -157,7 +140,6 @@ const styles = StyleSheet.create({
     padding: 10,
     textAlign: 'left',
   },
-
   contacttext: {
     fontSize: 14,
     textAlign: 'left',
@@ -170,7 +152,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 16,
   },
-
   contactcard: {
     backgroundColor: '#fff',
     height: 60,
@@ -194,7 +175,10 @@ const styles = StyleSheet.create({
   searchBar: {
     margin: 10,
     borderRadius: 16,
-    backgroundColor: '#E6EBF2',
+    backgroundColor: '#EEEEEE',
+    borderWidth: 1.5,
+    fontFamily: 'Urbanist-Medium',
+    borderColor: '#E6EBF2',
     height: Dimensions.get('window').height * 0.06,
   },
   button: {
@@ -213,7 +197,7 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   savebutton: {
-    width: Dimensions.get('window').width * 0.4,
+    width: Dimensions.get('window').width * 0.45,
     backgroundColor: '#548DFF',
     alignItems: 'center',
     justifyContent: 'center',
@@ -229,7 +213,7 @@ const styles = StyleSheet.create({
     height: 45,
   },
   cancelbutton: {
-    width: Dimensions.get('window').width * 0.4,
+    width: Dimensions.get('window').width * 0.45,
     backgroundColor: 'white',
     alignItems: 'center',
     justifyContent: 'center',
@@ -249,13 +233,13 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   savebuttonText: {
-    color: 'white',
-    fontWeight: '600',
+    color: '#fff',
     fontSize: 16,
+    fontFamily: 'Urbanist-SemiBold',
   },
   cancelbuttonText: {
-    color: 'black',
-    fontWeight: '600',
+    color: '#000',
+    fontFamily: 'Urbanist-SemiBold',
     fontSize: 16,
   },
 });

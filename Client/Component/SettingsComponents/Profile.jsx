@@ -178,9 +178,9 @@ export default function Profile({ navigation }) {
   }, []);
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      {/* <View style={styles.header}>
         <Text style={styles.title}>Profile</Text>
-      </View>
+      </View> */}
       <TouchableOpacity style={styles.imageContainer} onPress={() => pickImage()}>
         <Image style={styles.image} source={{ uri: userImg }} />
       </TouchableOpacity>
@@ -256,8 +256,8 @@ const styles = StyleSheet.create({
     marginBottom: Dimensions.get('window').height * 0.02,
   },
   image: {
-    width: Dimensions.get('window').width * 0.3,
-    height: Dimensions.get('window').height * 0.15,
+    width: 150,
+    height: 150,
     borderRadius: 100,
   },
   bottom: {

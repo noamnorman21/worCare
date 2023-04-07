@@ -2,6 +2,7 @@ import { Alert, View, Text, StyleSheet, SafeAreaView, Modal, TouchableOpacity, K
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback } from 'react-native';
 import { useState, useEffect } from 'react'
 import { AntDesign, Octicons } from '@expo/vector-icons';
+//import DateTimePicker from '@react-native-community/datetimepicker';
 
 import DatePicker from 'react-native-datepicker';
 import { Dropdown } from 'react-native-element-dropdown';
@@ -37,13 +38,10 @@ function AddNewMedicine(props) {
    const [medDosage, setMedDosage] = useState('')
    const [medDosageUnit, setMedDosageUnit] = useState('')
    const [selectedRange, setRange] = useState({});
-
    const [modalVisibleDate, setModalVisibleDate] = useState(false);
    const [allDrugs, setAllDrugs] = useState([]);//we will use this to get all the drugs from the server
    const [selectedDrugName, setSelectedDrugName] = useState('');//we will use this to get the selected drug from the user
    const [editMode, setEditMode] = useState(true);
-
-
    const medFrequencies = [
       { id: 0, name: 'Once' },
       { id: 1, name: 'Daily' },
@@ -108,10 +106,8 @@ function AddNewMedicine(props) {
       props.onClose();
    }
 
-
    const handeleDrugChange = (item) => {
       setSelectedDrugName(item);
-
       // להוסיף את הסוגים שאותם ניתן לספור לא רק pills
       if (item.Type != 'Pill') {
          setNumberPerDay(1);
@@ -124,7 +120,6 @@ function AddNewMedicine(props) {
          setQuantity(0);
       }
    }
-
 
    return (
       <SafeAreaView>
@@ -161,9 +156,8 @@ function AddNewMedicine(props) {
                                     <AntDesign name="caretup" size={15} color="#548DFF" />
                                  </TouchableOpacity>
                                  <TextInput
-                                    style={styles.inputNumber}
+                                    style={[styles.inputNumber, numberPerDay && { textAlign: 'center' }]}
                                     placeholder="Number per day"
-                                    placeholderStyle={{ textAlign: 'left' }}
                                     placeholderTextColor="#9E9E9E"
                                     editable={editMode}
                                     keyboardType='numeric'
@@ -205,7 +199,7 @@ function AddNewMedicine(props) {
                                     <AntDesign name="caretup" size={15} color="#548DFF" />
                                  </TouchableOpacity>
                                  <TextInput
-                                    style={styles.inputNumber}
+                                    style={[styles.inputNumber, quantity && { textAlign: 'center' }]}
                                     placeholder="Qty taken"
                                     placeholderTextColor="#9E9E9E"
                                     keyboardType='numeric'
@@ -221,7 +215,7 @@ function AddNewMedicine(props) {
                                     <AntDesign name="caretdown" size={15} color="#808080" />
                                  </TouchableOpacity>
                               </View>
-                              <View style={[styles.doubleRowItem, capacity && { borderColor: '#000' }]}>
+                              <View style={[styles.doubleRowItem, capacity && { borderColor: '#000'}]}>
                                  <TouchableOpacity onPress={() =>
                                     //setNumberPerDay using the function handleIncrement
                                     setCapacity(parseInt(capacity + 1))
@@ -229,7 +223,7 @@ function AddNewMedicine(props) {
                                     <AntDesign name="caretup" size={15} color="#548DFF" />
                                  </TouchableOpacity>
                                  <TextInput
-                                    style={styles.inputNumber}
+                                    style={[styles.inputNumber, capacity && { textAlign: 'center' }]}
                                     placeholder="Capacity In box"
                                     pointerEvents='box-none'
                                     placeholderTextColor="#9E9E9E"
@@ -254,170 +248,6 @@ function AddNewMedicine(props) {
                               <View style={[styles.doubleRowItem, medTime && { borderColor: '#000' }]}>
                               </View>
                            </View>
-
-
-                           {/* 
-                     { // if the user is a caregiver than display the assignee
-                        userType == "Caregiver" ?
-                           <Dropdown
-                              data={privateOrPublic}
-                              labelField="name"
-                              valueField="name"
-                              placeholder="Assignees"
-                              itemTextStyle={styles.itemStyle}
-                              placeholderStyle={styles.placeholderStyle}
-                              containerStyle={styles.containerStyle}
-                              style={[styles.input, taskAssignee && { borderColor: '#000' }]}
-                              value={taskAssignee}
-                              maxHeight={300}
-                              onChange={item => {
-                                 setTaskAssignee(item.name)
-                                 if (item.name == 'Private') {
-                                    setIsPrivate(true)
-                                 } else {
-                                    setIsPrivate(false)
-                                 }
-                              }}
-                           />
-                           : null
-                     }
-                     {
-                        //if is private= true than display the category
-                        !isPrivate ?
-                           <Dropdown
-                              data={taskCategorys}
-                              labelField="name"
-                              valueField="name"
-                              placeholder="Category"
-                              placeholderStyle={styles.placeholderStyle}
-                              style={[styles.input, taskCategory && { borderColor: '#000' }]}
-                              containerStyle={styles.containerStyle}
-                              maxHeight={300}
-                              value={taskCategory}
-                              onChange={item => { setTaskCategory(item.name) }}
-                           /> : //if is private= true than display like the user already choose the category of General
-                           <TextInput
-                              style={[styles.input, { borderColor: '#000' }]}
-                              placeholder='Category'
-                              placeholderTextColor='#9E9E9E'
-                              value='General'
-                              editable={false}
-                           />
-                     }
-
-                     <TouchableOpacity onPress={() => { setModalVisibleDate(true); }}>
-                        {
-                           taskFromDate && taskToDate ?
-                              <View style={[styles.input, { borderColor: '#000' }]}>
-                                 <Text style={[styles.regularTxt, { color: '#000', fontFamily: 'Urbanist-SemiBold' }]}>
-                                    {changeDateFormat(taskFromDate)} - {changeDateFormat(taskToDate)}
-                                 </Text>
-                              </View>
-                              :
-                              <View style={styles.input}>
-                                 <Text style={[styles.regularTxt, { color: '#9E9E9E' }]}>Start Date - End Date</Text>
-                              </View>
-                        }
-                     </TouchableOpacity>
-
-                     <Modal visible={modalVisibleDate}
-                        transparent={true} style={styles.modalDate} animationType='slide' onRequestClose={() => setModalVisibleDate(false)}>
-                        <View style={styles.modalDateView}>
-                           <DateRangePicker
-                              onSelectDateRange={(range) => { setRange(range); }}
-                              blockSingleDateSelection={true}
-                              responseFormat="YYYY-MM-DD"
-                              maxDate={moment().add(3, "year")}
-                              minDate={moment()}
-                              confirmBtnTitle=""
-                              clearBtnTitle=""
-                              selectedDateContainerStyle={styles.selectedDateContainerStyle}
-                              selectedDateStyle={styles.selectedDateStyle}
-                              selectedDateTextStyle={styles.selectedDateTextStyle}
-                              font='Urbanist-SemiBold'
-                           />
-
-                           <View style={{ height: 30 }}>
-                              {selectedRange.firstDate && selectedRange.secondDate && (
-                                 <Text style={styles.textStyleDate}>Selected Date: {changeDateFormat(selectedRange.firstDate)} - {changeDateFormat(selectedRange.secondDate)}</Text>
-                              )}
-                           </View>
-
-                           <View style={styles.btnModalDate}>
-                              <TouchableOpacity
-                                 style={styles.saveBtnDate}
-                                 onPress={() => {
-                                    setTaskFromDate(selectedRange.firstDate)
-                                    setTaskToDate(selectedRange.secondDate)
-                                    setModalVisibleDate(false);
-                                 }}
-                              >
-                                 <Text style={styles.textStyle}>Save</Text>
-                              </TouchableOpacity>
-                              <TouchableOpacity
-                                 style={styles.closeBtnDate}
-                                 onPress={() => {
-                                    setRange({});
-                                    setModalVisibleDate(false);
-                                 }}
-                              >
-                                 <Text style={styles.closeTxt}>Cancel</Text>
-                              </TouchableOpacity>
-                           </View>
-                        </View>
-                     </Modal>
-
-                     <DatePicker
-                        style={[styles.input, medTime != '' && { borderColor: '#000' }]}
-                        date={medTime}
-                        mode="time"
-                        placeholder="Time"
-                        format="HH:mm"
-                        is24Hour={true}
-                        confirmBtnText="Confirm"
-                        cancelBtnText="Cancel"
-                        showIcon={false}
-                        customStyles={{
-                           dateInput: {
-                              borderWidth: 0,
-                              alignItems: 'flex-start',
-                           },
-                           placeholderText: {
-                              color: '#9E9E9E',
-                              fontSize: 16,
-                              fontFamily: 'Urbanist-Light',
-                           },
-                           dateText: {
-                              color: '#000',
-                              fontSize: 16,
-                              fontFamily: 'Urbanist-SemiBold',
-                           },
-                        }}
-                        onDateChange={(date) => { setMedDate(date) }}
-                     />
-                     <Dropdown
-                        data={taskFrequencies}
-                        labelField="name"
-                        valueField="name"
-                        placeholder="Frequency"
-                        placeholderStyle={styles.placeholderStyle}
-                        style={[styles.input, taskFrequency && { borderColor: '#000' }]}
-                        maxHeight={200}
-                        value={taskFrequency}
-                        containerStyle={styles.containerStyle}
-                        onChange={item => { setTaskFrequency(item.name) }}
-                     />
-                     <TextInput
-                        style={[styles.commentInput, taskComment != '' && { borderColor: '#000' }]}
-                        placeholder='Comment ( optional )'
-                        value={taskComment}
-                        numberOfLines={4}
-                        returnKeyType='done'
-                        keyboardType='default'
-                        onSubmitEditing={() => Keyboard.dismiss()}
-                        placeholderTextColor='#9E9E9E'
-                        onChangeText={text => setTaskComment(text)}
-                     /> */}
                         </View>
 
                         <View style={styles.btnModal}>
@@ -435,7 +265,6 @@ function AddNewMedicine(props) {
          </Modal>
       </SafeAreaView >
    )
-
 }
 
 function NewTaskModal(props) {
@@ -747,24 +576,6 @@ function NewTaskModal(props) {
 
 export { NewTaskModal, AddBtn, AddNewMedicine }
 
-
-const stylesN = StyleSheet.create({
-   container: {
-      flexDirection: 'row',
-      alignItems: 'center',
-   },
-   icon: {
-      padding: 8,
-      borderRadius: 4,
-   },
-   upIcon: {
-      marginBottom: 8,
-   },
-   downIcon: {
-      marginTop: 8,
-   },
-});
-
 const styles = StyleSheet.create({
    container: {
       flex: 1,
@@ -805,7 +616,6 @@ const styles = StyleSheet.create({
       fontSize: 16,
       fontFamily: 'Urbanist',
    },
-
    placeholderStyle: {
       color: '#9E9E9E',
       fontSize: 16,
@@ -979,10 +789,7 @@ const styles = StyleSheet.create({
       borderBottomColor: '#E6EBF2',
       borderBottomWidth: 1.5,
    },
-
    arrowUp: {
-
-
       marginLeft: 10,
       position: 'absolute',
       right: 12,
@@ -991,27 +798,21 @@ const styles = StyleSheet.create({
       justifyContent: 'flex-end',
       height: 26,
       width: 28,
-      // backgroundColor:'red',
-
    },
    arrowDown: {
       marginLeft: 10,
       position: 'absolute',
-
       alignItems: 'center',
       justifyContent: 'center',
       height: 24,
       width: 28,
-
       right: 12,
       top: 22,
    },
    inputNumber: {
       width: SCREEN_WIDTH * 0.38,
-      // paddingLeft: 15,
-      textAlign: 'center',
-
       fontFamily: 'Urbanist-Light',
-      fontSize: 14,
+      fontSize: 16,
+      paddingLeft: 10,
    },
 })
