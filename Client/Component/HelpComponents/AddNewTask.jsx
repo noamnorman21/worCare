@@ -1,9 +1,4 @@
-<<<<<<< HEAD
-import { Alert, View, Text, StyleSheet, SafeAreaView, Modal, TouchableOpacity, Keyboard, Dimensions, TextInput } from 'react-native'
-import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback } from 'react-native';
-=======
 import { Alert, View, Text, StyleSheet, SafeAreaView, Modal, LayoutAnimation, TouchableOpacity, Keyboard, Dimensions, TextInput } from 'react-native'
->>>>>>> 12d71edbeb8a217a97cfc076f851e81f7fea37eb
 import { useState, useEffect } from 'react'
 import { AntDesign, Octicons } from '@expo/vector-icons';
 
@@ -32,24 +27,6 @@ function AddBtn(props) {
 function AddNewMedicine(props) {
    const [userData, setUserData] = useState('');
    const [userId, setUserId] = useState('');
-<<<<<<< HEAD
-   const [numberPerDay, setNumberPerDay] = useState(0)
-   const [quantity, setQuantity] = useState(0)
-   const [capacity, setCapacity] = useState(0)
-   const [selectedFrequency, setSelectedFrequency] = useState('')
-   const [medComment, setMedComment] = useState('')
-   const [medFromDate, setMedFromDate] = useState('')
-   const [medToDate, setMedToDate] = useState('')
-   const [medTime, setMedTime] = useState('')
-   const [medDosage, setMedDosage] = useState('')
-   const [medDosageUnit, setMedDosageUnit] = useState('')
-   const [selectedRange, setRange] = useState({});
-
-   const [modalVisibleDate, setModalVisibleDate] = useState(false);
-   const [allDrugs, setAllDrugs] = useState([]);//we will use this to get all the drugs from the server
-   const [selectedDrugName, setSelectedDrugName] = useState('');//we will use this to get the selected drug from the user
-   const [editMode, setEditMode] = useState(true);
-=======
    const [userType, setUserType] = useState('');
    const [medkName, setMedName] = useState('')
    const [medComment, setMedComment] = useState('')
@@ -67,7 +44,6 @@ function AddNewMedicine(props) {
    const [animation, setAnimation] = useState({});
    let animationInProgress = false;
 
->>>>>>> 12d71edbeb8a217a97cfc076f851e81f7fea37eb
 
 
    const medFrequencies = [
@@ -79,10 +55,6 @@ function AddNewMedicine(props) {
    ]
 
    useEffect(() => {
-<<<<<<< HEAD
-=======
-
->>>>>>> 12d71edbeb8a217a97cfc076f851e81f7fea37eb
       let allDrugsUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Drug/GetAllDrugs';
       fetch(allDrugsUrl, {
          method: 'GET',
@@ -102,26 +74,14 @@ function AddNewMedicine(props) {
             if (data != null) {
                //exmaple of data object: {drugId:1, drugName:"פרסקוטיקס", drugUrl:"https://www.drugs.com/images/pills/augmentin.jpg", modifyDate:"2021-05-05T00:00:00",Type:"pills"} 
                setAllDrugs(data);
-<<<<<<< HEAD
-=======
                console.log(allDrugs);
 
->>>>>>> 12d71edbeb8a217a97cfc076f851e81f7fea37eb
             }
          })
          .catch((error) => {
             console.log("err=", error);
          });
       getUserData();
-<<<<<<< HEAD
-   }, []);
-
-   const getUserData = async () => {
-      const user = await AsyncStorage.getItem('userData');
-      const userData = JSON.parse(user);
-      setUserId(userData.Id);
-      setUserData(userData);
-=======
       //use Keyboard.addListener to detect if the keyboard is open or not, if so add layout animation with margin bottom
       Keyboard.addListener('keyboardDidShow', () => {
          if (!animationInProgress) {
@@ -163,181 +123,11 @@ function AddNewMedicine(props) {
       setUserData(userData);
       setUserType(userContext.userType);
       console.log("userContext",userContext)
->>>>>>> 12d71edbeb8a217a97cfc076f851e81f7fea37eb
    }
    const changeDateFormat = (date) => {
       return moment(date).format('DD/MM/YYYY');
    }
    const addMed = () => {
-<<<<<<< HEAD
-      // Alert.alert('add med name');
-      console.log(selectedDrugName.Type);
-   }
-   const clearInputs = () => {
-      setNumberPerDay(0);
-      setQuantity(0);
-      setCapacity(0);
-      setSelectedFrequency('');
-      setMedComment('');
-      setMedFromDate('');
-      setMedToDate('');
-      setMedTime('');
-      setMedDosage('');
-      setMedDosageUnit('');
-      setSelectedDrugName('');
-      props.onClose();
-   }
-
-
-   const handeleDrugChange = (item) => {
-      setSelectedDrugName(item);
-
-      // להוסיף את הסוגים שאותם ניתן לספור לא רק pills
-      if (item.Type != 'Pill') {
-         setNumberPerDay(1);
-         setQuantity(1);
-         setEditMode(false);
-      }
-      else {
-         setEditMode(true);
-         setNumberPerDay(0);
-         setQuantity(0);
-      }
-   }
-
-
-   return (
-      <SafeAreaView>
-         <Modal visible={props.isVisible} presentationStyle='formSheet' animationType='slide' onRequestClose={props.onClose}>
-            <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-               <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
-                  <View style={styles.centeredView}>
-                     <View style={styles.modalView}>
-                        <Text style={styles.modalText}>Add new Med </Text>
-                        <View style={styles.inputView}>
-                           <Dropdown
-                              data={allDrugs}
-                              labelField="drugName"
-                              valueField="drugName"
-                              placeholder="Medicine Name"
-                              maxHeight={300}
-                              fontFamily='Urbanist-Light'
-                              // style={[styles.input, taskAssignee && { borderColor: '#000' }]}
-                              style={[styles.input, { textAlign: 'center' }, selectedDrugName && { borderColor: '#000' }]}
-                              itemTextStyle={styles.itemStyle}
-                              placeholderStyle={styles.placeholderStyle}
-                              containerStyle={styles.containerStyle}
-                              value={selectedDrugName}
-                              onChange={(item) => handeleDrugChange(item)}
-                           />
-                        </View>
-                        <Text>More Details...</Text>
-                        <View style={styles.inputView}>
-                           <View style={styles.doubleRow}>
-                              <View style={[styles.doubleRowItem, numberPerDay && { borderColor: '#000' }]}>
-                                 <TouchableOpacity disabled={!editMode} onPress={() =>
-                                    setNumberPerDay(parseInt(numberPerDay + 1))
-                                 } style={styles.arrowUp}>
-                                    <AntDesign name="caretup" size={15} color="#548DFF" />
-                                 </TouchableOpacity>
-                                 <TextInput
-                                    style={styles.inputNumber}
-                                    placeholder="Number per day"
-                                    placeholderStyle={{ textAlign: 'left' }}
-                                    placeholderTextColor="#9E9E9E"
-                                    editable={editMode}
-                                    keyboardType='numeric'
-                                    returnKeyType='done'
-                                    value={numberPerDay == 0 ? '' : numberPerDay.toString()}
-                                    onChangeText={text => text == '' ? setNumberPerDay(0) :
-                                       setNumberPerDay(parseInt(text))}
-                                 />
-                                 <TouchableOpacity disabled={!editMode} onPress={() =>
-                                    numberPerDay == 0 ? setNumberPerDay(0) : setNumberPerDay(parseInt(numberPerDay - 1))
-                                 } style={styles.arrowDown}>
-                                    <AntDesign name="caretdown" size={15} color="#808080" />
-                                 </TouchableOpacity>
-                              </View>
-                              <Dropdown
-                                 data={medFrequencies}
-                                 labelField="name"
-                                 valueField="name"
-                                 placeholder="Frequency"
-                                 fontFamily='Urbanist-Light'
-                                 // style={[styles.input, taskAssignee && { borderColor: '#000' }]}
-                                 style={[styles.doubleRowItem, { paddingLeft: 23, paddingRight: 18 }, selectedFrequency && { borderColor: '#000' }]}
-                                 itemTextStyle={styles.itemStyle}
-                                 placeholderStyle={styles.placeholderStyle}
-                                 //containerStyle={styles.containerStyle}
-                                 inputSearchStyle={styles.inputSearchStyle}
-                                 value={selectedFrequency}
-                                 onChange={item => {
-                                    setSelectedFrequency(item.name)
-                                 }}
-                              />
-                           </View>
-                           <View style={styles.doubleRow}>
-                              <View style={[styles.doubleRowItem, quantity && { borderColor: '#000' }]}>
-                                 <TouchableOpacity disabled={!editMode} onPress={() =>
-                                    //setNumberPerDay using the function handleIncrement
-                                    setQuantity(parseInt(quantity + 1))
-                                 } style={styles.arrowUp}>
-                                    <AntDesign name="caretup" size={15} color="#548DFF" />
-                                 </TouchableOpacity>
-                                 <TextInput
-                                    style={styles.inputNumber}
-                                    placeholder="Qty taken"
-                                    placeholderTextColor="#9E9E9E"
-                                    keyboardType='numeric'
-                                    editable={editMode}
-                                    returnKeyType='done'
-                                    value={quantity == 0 ? '' : quantity.toString()}
-                                    onChangeText={text => text == '' ? setQuantity(0) :
-                                       setQuantity(parseInt(text))}
-                                 />
-                                 <TouchableOpacity disabled={!editMode} onPress={() =>
-                                    quantity == 0 ? setQuantity(0) : setQuantity(parseInt(quantity - 1))
-                                 } style={styles.arrowDown}>
-                                    <AntDesign name="caretdown" size={15} color="#808080" />
-                                 </TouchableOpacity>
-                              </View>
-                              <View style={[styles.doubleRowItem, capacity && { borderColor: '#000' }]}>
-                                 <TouchableOpacity onPress={() =>
-                                    //setNumberPerDay using the function handleIncrement
-                                    setCapacity(parseInt(capacity + 1))
-                                 } style={styles.arrowUp}>
-                                    <AntDesign name="caretup" size={15} color="#548DFF" />
-                                 </TouchableOpacity>
-                                 <TextInput
-                                    style={styles.inputNumber}
-                                    placeholder="Capacity In box"
-                                    pointerEvents='box-none'
-                                    placeholderTextColor="#9E9E9E"
-                                    keyboardType='numeric'
-                                    returnKeyType='done'
-                                    value={capacity == 0 ? '' : capacity.toString()}
-                                    onChangeText={text => text == '' ? setCapacity(0) :
-                                       setCapacity(parseInt(text))}
-                                 />
-                                 <TouchableOpacity onPress={() =>
-                                    capacity == 0 ? setCapacity(0) : setCapacity(parseInt(capacity - 1))
-                                 } style={styles.arrowDown}>
-                                    <AntDesign name="caretdown" size={15} color="#808080" />
-                                 </TouchableOpacity>
-
-                              </View>
-                           </View>
-                           <Text>Set end date</Text>
-                           <View style={styles.doubleRow}>
-                              <View style={[styles.doubleRowItem, medToDate && { borderColor: '#000' }]}>
-                              </View>
-                              <View style={[styles.doubleRowItem, medTime && { borderColor: '#000' }]}>
-                              </View>
-                           </View>
-
-
-                           {/* 
-=======
       Alert.alert('add med name');
    }
 
@@ -388,7 +178,6 @@ function AddNewMedicine(props) {
                         onChangeText={text => setTaskName(text)}
                         onEndEditing={() => { setTaskNameBorder(taskName) }}
                      />
->>>>>>> 12d71edbeb8a217a97cfc076f851e81f7fea37eb
                      { // if the user is a caregiver than display the assignee
                         userType == "Caregiver" ?
                            <Dropdown
@@ -500,13 +289,8 @@ function AddNewMedicine(props) {
                      </Modal>
 
                      <DatePicker
-<<<<<<< HEAD
-                        style={[styles.input, medTime != '' && { borderColor: '#000' }]}
-                        date={medTime}
-=======
                         style={[styles.input, taskTime != '' && { borderColor: '#000' }]}
                         date={taskTime}
->>>>>>> 12d71edbeb8a217a97cfc076f851e81f7fea37eb
                         mode="time"
                         placeholder="Time"
                         format="HH:mm"
@@ -530,11 +314,7 @@ function AddNewMedicine(props) {
                               fontFamily: 'Urbanist-SemiBold',
                            },
                         }}
-<<<<<<< HEAD
-                        onDateChange={(date) => { setMedDate(date) }}
-=======
                         onDateChange={(date) => { setTaskTime(date) }}
->>>>>>> 12d71edbeb8a217a97cfc076f851e81f7fea37eb
                      />
                      <Dropdown
                         data={taskFrequencies}
@@ -548,10 +328,6 @@ function AddNewMedicine(props) {
                         containerStyle={styles.containerStyle}
                         onChange={item => { setTaskFrequency(item.name) }}
                      />
-<<<<<<< HEAD
-=======
-
->>>>>>> 12d71edbeb8a217a97cfc076f851e81f7fea37eb
                      <TextInput
                         style={[styles.commentInput, taskComment != '' && { borderColor: '#000' }]}
                         placeholder='Comment ( optional )'
@@ -563,24 +339,6 @@ function AddNewMedicine(props) {
                         placeholderTextColor='#9E9E9E'
                         onChangeText={text => setTaskComment(text)}
                      /> */}
-<<<<<<< HEAD
-                        </View>
-
-                        <View style={styles.btnModal}>
-                           <TouchableOpacity style={styles.saveBtn} onPress={addMed}>
-                              <Text style={styles.textStyle}>Save</Text>
-                           </TouchableOpacity>
-                           <TouchableOpacity style={styles.closeBtn} onPress={clearInputs}>
-                              <Text style={styles.closeTxt}>Cancel</Text>
-                           </TouchableOpacity>
-                        </View>
-                     </View>
-                  </View>
-               </TouchableWithoutFeedback>
-            </KeyboardAvoidingView>
-         </Modal>
-      </SafeAreaView >
-=======
                   </View>
                   <View style={styles.btnModal}>
                      <TouchableOpacity style={styles.SaveBtn} onPress={addMed}>
@@ -594,7 +352,6 @@ function AddNewMedicine(props) {
             </View>
          </Modal>
       </SafeAreaView>
->>>>>>> 12d71edbeb8a217a97cfc076f851e81f7fea37eb
    )
 
 }
@@ -710,14 +467,6 @@ function NewTaskModal(props) {
    return (
       <SafeAreaView>
          <Modal visible={props.isVisible} presentationStyle='formSheet' animationType='slide' onRequestClose={props.onClose}>
-<<<<<<< HEAD
-            <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-               <TouchableWithoutFeedback>
-                  <View style={styles.centeredView}>
-                     <View style={styles.modalView}>
-                        <Text style={styles.modalText}>Add new task </Text>
-                        <View style={styles.inputView}>
-=======
             <View style={[styles.centeredView, animation]}>
                <View style={styles.modalView}>
                   <Text style={styles.modalText}>Add new task </Text>
@@ -770,7 +519,6 @@ function NewTaskModal(props) {
                               value={taskCategory}
                               onChange={item => { setTaskCategory(item.name) }}
                            /> : //if is private= true than display like the user already choose the category of General
->>>>>>> 12d71edbeb8a217a97cfc076f851e81f7fea37eb
                            <TextInput
                               style={[styles.input, taskNameBorder && { borderColor: '#000' }]}
                               placeholder='Task Name'
@@ -1021,10 +769,6 @@ const styles = StyleSheet.create({
       fontSize: 16,
       fontFamily: 'Urbanist',
    },
-<<<<<<< HEAD
-
-=======
->>>>>>> 12d71edbeb8a217a97cfc076f851e81f7fea37eb
    placeholderStyle: {
       color: '#9E9E9E',
       fontSize: 16,
