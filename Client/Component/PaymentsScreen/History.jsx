@@ -53,7 +53,7 @@ export default function History({ navigation, route }) {
         userId: userContext.userId,
         userType: userContext.userType
       }
-      const response = await fetch('https://proj.ruppin.ac.il/cgroup94/prod/api/Payments/GetHistory/', {
+      const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/GetHistory/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

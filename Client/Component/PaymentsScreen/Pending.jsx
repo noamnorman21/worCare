@@ -34,7 +34,7 @@ export default function Pending({ route }) {
         userType: userContext.userType
       }
       console.log(user)
-      const response = await fetch('https://proj.ruppin.ac.il/cgroup94/prod/api/Payments/GetPending/', {
+      const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/GetPending/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -104,7 +104,7 @@ function Request(props) {
       requestStatus: "F"
     }
     try {
-      const response = await fetch('https://proj.ruppin.ac.il/cgroup94/prod/api/Payments/UpdateStatus/', {
+      const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/UpdateStatus/', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

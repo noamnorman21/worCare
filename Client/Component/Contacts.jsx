@@ -40,7 +40,7 @@ function Main({ navigation }) {
     userType: userContext.userType,
   } 
   // new part when server is uploaded
-  const response = await fetch('https://proj.ruppin.ac.il/cgroup94/prod/api/Contacts/GetContacts', {
+  const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/GetContacts', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

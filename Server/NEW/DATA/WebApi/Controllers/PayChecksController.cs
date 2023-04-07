@@ -13,36 +13,66 @@ namespace WebApi.Controllers
     public class PayChecksController : ApiController
     {
         igroup194Db db = new igroup194Db();
-<<<<<<< HEAD
-        [HttpGet]
-        [Route("GetPaychecks/{id}")]
-        public IHttpActionResult GetPaychecks(int id)
-=======
 
         // GET: api/PayChecks
         [HttpPost]
         [Route("GetPaychecks")]
-        public IHttpActionResult GetPaychecks([FromBody] int id)
->>>>>>> 12d71edbeb8a217a97cfc076f851e81f7fea37eb
+        public IHttpActionResult GetPaychecks([FromBody] UserDTO user)
         {
-
             try
             {
-                var Contacts = db.tblPaycheck.Where(x => x.UserId == id).Select(y => new PayCheckDTO
+                if (user.userType == "User")
                 {
-                    payCheckNum = y.payCheckNum,
-                    paycheckDate = y.paycheckDate,
-                    paycheckSummary = y.paycheckSummary,
-                    paycheckComment = y.paycheckComment,
-                    UserId = y.UserId,
-                }).ToList();
-                return Ok(Contacts);
+                    var Contacts = db.tblPaycheck.Where(x => x.UserId == user.userId).Select(y => new PayCheckDTO
+                    {
+                        payCheckNum = y.payCheckNum,
+                        paycheckDate = y.paycheckDate,
+                        paycheckSummary = y.paycheckSummary,
+                        paycheckComment = y.paycheckComment,
+                        UserId = y.UserId,
+                    }).ToList();
+                    return Ok(Contacts);
+                }
+                else
+                {
+                    var Patients = db.tblCaresForPatient.Where(x => x.workerId == user.userId).Select(y => y.patientId).ToList();
+                    var users= new List<List<UserDTO>>();
+                    foreach (var patient in Patients)
+                    {
+                        var tempo = db.tblPatient.Where(x => x.patientId == patient).Select(y => new UserDTO{
+                            userId= y.userId,
+                            }).ToList();
+                        users.Add(tempo);
+                    }
+                    var temp = new List<dynamic>();
+                    foreach (var item in users)
+                    {
+                        foreach (var item2 in item)
+                        {
+                            var Paycheks = db.tblPaycheck.Where(x => x.UserId == item2.userId).Select(y => new PayCheckDTO
+                            {
+                                payCheckNum = y.payCheckNum,
+                                paycheckDate = y.paycheckDate,
+                                paycheckSummary = y.paycheckSummary,
+                                paycheckComment = y.paycheckComment,
+                                UserId = y.UserId,
+                            }).ToList();
+                            foreach (var paycheck in Paycheks)
+                            {
+                                temp.Add(paycheck);
+                            }
+                        }
+                    }                    
+                    return Ok(temp);
+                }
+
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
         }
+
 
         [HttpGet]
         [Route("GetSpecificPayCheck/{num}")]
@@ -73,21 +103,8 @@ namespace WebApi.Controllers
         {
             try
             {
-<<<<<<< HEAD
                 int id = db.tblPaymentRequest.Max(x => x.requestId) + 1;
                 int num = db.tblPaycheck.Max(x => x.payCheckNum) + 1;
-=======
-                int num;
-                int rows = db.tblPaycheck.Count();
-                if (rows > 0)
-                {
-                    num = db.tblPaycheck.Max(x => x.payCheckNum) + 1;
-                }
-                else
-                {
-                    num = 1;
-                }
->>>>>>> 12d71edbeb8a217a97cfc076f851e81f7fea37eb
                 db.NewPaycheck(num, pay.paycheckDate, pay.paycheckSummary, pay.paycheckComment, pay.UserId);
                 db.SaveChanges();
                 return Ok("Paycheck added successfully!");

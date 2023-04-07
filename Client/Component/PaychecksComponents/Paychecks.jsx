@@ -42,12 +42,14 @@ export default function Paychecks({navigation, route}) {
   const getPaychecks = async () => {
 
     try {
-      const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/PayChecks/GetPaychecks/' + userContext.userId, {
-        method: 'GET',
+      const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/PayChecks/GetPaychecks/' , {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
 
         },
+        body: JSON.stringify(userContext.userId)
+
       });
       const data = await response.json();
       if(data!=null && data.length!=undefined) {
