@@ -13,11 +13,17 @@ namespace WebApi.Controllers
     public class PayChecksController : ApiController
     {
         igroup194Db db = new igroup194Db();
+<<<<<<< HEAD
+        [HttpGet]
+        [Route("GetPaychecks/{id}")]
+        public IHttpActionResult GetPaychecks(int id)
+=======
 
         // GET: api/PayChecks
         [HttpPost]
         [Route("GetPaychecks")]
         public IHttpActionResult GetPaychecks([FromBody] int id)
+>>>>>>> 12d71edbeb8a217a97cfc076f851e81f7fea37eb
         {
 
             try
@@ -67,6 +73,10 @@ namespace WebApi.Controllers
         {
             try
             {
+<<<<<<< HEAD
+                int id = db.tblPaymentRequest.Max(x => x.requestId) + 1;
+                int num = db.tblPaycheck.Max(x => x.payCheckNum) + 1;
+=======
                 int num;
                 int rows = db.tblPaycheck.Count();
                 if (rows > 0)
@@ -77,6 +87,7 @@ namespace WebApi.Controllers
                 {
                     num = 1;
                 }
+>>>>>>> 12d71edbeb8a217a97cfc076f851e81f7fea37eb
                 db.NewPaycheck(num, pay.paycheckDate, pay.paycheckSummary, pay.paycheckComment, pay.UserId);
                 db.SaveChanges();
                 return Ok("Paycheck added successfully!");
@@ -141,7 +152,6 @@ namespace WebApi.Controllers
             {
                 return BadRequest(ex.Message);
             }
-
         }
     }
 }

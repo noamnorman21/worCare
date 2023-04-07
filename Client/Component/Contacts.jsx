@@ -9,9 +9,6 @@ import { useIsFocused } from '@react-navigation/native';
 import Contact from './ContactComponents/Contact'
 import { useUserContext } from '../UserContext'
 
-
-
-
 export default function Contacts() {
   const stack = createStackNavigator();
 

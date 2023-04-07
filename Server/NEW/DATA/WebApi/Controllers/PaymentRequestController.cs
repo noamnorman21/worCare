@@ -13,11 +13,17 @@ namespace WebApi.Controllers
     public class PaymentRequestController : ApiController
     {
         igroup194Db db = new igroup194Db();
+<<<<<<< HEAD
+        [Route("GetPending/{id}")]
+        [HttpGet]
+        public IHttpActionResult GetPending(int id)
+=======
         
         // GET: api/PaymentRequest
         [Route("GetPending")]
         [HttpPost]
         public IHttpActionResult GetPending([FromBody] UserDTO user)
+>>>>>>> 12d71edbeb8a217a97cfc076f851e81f7fea37eb
         {
             try
             {
@@ -52,6 +58,72 @@ namespace WebApi.Controllers
                             }));
                         }
 
+<<<<<<< HEAD
+                var Payments = db.tblPaymentRequest.Where(x => x.userId == id && x.requestStatus == "R").Select(y => new PaymentsRequestDTO
+                {
+                    requestId = y.requestId,
+                    requestSubject = y.requestSubject,
+                    amountToPay = y.amountToPay,
+                    requestDate = y.requestDate,
+                    requestProofDocument = y.requestProofDocument,
+                    requestComment = y.requestComment,
+                    requestStatus = y.requestStatus,
+                    userId = y.userId,
+                }).ToList();
+                return Ok(Payments);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [Route("GetHistory/{id}")]
+        [HttpGet]
+        public IHttpActionResult GetHistory(int id)
+        {
+            try
+            {
+                var Payments = db.tblPaymentRequest.Where(x => x.userId == id && x.requestStatus == "C").Select(y => new PaymentsRequestDTO
+                {
+                    requestId = y.requestId,
+                    requestSubject = y.requestSubject,
+                    amountToPay = y.amountToPay,
+                    requestDate = y.requestDate,
+                    requestProofDocument = y.requestProofDocument,
+                    requestComment = y.requestComment,
+                    requestStatus = y.requestStatus,
+                    userId = y.userId,
+                }).ToList();
+                return Ok(Payments);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        // GET: api/PaymentRequest/5
+        [HttpGet]
+        [Route("GetSpecificPayments/{id}")]
+        public IHttpActionResult GetSpecificPayments(int id)
+        {
+            try
+            {
+                var Payment = db.tblPaymentRequest.Where(x => x.requestId == id).Select(y => new PaymentsRequestDTO
+                {
+                    requestId = y.requestId,
+                    requestSubject = y.requestSubject,
+                    amountToPay = y.amountToPay,
+                    requestDate = y.requestDate,
+                    requestProofDocument = y.requestProofDocument,
+                    requestComment = y.requestComment,
+                    requestStatus = y.requestStatus,
+                    userId = y.userId,
+                }).FirstOrDefault();
+                if (Payment != null)
+                {
+                    return Ok(Payment);
+=======
                     }
                     var Requests = new List<PaymentsRequestDTO>();
                     foreach (var worker in temp)
@@ -62,6 +134,7 @@ namespace WebApi.Controllers
                         }
                     }
                     return Ok(Requests);
+>>>>>>> 12d71edbeb8a217a97cfc076f851e81f7fea37eb
                 }
                 else
                 {
@@ -205,7 +278,6 @@ namespace WebApi.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
-                throw;
             }
         }
 
@@ -254,6 +326,5 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
     }
 }

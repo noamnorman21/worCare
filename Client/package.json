@@ -53,6 +53,7 @@
     "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "~2.8.0",
     "react-native-gifted-chat": "^1.1.0",
+    "react-native-numeric-input": "^1.9.1",
     "react-native-pager-view": "6.0.1",
     "react-native-paper": "^5.0.1",
     "react-native-paper-tabs": "^0.7.0",
