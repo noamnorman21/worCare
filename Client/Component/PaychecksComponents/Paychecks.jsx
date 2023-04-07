@@ -12,6 +12,7 @@ export default function Paychecks({navigation, route}) {
   const { userContext } = useUserContext();
  
   const [History, setHistory] = useState()
+  const [arr, setArr] = useState()
   const isFocused = useIsFocused()
   const [modal1Visible, setModal1Visible] = useState(false);
 
@@ -34,13 +35,17 @@ export default function Paychecks({navigation, route}) {
   
   
   useEffect(() => {
-    if (isFocused) {
+    if (isFocused && modal1Visible == false) {
       getPaychecks()
     }
-  }, [isFocused])
+  }, [isFocused, modal1Visible])
 
   const getPaychecks = async () => {
-    console.log("getPaychecks")
+    const user = {
+      userId: userContext.userId,
+      userType: userContext.userType,
+    }
+    
     try {
       const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/PayChecks/GetPaychecks/' , {
         method: 'POST',
@@ -48,9 +53,11 @@ export default function Paychecks({navigation, route}) {
           'Content-Type': 'application/json',
 
         },
-        body: JSON.stringify(userContext.userId)
+        body: JSON.stringify(user)
       });
       const data = await response.json();
+      setArr(data)
+      console.log(data)
       if(data!=null && data.length!=undefined) {
       let arr = data.map((item) => {
         return (
@@ -58,6 +65,7 @@ export default function Paychecks({navigation, route}) {
         )
       })
       setHistory(arr)
+      
     }
     } catch (error) {
       console.log(error)
@@ -156,7 +164,7 @@ function Paycheck(props) {
             <Text style={styles.viewbuttonText}>View Document</Text>
           </TouchableOpacity>
           <Modal animationType='slide' transparent={true} visible={modal1Visible}>
-            <EditPaycheck cancel={() => {setModal1Visible(false); setExpanded(true) ; props.getPaychecks()}} data={props.data} />
+            <EditPaycheck cancel={(value) => {setModal1Visible(false); setExpanded(true); props.getPaychecks(); settemp(value)}} data={props.data} />
           </Modal>
           <TouchableOpacity style={[styles.itemsText, styles.editButton]} onPress={!expanded ? () =>{setModal1Visible(true)} : null}>
             <Text style={styles.editbuttonText}>Edit</Text>

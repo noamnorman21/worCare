@@ -90,7 +90,7 @@ export default function EditPaycheck(props) {
   const onChangeDate = (selectedDate) => {   
    
   
-    const currentDate = new Date(selectedDate.nativeEvent.timestamp).toLocaleDateString();    
+    const currentDate = new Date(selectedDate.nativeEvent.timestamp).toISOString().substring(0,10);    
     console.log("Date",currentDate);
     setShow(false);
     handleInputChange('paycheckDate', currentDate);
@@ -218,7 +218,7 @@ const savePaycheck = async (downloadURL) => {
     .then(
       (result) => {
         console.log("fetch POST= ", result);          
-        props.cancel();
+        props.cancel(temp);
       },
       (error) => {
         console.log("err post=", error);
@@ -410,5 +410,5 @@ const styles = StyleSheet.create({
     borderColor: '#E6EBF2',
     borderWidth: 1,
   },
-  
+
 });

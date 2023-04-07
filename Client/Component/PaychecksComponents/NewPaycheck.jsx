@@ -60,8 +60,7 @@ export default function NewPaycheck(props) {
       aspect: [4, 3],
       quality: 0.1,
     });    
-    alert(result.uri);    
-    console.log(result);
+    
     // changeIMG(result.uri);
     
   };

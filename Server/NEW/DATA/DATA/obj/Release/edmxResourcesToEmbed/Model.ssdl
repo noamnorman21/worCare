@@ -182,7 +182,7 @@
     <Key>
       <PropertyRef Name="payCheckNum" />
     </Key>
-    <Property Name="payCheckNum" Type="int" Nullable="false" />
+    <Property Name="payCheckNum" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="paycheckDate" Type="date" Nullable="false" />
     <Property Name="paycheckSummary" Type="nvarchar" MaxLength="4000" Nullable="false" />
     <Property Name="paycheckComment" Type="nvarchar(max)" />
@@ -192,7 +192,7 @@
     <Key>
       <PropertyRef Name="requestId" />
     </Key>
-    <Property Name="requestId" Type="int" Nullable="false" />
+    <Property Name="requestId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="requestSubject" Type="varchar" MaxLength="20" Nullable="false" />
     <Property Name="amountToPay" Type="float" Nullable="false" />
     <Property Name="requestDate" Type="date" Nullable="false" />
@@ -510,8 +510,10 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__tblPayche__UserI__6A50C1DA">
-    <End Role="tblUser" Type="Self.tblUser" Multiplicity="1" />
+  <Association Name="FK__tblPayche__UserI__2942188C">
+    <End Role="tblUser" Type="Self.tblUser" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
     <End Role="tblPaycheck" Type="Self.tblPaycheck" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="tblUser">
@@ -522,8 +524,10 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__tblPaymen__userI__1EC48A19">
-    <End Role="tblForeignUser" Type="Self.tblForeignUser" Multiplicity="1" />
+  <Association Name="FK__tblPaymen__userI__2FEF161B">
+    <End Role="tblForeignUser" Type="Self.tblForeignUser" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
     <End Role="tblPaymentRequest" Type="Self.tblPaymentRequest" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="tblForeignUser">
@@ -669,14 +673,12 @@
     <Parameter Name="patientId" Type="char" Mode="In" />
   </Function>
   <Function Name="NewPaycheck" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-    <Parameter Name="payCheckNum" Type="int" Mode="In" />
     <Parameter Name="paycheckDate" Type="date" Mode="In" />
     <Parameter Name="paycheckSummary" Type="nvarchar" Mode="In" />
     <Parameter Name="paycheckComment" Type="varchar(max)" Mode="In" />
     <Parameter Name="UserId" Type="int" Mode="In" />
   </Function>
   <Function Name="NewPaymentRequest" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-    <Parameter Name="requestId" Type="int" Mode="In" />
     <Parameter Name="requestSubject" Type="varchar" Mode="In" />
     <Parameter Name="amountToPay" Type="float" Mode="In" />
     <Parameter Name="requestDate" Type="date" Mode="In" />
@@ -828,11 +830,11 @@
       <End Role="tblForeignUser" EntitySet="tblForeignUser" />
       <End Role="tblPatientTask" EntitySet="tblPatientTask" />
     </AssociationSet>
-    <AssociationSet Name="FK__tblPayche__UserI__6A50C1DA" Association="Self.FK__tblPayche__UserI__6A50C1DA">
+    <AssociationSet Name="FK__tblPayche__UserI__2942188C" Association="Self.FK__tblPayche__UserI__2942188C">
       <End Role="tblUser" EntitySet="tblUser" />
       <End Role="tblPaycheck" EntitySet="tblPaycheck" />
     </AssociationSet>
-    <AssociationSet Name="FK__tblPaymen__userI__1EC48A19" Association="Self.FK__tblPaymen__userI__1EC48A19">
+    <AssociationSet Name="FK__tblPaymen__userI__2FEF161B" Association="Self.FK__tblPaymen__userI__2FEF161B">
       <End Role="tblForeignUser" EntitySet="tblForeignUser" />
       <End Role="tblPaymentRequest" EntitySet="tblPaymentRequest" />
     </AssociationSet>
