@@ -121,7 +121,7 @@ export default function NewPaycheck(props) {
 
   const savePaycheck = async () => {
     const Newcheck = {     
-      paycheckDate: new Date(PayCheck.paycheckYear, PayCheck.paycheckMonth,1),
+      paycheckDate: new Date(PayCheck.paycheckYear, PayCheck.paycheckMonth-1,1).toLocaleDateString(),
       paycheckSummary: PayCheck.paycheckSummary,
       paycheckComment: PayCheck.paycheckComment,   
       userId: PayCheck.userId

@@ -12,7 +12,7 @@ export default function NewPayment(props) {
   const [payment, setPayment] = useState({
     amountToPay: '',
     requestSubject: '',
-    requestDate: new Date(),
+    requestDate: new Date().toLocaleDateString(),
     requestProofDocument: '',
     requestComment: '',
     requestStatus: 'P',

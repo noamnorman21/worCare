@@ -40,7 +40,7 @@ export default function Paychecks({navigation, route}) {
   }, [isFocused])
 
   const getPaychecks = async () => {
-
+    console.log("getPaychecks")
     try {
       const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/PayChecks/GetPaychecks/' , {
         method: 'POST',
@@ -49,7 +49,6 @@ export default function Paychecks({navigation, route}) {
 
         },
         body: JSON.stringify(userContext.userId)
-
       });
       const data = await response.json();
       if(data!=null && data.length!=undefined) {
@@ -227,7 +226,7 @@ const styles = StyleSheet.create({
     borderBottomStartRadius: 16,
     marginBottom: 10,
     padding: 16,
-    flexGrow: 0.35,   
+       
     
   },
   itemsText: {

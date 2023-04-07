@@ -91,7 +91,6 @@ export function UserProvider({ children }) {
             userUri: userData.userUri,
             gender: userData.gender,
         }
-
         setUserContext(usertoSync);
        
     }

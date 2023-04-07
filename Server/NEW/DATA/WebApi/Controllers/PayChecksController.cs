@@ -14,75 +14,55 @@ namespace WebApi.Controllers
     {
         igroup194Db db = new igroup194Db();
 
-        // GET: api/PayChecks -- > לתקן לפי מטופל בודד ומטפל בודד
-        //[HttpPost]
-        //[Route("GetPaychecks")]
-        //public IHttpActionResult GetPaychecks([FromBody] UserDTO user)
-        //{
-        //    try
-        //    {
-        //        if (user.userType == "User")
-        //        {
-        //            var Patients = db.tblCaresForPatient.Where(x => x.workerId == user.userId).Select(y => y.patientId).ToList();
-        //            var users = new List<List<UserDTO>>();
-                    
-        //            var Contacts = db.tblPaycheck.Where(x => x.UserId == user.userId).Select(y => new PayCheckDTO
-        //            {
-        //                payCheckNum = y.payCheckNum,
-        //                paycheckDate = y.paycheckDate,
-        //                paycheckSummary = y.paycheckSummary,
-        //                paycheckComment = y.paycheckComment,
-        //                UserId = y.UserId,
-        //            }).ToList();
-        //            return Ok(Contacts);
-        //        }
-        //        else
-        //        {
-        //            foreach (var patient in Patients)
-        //            {
-        //                var tempo = db.tblPatient.Where(x => x.patientId == patient).Select(y => new UserDTO{
-        //                    userId= y.userId,
-        //                    }).ToList();
-        //                users.Add(tempo);
-        //            }
-        //            var temp = new List<dynamic>();
-        //            foreach (var item in users)
-        //            {
-        //                foreach (var item2 in item)
-        //                {
-        //                    var Paycheks = db.tblPaycheck.Where(x => x.UserId == item2.userId).Select(y => new PayCheckDTO
-        //                    {
-        //                        payCheckNum = y.payCheckNum,
-        //                        paycheckDate = y.paycheckDate,
-        //                        paycheckSummary = y.paycheckSummary,
-        //                        paycheckComment = y.paycheckComment,
-        //                        UserId = y.UserId,
-        //                    }).ToList();
-        //                    foreach (var paycheck in Paycheks)
-        //                    {
-        //                        temp.Add(paycheck);
-        //                    }
-        //                }
-        //            }                    
-        //            return Ok(temp);
-        //        }
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(ex.Message);
-        //    }
-        //}
-
-        // POST: api/PayChecks
-        
+        //GET: api/PayChecks -- > לתקן לפי מטופל בודד ומטפל בודד
         [HttpPost]
-        [Route("NewPayCheck")] // פונקציה להוספת פייקצ'ק חדש
-        public IHttpActionResult NewPayCheck([FromBody] PayCheckDTO pay)
+        [Route("GetPaychecks")]
+        public IHttpActionResult GetPaychecks([FromBody] UserDTO user)
         {
             try
             {
-                db.NewPaycheck(pay.paycheckDate, pay.paycheckSummary, pay.paycheckComment, pay.UserId);
+                int CareGiverId;
+                int userId;
+                if (user.userType == "User")
+                {
+                    userId = user.userId;
+                    var Patients = db.tblPatient.Where(x => x.userId == user.userId).Select(y => y.patientId).FirstOrDefault();
+                    CareGiverId = db.tblCaresForPatient.Where(x => x.patientId == Patients).Select(y => y.workerId).FirstOrDefault();
+                    
+                }
+                else
+                {
+                    CareGiverId = user.userId;                    
+                    var Patients = db.tblCaresForPatient.Where(x => x.workerId == CareGiverId).Select(y => y.patientId).FirstOrDefault();
+                    userId = db.tblPatient.Where(x => x.patientId == Patients).Select(y => y.userId).FirstOrDefault();
+                }
+                var payChecks = db.tblPaycheck.Where(x => x.UserId == userId || x.UserId == CareGiverId).Select(y => new PayCheckDTO
+                {
+                    payCheckNum = y.payCheckNum,
+                    paycheckDate = y.paycheckDate,
+                    paycheckSummary = y.paycheckSummary,
+                    paycheckComment = y.paycheckComment,
+                    UserId = y.UserId,
+                }).ToList();
+                return Ok(payChecks);
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        // POST: api/PayChecks
+
+        [HttpPost]
+        [Route("NewPayCheck")] // פונקציה להוספת פייקצ'ק חדש
+        public IHttpActionResult NewPayCheck([FromBody] PayCheckDTO paycheck)
+        {
+            try
+            {
+
+                db.NewPaycheck(paycheck.paycheckDate, paycheck.paycheckSummary, paycheck.paycheckComment, paycheck.UserId);
                 db.SaveChanges();
                 return Ok("Paycheck added successfully!");
             }
@@ -91,7 +71,7 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        
+
         [HttpPut] // PUT: api/PayChecks/UpdatePayCheck
         [Route("UpdatePayCheck")]
         public IHttpActionResult UpdatePayCheck([FromBody] PayCheckDTO pay)
