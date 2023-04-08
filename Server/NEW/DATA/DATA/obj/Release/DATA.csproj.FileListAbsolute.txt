@@ -58,6 +58,5 @@ C:\Users\oryan\Desktop\app dev\worCare\Server\NEW\DATA\DATA\bin\Release\System.W
 C:\Users\oryan\Desktop\app dev\worCare\Server\NEW\DATA\DATA\bin\Release\System.Web.Http.Cors.xml
 C:\Users\oryan\Desktop\app dev\worCare\Server\NEW\DATA\DATA\obj\Release\DATA.csproj.AssemblyReference.cache
 C:\Users\oryan\Desktop\app dev\worCare\Server\NEW\DATA\DATA\obj\Release\DATA.csproj.CoreCompileInputs.cache
-C:\Users\oryan\Desktop\app dev\worCare\Server\NEW\DATA\DATA\obj\Release\DATA.csproj.CopyComplete
 C:\Users\oryan\Desktop\app dev\worCare\Server\NEW\DATA\DATA\obj\Release\DATA.dll
 C:\Users\oryan\Desktop\app dev\worCare\Server\NEW\DATA\DATA\obj\Release\DATA.pdb

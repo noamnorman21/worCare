@@ -45,18 +45,8 @@ function Main({ navigation }) {
       },
       body: JSON.stringify(user)
     });
-    const data = [
-      {
-          "contactId": 1,
-          "contactName": "Egunns",
-          "phoneNo": "0545445444",
-          "mobileNo": "0540540540",
-          "email": "Egun@gmail.com",
-          "role": "bla",
-          "contactComment": "blaaaa",
-          "patientId": "205920592"
-      }
-  ]
+    const data =await response.json();
+  
     let contacts = data.map((item) => {      
         return <ContactCard key={item.contactId} contact={item} />  
     })
