@@ -105,7 +105,7 @@ export default function NewPaycheck(props) {
       paycheckComment: PayCheck.paycheckComment,
       userId: PayCheck.userId
     }
-   console.log("Newcheck", Newcheck);
+    console.log("Newcheck", Newcheck);
    if (Newcheck.paycheckDate === null) {
       Alert.alert('Please select date');
       return;
@@ -325,6 +325,22 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'Urbanist-Regular',
     paddingRight: 10,
+  },
+  Deletebutton: {
+    width: Dimensions.get('window').width * 0.95,
+    backgroundColor: '#F5F8FF',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: '#548DFF',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 1,
+    marginTop: 10,
+    height: 45,
   },
 
 });

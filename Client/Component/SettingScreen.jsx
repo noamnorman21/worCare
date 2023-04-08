@@ -1,7 +1,7 @@
 // External imports:
 import { StyleSheet, View, Text, Alert, SafeAreaView, TouchableOpacity, Dimensions, Image, LogBox } from 'react-native'
 import React, { useState, useEffect } from 'react'
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, StackActions } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AntDesign, Ionicons, SimpleLineIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -147,10 +147,10 @@ export default function SettingScreen({ navigation }) {
                     headerBackTitleVisible: false,
                 }}>
 
-                <Stack.Screen name="Settings" component={HomeScreen} options={() => ({ headerTitle: 'Settings', headerShown: false })} initialParams={{ logout: () => { ; navigation.navigate('LogIn') } }} />
+                <Stack.Screen name="Settings" component={HomeScreen} options={() => ({ headerTitle: 'Settings', headerShown: false })} initialParams={{ logout: () => { navigation.dispatch(StackActions.replace('LogIn'))} }} />
                 <Stack.Screen name="Profile" component={Profile} />
                 <Stack.Screen name="Notifications" component={Notifications} />
-                <Stack.Screen name="Privacy" component={Privacy} options={{ headerTitle: 'Privacy & My Account' }} />
+                <Stack.Screen name="Privacy" component={Privacy} options={{ headerTitle: 'Privacy & My Account' }} initialParams={{ logout: () => { navigation.dispatch(StackActions.replace('LogIn'))} }} />
                 <Stack.Screen name="ContactUs" component={ContactUs} options={{ headerTitle: 'Contact Us' }} />
             </Stack.Navigator>
         </NavigationContainer>
