@@ -7,6 +7,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import NewPaycheck from './NewPaycheck';
 import EditPaycheck from './EditPaycheck';
 import { useUserContext } from '../../UserContext';
+import { AddBtn } from '../HelpComponents/AddNewTask';
 
 export default function Paychecks({navigation, route}) {
   const { userContext } = useUserContext();
@@ -112,9 +113,7 @@ export default function Paychecks({navigation, route}) {
         <Text style={styles.header} >History</Text>
         </View>  
       {History}
-      <TouchableOpacity style={styles.addRequest} onPress={() => setModal1Visible(true)}>
-        <Text style={styles.addRequestText}>+</Text>
-      </TouchableOpacity>
+      <View style={styles.addBtnView}><AddBtn onPress={() => setModal1Visible(true)}/></View>
       <Modal animationType='slide' transparent={true} visible={modal1Visible}>
        <NewPaycheck cancel={() => {setModal1Visible(false); getPaychecks()} } userId={userContext.userId} />
       </Modal>      
@@ -164,7 +163,7 @@ function Paycheck(props) {
             <Text style={styles.viewbuttonText}>View Document</Text>
           </TouchableOpacity>
           <Modal animationType='slide' transparent={true} visible={modal1Visible}>
-            <EditPaycheck cancel={(value) => {setModal1Visible(false); setExpanded(true); props.getPaychecks(); settemp(value)}} data={props.data} />
+            <EditPaycheck cancel={(value) => {setModal1Visible(false); setExpanded(true); props.getPaychecks()}} save={(value) => {setModal1Visible(false); setExpanded(true); props.getPaychecks(); settemp(value)}} data={props.data} />
           </Modal>
           <TouchableOpacity style={[styles.itemsText, styles.editButton]} onPress={!expanded ? () =>{setModal1Visible(true)} : null}>
             <Text style={styles.editbuttonText}>Edit</Text>
@@ -233,9 +232,12 @@ const styles = StyleSheet.create({
     borderBottomEndRadius: 16,
     borderBottomStartRadius: 16,
     marginBottom: 10,
-    padding: 16,
-       
-    
+    padding: 16,      
+  },
+  addBtnView: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
   },
   itemsText: {
     fontSize: 16,

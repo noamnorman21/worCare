@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
   savebuttonText: {
     color: 'white',
     fontSize: 16,
-    fontFamily: 'Urbanist-Bold',
+    fontFamily: 'Urbanist-SemiBold',
   },
   cancelbuttonText: {
     color: '#548DFF',

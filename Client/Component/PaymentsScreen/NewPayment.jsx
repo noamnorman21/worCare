@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, Button, SafeAreaView, Alert, StyleSheet, TouchableOpacity, Dimensions, Keyboard, LayoutAnimation } from 'react-native';
+import { View, Text, TextInput, Button, SafeAreaView, Alert, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { storage } from '../../config/firebase';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import * as DocumentPicker from 'expo-document-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useUserContext } from '../../UserContext';
 
+const SCREEN_WIDTH = Dimensions.get('window').width;
+
 export default function NewPayment(props) {
   const { userContext } = useUserContext();
- 
   const [payment, setPayment] = useState({
     amountToPay: '',
     requestSubject: '',
@@ -18,71 +20,37 @@ export default function NewPayment(props) {
     requestStatus: 'P',
     userId: null // will be changed to current user id,
   })
-  const [animation, setAnimation] = useState({});
-  let animationInProgress = false;
+
+
 
   useEffect(() => {
     AsyncStorage.getItem('userData').then((value) => {
       const data = JSON.parse(value);
       setPayment({ ...payment, userId: userContext.userId });
     })
-
-    Keyboard.addListener('keyboardDidShow', () => {
-      if (!animationInProgress) {
-         animationInProgress = true;
-         LayoutAnimation.configureNext({
-            update: {
-               type: LayoutAnimation.Types.easeIn,
-               duration: 250,
-               useNativeDriver: true,
-            },
-         });
-         setAnimation({
-            marginBottom: Dimensions.get('window').height * 0.355
-         });
-         animationInProgress = false;
-      }
-   }
-   );
-   Keyboard.addListener('keyboardDidHide', () => {
-      if (!animationInProgress) {
-         animationInProgress = true;
-         LayoutAnimation.configureNext({
-            update: {
-               type: LayoutAnimation.Types.easeOut,
-               duration: 250,
-               useNativeDriver: true,
-            },
-         });
-         setAnimation({ marginBottom: 0 });
-         animationInProgress = false;
-      }
-   }
-   );
-
   }, []);
-  
+
   const pickDocument = async () => {
 
     let result = await DocumentPicker.getDocumentAsync({
       allowsEditing: true,
       aspect: [4, 3],
       quality: 0.1,
-    });    
+    });
     console.log(result);
     changeIMG(result.uri);
-    
+
   };
 
   const changeIMG = (imageFromUser) => {
-   setPayment({ ...payment, requestProofDocument: imageFromUser });
+    setPayment({ ...payment, requestProofDocument: imageFromUser });
   }
 
   const handleInputChange = (name, value) => {
     setPayment({ ...payment, [name]: value });
   };
 
-  const sendToFirebase = async (image) => {   
+  const sendToFirebase = async (image) => {
     // if the user didn't upload an image, we will use the default image
     if (payment.requestProofDocument === '' || payment.requestProofDocument === undefined) {
       //זה תמונה מכוערת -נועם תחליף אותה
@@ -99,9 +67,9 @@ export default function NewPayment(props) {
       return;
     }
     console.log('image', image);
-     const filename = image.substring(image.lastIndexOf('/') + 1);
-     const storageRef = ref(storage, "requests/" + filename);
-     const blob = await fetch(image).then(response => response.blob());
+    const filename = image.substring(image.lastIndexOf('/') + 1);
+    const storageRef = ref(storage, "requests/" + filename);
+    const blob = await fetch(image).then(response => response.blob());
     try {
       const uploadTask = uploadBytesResumable(storageRef, blob);
       uploadTask.on('state_changed',
@@ -118,7 +86,7 @@ export default function NewPayment(props) {
             console.log('File available at', downloadURL);
             setPayment({ ...payment, requestProofDocument: downloadURL });
             savePayment(downloadURL);
-          });          
+          });
         }
       );
     } catch (error) {
@@ -136,10 +104,10 @@ export default function NewPayment(props) {
       requestComment: payment.requestComment,
       requestStatus: payment.requestStatus,
       userId: payment.userId
-    } 
+    }
     console.log('NewPayment', NewPayment);
-  
-      fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/NewRequest', {
+
+    fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/NewRequest', {
       method: 'POST',
       body: JSON.stringify(NewPayment),
       headers: new Headers({
@@ -147,55 +115,61 @@ export default function NewPayment(props) {
       })
     })
       .then(res => {
-          return res.json()
+        return res.json()
       })
       .then(
         (result) => {
-          console.log("fetch POST= ", result);          
+          console.log("fetch POST= ", result);
           props.cancel();
         },
         (error) => {
           console.log("err post=", error);
         });
-    } 
-  
-  return (  
-      <SafeAreaView style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.title}>New Payment</Text>
-        </View>
-        <View style={[styles.inputContainer, animation]}>
-          <TextInput
-            style={styles.input}
-            placeholder='Reason'
-            keyboardType='ascii-capable'
-            onChangeText={(value) => handleInputChange('requestSubject', value)}
-          />
-          <TextInput
-            style={[styles.input]}
-            placeholder='Amount'
-            keyboardType='decimal-pad'
-            onChangeText={(value) => handleInputChange('amountToPay', value)}
-            inputMode='decimal'
-          />
-          <TextInput
-            style={styles.input}
-            placeholder='Enter comment'
-            keyboardType='ascii-capable'
-            onChangeText={(value) => handleInputChange('requestComment', value)}
-          />
-          <TouchableOpacity style={styles.uploadButton} onPress={pickDocument}>
-            <Text style={styles.buttonText}>Upload document</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.uploadButton} onPress={()=> sendToFirebase(payment.requestProofDocument)}>
-            <Text style={styles.buttonText}>Upload request</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.closeBtn} onPress={props.cancel}>
-            <Text style={styles.closeTxt}>Cancel</Text>
-          </TouchableOpacity>
+  }
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
+          <View style={styles.centeredView}>
+            <Text style={styles.title}>New Payment</Text>
+            <View style={styles.inputContainer}>
+              <TextInput
+                style={styles.input}
+                placeholder='Reason'
+                keyboardType='ascii-capable'
+                onChangeText={(value) => handleInputChange('requestSubject', value)}
+              />
+              <TextInput
+                style={[styles.input]}
+                placeholder='Amount'
+                keyboardType='decimal-pad'
+                onChangeText={(value) => handleInputChange('amountToPay', value)}
+                inputMode='decimal'
+              />
+              <TextInput
+                style={styles.commentInput}
+                placeholder='Add comment'
+                keyboardType='ascii-capable'
+                onChangeText={(value) => handleInputChange('requestComment', value)}
+              />
+              <TouchableOpacity style={styles.uploadButton} onPress={pickDocument}>
+                <Text style={styles.buttonText}>Upload document</Text>
+              </TouchableOpacity>
+              <View style={styles.bottom}>
+                <TouchableOpacity style={styles.savebutton} onPress={() => sendToFirebase(payment.requestProofDocument)}>
+                  <Text style={styles.savebuttonText}>Upload request</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.cancelbutton} onPress={props.cancel}>
+                  <Text style={styles.cancelbuttonText}>Cancel</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
           </View>
-      </SafeAreaView>
-  
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
+
   );
 }
 
@@ -204,38 +178,36 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-  header: {
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
   title: {
-    color: '#000',
-    fontSize: 18,
-    padding: 20,
-    fontFamily:'Urbanist-Bold'
+    fontSize: 26,
+    fontFamily: 'Urbanist-Bold',
+    margin: 20,
+    textAlign: 'center',
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
   },
   inputContainer: {
     padding: 20,
     backgroundColor: '#fff',
   },
   input: {
-    height: Dimensions.get('window').height *0.07,
-    backgroundColor: '#fff',
-    marginBottom: 20,
-    color: '#000',
-    paddingHorizontal: 10,
-    borderColor: '#E6EBF2',
+    width: Dimensions.get('window').width * 0.95,
+    marginBottom: 10,
+    paddingLeft: 20,
+    alignItems: 'center',
     borderRadius: 16,
-    borderWidth: 1,
-    fontFamily:'Urbanist-Regular'
-  }, 
-  Savebutton: {
-    backgroundColor: '#000',
-    paddingVertical: 15,
+    borderWidth: 1.5,
+    borderColor: '#E6EBF2',
+    shadowColor: '#000',
+    height: 54,
+    fontFamily: 'Urbanist-Light',
+    fontSize: 16,
   },
+
   uploadButton: {
     paddingVertical: 15,
     justifyContent: 'center',
@@ -243,29 +215,68 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     marginBottom: 20,
     borderRadius: 16,
-    backgroundColor:'#548DFF'
+    backgroundColor: '#548DFF'
   },
-  closeBtn: {
-    paddingVertical: 15,
+  savebutton: {
+    backgroundColor: '#548DFF',
+    borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'center',
-    alignContent: 'center',
-    marginBottom: 20,
+    height: 45,
+    width: SCREEN_WIDTH * 0.45,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 1,
+  },
+  cancelbutton: {
+    backgroundColor: '#F5F8FF',
     borderRadius: 16,
-    backgroundColor:'#F5F8FF',
+    height: 45,
+    width: SCREEN_WIDTH * 0.45,
+    justifyContent: 'center',
+    alignItems: 'center',
     borderWidth: 1.5,
     borderColor: '#548DFF',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 1,
   },
-  closeTxt: {
+  savebuttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontFamily: 'Urbanist-SemiBold',
+  },
+  cancelbuttonText: {
     color: '#548DFF',
     textAlign: 'center',
     fontFamily: 'Urbanist-SemiBold',
     fontSize: 16,
- },  
+  },
   buttonText: {
     textAlign: 'center',
     fontFamily: 'Urbanist-SemiBold',
     fontSize: 16,
-    color: '#fff',         
+    color: '#fff',
+  },
+  commentInput: {
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: '#E6EBF2',
+    height: 90,
+    width: Dimensions.get('window').width * 0.95,
+    marginBottom: 10,
+    paddingLeft: 20,
+    fontFamily: 'Urbanist-Light',
+    fontSize: 16,
+  },
+  bottom: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: SCREEN_WIDTH * 0.95,
+    bottom: -50, //to make the buttons appear above the keyboard 
   },
 });
