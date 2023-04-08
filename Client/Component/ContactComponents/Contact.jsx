@@ -90,7 +90,8 @@ export default function Contact({ route, navigation }) {
     if (!mobileNo || !contactName) {
       return Alert.alert('Error', 'Email and Mobile Number are required')
     }
-    if (!email) {
+    if (email!==null) {
+      console.log('email', email)
       if (!validateEmail(email)) {
         return Alert.alert('Invalid Email', 'Please enter a valid email')
       }

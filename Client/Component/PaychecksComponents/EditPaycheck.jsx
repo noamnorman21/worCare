@@ -5,6 +5,7 @@ import { useState } from "react";
 import { ScrollView } from "react-native-gesture-handler";
 import * as DocumentPicker from 'expo-document-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { Octicons } from '@expo/vector-icons';
 
 export default function EditPaycheck(props) {
 
@@ -70,9 +71,7 @@ export default function EditPaycheck(props) {
    }
   }
 
-  useEffect(() => {
-    console.log(Paycheck);
-  }, [])
+
 
 
   const showMode = (currentMode) => {
@@ -87,11 +86,9 @@ export default function EditPaycheck(props) {
     showMode('date');
   };
 
-  const onChangeDate = (selectedDate) => {   
-   
-  
+  const onChangeDate = (selectedDate) => { 
     const currentDate = new Date(selectedDate.nativeEvent.timestamp).toISOString().substring(0,10);    
-    console.log("Date",currentDate);
+    
     setShow(false);
     handleInputChange('paycheckDate', currentDate);
   };
@@ -102,7 +99,7 @@ export default function EditPaycheck(props) {
   
 
 const handleInputChange = (name, value) => {
-  console.log(name, value);
+ 
     setPaycheck({ ...Paycheck, [name]: value })  
     if (name == 'paycheckDate') {
       setShow(false);
@@ -237,6 +234,7 @@ const savePaycheck = async (downloadURL) => {
         </View>
         <View style={[styles.inputContainer, animation]}>
           <TouchableOpacity style={styles.datePicker} onPress={showDatepicker}>
+          <Octicons name="calendar" size={22}/>
             <Text style={styles.TextInput}>{Paycheck.paycheckDate.substring(0, 10)}</Text>
           </TouchableOpacity>
           {show && (
@@ -409,6 +407,15 @@ const styles = StyleSheet.create({
     backgroundColor:'#fff',
     borderColor: '#E6EBF2',
     borderWidth: 1,
+    flexDirection: 'row',
+    
+  },
+  TextInput: {
+    color: '#000',
+    paddingHorizontal: 10,
+    fontSize: 16,
+    fontFamily: 'Urbanist-Regular',
+    paddingRight: 10,
   },
 
 });
