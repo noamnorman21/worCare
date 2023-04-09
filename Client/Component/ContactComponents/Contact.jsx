@@ -1,11 +1,14 @@
 // Path: Client\Component\Contact.jsx
 // Contact Page
-import { View, Keyboard, LayoutAnimation, Text, TouchableOpacity, StyleSheet, Dimensions, Alert, TextInput } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Alert, TextInput } from 'react-native'
 import { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
+
+const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function Contact({ route, navigation }) {
-  const [animation, setAnimation] = useState({});
+
   const { contact } = route.params;
   const [isChanged, setIsChanged] = useState(false);
   const [Contact, setContact] = useState({
@@ -19,39 +22,7 @@ export default function Contact({ route, navigation }) {
     patientId: 779355403 // will change when we finish context to get the patient id
   })
 
-  useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener(
-      'keyboardDidShow',
-      () => {
-        LayoutAnimation.configureNext({
-          update: {
-            type: LayoutAnimation.Types.easeIn,
-            duration: 200,
-            useNativeDriver: true,
-          },
-        });
-        setAnimation({ marginBottom: Dimensions.get('window').height * 0.1 });
-      }
-    );
-    const keyboardDidHideListener = Keyboard.addListener(
-      'keyboardDidHide',
-      () => {
-        LayoutAnimation.configureNext({
-          update: {
-            type: LayoutAnimation.Types.easeOut,
-            duration: 200,
-            useNativeDriver: true,
-          },
-        });
-        setAnimation({ marginBottom: 0 });
-      }
-    );
-    return () => {
-      keyboardDidShowListener.remove();
-      keyboardDidHideListener.remove();
-    }
-
-  }, []);
+  
 
   const Cancel = () => {
     Alert.alert(
@@ -90,7 +61,8 @@ export default function Contact({ route, navigation }) {
     if (!mobileNo || !contactName) {
       return Alert.alert('Error', 'Email and Mobile Number are required')
     }
-    if (!email) {
+    if (email !== null) {
+      console.log('email', email)
       if (!validateEmail(email)) {
         return Alert.alert('Invalid Email', 'Please enter a valid email')
       }
@@ -159,70 +131,72 @@ export default function Contact({ route, navigation }) {
   }
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Contact Details</Text>
-      </View>
-      <View style={[styles.inputContainer, animation]}>
-        <Text style={styles.contactheader}>Name:</Text>
-        <TextInput
-          style={styles.input}
-          value={Contact.contactName}
-          keyboardType='ascii-capable'
-          onChangeText={(value) => handleInputChange('contactName', value)}
-        />
-        <View style={styles.numbersInput}>
-          <View>
-            <Text style={styles.contactheader}>Phone number:</Text>
-            <TextInput
-              style={[styles.input, styles.numInput]}
-              value={Contact.phoneNo}
-              keyboardType='ascii-capable'
-              onChangeText={(value) => handleInputChange('phoneNo', value)}
-            />
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
+          <View style={styles.centeredView}>
+            <Text style={styles.title}>Edit Contact Details</Text>
+            <View style={[styles.inputContainer]}>
+              <Text style={styles.contactheader}>Name:</Text>
+              <TextInput
+                style={styles.input}
+                value={Contact.contactName}
+                keyboardType='ascii-capable'
+                onChangeText={(value) => handleInputChange('contactName', value)}
+              />
+              <View>
+                <Text style={styles.contactheader}>Phone number(optional):</Text>
+                <TextInput
+                  style={[styles.input, styles.numInput]}
+                  value={Contact.phoneNo}
+                  keyboardType='ascii-capable'
+                  onChangeText={(value) => handleInputChange('phoneNo', value)}
+                />
+              </View>
+              <View>
+                <Text style={styles.contactheader}>Mobile number:</Text>
+                <TextInput
+                  style={[styles.input, styles.numInput]}
+                  value={Contact.mobileNo}
+                  keyboardType='ascii-capable'
+                  onChangeText={(value) => handleInputChange('mobileNo', value)}
+                />
+              </View>
+              <Text style={styles.contactheader}>Role:</Text>
+              <TextInput
+                style={styles.input}
+                value={Contact.role}
+                keyboardType='ascii-capable'
+                onChangeText={(value) => handleInputChange('role', value)}
+              />
+              <Text style={styles.contactheader}>Email(optional):</Text>
+              <TextInput
+                style={styles.input}
+                value={Contact.email}
+                keyboardType='ascii-capable'
+                onChangeText={(value) => handleInputChange('email', value)}
+              />
+              <Text style={styles.contactheader}>Comment(optional):</Text>
+              <TextInput
+                style={styles.input}
+                value={Contact.contactComment}
+                keyboardType='ascii-capable'
+                onChangeText={(value) => handleInputChange('contactComment', value)}
+              />
+            </View>
+            <View style={styles.bottom}>
+              <TouchableOpacity style={styles.savebutton} onPress={validateInput}>
+                <Text style={styles.savebuttonText}>Save</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.cancelbutton} onPress={Cancel}>
+                <Text style={styles.cancelbuttonText}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity style={styles.Deletebutton} onPress={DeleteContact}>
+              <Text style={styles.cancelbuttonText}>Delete</Text>
+            </TouchableOpacity>
           </View>
-          <View>
-            <Text style={styles.contactheader}>Mobile number:</Text>
-            <TextInput
-              style={[styles.input, styles.numInput]}
-              value={Contact.mobileNo}
-              keyboardType='ascii-capable'
-              onChangeText={(value) => handleInputChange('mobileNo', value)}
-            />
-          </View>
-        </View>
-        <Text style={styles.contactheader}>Role:</Text>
-        <TextInput
-          style={styles.input}
-          value={Contact.role}
-          keyboardType='ascii-capable'
-          onChangeText={(value) => handleInputChange('role', value)}
-        />
-        <Text style={styles.contactheader}>Email:</Text>
-        <TextInput
-          style={styles.input}
-          value={Contact.email}
-          keyboardType='ascii-capable'
-          onChangeText={(value) => handleInputChange('email', value)}
-        />
-        <Text style={styles.contactheader}>Comment:</Text>
-        <TextInput
-          style={styles.input}
-          value={Contact.contactComment}
-          keyboardType='ascii-capable'
-          onChangeText={(value) => handleInputChange('contactComment', value)}
-        />
-      </View>
-      <View style={styles.bottom}>
-        <TouchableOpacity style={styles.savebutton} onPress={validateInput}>
-          <Text style={styles.savebuttonText}>Save</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.cancelbutton} onPress={Cancel}>
-          <Text style={styles.cancelbuttonText}>Cancel</Text>
-        </TouchableOpacity>
-      </View>
-      <TouchableOpacity style={styles.Deletebutton} onPress={DeleteContact}>
-        <Text style={styles.cancelbuttonText}>Delete</Text>
-      </TouchableOpacity>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   )
 }
@@ -232,63 +206,58 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#F5F5F5',
-    marginTop: -50, // NEVER DO THIS !!!!
+    backgroundColor: '#fff',
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
   },
   inputContainer: {
-    width: Dimensions.get('window').width * 1,
-    height: Dimensions.get('window').height * 1,
-    flex: 4,
-    textAlign: 'left',
-    marginTop: -20, // NEVER DO THIS !!!!
+    width: SCREEN_WIDTH * 0.95,
+    marginTop: 10,
   },
   input: {
     width: Dimensions.get('window').width * 0.95,
-    padding: 10,
-    margin: 7,
+    marginBottom: 10,
+    paddingLeft: 20,
     alignItems: 'center',
     borderRadius: 16,
-    borderWidth: 1,
-    backgroundColor: 'white',
-    borderColor: 'lightgray',
+    borderWidth: 1.5,
+    borderColor: '#E6EBF2',
     shadowColor: '#000',
-    height: 45,
-    fontFamily: 'Urbanist',
-  },
-  numInput: {
-    width: Dimensions.get('window').width * 0.455,
+    height: 54,
+    fontFamily: 'Urbanist-Light',
+    fontSize: 16,
   },
   savebutton: {
-    width: Dimensions.get('window').width * 0.4,
     backgroundColor: '#548DFF',
-    alignItems: 'center',
-    justifyContent: 'center',
     borderRadius: 16,
-    borderWidth: 1,
-    borderColor: 'lightgray',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 45,
+    width: SCREEN_WIDTH * 0.45,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 3,
     elevation: 1,
-    margin: 7,
-    height: 45,
   },
   cancelbutton: {
-    width: Dimensions.get('window').width * 0.4,
-    backgroundColor: 'white',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: '#F5F8FF',
     borderRadius: 16,
-    borderWidth: 1,
+    height: 45,
+    width: SCREEN_WIDTH * 0.45,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1.5,
     borderColor: '#548DFF',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 3,
     elevation: 1,
-    margin: 7,
-    height: 45,
   },
   Deletebutton: {
     width: Dimensions.get('window').width * 0.85,
@@ -308,25 +277,25 @@ const styles = StyleSheet.create({
   },
   bottom: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: SCREEN_WIDTH * 0.95,
   },
   savebuttonText: {
     color: 'white',
-    fontWeight: '600',
     fontSize: 16,
-    fontFamily: 'Urbanist-Bold',
+    fontFamily: 'Urbanist-SemiBold',
   },
   cancelbuttonText: {
     color: '#548DFF',
-    fontWeight: '600',
+    textAlign: 'center',
+    fontFamily: 'Urbanist-SemiBold',
     fontSize: 16,
-    fontFamily: 'Urbanist-Bold',
   },
   title: {
     fontSize: 26,
     fontFamily: 'Urbanist-Bold',
   },
   header: {
-    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -337,5 +306,21 @@ const styles = StyleSheet.create({
   },
   numbersInput: {
     flexDirection: 'row',
-  }
+  },
+  Deletebutton: {
+    width: Dimensions.get('window').width * 0.95,
+    backgroundColor: '#F5F8FF',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: '#548DFF',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 1,
+    marginTop: 10,
+    height: 45,
+  },
 });

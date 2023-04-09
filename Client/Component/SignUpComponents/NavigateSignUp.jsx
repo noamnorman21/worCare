@@ -56,9 +56,7 @@ export default function NavigateSignUp() {
   }
 
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      {/* wait few seconds and only then check if isSigned true or false*/}
-      {!isSigned ? (
+    <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName={!isSigned?"LogIn":"CustomHeader"}> 
         <>
           <Stack.Screen name="LogIn" component={LogIn} />
           <Stack.Screen name="CustomHeader" component={CustomHeader} />
@@ -88,12 +86,7 @@ export default function NavigateSignUp() {
           <Stack.Screen name="SignUpFinish" component={SignUpFinish} options={{ headerShown: true, headerTitle: '' }} />
           {/* כניסה למערכת */}
         </>
-      ) : (
-        <>
-          <Stack.Screen name="CustomHeader" component={CustomHeader} />
-          <Stack.Screen name="LogIn" component={LogIn} />
-        </>
-      )}
+     
     </Stack.Navigator>
   )
 }

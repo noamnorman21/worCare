@@ -14,7 +14,7 @@ export default function AddNewContact(props) {
     email: null,
     role: '',
     contactComment: '',
-    patientId: null // will change when we finish context to get the patient id
+    patientId: props.patientId // will change when we finish context to get the patient id
   })
 
   const handleInputChange = (field, value) => {
@@ -34,9 +34,7 @@ export default function AddNewContact(props) {
     if (!validatePhoneNum(Contact.mobileNo)) {
       return Alert.alert('Invalid Phone Number', 'Please enter a valid phone number')
     }
-    if (Contact.patientId === null || Contact.patientId === undefined) {
-      return Alert.alert('Invalid Patient Id', 'Please Choose Patient Id')
-    }
+   
     sendToDB();
   }
 
@@ -219,7 +217,7 @@ const styles = StyleSheet.create({
   savebuttonText: {
     color: 'white',
     fontSize: 16,
-    fontFamily: 'Urbanist-Bold',
+    fontFamily: 'Urbanist-SemiBold',
   },
   cancelbuttonText: {
     color: '#548DFF',

@@ -33,7 +33,7 @@ export default function Privacy({ navigation }) {
 
     console.log('userToUpdate', userToUpdate)
 
-    fetch('https://proj.ruppin.ac.il/cgroup94/prod/api/Settings/UpdateUserEmail', {
+    fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Settings/UpdateUserEmail', {
       method: 'PUT',
       headers: new Headers({
         'Content-Type': 'application/json; charset=UTF-8',

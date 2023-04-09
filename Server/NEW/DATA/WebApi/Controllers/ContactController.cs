@@ -26,40 +26,28 @@ namespace WebApi.Controllers
         {
             try
             {
-                var Patients = new List<PatientDTO>();
+                string PatientId;
                 if (user.userType == "User")
                 {
-                    var Temp = db.tblPatient.Where(x => x.userId == user.userId).Select(y => new PatientDTO
-                    {
-                        patientId = y.patientId,
-                    }).ToList();
-                    Patients = Temp;
+                    PatientId = db.tblPatient.Where(x => x.userId == user.userId).Select(y => y.patientId).FirstOrDefault();
                 }
                 else
                 {
-                    var Temp = db.tblCaresForPatient.Where(x => x.workerId == user.userId).Select(y => new PatientDTO
-                    {
-                        patientId = y.patientId,
-                    }).ToList();
-                    Patients = Temp;
+                    PatientId = db.tblCaresForPatient.Where(x => x.workerId == user.userId).Select(y => y.patientId).FirstOrDefault();
                 }
-                var patientContacts = new List<dynamic>();
-                foreach (var item in Patients)
+
+                var Contacts = db.tblContacts.Where(x => x.patientId == PatientId).Select(y => new ContactDTO
                 {
-                    var Contacts = db.tblContacts.Where(x => x.patientId == item.patientId).Select(y => new ContactDTO
-                    {
-                        contactId = y.contactId,
-                        contactName = y.contactName,
-                        phoneNo = y.phoneNo,
-                        mobileNo = y.mobileNo,
-                        email = y.email,
-                        role = y.role,
-                        contactComment = y.contactComment,
-                        patientId = y.patientId
-                    }).ToList();
-                    patientContacts.Add(Contacts);
-                }
-                return Ok(patientContacts);
+                    contactId = y.contactId,
+                    contactName = y.contactName,
+                    phoneNo = y.phoneNo,
+                    mobileNo = y.mobileNo,
+                    email = y.email,
+                    role = y.role,
+                    contactComment = y.contactComment,
+                    patientId = y.patientId
+                }).ToList();
+                return Ok(Contacts);
             }
             catch (Exception ex)
             {
@@ -74,6 +62,7 @@ namespace WebApi.Controllers
         {
             try
             {
+
                 db.NewContact(con.contactName, con.phoneNo, con.mobileNo, con.email, con.role, con.contactComment, con.patientId);
                 db.SaveChanges();
                 return Ok("Contact Added Succesfully!");
