@@ -1,5 +1,8 @@
 import { useState, useEffect, createContext, useContext, useRef} from 'react'
+import { Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React from 'react'
+
 
 
 //--ruppin api server--
@@ -61,24 +64,7 @@ export function UserProvider({ children }) {
     const [userGender, setuserGender] = useState(null)
 
     function logInContext(userData) {
-        setUserType(userData.userType);
-        setUserLanguage(userData.Language);
-        setUserCountry(userData.Country);
-        setUserCalendar(userData.Calendar);
-        setUserHobbies(userData.Hobbies);
-        setUserLimitations(userData.Limitations);
-        setUserCaresFor(userData.CaresFor);
-        setUserContacts(userData.Contacts);
-        setUserPaychecks(userData.Paychecks);
-        setUserPendingPayments(userData.PendingPayments);
-        setUserHistoryPayments(userData.HistoryPayments);
-        setFirstName(userData.FirstName);
-        setEmail(userData.Email);
-        setLastName(userData.LastName);
-        setPhone(userData.Phone);
-        setuserUri(userData.userUri);
-        setBirthDate(userData.BirthDate);
-        setuserGender(userData.Gender)
+
 
 
         let usertoSync = {
@@ -91,6 +77,7 @@ export function UserProvider({ children }) {
             userUri: userData.userUri,
             gender: userData.gender,
         }
+        
         setUserContext(usertoSync);
        
     }
@@ -101,6 +88,53 @@ export function UserProvider({ children }) {
         setUserContext(null)
     }
 
+    function updateUserProfile(user) {
+        const userToUpdate = {
+          Email: user.Email,
+          userUri: user.userUri,
+          phoneNum: user.phoneNum,
+          gender: user.gender,
+          FirstName: user.FirstName,
+          LastName: user.LastName,
+          Id: user.Id,
+          userType: userType
+        }    
+        fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Settings/UpdateUserProfile', {
+          method: 'PUT',
+          headers: new Headers({
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Accept': 'application/json; charset=UTF-8',
+    
+          }),
+          body: JSON.stringify(userToUpdate)
+        })
+          .then(res => {
+            if (res.ok) {
+              return res.json()
+                .then(
+                  (result) => {
+                    console.log("fetch POST= ", result);
+                    Alert.alert('User Updated', 'Your User has been Updated successfully');
+                    updateUserContext(userToUpdate)
+                    const jsonValue = JSON.stringify(userToUpdate)
+                    AsyncStorage.setItem('userData', jsonValue);                  
+                  }
+                )
+            }
+            else {
+              console.log('err post=', res);
+              Alert.alert('Error', 'Sorry, there was an error updating your user. Please try again later.');
+            }
+          }
+          )
+          .catch((error) => {
+            console.log('Error:', error.message);
+          }
+          );
+    
+    
+      }
+    
     
 
       
@@ -124,7 +158,7 @@ export function UserProvider({ children }) {
 
 
 
-    const value = { userContext, userContacts, logInContext, logOutContext, updateUserContext, updateuserContacts, UpdatePendings }
+    const value = { userContext, userContacts, logInContext, logOutContext, updateUserContext, updateuserContacts, UpdatePendings, updateUserProfile }
     return (
         <UserContext.Provider value={value}>
             {children}

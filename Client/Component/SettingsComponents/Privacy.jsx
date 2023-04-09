@@ -42,24 +42,28 @@ export default function Privacy({ navigation }) {
       body: JSON.stringify(userToUpdate)
     })
       .then(res => {
-        return res.json()
-      }
-      )
-      .then(
-        (result) => {
-          console.log("fetch POST= ", result);
-          Alert.alert('Email Updated', 'Your Email has been changed successfully');
+        if (res.ok) {
+          return res.json()
+            .then(
+              (result) => {
+                console.log("fetch POST= ", result);
+                Alert.alert('Email Updated', 'Your Email has been changed successfully');
+                updateUserContext(userToUpdate);
+                const jsonValue = JSON.stringify(userToUpdate)
+                AsyncStorage.setItem('userData', jsonValue);
+                navigation.goBack();
+              }
+            )
         }
+        else {
+          return Alert.alert('Email Alreay Exists', 'Sorry, there was an error updating your email. Please try again later.');
+        }
+      }
       )
       .catch((error) => {
         console.log('Error:', error.message);
       }
       );
-
-    updateUserContext(userToUpdate);
-    const jsonValue = JSON.stringify(userToUpdate)
-    AsyncStorage.setItem('userData', jsonValue);
-    navigation.goBack();
   }
 
   const openModal = (type, value) => {

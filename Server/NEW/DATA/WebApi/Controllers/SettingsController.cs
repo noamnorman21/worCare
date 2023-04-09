@@ -22,12 +22,18 @@ namespace WebApi.Controllers
         {
             try
             {
-                tblUser user = db.tblUser.Where(x => x.Email == userToUpdate.Email).FirstOrDefault();
+                tblUser user = db.tblUser.Where(x => x.userId == userToUpdate.userId).FirstOrDefault();
                 user.phoneNum = userToUpdate.phoneNum;
                 user.FirstName = userToUpdate.FirstName;
                 user.LastName = userToUpdate.LastName;
                 user.gender = userToUpdate.gender;
                 user.userUri = userToUpdate.userUri;
+                var temp= db.tblUser.Where(x => x.Email == userToUpdate.Email).FirstOrDefault();
+                if (temp != null)
+                {
+                    return BadRequest("Email already exists");
+                }
+                user.Email = userToUpdate.Email;
                 db.SaveChanges();
                 return Ok("User Updated Successfully");
             }

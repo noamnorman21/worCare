@@ -7,6 +7,8 @@ import { AntDesign, Ionicons, SimpleLineIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
 import { useUserContext } from '../UserContext';
+import { Octicons } from '@expo/vector-icons';
+
 
 // Internal imports:
 import Profile from './SettingsComponents/Profile'
@@ -146,9 +148,8 @@ export default function SettingScreen({ navigation }) {
                     },
                     headerBackTitleVisible: false,
                 }}>
-
                 <Stack.Screen name="Settings" component={HomeScreen} options={() => ({ headerTitle: 'Settings', headerShown: false })} initialParams={{ logout: () => { navigation.dispatch(StackActions.replace('LogIn'))} }} />
-                <Stack.Screen name="Profile" component={Profile} />
+                <Stack.Screen name="Profile" component={Profile} options={{headerRight: ()=><TouchableOpacity style={styles.headerButton}><Octicons name="check" size={22} /></TouchableOpacity>}} />
                 <Stack.Screen name="Notifications" component={Notifications} />
                 <Stack.Screen name="Privacy" component={Privacy} options={{ headerTitle: 'Privacy & My Account' }} initialParams={{ logout: () => { navigation.dispatch(StackActions.replace('LogIn'))} }} />
                 <Stack.Screen name="ContactUs" component={ContactUs} options={{ headerTitle: 'Contact Us' }} />
@@ -267,5 +268,11 @@ const styles = StyleSheet.create({
         fontSize: 18,
         color: 'white',
         fontFamily: 'Urbanist-SemiBold'
+    },
+    headerButton: {
+        width: SCREEN_WIDTH * 0.1,
+        height: SCREEN_HEIGHT * 0.05,        
+        alignItems: 'center',
+        justifyContent: 'center',
     },
 });

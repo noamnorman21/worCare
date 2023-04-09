@@ -27,7 +27,7 @@ export default function Profile({ navigation }) {
   const [modalType, setModalType] = useState('');
   const [modalValue, setModalValue] = useState('');
   const [modal2Visible, setModal2Visible] = useState(false);
-  const { updateUserContext, userContext, setUserContext } = useUserContext();
+  const { updateUserContext, userContext, setUserContext, updateUserProfile } = useUserContext();
 
 
   const sendToFirebase = async (image) => {
@@ -73,37 +73,13 @@ export default function Profile({ navigation }) {
       gender: Gender,
       FirstName: firstName,
       LastName: lastName,
-      Id: userId,
+      userId: userId,
       userType: userType
     }
-    updateUserContext(userToUpdate)
-    const jsonValue = JSON.stringify(userToUpdate)
-    AsyncStorage.setItem('userData', jsonValue);
-    fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Settings/UpdateUserProfile', {
-      method: 'PUT',
-      headers: new Headers({
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Accept': 'application/json; charset=UTF-8',
-
-      }),
-      body: JSON.stringify(userToUpdate)
-    })
-      .then(res => {
-        return res.json()
-      }
-      )
-      .then(
-        (result) => {
-          console.log("fetch POST= ", result);
-          Alert.alert('User Updated', 'Your User has been Updated successfully');
-        }
-      )
-      .catch((error) => {
-        console.log('Error:', error.message);
-      }
-      );
-
+    console.log("userToUpdate", userToUpdate);
+    updateUserProfile(userToUpdate);
     navigation.goBack();
+    
   }
 
   const displayGender = () => {
@@ -139,6 +115,9 @@ export default function Profile({ navigation }) {
     else if (Field == "Phone Number") {
       setPhonenum(value);
     }
+    else if (Field == "Email") {
+      setEmail(value);
+    }
   }
 
   const pickImage = async () => {
@@ -154,6 +133,7 @@ export default function Profile({ navigation }) {
       setImageChange(true)
     }
   }
+  
   const cancel = () => {
     console.log('cancel');
     navigation.goBack();
@@ -162,7 +142,7 @@ export default function Profile({ navigation }) {
   useEffect(() => {
     const getData = async () => {
       try {
-        setUserId(userContext.Id);
+        setUserId(userContext.userId);
         setFirstName(userContext.FirstName);
         setLastName(userContext.LastName);
         setGender(userContext.gender)
@@ -176,6 +156,7 @@ export default function Profile({ navigation }) {
     };
     getData();
   }, []);
+
   return (
     <View style={styles.container}>
       {/* <View style={styles.header}>
@@ -185,6 +166,9 @@ export default function Profile({ navigation }) {
         <Image style={styles.image} source={{ uri: userImg }} />
       </TouchableOpacity>
       <View style={styles.FieldContainer}>
+        <TouchableOpacity underlayColor={'lightgrey'} style={styles.fields} onPress={() => openModal("Email", Email)}>
+          <Text style={styles.fieldTxt}>{Email}</Text>
+        </TouchableOpacity>
         <TouchableOpacity underlayColor={'lightgrey'} style={styles.fields} onPress={() => openModal("First Name", firstName)}>
           <Text style={styles.fieldTxt}>{firstName}</Text>
         </TouchableOpacity>
@@ -231,10 +215,6 @@ const styles = StyleSheet.create({
     fontSize: 35,
     color: '#000',
     fontFamily: 'Urbanist-Bold',
-  },
-  smallTitle: {
-    fontSize: 15,
-    color: '#000',
   },
   fields: {
     alignItems: 'center',

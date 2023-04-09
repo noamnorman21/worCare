@@ -24,6 +24,11 @@ export default function FieldChange(props) {
       return passwordRegex.test(password);
    }
 
+   const validateEmail = (email) => {
+      var re = /\S+@\S+\.\S+/;
+      return re.test(email);
+  }
+
    const save = () => {
       if (type === 'Password' && validatePassword(value)) {
          console.log('password is valid')         
@@ -60,7 +65,7 @@ export default function FieldChange(props) {
          return Alert.alert('Password must be at least 8 characters, 1 letter and 1 number');
       }
       else if (type === 'Phone Number') {
-         console.log('phone number')
+         
          if (validatePhoneNum(value)) {
             console.log('phone number is valid')
             props.Save(type, value);
@@ -69,7 +74,17 @@ export default function FieldChange(props) {
             return Alert.alert('Phone number must be 10 digits and start with 0');
          }
       }
-      props.Save(type, value);
+      else if (type === 'Email') {
+         console.log('Email')
+         if (validateEmail(value)) {
+            console.log('Email is valid')
+            props.Save(type, value);
+         }
+         else {
+            return Alert.alert('Email not valid');
+         }
+      }
+      
    }
 
    return (
