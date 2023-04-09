@@ -1,5 +1,4 @@
-import React from 'react';
-import { SafeAreaView, View, Text, TextInput, Button, StyleSheet, Dimensions, TouchableOpacity, Alert } from 'react-native';
+import { SafeAreaView, View, Text, TextInput, StyleSheet, Dimensions, TouchableOpacity, Alert } from 'react-native';
 import { useState, useEffect } from 'react';
 import { OrLine, ReturnToLogin } from '../SignUpComponents/FooterLine';
 import emailjs from '@emailjs/browser';
@@ -15,33 +14,6 @@ const GenerateCode = () => {
     return codeTemp;
 }
 
-const SendEmail = (senderEmail, nameUser, codeTemp) => {
-    if (senderEmail) {
-        console.log('start User Context 2');
-        // Set the template parameters for the email
-        const templateParams = {
-            senderEmail: senderEmail,
-            userName: nameUser,
-            code: codeTemp,
-        };
-
-        // Send the email using EmailJS
-        emailjs.send('service_cg2lqzg', 'template_pqsos33', templateParams, 'amgCa1UEu2kFg8DfI')
-            .then(result => {
-                console.log(result);
-                Alert.alert('Code sent!', 'Check your email for the verification code.');
-            })
-            .catch(error => {
-                console.log(error);
-                Alert.alert('Error!', 'An error occurred while sending the verification code.');
-            });
-
-    }
-    else {
-        Alert.alert('Error!', 'Please enter your email address.');
-    }
-};
-
 export default function ForgotPassword({ navigation }) {
     const [email, setEmail] = useState('');
 
@@ -49,9 +21,47 @@ export default function ForgotPassword({ navigation }) {
         navigation.navigate('LogIn')
     }
 
+    const SendEmail = (senderEmail, nameUser, codeTemp) => {
+        if (senderEmail) {
+            // Set the template parameters for the email
+            const templateParams = {
+                senderEmail: senderEmail,
+                userName: nameUser,
+                code: codeTemp,
+            };
+    
+            // Send the email using EmailJS
+            emailjs.send('service_cg2lqzg', 'template_pqsos33', templateParams, 'amgCa1UEu2kFg8DfI')
+                .then(result => {
+                    console.log(result);
+                    Alert.alert('Code sent!', 'Check your email for the verification code.',
+                        [
+                            {
+                                text: 'OK', onPress: () => {
+                                    navigation.navigate('ForgotPasswordLvl2', { email: senderEmail, userName: nameUser, userCode: codeTemp })
+                                }
+                            }
+                        ]
+                    );
+                })
+                .catch(error => {
+                    console.log(error);
+                    Alert.alert('Error!', 'An error occurred while sending the verification code.');
+    
+                });
+        }
+        else {
+            Alert.alert('Error!', 'Please enter your email address.');
+        }
+    };
+
     const getData = () => {
-        fetch(`https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetEmail/${email}`, {
-            method: 'GET',
+        let userDto = {
+            Email: email,
+        }
+        fetch(`https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetEmailForgotPassword`, {
+            method: 'POST',
+            body: JSON.stringify(userDto),
             headers: {
                 'Content-Type': 'application/json; charset=UTF-8',
             },
@@ -68,7 +78,6 @@ export default function ForgotPassword({ navigation }) {
                 if (data != null) {
                     const userCode = GenerateCode();
                     SendEmail(email, data["FirstName"], userCode);
-                    navigation.navigate('ForgotPasswordLvl2', { email: email, userCode: userCode , userName: data["FirstName"]})
                 }
             })
             .catch((error) => {

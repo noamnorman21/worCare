@@ -1,7 +1,7 @@
-import { Alert, View, Text, StyleSheet, SafeAreaView, Modal, TouchableOpacity, Keyboard, Dimensions, TextInput } from 'react-native'
-import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback } from 'react-native';
+import { Alert, View, Text, StyleSheet, SafeAreaView, Modal, TouchableOpacity, Dimensions, TextInput } from 'react-native'
+import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { useState, useEffect } from 'react'
-import { AntDesign, Octicons } from '@expo/vector-icons';
+import { AntDesign, Octicons, Ionicons } from '@expo/vector-icons';
 //import DateTimePicker from '@react-native-community/datetimepicker';
 
 import DatePicker from 'react-native-datepicker';
@@ -129,8 +129,11 @@ function AddNewMedicine(props) {
                   <View style={styles.centeredView}>
                      <View style={styles.modalView}>
                         <Text style={styles.modalText}>Add new Med </Text>
+
+                        {/* SEARCH MED */}
                         <View style={styles.inputView}>
                            <Dropdown
+                              searchable={true}
                               data={allDrugs}
                               labelField="drugName"
                               valueField="drugName"
@@ -146,30 +149,32 @@ function AddNewMedicine(props) {
                               onChange={(item) => handeleDrugChange(item)}
                            />
                         </View>
-                        <Text>More Details...</Text>
+                        <Text style={styles.subTitle}>More Details...</Text>
                         <View style={styles.inputView}>
+                           {/* FIRST ROW */}
                            <View style={styles.doubleRow}>
-                              <View style={[styles.doubleRowItem, numberPerDay && { borderColor: '#000' }]}>
-                                 <TouchableOpacity disabled={!editMode} onPress={() =>
+                              <View style={styles.doubleRowItem}>
+                                 <TouchableOpacity onPress={() =>
                                     setNumberPerDay(parseInt(numberPerDay + 1))
                                  } style={styles.arrowUp}>
-                                    <AntDesign name="caretup" size={15} color="#548DFF" />
+                                    {/* Change icon color only onPress to #548DFF  */}
+                                    <Ionicons name="md-caret-up-outline" size={17} color="#808080" />
                                  </TouchableOpacity>
                                  <TextInput
                                     style={[styles.inputNumber, numberPerDay && { textAlign: 'center' }]}
                                     placeholder="Number per day"
                                     placeholderTextColor="#9E9E9E"
-                                    editable={editMode}
                                     keyboardType='numeric'
                                     returnKeyType='done'
                                     value={numberPerDay == 0 ? '' : numberPerDay.toString()}
                                     onChangeText={text => text == '' ? setNumberPerDay(0) :
                                        setNumberPerDay(parseInt(text))}
                                  />
-                                 <TouchableOpacity disabled={!editMode} onPress={() =>
+                                 <TouchableOpacity onPress={() =>
                                     numberPerDay == 0 ? setNumberPerDay(0) : setNumberPerDay(parseInt(numberPerDay - 1))
                                  } style={styles.arrowDown}>
-                                    <AntDesign name="caretdown" size={15} color="#808080" />
+                                    {/* Change icon color only onPress to #548DFF  */}
+                                    <Ionicons name="md-caret-down-outline" size={17} color="#808080" />
                                  </TouchableOpacity>
                               </View>
                               <Dropdown
@@ -177,12 +182,13 @@ function AddNewMedicine(props) {
                                  labelField="name"
                                  valueField="name"
                                  placeholder="Frequency"
+                                 renderRightIcon={() => <Ionicons style={styles.iconDropDown} name="md-caret-down-outline" size={17} color="#808080" />}
                                  fontFamily='Urbanist-Light'
                                  // style={[styles.input, taskAssignee && { borderColor: '#000' }]}
-                                 style={[styles.doubleRowItem, { paddingLeft: 23, paddingRight: 18 }, selectedFrequency && { borderColor: '#000' }]}
+                                 style={[styles.doubleRowItem, { paddingLeft: 10, paddingRight: 10 }, selectedFrequency && { borderColor: '#000' }]}
                                  itemTextStyle={styles.itemStyle}
                                  placeholderStyle={styles.placeholderStyle}
-                                 //containerStyle={styles.containerStyle}
+                                 containerStyle={styles.containerMedStyle}
                                  inputSearchStyle={styles.inputSearchStyle}
                                  value={selectedFrequency}
                                  onChange={item => {
@@ -190,13 +196,15 @@ function AddNewMedicine(props) {
                                  }}
                               />
                            </View>
+                           {/* SECOND ROW */}
                            <View style={styles.doubleRow}>
                               <View style={[styles.doubleRowItem, quantity && { borderColor: '#000' }]}>
                                  <TouchableOpacity disabled={!editMode} onPress={() =>
                                     //setNumberPerDay using the function handleIncrement
                                     setQuantity(parseInt(quantity + 1))
                                  } style={styles.arrowUp}>
-                                    <AntDesign name="caretup" size={15} color="#548DFF" />
+                                    {/* Change icon color only onPress to #548DFF  */}
+                                    <Ionicons name="md-caret-up-outline" size={17} color="#808080" />
                                  </TouchableOpacity>
                                  <TextInput
                                     style={[styles.inputNumber, quantity && { textAlign: 'center' }]}
@@ -212,15 +220,17 @@ function AddNewMedicine(props) {
                                  <TouchableOpacity disabled={!editMode} onPress={() =>
                                     quantity == 0 ? setQuantity(0) : setQuantity(parseInt(quantity - 1))
                                  } style={styles.arrowDown}>
-                                    <AntDesign name="caretdown" size={15} color="#808080" />
+                                    {/* Change icon color only onPress to #548DFF  */}
+                                    <Ionicons name="md-caret-down-outline" size={17} color="#808080" />
                                  </TouchableOpacity>
                               </View>
-                              <View style={[styles.doubleRowItem, capacity && { borderColor: '#000'}]}>
+                              <View style={[styles.doubleRowItem, capacity && { borderColor: '#000' }]}>
                                  <TouchableOpacity onPress={() =>
                                     //setNumberPerDay using the function handleIncrement
                                     setCapacity(parseInt(capacity + 1))
                                  } style={styles.arrowUp}>
-                                    <AntDesign name="caretup" size={15} color="#548DFF" />
+                                    {/* Change icon color only onPress to #548DFF  */}
+                                    <Ionicons name="md-caret-up-outline" size={17} color="#808080" />
                                  </TouchableOpacity>
                                  <TextInput
                                     style={[styles.inputNumber, capacity && { textAlign: 'center' }]}
@@ -236,16 +246,34 @@ function AddNewMedicine(props) {
                                  <TouchableOpacity onPress={() =>
                                     capacity == 0 ? setCapacity(0) : setCapacity(parseInt(capacity - 1))
                                  } style={styles.arrowDown}>
-                                    <AntDesign name="caretdown" size={15} color="#808080" />
+                                    {/* Change icon color only onPress to #548DFF  */}
+                                    <Ionicons name="md-caret-down-outline" size={17} color="#808080" />
                                  </TouchableOpacity>
 
                               </View>
                            </View>
-                           <Text>Set end date</Text>
+                           <Text style={styles.subTitle}>Set end date</Text>
+                           {/* THIRD ROW */}
                            <View style={styles.doubleRow}>
                               <View style={[styles.doubleRowItem, medToDate && { borderColor: '#000' }]}>
+                                 <TextInput
+                                    style={[styles.inputNumber, medToDate && { textAlign: 'center' }]}
+                                    placeholder="dd/mm/yyyy"
+                                    placeholderTextColor="#9E9E9E"
+                                    editable={false}
+                                    value={medToDate ? medToDate : ''}
+                                 />
+
                               </View>
                               <View style={[styles.doubleRowItem, medTime && { borderColor: '#000' }]}>
+                                 <TextInput
+                                    style={[styles.inputNumber, medTime && { textAlign: 'center' }]}
+                                    placeholder="Add Time"
+                                    placeholderTextColor="#9E9E9E"
+                                    editable={false}
+                                    value={medTime ? medTime : ''}
+                                 />
+
                               </View>
                            </View>
                         </View>
@@ -379,7 +407,7 @@ function NewTaskModal(props) {
       <SafeAreaView>
          <Modal visible={props.isVisible} presentationStyle='formSheet' animationType='slide' onRequestClose={props.onClose}>
             <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-               <TouchableWithoutFeedback>
+               <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                   <View style={styles.centeredView}>
                      <View style={styles.modalView}>
                         <Text style={styles.modalText}>Add new task </Text>
@@ -586,7 +614,6 @@ const styles = StyleSheet.create({
       justifyContent: 'space-between',
       height: SCREEN_HEIGHT * 0.1,
       width: SCREEN_WIDTH * 0.95,
-      marginBottom: 10,
    },
    doubleRowItem: {
       fontSize: 16,
@@ -600,6 +627,12 @@ const styles = StyleSheet.create({
    },
    containerStyle: {
       width: SCREEN_WIDTH * 0.95,
+      borderRadius: 16,
+      borderWidth: 1,
+      borderColor: '#F5F8FF',
+   },
+   containerMedStyle: {
+      width: SCREEN_WIDTH * 0.45,
       borderRadius: 16,
       borderWidth: 1,
       borderColor: '#F5F8FF',
@@ -640,7 +673,7 @@ const styles = StyleSheet.create({
       fontSize: 16,
    },
    modalText: {
-      marginBottom: 5,
+      marginBottom: 10,
       fontFamily: 'Urbanist-Bold',
       fontSize: 24,
       textAlign: 'center',
@@ -709,7 +742,6 @@ const styles = StyleSheet.create({
    },
    inputView: {
       width: SCREEN_WIDTH * 0.95,
-      marginTop: 10,
    },
    input: {
       borderRadius: 16,
@@ -718,6 +750,7 @@ const styles = StyleSheet.create({
       height: 54,
       width: SCREEN_WIDTH * 0.95,
       marginBottom: 10,
+      marginTop: 10,
       paddingHorizontal: 10,
       fontFamily: 'Urbanist-Light',
       fontSize: 16,
@@ -792,7 +825,7 @@ const styles = StyleSheet.create({
    arrowUp: {
       marginLeft: 10,
       position: 'absolute',
-      right: 12,
+      right: 5,
       top: 0,
       alignItems: 'center',
       justifyContent: 'flex-end',
@@ -806,7 +839,7 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       height: 24,
       width: 28,
-      right: 12,
+      right: 5,
       top: 22,
    },
    inputNumber: {
@@ -814,5 +847,15 @@ const styles = StyleSheet.create({
       fontFamily: 'Urbanist-Light',
       fontSize: 16,
       paddingLeft: 10,
+   },
+   iconDropDown: {
+      paddingTop: 7
+   },
+   subTitle: {
+      fontFamily: 'Urbanist-Bold',
+      fontSize: 16,
+      color: '#000',
+      marginVertical: 5,
+      paddingLeft: 5,
    },
 })

@@ -10,8 +10,6 @@ import { useUserContext } from '../../UserContext';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from '../../config/firebase';
 
-
-
 export default function Profile({ navigation }) {
   const [userId, setUserId] = useState(null);
   const [firstName, setFirstName] = useState(null);
@@ -28,7 +26,6 @@ export default function Profile({ navigation }) {
   const [modalValue, setModalValue] = useState('');
   const [modal2Visible, setModal2Visible] = useState(false);
   const { updateUserContext, userContext, setUserContext } = useUserContext();
-
 
   const sendToFirebase = async (image) => {
     // if the user didn't upload an image, we will use the default image

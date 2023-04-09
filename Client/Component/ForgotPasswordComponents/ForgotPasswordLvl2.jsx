@@ -1,7 +1,7 @@
 import { SafeAreaView, View, TouchableOpacity, Text, StyleSheet, TextInput, Dimensions, Alert } from 'react-native'
 import { React, useState, useRef, useEffect } from 'react'
-import * as Font from 'expo-font';
 import { OrLine, ReturnToLogin } from '../SignUpComponents/FooterLine';
+import emailjs from '@emailjs/browser';
 
 const CODE_LENGTH = 5;
 
@@ -12,12 +12,11 @@ const GenerateCode = () => {
     for (let i = 0; i < 5; i++) {
         codeTemp += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
-    return codeTemp;
+    return codeTemp;  //send the code to the user's email address
 }
 
 const SendEmail = (senderEmail, nameUser, codeTemp) => {
     if (senderEmail) {
-        console.log('start User Context 2');
         // Set the template parameters for the email
         const templateParams = {
             senderEmail: senderEmail,
@@ -35,7 +34,6 @@ const SendEmail = (senderEmail, nameUser, codeTemp) => {
                 console.log(error);
                 Alert.alert('Error!', 'An error occurred while sending the verification code.');
             });
-
     }
     else {
         Alert.alert('Error!', 'Please enter your email address.');
@@ -43,13 +41,6 @@ const SendEmail = (senderEmail, nameUser, codeTemp) => {
 };
 
 export default function ForgotPasswordLvl2({ navigation, route }) {
-    Font.loadAsync({
-        'Urbanist': require('../../assets/fonts/Urbanist-Regular.ttf'),
-        'Urbanist-Bold': require('../../assets/fonts/Urbanist-Bold.ttf'),
-        'Urbanist-Light': require('../../assets/fonts/Urbanist-Light.ttf'),
-        'Urbanist-Medium': require('../../assets/fonts/Urbanist-Medium.ttf'),
-    });
-    
     const userCode = route.params.userCode; //save the code that was sent to the user's email address       
     const email = route.params.email; // save the email address that the user entered
     const nameUser = route.params.userName; //save the user's name

@@ -54,7 +54,6 @@ export default function Holidays(props) {
 
 const styles = StyleSheet.create({
     headerContainer: {
-        // paddingHorizontal: 10,        
         backgroundColor: '#fff',
     },
     headerSmallTxt: {

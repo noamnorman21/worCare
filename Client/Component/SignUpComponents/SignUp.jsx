@@ -68,6 +68,7 @@ export default function CreateUser({ navigation, route }) {
   }, []);
 
   const CheckEmailInDB = () => {
+    console.log('CheckEmailInDB', user.email);
     let checkMail = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetEmail';
     let userDto = {
       Email: user.email,
