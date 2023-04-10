@@ -30,6 +30,7 @@ export default function FieldChange(props) {
   }
 
    const save = () => {
+     
       if (type === 'Password' && validatePassword(value)) {
          console.log('password is valid')         
          let userToUpdate = {
@@ -83,6 +84,9 @@ export default function FieldChange(props) {
          else {
             return Alert.alert('Email not valid');
          }
+      }
+      else {
+         props.Save(type, value);
       }
       
    }

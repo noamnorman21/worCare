@@ -9,6 +9,10 @@ import GenderChange from './GenderChange';
 import { useUserContext } from '../../UserContext';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from '../../config/firebase';
+import { Octicons } from '@expo/vector-icons';
+
+const SCREEN_WIDTH = Dimensions.get('window').width;
+const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 
 
@@ -28,6 +32,16 @@ export default function Profile({ navigation }) {
   const [modalValue, setModalValue] = useState('');
   const [modal2Visible, setModal2Visible] = useState(false);
   const { updateUserContext, userContext, setUserContext, updateUserProfile } = useUserContext();
+
+  // const navigationOptions = ({navigation}) =>{
+  //   const {state}= navigation;
+  //   return(
+  //   headerRight=()=><TouchableOpacity onPress={()=>state.params.handleSave()}><Text>Save</Text></TouchableOpacity>
+  //   )
+  // };
+
+ 
+
 
 
   const sendToFirebase = async (image) => {
@@ -66,6 +80,7 @@ export default function Profile({ navigation }) {
   }
 
   const sendDataToNextDB = (downloadURL) => {
+    console.log("sendDataToNextDB");
     const userToUpdate = {
       Email: Email,
       userUri: downloadURL == null ? userImg : downloadURL,
@@ -154,7 +169,17 @@ export default function Profile({ navigation }) {
         console.log('error', e);
       }
     };
+    const setNavigation= async ()=> navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity style={styles.headerButton} onPress={() => ImageChange ? sendToFirebase(userImg) : sendDataToNextDB()}>
+          <Octicons name="check" size={22} />
+        </TouchableOpacity>
+      ),
+    });
     getData();
+    setNavigation()
+    
+    ;
   }, []);
 
   return (
@@ -235,6 +260,12 @@ const styles = StyleSheet.create({
     marginTop: Dimensions.get('window').height * 0.02,
     marginBottom: Dimensions.get('window').height * 0.02,
   },
+  headerButton: {
+    width: SCREEN_WIDTH * 0.1,
+    height: SCREEN_HEIGHT * 0.05,        
+    alignItems: 'center',
+    justifyContent: 'center',
+},
   image: {
     width: 150,
     height: 150,

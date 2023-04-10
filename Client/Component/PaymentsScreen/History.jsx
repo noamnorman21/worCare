@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, Animated, Modal, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, Animated, Modal, Image, Platform } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { List } from 'react-native-paper';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -9,8 +9,9 @@ import EditPaymentScreen from './EditPaymentScreen';
 import { useUserContext } from '../../UserContext';
 import { AddBtn } from '../HelpComponents/AddNewTask';
 import * as FileSystem from 'expo-file-system';
-import { shareAsync } from 'expo-sharing';
+import { shareAsync, Sharing } from 'expo-sharing';
 import * as MediaLibrary from 'expo-media-library';
+
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -49,7 +50,7 @@ export default function History({ navigation, route }) {
 
   const getHistory = async () => {
     try {
-      const user={
+      const user = {
         userId: userContext.userId,
         userType: userContext.userType
       }
@@ -68,7 +69,7 @@ export default function History({ navigation, route }) {
       })
       setHistory(arr)
     } catch (error) {
-      console.log("error",error)
+      console.log("error", error)
     }
   }
 
@@ -141,38 +142,45 @@ function Request(props) {
     const questionMark = url.lastIndexOf("?");
     const type = url.substring(dot, questionMark);
     console.log("Type", type)
-    
-    const filename = props.data.requestId+type;
-    console.log(filename)
-    const downloadDest = `${FileSystem.documentDirectory}${filename}`;
-    console.log("Download Dest", downloadDest)
-    const { uri } = FileSystem.getInfoAsync(downloadDest);
-    console.log("New Urlli",uri)
-    if (!uri) {
-      console.log('Downloading to ', downloadDest);
-      FileSystem.makeDirectoryAsync(downloadDest, { intermediates: true });
-      let uri = FileSystem.getInfoAsync(downloadDest)
-      console.log("New Uri",uri)
-    }  
-
-    const res = await FileSystem.downloadAsync(url,downloadDest)
-    console.log("res", res)
-
-    saveFile(res);
+    const id = props.data.requestId;
+    const fileName = "Request " + id;
+    const fileUri = FileSystem.documentDirectory + fileName;
+    const DownloadedFile = await FileSystem.downloadAsync(url, fileUri);
+    console.log("DownloadedFile", DownloadedFile)
+    if (DownloadedFile.status == 200) {
+      console.log("File Downloaded", DownloadedFile)
+      saveFile(DownloadedFile.uri, fileName, DownloadedFile.headers['content-type']);
+    }
+    else {
+      console.log("File not Downloaded")
+    }
   }
 
 
-  const saveFile = async (res) => {
-    console.log("Uri1", res)
-    const asset = await MediaLibrary.createAssetAsync(res.uri);
-    console.log("Asset1", asset)
-    await MediaLibrary.createAlbumAsync('Downloads', asset, false);
-    Alert.alert("Downloaded Successfully")
+  const saveFile = async (res, fileName, type) => {
+    if (Platform.OS == "ios") {
+      shareAsync(res.uri)
+    }
+    else { //ios download with share
+      try {
+        const permission = await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
+        if (permission.granted) {
+          const base64 = await FileSystem.readAsStringAsync(res, { encoding: FileSystem.EncodingType.Base64 });
+          await FileSystem.StorageAccessFramework.createFileAsync(permission.directoryUri, fileName, type)
+            .then(async (res) => {
+              console.log("File", res)
+              await FileSystem.writeAsStringAsync(res, base64, { encoding: FileSystem.EncodingType.Base64 });
+              return console.log("File Saved")
+            })
+            .catch(error => { console.log("Error", error) })
+        }
+
+      }
+      catch (error) {
+        console.log("Error", error)
+      }
+    }
   }
-
-
-
-
   return (
     <List.Accordion style={!expanded ? (status == "F" ? [styles.requestFocused, styles.finishedRequestFocused] : [styles.requestFocused, styles.notCompleteRequestFocused]) : styles.requestunFocused}
       theme={{ colors: { background: 'white' } }}
@@ -186,12 +194,12 @@ function Request(props) {
       onPress={toggle}
     >
       <View style={!expanded ? status == "F" ? ([styles.Focused, styles.completeFocused]) : ([styles.Focused, styles.notCompleteFocused]) : null}>
-        <View>
-          <List.Item title={() => <Text style={styles.itemsText}>Date: {props.date.substring(0, 10)} </Text>} />
-          <List.Item title={() => <Text style={styles.itemsText}>Amount: {props.amountToPay} </Text>} />
-          <List.Item title={() => <Text style={styles.itemsText}>Comment: {props.requestComment} </Text>} />
-          <List.Item title={() => <Text style={styles.itemsText}>Status: {displayStatus()} </Text>} />
-          <List.Item title={() =>
+        <View style={styles.itemView}>
+          <List.Item left={() => <Text style={styles.itemsText}>Date: {props.date.substring(0, 10)} </Text>} />
+          <List.Item left={() => <Text style={styles.itemsText}>Amount: {props.amountToPay} </Text>} />
+          <List.Item left={() => <Text style={styles.itemsText}>Comment: {props.requestComment} </Text>} />
+          <List.Item left={() => <Text style={styles.itemsText}>Status: {displayStatus()} </Text>} />
+          <List.Item style={styles.bottom} left={() =>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
               <TouchableOpacity style={[styles.itemsText, styles.viewButton]} onPress={!expanded ? () => { setModal2Visible(true) } : null}>
                 <Text style={styles.viewbuttonText}>View Document</Text>
@@ -222,10 +230,7 @@ function Request(props) {
   )
 }
 
-
-
 const styles = StyleSheet.create({
-
   pending: {
     alignItems: 'center',
     backgroundColor: 'white',
@@ -271,6 +276,10 @@ const styles = StyleSheet.create({
     borderBottomColor: '#7DA9FF',
     shadowColor: '#000',
   },
+  bottom: {
+    position: 'relative',
+    right: SCREEN_WIDTH * 0.04,
+  },
   notCompleteRequestFocused: {
     borderTopColor: '#E6EBF2',
     borderLeftColor: '#E6EBF2',
@@ -290,12 +299,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     padding: 16,
   },
-  requestHeaderIcon: {
-    zIndex: 0,
-    position: 'absolute',
-    right: SCREEN_WIDTH * 0,
-    backgroundColor: 'orange',
-  },
   Focused: {
     borderLeftWidth: 2,
     borderBottomWidth: 2,
@@ -304,6 +307,9 @@ const styles = StyleSheet.create({
     borderBottomStartRadius: 16,
     marginBottom: 10,
     padding: 16,
+    alignContent: 'flex-start',
+    justifyContent: 'flex-start',
+    width: SCREEN_WIDTH * 0.9,
   },
   completeFocused: {
     borderLeftColor: '#7DA9FF',
@@ -324,31 +330,29 @@ const styles = StyleSheet.create({
   itemsText: {
     fontSize: 16,
     fontWeight: '600',
-    marginLeft: SCREEN_WIDTH * -0.16, //NEED TO CHANGE
-    marginRight: SCREEN_WIDTH * 0.02,
     fontFamily: 'Urbanist-Regular',
+    position: 'relative',
+    right: 40,
   },
   viewButton: {
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#7DA9FF',
     height: 40,
-    width: SCREEN_WIDTH * 0.36,
+    width: SCREEN_WIDTH * 0.4,
     borderRadius: 16,
-
   },
   editButton: {
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'white',
     height: 40,
-    width: SCREEN_WIDTH * 0.36,
+    width: SCREEN_WIDTH * 0.4,
     borderRadius: 16,
     borderWidth: 1,
     borderColor: '#7DA9FF',
     marginLeft: 10,
   },
-
   viewbuttonText: {
     color: 'white',
     fontSize: 16,
@@ -380,7 +384,6 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     backgroundColor: 'white',
     flex: 1,
-
   },
   documentImg: {
     height: SCREEN_HEIGHT * 0.5,
@@ -424,5 +427,4 @@ const styles = StyleSheet.create({
     fontFamily: 'Urbanist-Bold',
     alignItems: 'center',
   },
-
 })
