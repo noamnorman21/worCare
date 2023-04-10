@@ -14,8 +14,6 @@ import { Octicons } from '@expo/vector-icons';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
-
-
 export default function Profile({ navigation }) {
   const [userId, setUserId] = useState(null);
   const [firstName, setFirstName] = useState(null);
@@ -41,7 +39,6 @@ export default function Profile({ navigation }) {
   // };
 
  
-
 
 
   const sendToFirebase = async (image) => {

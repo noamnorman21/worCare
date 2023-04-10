@@ -37,12 +37,14 @@ export default function ImagePickerExample(props) {
   };
 
   return (
-    <View style={{ position: 'absolute' }}>
+    <View style={styles.imgContainer}>
       <TouchableOpacity onPress={pickImage} >
         {!image && <Image source={require('../../images/Avatar.png')} style={styles.imgUser} />}
         {image && <Image source={{ uri: image }} style={styles.imgUser} />}
       </TouchableOpacity>
-      {image && <Icon name="edit" size={28} color="#548DFF" style={styles.icon} />}
+      <View style={styles.iconContainer}>
+        {image && <Icon name="edit" size={23} color="#548DFF" style={styles.icon} />}
+      </View>
     </View>
   );
 }
@@ -52,9 +54,21 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 50,
   },
+  imgContainer: {
+    position: 'absolute',
+  },
+  iconContainer: {
+    position: 'absolute',
+    right: '22%',
+    top: '75%',
+    backgroundColor: '#fff',
+    borderRadius: 50,
+    width: 50,
+    height: 50,
+  },
   icon: {
     position: 'absolute',
-    right: 3,
-    bottom: 5,
-  }
+    right: 12,
+    top: 3
+  },
 });

@@ -1,64 +1,56 @@
 import { SafeAreaView, View, TouchableOpacity, Text, StyleSheet, TextInput, Dimensions, Alert } from 'react-native'
 import { React, useState, useRef, useEffect } from 'react'
-import * as Font from 'expo-font';
 import { OrLine, ReturnToLogin } from '../SignUpComponents/FooterLine';
-
-const CODE_LENGTH = 5;
-
-const GenerateCode = () => {
-    let codeTemp = '';
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    const charactersLength = characters.length;
-    for (let i = 0; i < 5; i++) {
-        codeTemp += characters.charAt(Math.floor(Math.random() * charactersLength));
-    }
-    return codeTemp;
-}
-
-const SendEmail = (senderEmail, nameUser, codeTemp) => {
-    if (senderEmail) {
-        console.log('start User Context 2');
-        // Set the template parameters for the email
-        const templateParams = {
-            senderEmail: senderEmail,
-            userName: nameUser,
-            code: codeTemp,
-        };
-
-        // Send the email using EmailJS
-        emailjs.send('service_cg2lqzg', 'template_pqsos33', templateParams, 'amgCa1UEu2kFg8DfI')
-            .then(result => {
-                console.log(result);
-                Alert.alert('Code sent!', 'Check your email for the verification code.');
-            })
-            .catch(error => {
-                console.log(error);
-                Alert.alert('Error!', 'An error occurred while sending the verification code.');
-            });
-
-    }
-    else {
-        Alert.alert('Error!', 'Please enter your email address.');
-    }
-};
+import emailjs from '@emailjs/browser';
 
 export default function ForgotPasswordLvl2({ navigation, route }) {
-    Font.loadAsync({
-        'Urbanist': require('../../assets/fonts/Urbanist-Regular.ttf'),
-        'Urbanist-Bold': require('../../assets/fonts/Urbanist-Bold.ttf'),
-        'Urbanist-Light': require('../../assets/fonts/Urbanist-Light.ttf'),
-        'Urbanist-Medium': require('../../assets/fonts/Urbanist-Medium.ttf'),
-    });
-    
-    const userCode = route.params.userCode; //save the code that was sent to the user's email address       
-    const email = route.params.email; // save the email address that the user entered
+    const CODE_LENGTH = 5;
+    const senderEmail = route.params.email; // save the email address that the user entered
     const nameUser = route.params.userName; //save the user's name
-
     const [code, setCode] = useState(''); //code that the user will enter
     const inputs = useRef([]); //array of inputs
+    const [userCode, setUserCode] = useState(route.params.userCode); //code that was sent to the user's email address
+    
+    const GenerateAnotherCode = () => {
+        let newCodeTemp = '';
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        const charactersLength = characters.length;
+        for (let i = 0; i < 5; i++) {
+            newCodeTemp += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        setUserCode(newCodeTemp);
+        return newCodeTemp;  //send the code to the user's email address
+    }
+
+    const SendAnotherEmail = () => {
+        if (senderEmail) {
+            // Set the template parameters for the email
+            const templateParams = {
+                senderEmail: senderEmail,
+                userName: nameUser,
+                code: GenerateAnotherCode(),
+            };
+
+            console.log(templateParams);
+            // Send the email using EmailJS
+            emailjs.send('service_cg2lqzg', 'template_pqsos33', templateParams, 'amgCa1UEu2kFg8DfI')
+                .then(result => {
+                    console.log(result, 'resended code');
+                    Alert.alert('Code sent!', 'Check your email for the verification code.');
+                })
+                .catch(error => {
+                    console.log(error);
+                    Alert.alert('Error!', 'An error occurred while sending the verification code.');
+                });
+        }
+        else {
+            Alert.alert('Error!', 'Please enter your email address.');
+        }
+    };
+
     useEffect(() => {
         inputs.current[0].focus();
-        console.log(userCode);//temaporary alert to show the code,until we will send it to the user's email address
+        // console.log(userCode);//temaporary alert to show the code,until we will send it to the user's email address
     }, []);
     const handleInput = (index, value) => {
         setCode(prevState => {
@@ -102,7 +94,7 @@ export default function ForgotPasswordLvl2({ navigation, route }) {
                 <TouchableOpacity style={styles.button}
                     onPress={() => {
                         if (code === userCode) {
-                            navigation.navigate('CreateNewPassword', { email: email });
+                            navigation.navigate('CreateNewPassword', { Email: senderEmail });
                         }
                         else {
                             Alert.alert('Wrong code', 'Please enter the correct code');
@@ -111,7 +103,7 @@ export default function ForgotPasswordLvl2({ navigation, route }) {
                 >
                     <Text style={styles.buttonText}>Submit</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={GenerateCode(email, nameUser, userCode)}>
+                <TouchableOpacity onPress={SendAnotherEmail}>
                     <Text style={styles.smallBtn}>Resend Code</Text>
                 </TouchableOpacity>
             </View>

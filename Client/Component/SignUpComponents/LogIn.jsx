@@ -1,4 +1,5 @@
-import { SafeAreaView, Dimensions, View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Keyboard, Alert, LayoutAnimation } from 'react-native'
+import { SafeAreaView, Dimensions, View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Alert } from 'react-native'
+import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState, useContext } from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons'
@@ -16,10 +17,6 @@ export default function LogIn({ navigation }) {
     const [userType, setUserType] = useState('User');
     const [isChecked, setChecked] = useState(false);
     const [showPassword, setShowPassword] = useState(false);//for password visibility
-    // Keyboard animation 
-    const [keyboardOpen, setKeyboardOpen] = useState(false);//for keyboard visibility
-    const [animation, setAnimation] = useState({}); //for animation
-    let animationInProgress = false;
     const { logInContext } = useUserContext();
 
     // function to check from where the app was opened from a invintation link or not  
@@ -137,7 +134,7 @@ export default function LogIn({ navigation }) {
                     const jsonValue = JSON.stringify(userContext)
                     AsyncStorage.setItem('userData', jsonValue);
                     logInContext(userContext);
-                    navigation.navigate('CustomHeader', {screen:"AppBarDown"});//navigate to home screen, we will add a necessary call to get user data from the server                                         
+                    navigation.navigate('CustomHeader', { screen: "AppBarDown" });//navigate to home screen, we will add a necessary call to get user data from the server                                         
                 }
             }
             )
@@ -168,111 +165,78 @@ export default function LogIn({ navigation }) {
 
     useEffect(() => {
         getInitialUrl();
-        //keyboard listener for animation
-        const keyboardDidShowListener = Keyboard.addListener(
-            'keyboardDidShow',
-            () => {
-                if (!animationInProgress) {
-                    animationInProgress = true;
-                    LayoutAnimation.configureNext({
-                        update: {
-                            type: LayoutAnimation.Types.easeIn,
-                            duration: 200,
-                            useNativeDriver: true,
-                        },
-                    });
-                    setAnimation({ marginBottom: Dimensions.get('window').height * 0.3 });
-                    animationInProgress = false;
-                }
-            }
-        );
-        const keyboardDidHideListener = Keyboard.addListener(
-            'keyboardDidHide',
-            () => {
-                if (!animationInProgress) {
-                    animationInProgress = true;
-                    LayoutAnimation.configureNext({
-                        update: {
-                            type: LayoutAnimation.Types.easeOut,
-                            duration: 200,
-                            useNativeDriver: true,
-                        },
-                    });
-                    setAnimation({ marginBottom: 0 });
-                    animationInProgress = false;
-                }
-            }
-        );
-        return () => {
-            keyboardDidShowListener.remove();
-            keyboardDidHideListener.remove();
-        }
     }, []);
 
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.imageContainer}>
-                <Image
-                    style={styles.image}
-                    source={require('../../images/logo_New.png')}
-                />
-            </View>
-            <View style={[styles.inputContainer, animation]}>
-                {/* userName */}
-                <TextInput
-                    style={styles.input}
-                    placeholder="Email"
-                    value={email}
-                    autoCapitalize='none'
-                    onChangeText={text => setEmail(text)}
-                    keyboardType="email-address"
-                    autoCorrect={false}
-                />
-                <View style={styles.passwordContainer}>
-                    {/* password */}
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Password"
-                        secureTextEntry={!showPassword}
-                        value={password}
-                        autoCapitalize='none'
-                        autoCorrect={false}
-                        keyboardType='ascii-capable'
-                        onChangeText={text => setPassword(text)}
-                    />
-                    {/* password visibility button */}
-                    <TouchableOpacity style={styles.passwordButton} onPress={() => setShowPassword(!showPassword)}>
-                        {/* Icon button For changing password input visibility */}
-                        <Icon name={showPassword ? 'visibility' : 'visibility-off'} size={20} color='#979797' />
-                    </TouchableOpacity>
-                </View>
-                {/* remmeber me check box  in one line*/}
-                <View style={styles.rememberMeContainer}>
-                    <TouchableOpacity onPress={toggeleRememberMe}>
-                        {isChecked
-                            ?
-                            <MaterialCommunityIcons style={styles.rememberMeIcon} name="checkbox-intermediate" size={24} color="#979797" />
-                            :
-                            <MaterialCommunityIcons style={styles.rememberMeIcon} name="checkbox-blank-outline" size={24} color="#979797" />
-                        }
-                     
-                    </TouchableOpacity>
-                    <Text style={styles.rememberMe}>Remember Me</Text>
-                    {/* forgot password button */}
-                    <TouchableOpacity onPress={NavigateToForgotPassword}>
-                        <View style={styles.forgotPasswordContainer}>
-                            <Text style={styles.btnForgotPassword}>Forgot Password?</Text>
+            <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
+                    <View>
+                        <View style={styles.imageContainer}>
+                            <Image style={styles.image} source={require('../../images/logo_New.png')} />
                         </View>
-                    </TouchableOpacity>
-                </View>
-                {/* login button */}
-                <TouchableOpacity onPress={logInBtn} style={styles.button}>
-                    <Text style={styles.buttonText}>Log In</Text>
-                </TouchableOpacity>
-            </View>
-            {/* footer line */}
-            <OrLine />
-            <NeedAccount NavigateToSignUp={NavigateToSignUp} />
+                        <View style={styles.inputContainer}>
+                            {/* userName */}
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Email Address"
+                                placeholderTextColor={'#9E9E9E'}
+                                value={email}
+                                autoCapitalize='none'
+                                onChangeText={text => setEmail(text)}
+                                keyboardType="email-address"
+                                autoCorrect={false}
+                            />
+                            <View style={styles.passwordContainer}>
+                                {/* password */}
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder="Password"
+                                    placeholderTextColor={'#9E9E9E'}
+                                    secureTextEntry={!showPassword}
+                                    value={password}
+                                    autoCapitalize='none'
+                                    autoCorrect={false}
+                                    keyboardType='ascii-capable'
+                                    onChangeText={text => setPassword(text)}
+                                />
+                                {/* password visibility button */}
+                                <TouchableOpacity style={styles.passwordButton} onPress={() => setShowPassword(!showPassword)}>
+                                    {/* Icon button For changing password input visibility */}
+                                    <Icon name={showPassword ? 'visibility' : 'visibility-off'} size={20} color='#000' />
+                                </TouchableOpacity>
+                            </View>
+                            {/* remmeber me check box  in one line*/}
+                            <View style={styles.rememberMeContainer}>
+                                <TouchableOpacity onPress={toggeleRememberMe}>
+                                    {isChecked
+                                        ?
+                                        <MaterialCommunityIcons style={styles.rememberMeIcon} name="checkbox-intermediate" size={24} color="#979797" />
+                                        :
+                                        <MaterialCommunityIcons style={styles.rememberMeIcon} name="checkbox-blank-outline" size={24} color="#979797" />
+                                    }
+                                </TouchableOpacity>
+                                <Text style={styles.rememberMe}>Remember Me</Text>
+                                {/* forgot password button */}
+                                <TouchableOpacity onPress={NavigateToForgotPassword}>
+                                    <View style={styles.forgotPasswordContainer}>
+                                        <Text style={styles.btnForgotPassword}>Forgot Password?</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
+                            {/* login button */}
+                            <TouchableOpacity onPress={logInBtn} style={styles.button}>
+                                <Text style={styles.buttonText}>Log In</Text>
+                            </TouchableOpacity>
+                            <View style={styles.footerContainer}>
+                                {/* footer line */}
+                                <OrLine />
+                                <NeedAccount NavigateToSignUp={NavigateToSignUp} />
+                            </View>
+                        </View>
+                    </View>
+                </TouchableWithoutFeedback>
+            </KeyboardAvoidingView>
         </SafeAreaView >
     )
 }
@@ -282,13 +246,13 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#F5F5F5',
+        backgroundColor: '#FFFFFF',
         flexDirection: 'column',
     },
     imageContainer: {
         alignItems: 'center',
         justifyContent: 'center',
-        flex: 2,
+        flex: 1.5,
     },
     passwordContainer: {
         width: '100%',
@@ -299,6 +263,12 @@ const styles = StyleSheet.create({
         flex: 2,
         width: '100%',
         alignItems: 'center',
+    },
+    footerContainer: {
+        flex: 1,
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     image: {
         width: SCREEN_WIDTH * 0.85,
@@ -311,12 +281,11 @@ const styles = StyleSheet.create({
         margin: 10,
         alignItems: 'center',
         borderRadius: 16,
-        borderWidth: 1,
-        backgroundColor: '#F5F5F5',
-        borderColor: 'lightgray',
-        shadowColor: '#000',
+        borderWidth: 1.5,
+        backgroundColor: '#FFFFFF',
+        borderColor: '#E6EBF2',
         height: 54,
-        fontFamily: 'Urbanist-Regular',
+        fontFamily: 'Urbanist-Medium',
         fontSize: 14
     },
     button: {
@@ -325,51 +294,43 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 16,
-        borderWidth: 1,
-        borderColor: 'lightgray',
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.3,
-        shadowRadius: 3,
-        elevation: 1,
         margin: 15,
         height: 54,
     },
     buttonText: {
-        color: 'white',
+        color: '#FFFFFF',
         fontFamily: 'Urbanist-Bold',
         fontSize: 18,
     },
     passwordButton: {
         position: 'absolute',
-        right: SCREEN_WIDTH * 0.1,
+        right: SCREEN_WIDTH * 0.05,
         padding: 5,
         borderRadius: 5,
         marginLeft: 5,
     },
     passwordButtonText: {
-        color: 'black',
+        color: '#000',
         fontFamily: 'Urbanist-Bold',
         fontSize: 14
     },
     btnForgotPassword: {
         color: '#548DFF',
         fontSize: 14,
-        fontFamily: 'Urbanist-Regular',
+        fontFamily: 'Urbanist',
         marginTop: 10,
         marginBottom: 10,
     },
     rememberMe: {
         color: '#979797',
         fontSize: 14,
-        fontFamily: 'Urbanist-Regular',
+        fontFamily: 'Urbanist',
         marginTop: 10,
         marginBottom: 10,
     },
     rememberMeIcon: {
         marginTop: SCREEN_HEIGHT * 0.01,
         marginBottom: SCREEN_WIDTH * 0.01,
-      
     },
     forgotPasswordContainer: {
         flexDirection: 'row',
@@ -379,6 +340,5 @@ const styles = StyleSheet.create({
     rememberMeContainer: {
         width: SCREEN_WIDTH * 0.9,
         flexDirection: 'row',
-     
     }
 });

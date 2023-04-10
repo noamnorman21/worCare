@@ -98,7 +98,8 @@ export default function SignUpUserLVL5({ navigation, route }) {
             placeholderText: {
               color: 'gray',
               fontFamily: 'Urbanist',
-              fontSize: 16
+              fontSize: 16,
+              textAlign: 'left',
             }
           }}
           onDateChange={(date) => { setDate(date) }}

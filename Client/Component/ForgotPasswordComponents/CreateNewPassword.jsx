@@ -1,14 +1,8 @@
 import { SafeAreaView, View, Text, TouchableOpacity, StyleSheet, Alert, Dimensions, TextInput } from 'react-native'
 import { useState } from 'react'
+import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { OrLine, ReturnToLogin } from '../SignUpComponents/FooterLine'
-import * as Font from 'expo-font'
-Font.loadAsync({
-  'Urbanist': require('../../assets/fonts/Urbanist-Regular.ttf'),
-  'Urbanist-Bold': require('../../assets/fonts/Urbanist-Bold.ttf'),
-  'Urbanist-Light': require('../../assets/fonts/Urbanist-Light.ttf'),
-  'Urbanist-Medium': require('../../assets/fonts/Urbanist-Medium.ttf'),
-});
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
@@ -21,16 +15,17 @@ export default function CreateNewPassword({ navigation, route }) {
   const CreatePassword = () => {
     if (password === repeatPassword) {
       const newData = {
-        email: email,
-        password: password,
+        Email: email,
+        Password: password,
       };
+      console.log(newData);
       // here we will send the new password to the server
       fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/UpdateUserPassword', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        body: JSON.stringify({newData}),
+        body: JSON.stringify(newData),
       })
         .then((response) => response.json())
         .then((json) => {
@@ -38,7 +33,7 @@ export default function CreateNewPassword({ navigation, route }) {
         })
         .catch((error) => {
           console.error(error);
-        });        
+        });
       Alert.alert('Password Created');
       NavigateToLogIn();
     } else {
@@ -52,79 +47,66 @@ export default function CreateNewPassword({ navigation, route }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.headerContainer}>
-        <Text style={styles.header}>Create New Password</Text>
-        <Text style={styles.smallHeader}>Enter your new password to log-in</Text>
-      </View>
+      <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
+          <View>
+            <View style={styles.headerContainer}>
+              <Text style={styles.header}>Create New Password</Text>
+              <Text style={styles.smallHeader}>Enter your new password to Log-in</Text>
+            </View>
 
-      <View style={styles.inputContainer}>
-        <View>
-          {/*new password input */}
-          <TextInput
-            style={styles.input}
-            placeholder="New Password"
-            placeholderTextColor="#A9A9A9"
-            secureTextEntry={!showPassword}
-            autoCapitalize='none'
-            autoCorrect={false}
-            keyboardType='ascii-capable'
-            onChangeText={(text) => setPassword(text)}
-          />
-          {/* password visibility button */}
-          <TouchableOpacity
-            style={styles.passwordButton}
-            onPress={() => setShowPassword(!showPassword)}
-          >
-            {/* Icon button For changing password input visibility */}
-            <Icon
-              name={showPassword ? 'visibility' : 'visibility-off'}
-              size={20}
-              color='#979797'
-            />
-          </TouchableOpacity>
-        </View>
+            <View style={styles.inputContainer}>
+              <View>
+                {/*new password input */}
+                <TextInput
+                  style={styles.input}
+                  placeholder="New Password"
+                  placeholderTextColor="#9E9E9E"
+                  secureTextEntry={!showPassword}
+                  autoCapitalize='none'
+                  autoCorrect={false}
+                  keyboardType='ascii-capable'
+                  onChangeText={(text) => setPassword(text)}
+                />
+                {/* password visibility button */}
+                <TouchableOpacity
+                  style={styles.passwordButton}
+                  onPress={() => setShowPassword(!showPassword)}
+                >
+                  {/* Icon button For changing password input visibility */}
+                  <Icon name={showPassword ? 'visibility' : 'visibility-off'} size={20} color='#000' />
+                </TouchableOpacity>
+              </View>
 
-        <View>
-          {/* repeat password input */}
-          <TextInput
-            style={styles.input}
-            placeholder="Repeat Password"
-            placeholderTextColor="#A9A9A9"
-            secureTextEntry={!showPassword}
-            autoCapitalize='none'
-            autoCorrect={false}
-            keyboardType='ascii-capable'
-            onChangeText={(text) => setRepeatPassword(text)}
-          />
+              <View>
+                {/* repeat password input */}
+                <TextInput
+                  style={styles.input}
+                  placeholder="Repeat Password"
+                  placeholderTextColor="#9E9E9E"
+                  secureTextEntry={!showPassword}
+                  autoCapitalize='none'
+                  autoCorrect={false}
+                  keyboardType='ascii-capable'
+                  onChangeText={(text) => setRepeatPassword(text)}
+                />
+                {/* password visibility button */}
+                <TouchableOpacity style={styles.passwordButton} onPress={() => setShowPassword(!showPassword)}>
+                  {/* Icon button For changing password input visibility */}
+                  <Icon name={showPassword ? 'visibility' : 'visibility-off'} size={20} color='#000' />
+                </TouchableOpacity>
+              </View>
 
-          {/* password visibility button */}
-          <TouchableOpacity
-            style={styles.passwordButton}
-            onPress={() => setShowPassword(!showPassword)}
-          >
-            {/* Icon button For changing password input visibility */}
-            <Icon
-              name={showPassword ? 'visibility' : 'visibility-off'}
-              size={20}
-              color='#979797'
-            />
-          </TouchableOpacity>
-        </View>
-
-        {/* Finish button */}
-        <TouchableOpacity
-          style={styles.button}
-
-        >
-          <Text style={styles.buttonText}>
-            Continue
-          </Text>
-        </TouchableOpacity>
-      </View>
-
-
-      <OrLine />
-      <ReturnToLogin NavigateToLogIn={NavigateToLogIn} />
+              {/* Finish button */}
+              <TouchableOpacity style={styles.button} onPress={() => CreatePassword()}>
+                <Text style={styles.buttonText}>Submit</Text>
+              </TouchableOpacity>
+            </View>
+            <OrLine />
+            <ReturnToLogin NavigateToLogIn={NavigateToLogIn} />
+          </View>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   )
 }
@@ -164,9 +146,9 @@ const styles = StyleSheet.create({
     margin: 10,
     alignItems: 'flex-left',
     borderRadius: 16,
-    borderWidth: 1,
-    backgroundColor: '#F5F5F5',
-    borderColor: 'lightgray',
+    borderWidth: 1.5,
+    backgroundColor: '#FFFFFF',
+    borderColor: '#E6EBF2',
     shadowColor: '#000',
     height: 54,
     fontFamily: 'Urbanist',
@@ -178,12 +160,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 16,
-    borderWidth: 1,
-    borderColor: 'lightgray',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
     elevation: 1,
     margin: 15,
     height: 54,
@@ -194,7 +170,7 @@ const styles = StyleSheet.create({
     top: SCREEN_HEIGHT * 0.03,
   },
   buttonText: {
-    color: 'white',
+    color: '#fff',
     fontFamily: 'Urbanist-Bold',
     fontSize: 18,
   },
