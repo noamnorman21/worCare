@@ -188,9 +188,9 @@ export default function Profile({ navigation }) {
         <Image style={styles.image} source={{ uri: userImg }} />
       </TouchableOpacity>
       <View style={styles.FieldContainer}>
-        <TouchableOpacity underlayColor={'lightgrey'} style={styles.fields} onPress={() => openModal("Email", Email)}>
+        {/* <TouchableOpacity underlayColor={'lightgrey'} style={styles.fields} onPress={() => openModal("Email", Email)}>
           <Text style={styles.fieldTxt}>{Email}</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <TouchableOpacity underlayColor={'lightgrey'} style={styles.fields} onPress={() => openModal("First Name", firstName)}>
           <Text style={styles.fieldTxt}>{firstName}</Text>
         </TouchableOpacity>
