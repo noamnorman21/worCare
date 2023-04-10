@@ -152,6 +152,7 @@ export default function CreateUser({ navigation, route }) {
               <Text style={styles.title}>Fill your profile</Text>
               <Text style={styles.smallTitle}>Don't worry, you can always change it later</Text>
             </View>
+
             <View style={styles.imageContainer}>
               <ImagePickerExample style={styles.image} onImgChange={changeIMG} />
             </View>
@@ -161,19 +162,22 @@ export default function CreateUser({ navigation, route }) {
                 <TextInput
                   style={[styles.input, styles.firstNameInput]}
                   placeholder="First Name"
+                  placeholderTextColor={'#9E9E9E'}
                   keyboardType='ascii-capable'
                   onChangeText={(value) => handleInputChange('firstName', value)}
                 />
                 <TextInput
                   style={[styles.input, styles.lastNameInput]}
                   placeholder="Last Name"
+                  placeholderTextColor={'#9E9E9E'}
                   keyboardType='ascii-capable'
                   onChangeText={(value) => handleInputChange('lastName', value)}
                 />
               </View>
               <TextInput
                 style={styles.input}
-                placeholder="Email"
+                placeholder="Email Address"
+                placeholderTextColor={'#9E9E9E'}
                 keyboardType='ascii-capable'
                 onChangeText={(value) => handleInputChange('email', value)}
                 autoCapitalize='none'
@@ -186,6 +190,7 @@ export default function CreateUser({ navigation, route }) {
               <View style={styles.phoneContainer}>
                 <TextInput
                   style={styles.input}
+                  placeholderTextColor={'#9E9E9E'}
                   placeholder="Phone Number"
                   keyboardType='phone-pad'
                   // return button type in keyboard for ios devices
@@ -200,6 +205,7 @@ export default function CreateUser({ navigation, route }) {
                 <TextInput
                   input
                   style={styles.input}
+                  placeholderTextColor={'#9E9E9E'}
                   placeholder="Password (8+ characters)"
                   secureTextEntry={!showPassword}
                   autoCapitalize='none'
@@ -215,17 +221,20 @@ export default function CreateUser({ navigation, route }) {
                   <Icon
                     name={showPassword ? 'visibility' : 'visibility-off'}
                     size={20}
-                    color='#979797'
+                    color='#000000'
                   />
                 </TouchableOpacity>
               </View>
-
               <TouchableOpacity style={styles.button} onPress={handleCreateUser} >
                 <Text style={styles.buttonText}>Get Started</Text>
               </TouchableOpacity>
+
+              <View style={styles.footerContainer}>
+                {/* footer line */}
+                <OrLine />
+                <HaveAccount NavigateToLogIn={NavigateToLogIn} />
+              </View>
             </View>
-            <OrLine />
-            <HaveAccount NavigateToLogIn={NavigateToLogIn} />
           </View>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
@@ -245,17 +254,17 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#FFFFFF',
     flexDirection: 'column',
   },
   inputContainer: {
     width: Dimensions.get('window').width * 1,
     height: Dimensions.get('window').height * 1,
     alignItems: 'center',
-    flex: 4,
+    flex: 4.5,
   },
   imageContainer: {
-    flex: 2,
+    flex: 1.5,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -264,10 +273,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  image: {
-    width: Dimensions.get('window').width * 0.85,
-    height: Dimensions.get('window').width * 0.85,
-    resizeMode: 'contain',
+  footerContainer: {
+    flex: 1,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   input: {
     width: Dimensions.get('window').width * 0.85,
@@ -275,11 +285,10 @@ const styles = StyleSheet.create({
     margin: 7,
     alignItems: 'center',
     borderRadius: 16,
-    borderWidth: 1,
-    backgroundColor: '#F5F5F5',
-    borderColor: 'lightgray',
-    shadowColor: '#000',
-    height: 45,
+    borderWidth: 1.5,
+    borderColor: '#E6EBF2',
+    fontFamily: 'Urbanist-Medium',
+    height: 48,
   },
   button: {
     width: Dimensions.get('window').width * 0.85,
@@ -287,20 +296,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 16,
-    borderWidth: 1,
-    borderColor: 'lightgray',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 1,
     margin: 7,
-    height: 45,
+    height: 48,
   },
   buttonText: {
-    color: 'white',
-    fontWeight: '600',
+    color: '#fff',
     fontSize: 16,
+    fontFamily: 'Urbanist-Bold',
   },
   nameContainer: {
     flexDirection: 'row',
@@ -317,7 +319,7 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width * 0.4,
   },
   title: {
-    fontSize: 26,
+    fontSize: 24,
     fontFamily: 'Urbanist-Bold',
     marginBottom: 7,
   },
@@ -331,5 +333,4 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginBottom: 5,
   },
-
 });

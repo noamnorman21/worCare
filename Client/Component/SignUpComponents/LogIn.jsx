@@ -179,7 +179,8 @@ export default function LogIn({ navigation }) {
                             {/* userName */}
                             <TextInput
                                 style={styles.input}
-                                placeholder="Email"
+                                placeholder="Email Address"
+                                placeholderTextColor={'#9E9E9E'}
                                 value={email}
                                 autoCapitalize='none'
                                 onChangeText={text => setEmail(text)}
@@ -191,6 +192,7 @@ export default function LogIn({ navigation }) {
                                 <TextInput
                                     style={styles.input}
                                     placeholder="Password"
+                                    placeholderTextColor={'#9E9E9E'}
                                     secureTextEntry={!showPassword}
                                     value={password}
                                     autoCapitalize='none'
@@ -226,10 +228,11 @@ export default function LogIn({ navigation }) {
                             <TouchableOpacity onPress={logInBtn} style={styles.button}>
                                 <Text style={styles.buttonText}>Log In</Text>
                             </TouchableOpacity>
-
-                            {/* footer line */}
-                            <OrLine />
-                            <NeedAccount NavigateToSignUp={NavigateToSignUp} />
+                            <View style={styles.footerContainer}>
+                                {/* footer line */}
+                                <OrLine />
+                                <NeedAccount NavigateToSignUp={NavigateToSignUp} />
+                            </View>
                         </View>
                     </View>
                 </TouchableWithoutFeedback>
@@ -261,6 +264,12 @@ const styles = StyleSheet.create({
         width: '100%',
         alignItems: 'center',
     },
+    footerContainer: {
+        flex: 1,
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
     image: {
         width: SCREEN_WIDTH * 0.85,
         height: SCREEN_WIDTH * 0.85,
@@ -276,7 +285,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         borderColor: '#E6EBF2',
         height: 54,
-        fontFamily: 'Urbanist-Light',
+        fontFamily: 'Urbanist-Medium',
         fontSize: 14
     },
     button: {

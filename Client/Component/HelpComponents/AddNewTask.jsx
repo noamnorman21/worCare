@@ -1,7 +1,7 @@
 import { Alert, View, Text, StyleSheet, SafeAreaView, Modal, TouchableOpacity, Dimensions, TextInput } from 'react-native'
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { useState, useEffect } from 'react'
-import { AntDesign, Octicons, Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, MaterialIcons, Octicons, Ionicons } from '@expo/vector-icons';
 //import DateTimePicker from '@react-native-community/datetimepicker';
 
 import DatePicker from 'react-native-datepicker';
@@ -132,7 +132,11 @@ function AddNewMedicine(props) {
                         {/* SEARCH MED */}
                         <View style={styles.inputView}>
                            <Dropdown
-                              searchable={true}
+                              search={true}
+                              searchPlaceholder="Search..."
+                              
+                              renderLeftIcon={() => <MaterialIcons name="search" size={30} color="gray" />}
+                              inputSearchStyle={styles.inputSearchStyle}
                               data={allDrugs}
                               labelField="drugName"
                               valueField="drugName"
@@ -140,7 +144,7 @@ function AddNewMedicine(props) {
                               maxHeight={300}
                               fontFamily='Urbanist-Light'
                               // style={[styles.input, taskAssignee && { borderColor: '#000' }]}
-                              style={[styles.input, { textAlign: 'center' }, selectedDrugName && { borderColor: '#000' }]}
+                              style={[styles.input, { textAlign: 'center', backgroundColor: '#EEEEEE' }, selectedDrugName && { borderColor: '#000' }]}
                               itemTextStyle={styles.itemStyle}
                               placeholderStyle={styles.placeholderStyle}
                               containerStyle={styles.containerStyle}
@@ -169,10 +173,11 @@ function AddNewMedicine(props) {
                                     onChangeText={text => text == '' ? setNumberPerDay(0) :
                                        setNumberPerDay(parseInt(text))}
                                  />
+                                 {/* Change icon color only onPress to #548DFF  */}
                                  <TouchableOpacity onPress={() =>
+
                                     numberPerDay == 0 ? setNumberPerDay(0) : setNumberPerDay(parseInt(numberPerDay - 1))
                                  } style={styles.arrowDown}>
-                                    {/* Change icon color only onPress to #548DFF  */}
                                     <Ionicons name="md-caret-down-outline" size={17} color="#808080" />
                                  </TouchableOpacity>
                               </View>
@@ -248,7 +253,6 @@ function AddNewMedicine(props) {
                                     {/* Change icon color only onPress to #548DFF  */}
                                     <Ionicons name="md-caret-down-outline" size={17} color="#808080" />
                                  </TouchableOpacity>
-
                               </View>
                            </View>
                            <Text style={styles.subTitle}>Set end date</Text>
@@ -262,7 +266,7 @@ function AddNewMedicine(props) {
                                     editable={false}
                                     value={medToDate ? medToDate : ''}
                                  />
-
+                                 <MaterialCommunityIcons style={styles.addIcon} name="calendar-outline" size={24} color="#808080" />
                               </View>
                               <View style={[styles.doubleRowItem, medTime && { borderColor: '#000' }]}>
                                  <TextInput
@@ -272,11 +276,21 @@ function AddNewMedicine(props) {
                                     editable={false}
                                     value={medTime ? medTime : ''}
                                  />
-
+                                 <MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />
                               </View>
                            </View>
                         </View>
-
+                        <TextInput
+                           style={[styles.commentInput, { padding: 0 }, medComment && { borderColor: '#000' }]}
+                           placeholder="Custom Instruction ( Optional )"
+                           placeholderTextColor="#9E9E9E"
+                           value={medComment}
+                           multiline={true}
+                           returnKeyType='done'
+                           keyboardType='default'
+                           numberOfLines={4}
+                           onChangeText={text => setMedComment(text)}
+                        />
                         <View style={styles.btnModal}>
                            <TouchableOpacity style={styles.saveBtn} onPress={addMed}>
                               <Text style={styles.textStyle}>Save</Text>
@@ -408,8 +422,8 @@ function NewTaskModal(props) {
             <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                   <View style={styles.centeredView}>
+                     <Text style={styles.modalText}>Add new task </Text>
                      <View style={styles.modalView}>
-                        <Text style={styles.modalText}>Add new task </Text>
                         <View style={styles.inputView}>
                            <TextInput
                               style={[styles.input, taskNameBorder && { borderColor: '#000' }]}
@@ -572,13 +586,15 @@ function NewTaskModal(props) {
                            />
 
                            <TextInput
-                              style={[styles.commentInput, taskComment != '' && { borderColor: '#000' }]}
+                              style={[styles.commentInput, {
+                                 borderColor: taskComment != '' ? '#000' : '#E6EBF2'
+                              }]}
                               placeholder='Comment ( optional )'
                               value={taskComment}
-                              numberOfLines={4}
+                              numberOfLines={3}
                               returnKeyType='done'
                               keyboardType='default'
-                              onSubmitEditing={() => Keyboard.dismiss()}
+                              onSubmitEditing={Keyboard.dismiss}
                               placeholderTextColor='#9E9E9E'
                               onChangeText={text => setTaskComment(text)}
                            />
@@ -622,7 +638,11 @@ const styles = StyleSheet.create({
       borderRadius: 16,
       justifyContent: 'center',
       alignItems: 'start',
-      height: 54,
+      height: 50,
+   },
+   addIcon: {
+      position: 'absolute',
+      right: 10,
    },
    containerStyle: {
       width: SCREEN_WIDTH * 0.95,
@@ -637,10 +657,8 @@ const styles = StyleSheet.create({
       borderColor: '#F5F8FF',
    },
    centeredView: {
-      flex: 1,
-      justifyContent: 'center',
       alignItems: 'center',
-      marginTop: 22,
+      marginTop: 30,
    },
    itemStyle: {
       justifyContent: 'flex-start',
@@ -652,6 +670,7 @@ const styles = StyleSheet.create({
       color: '#9E9E9E',
       fontSize: 16,
       fontFamily: 'Urbanist-Light',
+      paddingLeft: 10
    },
    textStyleDate: {
       padding: 10,
@@ -672,7 +691,7 @@ const styles = StyleSheet.create({
       fontSize: 16,
    },
    modalText: {
-      marginBottom: 10,
+      marginVertical: 20,
       fontFamily: 'Urbanist-Bold',
       fontSize: 24,
       textAlign: 'center',
@@ -748,8 +767,7 @@ const styles = StyleSheet.create({
       borderColor: '#E6EBF2',
       height: 54,
       width: SCREEN_WIDTH * 0.95,
-      marginBottom: 10,
-      marginTop: 10,
+      marginVertical: 7,
       paddingHorizontal: 10,
       fontFamily: 'Urbanist-Light',
       fontSize: 16,
@@ -761,11 +779,11 @@ const styles = StyleSheet.create({
       borderColor: '#E6EBF2',
       height: 90,
       width: SCREEN_WIDTH * 0.95,
-      marginBottom: 10,
-      paddingLeft: 20,
+      marginVertical: 7,
+      paddingHorizontal: 10,
       fontFamily: 'Urbanist-Light',
       fontSize: 16,
-      textAlignVertical: 'top',
+      justifyContent: 'center',
    },
    modalDateView: {
       marginTop: SCREEN_HEIGHT * 0.2,
@@ -811,7 +829,7 @@ const styles = StyleSheet.create({
       justifyContent: "center",
    },
    inputSearchStyle: {
-      height: 45,
+      height: 54,
       width: SCREEN_WIDTH * 0.925,
       fontSize: 16,
       fontFamily: 'Urbanist',

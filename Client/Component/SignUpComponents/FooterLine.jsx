@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
         marginVertical: 30,
     },
     line: {
-        flex: 1,
+        flex: 0.5,
         height: 1,
         backgroundColor: '#808080',
         marginHorizontal: 10,
