@@ -44,9 +44,10 @@ function AddNewMedicine(props) {
    const medFrequencies = [
       { id: 0, name: 'Once' },
       { id: 1, name: 'Daily' },
-      { id: 2, name: 'Weekly' },
-      { id: 3, name: 'Monthly' },
-      { id: 4, name: 'Yearly' },
+      // { id: 2, name: 'Twice In A Week' },
+      { id: 3, name: 'Weekly' },
+      { id: 4, name: 'Monthly' },
+      { id: 5, name: 'Yearly' },
    ]
 
    useEffect(() => {
@@ -96,7 +97,7 @@ function AddNewMedicine(props) {
       setCapacity(0);
       setSelectedFrequency('');
       setMedComment('');
-      setMedFromDate('');
+      setMedFromDate(moment().format('YYYY-MM-DD'));
       setMedToDate('');
       setMedTime('');
       setMedDosage('');
@@ -134,7 +135,7 @@ function AddNewMedicine(props) {
                            <Dropdown
                               search={true}
                               searchPlaceholder="Search..."
-                              
+
                               renderLeftIcon={() => <MaterialIcons name="search" size={30} color="gray" />}
                               inputSearchStyle={styles.inputSearchStyle}
                               data={allDrugs}
