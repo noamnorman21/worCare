@@ -29,7 +29,7 @@ export default function ForgotPassword({ navigation }) {
                 userName: nameUser,
                 code: codeTemp,
             };
-    
+
             // Send the email using EmailJS
             emailjs.send('service_cg2lqzg', 'template_pqsos33', templateParams, 'amgCa1UEu2kFg8DfI')
                 .then(result => {
@@ -47,7 +47,7 @@ export default function ForgotPassword({ navigation }) {
                 .catch(error => {
                     console.log(error);
                     Alert.alert('Error!', 'An error occurred while sending the verification code.');
-    
+
                 });
         }
         else {
@@ -95,7 +95,7 @@ export default function ForgotPassword({ navigation }) {
                 </Text>
                 <TextInput
                     style={styles.input}
-                    placeholder="Email"
+                    placeholder="Enter your email address..."
                     keyboardType="email-address"
                     autoCorrect={false}
                     autoCapitalize="none"
@@ -103,7 +103,7 @@ export default function ForgotPassword({ navigation }) {
                 />
                 {/* Submit And go to next lvl screen - verification code */}
                 <TouchableOpacity style={styles.button} onPress={getData} >
-                    <Text style={styles.buttonText}>Submit</Text>
+                    <Text style={styles.buttonText}>Continue</Text>
                 </TouchableOpacity>
             </View>
             <OrLine />
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#F5F5F5',
+        backgroundColor: '#FFFFFF',
         flexDirection: 'column',
     },
     welcome: {
@@ -128,13 +128,13 @@ const styles = StyleSheet.create({
     },
     instructions: {
         textAlign: 'center',
-        color: '#333333',
-        margin: Dimensions.get('screen').width * 0.03,
+        color: '#000',
+        margin: Dimensions.get('screen').width * 0.05,
         fontSize: 15,
         fontFamily: 'Urbanist',
         lineHeight: 18,
-        paddingTop: 10,
-        paddingBottom: 20,
+        paddingTop: 15,
+        paddingBottom: 15,
     },
     input: {
         width: Dimensions.get('window').width * 0.9,
@@ -142,13 +142,12 @@ const styles = StyleSheet.create({
         margin: 10,
         alignItems: 'flex-left',
         borderRadius: 16,
-        borderWidth: 1,
-        backgroundColor: '#F5F5F5',
-        borderColor: 'lightgray',
-        shadowColor: '#000',
+        borderWidth: 1.5,
+        borderColor: '#E6EBF2',
         height: 54,
-        fontFamily: 'Urbanist',
-        fontSize: 14,
+        fontFamily: 'Urbanist-Light',
+        fontSize: 16,
+        color: '#9E9E9E'
     },
     button: {
         width: Dimensions.get('window').width * 0.9,
@@ -156,13 +155,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 16,
-        borderWidth: 1,
-        borderColor: 'lightgray',
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.3,
-        shadowRadius: 3,
-        elevation: 1,
         margin: 15,
         height: 54,
     },

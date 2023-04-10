@@ -1,4 +1,5 @@
-import { Image, Keyboard, LayoutAnimation, View, Text, TextInput, Dimensions, SafeAreaView, Alert, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, TextInput, Dimensions, SafeAreaView, Alert, StyleSheet, TouchableOpacity } from 'react-native'
+import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import React, { useState, useEffect } from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import ImagePickerExample from '../HelpComponents/ImagePickerExample'
@@ -8,8 +9,6 @@ import { OrLine, HaveAccount } from './FooterLine'
 // On submit, user is taken to SignUpLvl2 Screen - address, city, state, zip code, country
 export default function CreateUser({ navigation, route }) {
   const [showPassword, setShowPassword] = useState(false);//for password visibility
-  const [keyboardOpen, setKeyboardOpen] = useState(false);//for keyboard visibility
-  const [animation, setAnimation] = useState({});
   const [userImage, setUserImage] = useState(null)
   const [user, setUser] = useState({
     email: '',
@@ -21,50 +20,9 @@ export default function CreateUser({ navigation, route }) {
   const [patientId, setPatientId] = useState('');
   const [validateEmailInDB, setValidateEmailInDB] = useState(false);
   const [validatePhoneInDB, setValidatePhoneInDB] = useState(false);
-  let animationInProgress = false;
 
   useEffect(() => {
     setPatientId(route.params.patientId);
-    //bring all emails and phone numbers from DB to check if they are already in use, because 
-    //to check it in the DB is too slow with Ruppin's wonderful server
-    const keyboardDidShowListener = Keyboard.addListener(
-      'keyboardDidShow',
-      () => {
-        if (!animationInProgress) {
-          animationInProgress = true;
-          LayoutAnimation.configureNext({
-            update: {
-              type: LayoutAnimation.Types.easeIn,
-              duration: 200,
-              useNativeDriver: true,
-            },
-          });
-          setAnimation({ marginBottom: Dimensions.get('window').height * 0.32 });
-          animationInProgress = false;
-        }
-      }
-    );
-    const keyboardDidHideListener = Keyboard.addListener(
-      'keyboardDidHide',
-      () => {
-        if (!animationInProgress) {
-          animationInProgress = true;
-          LayoutAnimation.configureNext({
-            update: {
-              type: LayoutAnimation.Types.easeOut,
-              duration: 200,
-              useNativeDriver: true,
-            },
-          });
-          setAnimation({ marginBottom: 0 });
-          animationInProgress = false;
-        }
-      }
-    );
-    return () => {
-      keyboardDidShowListener.remove();
-      keyboardDidHideListener.remove();
-    }
   }, []);
 
   const CheckEmailInDB = () => {
@@ -184,87 +142,93 @@ export default function CreateUser({ navigation, route }) {
   const NavigateToLogIn = () => {
     navigation.navigate('LogIn')
   }
-  
+
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Fill your profile</Text>
-        <Text style={styles.smallTitle}>Don't worry, you can always change it later</Text>
-      </View>
-      <View style={styles.imageContainer}>
-        <ImagePickerExample style={styles.image} onImgChange={changeIMG} />
-      </View>
+      <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
+          <View>
+            <View style={styles.header}>
+              <Text style={styles.title}>Fill your profile</Text>
+              <Text style={styles.smallTitle}>Don't worry, you can always change it later</Text>
+            </View>
+            <View style={styles.imageContainer}>
+              <ImagePickerExample style={styles.image} onImgChange={changeIMG} />
+            </View>
 
-      <View style={[styles.inputContainer, animation]}>
-        <View style={styles.nameContainer}>
-          <TextInput
-            style={[styles.input, styles.firstNameInput]}
-            placeholder="First Name"
-            keyboardType='ascii-capable'
-            onChangeText={(value) => handleInputChange('firstName', value)}
-          />
-          <TextInput
-            style={[styles.input, styles.lastNameInput]}
-            placeholder="Last Name"
-            keyboardType='ascii-capable'
-            onChangeText={(value) => handleInputChange('lastName', value)}
-          />
-        </View>
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          keyboardType='ascii-capable'
-          onChangeText={(value) => handleInputChange('email', value)}
-          autoCapitalize='none'
-          autoCorrect={false}
-          onBlur={() => {
-            CheckEmailInDB()
-          }}
-        />
+            <View style={styles.inputContainer}>
+              <View style={styles.nameContainer}>
+                <TextInput
+                  style={[styles.input, styles.firstNameInput]}
+                  placeholder="First Name"
+                  keyboardType='ascii-capable'
+                  onChangeText={(value) => handleInputChange('firstName', value)}
+                />
+                <TextInput
+                  style={[styles.input, styles.lastNameInput]}
+                  placeholder="Last Name"
+                  keyboardType='ascii-capable'
+                  onChangeText={(value) => handleInputChange('lastName', value)}
+                />
+              </View>
+              <TextInput
+                style={styles.input}
+                placeholder="Email"
+                keyboardType='ascii-capable'
+                onChangeText={(value) => handleInputChange('email', value)}
+                autoCapitalize='none'
+                autoCorrect={false}
+                onBlur={() => {
+                  CheckEmailInDB()
+                }}
+              />
 
-        <View style={styles.phoneContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="Phone Number"
-            keyboardType='phone-pad'
-            // return button type in keyboard for ios devices
-            returnKeyType='done'
-            onChangeText={(value) => handleInputChange('phoneNum', value)}
-            onBlur={() => {
-              CheckPhoneInDB()
-            }}
-          />
-        </View>
-        <View style={styles.passwordContainer}>
-          <TextInput
-            input
-            style={styles.input}
-            placeholder="Password (8+ characters)"
-            secureTextEntry={!showPassword}
-            autoCapitalize='none'
-            autoCorrect={false}
-            keyboardType='ascii-capable'
-            onChangeText={(value) => handleInputChange('password', value)}
-          />
-          <TouchableOpacity
-            style={styles.passwordButton}
-            onPress={() => setShowPassword(!showPassword)}
-          >
-            {/* Icon button For changing password input visibility */}
-            <Icon
-              name={showPassword ? 'visibility' : 'visibility-off'}
-              size={20}
-              color='#979797'
-            />
-          </TouchableOpacity>
-        </View>
+              <View style={styles.phoneContainer}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Phone Number"
+                  keyboardType='phone-pad'
+                  // return button type in keyboard for ios devices
+                  returnKeyType='done'
+                  onChangeText={(value) => handleInputChange('phoneNum', value)}
+                  onBlur={() => {
+                    CheckPhoneInDB()
+                  }}
+                />
+              </View>
+              <View style={styles.passwordContainer}>
+                <TextInput
+                  input
+                  style={styles.input}
+                  placeholder="Password (8+ characters)"
+                  secureTextEntry={!showPassword}
+                  autoCapitalize='none'
+                  autoCorrect={false}
+                  keyboardType='ascii-capable'
+                  onChangeText={(value) => handleInputChange('password', value)}
+                />
+                <TouchableOpacity
+                  style={styles.passwordButton}
+                  onPress={() => setShowPassword(!showPassword)}
+                >
+                  {/* Icon button For changing password input visibility */}
+                  <Icon
+                    name={showPassword ? 'visibility' : 'visibility-off'}
+                    size={20}
+                    color='#979797'
+                  />
+                </TouchableOpacity>
+              </View>
 
-        <TouchableOpacity style={styles.button} onPress={handleCreateUser} >
-          <Text style={styles.buttonText}>Get Started</Text>
-        </TouchableOpacity>
-      </View>
-      <OrLine />
-      <HaveAccount NavigateToLogIn={NavigateToLogIn} />
+              <TouchableOpacity style={styles.button} onPress={handleCreateUser} >
+                <Text style={styles.buttonText}>Get Started</Text>
+              </TouchableOpacity>
+            </View>
+            <OrLine />
+            <HaveAccount NavigateToLogIn={NavigateToLogIn} />
+          </View>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   )
 }
