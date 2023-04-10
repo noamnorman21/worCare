@@ -34,13 +34,13 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpGet]
-        [Route("GetEmail/{userEmail}")]
-        public IHttpActionResult GetEmail(string userEmail)
+        [HttpPost]
+        [Route("GetEmailForgotPassword")]
+        public IHttpActionResult GetEmailForgotPassword([FromBody] UserDTO userD)
         {
             try
             {
-                var user = db.tblUser.Where(x => x.Email == userEmail).First();
+                var user = db.tblUser.Where(x => x.Email == userD.Email).First();
                 if (user == null)
                 {
                     return NotFound();
@@ -96,9 +96,9 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        
         [HttpPost]
-        [Route("GetEmail")]
-        //check if email exist in DB
+        [Route("GetEmail")] //check if email exist in DB        
         public IHttpActionResult GetEmail([FromBody] UserDTO userDTO)
         {
             try
@@ -108,6 +108,7 @@ namespace WebApi.Controllers
                 {
                     return Ok("the email available");
                 }
+                
                 return NotFound();
             }
             catch (Exception ex)
@@ -115,9 +116,9 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        //check if phone number exist in DB
+        
         [HttpPost]
-        [Route("GetPhoneNum")]
+        [Route("GetPhoneNum")] //check if phone number exist in DB
         public IHttpActionResult GetPhoneNum([FromBody] UserDTO userDTO)
         {
             try
@@ -134,11 +135,9 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-
-        // GET : Get all users (email and passwords) from DB for firebase authentication
+        
         [HttpGet]
-        [Route("GetAllUsers")]
+        [Route("GetAllUsers")] // GET all users (email and passwords) from DB for firebase authentication
         public IHttpActionResult GetAllUsersFireBase()
         {
             try
@@ -155,29 +154,9 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-        [HttpGet]
-        [Route("GetAllUsersEmailAndPhoneNum")]
-        public IHttpActionResult GetAllUsersEmailAndPhoneNum()
-        {
-            try
-            {
-                var users = db.tblUser.Select(x => new { x.Email, x.phoneNum }).ToList();
-                if (users == null)
-                {
-                    return NotFound();
-                }
-                return Ok(users);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        // insert user to db by calling Stored Prodecdure InsertUser
+        
         [HttpPost]
-        [Route("InsertUser")]
+        [Route("InsertUser")] // insert user to db by calling Stored Prodecdure InsertUser
         public IHttpActionResult InsertUser([FromBody] UserDTO user)
         {
             try
@@ -189,7 +168,7 @@ namespace WebApi.Controllers
                 var newUser = db.tblUser.Where(x => x.Email == user.Email).First();
                 if (newUser == null)
                     return NotFound();
-                //we using here partial class tblCalendarForUser to call the method InsertCalendar
+                //we are using here partial class tblCalendarForUser to call the method InsertCalendar
                 int result = calendarForUser.InsertCalendar(newUser.userId, user.Calendars);
                 if (result == -1)
                     return BadRequest("Error in insert calendar for user");
@@ -200,33 +179,9 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-        // Update user to db by calling Function UpdateUser
+                
         [HttpPut]
-        [Route("UpdateUser")]
-        public IHttpActionResult UpdateUser([FromBody] UserDTO userToUpdate)
-        {
-            try
-            {
-                tblUser user = db.tblUser.Where(x => x.Email == userToUpdate.Email).FirstOrDefault();
-                user.phoneNum = userToUpdate.phoneNum;
-                user.FirstName = userToUpdate.FirstName;
-                user.LastName = userToUpdate.LastName;
-                user.gender = userToUpdate.gender;
-                user.userUri = userToUpdate.userUri;
-                user.Password = userToUpdate.Password;
-                db.SaveChanges();
-                return Ok("User Updated Successfully");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        // Update user password by calling Function UpdateUserPassword
-        [HttpPut]
-        [Route("UpdateUserPassword")]
+        [Route("UpdateUserPassword")] // Update user password by calling Function UpdateUserPassword
         public IHttpActionResult UpdateUserPassword([FromBody] UserDTO userToUpdate)
         {
             try
