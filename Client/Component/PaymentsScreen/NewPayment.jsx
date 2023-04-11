@@ -21,8 +21,6 @@ export default function NewPayment(props) {
     userId: null // will be changed to current user id,
   })
 
-
-
   useEffect(() => {
     AsyncStorage.getItem('userData').then((value) => {
       const data = JSON.parse(value);
@@ -31,7 +29,6 @@ export default function NewPayment(props) {
   }, []);
 
   const pickDocument = async () => {
-
     let result = await DocumentPicker.getDocumentAsync({
       allowsEditing: true,
       aspect: [4, 3],
@@ -39,7 +36,6 @@ export default function NewPayment(props) {
     });
     console.log(result);
     changeIMG(result.uri);
-
   };
 
   const changeIMG = (imageFromUser) => {
@@ -106,7 +102,6 @@ export default function NewPayment(props) {
       userId: payment.userId
     }
     console.log('NewPayment', NewPayment);
-
     fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/NewRequest', {
       method: 'POST',
       body: JSON.stringify(NewPayment),

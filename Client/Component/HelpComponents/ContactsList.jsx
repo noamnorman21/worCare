@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Modal, FlatList, TouchableOpacity, StyleSheet, SafeAreaView, Dimensions, TextInput, } from 'react-native';
 import * as Contacts from 'expo-contacts';
 import { MaterialIcons } from '@expo/vector-icons';
+
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 

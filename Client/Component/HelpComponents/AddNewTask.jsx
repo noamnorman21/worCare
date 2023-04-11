@@ -498,8 +498,7 @@ function NewTaskModal(props) {
                               }
                            </TouchableOpacity>
 
-                           <Modal visible={modalVisibleDate}
-                              transparent={true} style={styles.modalDate} animationType='slide' onRequestClose={() => setModalVisibleDate(false)}>
+                           <Modal visible={modalVisibleDate} transparent={true} style={styles.modalDate} animationType='slide' onRequestClose={() => setModalVisibleDate(false)}>
                               <View style={styles.modalDateView}>
                                  <DateRangePicker
                                     onSelectDateRange={(range) => { setRange(range); }}

@@ -11,7 +11,7 @@ import { AddBtn } from '../HelpComponents/AddNewTask';
 
 
 export default function Pending({ route }) {
-  const {userContext, userPendingPayments} = useUserContext()
+  const { userContext, userPendingPayments } = useUserContext()
   const [modal1Visible, setModal1Visible] = useState(false);
   const [Pendings, setPendings] = useState()
   const [List, setList] = useState([])
@@ -23,13 +23,9 @@ export default function Pending({ route }) {
     }
   }, [isFocused])
 
- 
-  
-
-
-  const getPending = async () => {   
+  const getPending = async () => {
     try {
-      const user={
+      const user = {
         userId: userContext.userId,
         userType: userContext.userType
       }
@@ -70,15 +66,12 @@ export default function Pending({ route }) {
     );
   }
 
-
-  
-
   return (
     <ScrollView contentContainerStyle={styles.pending}>
       {Pendings}
-      {userContext.userType=="Caregiver"?<View style={styles.addBtnView}><AddBtn onPress={() => setModal1Visible(true)}/></View>: null}
+      {userContext.userType == "Caregiver" ? <View style={styles.addBtnView}><AddBtn onPress={() => setModal1Visible(true)} /></View> : null}
       <Modal animationType='slide' transparent={true} visible={modal1Visible}>
-        <NewPayment cancel={() => {setModal1Visible(false);getPending()}} />
+        <NewPayment cancel={() => { setModal1Visible(false); getPending() }} />
       </Modal>
     </ScrollView>
   );
@@ -99,7 +92,7 @@ function Request(props) {
   };
 
   const saveStatus = async (id) => {
-    let request={
+    let request = {
       requestId: id,
       requestStatus: "F"
     }
@@ -144,23 +137,23 @@ function Request(props) {
           <List.Item title={() => <Text style={styles.itemsText}>Date: {props.date.substring(0, 10)} </Text>} />
           <List.Item title={() => <Text style={styles.itemsText}>Amount: {props.amountToPay} </Text>} />
           <List.Item title={() => <Text style={styles.itemsText}>Comment: {props.requestComment} </Text>} />
-          <List.Item title={() =><View>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <TouchableOpacity style={[styles.itemsText, styles.viewButton]} onPress={!expanded ? () =>{setModal1Visible(true)}:null}>
-              <Text style={styles.viewbuttonText}>View Document</Text>
-            </TouchableOpacity>
-            <Modal animationType='slide' transparent={true} visible={modal1Visible}>
-              <EditPaymentScreen cancel={() => {setModal1Visible(false);props.getPending()}} data={props.data} />
-            </Modal>
-            <TouchableOpacity style={[styles.itemsText, styles.editButton]} onPress={!expanded ? () =>{setModal1Visible(true)} : null}>
-              <Text style={styles.editbuttonText}>Edit</Text>
-            </TouchableOpacity>
+          <List.Item title={() => <View>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              <TouchableOpacity style={[styles.itemsText, styles.viewButton]} onPress={!expanded ? () => { setModal1Visible(true) } : null}>
+                <Text style={styles.viewbuttonText}>View Document</Text>
+              </TouchableOpacity>
+              <Modal animationType='slide' transparent={true} visible={modal1Visible}>
+                <EditPaymentScreen cancel={() => { setModal1Visible(false); props.getPending() }} data={props.data} />
+              </Modal>
+              <TouchableOpacity style={[styles.itemsText, styles.editButton]} onPress={!expanded ? () => { setModal1Visible(true) } : null}>
+                <Text style={styles.editbuttonText}>Edit</Text>
+              </TouchableOpacity>
             </View>
             <View>
-            <TouchableOpacity style={[styles.itemsText, styles.SaveButton]} onPress={!expanded ? () =>{saveStatus(props.data.requestId)} : null}>
-              <Text style={styles.editbuttonText}>Update Status to finished</Text>
-            </TouchableOpacity>
-          </View>
+              <TouchableOpacity style={[styles.itemsText, styles.SaveButton]} onPress={!expanded ? () => { saveStatus(props.data.requestId) } : null}>
+                <Text style={styles.editbuttonText}>Update Status to finished</Text>
+              </TouchableOpacity>
+            </View>
           </View>} />
         </View>
       </View>
@@ -174,7 +167,7 @@ const styles = StyleSheet.create({
 
   pending: {
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: '#FEFEFE',
     paddingTop: 10,
     flexGrow: 1,
   },
@@ -280,13 +273,13 @@ const styles = StyleSheet.create({
   },
   SaveButton: {
     alignItems: 'center',
-    justifyContent: 'center',    
+    justifyContent: 'center',
     height: 40,
     width: Dimensions.get('screen').width * 0.765,
     borderRadius: 16,
     borderWidth: 1,
     borderColor: '#7DA9FF',
-    marginTop: 10,    
+    marginTop: 10,
   },
   viewbuttonText: {
     color: 'white',

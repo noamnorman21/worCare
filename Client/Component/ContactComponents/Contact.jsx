@@ -22,8 +22,6 @@ export default function Contact({ route, navigation }) {
     patientId: 779355403 // will change when we finish context to get the patient id
   })
 
-  
-
   const Cancel = () => {
     Alert.alert(
       'Cancel Changes',

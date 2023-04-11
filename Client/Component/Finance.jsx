@@ -9,9 +9,6 @@ import Paychecks from './PaychecksComponents/Paychecks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
 
-
-
-
 const Stack = createStackNavigator();
 
 // Big Image and 2 Buttons that will navigate to 2 different screens
@@ -30,29 +27,20 @@ export default function Finance() {
           cardOverlayEnabled: true,
           style: {
             flex: 1,
-          },
-
+          }
         })} />
-        {/*בעת ניווט למסך התשלומים, תתבצע פעולת גט אשר תשלוף את בקשות התשלומים אשר קיימות במסד הנתונים.
-      בעת רנדור עמוד פנימי פנדינג ירונדרו בקשות לפי סטוטס בקשה אינו שולם,
-      בעת רנדור מס היסטוריה ירונדרו בקשות אשר בעלות סטטוס שולמו.
-      מידע אשר ישלף כלפי כל בקשה- id, sunject, amount, requestDate, proofofdocument, comment, status */}
         <Stack.Screen name='Paychecks' component={Paychecks} options={() => ({
           headerShown: false,
           presentation: 'stack',
           cardOverlayEnabled: true,
         })} />
-         
-       
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
 
 function Choice({ navigation }) {
-
-  const [userId,setUserId] = useState(null);
-
+  const [userId, setUserId] = useState(null);
   useEffect(() => {
     AsyncStorage.getItem('userData').then((value) => {
       const data = JSON.parse(value);
@@ -64,7 +52,6 @@ function Choice({ navigation }) {
     <View style={styles.Choice}>
       <Image source={require('../images/logo_New.png')} style={styles.BigIMG} />
       <TouchableOpacity
-        
         style={styles.button}
         onPress={() => {
           navigation.navigate('Payments', { userId: userId })
@@ -73,10 +60,9 @@ function Choice({ navigation }) {
         <Text style={styles.txt}>Payment</Text>
       </TouchableOpacity>
       <TouchableOpacity
-        
         style={styles.button}
         onPress={() => {
-          navigation.navigate('Paychecks',  { userId: userId })
+          navigation.navigate('Paychecks', { userId: userId })
         }}
       >
         <Text style={styles.txt}>Paycheck</Text>
@@ -85,36 +71,49 @@ function Choice({ navigation }) {
   );
 }
 
-
 const Tab = createMaterialTopTabNavigator();
-function Payments({ route}) {
+function Payments({ route }) {
   return (
-    
-    <Tab.Navigator initialRouteName="Pending"
-      backBehavior='none'
-     screenOptions={{
-      tabBarActiveTintColor: '#548DFF',
-      tabBarInactiveTintColor: 'grey',
-      tabBarIndicatorStyle: { height: 4, marginLeft:5, marginRight:5, width: '45%', borderRadius: 16,},
-      tabBarLabelStyle: { fontSize: 24, fontWeight: 'bold', fontFamily: 'sans-serif', textTransform: 'none' },
-      tabBarStyle: { backgroundColor: '#fff' },      
-     }}
+    <Tab.Navigator
+      initialRouteName="Pending"
+      backBehavior='initialRoute'
+      screenOptions={{
+        tabBarStyle: { backgroundColor: '#fff', width: '100%', justifyContent: 'center', alignSelf: 'center' },
+        tabBarPressColor: '#548DFF',
+        tabBarPressOpacity: 0.5,
+        tabBarLabelStyle: {
+          marginTop: 15,
+          height: 25,
+          fontSize: 18, // <-- change this size to 18 when we have the font family 'Urbanist'
+          color: '#9E9E9E',
+          fontFamily: 'Urbanist-SemiBold',
+          alignItems: 'center',
+          textTransform: 'none',
+        },
+        tabBarIndicatorStyle: {
+          backgroundColor: '#548DFF',
+          height: 3,
+          borderRadius: 50,
+          width: '35%',
+          justifyContent: 'center',
+          alignSelf: 'center',
+          marginLeft: '6%',
+        },
+      }}
     >
-      <Tab.Screen name="Pending" component={Pending} initialParams={{userId: route.params.userId}}  />
+      <Tab.Screen name="Pending" component={Pending} initialParams={{ userId: route.params.userId }} />
       {/*במעבר למסך תשלומים ממתינים תבוצע םעולת גט אשר תשלוף את כלל בקשות התשלום אשר שמורות במסד הנתונים.
     אשר סטטוס הבקשה שלהם אינו סומן כשולם*/}
-      <Tab.Screen name="History" component={History} initialParams={{userId: route.params.userId}} />
+      <Tab.Screen name="History" component={History} initialParams={{ userId: route.params.userId }} />
       { /*במעבר למסך היסטוריית התשלומים תבוצע םעולת גט אשר תשלוף את כלל בקשות התשלום אשר שמורות במסד הנתונים.
-    אשר סטטוס הבקשה שלהם סומן כשולם*/}    
+    אשר סטטוס הבקשה שלהם סומן כשולם*/}
     </Tab.Navigator>
-
   );
 }
 
-
-
 const styles = StyleSheet.create({
-  container: {    
+  container: {
+    // backgroundColor: '#FEFEFE',
     alignItems: 'center',
     justifyContent: 'center',
     height: Dimensions.get('screen').height * 1,
@@ -122,17 +121,15 @@ const styles = StyleSheet.create({
   },
   Choice: {
     flex: 1,
-    alignItems: 'center',    
-    backgroundColor: 'white',
+    alignItems: 'center',
+    backgroundColor: '#fff',
   },
-
   Pending: {
     flex: 1,
     alignItems: 'center',
     paddingTop: 20,
-    backgroundColor: 'white',
+    // backgroundColor: 'white',
   },
-
   BigIMG: {
     height: Dimensions.get('screen').height * 0.55,
   },
@@ -147,10 +144,9 @@ const styles = StyleSheet.create({
     activeOpacity: 1,
   },
   txt: {
-    color: 'white',
+    color: '#fff',
     fontSize: 16,
-    fontFamily:'Urbanist-SemiBold'
-
+    fontFamily: 'Urbanist-SemiBold'
   },
   request: {
     alignItems: 'center',
@@ -158,22 +154,22 @@ const styles = StyleSheet.create({
     backgroundColor: 'none',
     height: 54,
     width: Dimensions.get('screen').width * 0.9,
-    margin: 10,   
+    margin: 10,
     borderWidth: 1,
     borderColor: '#9E9E9E',
     borderRadius: 16,
-    flexDirection: 'row', 
-    padding: 16,  
+    flexDirection: 'row',
+    padding: 16,
   },
   requestText: {
     fontSize: 16,
-    fontWeight: '600',
+    fontFamily: 'Urbanist-SemiBold',
   },
   Paycheck: {
     flex: 1,
     alignItems: 'center',
     paddingTop: 20,
-    backgroundColor: 'white',
+    // backgroundColor: 'white',
     justifyContent: 'center',
   },
 })
