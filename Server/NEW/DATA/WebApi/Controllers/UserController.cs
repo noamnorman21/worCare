@@ -103,7 +103,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                var user = db.tblUser.Where(x => x.Email == userDTO.Email).First();
+                var user = db.tblUser.Where(x => x.Email == userDTO.Email).FirstOrDefault();
                 if (user == null)
                 {
                     return Ok("the email available");

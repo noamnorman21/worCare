@@ -31,6 +31,7 @@ export default function CreateUser({ navigation, route }) {
     let userDto = {
       Email: user.email,
     }
+    console.log('userDto', userDto);
     fetch(checkMail, {
       method: 'POST',
       body: JSON.stringify(userDto),

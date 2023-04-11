@@ -27,6 +27,8 @@ export default function Privacy({ navigation, route }) {
   const [showPassword2, setShowPassword2] = useState(false);
   const [password1, setPassword1] = useState('');
   const [password2, setPassword2] = useState('');
+  const [passwordChanged, setpasswordChanged] = useState(false);
+
 
 
   const CheckEmailInDB = () => {
@@ -35,6 +37,7 @@ export default function Privacy({ navigation, route }) {
     let userDto = {
       Email: Email,
     }
+    console.log('userDto', userDto);
     fetch(checkMail, {
       method: 'POST',
       body: JSON.stringify(userDto),
@@ -44,10 +47,10 @@ export default function Privacy({ navigation, route }) {
     })
       .then(res => {
         if (res.ok) {
-          sendDataToNextDB();
+
         }
         else {
-          Alert.alert('Email Alreay Exists', 'Sorry, there was an error updating your email. Please try again later.');
+          sendDataToNextDB();
         }
       })
       .catch((error) => {
@@ -88,7 +91,13 @@ export default function Privacy({ navigation, route }) {
                 updateUserContext(userToUpdate);
                 const jsonValue = JSON.stringify(userToUpdate)
                 AsyncStorage.setItem('userData', jsonValue);
-                navigation.goBack();
+                route.params.updateUser("Email", userToUpdate.Email)
+                if (passwordChanged) {
+                  checkPassowrd();
+                }
+                else {
+                  navigation.goBack();
+                }
               }
             )
         }
@@ -117,11 +126,23 @@ export default function Privacy({ navigation, route }) {
 
   }
 
-
-
   const cancel = () => {
     console.log('cancel');
     setEmail(userContext.Email);
+  }
+
+  const SaveAllChanges = () => {
+    if (Email != userContext.Email) {
+      sendDataToNextDB();
+    }
+    else if (Email == userContext.Email  && passwordChanged) {
+      checkPassowrd();
+    }
+    else if (Email == userContext.Email  && !passwordChanged){
+      Alert.alert("No Changes", "You didn't make any changes")
+      navigation.goBack();
+    }
+
   }
 
   useEffect(() => {
@@ -145,41 +166,48 @@ export default function Privacy({ navigation, route }) {
   useEffect(() => {
     const setNavigation = async () => navigation.setOptions({
       headerRight: () => (
-        <TouchableOpacity style={styles.headerButton} onPress={() => (ImageChange ? sendToFirebase(user.userUri) : sendDataToNextDB())}>
-          <Octicons name="check" size={22} />
-        </TouchableOpacity>
+        <View style={styles.headerRight}>
+          <TouchableOpacity
+            onPress={() => {
+              SaveAllChanges();
+            }}
+          >
+            <Text style={styles.headerRightText}>Save</Text>
+          </TouchableOpacity>
+        </View>
+
       ),
       headerLeft: () => (
-          <View style={styles.headerLeft}>
-              <TouchableOpacity
-                  onPress={() => Alert.alert(
-                      "Cancel Changes",
-                      "Are you sure you want to cancel your changes?",
-                      [
-                          {
-                              text: "Cancel",
-                              onPress: () => console.log("Cancel Pressed"),
-                              style: "cancel"
-                          },
-                          { text: "OK", onPress: () => navigation.goBack() }
-                      ],
-                      { cancelable: false }
-                  )}
-              >
-                  <Ionicons
-                      name="arrow-back"
-                      size={28}
-                      color={'#000000'}
-                  />
-              </TouchableOpacity>
-          </View>
+        <View style={styles.headerLeft}>
+          <TouchableOpacity
+            onPress={() => Alert.alert(
+              "Cancel Changes",
+              "Are you sure you want to cancel your changes?",
+              [
+                {
+                  text: "Cancel",
+                  onPress: () => console.log("Cancel Pressed"),
+                  style: "cancel"
+                },
+                { text: "OK", onPress: () => navigation.goBack() }
+              ],
+              { cancelable: false }
+            )}
+          >
+            <Ionicons
+              name="arrow-back"
+              size={28}
+              color={'#000000'}
+            />
+          </TouchableOpacity>
+        </View>
       ),
-      });
+    });
     console.log("setnavigations")
-  setNavigation();
-  }, [Email]);
+    setNavigation();
+  }, [Email, password1, password2]);
 
-  const DeleteProfile = () =>{
+  const DeleteProfile = () => {
     fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/DeleteUser', {
       method: 'DELETE',
       headers: new Headers({
@@ -215,12 +243,10 @@ export default function Privacy({ navigation, route }) {
   const validatePassword = (password) => {
     const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/ //at least 8 characters, 1 letter, 1 number
     return passwordRegex.test(password);
- }
-
-
+  }
   const checkPassowrd = () => {
-    if (password1 ===password2 && validatePassword(password1)) {
-      let user={
+    if (password1 === password2 && validatePassword(password1)) {
+      let user = {
         userId: userContext.userId,
         password: password1
       }
@@ -239,7 +265,7 @@ export default function Privacy({ navigation, route }) {
                 (result) => {
                   console.log("fetch POST= ", result);
                   Alert.alert('Password Updated', 'Your Password has been changed successfully');
-                  navigation.goBack();
+navigation.goBack();
                 }
               )
           }
@@ -248,15 +274,23 @@ export default function Privacy({ navigation, route }) {
           }
         }
         )
-
     }
     else if (password1 !== password2) {
       Alert.alert('Password Change Failed', 'Sorry, your passwords do not match. Please try again.');
+      // throw new Error('Passwords do not match')
+      //   .catch((error) => {
+      //     console.log('Error:', error.message);
+      //   }
+      //   )
+
     }
     else if (!validatePassword(password1)) {
       Alert.alert('Password Change Failed', 'Sorry, your password must be at least 8 characters long, and contain at least one letter and one number. Please try again.');
     }
-    
+    else if (password1 === '' || password2 === '') {
+      Alert.alert('Password Change Failed', 'Sorry, you must enter Both passwords. Please try again.');
+    }
+
   }
 
 
@@ -267,40 +301,31 @@ export default function Privacy({ navigation, route }) {
       {/* <View style={styles.header}>
         <Text style={styles.title}>Privacy</Text>
       </View> */}
-    
+
       <View style={styles.fieldContainer}>
-      <View style={styles.emailContainer}> 
-      <Text style={styles.emailHeader}>Set new Email</Text>
-        <View style={styles.fieldView}>
-          <Text style={styles.fieldHeader}>Email:</Text>
-          <TouchableOpacity underlayColor={'lightgrey'} style={styles.fields} onPress={() => openModal("Email", Email)}>
-            <Text style={styles.fieldTxt}>{Email}</Text>
-          </TouchableOpacity>
-        </View>   
-        
-        </View>
-        <View style={styles.bottom}>
-          <TouchableOpacity onPress={() => CheckEmailInDB()} style={styles.button}>
-            <Text style={styles.buttonText}>Save Email</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={cancel} style={styles.cancelbutton}>
-            <Text style={styles.cancelbuttonText}>Cancel Email Changes</Text>
-          </TouchableOpacity>
+        <View style={styles.emailContainer}>
+          <Text style={styles.emailHeader}>Set new Email</Text>
+          <View style={styles.fieldView}>
+            <Text style={styles.fieldHeader}>Email:</Text>
+            <TouchableOpacity underlayColor={'lightgrey'} style={styles.fields} onPress={() => openModal("Email", Email)}>
+              <Text style={styles.fieldTxt}>{Email}</Text>
+            </TouchableOpacity>
+          </View>
         </View>
         <View style={styles.passwordView}>
           <Text style={styles.passwordHeader}>Set new password</Text>
           <View style={styles.passwordContainer}>
+          <Text style={styles.passwordSmallHeader}>Password</Text>
             {/* password */}
             <TextInput
-              style={styles.input}
-              placeholder="Password"
+              style={styles.input}          
               placeholderTextColor={'#9E9E9E'}
               secureTextEntry={!showPassword}
               value={password1}
               autoCapitalize='none'
               autoCorrect={false}
               keyboardType='ascii-capable'
-              onChangeText={text => setPassword1(text)}
+              onChangeText={text => { setPassword1(text); setpasswordChanged(true) }}
             />
             {/* password visibility button */}
             <TouchableOpacity style={styles.passwordButton} onPress={() => setShowPassword(!showPassword)}>
@@ -310,36 +335,54 @@ export default function Privacy({ navigation, route }) {
           </View>
           <View style={styles.passwordContainer}>
             {/* password */}
+            <Text style={styles.passwordSmallHeader}>Repeat Password</Text>
             <TextInput
-              style={styles.input}
-              placeholder="Password"
+              style={styles.input}   
               placeholderTextColor={'#9E9E9E'}
-              secureTextEntry={!showPassword}
+              secureTextEntry={!showPassword2}
               value={password2}
               autoCapitalize='none'
               autoCorrect={false}
               keyboardType='ascii-capable'
-              onChangeText={text => setPassword2(text)}
+              onChangeText={text => { setPassword2(text); setpasswordChanged(true) }}
             />
             {/* password visibility button */}
             <TouchableOpacity style={styles.passwordButton} onPress={() => setShowPassword2(!showPassword2)}>
               {/* Icon button For changing password input visibility */}
-              <Icon name={showPassword ? 'visibility' : 'visibility-off'} size={20} color='#000' />
+              <Icon name={showPassword2 ? 'visibility' : 'visibility-off'} size={20} color='#000' />
             </TouchableOpacity>
           </View>
-        </View>
-        <View style={styles.bottom}>
-          <TouchableOpacity onPress={() => checkPassowrd()} style={styles.button}>
-            <Text style={styles.buttonText}>Save Password</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={cancel} style={styles.cancelbutton}>
-            <Text style={styles.cancelbuttonText}>Cancel All Changes</Text>
-          </TouchableOpacity>
-        </View>
+        </View>       
         <Modal animationType="slide" visible={modalVisible}>
           <FieldChange userId={userId} type={modalType} value={modalValue} cancel={() => setModalVisible(false)} Save={(Field, value) => Update(Field, value)} />
         </Modal>
-        <TouchableOpacity style={styles.colorBtn2}
+      </View>
+      <View style={styles.accountView}>
+        <Text style={styles.emailHeader}>Account</Text>
+        <TouchableOpacity style={styles.logoutBtn}
+          onPress={() => {
+            Alert.alert("Add Account")
+          }}
+        >
+          <Text style={styles.btnText1}>Add Account</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.logoutBtn}
+          onPress={() => {
+            AsyncStorage.removeItem("user");
+            AsyncStorage.removeItem("userData");
+            Alert.alert('Log Out', 'You have been logged out', [
+              {
+                text: 'OK',
+                onPress: () => {
+                  route.params.logout();
+                }
+              },
+            ]);
+          }}
+        >
+          <Text style={styles.btnText1}>Log Out</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.deleteButton}
           onPress={() => {
             Alert.alert('Delete Account', 'Are you sure you want to delete your account?', [
               {
@@ -350,7 +393,7 @@ export default function Privacy({ navigation, route }) {
               {
                 text: 'OK',
                 onPress: () => {
-                 DeleteProfile();                   
+                  DeleteProfile();
                 }
               },
             ]);
@@ -358,6 +401,8 @@ export default function Privacy({ navigation, route }) {
         >
           <Text style={styles.btnText2}>Delete Account</Text>
         </TouchableOpacity>
+        
+
       </View>
     </View>
   )
@@ -393,70 +438,33 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flex: 5,
     borderRadius: 16,
-    borderBottomWidth: 1,
-    borderColor: 'lightgrey',
+    borderBottomWidth: 1.5,
+    borderColor: '#E6EBF2',
     padding: 10,
-  },  
+  },
   fieldTxt: {
     fontSize: 18,
     color: '#000',
     fontFamily: 'Urbanist-Medium',
   },
-  bottom: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  logoutBtn: {
     width: SCREEN_WIDTH * 0.95,
-    marginTop: 10,
+    height: SCREEN_HEIGHT*0.05,
   },
-  colorBtn2: {
+  deleteButton: {
     width: SCREEN_WIDTH * 0.95,
-    height: 54,
-    borderRadius: 16,
-    borderWidth: 1.5,
-    backgroundColor: '#F5F8FF',
-    borderColor: '#548DFF',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: SCREEN_HEIGHT * 0.02,
+    height: SCREEN_HEIGHT*0.05,
+  },
+  btnText1: {
+    fontSize: 18,
+    color: '#548DFF',
+    fontFamily: 'Urbanist-SemiBold'
   },
   btnText2: {
     fontSize: 18,
-    color: '#548DFF',
+    color: 'red',
     fontFamily: 'Urbanist-SemiBold',
-  },
-  button: {
-    backgroundColor: '#548DFF',
-    borderRadius: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 45,
-    width: SCREEN_WIDTH * 0.45,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 1,
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontFamily: 'Urbanist-SemiBold',
-  },
-  cancelbutton: {
-    backgroundColor: '#F5F8FF',
-    borderRadius: 16,
-    height: 45,
-    width: SCREEN_WIDTH * 0.45,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1.5,
-    borderColor: '#548DFF',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 1,
-  },
+  },  
   cancelbuttonText: {
     color: '#548DFF',
     textAlign: 'center',
@@ -467,15 +475,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  passwordSmallHeader:{   
+      fontSize: 16,
+      fontFamily: 'Urbanist-Bold',
+      color: '#000',
+      marginLeft: SCREEN_WIDTH * 0.03,
+      flex: 2,    
+  },
   fieldHeader: {
     fontSize: 16,
     fontFamily: 'Urbanist-Bold',
     color: '#000',
     marginLeft: SCREEN_WIDTH * 0.03,
-    flex:2,
+    flex: 2,
     marginTop: 10,
   },
-  fieldView: {   
+  fieldView: {
     flexDirection: 'row',
   },
   passwordHeader: {
@@ -485,7 +500,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderBottomColor: 'lightgrey',
     borderBottomWidth: 1,
-
+    marginLeft: SCREEN_WIDTH * 0.03,
   },
   emailHeader: {
     fontSize: 20,
@@ -494,20 +509,21 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderBottomColor: 'lightgrey',
     borderBottomWidth: 1,
-    textAlign:'left'
+    textAlign: 'left',
+    width: SCREEN_WIDTH * 0.95,
   },
   passwordView: {
     marginTop: 10,
     marginBottom: 10,
   },
   input: {
-    width: Dimensions.get('window').width * 0.95,
+   flex: 5,
     marginBottom: 10,
     paddingLeft: 20,
     alignItems: 'center',
     borderRadius: 16,
-    borderWidth: 1.5,
-    borderColor: '#E6EBF2',
+    borderBottomWidth: 1.5,
+    borderBottomColor: '#E6EBF2',
     shadowColor: '#000',
     height: 54,
     fontFamily: 'Urbanist-Light',
@@ -517,11 +533,11 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
+    flexDirection: 'row',
   },
   emailContainer: {
     width: '100%',
     alignItems: 'center',
-    
   },
   passwordButton: {
     position: 'absolute',

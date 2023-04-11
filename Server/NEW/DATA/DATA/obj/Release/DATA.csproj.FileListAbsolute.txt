@@ -60,3 +60,4 @@ C:\Users\oryan\Desktop\app dev\worCare\Server\NEW\DATA\DATA\obj\Release\DATA.csp
 C:\Users\oryan\Desktop\app dev\worCare\Server\NEW\DATA\DATA\obj\Release\DATA.csproj.CoreCompileInputs.cache
 C:\Users\oryan\Desktop\app dev\worCare\Server\NEW\DATA\DATA\obj\Release\DATA.dll
 C:\Users\oryan\Desktop\app dev\worCare\Server\NEW\DATA\DATA\obj\Release\DATA.pdb
+C:\Users\oryan\Desktop\app dev\worCare\Server\NEW\DATA\DATA\obj\Release\DATA.csproj.CopyComplete

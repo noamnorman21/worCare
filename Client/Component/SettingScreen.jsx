@@ -160,7 +160,7 @@ function HomeScreen({ navigation, route }) {
         });
         console.log("setnavigations")
         setNavigation();
-    }, [user]);
+    }, [user,isFocused]);
 
 
 
@@ -170,7 +170,7 @@ function HomeScreen({ navigation, route }) {
         <SafeAreaView style={styles.container}>
             <Profile updateUser={(Field, value) => updateUser(Field, value)} />
             <View style={styles.btnContainer}>
-                <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Privacy')}>
+                <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Privacy', {updateUser:(Field, Value)=>updateUser(Field, Value)})}>
                     <Ionicons style={styles.logoStyle} name='key' size={30} color='gray' />
                     <Text style={styles.btnText}>Privacy & My Account</Text>
                     <AntDesign style={styles.arrowLogoStyle} name="right" size={25} color="gray" />
@@ -180,7 +180,7 @@ function HomeScreen({ navigation, route }) {
                     <Text style={styles.btnText}>Contact Us</Text>
                     <AntDesign style={styles.arrowLogoStyle} name="right" size={25} color="gray" />
                 </TouchableOpacity>
-                <View style={styles.ColorBtnContainer}>
+                {/* <View style={styles.ColorBtnContainer}>
                     <TouchableOpacity style={styles.colorBtn1}
                         onPress={() => {
                             AsyncStorage.removeItem("user");
@@ -199,7 +199,7 @@ function HomeScreen({ navigation, route }) {
                     </TouchableOpacity>
 
 
-                </View>
+                </View> */}
             </View>
         </SafeAreaView>
     );
