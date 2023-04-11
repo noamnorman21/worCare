@@ -40,7 +40,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                var user = db.tblUser.Where(x => x.Email == userD.Email).First();
+                var user = db.tblUser.Where(x => x.Email == userD.Email).FirstOrDefault();
                 if (user == null)
                 {
                     return NotFound();
@@ -103,7 +103,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                var user = db.tblUser.Where(x => x.Email == userDTO.Email).First();
+                var user = db.tblUser.Where(x => x.Email == userDTO.Email).FirstOrDefault();
                 if (user == null)
                 {
                     return Ok("the email available");
@@ -123,7 +123,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                var user = db.tblUser.Where(x => x.phoneNum == userDTO.phoneNum).First();
+                var user = db.tblUser.Where(x => x.phoneNum == userDTO.phoneNum).FirstOrDefault(); ;
                 if (user == null)
                 {
                     return Ok("the phone number available");
