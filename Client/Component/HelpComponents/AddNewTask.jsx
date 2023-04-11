@@ -203,6 +203,7 @@ function AddNewMedicine(props) {
          }
       }
       setMedTimeArr(medTimeArr);
+      
       setModalTimesVisible(false);
    }
 
@@ -376,9 +377,9 @@ function AddNewMedicine(props) {
                                  :
                                  <View>
                                     <TouchableOpacity onPress={() => { setModalTimesVisible(true) }}>
-                                       <View style={[styles.doubleRowItem, medTime && { borderColor: '#000' }]}>
-                                          <Text style={[styles.inputNumber, { color: '#9E9E9E' }, medTime && { textAlign: 'center' }]}>
-                                             {medTimeArr ? 'Add Times' : 'Times Selected'}
+                                       <View style={[styles.doubleRowItem, medTimeArr.length==numberPerDay && { borderColor: '#000' }]}>
+                                          <Text style={[styles.inputNumber, { color: '#9E9E9E' }, medTimeArr.length==numberPerDay && { color: '#000' }]}>
+                                             {numberPerDay==medTimeArr.length?'Times Selected'  : 'Add Times'}
                                           </Text>
                                           <MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />
                                        </View>
