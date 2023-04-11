@@ -96,7 +96,6 @@ export default function SignUpLimitations({ navigation, route }) {
 
   return (
     <SafeAreaView style={styles.container}>
-
       <View style={styles.headerContainer}>
         <Text style={styles.header}>Add Patient limitation's</Text>
         <View style={styles.line} />
