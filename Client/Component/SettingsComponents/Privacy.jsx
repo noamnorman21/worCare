@@ -362,6 +362,16 @@ navigation.goBack();
         <TouchableOpacity style={styles.logoutBtn}
           onPress={() => {
             Alert.alert("Add Account")
+            AsyncStorage.removeItem("user");
+            AsyncStorage.removeItem("userData");
+            Alert.alert('Log Out', 'You have been logged out', [
+              {
+                text: 'OK',
+                onPress: () => {
+                  route.params.AddNewAccount();
+                }
+              },
+            ]);
           }}
         >
           <Text style={styles.btnText1}>Add Account</Text>
