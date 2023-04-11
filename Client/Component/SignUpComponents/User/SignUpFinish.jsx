@@ -40,7 +40,6 @@ export default function SignUpFinish({ navigation, route }) {
                         text: "OK",
                         onPress: () => { setModalVisible(false), createNewUserInDB() },
                         style: "cancel"
-
                     },
                 ]);
             }
@@ -244,6 +243,7 @@ export default function SignUpFinish({ navigation, route }) {
                     </View>
                 </View>
             </Modal>
+            
             <ContactsList sendVisible={sendVisible} contactVisible={contactVisible} sendContact={sendContact} />
         </View>
     )

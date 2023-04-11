@@ -41,7 +41,7 @@ function HomeScreen({ navigation, route }) {
                 setUserName(userContext.FirstName);
                 setuserEmail(userData.Email);
                 setUserImg(userData.userUri);
-                setUserId(userData.UserId);  
+                setUserId(userData.UserId);
             } catch (e) {
                 console.log('error', e);
             }
@@ -54,40 +54,23 @@ function HomeScreen({ navigation, route }) {
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.personalContainer}>
-                <View style={styles.imageContainer}>
-                    {/* here will be the user name and image and the logo of the app */}
+                <Profile />
+
+                {/* <View style={styles.imageContainer}>
                     <Image style={styles.image} source={{ uri: userImg }} />
                     <View style={styles.personalTextContainer}>
                         <Text style={styles.personalText}>Hello, {userName}</Text>
-                        {/* <Text style={styles.personalText}></Text> */}
                     </View>
-                </View>
+                </View> */}
             </View>
 
             <View style={styles.btnContainer}>
-                <TouchableOpacity style={styles.btn} onPress={() => [navigation.navigate('Profile', { email: userEmail })]}>
-                    <Ionicons style={styles.logoStyle} name='ios-person-outline' size={30} color='gray' />
-                    <Text style={styles.btnText}>Profile</Text>
-                    <AntDesign style={styles.arrowLogoStyle} name="right" size={25} color="gray" />
-                </TouchableOpacity>
-
-                <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Notifications')}>
-                    <SimpleLineIcons style={styles.logoStyle} name='bell' size={30} color='gray' />
-                    <Text style={styles.btnText}>Notifications</Text>
-                    <AntDesign style={styles.arrowLogoStyle} name="right" size={24} color="gray" />
-                </TouchableOpacity>
-
                 <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Privacy')}>
                     <Ionicons style={styles.logoStyle} name='key' size={30} color='gray' />
                     <Text style={styles.btnText}>Privacy & My Account</Text>
                     <AntDesign style={styles.arrowLogoStyle} name="right" size={25} color="gray" />
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('ContactUs', { userImg: userImg })}>
-                    <Ionicons style={styles.logoStyle} name='send' size={30} color='gray' />
-                    <Text style={styles.btnText}>Contact Us</Text>
-                    <AntDesign style={styles.arrowLogoStyle} name="right" size={25} color="gray" />
-                </TouchableOpacity>
-                <View style={styles.ColorBtnContainer}>
+                {/* <View style={styles.ColorBtnContainer}>
                     <TouchableOpacity style={styles.colorBtn1}
                         onPress={() => {
                             AsyncStorage.removeItem("user");
@@ -124,7 +107,7 @@ function HomeScreen({ navigation, route }) {
                     >
                         <Text style={styles.btnText2}>Delete Account</Text>
                     </TouchableOpacity>
-                </View>
+                </View> */}
             </View>
         </SafeAreaView>
     );
@@ -147,11 +130,42 @@ export default function SettingScreen({ navigation }) {
                     headerBackTitleVisible: false,
                 }}>
 
-                <Stack.Screen name="Settings" component={HomeScreen} options={() => ({ headerTitle: 'Settings', headerShown: false })} initialParams={{ logout: () => { navigation.dispatch(StackActions.replace('LogIn'))} }} />
-                <Stack.Screen name="Profile" component={Profile} />
-                <Stack.Screen name="Notifications" component={Notifications} />
-                <Stack.Screen name="Privacy" component={Privacy} options={{ headerTitle: 'Privacy & My Account' }} initialParams={{ logout: () => { navigation.dispatch(StackActions.replace('LogIn'))} }} />
-                <Stack.Screen name="ContactUs" component={ContactUs} options={{ headerTitle: 'Contact Us' }} />
+                <Stack.Screen name="Settings" component={HomeScreen}
+                    options={() => (
+                        {
+                            headerTitle: 'Settings',
+                            headerShown: true,
+                            headerLeft: () => (
+                                <View>
+                                    <TouchableOpacity onPress={() => {
+                                        Alert.alert(
+                                            "Are you sure you want to exit?",
+                                            "You will be logged out",
+                                            [
+                                                {
+                                                    text: "Cancel",
+                                                    onPress: () => console.log("Cancel Pressed"),
+                                                    style: "cancel"
+                                                },
+                                                {
+                                                    text: "OK", onPress: () => {
+                                                        console.log("OK Pressed");
+                                                    }
+                                                }
+                                            ],
+                                            { cancelable: false }
+                                        );
+                                    }}>
+                                        <Ionicons name="chevron-back" size={28} color="black" />
+                                    </TouchableOpacity>
+                                </View>
+                            ),
+                        }
+                    )} initialParams={{ logout: () => { navigation.dispatch(StackActions.replace('LogIn')) } }} />
+                {/* <Stack.Screen name="Profile" component={Profile} /> */}
+                {/* <Stack.Screen name="Notifications" component={Notifications} /> */}
+                <Stack.Screen name="Privacy" component={Privacy} options={{ headerTitle: 'Privacy & My Account' }} initialParams={{ logout: () => { navigation.dispatch(StackActions.replace('LogIn')) } }} />
+                {/* <Stack.Screen name="ContactUs" component={ContactUs} options={{ headerTitle: 'Contact Us' }} /> */}
             </Stack.Navigator>
         </NavigationContainer>
     )
@@ -207,14 +221,6 @@ const styles = StyleSheet.create({
         flex: 4,
         alignItems: 'center',
         justifyContent: 'flex-start',
-    },
-    personalContainer: {
-        flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'flex-start',
-        width: SCREEN_WIDTH * 1,
-        // paddingVertical: SCREEN_HEIGHT * 0.04,
     },
     imageContainer: {
         flexDirection: 'row',

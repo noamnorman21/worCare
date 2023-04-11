@@ -15,13 +15,12 @@ import * as MediaLibrary from 'expo-media-library';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
-
-
 export default function History({ navigation, route }) {
   const { userContext } = useUserContext();// יש להחליף למשתנה של המשתמש הנוכחי
-  const [History, setHistory] = useState()
-  const isFocused = useIsFocused()
+  const [History, setHistory] = useState('')
   const [modal1Visible, setModal1Visible] = useState(false);
+  const [list, setlist] = useState('');
+  const isFocused = useIsFocused()
 
   const Edit = (id, data) => {
     Alert.alert(
@@ -39,8 +38,6 @@ export default function History({ navigation, route }) {
     );
   }
 
-
-
   useEffect(() => {
     if (isFocused) {
       getHistory()
@@ -49,7 +46,7 @@ export default function History({ navigation, route }) {
 
   const getHistory = async () => {
     try {
-      const user={
+      const user = {
         userId: userContext.userId,
         userType: userContext.userType
       }
@@ -68,13 +65,9 @@ export default function History({ navigation, route }) {
       })
       setHistory(arr)
     } catch (error) {
-      console.log("error",error)
+      console.log("error", error)
     }
   }
-
-  const [list, setlist] = React.useState();
-
-
 
   const Notification = (id) => {
     Alert.alert(
@@ -99,7 +92,6 @@ export default function History({ navigation, route }) {
       <Modal animationType='slide' transparent={true} visible={modal1Visible}>
         <NewPayment cancel={() => setModal1Visible(false)} />
       </Modal>
-
     </ScrollView>
   );
 }
@@ -140,48 +132,28 @@ function Request(props) {
     const dot = url.lastIndexOf(".");
     const questionMark = url.lastIndexOf("?");
     const type = url.substring(dot, questionMark);
-    console.log("Type", type)
-    
-    const filename = props.data.requestId+type;
-    console.log(filename)
+    const filename = props.data.requestId + type;
     const downloadDest = `${FileSystem.documentDirectory}${filename}`;
-    console.log("Download Dest", downloadDest)
     const { uri } = FileSystem.getInfoAsync(downloadDest);
-    console.log("New Urlli",uri)
     if (!uri) {
-      console.log('Downloading to ', downloadDest);
       FileSystem.makeDirectoryAsync(downloadDest, { intermediates: true });
       let uri = FileSystem.getInfoAsync(downloadDest)
-      console.log("New Uri",uri)
-    }  
-
-    const res = await FileSystem.downloadAsync(url,downloadDest)
-    console.log("res", res)
-
+    }
+    const res = await FileSystem.downloadAsync(url, downloadDest)
     saveFile(res);
   }
 
-
   const saveFile = async (res) => {
-    console.log("Uri1", res)
     const asset = await MediaLibrary.createAssetAsync(res.uri);
-    console.log("Asset1", asset)
     await MediaLibrary.createAlbumAsync('Downloads', asset, false);
     Alert.alert("Downloaded Successfully")
   }
 
-
-
-
   return (
     <List.Accordion style={!expanded ? (status == "F" ? [styles.requestFocused, styles.finishedRequestFocused] : [styles.requestFocused, styles.notCompleteRequestFocused]) : styles.requestunFocused}
       theme={{ colors: { background: 'white' } }}
-      right={() => <View style={styles.requesRight}><Text style={styles.requestHeaderText}>{props.subject}</Text>
-
-      </View>}
-      left={() => <View >
-        <Text style={styles.requestHeaderText}>{props.date.substring(0, 10)}</Text>
-      </View>}
+      right={() => <View style={styles.requesRight}><Text style={styles.requestHeaderText}>{props.subject}</Text></View>}
+      left={() => <View><Text style={styles.requestHeaderText}>{props.date.substring(0, 10)}</Text></View>}
       expanded={!expanded}
       onPress={toggle}
     >
@@ -222,13 +194,9 @@ function Request(props) {
   )
 }
 
-
-
 const styles = StyleSheet.create({
-
   pending: {
     alignItems: 'center',
-    backgroundColor: 'white',
     flexGrow: 1,
     paddingTop: 10
   },
@@ -247,7 +215,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.8,
     shadowRadius: 2,
     paddingLeft: 12,
-
   },
   requestFocused: {
     justifyContent: 'center',
@@ -262,7 +229,6 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 16,
     borderBottomWidth: 1,
     borderBottomMargin: 10,
-
   },
   finishedRequestFocused: {
     borderTopColor: '#7DA9FF',

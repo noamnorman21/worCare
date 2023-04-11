@@ -34,6 +34,7 @@ function AddNewMedicine(props) {
    const [medFromDate, setMedFromDate] = useState('')
    const [medToDate, setMedToDate] = useState('')
    const [medTime, setMedTime] = useState('')
+   const [medTimeArr, setMedTimeArr] = useState([]) //we will use this to get all the times from the user
    const [medDosage, setMedDosage] = useState('')
    const [medDosageUnit, setMedDosageUnit] = useState('')
    const [selectedRange, setRange] = useState({});
@@ -41,6 +42,7 @@ function AddNewMedicine(props) {
    const [allDrugs, setAllDrugs] = useState([]);//we will use this to get all the drugs from the server
    const [selectedDrugName, setSelectedDrugName] = useState('');//we will use this to get the selected drug from the user
    const [editMode, setEditMode] = useState(true);
+   const timePickers = [];
 
    const [modalTimesVisible, setModalTimesVisible] = useState(false);
    const medFrequencies = [
@@ -102,6 +104,7 @@ function AddNewMedicine(props) {
       setMedFromDate(moment().format('YYYY-MM-DD'));
       setMedToDate('');
       setMedTime('');
+      setMedTimeArr([]);
       setMedDosage('');
       setMedDosageUnit('');
       setSelectedDrugName('');
@@ -122,22 +125,100 @@ function AddNewMedicine(props) {
          setQuantity(0);
       }
    }
+   const stylesForTimeModal = StyleSheet.create({
+      timePicker: {
+         flexDirection: 'row',
+         justifyContent: 'space-between',
+         alignItems: 'center',
+         width: '100%',
+         marginVertical: 10,
+      },
+      doubleRowItem: {
+         width: SCREEN_WIDTH * 0.5,
+         height: 54,
+         justifyContent: 'center',
+         alignItems: 'center',
+         borderColor: '#E6EBF2',
+         borderWidth: 1.5,
+         borderRadius: 16,
+         padding: 5,
+      }
+
+   })
+   function rowForEachTime() {
+      for (let i = 0; i < numberPerDay; i++) {
+         timePickers.push(
+            <View key={i} style={stylesForTimeModal.timePicker}>
+               <View>
+                  <Text style={{ fontFamily: 'Urbanist-Light', fontSize: 16, color: '#000' }}>Time {i + 1}</Text>
+               </View>
+               <View>
+                  <DatePicker
+                     style={[stylesForTimeModal.doubleRowItem, medTimeArr[i] != null && { borderColor: '#000' }]}
+                     date={medTimeArr[i]}
+                     iconComponent={<MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />}
+                     placeholder="Add Time"
+                     mode="time"
+                     format="HH:mm"
+                     is24Hour={true}
+                     confirmBtnText="Confirm"
+                     cancelBtnText="Cancel"
+                     showIcon={true}
+                     customStyles={{
+                        dateInput: {
+                           borderWidth: 0,
+                           alignItems: 'flex-start',
+                           paddingLeft: 10,
+                        },
+                        placeholderText: {
+                           color: '#9E9E9E',
+                           fontSize: 16,
+                           textAlign: 'left',
+                           fontFamily: 'Urbanist-Light',
+                        },
+                        dateText: {
+                           color: '#000',
+                           fontSize: 16,
+                           fontFamily: 'Urbanist-SemiBold',
+                        },
+                     }}
+                     onDateChange={(date) => {
+                        let newArr = [...medTimeArr];
+                        newArr[i] = date;
+                        setMedTimeArr(newArr);
+                     }}
+                  />
+               </View>
+            </View>
+         )
+      }
+      return timePickers;
+   }
+
+   const saveTimeArr = () => {
+      for (let i = 0; i < timePickers.length; i++) {
+         if (medTimeArr[i] == '' || medTimeArr[i] == null) {
+            Alert.alert('Please Fill all the time fields');
+            return;
+         }
+      }
+      setMedTimeArr(medTimeArr);
+      setModalTimesVisible(false);
+   }
 
    return (
       <SafeAreaView>
          <Modal visible={props.isVisible} presentationStyle='formSheet' animationType='slide' onRequestClose={props.onClose}>
-            <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+            <KeyboardAvoidingView style={[styles.container, modalTimesVisible && { backgroundColor: 'rgba(0, 0, 0, 0.75)' }]} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
                <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
                   <View style={styles.centeredView}>
                      <View style={styles.modalView}>
                         <Text style={styles.modalText}>Add new Med </Text>
-
                         {/* SEARCH MED */}
-                        <View style={styles.inputView}>
+                        <View style={[styles.inputView, modalTimesVisible && { display: 'none' }]}>
                            <Dropdown
                               search={true}
                               searchPlaceholder="Search..."
-
                               renderLeftIcon={() => <MaterialIcons name="search" size={30} color="gray" />}
                               inputSearchStyle={styles.inputSearchStyle}
                               data={allDrugs}
@@ -173,14 +254,10 @@ function AddNewMedicine(props) {
                                     keyboardType='numeric'
                                     returnKeyType='done'
                                     value={numberPerDay == 0 ? '' : numberPerDay.toString()}
-                                    onChangeText={text => text == '' ? setNumberPerDay(0) && setMedTime('') :
-                                       setNumberPerDay(parseInt(text))}
+                                    onChangeText={text => text == '' ? setNumberPerDay(0) && setMedTime('') : setNumberPerDay(parseInt(text))}
                                  />
                                  {/* Change icon color only onPress to #548DFF  */}
-                                 <TouchableOpacity onPress={() =>
-
-                                    numberPerDay == 0 ? setNumberPerDay(0) : setNumberPerDay(parseInt(numberPerDay - 1))
-                                 } style={styles.arrowDown}>
+                                 <TouchableOpacity style={styles.arrowDown} onPress={() => numberPerDay == 0 ? setNumberPerDay(0) : setNumberPerDay(parseInt(numberPerDay - 1))}>
                                     <Ionicons name="md-caret-down-outline" size={17} color="#808080" />
                                  </TouchableOpacity>
                               </View>
@@ -192,24 +269,20 @@ function AddNewMedicine(props) {
                                  renderRightIcon={() => <Ionicons style={styles.iconDropDown} name="md-caret-down-outline" size={17} color="#808080" />}
                                  fontFamily='Urbanist-Light'
                                  // style={[styles.input, taskAssignee && { borderColor: '#000' }]}
-                                 style={[styles.doubleRowItem, { paddingLeft: 10, paddingRight: 10 }, selectedFrequency && { borderColor: '#000' }]}
+                                 style={[styles.doubleRowItem, { paddingRight: 10 }, selectedFrequency && { borderColor: '#000' }]}
                                  itemTextStyle={styles.itemStyle}
                                  placeholderStyle={styles.placeholderStyle}
                                  containerStyle={styles.containerMedStyle}
                                  inputSearchStyle={styles.inputSearchStyle}
                                  value={selectedFrequency}
-                                 onChange={item => {
-                                    setSelectedFrequency(item.name)
-                                 }}
+                                 onChange={item => { setSelectedFrequency(item.name) }}
                               />
                            </View>
                            {/* SECOND ROW */}
                            <View style={styles.doubleRow}>
                               <View style={[styles.doubleRowItem, quantity && { borderColor: '#000' }]}>
-                                 <TouchableOpacity disabled={!editMode} onPress={() =>
-                                    //setNumberPerDay using the function handleIncrement
-                                    setQuantity(parseInt(quantity + 1))
-                                 } style={styles.arrowUp}>
+                                 <TouchableOpacity style={styles.arrowUp} disabled={!editMode} onPress={() => setQuantity(parseInt(quantity + 1))}>
+                                    {/* //setNumberPerDay using the function handleIncrement */}
                                     {/* Change icon color only onPress to #548DFF  */}
                                     <Ionicons name="md-caret-up-outline" size={17} color="#808080" />
                                  </TouchableOpacity>
@@ -221,21 +294,16 @@ function AddNewMedicine(props) {
                                     editable={editMode}
                                     returnKeyType='done'
                                     value={quantity == 0 ? '' : quantity.toString()}
-                                    onChangeText={text => text == '' ? setQuantity(0) :
-                                       setQuantity(parseInt(text))}
+                                    onChangeText={text => text == '' ? setQuantity(0) : setQuantity(parseInt(text))}
                                  />
-                                 <TouchableOpacity disabled={!editMode} onPress={() =>
-                                    quantity == 0 ? setQuantity(0) : setQuantity(parseInt(quantity - 1))
-                                 } style={styles.arrowDown}>
+                                 <TouchableOpacity style={styles.arrowDown} disabled={!editMode} onPress={() => quantity == 0 ? setQuantity(0) : setQuantity(parseInt(quantity - 1))}>
                                     {/* Change icon color only onPress to #548DFF  */}
                                     <Ionicons name="md-caret-down-outline" size={17} color="#808080" />
                                  </TouchableOpacity>
                               </View>
                               <View style={[styles.doubleRowItem, capacity && { borderColor: '#000' }]}>
-                                 <TouchableOpacity onPress={() =>
-                                    //setNumberPerDay using the function handleIncrement
-                                    setCapacity(parseInt(capacity + 1))
-                                 } style={styles.arrowUp}>
+                                 <TouchableOpacity style={styles.arrowUp} onPress={() => setCapacity(parseInt(capacity + 1))}>
+                                    {/* setNumberPerDay using the function handleIncrement */}
                                     {/* Change icon color only onPress to #548DFF  */}
                                     <Ionicons name="md-caret-up-outline" size={17} color="#808080" />
                                  </TouchableOpacity>
@@ -247,20 +315,18 @@ function AddNewMedicine(props) {
                                     keyboardType='numeric'
                                     returnKeyType='done'
                                     value={capacity == 0 ? '' : capacity.toString()}
-                                    onChangeText={text => text == '' ? setCapacity(0) :
-                                       setCapacity(parseInt(text))}
+                                    onChangeText={text => text == '' ? setCapacity(0) : setCapacity(parseInt(text))}
                                  />
-                                 <TouchableOpacity onPress={() =>
-                                    capacity == 0 ? setCapacity(0) : setCapacity(parseInt(capacity - 1))
-                                 } style={styles.arrowDown}>
+                                 <TouchableOpacity style={styles.arrowDown} onPress={() => capacity == 0 ? setCapacity(0) : setCapacity(parseInt(capacity - 1))}>
                                     {/* Change icon color only onPress to #548DFF  */}
                                     <Ionicons name="md-caret-down-outline" size={17} color="#808080" />
                                  </TouchableOpacity>
                               </View>
                            </View>
+
                            <Text style={styles.subTitle}>Set end date</Text>
                            {/* THIRD ROW */}
-                           <View style={styles.doubleRow}>
+                           <View style={[styles.doubleRow, modalTimesVisible && { display: 'none' }]}>
                               <View style={[styles.doubleRowItem, medToDate && { borderColor: '#000' }]}>
                                  <TextInput
                                     style={[styles.inputNumber, medToDate && { textAlign: 'center' }]}
@@ -306,69 +372,59 @@ function AddNewMedicine(props) {
                                           setMedTime(date)
                                        }}
                                     />
-                                 </View> :
+                                 </View>
+                                 :
                                  <View>
-                                    <TouchableOpacity onPress={() => setModalTimesVisible(true)}>
-
+                                    <TouchableOpacity onPress={() => { setModalTimesVisible(true) }}>
                                        <View style={[styles.doubleRowItem, medTime && { borderColor: '#000' }]}>
-                                          <TextInput
-                                             style={[styles.inputNumber, medTime && { textAlign: 'center' }]}
-                                             placeholder="Add Times"
-                                             value={medTime ? 'time picked' : ''}
-                                             placeholderTextColor="#9E9E9E"
-                                             editable={false}
-                                          />
+                                          <Text style={[styles.inputNumber, { color: '#9E9E9E' }, medTime && { textAlign: 'center' }]}>
+                                             {medTimeArr ? 'Add Times' : 'Times Selected'}
+                                          </Text>
                                           <MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />
                                        </View>
                                     </TouchableOpacity>
                                  </View>
                               }
+                           </View>
 
-                              {/* <Modal transparent={true} animationType="slide" visible={modalTimesVisible}
-                                 onRequestClose={() => setModalTimesVisible(false)} >
-                                 <View style={styles.centeredView}>
-
-                                    <Text >Add Times</Text>
-
-
-                                 </View>
-                              </Modal> */}
-                              <View>
-                                 <Modal visible={modalTimesVisible}
-                                    transparent={true} style={styles.modalDate} animationType='slide' onRequestClose={() => setModalTimesVisible(false)}>
-                                    <View style={styles.modalTimesView}>
-
-
-                                       <View style={styles.btnModalDate}>
-                                          <TouchableOpacity
-                                             style={styles.saveBtnDate}
-                                             onPress={() => {
-                                                setTaskFromDate(selectedRange.firstDate)
-                                                setTaskToDate(selectedRange.secondDate)
-                                                modalTimesVisible(false);
-                                             }}
-                                          >
-                                             <Text style={styles.textStyle}>Save</Text>
-                                          </TouchableOpacity>
-                                          <TouchableOpacity
-                                             style={styles.closeBtnDate}
-                                             onPress={() => {
-                                                setMedTime('');
-                                                setModalTimesVisible(false);
-                                             }}
-                                          >
-                                             <Text style={styles.closeTxt}>Cancel</Text>
-                                          </TouchableOpacity>
+                           {/* Modal Box For TIMES ARRAY */}
+                           <View>
+                              <Modal visible={modalTimesVisible} transparent={true} style={styles.modalDate} animationType='slide' onRequestClose={() => setModalTimesVisible(false)}>
+                                 <View style={styles.modalTimesView}>
+                                    {/* Header for add times*/}
+                                    <View style={styles.modalTimesHeader}>
+                                       <Text style={styles.modalText}>Select Med Times</Text>
+                                    </View>
+                                    {/* Body */}
+                                    <View style={styles.modalTimesBody}>
+                                       <View style={styles.modalTimesBodyContent}>
+                                          {rowForEachTime()}
                                        </View>
                                     </View>
-                                 </Modal>
 
-                              </View>
-
+                                    <View style={styles.btnModalDate}>
+                                       <TouchableOpacity
+                                          style={styles.saveBtnDate}
+                                          onPress={saveTimeArr}
+                                       >
+                                          <Text style={styles.textStyle}>Save</Text>
+                                       </TouchableOpacity>
+                                       <TouchableOpacity
+                                          style={styles.closeBtnDate}
+                                          onPress={() => {
+                                             setMedTime('');
+                                             setModalTimesVisible(false);
+                                          }}
+                                       >
+                                          <Text style={styles.closeTxt}>Cancel</Text>
+                                       </TouchableOpacity>
+                                    </View>
+                                 </View>
+                              </Modal>
                            </View>
                         </View>
                         <TextInput
-                           style={[styles.commentInput, { padding: 0 }, medComment && { borderColor: '#000' }]}
+                           style={[styles.commentInput, { padding: 0 }, medComment && { borderColor: '#000' }, modalTimesVisible && { display: 'none' }]}
                            placeholder="Custom Instruction ( Optional )"
                            placeholderTextColor="#9E9E9E"
                            value={medComment}
@@ -378,7 +434,7 @@ function AddNewMedicine(props) {
                            numberOfLines={4}
                            onChangeText={text => setMedComment(text)}
                         />
-                        <View style={styles.btnModal}>
+                        <View style={[styles.btnModal, modalTimesVisible && { display: 'none' }]}>
                            <TouchableOpacity style={styles.saveBtn} onPress={addMed}>
                               <Text style={styles.textStyle}>Save</Text>
                            </TouchableOpacity>
@@ -414,7 +470,7 @@ function NewTaskModal(props) {
    const taskCategorys = [
       { id: 1, name: 'General', color: '#FFC0CB' },
       { id: 2, name: 'Shop', color: '#FFC0CB' },
-      //{ id: 3, name: 'Medicines', color: '#FFC0CB' },
+      //{id: 3, name: 'Medicines', color: '#FFC0CB' },
    ]
    const taskFrequencies = [
       { id: 0, name: 'Once' },
@@ -723,7 +779,7 @@ const styles = StyleSheet.create({
       borderColor: '#E6EBF2',
       borderRadius: 16,
       justifyContent: 'center',
-      alignItems: 'start',
+      alignItems: 'flex-start',
       height: 50,
    },
    addIcon: {
@@ -902,9 +958,10 @@ const styles = StyleSheet.create({
       shadowOpacity: 0.25,
       shadowRadius: 3.84,
       width: SCREEN_WIDTH * 0.95,
-      height: SCREEN_HEIGHT * 0.75,
+      height: 'auto',
+      maxHeight: SCREEN_HEIGHT * 0.8,
       position: 'absolute',
-      top: SCREEN_HEIGHT * 0.025,
+      top: SCREEN_HEIGHT * 0.07,
       left: SCREEN_WIDTH * 0.025,
    },
    btnModalDate: {

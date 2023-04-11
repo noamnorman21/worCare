@@ -30,8 +30,8 @@ function CustomHeader() {
                     headerLeft: () => (
                         <View style={styles.headerLeft}>
                             <TouchableOpacity
-                            //on press send the function hideHeader and showHeader to the child component
-                                onPress={() => { navigation.navigate('SettingScreen') }}                                
+                                //on press send the function hideHeader and showHeader to the child component
+                                onPress={() => { navigation.navigate('SettingScreen') }}
                             >
                                 <Image
                                     source={require('../images/icons/Profile.png')}
@@ -79,8 +79,9 @@ function CustomHeader() {
                     headerTitle: 'Settings',
                     presentation: 'stack',
                     cardOverlayEnabled: true,
-                    headerShown: true,
+                    headerShown: false,
                 })}
+
             />
             <Stack.Screen name='PushNotifications' component={PushNotifications}
                 options={() => ({

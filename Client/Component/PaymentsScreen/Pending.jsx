@@ -114,21 +114,15 @@ function Request(props) {
 
   return (
     <List.Accordion style={!expanded ? styles.request : styles.requestunFocused}
-      theme={{ colors: { background: 'white' } }}
+      theme={{ colors: { background: '#FFF' } }}
       right={() => <View style={styles.requesRight}><Text style={styles.requestHeaderText}>{props.subject}</Text>
         <TouchableOpacity>
           <View>
-            <Feather
-              name="bell"
-              size={18}
-              color={'#000000'}
-            />
+            <Feather name="bell" size={18} color={'#000000'} />
           </View>
         </TouchableOpacity>
       </View>}
-      left={() => <View >
-        <Text style={styles.requestHeaderText}>{props.date.substring(0, 10)}</Text>
-      </View>}
+      left={() => <View><Text style={styles.requestHeaderText}>{props.date.substring(0, 10)}</Text></View>}
       expanded={!expanded}
       onPress={toggle}
     >
@@ -186,25 +180,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.8,
     shadowRadius: 2,
     paddingLeft: 12,
-
   },
   request: {
     justifyContent: 'center',
     paddingLeft: 12,
     width: Dimensions.get('screen').width * 0.9,
-    height: Dimensions.get('screen').height * 0.073,
-    justifyContent: 'center',
-    borderLeftColor: '#7DA9FF',
-    borderLeftWidth: 1,
-    borderTopLeftRadius: 16,
-    borderTopColor: '#7DA9FF',
-    borderTopWidth: 1,
-    borderRightColor: '#7DA9FF',
-    borderRightWidth: 1,
-    borderTopRightRadius: 16,
-    borderBottomColor: '#9E9E9E',
-    borderBottomWidth: 0.5,
-    borderBottomMargin: 10,
+    borderColor: '#E6EBF2',
+    borderWidth: 1.5,
+    borderRadius: 16,
   },
   requestHeaderText: {
     fontSize: 17,
@@ -231,7 +214,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     width: Dimensions.get('screen').width * 0.35,
   },
-
   Focused: {
     borderLeftColor: '#7DA9FF',
     borderLeftWidth: 1,

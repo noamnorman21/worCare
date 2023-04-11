@@ -215,8 +215,7 @@ export default function Profile({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
+    flex: 0.75,
     alignItems: 'center',
   },
   header: {
@@ -237,8 +236,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     height: 50,
-    width: 300,
-    backgroundColor: '#fff',
+    width: Dimensions.get('window').width * 0.85,
     borderRadius: 16,
     borderBottomWidth: 1,
     borderColor: 'lightgrey',
@@ -253,9 +251,9 @@ const styles = StyleSheet.create({
     marginBottom: Dimensions.get('window').height * 0.02,
   },
   image: {
-    width: 150,
-    height: 150,
-    borderRadius: 100,
+    width: 100,
+    height: 100,
+    borderRadius: 50,
   },
   bottom: {
     flex: 5,
@@ -274,7 +272,7 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 1,
     margin: 7,
-    height: 55,
+    height: 54,
   },
   buttonText: {
     color: 'white',
@@ -296,11 +294,10 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 1,
     margin: 7,
-    height: 55,
+    height: 54,
   },
   cancelbuttonText: {
     color: '#548DFF',
-    fontWeight: '600',
     fontSize: 18,
     fontFamily: 'Urbanist-Bold',
   },

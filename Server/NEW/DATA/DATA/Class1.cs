@@ -59,7 +59,6 @@ namespace DATA
                 var suggestions = ExtractSuggestionsFromJson(content);
                 Console.WriteLine(string.Join(Environment.NewLine, suggestions));
             }
-
         }
         static List<string> ExtractSuggestionsFromJson(string json)
         {
