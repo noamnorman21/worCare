@@ -41,6 +41,8 @@ function AddNewMedicine(props) {
    const [allDrugs, setAllDrugs] = useState([]);//we will use this to get all the drugs from the server
    const [selectedDrugName, setSelectedDrugName] = useState('');//we will use this to get the selected drug from the user
    const [editMode, setEditMode] = useState(true);
+
+   const [modalTimesVisible, setModalTimesVisible] = useState(false);
    const medFrequencies = [
       { id: 0, name: 'Once' },
       { id: 1, name: 'Daily' },
@@ -171,7 +173,7 @@ function AddNewMedicine(props) {
                                     keyboardType='numeric'
                                     returnKeyType='done'
                                     value={numberPerDay == 0 ? '' : numberPerDay.toString()}
-                                    onChangeText={text => text == '' ? setNumberPerDay(0) :
+                                    onChangeText={text => text == '' ? setNumberPerDay(0) && setMedTime('') :
                                        setNumberPerDay(parseInt(text))}
                                  />
                                  {/* Change icon color only onPress to #548DFF  */}
@@ -269,16 +271,100 @@ function AddNewMedicine(props) {
                                  />
                                  <MaterialCommunityIcons style={styles.addIcon} name="calendar-outline" size={24} color="#808080" />
                               </View>
-                              <View style={[styles.doubleRowItem, medTime && { borderColor: '#000' }]}>
-                                 <TextInput
-                                    style={[styles.inputNumber, medTime && { textAlign: 'center' }]}
-                                    placeholder="Add Time"
-                                    placeholderTextColor="#9E9E9E"
-                                    editable={false}
-                                    value={medTime ? medTime : ''}
-                                 />
-                                 <MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />
+                              {numberPerDay == 0 | numberPerDay == 1 ?
+                                 <View >
+                                    <DatePicker
+                                       style={[styles.doubleRowItem, medTime != '' && { borderColor: '#000' }]}
+                                       date={medTime}
+                                       iconComponent={<MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />}
+                                       placeholder="Add Time"
+                                       mode="time"
+                                       format="HH:mm"
+                                       is24Hour={true}
+                                       confirmBtnText="Confirm"
+                                       cancelBtnText="Cancel"
+                                       showIcon={true}
+                                       customStyles={{
+                                          dateInput: {
+                                             borderWidth: 0,
+                                             alignItems: 'flex-start',
+                                             paddingLeft: 10,
+                                          },
+                                          placeholderText: {
+                                             color: '#9E9E9E',
+                                             fontSize: 16,
+                                             textAlign: 'left',
+                                             fontFamily: 'Urbanist-Light',
+                                          },
+                                          dateText: {
+                                             color: '#000',
+                                             fontSize: 16,
+                                             fontFamily: 'Urbanist-SemiBold',
+                                          },
+                                       }}
+                                       onDateChange={(date) => {
+                                          setMedTime(date)
+                                       }}
+                                    />
+                                 </View> :
+                                 <View>
+                                    <TouchableOpacity onPress={() => setModalTimesVisible(true)}>
+
+                                       <View style={[styles.doubleRowItem, medTime && { borderColor: '#000' }]}>
+                                          <TextInput
+                                             style={[styles.inputNumber, medTime && { textAlign: 'center' }]}
+                                             placeholder="Add Times"
+                                             value={medTime ? 'time picked' : ''}
+                                             placeholderTextColor="#9E9E9E"
+                                             editable={false}
+                                          />
+                                          <MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />
+                                       </View>
+                                    </TouchableOpacity>
+                                 </View>
+                              }
+
+                              {/* <Modal transparent={true} animationType="slide" visible={modalTimesVisible}
+                                 onRequestClose={() => setModalTimesVisible(false)} >
+                                 <View style={styles.centeredView}>
+
+                                    <Text >Add Times</Text>
+
+
+                                 </View>
+                              </Modal> */}
+                              <View>
+                                 <Modal visible={modalTimesVisible}
+                                    transparent={true} style={styles.modalDate} animationType='slide' onRequestClose={() => setModalTimesVisible(false)}>
+                                    <View style={styles.modalTimesView}>
+
+
+                                       <View style={styles.btnModalDate}>
+                                          <TouchableOpacity
+                                             style={styles.saveBtnDate}
+                                             onPress={() => {
+                                                setTaskFromDate(selectedRange.firstDate)
+                                                setTaskToDate(selectedRange.secondDate)
+                                                modalTimesVisible(false);
+                                             }}
+                                          >
+                                             <Text style={styles.textStyle}>Save</Text>
+                                          </TouchableOpacity>
+                                          <TouchableOpacity
+                                             style={styles.closeBtnDate}
+                                             onPress={() => {
+                                                setMedTime('');
+                                                setModalTimesVisible(false);
+                                             }}
+                                          >
+                                             <Text style={styles.closeTxt}>Cancel</Text>
+                                          </TouchableOpacity>
+                                       </View>
+                                    </View>
+                                 </Modal>
+
                               </View>
+
                            </View>
                         </View>
                         <TextInput
@@ -799,6 +885,24 @@ const styles = StyleSheet.create({
       shadowRadius: 3.84,
       width: SCREEN_WIDTH * 0.95,
       height: SCREEN_HEIGHT * 0.65,
+      position: 'absolute',
+      top: SCREEN_HEIGHT * 0.025,
+      left: SCREEN_WIDTH * 0.025,
+   },
+   modalTimesView: {
+      marginTop: SCREEN_HEIGHT * 0.15,
+      backgroundColor: 'white',
+      borderRadius: 16,
+      padding: 20,
+      shadowColor: '#000',
+      shadowOffset: {
+         width: 0,
+         height: 2
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      width: SCREEN_WIDTH * 0.95,
+      height: SCREEN_HEIGHT * 0.75,
       position: 'absolute',
       top: SCREEN_HEIGHT * 0.025,
       left: SCREEN_WIDTH * 0.025,
