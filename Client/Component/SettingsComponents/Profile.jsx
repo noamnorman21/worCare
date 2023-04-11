@@ -9,8 +9,13 @@ import GenderChange from './GenderChange';
 import { useUserContext } from '../../UserContext';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from '../../config/firebase';
+import { Ionicons, Octicons } from '@expo/vector-icons';
+import { TextInput } from 'react-native-gesture-handler';
 
-export default function Profile({ navigation }) {
+const SCREEN_WIDTH = Dimensions.get('window').width;
+const SCREEN_HEIGHT = Dimensions.get('window').height;
+
+export default function Profile(props) {
   const [userId, setUserId] = useState(null);
   const [firstName, setFirstName] = useState(null);
   const [lastName, setLastName] = useState(null);
@@ -25,84 +30,9 @@ export default function Profile({ navigation }) {
   const [modalType, setModalType] = useState('');
   const [modalValue, setModalValue] = useState('');
   const [modal2Visible, setModal2Visible] = useState(false);
-  const { updateUserContext, userContext, setUserContext } = useUserContext();
-
-  const sendToFirebase = async (image) => {
-    // if the user didn't upload an image, we will use the default image
-    if (userImg === null) {
-      //זה תמונה מכוערת -נועם תחליף אותה
-      let defultImage = "https://png.pngtree.com/element_our/20200610/ourmid/pngtree-character-default-avatar-image_2237203.jpg"
-      sendDataToNextDB(defultImage);
-    }
-    const filename = image.substring(image.lastIndexOf('/') + 1);
-    const storageRef = ref(storage, "images/" + filename);
-    const blob = await fetch(image).then(response => response.blob());
-    try {
-      const uploadTask = uploadBytesResumable(storageRef, blob);
-      uploadTask.on('state_changed',
-        snapshot => {
-          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log(`Upload is ${progress}% complete`);
-        },
-        error => {
-          console.error(error);
-          Alert.alert('Upload Error', 'Sorry, there was an error uploading your image. Please try again later.');
-        },
-        () => {
-          getDownloadURL(storageRef).then(downloadURL => {
-            console.log('File available at', downloadURL);
-            sendDataToNextDB(downloadURL);
-          });
-        }
-      );
-    } catch (error) {
-      console.error(error);
-      Alert.alert('Upload Error', 'Sorry, there was an error uploading your image. Please try again later.');
-      sendDataToNextDB();
-    }
-  }
-
-  const sendDataToNextDB = (downloadURL) => {
-    const userToUpdate = {
-      Email: Email,
-      userUri: downloadURL == null ? userImg : downloadURL,
-      phoneNum: Phonenum,
-      gender: Gender,
-      FirstName: firstName,
-      LastName: lastName,
-      Id: userId,
-      userType: userType
-    }
-    updateUserContext(userToUpdate)
-    const jsonValue = JSON.stringify(userToUpdate)
-    AsyncStorage.setItem('userData', jsonValue);
-    fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Settings/UpdateUserProfile', {
-      method: 'PUT',
-      headers: new Headers({
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Accept': 'application/json; charset=UTF-8',
-
-      }),
-      body: JSON.stringify(userToUpdate)
-    })
-      .then(res => {
-        return res.json()
-      }
-      )
-      .then(
-        (result) => {
-          console.log("fetch POST= ", result);
-          Alert.alert('User Updated', 'Your User has been Updated successfully');
-        }
-      )
-      .catch((error) => {
-        console.log('Error:', error.message);
-      }
-      );
-
-    navigation.goBack();
-  }
-
+  const { updateUserContext, userContext, setUserContext, updateUserProfile } = useUserContext();
+  const [isChanged, setIsChanged] = useState(false);
+  const [placeHolder, setPlaceHolder] = useState(null);
   const displayGender = () => {
     if (Gender == "M") {
       return "Male"
@@ -129,12 +59,22 @@ export default function Profile({ navigation }) {
     setModalVisible(false);
     if (Field == "First Name") {
       setFirstName(value)
+      props.updateUser("FirstName", value)
     }
     else if (Field == "Last Name") {
       setLastName(value);
+      props.updateUser("LastName", value)
     }
     else if (Field == "Phone Number") {
       setPhonenum(value);
+      props.updateUser("phoneNum", value)
+    }
+    else if (Field == "Gender") {
+      setGender(value);
+      props.updateUser("gender", value)
+    }
+    if (!isChanged) {
+      setIsChanged(true);
     }
   }
 
@@ -148,18 +88,28 @@ export default function Profile({ navigation }) {
     });
     if (!result.canceled) {
       setUserImg(result.assets[0].uri);
+      props.updateUser("userUri", result.assets[0].uri)
       setImageChange(true)
     }
   }
+
   const cancel = () => {
     console.log('cancel');
     navigation.goBack();
   }
 
+  const setNavigation = async () => navigation.setOptions({
+    headerRight: () => (
+      <TouchableOpacity style={styles.headerButton} onPress={() => isChanged ? (ImageChange ? sendToFirebase(userImg) : sendDataToNextDB()) : Alert.alert("No Changes")}>
+        <Text style={styles.headerButtonText}>Done</Text>
+      </TouchableOpacity>
+    ),
+  });
+
   useEffect(() => {
     const getData = async () => {
       try {
-        setUserId(userContext.Id);
+        setUserId(userContext.userId);
         setFirstName(userContext.FirstName);
         setLastName(userContext.LastName);
         setGender(userContext.gender)
@@ -173,40 +123,51 @@ export default function Profile({ navigation }) {
     };
     getData();
   }, []);
+
   return (
     <View style={styles.container}>
-      {/* <View style={styles.header}>
-        <Text style={styles.title}>Profile</Text>
-      </View> */}
-      <TouchableOpacity style={styles.imageContainer} onPress={() => pickImage()}>
+      <TouchableOpacity onPress={() => pickImage()}>
         <Image style={styles.image} source={{ uri: userImg }} />
       </TouchableOpacity>
+      <TouchableOpacity onPress={() => pickImage()}>
+        <Text style={styles.imageTxt}>Edit profile picture</Text>
+      </TouchableOpacity>
       <View style={styles.FieldContainer}>
-        <TouchableOpacity underlayColor={'lightgrey'} style={styles.fields} onPress={() => openModal("First Name", firstName)}>
-          <Text style={styles.fieldTxt}>{firstName}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity underlayColor={'lightgrey'} style={styles.fields} onPress={() => openModal("Last Name", lastName)}>
-          <Text style={styles.fieldTxt}>{lastName}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity underlayColor={'lightgrey'} style={styles.fields} onPress={() => openModal("Phone Number", Phonenum)}>
-          <Text style={styles.fieldTxt}>{Phonenum}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity underlayColor={'lightgrey'} style={styles.fields} onPress={() => openModal2(Gender)}>
-          <Text style={styles.fieldTxt}>{displayGender()}</Text>
-        </TouchableOpacity>
-        <View style={styles.bottom}>
-          <TouchableOpacity onPress={() => ImageChange ? sendToFirebase(userImg) : sendDataToNextDB()} style={styles.button}>
-            <Text style={styles.buttonText}>Save to DB</Text>
+        <View style={styles.fieldView} >
+          <Text style={styles.fieldHeader}>First Name</Text>
+          <TouchableOpacity underlayColor={'lightgrey'} style={styles.fields} onPress={() => openModal("First Name", firstName)}>
+            <Text style={styles.fieldTxt}>{firstName}</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={cancel} style={styles.cancelbutton}>
-            <Text style={styles.cancelbuttonText}>Cancel All Changes</Text>
+        </View>
+        <View style={styles.fieldView} >
+          <Text style={styles.fieldHeader}>Last Name</Text>
+          <TouchableOpacity underlayColor={'lightgrey'} style={styles.fields} onPress={() => openModal("Last Name", lastName)}>
+            <Text style={styles.fieldTxt}>{lastName}</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.fieldView} >
+          <Text style={styles.fieldHeader}>Phone Number</Text>
+          <View style={styles.fields}>
+            <TextInput
+              style={styles.fieldTxt}
+              placeholder={Phonenum}
+              onChangeText={text => setPhonenum(text)}
+              value={Phonenum}
+            />
+          </View>
+        </View>
+        <View style={styles.fieldView} >
+          <Text style={styles.fieldHeader}>Gender</Text>
+          <TouchableOpacity underlayColor={'lightgrey'} style={styles.fields} onPress={() => openModal2(Gender)}>
+            <Text style={styles.fieldTxt}>{displayGender()}</Text>
+            <Ionicons style={styles.arrowLogoStyle} name="chevron-forward" size={24} color="grey" />
           </TouchableOpacity>
         </View>
         <Modal animationType="slide" visible={modalVisible}>
           <FieldChange userId={userId} type={modalType} value={modalValue} cancel={() => setModalVisible(false)} Save={(Field, value) => Update(Field, value)} />
         </Modal>
         <Modal animationType="slide" visible={modal2Visible}>
-          <GenderChange userId={userId} Gender={Gender} cancel={() => setModal2Visible(false)} Save={(Gender) => { setModal2Visible(false); setGender(Gender) }} />
+          <GenderChange userId={userId} Gender={Gender} cancel={() => setModal2Visible(false)} Save={(Gender) => { setModal2Visible(false); Update("Gender", Gender) }} />
         </Modal>
       </View>
     </View>
@@ -215,100 +176,86 @@ export default function Profile({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 0.75,
+    flex: 5,
     alignItems: 'center',
+  },
+  logoStyle: {
+    marginLeft: SCREEN_WIDTH * 0.03,
+    marginRight: SCREEN_WIDTH * 0.06
+  },
+  arrowLogoStyle: {
+    position: 'absolute',
+    right: SCREEN_WIDTH * 0.03,
   },
   header: {
     marginTop: 20,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  title: {
-    fontSize: 35,
-    color: '#000',
-    fontFamily: 'Urbanist-Bold',
-  },
-  smallTitle: {
-    fontSize: 15,
-    color: '#000',
-  },
   fields: {
-    alignItems: 'center',
     justifyContent: 'center',
-    height: 50,
-    width: Dimensions.get('window').width * 0.85,
+    flex: 3.75,
     borderRadius: 16,
     borderBottomWidth: 1,
     borderColor: 'lightgrey',
     padding: 10,
   },
-  imageContainer: {
-    flexDirection: 'row',
+  headerButton: {
+    width: SCREEN_WIDTH * 0.1,
+    height: SCREEN_HEIGHT * 0.05,
     alignItems: 'center',
     justifyContent: 'center',
-    marginLeft: Dimensions.get('window').width * 0.0,
-    marginTop: Dimensions.get('window').height * 0.02,
-    marginBottom: Dimensions.get('window').height * 0.02,
   },
   image: {
     width: 100,
     height: 100,
-    borderRadius: 50,
+    borderRadius: 100,
+    marginTop: 20,
+  },
+  imageTxt: {
+    color: '#548DFF',
+    fontFamily: 'Urbanist-SemiBold',
+    fontSize: 16,
+    marginTop: 10,
   },
   bottom: {
-    flex: 5,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: SCREEN_WIDTH * 0.95,
+    flex: 1,
+    alignItems: 'flex-end',
+    marginBottom: 20,
   },
-  button: {
-    width: Dimensions.get('window').width * 0.85,
-    backgroundColor: '#548DFF',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: 'lightgray',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 1,
-    margin: 7,
-    height: 54,
-  },
-  buttonText: {
-    color: 'white',
-    fontWeight: '600',
-    fontSize: 18,
-    fontFamily: 'Urbanist-Bold',
-  },
-  cancelbutton: {
-    width: Dimensions.get('window').width * 0.85,
-    backgroundColor: 'white',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: 'lightgray',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 1,
-    margin: 7,
-    height: 54,
-  },
-  cancelbuttonText: {
+  headerButtonText: {
     color: '#548DFF',
-    fontSize: 18,
-    fontFamily: 'Urbanist-Bold',
+    fontFamily: 'Urbanist-SemiBold',
+    fontSize: 16,
   },
   fieldTxt: {
-    fontSize: 20,
+    fontSize: 16,
     color: '#000',
-    fontFamily: 'Urbanist-Medium',
+    fontFamily: 'Urbanist-Light',
   },
   FieldContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  fieldHeader: {
+    fontSize: 16,
+    fontFamily: 'Urbanist-SemiBold',
+    color: '#000',
+    marginLeft: SCREEN_WIDTH * 0.03,
+    flex: 2,
+    marginTop: 10,
+  },
+  fieldView: {
+    flexDirection: 'row',
+  },
+  personalContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    width: SCREEN_WIDTH * 1,
   },
 })

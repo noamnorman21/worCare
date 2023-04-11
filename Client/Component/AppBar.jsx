@@ -81,7 +81,6 @@ function CustomHeader() {
                     cardOverlayEnabled: true,
                     headerShown: false,
                 })}
-
             />
             <Stack.Screen name='PushNotifications' component={PushNotifications}
                 options={() => ({
