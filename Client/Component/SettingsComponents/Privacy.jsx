@@ -3,8 +3,14 @@ import { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FieldChange from './FieldChange';
 import { useUserContext } from '../../UserContext';
+import { TextInput } from 'react-native-gesture-handler';
+import Icon from 'react-native-vector-icons/MaterialIcons'
+const SCREEN_WIDTH = Dimensions.get('window').width;
+const SCREEN_HEIGHT = Dimensions.get('window').height;
+import { Ionicons } from '@expo/vector-icons';
+import { Octicons } from '@expo/vector-icons';
 
-export default function Privacy({ navigation }) {
+export default function Privacy({ navigation, route }) {
   const [userId, setUserId] = useState(null);
   const [firstName, setFirstName] = useState(null);
   const [lastName, setLastName] = useState(null);
@@ -17,6 +23,37 @@ export default function Privacy({ navigation }) {
   const [modalType, setModalType] = useState('');
   const [modalValue, setModalValue] = useState('');
   const { userContext, updateUserContext } = useUserContext();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword2, setShowPassword2] = useState(false);
+  const [password1, setPassword1] = useState('');
+  const [password2, setPassword2] = useState('');
+
+
+  const CheckEmailInDB = () => {
+    console.log('CheckEmailInDB', Email);
+    let checkMail = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetEmail';
+    let userDto = {
+      Email: Email,
+    }
+    fetch(checkMail, {
+      method: 'POST',
+      body: JSON.stringify(userDto),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+      }
+    })
+      .then(res => {
+        if (res.ok) {
+          sendDataToNextDB();
+        }
+        else {
+          Alert.alert('Email Alreay Exists', 'Sorry, there was an error updating your email. Please try again later.');
+        }
+      })
+      .catch((error) => {
+        console.log("err=", error);
+      });
+  }
 
 
   const sendDataToNextDB = () => {
@@ -80,13 +117,11 @@ export default function Privacy({ navigation }) {
 
   }
 
-  const savePassword = (value) => {
-    console.log(value)
-  }
+
 
   const cancel = () => {
     console.log('cancel');
-    navigation.goBack();
+    setEmail(userContext.Email);
   }
 
   useEffect(() => {
@@ -107,21 +142,195 @@ export default function Privacy({ navigation }) {
     getData();
   }, []);
 
+  useEffect(() => {
+    const setNavigation = async () => navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity style={styles.headerButton} onPress={() => (ImageChange ? sendToFirebase(user.userUri) : sendDataToNextDB())}>
+          <Octicons name="check" size={22} />
+        </TouchableOpacity>
+      ),
+      headerLeft: () => (
+          <View style={styles.headerLeft}>
+              <TouchableOpacity
+                  onPress={() => Alert.alert(
+                      "Cancel Changes",
+                      "Are you sure you want to cancel your changes?",
+                      [
+                          {
+                              text: "Cancel",
+                              onPress: () => console.log("Cancel Pressed"),
+                              style: "cancel"
+                          },
+                          { text: "OK", onPress: () => navigation.goBack() }
+                      ],
+                      { cancelable: false }
+                  )}
+              >
+                  <Ionicons
+                      name="arrow-back"
+                      size={28}
+                      color={'#000000'}
+                  />
+              </TouchableOpacity>
+          </View>
+      ),
+      });
+    console.log("setnavigations")
+  setNavigation();
+  }, [Email]);
+
+  const DeleteProfile = () =>{
+    fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/DeleteUser', {
+      method: 'DELETE',
+      headers: new Headers({
+        'Content-Type': 'application/json; charset=UTF-8',
+      }),
+      body: JSON.stringify({
+        userId: userId,
+        Email: Email,
+      })
+    })
+      .then(res => {
+        console.log('res.ok', res.ok);
+        if (res.ok) {
+          return res.json();
+        }
+        else {
+          console.log('error');
+        }
+      })
+      .then(
+        (result) => {
+          console.log("fetch DELETE= ", result);
+          if (result == 1) {
+            route.params.logout();
+          }
+        })
+      .catch((error) => {
+        console.log('Error:', error.message);
+      });
+
+  }
+
+  const validatePassword = (password) => {
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/ //at least 8 characters, 1 letter, 1 number
+    return passwordRegex.test(password);
+ }
+
+
+  const checkPassowrd = () => {
+    if (password1 ===password2 && validatePassword(password1)) {
+      let user={
+        userId: userContext.userId,
+        password: password1
+      }
+      fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Settings/SetNewPassword', {
+        method: 'PUT',
+        headers: new Headers({
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Accept': 'application/json; charset=UTF-8',
+        }),
+        body: JSON.stringify(user)
+      })
+        .then(res => {
+          if (res.ok) {
+            return res.json()
+              .then(
+                (result) => {
+                  console.log("fetch POST= ", result);
+                  Alert.alert('Password Updated', 'Your Password has been changed successfully');
+                  navigation.goBack();
+                }
+              )
+          }
+          else {
+            return Alert.alert('Password Change Failed', 'Sorry, there was an error updating your password. Please try again later.');
+          }
+        }
+        )
+
+    }
+    else if (password1 !== password2) {
+      Alert.alert('Password Change Failed', 'Sorry, your passwords do not match. Please try again.');
+    }
+    else if (!validatePassword(password1)) {
+      Alert.alert('Password Change Failed', 'Sorry, your password must be at least 8 characters long, and contain at least one letter and one number. Please try again.');
+    }
+    
+  }
+
+
+
+
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      {/* <View style={styles.header}>
         <Text style={styles.title}>Privacy</Text>
-      </View>
+      </View> */}
+    
       <View style={styles.fieldContainer}>
-        <TouchableOpacity underlayColor={'lightgrey'} style={styles.fields} onPress={() => openModal("Email", Email)}>
-          <Text style={styles.fieldTxt}>{Email}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity underlayColor={'lightgrey'} style={styles.fields} onPress={() => openModal("Password")}>
-          <Text style={styles.fieldTxt}>Set New Password</Text>
-        </TouchableOpacity>
+      <View style={styles.emailContainer}> 
+      <Text style={styles.emailHeader}>Set new Email</Text>
+        <View style={styles.fieldView}>
+          <Text style={styles.fieldHeader}>Email:</Text>
+          <TouchableOpacity underlayColor={'lightgrey'} style={styles.fields} onPress={() => openModal("Email", Email)}>
+            <Text style={styles.fieldTxt}>{Email}</Text>
+          </TouchableOpacity>
+        </View>   
+        
+        </View>
         <View style={styles.bottom}>
-          <TouchableOpacity onPress={() => sendDataToNextDB()} style={styles.button}>
-            <Text style={styles.buttonText}>Save to DB</Text>
+          <TouchableOpacity onPress={() => CheckEmailInDB()} style={styles.button}>
+            <Text style={styles.buttonText}>Save Email</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={cancel} style={styles.cancelbutton}>
+            <Text style={styles.cancelbuttonText}>Cancel Email Changes</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.passwordView}>
+          <Text style={styles.passwordHeader}>Set new password</Text>
+          <View style={styles.passwordContainer}>
+            {/* password */}
+            <TextInput
+              style={styles.input}
+              placeholder="Password"
+              placeholderTextColor={'#9E9E9E'}
+              secureTextEntry={!showPassword}
+              value={password1}
+              autoCapitalize='none'
+              autoCorrect={false}
+              keyboardType='ascii-capable'
+              onChangeText={text => setPassword1(text)}
+            />
+            {/* password visibility button */}
+            <TouchableOpacity style={styles.passwordButton} onPress={() => setShowPassword(!showPassword)}>
+              {/* Icon button For changing password input visibility */}
+              <Icon name={showPassword ? 'visibility' : 'visibility-off'} size={20} color='#000' />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.passwordContainer}>
+            {/* password */}
+            <TextInput
+              style={styles.input}
+              placeholder="Password"
+              placeholderTextColor={'#9E9E9E'}
+              secureTextEntry={!showPassword}
+              value={password2}
+              autoCapitalize='none'
+              autoCorrect={false}
+              keyboardType='ascii-capable'
+              onChangeText={text => setPassword2(text)}
+            />
+            {/* password visibility button */}
+            <TouchableOpacity style={styles.passwordButton} onPress={() => setShowPassword2(!showPassword2)}>
+              {/* Icon button For changing password input visibility */}
+              <Icon name={showPassword ? 'visibility' : 'visibility-off'} size={20} color='#000' />
+            </TouchableOpacity>
+          </View>
+        </View>
+        <View style={styles.bottom}>
+          <TouchableOpacity onPress={() => checkPassowrd()} style={styles.button}>
+            <Text style={styles.buttonText}>Save Password</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={cancel} style={styles.cancelbutton}>
             <Text style={styles.cancelbuttonText}>Cancel All Changes</Text>
@@ -130,6 +339,25 @@ export default function Privacy({ navigation }) {
         <Modal animationType="slide" visible={modalVisible}>
           <FieldChange userId={userId} type={modalType} value={modalValue} cancel={() => setModalVisible(false)} Save={(Field, value) => Update(Field, value)} />
         </Modal>
+        <TouchableOpacity style={styles.colorBtn2}
+          onPress={() => {
+            Alert.alert('Delete Account', 'Are you sure you want to delete your account?', [
+              {
+                text: 'Cancel',
+                onPress: () => console.log('Cancel Pressed'),
+                style: 'cancel'
+              },
+              {
+                text: 'OK',
+                onPress: () => {
+                 DeleteProfile();                   
+                }
+              },
+            ]);
+          }}
+        >
+          <Text style={styles.btnText2}>Delete Account</Text>
+        </TouchableOpacity>
       </View>
     </View>
   )
@@ -146,6 +374,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  headerButton: {
+    width: SCREEN_WIDTH * 0.1,
+    height: SCREEN_HEIGHT * 0.05,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   title: {
     fontSize: 30,
     color: '#000',
@@ -156,82 +390,147 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   fields: {
-    alignItems: 'center',
     justifyContent: 'center',
-    height: 50,
-    width: 300,
-    backgroundColor: '#fff',
+    flex: 5,
     borderRadius: 16,
     borderBottomWidth: 1,
     borderColor: 'lightgrey',
     padding: 10,
-  },
+  },  
   fieldTxt: {
-    fontSize: 20,
-    fontFamily: 'Urbanist-Medium',
+    fontSize: 18,
     color: '#000',
-  },
-  imageContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginLeft: Dimensions.get('window').width * 0.0,
-    marginTop: Dimensions.get('window').height * 0.02,
-    marginBottom: Dimensions.get('window').height * 0.02,
-  },
-  image: {
-    width: Dimensions.get('window').width * 0.3,
-    height: Dimensions.get('window').height * 0.15,
-    borderRadius: 100,
+    fontFamily: 'Urbanist-Medium',
   },
   bottom: {
-    flex: 5,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: SCREEN_WIDTH * 0.95,
+    marginTop: 10,
   },
-  button: {
-    width: Dimensions.get('window').width * 0.85,
-    backgroundColor: '#548DFF',
+  colorBtn2: {
+    width: SCREEN_WIDTH * 0.95,
+    height: 54,
+    borderRadius: 16,
+    borderWidth: 1.5,
+    backgroundColor: '#F5F8FF',
+    borderColor: '#548DFF',
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: SCREEN_HEIGHT * 0.02,
+  },
+  btnText2: {
+    fontSize: 18,
+    color: '#548DFF',
+    fontFamily: 'Urbanist-SemiBold',
+  },
+  button: {
+    backgroundColor: '#548DFF',
     borderRadius: 16,
-    borderWidth: 1,
-    borderColor: 'lightgray',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 45,
+    width: SCREEN_WIDTH * 0.45,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 3,
     elevation: 1,
-    margin: 7,
-    height: 55,
   },
   buttonText: {
     color: 'white',
-    fontFamily: 'Urbanist-Bold',
     fontSize: 16,
+    fontFamily: 'Urbanist-SemiBold',
   },
   cancelbutton: {
-    width: Dimensions.get('window').width * 0.85,
-    backgroundColor: 'white',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: '#F5F8FF',
     borderRadius: 16,
-    borderWidth: 1,
-    borderColor: 'lightgray',
+    height: 45,
+    width: SCREEN_WIDTH * 0.45,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1.5,
+    borderColor: '#548DFF',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 3,
     elevation: 1,
-    margin: 7,
-    height: 55,
   },
   cancelbuttonText: {
     color: '#548DFF',
-    fontFamily: 'Urbanist-Bold',
+    textAlign: 'center',
+    fontFamily: 'Urbanist-SemiBold',
     fontSize: 16,
   },
   fieldContainer: {
-    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  fieldHeader: {
+    fontSize: 16,
+    fontFamily: 'Urbanist-Bold',
+    color: '#000',
+    marginLeft: SCREEN_WIDTH * 0.03,
+    flex:2,
+    marginTop: 10,
+  },
+  fieldView: {   
+    flexDirection: 'row',
+  },
+  passwordHeader: {
+    fontSize: 20,
+    fontFamily: 'Urbanist-Bold',
+    color: '#000',
+    marginBottom: 10,
+    borderBottomColor: 'lightgrey',
+    borderBottomWidth: 1,
+
+  },
+  emailHeader: {
+    fontSize: 20,
+    fontFamily: 'Urbanist-Bold',
+    color: '#000',
+    marginBottom: 10,
+    borderBottomColor: 'lightgrey',
+    borderBottomWidth: 1,
+    textAlign:'left'
+  },
+  passwordView: {
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  input: {
+    width: Dimensions.get('window').width * 0.95,
+    marginBottom: 10,
+    paddingLeft: 20,
+    alignItems: 'center',
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: '#E6EBF2',
+    shadowColor: '#000',
+    height: 54,
+    fontFamily: 'Urbanist-Light',
+    fontSize: 16,
+  },
+  passwordContainer: {
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emailContainer: {
+    width: '100%',
+    alignItems: 'center',
+    
+  },
+  passwordButton: {
+    position: 'absolute',
+    right: SCREEN_WIDTH * 0.05,
+    top: 16,
+  },
+  passwordButtonText: {
+    color: '#000',
+    fontFamily: 'Urbanist-Bold',
+    fontSize: 14,
   },
 })

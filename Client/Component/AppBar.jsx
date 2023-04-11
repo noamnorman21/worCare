@@ -79,7 +79,21 @@ function CustomHeader() {
                     headerTitle: 'Settings',
                     presentation: 'stack',
                     cardOverlayEnabled: true,
-                    headerShown: true,
+                    headerShown: false,
+                    headerLeft: () => (
+                        <View style={styles.headerLeft}>
+                            <TouchableOpacity
+                                onPress={() => { navigation.dispatch(StackActions.popToTop()) }}
+                            >
+                                <Ionicons
+                                    name="check"
+                                    size={28}
+                                    color={'#000000'}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    ),
+                        
                 })}
             />
             <Stack.Screen name='PushNotifications' component={PushNotifications}

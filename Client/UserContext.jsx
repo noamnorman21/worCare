@@ -64,9 +64,6 @@ export function UserProvider({ children }) {
     const [userGender, setuserGender] = useState(null)
 
     function logInContext(userData) {
-
-
-
         let usertoSync = {
             userId: userData.userId,
             userType: userData.userType,
@@ -96,8 +93,8 @@ export function UserProvider({ children }) {
           gender: user.gender,
           FirstName: user.FirstName,
           LastName: user.LastName,
-          Id: user.Id,
-          userType: userType
+          userId: user.userId,
+          userType: user.userType
         }    
         fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Settings/UpdateUserProfile', {
           method: 'PUT',

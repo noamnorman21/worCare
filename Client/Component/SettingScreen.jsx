@@ -7,6 +7,9 @@ import { AntDesign, Ionicons, SimpleLineIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
 import { useUserContext } from '../UserContext';
+import { Octicons } from '@expo/vector-icons';
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { storage } from '../config/firebase';
 
 
 
@@ -16,6 +19,7 @@ import Notifications from './SettingsComponents/Notifications'
 import Privacy from './SettingsComponents/Privacy'
 import ContactUs from './SettingsComponents/ContactUs'
 import ImageChange from './SettingsComponents/ImageChange'
+
 
 const Stack = createNativeStackNavigator();
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -29,7 +33,11 @@ function HomeScreen({ navigation, route }) {
     const [userEmail, setuserEmail] = useState(null);
     const [userId, setUserId] = useState(null);
     const isFocused = useIsFocused();
-    const { userContext, setUserContext } = useUserContext();
+    const { userContext, setUserContext, updateUserProfile } = useUserContext();
+    const [user, setUser] = useState(userContext);
+    const [isChanged, setIsChanged] = useState(false);
+    const [ImageChange, setImageChange] = useState(false);
+
 
     LogBox.ignoreLogs([
         'Non-serializable values were found in the navigation state',
@@ -43,7 +51,7 @@ function HomeScreen({ navigation, route }) {
                 setUserName(userContext.FirstName);
                 setuserEmail(userData.Email);
                 setUserImg(userData.userUri);
-                setUserId(userData.UserId);  
+                setUserId(userData.UserId);
             } catch (e) {
                 console.log('error', e);
             }
@@ -51,34 +59,117 @@ function HomeScreen({ navigation, route }) {
         getData();
     }, [isFocused]);
 
+    const sendToFirebase = async (image) => {
+        console.log('image', image);
+        // if the user didn't upload an image, we will use the default image
+        if (userImg === null) {
+            //זה תמונה מכוערת -נועם תחליף אותה
+            let defultImage = "https://png.pngtree.com/element_our/20200610/ourmid/pngtree-character-default-avatar-image_2237203.jpg"
+            sendDataToNextDB(defultImage);
+        }
+        const filename = image.substring(image.lastIndexOf('/') + 1);
+        const storageRef = ref(storage, "images/" + filename);
+        const blob = await fetch(image).then(response => response.blob());
+        try {
+            const uploadTask = uploadBytesResumable(storageRef, blob);
+            uploadTask.on('state_changed',
+                snapshot => {
+                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    console.log(`Upload is ${progress}% complete`);
+                },
+                error => {
+                    console.error(error);
+                    Alert.alert('Upload Error', 'Sorry, there was an error uploading your image. Please try again later.');
+                },
+                () => {
+                    getDownloadURL(storageRef).then(downloadURL => {
+                        console.log('File available at', downloadURL);
+                        sendDataToNextDB(downloadURL);
+                    });
+                }
+            );
+        } catch (error) {
+            console.error(error);
+            Alert.alert('Upload Error', 'Sorry, there was an error uploading your image. Please try again later.');
+            sendDataToNextDB();
+        }
+    }
+
+    const sendDataToNextDB = (downloadURL) => {
+        console.log("sendDataToNextDB");
+        console.log("user", user);
+        console.log("downloadURL", downloadURL);
+        const userToUpdate = {
+            Email: user.Email,
+            userUri: downloadURL == null ? user.userUri : downloadURL,
+            phoneNum: user.phoneNum,
+            gender: user.gender,
+            FirstName: user.FirstName,
+            LastName: user.LastName,
+            userId: user.userId,
+            userType: user.userType
+        }
+        console.log("userToUpdate", userToUpdate);
+        updateUserProfile(userToUpdate);
+        route.params.Exit();
+    }
+
+    const updateUser = (Field, value) => {
+        console.log("updateUser");
+        console.log("Field", Field);
+        setIsChanged(true);
+        if (Field === "userUri") {
+            Alert.alert("התמונה עודכנה בהצלחה");
+            setImageChange(true);
+        }
+        setUser({ ...user, [Field]: value });
+    }
+
+    useEffect(() => {
+        const setNavigation = async () => navigation.setOptions({
+            headerRight: () => (
+                <TouchableOpacity style={styles.headerButton} onPress={() => (ImageChange ? sendToFirebase(user.userUri) : sendDataToNextDB())}>
+                    <Octicons name="check" size={22} />
+                </TouchableOpacity>
+            ),
+            headerLeft: () => (
+                <View style={styles.headerLeft}>
+                    <TouchableOpacity
+                        onPress={isChanged?()=> Alert.alert(
+                            "Cancel Changes",
+                            "Are you sure you want leave without Saving?",
+                            [
+                                {
+                                    text: "Cancel",
+                                    onPress: () => console.log("Cancel Pressed"),
+                                    style: "cancel"
+                                },
+                                { text: "OK", onPress: () => route.params.Exit() }
+                            ],
+                            { cancelable: false }
+                        ):route.params.Exit}         >
+                        <Ionicons
+                            name="arrow-back"
+                            size={28}
+                            color={'#000000'}
+                        />
+                    </TouchableOpacity>
+                </View>
+            ),
+            
+        });
+        console.log("setnavigations")
+        setNavigation();
+    }, [user]);
+
+
+
     //the user name will be taken from the database
     //the user image will be taken from the database
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.personalContainer}>
-                <View style={styles.imageContainer}>
-                    {/* here will be the user name and image and the logo of the app */}
-                    <Image style={styles.image} source={{ uri: userImg }} />
-                    <View style={styles.personalTextContainer}>
-                        <Text style={styles.personalText}>Hello, {userName}</Text>
-                        {/* <Text style={styles.personalText}></Text> */}
-                    </View>
-                </View>
-            </View>
-
+            <Profile updateUser={(Field, value) => updateUser(Field, value)} />
             <View style={styles.btnContainer}>
-                <TouchableOpacity style={styles.btn} onPress={() => [navigation.navigate('Profile', { email: userEmail })]}>
-                    <Ionicons style={styles.logoStyle} name='ios-person-outline' size={30} color='gray' />
-                    <Text style={styles.btnText}>Profile</Text>
-                    <AntDesign style={styles.arrowLogoStyle} name="right" size={25} color="gray" />
-                </TouchableOpacity>
-
-                <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Notifications')}>
-                    <SimpleLineIcons style={styles.logoStyle} name='bell' size={30} color='gray' />
-                    <Text style={styles.btnText}>Notifications</Text>
-                    <AntDesign style={styles.arrowLogoStyle} name="right" size={24} color="gray" />
-                </TouchableOpacity>
-
                 <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Privacy')}>
                     <Ionicons style={styles.logoStyle} name='key' size={30} color='gray' />
                     <Text style={styles.btnText}>Privacy & My Account</Text>
@@ -107,25 +198,7 @@ function HomeScreen({ navigation, route }) {
                         <Text style={styles.btnText1}>Log Out</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.colorBtn2}
-                        onPress={() => {
-                            Alert.alert('Delete Account', 'Are you sure you want to delete your account?', [
-                                {
-                                    text: 'Cancel',
-                                    onPress: () => console.log('Cancel Pressed'),
-                                    style: 'cancel'
-                                },
-                                {
-                                    text: 'OK',
-                                    onPress: () => {
-                                        navigation.navigate('LogIn')
-                                    }
-                                },
-                            ]);
-                        }}
-                    >
-                        <Text style={styles.btnText2}>Delete Account</Text>
-                    </TouchableOpacity>
+
                 </View>
             </View>
         </SafeAreaView>
@@ -147,11 +220,12 @@ export default function SettingScreen({ navigation }) {
                         marginLeft: SCREEN_WIDTH * 0.03,
                     },
                     headerBackTitleVisible: false,
+                    headerShown: false,
                 }}>
-                <Stack.Screen name="Settings" component={HomeScreen} options={() => ({ headerTitle: 'Settings', headerShown: false })} initialParams={{ logout: () => { navigation.dispatch(StackActions.replace('LogIn'))} }} />
-                <Stack.Screen name="Profile" component={Profile}  />
+                <Stack.Screen name="Settings" component={HomeScreen} options={() => ({ headerTitle: 'Settings', headerShown: true, headerTitleAlign:'center' })} initialParams={{ logout: () => { navigation.dispatch(StackActions.replace('LogIn')) }, Exit: () => navigation.navigate('AppBarDown') }} />
+                <Stack.Screen name="Profile" component={Profile} />
                 <Stack.Screen name="Notifications" component={Notifications} />
-                <Stack.Screen name="Privacy" component={Privacy} options={{ headerTitle: 'Privacy & My Account' }} initialParams={{ logout: () => { navigation.dispatch(StackActions.replace('LogIn'))} }} />
+                <Stack.Screen name="Privacy" component={Privacy} options={{ headerTitle: 'Privacy & My Account', headerTitleAlign:'center', headerShown: true }} initialParams={{ logout: () => { navigation.dispatch(StackActions.replace('LogIn')) } }} />
                 <Stack.Screen name="ContactUs" component={ContactUs} options={{ headerTitle: 'Contact Us' }} />
             </Stack.Navigator>
         </NavigationContainer>
@@ -203,6 +277,12 @@ const styles = StyleSheet.create({
         marginRight: SCREEN_WIDTH * 0.6,
         marginTop: SCREEN_HEIGHT * 0.03,
         fontFamily: 'Urbanist-Bold'
+    },
+    headerButton: {
+        width: SCREEN_WIDTH * 0.1,
+        height: SCREEN_HEIGHT * 0.05,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     btnContainer: {
         flex: 4,
@@ -271,7 +351,7 @@ const styles = StyleSheet.create({
     },
     headerButton: {
         width: SCREEN_WIDTH * 0.1,
-        height: SCREEN_HEIGHT * 0.05,        
+        height: SCREEN_HEIGHT * 0.05,
         alignItems: 'center',
         justifyContent: 'center',
     },
