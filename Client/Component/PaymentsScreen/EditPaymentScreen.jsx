@@ -1,15 +1,16 @@
-
 import { TextInput, View, Text, StyleSheet, Alert, SafeAreaView, TouchableOpacity, Dimensions } from "react-native";
+import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { useState } from "react";
 import { Octicons } from '@expo/vector-icons';
-import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-
 import * as DocumentPicker from 'expo-document-picker';
+
 const SCREEN_WIDTH = Dimensions.get('window').width;
+const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export default function EditPaymentScreen(props) {
   const [imageChanged, setimageChanged] = useState(false);
+  const [show, setShow] = useState(false);
   const [Payment, setPayment] = useState({
     amountToPay: props.data.amountToPay,
     requestId: props.data.requestId,
@@ -21,7 +22,6 @@ export default function EditPaymentScreen(props) {
     userId: props.data.userId
   })
 
-  const [show, setShow] = useState(false);
   const pickDocument = async () => {
     let result = await DocumentPicker.getDocumentAsync({});
     alert(result.uri);
@@ -40,6 +40,9 @@ export default function EditPaymentScreen(props) {
       setShow(true);
       // for iOS, add a button that closes the picker
     }
+    if (Platform.OS === 'ios') {
+      setShow(true);
+    }
   };
 
   const showDatepicker = () => {
@@ -56,6 +59,7 @@ export default function EditPaymentScreen(props) {
   const handleInputChange = (name, value) => {
     setPayment({ ...Payment, [name]: value })
   }
+
   const Cancel = () => {
     Alert.alert(
       'Cancel Changes',
@@ -75,8 +79,8 @@ export default function EditPaymentScreen(props) {
 
   const Delete = () => {
     Alert.alert(
-      'Cancel Changes',
-      'are you sure you want to Exit the Page? All changes will be lost',
+      'Delete request',
+      'are you sure you want to Delete? All changes will be lost',
       [
         { text: "Don't leave", style: 'cancel', onPress: () => { } },
         {
@@ -146,6 +150,7 @@ export default function EditPaymentScreen(props) {
       requestStatus: Payment.requestStatus,
       userId: Payment.userId
     }
+    console.log(temp);
     fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/UpdateRequest', {
       method: 'PUT',
       body: JSON.stringify(temp),
@@ -198,7 +203,7 @@ export default function EditPaymentScreen(props) {
               <TextInput
                 style={[styles.input]}
                 placeholder='Amount'
-                value={Payment.amountToPay}
+                value={`${Payment.amountToPay}`}
                 keyboardType='ascii-capable'
                 onChangeText={(value) => handleInputChange('amountToPay', value)}
                 inputMode='decimal'
@@ -231,7 +236,6 @@ export default function EditPaymentScreen(props) {
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
     </SafeAreaView>
-
   );
 }
 
@@ -285,7 +289,6 @@ const styles = StyleSheet.create({
     height: 54,
     fontFamily: 'Urbanist-Light',
     fontSize: 16,
-
   },
   dateInputTxt: {
     color: '#000',

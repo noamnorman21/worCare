@@ -1,9 +1,7 @@
-
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, Animated, Modal, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, Animated, Modal, Image, ScrollView } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { List } from 'react-native-paper';
-import { ScrollView } from 'react-native-gesture-handler';
 import NewPayment from './NewPayment';
 import EditPaymentScreen from './EditPaymentScreen';
 import { useUserContext } from '../../UserContext';
@@ -19,7 +17,6 @@ export default function History({ navigation, route }) {
   const { userContext } = useUserContext();// יש להחליף למשתנה של המשתמש הנוכחי
   const [History, setHistory] = useState('')
   const [modal1Visible, setModal1Visible] = useState(false);
-  const [list, setlist] = useState('');
   const isFocused = useIsFocused()
 
   const Edit = (id, data) => {
@@ -97,11 +94,12 @@ export default function History({ navigation, route }) {
 }
 
 function Request(props) {
-  const [expanded, setExpanded] = React.useState(true);
+  const [expanded, setExpanded] = useState(true);
   const animationController = useRef(new Animated.Value(0)).current;
   const [modal1Visible, setModal1Visible] = useState(false);
   const [modal2Visible, setModal2Visible] = useState(false);
   const status = props.data.requestStatus;
+
   const toggle = () => {
     const config = {
       toValue: expanded ? 0 : 1,
@@ -132,25 +130,48 @@ function Request(props) {
     const dot = url.lastIndexOf(".");
     const questionMark = url.lastIndexOf("?");
     const type = url.substring(dot, questionMark);
-    const filename = props.data.requestId + type;
-    const downloadDest = `${FileSystem.documentDirectory}${filename}`;
-    const { uri } = FileSystem.getInfoAsync(downloadDest);
-    if (!uri) {
-      FileSystem.makeDirectoryAsync(downloadDest, { intermediates: true });
-      let uri = FileSystem.getInfoAsync(downloadDest)
+    console.log("Type", type)
+    const id = props.data.requestId;
+    const fileName = "Request " + id;
+    const fileUri = FileSystem.documentDirectory + fileName;
+    const DownloadedFile = await FileSystem.downloadAsync(url, fileUri);
+    console.log("DownloadedFile", DownloadedFile)
+    if (DownloadedFile.status == 200) {
+      console.log("File Downloaded", DownloadedFile)
+      saveFile(DownloadedFile.uri, fileName, DownloadedFile.headers['content-type']);
     }
-    const res = await FileSystem.downloadAsync(url, downloadDest)
-    saveFile(res);
+    else {
+      console.log("File not Downloaded")
+    }
   }
 
-  const saveFile = async (res) => {
-    const asset = await MediaLibrary.createAssetAsync(res.uri);
-    await MediaLibrary.createAlbumAsync('Downloads', asset, false);
-    Alert.alert("Downloaded Successfully")
+  const saveFile = async (res, fileName, type) => {
+    if (Platform.OS == "ios") {
+      shareAsync(res.uri)
+    }
+    else { //ios download with share
+      try {
+        const permission = await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
+        if (permission.granted) {
+          const base64 = await FileSystem.readAsStringAsync(res, { encoding: FileSystem.EncodingType.Base64 });
+          await FileSystem.StorageAccessFramework.createFileAsync(permission.directoryUri, fileName, type)
+            .then(async (res) => {
+              console.log("File", res)
+              await FileSystem.writeAsStringAsync(res, base64, { encoding: FileSystem.EncodingType.Base64 });
+              return console.log("File Saved")
+            })
+            .catch(error => { console.log("Error", error) })
+        }
+      }
+      catch (error) {
+        console.log("Error", error)
+      }
+    }
   }
 
   return (
-    <List.Accordion style={!expanded ? (status == "F" ? [styles.requestFocused, styles.finishedRequestFocused] : [styles.requestFocused, styles.notCompleteRequestFocused]) : styles.requestunFocused}
+    <List.Accordion
+      style={!expanded ? (status == "F" ? [styles.requestFocused, styles.finishedRequestFocused] : [styles.requestFocused, styles.notCompleteRequestFocused]) : styles.requestunFocused}
       theme={{ colors: { background: 'white' } }}
       right={() => <View style={styles.requesRight}><Text style={styles.requestHeaderText}>{props.subject}</Text></View>}
       left={() => <View><Text style={styles.requestHeaderText}>{props.date.substring(0, 10)}</Text></View>}
@@ -168,13 +189,10 @@ function Request(props) {
               <TouchableOpacity style={[styles.itemsText, styles.viewButton]} onPress={!expanded ? () => { setModal2Visible(true) } : null}>
                 <Text style={styles.viewbuttonText}>View Document</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.itemsText, styles.editButton]} onPress={!expanded ? () => { setModal1Visible(true) } : null}>
-                <Text style={styles.editbuttonText}>Edit</Text>
-              </TouchableOpacity>
-              <Modal animationType='slide' transparent={true} visible={modal1Visible}>
+              <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
                 <EditPaymentScreen cancel={() => { setModal1Visible(false); props.getHistory() }} data={props.data} />
               </Modal>
-              <Modal animationType='slide' transparent={true} visible={modal2Visible}>
+              <Modal animationType='slide' transparent={true} visible={modal2Visible} onRequestClose={() => setModal2Visible(false)}>
                 <View style={styles.documentview}>
                   <Image source={{ uri: props.data.requestProofDocument }} style={styles.documentImg} />
                   <Text>{props.data.requestProofDocument}</Text>
@@ -186,7 +204,6 @@ function Request(props) {
                   </TouchableOpacity>
                 </View>
               </Modal>
-
             </View>} />
         </View>
       </View>
@@ -198,7 +215,8 @@ const styles = StyleSheet.create({
   pending: {
     alignItems: 'center',
     flexGrow: 1,
-    paddingTop: 10
+    paddingTop: 10,
+    backgroundColor: '#fff'
   },
   requestunFocused: {
     justifyContent: 'center',
@@ -298,10 +316,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#7DA9FF',
-    height: 40,
-    width: SCREEN_WIDTH * 0.36,
+    height: 50,
+    width: SCREEN_WIDTH * 0.8,
     borderRadius: 16,
-
   },
   editButton: {
     alignItems: 'center',
@@ -314,7 +331,6 @@ const styles = StyleSheet.create({
     borderColor: '#7DA9FF',
     marginLeft: 10,
   },
-
   viewbuttonText: {
     color: 'white',
     fontSize: 16,
@@ -346,7 +362,6 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     backgroundColor: 'white',
     flex: 1,
-
   },
   documentImg: {
     height: SCREEN_HEIGHT * 0.5,
@@ -390,5 +405,4 @@ const styles = StyleSheet.create({
     fontFamily: 'Urbanist-Bold',
     alignItems: 'center',
   },
-
 })

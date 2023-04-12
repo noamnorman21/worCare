@@ -128,7 +128,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     paddingTop: 20,
-    // backgroundColor: 'white',
   },
   BigIMG: {
     height: Dimensions.get('screen').height * 0.55,

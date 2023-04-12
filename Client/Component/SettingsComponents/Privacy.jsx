@@ -1,5 +1,5 @@
 import { View, Text, SafeAreaView, StyleSheet, Alert, TouchableOpacity, Dimensions, Modal } from 'react-native'
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FieldChange from './FieldChange';
 import { useUserContext } from '../../UserContext';
@@ -28,8 +28,6 @@ export default function Privacy({ navigation, route }) {
   const [password1, setPassword1] = useState('');
   const [password2, setPassword2] = useState('');
   const [passwordChanged, setpasswordChanged] = useState(false);
-
-
 
   const CheckEmailInDB = () => {
     console.log('CheckEmailInDB', Email);
@@ -483,7 +481,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Urbanist-SemiBold',
   },
   fieldContainer: {
-    flex : 1,
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
