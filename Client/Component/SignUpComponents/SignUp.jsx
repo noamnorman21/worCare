@@ -31,7 +31,6 @@ export default function CreateUser({ navigation, route }) {
     let userDto = {
       Email: user.email,
     }
-    console.log('userDto', userDto);
     fetch(checkMail, {
       method: 'POST',
       body: JSON.stringify(userDto),
@@ -53,6 +52,7 @@ export default function CreateUser({ navigation, route }) {
       });
   }
   const CheckPhoneInDB = () => {
+    console.log('CheckPhoneInDB', user.phoneNum);
     let checkPhone = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetPhoneNum';
     let userDto = {
       phoneNum: user.phoneNum,
@@ -97,10 +97,10 @@ export default function CreateUser({ navigation, route }) {
     if (!validatePhoneNum(phoneNum)) {
       return Alert.alert('Invalid Phone Number', 'Please enter a valid phone number')
     }
-    if (validateEmailInDB) {
+    if (!validateEmailInDB) {
       return Alert.alert('Email already exists', 'Please enter a different email')
     }
-    if (validatePhoneInDB) {
+    if (!validatePhoneInDB) {
       return Alert.alert('Phone Number already exists', 'Please enter a different phone number')
     }
 

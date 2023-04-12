@@ -1,5 +1,5 @@
 // External imports:
-import { StyleSheet, View, Text, Alert, SafeAreaView, TouchableOpacity, Dimensions, Image, LogBox } from 'react-native'
+import { StyleSheet, View, Text, Alert, SafeAreaView, TouchableOpacity, Dimensions, Image, LogBox, TextInput, Modal } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { NavigationContainer, StackActions } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -10,6 +10,7 @@ import { useUserContext } from '../UserContext';
 import { Octicons } from '@expo/vector-icons';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from '../config/firebase';
+import * as ImagePicker from 'expo-image-picker';
 
 
 
@@ -17,6 +18,7 @@ import { storage } from '../config/firebase';
 import Profile from './SettingsComponents/Profile'
 import Notifications from './SettingsComponents/Notifications'
 import Privacy from './SettingsComponents/Privacy'
+import GenderChange from './SettingsComponents/GenderChange';
 import ContactUs from './SettingsComponents/ContactUs'
 import ImageChange from './SettingsComponents/ImageChange'
 
@@ -37,7 +39,7 @@ function HomeScreen({ navigation, route }) {
     const [user, setUser] = useState(userContext);
     const [isChanged, setIsChanged] = useState(false);
     const [ImageChange, setImageChange] = useState(false);
-
+    const [modalVisible, setModalVisible] = useState(false);
 
     LogBox.ignoreLogs([
         'Non-serializable values were found in the navigation state',
@@ -95,6 +97,18 @@ function HomeScreen({ navigation, route }) {
         }
     }
 
+    const displayGender = () => {
+        if (user.gender == "M") {
+            return "Male"
+        }
+        else if (user.gender == "F") {
+            return "Female"
+        }
+        else {
+            return "Other"
+        }
+    }
+
     const sendDataToNextDB = (downloadURL) => {
         console.log("sendDataToNextDB");
         console.log("user", user);
@@ -115,8 +129,6 @@ function HomeScreen({ navigation, route }) {
     }
 
     const updateUser = (Field, value) => {
-        console.log("updateUser");
-        console.log("Field", Field);
         setIsChanged(true);
         if (Field === "userUri") {
             Alert.alert("התמונה עודכנה בהצלחה");
@@ -125,17 +137,32 @@ function HomeScreen({ navigation, route }) {
         setUser({ ...user, [Field]: value });
     }
 
+    const pickImage = async () => {
+        // No permissions request is necessary for launching the image library
+        let result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.All,
+          allowsEditing: true,
+          aspect: [4, 3],
+          quality: 1,
+        });
+        if (!result.canceled) {
+         setUser({...user,["userUri"]:result.assets[0].uri})
+          setImageChange(true)
+        }
+      }
+
+
     useEffect(() => {
         const setNavigation = async () => navigation.setOptions({
             headerRight: () => (
                 <TouchableOpacity style={styles.headerButton} onPress={() => (ImageChange ? sendToFirebase(user.userUri) : sendDataToNextDB())}>
-                    <Octicons name="check" size={22} />
+                    <Text style={styles.headerButtonText}>Done</Text>
                 </TouchableOpacity>
             ),
             headerLeft: () => (
                 <View style={styles.headerLeft}>
                     <TouchableOpacity
-                        onPress={isChanged?()=> Alert.alert(
+                        onPress={() => Alert.alert(
                             "Cancel Changes",
                             "Are you sure you want leave without Saving?",
                             [
@@ -147,59 +174,57 @@ function HomeScreen({ navigation, route }) {
                                 { text: "OK", onPress: () => route.params.Exit() }
                             ],
                             { cancelable: false }
-                        ):route.params.Exit}         >
-                        <Ionicons
-                            name="arrow-back"
-                            size={28}
-                            color={'#000000'}
-                        />
+                        )}         >
+                        <Ionicons name="chevron-back" size={28} color="black" />
                     </TouchableOpacity>
                 </View>
             ),
-            
         });
         console.log("setnavigations")
         setNavigation();
-    }, [user,isFocused]);
-
-
+    }, [user, isFocused]);
 
     //the user name will be taken from the database
     //the user image will be taken from the database
     return (
         <SafeAreaView style={styles.container}>
-            <Profile updateUser={(Field, value) => updateUser(Field, value)} />
+            {/* <Profile updateUser={(Field, value) => updateUser(Field, value)} /> */}
+            <TouchableOpacity onPress={() => pickImage()}>
+                <Image style={styles.image} source={{ uri: user.userUri }} />
+            </TouchableOpacity>
+            <View style={styles.fieldView} >
+                <Text style={styles.fieldHeader}>First Name</Text>
+                <TextInput style={styles.fields} value={user.FirstName} onChangeText={(value) => setUser({ ...user, ["FirstName"]: value })} />
+            </View>
+            <View style={styles.fieldView} >
+                <Text style={styles.fieldHeader}>Last Name</Text>
+                <TextInput style={styles.fields} value={user.LastName} onChangeText={(value) => setUser({ ...user, ["LastName"]: value })} />
+            </View>
+            <View style={styles.fieldView} >
+                <Text style={styles.fieldHeader}>Phone Number</Text>
+                <TextInput keyboardType='numeric' style={styles.fields} value={user.phoneNum} onChangeText={(value) => setUser({ ...user, ["phoneNum"]: value })} />
+            </View>
+            <View style={styles.fieldView} >
+                <Text style={styles.fieldHeader}>Gender</Text>
+                <TouchableOpacity underlayColor={'lightgrey'} style={styles.fields} onPress={() => setModalVisible(true)}>
+                    <Text style={styles.fieldTxt}>{displayGender()}</Text>
+                    <Ionicons style={styles.arrowLogoStyle} name="chevron-forward" size={24} color="grey" />
+                </TouchableOpacity>
+                <Modal animationType="slide" visible={modalVisible} onRequestClose={() => setModalVisible(false)}>
+                    <GenderChange userId={user.userId} Gender={user.gender} cancel={() => setModalVisible(false)} Save={(Gender) => { setModalVisible(false); setUser({ ...user, ["gender"]: Gender }) }} />
+                </Modal>
+            </View>
+
+
             <View style={styles.btnContainer}>
-                <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Privacy', {updateUser:(Field, Value)=>updateUser(Field, Value)})}>
-                    <Ionicons style={styles.logoStyle} name='key' size={30} color='gray' />
+                <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Privacy', { updateUser: (Field, Value) => updateUser(Field, Value) })}>
                     <Text style={styles.btnText}>Privacy & My Account</Text>
-                    <AntDesign style={styles.arrowLogoStyle} name="right" size={25} color="gray" />
+                    <Ionicons style={styles.arrowLogoStyle} name="chevron-forward" size={24} color="grey" />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('ContactUs', { userImg: userImg })}>
-                    <Ionicons style={styles.logoStyle} name='send' size={30} color='gray' />
                     <Text style={styles.btnText}>Contact Us</Text>
-                    <AntDesign style={styles.arrowLogoStyle} name="right" size={25} color="gray" />
+                    <Ionicons style={styles.arrowLogoStyle} name="chevron-forward" size={24} color="grey" />
                 </TouchableOpacity>
-                {/* <View style={styles.ColorBtnContainer}>
-                    <TouchableOpacity style={styles.colorBtn1}
-                        onPress={() => {
-                            AsyncStorage.removeItem("user");
-                            AsyncStorage.removeItem("userData");
-                            Alert.alert('Log Out', 'You have been logged out', [
-                                {
-                                    text: 'OK',
-                                    onPress: () => {
-                                        route.params.logout();
-                                    }
-                                },
-                            ]);
-                        }}
-                    >
-                        <Text style={styles.btnText1}>Log Out</Text>
-                    </TouchableOpacity>
-
-
-                </View> */}
             </View>
         </SafeAreaView>
     );
@@ -219,14 +244,10 @@ export default function SettingScreen({ navigation }) {
                         color: 'black',
                         marginLeft: SCREEN_WIDTH * 0.03,
                     },
-                    headerBackTitleVisible: false,
-                    headerShown: false,
+                    headerShown: true,
                 }}>
-                <Stack.Screen name="Settings" component={HomeScreen} options={() => ({ headerTitle: 'Settings', headerShown: true, headerTitleAlign:'center' })} initialParams={{ logout: () => { navigation.dispatch(StackActions.replace('LogIn')) }, Exit: () => navigation.navigate('AppBarDown')}} />
-                <Stack.Screen name="Profile" component={Profile} />
-                <Stack.Screen name="Notifications" component={Notifications} />
-                <Stack.Screen name="Privacy" component={Privacy} options={{ headerTitle: 'Privacy & My Account', headerTitleAlign:'center', headerShown: true }} initialParams={{ logout: () => { navigation.dispatch(StackActions.replace('LogIn')) },  AddNewAccount: () => { navigation.dispatch(StackActions.replace('LogIn')); navigation.navigate('SignUp', {patiendId:null}) }  }} />
-                <Stack.Screen name="ContactUs" component={ContactUs} options={{ headerTitle: 'Contact Us' }} />
+                <Stack.Screen name="Settings" component={HomeScreen} options={() => ({ headerTitle: 'Settings', headerShown: true, headerTitleAlign: 'center' })} initialParams={{ logout: () => { navigation.dispatch(StackActions.replace('LogIn')) }, Exit: () => navigation.navigate('AppBarDown') }} />
+                <Stack.Screen name="Privacy" component={Privacy} options={{ headerTitle: 'Privacy & My Account', headerTitleAlign: 'center', headerShown: true }} initialParams={{ logout: () => { navigation.dispatch(StackActions.replace('LogIn')) } }} />
             </Stack.Navigator>
         </NavigationContainer>
     )
@@ -320,12 +341,11 @@ const styles = StyleSheet.create({
         marginBottom: SCREEN_HEIGHT * 0.0,
     },
     image: {
-        width: SCREEN_WIDTH * 0.20,
-        height: SCREEN_HEIGHT * 0.09,
+        width: 100,
+        height: 100,
         borderRadius: 100,
-        marginTop: SCREEN_HEIGHT * 0.022,
-        marginLeft: SCREEN_WIDTH * 0.05,
-    },
+        marginTop: 20,
+      },
     btn: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -336,6 +356,7 @@ const styles = StyleSheet.create({
         borderBottomColor: 'lightgray',
     },
     btnText: {
+        marginLeft: SCREEN_WIDTH * 0.03,
         fontSize: 20,
         fontFamily: 'Urbanist'
     },
@@ -350,9 +371,39 @@ const styles = StyleSheet.create({
         fontFamily: 'Urbanist-SemiBold'
     },
     headerButton: {
-        width: SCREEN_WIDTH * 0.1,
-        height: SCREEN_HEIGHT * 0.05,
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    headerButtonText: {
+        color: '#548DFF',
+        fontFamily: 'Urbanist-SemiBold',
+        fontSize: 16,
+    },
+    fieldTxt: {
+        fontSize: 16,
+        color: '#000',
+        fontFamily: 'Urbanist-Light',
+    },
+    fieldHeader: {
+        fontSize: 16,
+        fontFamily: 'Urbanist-SemiBold',
+        color: '#000',
+        marginLeft: SCREEN_WIDTH * 0.03,
+        flex: 2,
+        marginTop: 12,
+    },
+    fieldView: {
+        flexDirection: 'row',
+    },
+    fields: {
+        justifyContent: 'center',
+        flex: 3.75,
+        borderRadius: 16,
+        borderBottomWidth: 1,
+        borderColor: 'lightgrey',
+        padding: 10,
+        fontSize: 16,
+        color: '#000',
+        fontFamily: 'Urbanist-Light',
     },
 });

@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, Button, SafeAreaView, Alert, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, TextInput, SafeAreaView, Alert, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { storage } from '../../config/firebase';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import * as DocumentPicker from 'expo-document-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useUserContext } from '../../UserContext';
+import moment from "moment";
+import { MaterialCommunityIcons, MaterialIcons, Octicons, Ionicons } from '@expo/vector-icons';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
@@ -14,14 +16,12 @@ export default function NewPayment(props) {
   const [payment, setPayment] = useState({
     amountToPay: '',
     requestSubject: '',
-    requestDate: new Date().toLocaleDateString(),
+    requestDate: moment().format('YYYY-MM-DD'),
     requestProofDocument: '',
     requestComment: '',
     requestStatus: 'P',
     userId: null // will be changed to current user id,
   })
-
-
 
   useEffect(() => {
     AsyncStorage.getItem('userData').then((value) => {
@@ -31,7 +31,6 @@ export default function NewPayment(props) {
   }, []);
 
   const pickDocument = async () => {
-
     let result = await DocumentPicker.getDocumentAsync({
       allowsEditing: true,
       aspect: [4, 3],
@@ -39,7 +38,6 @@ export default function NewPayment(props) {
     });
     console.log(result);
     changeIMG(result.uri);
-
   };
 
   const changeIMG = (imageFromUser) => {
@@ -106,7 +104,6 @@ export default function NewPayment(props) {
       userId: payment.userId
     }
     console.log('NewPayment', NewPayment);
-
     fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/NewRequest', {
       method: 'POST',
       body: JSON.stringify(NewPayment),
@@ -132,7 +129,11 @@ export default function NewPayment(props) {
       <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
           <View style={styles.centeredView}>
-            <Text style={styles.title}>New Payment</Text>
+            <TouchableOpacity style={styles.cancelbutton} onPress={props.cancel}>
+              <Ionicons name="close" size={24} color="black" />
+            </TouchableOpacity>
+
+            <Text style={styles.title}>New Payment Request</Text>
             <View style={styles.inputContainer}>
               <TextInput
                 style={styles.input}
@@ -149,27 +150,21 @@ export default function NewPayment(props) {
               />
               <TextInput
                 style={styles.commentInput}
-                placeholder='Add comment'
+                placeholder='Add comment ( optional )'
                 keyboardType='ascii-capable'
                 onChangeText={(value) => handleInputChange('requestComment', value)}
               />
               <TouchableOpacity style={styles.uploadButton} onPress={pickDocument}>
                 <Text style={styles.buttonText}>Upload document</Text>
               </TouchableOpacity>
-              <View style={styles.bottom}>
-                <TouchableOpacity style={styles.savebutton} onPress={() => sendToFirebase(payment.requestProofDocument)}>
-                  <Text style={styles.savebuttonText}>Upload request</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.cancelbutton} onPress={props.cancel}>
-                  <Text style={styles.cancelbuttonText}>Cancel</Text>
-                </TouchableOpacity>
-              </View>
+              <TouchableOpacity style={styles.uploadButton} onPress={() => sendToFirebase(payment.requestProofDocument)}>
+                <Text style={styles.savebuttonText}>Send request</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
     </SafeAreaView>
-
   );
 }
 
@@ -182,7 +177,6 @@ const styles = StyleSheet.create({
     fontSize: 26,
     fontFamily: 'Urbanist-Bold',
     margin: 20,
-    textAlign: 'center',
   },
   centeredView: {
     flex: 1,
@@ -196,18 +190,17 @@ const styles = StyleSheet.create({
   },
   input: {
     width: Dimensions.get('window').width * 0.95,
-    marginBottom: 10,
-    paddingLeft: 20,
+    marginVertical: 10,
+    paddingHorizontal: 10,
     alignItems: 'center',
     borderRadius: 16,
     borderWidth: 1.5,
     borderColor: '#E6EBF2',
     shadowColor: '#000',
     height: 54,
-    fontFamily: 'Urbanist-Light',
+    fontFamily: 'Urbanist-Medium',
     fontSize: 16,
   },
-
   uploadButton: {
     paddingVertical: 15,
     justifyContent: 'center',
@@ -231,30 +224,18 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   cancelbutton: {
-    backgroundColor: '#F5F8FF',
-    borderRadius: 16,
-    height: 45,
-    width: SCREEN_WIDTH * 0.45,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1.5,
-    borderColor: '#548DFF',
-    shadowColor: '#000',
+    position: 'absolute',
+    top: 10,
+    right: 20,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
-    shadowRadius: 3,
+    shadowRadius: 1,
     elevation: 1,
   },
   savebuttonText: {
     color: 'white',
     fontSize: 16,
     fontFamily: 'Urbanist-SemiBold',
-  },
-  cancelbuttonText: {
-    color: '#548DFF',
-    textAlign: 'center',
-    fontFamily: 'Urbanist-SemiBold',
-    fontSize: 16,
   },
   buttonText: {
     textAlign: 'center',
@@ -266,17 +247,16 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 1.5,
     borderColor: '#E6EBF2',
-    height: 90,
+    height: 200,
+    marginVertical: 10,
     width: Dimensions.get('window').width * 0.95,
-    marginBottom: 10,
-    paddingLeft: 20,
-    fontFamily: 'Urbanist-Light',
+    paddingLeft: 10,
+    fontFamily: 'Urbanist-Medium',
     fontSize: 16,
   },
   bottom: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: SCREEN_WIDTH * 0.95,
-    bottom: -50, //to make the buttons appear above the keyboard 
   },
 });

@@ -9,9 +9,6 @@ import * as DocumentPicker from 'expo-document-picker';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function EditPaymentScreen(props) {
-
-
-
   const [imageChanged, setimageChanged] = useState(false);
   const [Payment, setPayment] = useState({
     amountToPay: props.data.amountToPay,
@@ -25,13 +22,10 @@ export default function EditPaymentScreen(props) {
   })
 
   const [show, setShow] = useState(false);
-
-
   const pickDocument = async () => {
     let result = await DocumentPicker.getDocumentAsync({});
     alert(result.uri);
     changeIMG(result.uri);
-
   };
 
   const changeIMG = (imageFromUser) => {
@@ -46,7 +40,9 @@ export default function EditPaymentScreen(props) {
       setShow(true);
       // for iOS, add a button that closes the picker
     }
-
+    if (Platform.OS === 'ios') {
+      setShow(true);
+    }
   };
 
   const showDatepicker = () => {
@@ -59,8 +55,6 @@ export default function EditPaymentScreen(props) {
     setShow(false);
     handleInputChange('requestDate', currentDate);
   };
-
-
 
   const handleInputChange = (name, value) => {
     setPayment({ ...Payment, [name]: value })
@@ -89,7 +83,7 @@ export default function EditPaymentScreen(props) {
       [
         { text: "Don't leave", style: 'cancel', onPress: () => { } },
         {
-          text: 'Confirm',
+          text: 'Leave',
           style: 'destructive',
           // If the user confirmed, then we dispatch the action we blocked earlier
           // This will continue the action that had triggered the removal of the screen
@@ -145,7 +139,6 @@ export default function EditPaymentScreen(props) {
   }
 
   const savePayment = async (downloadURL) => {
-
     const temp = {
       requestId: Payment.requestId,
       amountToPay: Payment.amountToPay,
@@ -178,7 +171,6 @@ export default function EditPaymentScreen(props) {
   }
 
   return (
-
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} >

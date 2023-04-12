@@ -1,7 +1,7 @@
 import { useState, useEffect, createContext, useContext, useRef} from 'react'
+import React from 'react'
 import { Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React from 'react'
 
 
 
@@ -64,6 +64,26 @@ export function UserProvider({ children }) {
     const [userGender, setuserGender] = useState(null)
 
     function logInContext(userData) {
+        setUserType(userData.userType);
+        setUserLanguage(userData.Language);
+        setUserCountry(userData.Country);
+        setUserCalendar(userData.Calendar);
+        setUserHobbies(userData.Hobbies);
+        setUserLimitations(userData.Limitations);
+        setUserCaresFor(userData.CaresFor);
+        setUserContacts(userData.Contacts);
+        setUserPaychecks(userData.Paychecks);
+        setUserPendingPayments(userData.PendingPayments);
+        setUserHistoryPayments(userData.HistoryPayments);
+        setFirstName(userData.FirstName);
+        setEmail(userData.Email);
+        setLastName(userData.LastName);
+        setPhone(userData.Phone);
+        setuserUri(userData.userUri);
+        setBirthDate(userData.BirthDate);
+        setuserGender(userData.Gender)
+
+
         let usertoSync = {
             userId: userData.userId,
             userType: userData.userType,
@@ -74,7 +94,6 @@ export function UserProvider({ children }) {
             userUri: userData.userUri,
             gender: userData.gender,
         }
-        
         setUserContext(usertoSync);
        
     }
@@ -85,6 +104,7 @@ export function UserProvider({ children }) {
         setUserContext(null)
     }
 
+    
     function updateUserProfile(user) {
         const userToUpdate = {
           Email: user.Email,
@@ -131,7 +151,6 @@ export function UserProvider({ children }) {
     
     
       }
-    
     
 
       

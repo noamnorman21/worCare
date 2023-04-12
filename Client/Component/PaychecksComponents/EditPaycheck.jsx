@@ -98,12 +98,12 @@ export default function EditPaycheck(props) {
 
   const Delete = () => {
     Alert.alert(
-      'Delete Paycheck',
-      'are you sure you want to Delete Paycheck? All changes will be lost',
+      'Cancel Changes',
+      'are you sure you want to Exit the Page? All changes will be lost',
       [
         { text: "Don't leave", style: 'cancel', onPress: () => { } },
         {
-          text: 'Confrim',
+          text: 'Leave',
           style: 'destructive',
           // If the user confirmed, then we dispatch the action we blocked earlier
           // This will continue the action that had triggered the removal of the screen

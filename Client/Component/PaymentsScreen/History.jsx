@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, Animated, Modal, Image, Platform } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, Animated, Modal, Image } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { List } from 'react-native-paper';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -9,20 +9,18 @@ import EditPaymentScreen from './EditPaymentScreen';
 import { useUserContext } from '../../UserContext';
 import { AddBtn } from '../HelpComponents/AddNewTask';
 import * as FileSystem from 'expo-file-system';
-import { shareAsync, Sharing } from 'expo-sharing';
+import { shareAsync } from 'expo-sharing';
 import * as MediaLibrary from 'expo-media-library';
-
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
-
-
 export default function History({ navigation, route }) {
   const { userContext } = useUserContext();// יש להחליף למשתנה של המשתמש הנוכחי
-  const [History, setHistory] = useState()
-  const isFocused = useIsFocused()
+  const [History, setHistory] = useState('')
   const [modal1Visible, setModal1Visible] = useState(false);
+  const [list, setlist] = useState('');
+  const isFocused = useIsFocused()
 
   const Edit = (id, data) => {
     Alert.alert(
@@ -39,8 +37,6 @@ export default function History({ navigation, route }) {
       { cancelable: false }
     );
   }
-
-
 
   useEffect(() => {
     if (isFocused) {
@@ -73,10 +69,6 @@ export default function History({ navigation, route }) {
     }
   }
 
-  const [list, setlist] = React.useState();
-
-
-
   const Notification = (id) => {
     Alert.alert(
       "Notification",
@@ -100,7 +92,6 @@ export default function History({ navigation, route }) {
       <Modal animationType='slide' transparent={true} visible={modal1Visible}>
         <NewPayment cancel={() => setModal1Visible(false)} />
       </Modal>
-
     </ScrollView>
   );
 }
@@ -155,8 +146,6 @@ function Request(props) {
       console.log("File not Downloaded")
     }
   }
-
-
   const saveFile = async (res, fileName, type) => {
     if (Platform.OS == "ios") {
       shareAsync(res.uri)
@@ -181,29 +170,26 @@ function Request(props) {
       }
     }
   }
+
   return (
     <List.Accordion style={!expanded ? (status == "F" ? [styles.requestFocused, styles.finishedRequestFocused] : [styles.requestFocused, styles.notCompleteRequestFocused]) : styles.requestunFocused}
       theme={{ colors: { background: 'white' } }}
-      right={() => <View style={styles.requesRight}><Text style={styles.requestHeaderText}>{props.subject}</Text>
-
-      </View>}
-      left={() => <View >
-        <Text style={styles.requestHeaderText}>{props.date.substring(0, 10)}</Text>
-      </View>}
+      right={() => <View style={styles.requesRight}><Text style={styles.requestHeaderText}>{props.subject}</Text></View>}
+      left={() => <View><Text style={styles.requestHeaderText}>{props.date.substring(0, 10)}</Text></View>}
       expanded={!expanded}
       onPress={toggle}
     >
       <View style={!expanded ? status == "F" ? ([styles.Focused, styles.completeFocused]) : ([styles.Focused, styles.notCompleteFocused]) : null}>
-        <View style={styles.itemView}>
-          <List.Item left={() => <Text style={styles.itemsText}>Date: {props.date.substring(0, 10)} </Text>} />
-          <List.Item left={() => <Text style={styles.itemsText}>Amount: {props.amountToPay} </Text>} />
-          <List.Item left={() => <Text style={styles.itemsText}>Comment: {props.requestComment} </Text>} />
-          <List.Item left={() => <Text style={styles.itemsText}>Status: {displayStatus()} </Text>} />
-          <List.Item style={styles.bottom} left={() =>
+        <View>
+          <List.Item title={() => <Text style={styles.itemsText}>Date: {props.date.substring(0, 10)} </Text>} />
+          <List.Item title={() => <Text style={styles.itemsText}>Amount: {props.amountToPay} </Text>} />
+          <List.Item title={() => <Text style={styles.itemsText}>Comment: {props.requestComment} </Text>} />
+          <List.Item title={() => <Text style={styles.itemsText}>Status: {displayStatus()} </Text>} />
+          <List.Item title={() =>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-              <TouchableOpacity style={[styles.itemsText, styles.viewButton]} onPress={!expanded ? () => { setModal2Visible(true) } : null}>
-                <Text style={styles.viewbuttonText}>View Document</Text>
-              </TouchableOpacity>
+            <TouchableOpacity style={[styles.itemsText, styles.viewButton]} onPress={!expanded ? () =>{setModal2Visible(true)}:null}>
+              <Text style={styles.viewbuttonText}>View Document</Text>
+            </TouchableOpacity>
               <TouchableOpacity style={[styles.itemsText, styles.editButton]} onPress={!expanded ? () => { setModal1Visible(true) } : null}>
                 <Text style={styles.editbuttonText}>Edit</Text>
               </TouchableOpacity>
@@ -233,9 +219,9 @@ function Request(props) {
 const styles = StyleSheet.create({
   pending: {
     alignItems: 'center',
-    backgroundColor: 'white',
     flexGrow: 1,
-    paddingTop: 10
+    paddingTop: 10,
+    backgroundColor:'#fff'
   },
   requestunFocused: {
     justifyContent: 'center',
@@ -252,7 +238,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.8,
     shadowRadius: 2,
     paddingLeft: 12,
-
   },
   requestFocused: {
     justifyContent: 'center',
@@ -267,7 +252,6 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 16,
     borderBottomWidth: 1,
     borderBottomMargin: 10,
-
   },
   finishedRequestFocused: {
     borderTopColor: '#7DA9FF',
@@ -275,10 +259,6 @@ const styles = StyleSheet.create({
     borderRightColor: '#7DA9FF',
     borderBottomColor: '#7DA9FF',
     shadowColor: '#000',
-  },
-  bottom: {
-    position: 'relative',
-    right: SCREEN_WIDTH * 0.04,
   },
   notCompleteRequestFocused: {
     borderTopColor: '#E6EBF2',
@@ -299,6 +279,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     padding: 16,
   },
+  requestHeaderIcon: {
+    zIndex: 0,
+    position: 'absolute',
+    right: SCREEN_WIDTH * 0,
+    backgroundColor: 'orange',
+  },
   Focused: {
     borderLeftWidth: 2,
     borderBottomWidth: 2,
@@ -307,9 +293,6 @@ const styles = StyleSheet.create({
     borderBottomStartRadius: 16,
     marginBottom: 10,
     padding: 16,
-    alignContent: 'flex-start',
-    justifyContent: 'flex-start',
-    width: SCREEN_WIDTH * 0.9,
   },
   completeFocused: {
     borderLeftColor: '#7DA9FF',
@@ -330,29 +313,31 @@ const styles = StyleSheet.create({
   itemsText: {
     fontSize: 16,
     fontWeight: '600',
+    marginLeft: SCREEN_WIDTH * -0.16, //NEED TO CHANGE
+    marginRight: SCREEN_WIDTH * 0.02,
     fontFamily: 'Urbanist-Regular',
-    position: 'relative',
-    right: 40,
   },
   viewButton: {
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#7DA9FF',
     height: 40,
-    width: SCREEN_WIDTH * 0.4,
+    width: SCREEN_WIDTH * 0.36,
     borderRadius: 16,
+
   },
   editButton: {
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'white',
     height: 40,
-    width: SCREEN_WIDTH * 0.4,
+    width: SCREEN_WIDTH * 0.36,
     borderRadius: 16,
     borderWidth: 1,
     borderColor: '#7DA9FF',
     marginLeft: 10,
   },
+
   viewbuttonText: {
     color: 'white',
     fontSize: 16,
@@ -384,6 +369,7 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     backgroundColor: 'white',
     flex: 1,
+
   },
   documentImg: {
     height: SCREEN_HEIGHT * 0.5,
@@ -427,4 +413,5 @@ const styles = StyleSheet.create({
     fontFamily: 'Urbanist-Bold',
     alignItems: 'center',
   },
+
 })

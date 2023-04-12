@@ -135,10 +135,10 @@ export default function Privacy({ navigation, route }) {
     if (Email != userContext.Email) {
       sendDataToNextDB();
     }
-    else if (Email == userContext.Email  && passwordChanged) {
+    else if (Email == userContext.Email && passwordChanged) {
       checkPassowrd();
     }
-    else if (Email == userContext.Email  && !passwordChanged){
+    else if (Email == userContext.Email && !passwordChanged) {
       Alert.alert("No Changes", "You didn't make any changes")
       navigation.goBack();
     }
@@ -194,11 +194,7 @@ export default function Privacy({ navigation, route }) {
               { cancelable: false }
             )}
           >
-            <Ionicons
-              name="arrow-back"
-              size={28}
-              color={'#000000'}
-            />
+            <Ionicons name="chevron-back" size={28} color="black" />
           </TouchableOpacity>
         </View>
       ),
@@ -265,7 +261,7 @@ export default function Privacy({ navigation, route }) {
                 (result) => {
                   console.log("fetch POST= ", result);
                   Alert.alert('Password Updated', 'Your Password has been changed successfully');
-navigation.goBack();
+                  navigation.goBack();
                 }
               )
           }
@@ -293,32 +289,37 @@ navigation.goBack();
 
   }
 
-
-
-
   return (
     <View style={styles.container}>
-      {/* <View style={styles.header}>
-        <Text style={styles.title}>Privacy</Text>
-      </View> */}
-
       <View style={styles.fieldContainer}>
         <View style={styles.emailContainer}>
+          <View style={styles.lineContainer}>
+            <View style={styles.line} />
+          </View>
           <Text style={styles.emailHeader}>Set new Email</Text>
+          <View style={styles.lineContainer}>
+            <View style={styles.line} />
+          </View>
           <View style={styles.fieldView}>
-            <Text style={styles.fieldHeader}>Email:</Text>
+            <Text style={styles.fieldHeader}>Email Address</Text>
             <TouchableOpacity underlayColor={'lightgrey'} style={styles.fields} onPress={() => openModal("Email", Email)}>
               <Text style={styles.fieldTxt}>{Email}</Text>
             </TouchableOpacity>
           </View>
         </View>
         <View style={styles.passwordView}>
+          <View style={styles.lineContainer}>
+            <View style={styles.line} />
+          </View>
           <Text style={styles.passwordHeader}>Set new password</Text>
+          <View style={styles.lineContainer}>
+            <View style={styles.line} />
+          </View>
           <View style={styles.passwordContainer}>
-          <Text style={styles.passwordSmallHeader}>Password</Text>
+            <Text style={styles.passwordSmallHeader}>Password</Text>
             {/* password */}
             <TextInput
-              style={styles.input}          
+              style={styles.input}
               placeholderTextColor={'#9E9E9E'}
               secureTextEntry={!showPassword}
               value={password1}
@@ -337,7 +338,7 @@ navigation.goBack();
             {/* password */}
             <Text style={styles.passwordSmallHeader}>Repeat Password</Text>
             <TextInput
-              style={styles.input}   
+              style={styles.input}
               placeholderTextColor={'#9E9E9E'}
               secureTextEntry={!showPassword2}
               value={password2}
@@ -352,13 +353,19 @@ navigation.goBack();
               <Icon name={showPassword2 ? 'visibility' : 'visibility-off'} size={20} color='#000' />
             </TouchableOpacity>
           </View>
-        </View>       
+        </View>
         <Modal animationType="slide" visible={modalVisible}>
           <FieldChange userId={userId} type={modalType} value={modalValue} cancel={() => setModalVisible(false)} Save={(Field, value) => Update(Field, value)} />
         </Modal>
       </View>
       <View style={styles.accountView}>
+        <View style={styles.lineContainer}>
+          <View style={styles.line} />
+        </View>
         <Text style={styles.emailHeader}>Account</Text>
+        <View style={styles.lineContainer}>
+          <View style={styles.line} />
+        </View>
         <TouchableOpacity style={styles.logoutBtn}
           onPress={() => {
             Alert.alert("Add Account")
@@ -411,7 +418,7 @@ navigation.goBack();
         >
           <Text style={styles.btnText2}>Delete Account</Text>
         </TouchableOpacity>
-        
+
 
       </View>
     </View>
@@ -424,25 +431,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
   },
-  header: {
-    marginTop: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   headerButton: {
     width: SCREEN_WIDTH * 0.1,
     height: SCREEN_HEIGHT * 0.05,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  title: {
-    fontSize: 30,
-    color: '#000',
-    fontFamily: 'Urbanist-Bold'
-  },
-  smallTitle: {
-    fontSize: 15,
-    color: '#000',
   },
   fields: {
     justifyContent: 'center',
@@ -452,53 +445,62 @@ const styles = StyleSheet.create({
     borderColor: '#E6EBF2',
     padding: 10,
   },
+  lineContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    alignSelf: 'center',
+  },
+  line: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#E6EBF2',
+    marginVertical: 5,
+  },
   fieldTxt: {
-    fontSize: 18,
+    fontSize: 16,
     color: '#000',
-    fontFamily: 'Urbanist-Medium',
+    fontFamily: 'Urbanist',
   },
   logoutBtn: {
     width: SCREEN_WIDTH * 0.95,
-    height: SCREEN_HEIGHT*0.05,
+    height: SCREEN_HEIGHT * 0.05,
   },
   deleteButton: {
     width: SCREEN_WIDTH * 0.95,
-    height: SCREEN_HEIGHT*0.05,
+    height: SCREEN_HEIGHT * 0.05,
   },
   btnText1: {
-    fontSize: 18,
+    fontSize: 16,
     color: '#548DFF',
-    fontFamily: 'Urbanist-SemiBold'
+    paddingLeft: 10,
+    fontFamily: 'Urbanist-SemiBold',
   },
   btnText2: {
-    fontSize: 18,
-    color: 'red',
-    fontFamily: 'Urbanist-SemiBold',
-  },  
-  cancelbuttonText: {
-    color: '#548DFF',
-    textAlign: 'center',
-    fontFamily: 'Urbanist-SemiBold',
     fontSize: 16,
+    color: 'red',
+    paddingLeft: 10,
+    fontFamily: 'Urbanist-SemiBold',
   },
   fieldContainer: {
+    flex : 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  passwordSmallHeader:{   
-      fontSize: 16,
-      fontFamily: 'Urbanist-Bold',
-      color: '#000',
-      marginLeft: SCREEN_WIDTH * 0.03,
-      flex: 2,    
+  passwordSmallHeader: {
+    fontSize: 16,
+    fontFamily: 'Urbanist-SemiBold',
+    color: '#000',
+    paddingLeft: 10,
+    flex: 2,
   },
   fieldHeader: {
     fontSize: 16,
-    fontFamily: 'Urbanist-Bold',
+    fontFamily: 'Urbanist-SemiBold',
     color: '#000',
-    marginLeft: SCREEN_WIDTH * 0.03,
+    paddingLeft: 10,
     flex: 2,
-    marginTop: 10,
+    // marginVertical: 5,
   },
   fieldView: {
     flexDirection: 'row',
@@ -507,29 +509,25 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontFamily: 'Urbanist-Bold',
     color: '#000',
-    marginBottom: 10,
-    borderBottomColor: 'lightgrey',
-    borderBottomWidth: 1,
-    marginLeft: SCREEN_WIDTH * 0.03,
+    marginVertical: 10,
+    paddingLeft: 10,
   },
   emailHeader: {
     fontSize: 20,
     fontFamily: 'Urbanist-Bold',
     color: '#000',
-    marginBottom: 10,
-    borderBottomColor: 'lightgrey',
-    borderBottomWidth: 1,
+    marginVertical: 10,
     textAlign: 'left',
-    width: SCREEN_WIDTH * 0.95,
+    paddingLeft: 10,
+    width: SCREEN_WIDTH * 1,
   },
   passwordView: {
-    marginTop: 10,
-    marginBottom: 10,
+    marginVertical: 10,
   },
   input: {
-   flex: 5,
-    marginBottom: 10,
-    paddingLeft: 20,
+    flex: 5,
+    marginVertical: 5,
+    paddingLeft: 10,
     alignItems: 'center',
     borderRadius: 16,
     borderBottomWidth: 1.5,
@@ -548,11 +546,12 @@ const styles = StyleSheet.create({
   emailContainer: {
     width: '100%',
     alignItems: 'center',
+    justifyContent: 'center',
   },
   passwordButton: {
     position: 'absolute',
     right: SCREEN_WIDTH * 0.05,
-    top: 16,
+    top: 25,
   },
   passwordButtonText: {
     color: '#000',

@@ -24,25 +24,25 @@ namespace WebApi.Controllers
                 int id;
                 if (user.userType == "User")
                 {
-                    string patient = db.tblPatient.Where(x => x.userId == user.userId).Select(y=> y.patientId).FirstOrDefault();
-                    id = db.tblCaresForPatient.Where(x => x.patientId == patient).Select(y=>y.workerId).FirstOrDefault();
+                    string patient = db.tblPatient.Where(x => x.userId == user.userId).Select(y => y.patientId).FirstOrDefault();
+                    id = db.tblCaresForPatient.Where(x => x.patientId == patient).Select(y => y.workerId).FirstOrDefault();
                 }
                 else
                 {
                     id = user.userId;
                 }
-                    var Pendings = db.tblPaymentRequest.Where(x => x.userId == id && x.requestStatus == "P").Select(y => new PaymentsRequestDTO
-                    {
-                        requestId = y.requestId,
-                        requestSubject = y.requestSubject,
-                        amountToPay = y.amountToPay,
-                        requestDate = y.requestDate,
-                        requestProofDocument = y.requestProofDocument,
-                        requestComment = y.requestComment,
-                        requestStatus = y.requestStatus,
-                        userId = y.userId,
-                    }).ToList();
-                    return Ok(Pendings);                
+                var Pendings = db.tblPaymentRequest.Where(x => x.userId == id && x.requestStatus == "P").Select(y => new PaymentsRequestDTO
+                {
+                    requestId = y.requestId,
+                    requestSubject = y.requestSubject,
+                    amountToPay = y.amountToPay,
+                    requestDate = y.requestDate,
+                    requestProofDocument = y.requestProofDocument,
+                    requestComment = y.requestComment,
+                    requestStatus = y.requestStatus,
+                    userId = y.userId,
+                }).ToList();
+                return Ok(Pendings);
             }
             catch (Exception ex)
             {
@@ -50,7 +50,7 @@ namespace WebApi.Controllers
             }
         }
 
-        [Route("GetHistory/")]
+        [Route("GetHistory")]
         [HttpPost]
         public IHttpActionResult GetHistory([FromBody] UserDTO user)
         {
@@ -66,20 +66,18 @@ namespace WebApi.Controllers
                 {
                     id = user.userId;
                 }
-               
-                    var Payments = db.tblPaymentRequest.Where(x => x.userId == id && x.requestStatus != "P").Select(y => new PaymentsRequestDTO
-                    {
-                        requestId = y.requestId,
-                        requestSubject = y.requestSubject,
-                        amountToPay = y.amountToPay,
-                        requestDate = y.requestDate,
-                        requestProofDocument = y.requestProofDocument,
-                        requestComment = y.requestComment,
-                        requestStatus = y.requestStatus,
-                        userId = y.userId,
-                    }).ToList();
-                    return Ok(Payments);
-                
+                var Payments = db.tblPaymentRequest.Where(x => x.userId == id && x.requestStatus != "P").Select(y => new PaymentsRequestDTO
+                {
+                    requestId = y.requestId,
+                    requestSubject = y.requestSubject,
+                    amountToPay = y.amountToPay,
+                    requestDate = y.requestDate,
+                    requestProofDocument = y.requestProofDocument,
+                    requestComment = y.requestComment,
+                    requestStatus = y.requestStatus,
+                    userId = y.userId,
+                }).ToList();
+                return Ok(Payments);
             }
             catch (Exception ex)
             {
@@ -93,7 +91,7 @@ namespace WebApi.Controllers
         public IHttpActionResult NewRequest([FromBody] PaymentsRequestDTO req)
         {
             try
-            {                
+            {
                 db.NewPaymentRequest(req.requestSubject, req.amountToPay, req.requestDate, req.requestProofDocument, req.requestComment, req.requestStatus, req.userId);
                 db.SaveChanges();
                 return Ok("Request added successfully!");
@@ -124,10 +122,7 @@ namespace WebApi.Controllers
                     db.SaveChanges();
                     return Ok("Request Updated successfully!");
                 }
-                else
-                {
-                    return BadRequest("requset not found");
-                }
+                return NotFound();
             }
             catch (Exception ex)
             {
@@ -148,10 +143,7 @@ namespace WebApi.Controllers
                     db.SaveChanges();
                     return Ok("Status Updated successfully!");
                 }
-                else
-                {
-                    return BadRequest("requset not found");
-                }
+                return NotFound();
             }
             catch (Exception ex)
             {

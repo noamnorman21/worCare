@@ -11,7 +11,6 @@ import { useUserContext } from '../UserContext'
 import { Octicons } from '@expo/vector-icons';
 export default function Contacts() {
   const stack = createStackNavigator();
-
   return (
     <stack.Navigator initialRouteName='Main' screenOptions={{ headerShown: false }} >
       <stack.Screen name="Main" component={Main} options={{ headerShown: false }} />

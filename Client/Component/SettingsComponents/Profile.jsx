@@ -9,7 +9,8 @@ import GenderChange from './GenderChange';
 import { useUserContext } from '../../UserContext';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from '../../config/firebase';
-import { Octicons } from '@expo/vector-icons';
+import { Ionicons, Octicons } from '@expo/vector-icons';
+import { TextInput } from 'react-native-gesture-handler';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -31,11 +32,7 @@ export default function Profile(props) {
   const [modal2Visible, setModal2Visible] = useState(false);
   const { updateUserContext, userContext, setUserContext, updateUserProfile } = useUserContext();
   const [isChanged, setIsChanged] = useState(false);
-
-
-
-
-  
+  const [placeHolder, setPlaceHolder] = useState(null);
   const displayGender = () => {
     if (Gender == "M") {
       return "Male"
@@ -104,7 +101,7 @@ export default function Profile(props) {
   const setNavigation = async () => navigation.setOptions({
     headerRight: () => (
       <TouchableOpacity style={styles.headerButton} onPress={() => isChanged ? (ImageChange ? sendToFirebase(userImg) : sendDataToNextDB()) : Alert.alert("No Changes")}>
-        <Octicons name="check" size={22} />
+        <Text style={styles.headerButtonText}>Done</Text>
       </TouchableOpacity>
     ),
   });
@@ -123,8 +120,8 @@ export default function Profile(props) {
       } catch (e) {
         console.log('error', e);
       }
-    };    
-    getData();    
+    };
+    getData();
   }, []);
 
   return (
@@ -133,12 +130,9 @@ export default function Profile(props) {
         <Image style={styles.image} source={{ uri: userImg }} />
       </TouchableOpacity>
       <TouchableOpacity onPress={() => pickImage()}>
-        <Text style={styles.imageTxt}>Change image</Text>
+        <Text style={styles.imageTxt}>Edit profile picture</Text>
       </TouchableOpacity>
       <View style={styles.FieldContainer}>
-        {/* <TouchableOpacity underlayColor={'lightgrey'} style={styles.fields} onPress={() => openModal("Email", Email)}>
-          <Text style={styles.fieldTxt}>{Email}</Text>
-        </TouchableOpacity> */}
         <View style={styles.fieldView} >
           <Text style={styles.fieldHeader}>First Name</Text>
           <TouchableOpacity underlayColor={'lightgrey'} style={styles.fields} onPress={() => openModal("First Name", firstName)}>
@@ -153,21 +147,27 @@ export default function Profile(props) {
         </View>
         <View style={styles.fieldView} >
           <Text style={styles.fieldHeader}>Phone Number</Text>
-          <TouchableOpacity underlayColor={'lightgrey'} style={styles.fields} onPress={() => openModal("Phone Number", Phonenum)}>
-            <Text style={styles.fieldTxt}>{Phonenum}</Text>
-          </TouchableOpacity>
+          <View style={styles.fields}>
+            <TextInput
+              style={styles.fieldTxt}
+              placeholder={Phonenum}
+              onChangeText={text => setPhonenum(text)}
+              value={Phonenum}
+            />
+          </View>
         </View>
         <View style={styles.fieldView} >
           <Text style={styles.fieldHeader}>Gender</Text>
           <TouchableOpacity underlayColor={'lightgrey'} style={styles.fields} onPress={() => openModal2(Gender)}>
             <Text style={styles.fieldTxt}>{displayGender()}</Text>
+            <Ionicons style={styles.arrowLogoStyle} name="chevron-forward" size={24} color="grey" />
           </TouchableOpacity>
         </View>
         <Modal animationType="slide" visible={modalVisible}>
           <FieldChange userId={userId} type={modalType} value={modalValue} cancel={() => setModalVisible(false)} Save={(Field, value) => Update(Field, value)} />
         </Modal>
         <Modal animationType="slide" visible={modal2Visible}>
-          <GenderChange userId={userId} Gender={Gender} cancel={() => setModal2Visible(false)} Save={(Gender) => { setModal2Visible(false); Update("Gender",Gender) }} />
+          <GenderChange userId={userId} Gender={Gender} cancel={() => setModal2Visible(false)} Save={(Gender) => { setModal2Visible(false); Update("Gender", Gender) }} />
         </Modal>
       </View>
     </View>
@@ -179,24 +179,27 @@ const styles = StyleSheet.create({
     flex: 5,
     alignItems: 'center',
   },
+  logoStyle: {
+    marginLeft: SCREEN_WIDTH * 0.03,
+    marginRight: SCREEN_WIDTH * 0.06
+  },
+  arrowLogoStyle: {
+    position: 'absolute',
+    right: SCREEN_WIDTH * 0.03,
+  },
   header: {
     marginTop: 20,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  title: {
-    fontSize: 35,
-    color: '#000',
-    fontFamily: 'Urbanist-Bold',
-  },
   fields: {
     justifyContent: 'center',
-    flex: 5,
+    flex: 3.75,
     borderRadius: 16,
     borderBottomWidth: 1,
     borderColor: 'lightgrey',
     padding: 10,
-  },  
+  },
   headerButton: {
     width: SCREEN_WIDTH * 0.1,
     height: SCREEN_HEIGHT * 0.05,
@@ -223,49 +226,15 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     marginBottom: 20,
   },
-  button: {
-    backgroundColor: '#548DFF',
-    borderRadius: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 45,
-    width: SCREEN_WIDTH * 0.45,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 1,
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontFamily: 'Urbanist-SemiBold',
-  },
-  cancelbutton: {
-    backgroundColor: '#F5F8FF',
-    borderRadius: 16,
-    height: 45,
-    width: SCREEN_WIDTH * 0.45,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1.5,
-    borderColor: '#548DFF',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 1,
-  },
-  cancelbuttonText: {
+  headerButtonText: {
     color: '#548DFF',
-    textAlign: 'center',
     fontFamily: 'Urbanist-SemiBold',
     fontSize: 16,
   },
   fieldTxt: {
-    fontSize: 18,
+    fontSize: 16,
     color: '#000',
-    fontFamily: 'Urbanist-Medium',
+    fontFamily: 'Urbanist-Light',
   },
   FieldContainer: {
     flex: 1,
@@ -274,13 +243,13 @@ const styles = StyleSheet.create({
   },
   fieldHeader: {
     fontSize: 16,
-    fontFamily: 'Urbanist-Bold',
+    fontFamily: 'Urbanist-SemiBold',
     color: '#000',
     marginLeft: SCREEN_WIDTH * 0.03,
-    flex:2,
+    flex: 2,
     marginTop: 10,
   },
-  fieldView: {   
+  fieldView: {
     flexDirection: 'row',
   },
   personalContainer: {
@@ -288,7 +257,5 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'flex-start',
     width: SCREEN_WIDTH * 1,
-    // paddingVertical: SCREEN_HEIGHT * 0.04,
-},
-
+  },
 })
