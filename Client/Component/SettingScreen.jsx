@@ -124,18 +124,32 @@ function HomeScreen({ navigation, route }) {
             userType: user.userType
         }
         console.log("userToUpdate", userToUpdate);
+         if (userToUpdate.phoneNum != userContext.phoneNum) {          
+
+        fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetPhoneNum', {
+            method: 'POST',
+            body: JSON.stringify(userToUpdate),
+            headers: new Headers({
+                'Content-Type': 'application/json; charset=UTF-8',
+            })
+        })
+            .then(res => {
+                if (res.ok) {
+                    updateUserProfile(userToUpdate);
+                    route.params.Exit();
+                }
+                else {
+                   Alert.alert('Phone Already in system', 'Please enter a different phone number');
+                }
+            })      
+    }
+    else{
         updateUserProfile(userToUpdate);
         route.params.Exit();
     }
-
-    const updateUser = (Field, value) => {
-        setIsChanged(true);
-        if (Field === "userUri") {
-            Alert.alert("התמונה עודכנה בהצלחה");
-            setImageChange(true);
-        }
-        setUser({ ...user, [Field]: value });
     }
+
+
 
     const pickImage = async () => {
         // No permissions request is necessary for launching the image library
@@ -155,7 +169,7 @@ function HomeScreen({ navigation, route }) {
     useEffect(() => {
         const setNavigation = async () => navigation.setOptions({
             headerRight: () => (
-                <TouchableOpacity style={styles.headerButton} onPress={() => (ImageChange ? sendToFirebase(user.userUri) : sendDataToNextDB())}>
+                <TouchableOpacity style={styles.headerButton} onPress={() =>isChanged? (ImageChange ? sendToFirebase(user.userUri) : sendDataToNextDB()):route.params.Exit()}>
                     <Text style={styles.headerButtonText}>Done</Text>
                 </TouchableOpacity>
             ),
@@ -181,6 +195,10 @@ function HomeScreen({ navigation, route }) {
             ),
         });
         console.log("setnavigations")
+        if(!isChanged)
+        {
+            setIsChanged(true);
+        }
         setNavigation();
     }, [user, isFocused]);
 
@@ -217,7 +235,7 @@ function HomeScreen({ navigation, route }) {
 
 
             <View style={styles.btnContainer}>
-                <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Privacy', { updateUser: (Field, Value) => updateUser(Field, Value) })}>
+                <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Privacy')}>
                     <Text style={styles.btnText}>Privacy & My Account</Text>
                     <Ionicons style={styles.arrowLogoStyle} name="chevron-forward" size={24} color="grey" />
                 </TouchableOpacity>

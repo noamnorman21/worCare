@@ -47,10 +47,11 @@ export default function Privacy({ navigation, route }) {
     })
       .then(res => {
         if (res.ok) {
-
+          console.log('res.ok');
+          sendDataToNextDB();
         }
         else {
-          sendDataToNextDB();
+         console.log('res not ok');
         }
       })
       .catch((error) => {
@@ -91,7 +92,6 @@ export default function Privacy({ navigation, route }) {
                 updateUserContext(userToUpdate);
                 const jsonValue = JSON.stringify(userToUpdate)
                 AsyncStorage.setItem('userData', jsonValue);
-                route.params.updateUser("Email", userToUpdate.Email)
                 if (passwordChanged) {
                   checkPassowrd();
                 }
@@ -126,14 +126,11 @@ export default function Privacy({ navigation, route }) {
 
   }
 
-  const cancel = () => {
-    console.log('cancel');
-    setEmail(userContext.Email);
-  }
+
 
   const SaveAllChanges = () => {
     if (Email != userContext.Email) {
-      sendDataToNextDB();
+      CheckEmailInDB();
     }
     else if (Email == userContext.Email && passwordChanged) {
       checkPassowrd();
