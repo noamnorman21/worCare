@@ -193,10 +193,10 @@ function Request(props) {
               <TouchableOpacity style={[styles.itemsText, styles.editButton]} onPress={!expanded ? () => { setModal1Visible(true) } : null}>
                 <Text style={styles.editbuttonText}>Edit</Text>
               </TouchableOpacity>
-              <Modal animationType='slide' transparent={true} visible={modal1Visible}>
+              <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={()=>setModal1Visible(false)}>
                 <EditPaymentScreen cancel={() => { setModal1Visible(false); props.getHistory() }} data={props.data} />
               </Modal>
-              <Modal animationType='slide' transparent={true} visible={modal2Visible}>
+              <Modal animationType='slide' transparent={true} visible={modal2Visible} onRequestClose={()=>setModal2Visible(false)}>
                 <View style={styles.documentview}>
                   <Image source={{ uri: props.data.requestProofDocument }} style={styles.documentImg} />
                   <Text>{props.data.requestProofDocument}</Text>

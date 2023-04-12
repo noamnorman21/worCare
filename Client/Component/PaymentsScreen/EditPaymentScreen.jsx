@@ -202,7 +202,7 @@ export default function EditPaymentScreen(props) {
               <TextInput
                 style={[styles.input]}
                 placeholder='Amount'
-                value={Payment.amountToPay}
+                value={`${Payment.amountToPay}`}
                 keyboardType='ascii-capable'
                 onChangeText={(value) => handleInputChange('amountToPay', value)}
                 inputMode='decimal'
