@@ -106,12 +106,12 @@ export default function Paychecks({ navigation, route }) {
 
 
   return (
-    <ScrollView contentContainerStyle={styles.pending}>
-      <View style={styles.headerText}>
-        <Text style={styles.header} >History</Text>
+    <ScrollView contentContainerStyle={newStyles.pending}>
+      <View style={newStyles.headerText}>
+        <Text style={newStyles.header} >History</Text>
       </View>
       {History}
-      <View style={styles.addBtnView}><AddBtn onPress={() => setModal1Visible(true)} /></View>
+      <View style={newStyles.addBtnView}><AddBtn onPress={() => setModal1Visible(true)} /></View>
       <Modal animationType='slide' transparent={true} visible={modal1Visible}>
         <NewPaycheck cancel={() => { setModal1Visible(false); getPaychecks() }} userId={userContext.userId} />
       </Modal>
@@ -285,7 +285,7 @@ function Paycheck(props) {
               </Menu>
               <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
                 <View style={newStyles.documentview}>
-                  <Image source={{ uri: props.data.requestProofDocument }} style={styles.documentImg} />
+                  <Image source={{ uri: props.data.requestProofDocument }} style={newStyles.documentImg} />
                   <Text>{props.data.requestProofDocument}</Text>
                   <TouchableOpacity style={newStyles.documentDownloadButton} onPress={downloadFile} >
                     <Text style={newStyles.documentButtonText}>Download</Text>
@@ -343,7 +343,7 @@ function Paycheck(props) {
               </Menu>
               <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
                 <View style={newStyles.documentview}>
-                  <Image source={{ uri: props.data.requestProofDocument }} style={styles.documentImg} />
+                  <Image source={{ uri: props.data.requestProofDocument }} style={newStyles.documentImg} />
                   <Text>{props.data.requestProofDocument}</Text>
                   <TouchableOpacity style={newStyles.documentDownloadButton} onPress={downloadFile} >
                     <Text style={newStyles.documentButtonText}>Download</Text>
@@ -363,37 +363,6 @@ function Paycheck(props) {
     </SafeAreaView >
   );
 
-  // return (
-  //   <List.Accordion style={!expanded ? styles.request : styles.requestunFocused}
-  //   theme={{ colors: { background: 'white' } }}
-  //   right={() => <View ></View>}
-  //   left={() => <View >
-  //     <Text style={styles.requestHeaderText}>{temp.paycheckDate.substring(0,7).replace("-","/")}</Text>
-  //   </View>}
-  //   expanded={!expanded}
-  //   onPress={toggle}
-  // >
-  //   <View style={styles.Focused}>
-  //     <View>
-  //     <List.Item title={() => <Text style={styles.itemsText}>Date: {temp.paycheckDate.substring(0, 10).replace(/-/g,"/" )} </Text>} />
-  //     <List.Item title={() => <Text style={styles.itemsText}>Summary: {temp.paycheckSummary.substring(0, 100)}</Text>} />
-  //     <List.Item title={() => <Text style={styles.itemsText}>Comment: {temp.paycheckComment} </Text>} />
-  //     <List.Item title={() =>
-  //       <View style={styles.bottom}>
-  //         <TouchableOpacity style={[styles.itemsText, styles.viewButton]} onPress={!expanded ? () =>{setModal1Visible(true)}:null}>
-  //           <Text style={styles.viewbuttonText}>View Document</Text>
-  //         </TouchableOpacity>
-  //         <Modal animationType='slide' transparent={true} visible={modal1Visible}>
-  //           <EditPaycheck cancel={(value) => {setModal1Visible(false); setExpanded(true); props.getPaychecks()}} save={(value) => {setModal1Visible(false); setExpanded(true); props.getPaychecks(); settemp(value)}} data={props.data} />
-  //         </Modal>
-  //         <TouchableOpacity style={[styles.itemsText, styles.editButton]} onPress={!expanded ? () =>{setModal1Visible(true)} : null}>
-  //           <Text style={styles.editbuttonText}>Edit</Text>
-  //         </TouchableOpacity>
-  //       </View>} />
-  //       </View>
-  //   </View>
-  // </List.Accordion>
-  // )
 }
 
 const newStyles = StyleSheet.create({
@@ -559,127 +528,11 @@ const newStyles = StyleSheet.create({
     fontFamily: 'Urbanist-Bold',
     alignItems: 'center',
   },
-})
-
-const styles = StyleSheet.create({
   pending: {
     backgroundColor: 'white',
     flexGrow: 1,
     paddingTop: 10,
     alignItems: 'center',
-  },
-  requestunFocused: {
-    justifyContent: 'center',
-    width: Dimensions.get('screen').width * 0.9,
-    height: Dimensions.get('screen').height * 0.073,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: '#E6EBF2',
-    marginBottom: 10,
-    backgroundColor: 'white',
-    elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
-    shadowRadius: 2,
-    paddingLeft: 12,
-  },
-  request: {
-    paddingLeft: 12,
-    width: Dimensions.get('screen').width * 0.9,
-    height: Dimensions.get('screen').height * 0.073,
-    borderLeftColor: '#7DA9FF',
-    borderLeftWidth: 2,
-    borderTopLeftRadius: 16,
-    borderTopColor: '#7DA9FF',
-    borderTopWidth: 2,
-    borderRightColor: '#7DA9FF',
-    borderRightWidth: 2,
-    borderTopRightRadius: 16,
-    borderBottomColor: '#9E9E9E',
-    borderBottomWidth: 1,
-    borderBottomMargin: 10,
-
-  },
-  requestHeaderText: {
-    fontSize: 17,
-    fontFamily: 'Urbanist-Bold'
-  },
-  Focused: {
-    borderLeftColor: '#7DA9FF',
-    borderLeftWidth: 2,
-    borderBottomColor: '#7DA9FF',
-    borderBottomWidth: 2,
-    borderRightColor: '#7DA9FF',
-    borderRightWidth: 2,
-    borderBottomColor: '#7DA9FF',
-    borderBottomEndRadius: 16,
-    borderBottomStartRadius: 16,
-    marginBottom: 10,
-    padding: 16,
-  },
-  addBtnView: {
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
-  },
-  itemsText: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginLeft: Dimensions.get('screen').width * -0.16,
-    marginRight: Dimensions.get('screen').width * 0.02,
-    fontFamily: 'Urbanist-Regular',
-  },
-  viewButton: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#7DA9FF',
-    height: 40,
-    width: Dimensions.get('screen').width * 0.36,
-    borderRadius: 16,
-  },
-  editButton: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'white',
-    height: 40,
-    width: Dimensions.get('screen').width * 0.36,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: '#7DA9FF',
-    marginLeft: 10,
-  },
-  viewbuttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  editbuttonText: {
-    color: '#7DA9FF',
-    fontSize: 16,
-    fontWeight: '600',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  addRequest: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#548DFF',
-    height: 54,
-    width: 54,
-    borderRadius: 54,
-    position: 'absolute',
-    bottom: Platform.OS === 'ios' ? 40 : 10,
-    right: Platform.OS === 'ios' ? 15 : 10,
-    elevation: 5,
-  },
-  addRequestText: {
-    color: 'white',
-    fontSize: 26,
-    marginBottom: 2,
-    fontFamily: 'Urbanist-SemiBold',
   },
   headerText: {
     height: Dimensions.get('screen').height * 0.05,
@@ -691,8 +544,10 @@ const styles = StyleSheet.create({
     fontFamily: 'Urbanist-Bold',
     textAlign: 'center'
   },
-  bottom: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  addBtnView: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
   },
 })
+

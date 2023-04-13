@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, Animated, Modal, ScrollView, Image, layoutView } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
-import { List } from 'react-native-paper';
 import { MaterialCommunityIcons, AntDesign, Feather, Ionicons } from '@expo/vector-icons';
 import NewPayment from './NewPayment';
 import EditPaymentScreen from './EditPaymentScreen';

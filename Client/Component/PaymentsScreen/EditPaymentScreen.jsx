@@ -6,6 +6,8 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import * as DocumentPicker from 'expo-document-picker';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from '../../config/firebase';
+import { MaterialCommunityIcons, MaterialIcons, Ionicons } from '@expo/vector-icons';
+
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -178,6 +180,9 @@ export default function EditPaymentScreen(props) {
       <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
           <View style={styles.centeredView}>
+          <TouchableOpacity style={styles.cancelbutton} onPress={props.cancel}>
+              <Ionicons name="close" size={24} color="black" />
+            </TouchableOpacity>
             <Text style={styles.title}>Edit Payment {Payment.requestId}</Text>
             <View style={styles.inputContainer}>
               <TextInput
@@ -224,9 +229,6 @@ export default function EditPaymentScreen(props) {
                 <TouchableOpacity style={styles.savebutton} onPress={() => sendToFirebase(Payment.requestProofDocument)}>
                   <Text style={styles.savebuttonText}>Save</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.cancelbutton} onPress={Cancel}>
-                  <Text style={styles.cancelbuttonText}>Cancel</Text>
-                </TouchableOpacity>
               </View>
               <View style={styles.bottom}>
                 <TouchableOpacity style={styles.Deletebutton} onPress={Delete}>
@@ -246,9 +248,8 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#F5F5F5',
-    height: Dimensions.get('window').height * 1,
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
+    height: Dimensions.get('window').height * 1
   },
   inputContainer: {
     padding: 20,
@@ -278,8 +279,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   datePicker: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: 'row',    
     width: Dimensions.get('window').width * 0.95,
     marginBottom: 10,
     paddingLeft: 20,
@@ -305,7 +305,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     height: 45,
-    width: SCREEN_WIDTH * 0.45,
+    width: SCREEN_WIDTH * 0.95,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
@@ -313,19 +313,13 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   cancelbutton: {
-    backgroundColor: '#F5F8FF',
-    borderRadius: 16,
-    height: 45,
-    width: SCREEN_WIDTH * 0.45,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1.5,
-    borderColor: '#548DFF',
-    shadowColor: '#000',
+    position: 'absolute',
+    top:0,
+    right: 20,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 1,
+    shadowRadius: 1,
+    
   },
   Deletebutton: {
     width: Dimensions.get('window').width * 0.95,

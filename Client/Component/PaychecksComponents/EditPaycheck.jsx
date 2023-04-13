@@ -4,6 +4,8 @@ import { useState } from "react";
 import * as DocumentPicker from 'expo-document-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Octicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, MaterialIcons, Ionicons } from '@expo/vector-icons';
+
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function EditPaycheck(props) {
@@ -202,6 +204,9 @@ export default function EditPaycheck(props) {
       <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
           <SafeAreaView style={styles.container}>
+          <TouchableOpacity style={styles.cancelbutton} onPress={props.cancel}>
+              <Ionicons name="close" size={24} color="black" />
+            </TouchableOpacity>
             <Text style={styles.title}>Edit Paycheck {Paycheck.payCheckNumber}</Text>
             <View style={styles.inputContainer}>
               <TouchableOpacity style={styles.datePicker} onPress={showDatepicker}>
@@ -262,7 +267,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#fff',
     height: Dimensions.get('window').height * 1
   },
   inputContainer: {
@@ -296,19 +301,12 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   cancelbutton: {
-    backgroundColor: '#F5F8FF',
-    borderRadius: 16,
-    height: 45,
-    width: SCREEN_WIDTH * 0.45,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1.5,
-    borderColor: '#548DFF',
-    shadowColor: '#000',
+    position: 'absolute',
+    top:0,
+    right: 20,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 1,
+    shadowRadius: 1,
   },
   Deletebutton: {
     width: Dimensions.get('window').width * 0.95,
