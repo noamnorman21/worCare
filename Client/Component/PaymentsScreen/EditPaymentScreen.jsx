@@ -15,6 +15,7 @@ const SCREEN_HEIGHT = Dimensions.get('window').height;
 export default function EditPaymentScreen(props) {
   const [imageChanged, setimageChanged] = useState(false);
   const [show, setShow] = useState(false);
+  const [isChanged, setisChanged] = useState(false);
   const [Payment, setPayment] = useState({
     amountToPay: props.data.amountToPay,
     requestId: props.data.requestId,
@@ -62,23 +63,30 @@ export default function EditPaymentScreen(props) {
 
   const handleInputChange = (name, value) => {
     setPayment({ ...Payment, [name]: value })
+    if (!isChanged) {
+      setisChanged(true);
+    }
   }
 
   const Cancel = () => {
-    Alert.alert(
-      'Cancel Changes',
-      'are you sure you want to Exit the Page? All changes will be lost',
-      [
-        { text: "Don't leave", style: 'cancel', onPress: () => { } },
-        {
-          text: 'Leave',
-          style: 'destructive',
-          // If the user confirmed, then we dispatch the action we blocked earlier
-          // This will continue the action that had triggered the removal of the screen
-          onPress: () => props.cancel()
-        },
-      ]
-    );
+    if (isChanged) {
+      Alert.alert(
+        'Cancel Changes',
+        'are you sure you want to Exit the Page? All changes will be lost',
+        [
+          { text: "Don't leave", style: 'cancel', onPress: () => { } },
+          {
+            text: 'Leave',
+            style: 'destructive',
+            // If the user confirmed, then we dispatch the action we blocked earlier
+            // This will continue the action that had triggered the removal of the screen
+            onPress: () => props.cancel()
+          },
+        ]
+      );
+    } else {
+      props.cancel();
+    }
   }
 
   const Delete = () => {
@@ -180,7 +188,7 @@ export default function EditPaymentScreen(props) {
       <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
           <View style={styles.centeredView}>
-          <TouchableOpacity style={styles.cancelbutton} onPress={props.cancel}>
+          <TouchableOpacity style={styles.cancelbutton} onPress={Cancel}>
               <Ionicons name="close" size={24} color="black" />
             </TouchableOpacity>
             <Text style={styles.title}>Edit Payment {Payment.requestId}</Text>

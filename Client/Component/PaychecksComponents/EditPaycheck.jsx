@@ -204,7 +204,7 @@ export default function EditPaycheck(props) {
       <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
           <SafeAreaView style={styles.container}>
-          <TouchableOpacity style={styles.cancelbutton} onPress={props.cancel}>
+          <TouchableOpacity style={styles.cancelbutton} onPress={Cancel}>
               <Ionicons name="close" size={24} color="black" />
             </TouchableOpacity>
             <Text style={styles.title}>Edit Paycheck {Paycheck.payCheckNumber}</Text>
