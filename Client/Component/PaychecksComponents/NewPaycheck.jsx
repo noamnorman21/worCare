@@ -157,6 +157,7 @@ export default function NewPaycheck(props) {
                 testID="dateTimePicker"
                 value={new Date(PayCheck.paycheckDate)}
                 mode={"date"}
+                minimumDate={new Date(2020, 0, 1)}
                 is24Hour={true}
                 onChange={(value) => onChangeDate(value)}
                 display="default"

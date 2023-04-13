@@ -215,24 +215,9 @@ function Request(props) {
     }
   }
 
-  const CustomMenu = (props) => {
-    const { children, layouts, ...other } = props;
-    const position = { top: 0, left: 0 }
-    return (
-      <View {...other} style={[position]}>
-        {children}
-      </View>
-    );
-  };
 
 
-  //   const getmeasurs = (prop) => {
-  //     // get measures of header right button
-  //     setTimeout(() => {
-  //       prop.measure(fx, fy, width, height, px, py )
-  //     }
-  //       , 1000);
-  //   }
+
 
 
 
