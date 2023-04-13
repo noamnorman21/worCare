@@ -27,6 +27,9 @@ export default function NewPaycheck(props) {
       setShow(true);
       // for iOS, add a button that closes the picker
     }
+    else {
+      setShow(true);
+    }
 
   };
 
