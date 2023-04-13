@@ -296,7 +296,7 @@ function Paycheck(props) {
                 </View>
               </Modal>
               <Modal animationType='slide' transparent={true} visible={modal2Visible}>
-                <EditPaycheck cancel={(value) => { setModal2Visible(false); setExpanded(true); props.getPaychecks() }} save={(value) => { setModal1Visible(false); setExpanded(true); props.getPaychecks(); settemp(value) }} data={props.data} />
+                <EditPaycheck cancel={(value) => { setModal2Visible(false); setExpanded(true); props.getPaychecks() }} save={(value) => { setModal2Visible(false); setExpanded(false); props.getPaychecks(); settemp(value) }} data={props.data} />
               </Modal>
             </View>
             <View style={newStyles.requestItemBody}>
@@ -342,19 +342,19 @@ function Paycheck(props) {
                 </MenuOptions>
               </Menu>
               <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
-                <View style={styles.documentview}>
+                <View style={newStyles.documentview}>
                   <Image source={{ uri: props.data.requestProofDocument }} style={styles.documentImg} />
                   <Text>{props.data.requestProofDocument}</Text>
-                  <TouchableOpacity style={styles.documentDownloadButton} onPress={downloadFile} >
-                    <Text style={styles.documentButtonText}>Download</Text>
+                  <TouchableOpacity style={newStyles.documentDownloadButton} onPress={downloadFile} >
+                    <Text style={newStyles.documentButtonText}>Download</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.documentCancelButton} onPress={() => setModal1Visible(false)}>
-                    <Text style={styles.documentCancelText}>Go Back</Text>
+                  <TouchableOpacity style={newStyles.documentCancelButton} onPress={() => setModal1Visible(false)}>
+                    <Text style={newStyles.documentCancelText}>Go Back</Text>
                   </TouchableOpacity>
                 </View>
               </Modal>
               <Modal animationType='slide' transparent={true} visible={modal2Visible}>
-                <EditPaycheck cancel={(value) => { setModal2Visible(false); setExpanded(true); props.getPaychecks() }} save={(value) => { setModal1Visible(false); setExpanded(true); props.getPaychecks(); settemp(value) }} data={props.data} />
+                <EditPaycheck cancel={(value) => { setModal2Visible(false); setExpanded(true); props.getPaychecks() }} save={(value) => { setModal2Visible(false); setExpanded(false); props.getPaychecks(); settemp(value) }} data={props.data} />
               </Modal>
             </View>
           </View>
