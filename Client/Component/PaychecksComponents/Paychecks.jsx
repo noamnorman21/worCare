@@ -277,10 +277,10 @@ function Paycheck(props) {
                 <MenuOptions customStyles={{
                   optionsWrapper: newStyles.optionsWrapperOpened,
                 }}  >
-                  <MenuOption value={1} children={<View style={newStyles.options}><MaterialCommunityIcons name='bell-ring-outline' size={20} /><Text style={newStyles.optionsText}> Send Notification</Text></View>} />
-                  <MenuOption value={2} children={<View style={newStyles.options}><Feather name='eye' size={20} /><Text style={newStyles.optionsText}> View Document</Text></View>} />
-                  <MenuOption value={3} children={<View style={newStyles.options}><Feather name='edit' size={20} /><Text style={newStyles.optionsText}> Edit Requset</Text></View>} />
-                  <MenuOption style={newStyles.deleteTxt} value={4} children={<View style={newStyles.options}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={newStyles.deleteTxt}> Delete Requset</Text></View>} />
+                 <MenuOption style={{ borderRadius: 16 }} value={1} children={<View style={newStyles.options}><MaterialCommunityIcons name='bell-ring-outline' size={20} /><Text style={newStyles.optionsText}> Send Notification</Text></View>} />
+                  <MenuOption style={{ borderRadius: 16 }} value={2} children={<View style={newStyles.options}><Feather name='eye' size={20} /><Text style={newStyles.optionsText}> View Document</Text></View>} />
+                  <MenuOption style={{ borderRadius: 16 }} value={3} children={<View style={newStyles.options}><Feather name='edit' size={20} /><Text style={newStyles.optionsText}> Edit Paycheck</Text></View>} />
+                  <MenuOption style={newStyles.deleteTxt} value={4} children={<View style={newStyles.options}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={newStyles.deleteTxt}> Delete Paycheck</Text></View>} />
                 </MenuOptions>
               </Menu>
               <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
@@ -335,8 +335,6 @@ function Paycheck(props) {
                   optionsWrapper: newStyles.optionsWrapper,
                 }}
                 >
-
-
                   <MenuOption style={{ borderRadius: 16 }} value={1} children={<View style={newStyles.options}><MaterialCommunityIcons name='bell-ring-outline' size={20} /><Text style={newStyles.optionsText}> Send Notification</Text></View>} />
                   <MenuOption style={{ borderRadius: 16 }} value={2} children={<View style={newStyles.options}><Feather name='eye' size={20} /><Text style={newStyles.optionsText}> View Document</Text></View>} />
                   <MenuOption style={{ borderRadius: 16 }} value={3} children={<View style={newStyles.options}><Feather name='edit' size={20} /><Text style={newStyles.optionsText}> Edit Paycheck</Text></View>} />
