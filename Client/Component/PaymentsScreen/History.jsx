@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, Animated, Modal, Image, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, Animated, Modal, Image, ScrollView, sagea } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { List } from 'react-native-paper';
 import NewPayment from './NewPayment';
@@ -8,7 +8,17 @@ import { useUserContext } from '../../UserContext';
 import { AddBtn } from '../HelpComponents/AddNewTask';
 import * as FileSystem from 'expo-file-system';
 import { shareAsync } from 'expo-sharing';
-import * as MediaLibrary from 'expo-media-library';
+import { SafeAreaView } from 'react-navigation';
+import { MaterialCommunityIcons, AntDesign, Feather, Ionicons } from '@expo/vector-icons';
+import {
+  Menu,
+  MenuProvider,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+  renderers
+} from "react-native-popup-menu";
+
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -83,6 +93,7 @@ export default function History({ navigation, route }) {
   }
 
   return (
+
     <ScrollView contentContainerStyle={styles.pending}>
       {History}
       {userContext.userType == "Caregiver" ? <View style={styles.addBtnView}><AddBtn onPress={() => setModal1Visible(true)} /></View> : null}
@@ -90,15 +101,21 @@ export default function History({ navigation, route }) {
         <NewPayment cancel={() => setModal1Visible(false)} />
       </Modal>
     </ScrollView>
+
   );
 }
 
 function Request(props) {
-  const [expanded, setExpanded] = useState(true);
+  const [expanded, setExpanded] = useState(false);
   const animationController = useRef(new Animated.Value(0)).current;
   const [modal1Visible, setModal1Visible] = useState(false);
   const [modal2Visible, setModal2Visible] = useState(false);
-  const status = props.data.requestStatus;
+  const date = new Date(props.date);
+  const year = date.getFullYear();
+  const newYear = year.toString().substr(-2);
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const dateString = day + "/" + month + "/" + newYear;
 
   const toggle = () => {
     const config = {
@@ -110,22 +127,71 @@ function Request(props) {
     setExpanded(!expanded);
   };
 
-  const displayStatus = () => {
-    if (status == "F") {
-      return "Finished"
+
+  const openModal = (value) => {
+    if (value == 1) {
+      console.log("Notofication")
     }
-    else if (status == "C") {
-      return "Canceled"
+    else if (value == 2) {
+      setModal1Visible(true)
     }
-    else if (status == "R") {
-      return "Rejected"
+    if (value == 3) {
+      setModal2Visible(true)
     }
-    else if (status == "P") {
-      return "Pending"
+    if (value == 4) {
+      DeleteRequest()
     }
   }
 
-  const Download = async () => {
+  const DeleteRequest = () => {
+    Alert.alert(
+      'Delete request',
+      'are you sure you want to Delete? All changes will be lost',
+      [
+        { text: "Don't leave", style: 'cancel', onPress: () => { } },
+        {
+          text: 'Leave',
+          style: 'destructive',
+          // If the user confirmed, then we dispatch the action we blocked earlier
+          // This will continue the action that had triggered the removal of the screen
+          onPress: () => {
+            let res = fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/DeletePayment/' + props.data.requestId, {
+              method: 'DELETE',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            });
+            console.log(res);
+            props.getHistory();
+          }
+        },
+      ]
+    );
+  }
+
+  const saveStatus = async (id) => {
+    console.log("request", request)
+    let request = {
+      requestId: id,
+      requestStatus: "F"
+    }
+    try {
+      const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/UpdateStatus/', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(id)
+      });
+      const data = await response.json();
+      console.log(data)
+      props.getPending()
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const downloadFile = async () => {
     const url = props.data.requestProofDocument;
     const dot = url.lastIndexOf(".");
     const questionMark = url.lastIndexOf("?");
@@ -158,10 +224,12 @@ function Request(props) {
             .then(async (res) => {
               console.log("File", res)
               await FileSystem.writeAsStringAsync(res, base64, { encoding: FileSystem.EncodingType.Base64 });
-              return console.log("File Saved")
+              return Alert.alert("File Saved")
+
             })
             .catch(error => { console.log("Error", error) })
         }
+
       }
       catch (error) {
         console.log("Error", error)
@@ -169,47 +237,292 @@ function Request(props) {
     }
   }
 
+  const displayStatus = () => {
+
+    if (props.data.requestStatus == "F") {
+      return "Finished"
+    }
+    else if (props.data.requestStatus == "C") {
+      return "Canceled"
+    }
+    else if (props.data.requestStatus == "R") {
+      return "Rejected"
+    }
+  }
+
+
+
+
   return (
-    <List.Accordion
-      style={!expanded ? (status == "F" ? [styles.requestFocused, styles.finishedRequestFocused] : [styles.requestFocused, styles.notCompleteRequestFocused]) : styles.requestunFocused}
-      theme={{ colors: { background: 'white' } }}
-      right={() => <View style={styles.requesRight}><Text style={styles.requestHeaderText}>{props.subject}</Text></View>}
-      left={() => <View><Text style={styles.requestHeaderText}>{props.date.substring(0, 10)}</Text></View>}
-      expanded={!expanded}
-      onPress={toggle}
-    >
-      <View style={!expanded ? status == "F" ? ([styles.Focused, styles.completeFocused]) : ([styles.Focused, styles.notCompleteFocused]) : null}>
-        <View>
-          <List.Item title={() => <Text style={styles.itemsText}>Date: {props.date.substring(0, 10)} </Text>} />
-          <List.Item title={() => <Text style={styles.itemsText}>Amount: {props.amountToPay} </Text>} />
-          <List.Item title={() => <Text style={styles.itemsText}>Comment: {props.requestComment} </Text>} />
-          <List.Item title={() => <Text style={styles.itemsText}>Status: {displayStatus()} </Text>} />
-          <List.Item title={() =>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-              <TouchableOpacity style={[styles.itemsText, styles.viewButton]} onPress={!expanded ? () => { setModal2Visible(true) } : null}>
-                <Text style={styles.viewbuttonText}>View Document</Text>
+    <SafeAreaView>
+      <View>
+        {expanded ?
+          <View style={newStyles.requestOpen}>
+            <View style={newStyles.requestItemHeaderOpen}>
+              <TouchableOpacity onPress={toggle} style={newStyles.request}>
+                <View style={newStyles.requestItemLeft}>
+                  <Text style={newStyles.requestItemText}>{dateString}</Text>
+                </View>
+                <View style={newStyles.requestItemMiddle}>
+                  <Text style={newStyles.requestItemText}>{props.subject}</Text>
+                </View>
               </TouchableOpacity>
+              <Menu style={{ flexDirection: 'column', marginVertical: 0 }} onSelect={value => openModal(value)} >
+                <MenuTrigger
+                  children={<View>
+                    <MaterialCommunityIcons name="dots-horizontal" size={28} color="gray" />
+                  </View>}
+                />
+                <MenuOptions customStyles={{
+                 optionsWrapper:newStyles.optionsWrapperOpened,
+                }}  >
+                  <MenuOption value={1} children={<View style={newStyles.options}><MaterialCommunityIcons name='bell-ring-outline' size={20} /><Text style={newStyles.optionsText}> Send Notification</Text></View>} />
+                  <MenuOption value={2} children={<View style={newStyles.options}><Feather name='eye' size={20} /><Text style={newStyles.optionsText}> View Document</Text></View>} />
+                  <MenuOption value={3} children={<View style={newStyles.options}><Feather name='edit' size={20} /><Text style={newStyles.optionsText}> Edit Requset</Text></View>} />
+                  <MenuOption style={newStyles.deleteTxt} value={4} children={<View style={newStyles.options}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={newStyles.deleteTxt}> Delete Requset</Text></View>} />
+                </MenuOptions>
+              </Menu>
               <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
-                <EditPaymentScreen cancel={() => { setModal1Visible(false); props.getHistory() }} data={props.data} />
-              </Modal>
-              <Modal animationType='slide' transparent={true} visible={modal2Visible} onRequestClose={() => setModal2Visible(false)}>
                 <View style={styles.documentview}>
                   <Image source={{ uri: props.data.requestProofDocument }} style={styles.documentImg} />
                   <Text>{props.data.requestProofDocument}</Text>
-                  <TouchableOpacity style={styles.documentDownloadButton} onPress={Download} >
+                  <TouchableOpacity style={styles.documentDownloadButton} onPress={downloadFile} >
                     <Text style={styles.documentButtonText}>Download</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.documentCancelButton} onPress={() => setModal2Visible(false)}>
+                  <TouchableOpacity style={styles.documentCancelButton} onPress={() => setModal1Visible(false)}>
                     <Text style={styles.documentCancelText}>Go Back</Text>
                   </TouchableOpacity>
                 </View>
               </Modal>
-            </View>} />
-        </View>
+              <Modal animationType='slide' transparent={true} visible={modal2Visible}>
+                <EditPaymentScreen cancel={() => { setModal2Visible(false); props.getHistory() }} data={props.data} />
+              </Modal>
+            </View>
+            <View style={newStyles.requestItemBody}>
+              <View style={newStyles.requestItemBodyLeft}>
+                <Text style={newStyles.requestItemText}>Date: </Text>
+                <Text style={newStyles.requestItemText}>Amount: </Text>
+                <Text style={[newStyles.requestItemText, props.requestComment == null || props.requestComment == '' && { display: 'none' }]}>Comment: </Text>
+                <Text style={newStyles.requestItemText}>Status: </Text>
+              </View>
+              <View style={newStyles.requestItemBodyRight}>
+                <Text style={newStyles.requestItemText}>{dateString}</Text>
+                <Text style={newStyles.requestItemText}>{props.data.amountToPay}</Text>
+                <Text style={[newStyles.requestItemText, props.data.requestComment == null || props.data.requestComment == '' && { display: 'none' }]}>{props.requestComment}</Text>
+                <Text style={newStyles.requestItemText}>{displayStatus()}</Text>
+              </View>
+            </View>
+          </View>
+          :
+          <View>
+            <View style={newStyles.requestItemHeader}>
+              <TouchableOpacity onPress={toggle} style={newStyles.request}>
+                <View style={newStyles.requestItemLeft}>
+                  <Text style={newStyles.requestItemText}>{dateString}</Text>
+                </View>
+                <View style={newStyles.requestItemMiddle}>
+                  <Text style={newStyles.requestItemText}>{props.subject}</Text>
+                </View>
+              </TouchableOpacity>
+              <Menu style={{ flexDirection: 'column', marginVertical: 0 }} onSelect={value => openModal(value)} >
+                <MenuTrigger
+                  children={<View>
+                    <MaterialCommunityIcons name="dots-horizontal" size={28} color="gray" />
+                  </View>}
+                />
+                <MenuOptions customStyles={{
+                  optionsWrapper:newStyles.optionsWrapper,
+                }}
+                >
+
+
+                  <MenuOption style={{ borderRadius: 16 }} value={1} children={<View style={newStyles.options}><MaterialCommunityIcons name='bell-ring-outline' size={20} /><Text style={newStyles.optionsText}> Send Notification</Text></View>} />
+                  <MenuOption style={{ borderRadius: 16 }} value={2} children={<View style={newStyles.options}><Feather name='eye' size={20} /><Text style={newStyles.optionsText}> View Document</Text></View>} />
+                  <MenuOption style={{ borderRadius: 16 }} value={3} children={<View style={newStyles.options}><Feather name='edit' size={20} /><Text style={newStyles.optionsText}> Edit Requset</Text></View>} />
+                  <MenuOption style={newStyles.deleteTxt} value={4} children={<View style={newStyles.options}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={newStyles.deleteTxt}> Delete Requset</Text></View>} />
+
+
+                </MenuOptions>
+              </Menu>
+              <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
+                <View style={styles.documentview}>
+                  <Image source={{ uri: props.data.requestProofDocument }} style={styles.documentImg} />
+                  <Text>{props.data.requestProofDocument}</Text>
+                  <TouchableOpacity style={styles.documentDownloadButton} onPress={downloadFile} >
+                    <Text style={styles.documentButtonText}>Download</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.documentCancelButton} onPress={() => setModal1Visible(false)}>
+                    <Text style={styles.documentCancelText}>Go Back</Text>
+                  </TouchableOpacity>
+                </View>
+              </Modal>
+              <Modal animationType='slide' transparent={true} visible={modal2Visible}>
+                <EditPaymentScreen cancel={() => { setModal2Visible(false); props.getHistory() }} data={props.data} />
+              </Modal>
+            </View>
+          </View>
+        }
       </View>
-    </List.Accordion>
-  )
+    </SafeAreaView >
+  );
+
+  // return (
+  //   <List.Accordion
+  //     style={!expanded ? (status == "F" ? [styles.requestFocused, styles.finishedRequestFocused] : [styles.requestFocused, styles.notCompleteRequestFocused]) : styles.requestunFocused}
+  //     theme={{ colors: { background: 'white' } }}
+  //     right={() => <View style={styles.requesRight}><Text style={styles.requestHeaderText}>{props.subject}</Text></View>}
+  //     left={() => <View><Text style={styles.requestHeaderText}>{props.date.substring(0, 10)}</Text></View>}
+  //     expanded={!expanded}
+  //     onPress={toggle}
+  //   >
+  //     <View style={!expanded ? status == "F" ? ([styles.Focused, styles.completeFocused]) : ([styles.Focused, styles.notCompleteFocused]) : null}>
+  //       <View>
+  //         <List.Item title={() => <Text style={styles.itemsText}>Date: {props.date.substring(0, 10)} </Text>} />
+  //         <List.Item title={() => <Text style={styles.itemsText}>Amount: {props.amountToPay} </Text>} />
+  //         <List.Item title={() => <Text style={styles.itemsText}>Comment: {props.requestComment} </Text>} />
+  //         <List.Item title={() => <Text style={styles.itemsText}>Status: {displayStatus()} </Text>} />
+  //         <List.Item title={() =>
+  //           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+  //             <TouchableOpacity style={[styles.itemsText, styles.viewButton]} onPress={!expanded ? () => { setModal2Visible(true) } : null}>
+  //               <Text style={styles.viewbuttonText}>View Document</Text>
+  //             </TouchableOpacity>
+  //             <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
+  //               <EditPaymentScreen cancel={() => { setModal1Visible(false); props.getHistory() }} data={props.data} />
+  //             </Modal>
+  //             <Modal animationType='slide' transparent={true} visible={modal2Visible} onRequestClose={() => setModal2Visible(false)}>
+  //               <View style={styles.documentview}>
+  //                 <Image source={{ uri: props.data.requestProofDocument }} style={styles.documentImg} />
+  //                 <Text>{props.data.requestProofDocument}</Text>
+  //                 <TouchableOpacity style={styles.documentDownloadButton} onPress={Download} >
+  //                   <Text style={styles.documentButtonText}>Download</Text>
+  //                 </TouchableOpacity>
+  //                 <TouchableOpacity style={styles.documentCancelButton} onPress={() => setModal2Visible(false)}>
+  //                   <Text style={styles.documentCancelText}>Go Back</Text>
+  //                 </TouchableOpacity>
+  //               </View>
+  //             </Modal>
+  //           </View>} />
+  //       </View>
+  //     </View>
+  //   </List.Accordion>
+  // )
 }
+
+const newStyles = StyleSheet.create({
+  requestItemHeader: {
+    justifyContent: 'space-between',
+    width: Dimensions.get('screen').width * 0.9,
+    height: 60,
+    alignItems: 'center',
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: '#E6EBF2',
+    marginVertical: 10,
+    backgroundColor: '#FFF',
+    padding: 12,
+    flexDirection: 'row',
+  },
+  requestItemBodyEdit: {
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+    width: Dimensions.get('screen').width * 0.9,
+  },
+  requestItemHeaderOpen: {
+    // justifyContent: 'flex-start',
+    width: Dimensions.get('screen').width * 0.9,
+    height: 60,
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    flexDirection: 'row',
+    borderRadius: 10,
+    borderBottomColor: '#7DA9FF',
+    borderBottomWidth: 1.5,
+  },
+  requestOpen: {
+    width: Dimensions.get('screen').width * 0.9,
+    alignItems: 'center',
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: '#7DA9FF',
+    marginVertical: 10,
+    backgroundColor: '#F5F8FF',
+    padding: 5,
+  },
+  requestItemBody: {
+    justifyContent: 'space-between',
+    width: Dimensions.get('screen').width * 0.9,
+    alignItems: 'flex-start',
+    padding: 12,
+    flexDirection: 'row',
+    flex: 1,
+  },
+  request: {
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    flex: 1,
+  },
+  requestItemRight: {
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+    width: 54,
+    height: 54,
+    borderRadius: 16,
+  },
+  requestItemMiddle: {
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    flex: 2,
+  },
+  requestItemLeft: {
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    flex: 2,
+  },
+  requestItemText: {
+    fontSize: 18,
+    color: '#000000',
+    fontFamily: 'Urbanist-SemiBold',
+  },
+  options: {
+    flexDirection: 'row',
+    borderBottomColor: '#80808080',
+    borderBottomWidth: 0.2,
+    padding: 2
+  },
+  optionsWrapper: {
+    position: 'absolute',
+    bottom: -40,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    left: 70,
+    elevation: 100,
+  },
+  optionsWrapperOpened: {
+    position: 'absolute',
+    bottom: -32,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    left: 70,
+    elevation: 100,
+  },
+  optionsText: {    
+    fontFamily: 'Urbanist-Regular',
+  },
+  deleteTxt: {
+    color: '#FF3C3C',
+    fontFamily: 'Urbanist-Regular',
+  },
+  requestItemBodyLeft: {
+    flex:2,
+  },
+  requestItemBodyRight: {
+    flex:3,
+    alignItems: 'flex-start',
+  },
+
+})
 
 const styles = StyleSheet.create({
   pending: {

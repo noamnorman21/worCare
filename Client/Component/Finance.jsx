@@ -8,7 +8,7 @@ import History from './PaymentsScreen/History';
 import Paychecks from './PaychecksComponents/Paychecks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
-
+import { MenuProvider, } from "react-native-popup-menu";
 const Stack = createStackNavigator();
 
 // Big Image and 2 Buttons that will navigate to 2 different screens
@@ -16,26 +16,34 @@ const Stack = createStackNavigator();
 // Second Button will navigate to Paycheck screen - [History]
 export default function Finance() {
   return (
-    <NavigationContainer independent={true} zIndex='0' initialRouteName='choice'  >
-      <Stack.Navigator initialRouteName='choice'>
-        <Stack.Screen name='choice' component={Choice} options={() => ({
-          headerShown: false,
-        })} />
-        <Stack.Screen name='Payments' component={Payments} options={() => ({
-          headerShown: false,
-          presentation: 'stack',
-          cardOverlayEnabled: true,
-          style: {
-            flex: 1,
-          }
-        })} />
-        <Stack.Screen name='Paychecks' component={Paychecks} options={() => ({
-          headerShown: false,
-          presentation: 'stack',
-          cardOverlayEnabled: true,
-        })} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <MenuProvider customStyles={{
+      optionsContainer: {
+        borderRadius: 0,
+        elevation: 100,
+      },
+    }}>
+
+      <NavigationContainer independent={true} zIndex='0' initialRouteName='choice'  >
+        <Stack.Navigator initialRouteName='choice'>
+          <Stack.Screen name='choice' component={Choice} options={() => ({
+            headerShown: false,
+          })} />
+          <Stack.Screen name='Payments' component={Payments} options={() => ({
+            headerShown: false,
+            presentation: 'stack',
+            cardOverlayEnabled: true,
+            style: {
+              flex: 1,
+            }
+          })} />
+          <Stack.Screen name='Paychecks' component={Paychecks} options={() => ({
+            headerShown: false,
+            presentation: 'stack',
+            cardOverlayEnabled: true,
+          })} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </MenuProvider>
   );
 }
 

@@ -22,7 +22,7 @@ export default function AddNewContact(props) {
   }
 
   const validateInput = () => {
-    if (!Contact.mobileNo || !Contact.contactName) {
+    if (!Contact.contactName) {
       return Alert.alert('Error', 'Email and Mobile Number are required')
     }
     if (Contact.email !== null && !validateEmail(Contact.email)) {
@@ -31,10 +31,6 @@ export default function AddNewContact(props) {
     if (Contact.contactName === '') {
       return Alert.alert('Invalid Contact Name', 'Please enter a valid contact name')
     }
-    if (!validatePhoneNum(Contact.mobileNo)) {
-      return Alert.alert('Invalid Phone Number', 'Please enter a valid phone number')
-    }
-   
     sendToDB();
   }
 
@@ -63,12 +59,6 @@ export default function AddNewContact(props) {
   const validateEmail = (email) => {
     const emailRegex = /\S+@\S+\.\S+/
     return emailRegex.test(email)
-  }
-
-  const validatePhoneNum = (phoneNum) => {
-    //only numbers allowed in phone number input - no spaces or dashes - 10 digits - starts with 0
-    const phoneNumRegex = /^(0)[0-9]{9}$/
-    return phoneNumRegex.test(phoneNum)
   }
 
   return (
@@ -110,7 +100,7 @@ export default function AddNewContact(props) {
                   />
                   <TextInput
                     style={styles.input}
-                    placeholder="Email (optional)"
+                    placeholder="Email ( optional )"
                     keyboardType='ascii-capable'
                     onChangeText={(value) => handleInputChange('email', value)}
                   />

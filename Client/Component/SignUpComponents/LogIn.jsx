@@ -183,6 +183,7 @@ export default function LogIn({ navigation }) {
                                 placeholderTextColor={'#9E9E9E'}
                                 value={email}
                                 autoCapitalize='none'
+                                
                                 onChangeText={text => setEmail(text)}
                                 keyboardType="email-address"
                                 autoCorrect={false}

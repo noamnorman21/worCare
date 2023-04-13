@@ -1,8 +1,9 @@
 import { TextInput, View, Text, StyleSheet, Alert, SafeAreaView, TouchableOpacity, Dimensions } from "react-native";
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { useState } from "react";
-import { Octicons } from '@expo/vector-icons';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import { AntDesign, Octicons } from '@expo/vector-icons';
+import { DateTimePicker } from '@react-native-community/datetimepicker';
+// import DateTimePickerModal from "react-native-modal-datetime-picker";
 import * as DocumentPicker from 'expo-document-picker';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -46,7 +47,9 @@ export default function EditPaymentScreen(props) {
   };
 
   const showDatepicker = () => {
-    showMode('date');
+    // showMode('date');
+    setShow(true);
+
   };
 
   const onChangeDate = (selectedDate) => {
@@ -175,61 +178,62 @@ export default function EditPaymentScreen(props) {
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
-          <View style={styles.centeredView}>
-            <Text style={styles.title}>Edit Payment {Payment.requestId}</Text>
-            <View style={styles.inputContainer}>
-              <TextInput
-                style={styles.input}
-                value={Payment.requestSubject}
-                placeholder='Reason'
-                keyboardType='ascii-capable'
-                onChangeText={(value) => handleInputChange('requestSubject', value)}
-              />
-              <TouchableOpacity style={styles.datePicker} onPress={showDatepicker}>
-                <Octicons name="calendar" size={22} />
-                <Text style={styles.dateInputTxt}>{Payment.requestDate.substring(0, 10)}</Text>
-              </TouchableOpacity>
-              {show && (
-                <DateTimePicker
-                  testID="dateTimePicker"
-                  value={new Date(Payment.requestDate)}
-                  mode={"date"}
-                  is24Hour={true}
-                  onChange={(value) => onChangeDate(value)}
-                  display="default"
-                  maximumDate={new Date()}
+          <View style={styles.container}>
+            <TouchableOpacity style={styles.closeBtn} onPress={Cancel}>
+              <AntDesign name="close" size={24} color="black" />
+            </TouchableOpacity>
+            <View style={styles.centeredView}>
+              <Text style={styles.title}>Edit Payment {Payment.requestId}</Text>
+              {/* close btn icon */}
+              <View style={styles.inputContainer}>
+                <TextInput
+                  style={styles.input}
+                  value={Payment.requestSubject}
+                  placeholder='Reason'
+                  keyboardType='ascii-capable'
+                  onChangeText={(value) => handleInputChange('requestSubject', value)}
                 />
-              )}
-              <TextInput
-                style={[styles.input]}
-                placeholder='Amount'
-                value={`${Payment.amountToPay}`}
-                keyboardType='ascii-capable'
-                onChangeText={(value) => handleInputChange('amountToPay', value)}
-                inputMode='decimal'
-              />
-              <TextInput
-                style={styles.commentInput}
-                placeholder='Enter comment'
-                value={Payment.requestComment}
-                keyboardType='ascii-capable'
-                onChangeText={(value) => handleInputChange('requestComment', value)}
-              />
-              <TouchableOpacity style={styles.uploadButton} onPress={pickDocument}>
-                <Text style={styles.uploaddbuttonText}>Upload document</Text>
-              </TouchableOpacity>
-              <View style={styles.bottom}>
-                <TouchableOpacity style={styles.savebutton} onPress={() => sendToFirebase(Payment.requestProofDocument)}>
-                  <Text style={styles.savebuttonText}>Save</Text>
+                <TouchableOpacity style={styles.datePicker} onPress={showDatepicker}>
+                  <Text style={styles.dateInputTxt}>{Payment.requestDate.substring(0, 10)}</Text>
+                  {/* <Octicons name="calendar" size={22} /> */}
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.cancelbutton} onPress={Cancel}>
-                  <Text style={styles.cancelbuttonText}>Cancel</Text>
+                {show && (
+                  <DateTimePicker
+                    //testID="dateTimePicker"
+                    value={new Date(Payment.requestDate)}
+                    // mode={"date"}
+                    is24Hour={true}
+                    onChange={(value) => onChangeDate(value)}
+                    display="spinner"
+                    maximumDate={new Date()}
+                  />
+                )}
+                <TextInput
+                  style={[styles.input]}
+                  placeholder='Amount'
+                  value={`${Payment.amountToPay}`}
+                  keyboardType='ascii-capable'
+                  onChangeText={(value) => handleInputChange('amountToPay', value)}
+                  inputMode='decimal'
+                />
+                <TextInput
+                  style={styles.commentInput}
+                  placeholder='Enter comment'
+                  value={Payment.requestComment}
+                  keyboardType='ascii-capable'
+                  onChangeText={(value) => handleInputChange('requestComment', value)}
+                />
+                <TouchableOpacity style={styles.uploadButton} onPress={pickDocument}>
+                  <Text style={styles.uploaddbuttonText}>Upload document</Text>
                 </TouchableOpacity>
-              </View>
-              <View style={styles.bottom}>
-                <TouchableOpacity style={styles.Deletebutton} onPress={Delete}>
-                  <Text style={styles.cancelbuttonText}>Delete</Text>
-                </TouchableOpacity>
+                <View style={styles.bottom}>
+                  <TouchableOpacity style={styles.savebutton} onPress={() => sendToFirebase(Payment.requestProofDocument)}>
+                    <Text style={styles.savebuttonText}>Save</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.cancelbutton} onPress={Cancel}>
+                    <Text style={styles.cancelbuttonText}>Delete</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
           </View>
@@ -250,6 +254,11 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     padding: 20,
+  },
+  closeBtn: {
+    position: 'absolute',
+    top: 100,
+    right: 30,
   },
   input: {
     width: Dimensions.get('window').width * 0.95,
@@ -277,10 +286,10 @@ const styles = StyleSheet.create({
   },
   datePicker: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    // justifyContent: 'center',
     width: Dimensions.get('window').width * 0.95,
     marginBottom: 10,
-    paddingLeft: 20,
+    paddingLeft: 10,
     alignItems: 'center',
     borderRadius: 16,
     borderWidth: 1.5,

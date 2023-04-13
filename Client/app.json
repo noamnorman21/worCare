@@ -6,7 +6,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./images/logo_New_Small.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./images/logo_New.png",
       "resizeMode": "contain",
@@ -19,7 +19,7 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true          
+      "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
