@@ -1,11 +1,8 @@
-import { useState, useEffect, createContext, useContext, useRef} from 'react'
-import React from 'react'
+import React, { useState, useEffect, createContext, useContext, useRef } from 'react'
 import { Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-
-
 //--ruppin api server--
+
 //login
 let userForLoginUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUserForLogin';
 
@@ -35,8 +32,8 @@ let updateRequest = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/Updat
 let newRequest = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/NewRequest';
 let getPending = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/GetPending/';//+userId
 
-const UserContext = React.createContext()
-const UserUpdateContext = React.createContext()
+const UserContext = createContext()
+const UserUpdateContext = createContext()
 
 export function useUserContext() {
     return useContext(UserContext)
@@ -59,9 +56,9 @@ export function UserProvider({ children }) {
     const [LastName, setLastName] = useState(null)
     const [Email, setEmail] = useState(null)
     const [phoneNum, setPhone] = useState(null)
-    const [userUri, setuserUri] = useState(null)
+    const [userUri, setUserUri] = useState(null)
     const [BirthDate, setBirthDate] = useState(null)
-    const [userGender, setuserGender] = useState(null)
+    const [userGender, setUserGender] = useState(null)
 
     function logInContext(userData) {
         setUserType(userData.userType);
@@ -79,10 +76,9 @@ export function UserProvider({ children }) {
         setEmail(userData.Email);
         setLastName(userData.LastName);
         setPhone(userData.Phone);
-        setuserUri(userData.userUri);
+        setUserUri(userData.userUri);
         setBirthDate(userData.BirthDate);
-        setuserGender(userData.Gender)
-
+        setUserGender(userData.Gender)
 
         let usertoSync = {
             userId: userData.userId,
@@ -95,86 +91,76 @@ export function UserProvider({ children }) {
             gender: userData.gender,
         }
         setUserContext(usertoSync);
-       
     }
-
-
 
     function logOutContext() {
         setUserContext(null)
     }
 
-    
     function updateUserProfile(user) {
         const userToUpdate = {
-          Email: user.Email,
-          userUri: user.userUri,
-          phoneNum: user.phoneNum,
-          gender: user.gender,
-          FirstName: user.FirstName,
-          LastName: user.LastName,
-          userId: user.userId,
-          userType: user.userType
-        }    
+            Email: user.Email,
+            userUri: user.userUri,
+            phoneNum: user.phoneNum,
+            gender: user.gender,
+            FirstName: user.FirstName,
+            LastName: user.LastName,
+            userId: user.userId,
+            userType: user.userType
+        }
         fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Settings/UpdateUserProfile', {
-          method: 'PUT',
-          headers: new Headers({
-            'Content-Type': 'application/json; charset=UTF-8',
-            'Accept': 'application/json; charset=UTF-8',
-    
-          }),
-          body: JSON.stringify(userToUpdate)
-        })
-          .then(res => {
-            if (res.ok) {
-              return res.json()
-                .then(
-                  (result) => {
-                    console.log("fetch POST= ", result);
-                    Alert.alert('User Updated', 'Your User has been Updated successfully');
-                    updateUserContext(userToUpdate)
-                    const jsonValue = JSON.stringify(userToUpdate)
-                    AsyncStorage.setItem('userData', jsonValue);                  
-                  }
-                )
-            }
-            else {
-              console.log('err post=', res);
-              Alert.alert('Error', 'Sorry, there was an error updating your user. Please try again later.');
-            }
-          }
-          )
-          .catch((error) => {
-            console.log('Error:', error.message);
-          }
-          );
-    
-    
-      }
-    
+            method: 'PUT',
+            headers: new Headers({
+                'Content-Type': 'application/json; charset=UTF-8',
+                'Accept': 'application/json; charset=UTF-8',
 
-      
+            }),
+            body: JSON.stringify(userToUpdate)
+        })
+            .then(res => {
+                if (res.ok) {
+                    return res.json()
+                        .then(
+                            (result) => {
+                                console.log("fetch POST= ", result);
+                                Alert.alert('User Updated', 'Your User has been Updated successfully');
+                                updateUserContext(userToUpdate)
+                                const jsonValue = JSON.stringify(userToUpdate)
+                                AsyncStorage.setItem('userData', jsonValue);
+                            }
+                        )
+                }
+                else {
+                    console.log('err post=', res);
+                    Alert.alert('Error', 'Sorry, there was an error updating your user. Please try again later.');
+                }
+            }
+            )
+            .catch((error) => {
+                console.log('Error:', error.message);
+            }
+            );
+    }
+
     function updateUserContext(userContext) {
         console.log("updateUser", userContext);
         setUserContext(userContext)
     }
 
-    function updaterememberUserContext(userContext) {
+    function updateRememberUserContext(userContext) {
         console.log("updateUser", userContext);
         setUserContext(userContext)
     }
 
-    function updateuserContacts(Contacts) {
+    function updateUserContacts(Contacts) {
         setUserContacts(Contacts)
     }
 
-    function UpdatePendings (pendings){
+    function updatePendings(pendings) {
         setUserPendingPayments(pendings);
     }
 
-
-
-    const value = { userContext, userContacts, logInContext, logOutContext, updateUserContext, updateuserContacts, UpdatePendings, updateUserProfile }
+    const value = { userContext, userContacts, logInContext, logOutContext, updateUserContext, updateUserContacts, updatePendings, updateUserProfile }
     return (
         <UserContext.Provider value={value}>
             {children}
@@ -183,5 +169,3 @@ export function UserProvider({ children }) {
 }
 
 export default UserContext;
-
-

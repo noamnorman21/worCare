@@ -1,15 +1,16 @@
-
 import { TextInput, View, Text, StyleSheet, Alert, SafeAreaView, TouchableOpacity, Dimensions } from "react-native";
+import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { useState } from "react";
 import { Octicons } from '@expo/vector-icons';
-import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-
 import * as DocumentPicker from 'expo-document-picker';
+
 const SCREEN_WIDTH = Dimensions.get('window').width;
+const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export default function EditPaymentScreen(props) {
   const [imageChanged, setimageChanged] = useState(false);
+  const [show, setShow] = useState(false);
   const [Payment, setPayment] = useState({
     amountToPay: props.data.amountToPay,
     requestId: props.data.requestId,
@@ -21,7 +22,6 @@ export default function EditPaymentScreen(props) {
     userId: props.data.userId
   })
 
-  const [show, setShow] = useState(false);
   const pickDocument = async () => {
     let result = await DocumentPicker.getDocumentAsync({});
     alert(result.uri);
@@ -59,6 +59,7 @@ export default function EditPaymentScreen(props) {
   const handleInputChange = (name, value) => {
     setPayment({ ...Payment, [name]: value })
   }
+
   const Cancel = () => {
     Alert.alert(
       'Cancel Changes',
@@ -235,7 +236,6 @@ export default function EditPaymentScreen(props) {
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
     </SafeAreaView>
-
   );
 }
 
@@ -289,7 +289,6 @@ const styles = StyleSheet.create({
     height: 54,
     fontFamily: 'Urbanist-Light',
     fontSize: 16,
-
   },
   dateInputTxt: {
     color: '#000',

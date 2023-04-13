@@ -12,8 +12,6 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from '../config/firebase';
 import * as ImagePicker from 'expo-image-picker';
 
-
-
 // Internal imports:
 import Profile from './SettingsComponents/Profile'
 import Notifications from './SettingsComponents/Notifications'
@@ -62,7 +60,6 @@ function HomeScreen({ navigation, route }) {
     }, [isFocused]);
 
     const sendToFirebase = async (image) => {
-        console.log('image', image);
         // if the user didn't upload an image, we will use the default image
         if (userImg === null) {
             //זה תמונה מכוערת -נועם תחליף אותה
@@ -110,9 +107,6 @@ function HomeScreen({ navigation, route }) {
     }
 
     const sendDataToNextDB = (downloadURL) => {
-        console.log("sendDataToNextDB");
-        console.log("user", user);
-        console.log("downloadURL", downloadURL);
         const userToUpdate = {
             Email: user.Email,
             userUri: downloadURL == null ? user.userUri : downloadURL,
@@ -123,53 +117,48 @@ function HomeScreen({ navigation, route }) {
             userId: user.userId,
             userType: user.userType
         }
-        console.log("userToUpdate", userToUpdate);
-         if (userToUpdate.phoneNum != userContext.phoneNum) {          
-
-        fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetPhoneNum', {
-            method: 'POST',
-            body: JSON.stringify(userToUpdate),
-            headers: new Headers({
-                'Content-Type': 'application/json; charset=UTF-8',
+        if (userToUpdate.phoneNum != userContext.phoneNum) {
+            fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetPhoneNum', {
+                method: 'POST',
+                body: JSON.stringify(userToUpdate),
+                headers: new Headers({
+                    'Content-Type': 'application/json; charset=UTF-8',
+                })
             })
-        })
-            .then(res => {
-                if (res.ok) {
-                    updateUserProfile(userToUpdate);
-                    route.params.Exit();
-                }
-                else {
-                   Alert.alert('Phone Already in system', 'Please enter a different phone number');
-                }
-            })      
+                .then(res => {
+                    if (res.ok) {
+                        updateUserProfile(userToUpdate);
+                        route.params.Exit();
+                    }
+                    else {
+                        Alert.alert('Phone Already in system', 'Please enter a different phone number');
+                    }
+                })
+        }
+        else {
+            updateUserProfile(userToUpdate);
+            route.params.Exit();
+        }
     }
-    else{
-        updateUserProfile(userToUpdate);
-        route.params.Exit();
-    }
-    }
-
-
 
     const pickImage = async () => {
         // No permissions request is necessary for launching the image library
         let result = await ImagePicker.launchImageLibraryAsync({
-          mediaTypes: ImagePicker.MediaTypeOptions.All,
-          allowsEditing: true,
-          aspect: [4, 3],
-          quality: 1,
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
         });
         if (!result.canceled) {
-         setUser({...user,["userUri"]:result.assets[0].uri})
-          setImageChange(true)
+            setUser({ ...user, ["userUri"]: result.assets[0].uri })
+            setImageChange(true)
         }
-      }
-
+    }
 
     useEffect(() => {
         const setNavigation = async () => navigation.setOptions({
             headerRight: () => (
-                <TouchableOpacity style={styles.headerButton} onPress={() =>isChanged? (ImageChange ? sendToFirebase(user.userUri) : sendDataToNextDB()):route.params.Exit()}>
+                <TouchableOpacity style={styles.headerButton} onPress={() => isChanged ? (ImageChange ? sendToFirebase(user.userUri) : sendDataToNextDB()) : route.params.Exit()}>
                     <Text style={styles.headerButtonText}>Done</Text>
                 </TouchableOpacity>
             ),
@@ -194,9 +183,7 @@ function HomeScreen({ navigation, route }) {
                 </View>
             ),
         });
-        console.log("setnavigations")
-        if(!isChanged)
-        {
+        if (!isChanged) {
             setIsChanged(true);
         }
         setNavigation();
@@ -210,6 +197,10 @@ function HomeScreen({ navigation, route }) {
             <TouchableOpacity onPress={() => pickImage()}>
                 <Image style={styles.image} source={{ uri: user.userUri }} />
             </TouchableOpacity>
+            <TouchableOpacity onPress={() => pickImage()}>
+                <Text style={styles.imageTxt}>Edit profile picture</Text>
+            </TouchableOpacity>
+
             <View style={styles.fieldView} >
                 <Text style={styles.fieldHeader}>First Name</Text>
                 <TextInput style={styles.fields} value={user.FirstName} onChangeText={(value) => setUser({ ...user, ["FirstName"]: value })} />
@@ -232,8 +223,6 @@ function HomeScreen({ navigation, route }) {
                     <GenderChange userId={user.userId} Gender={user.gender} cancel={() => setModalVisible(false)} Save={(Gender) => { setModalVisible(false); setUser({ ...user, ["gender"]: Gender }) }} />
                 </Modal>
             </View>
-
-
             <View style={styles.btnContainer}>
                 <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Privacy')}>
                     <Text style={styles.btnText}>Privacy & My Account</Text>
@@ -276,6 +265,12 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         backgroundColor: '#F5F5F5',
+    },
+    imageTxt: {
+        color: '#548DFF',
+        fontFamily: 'Urbanist-SemiBold',
+        fontSize: 16,
+        marginVertical: 10,
     },
     ColorBtnContainer: {
         justifyContent: 'space-between',
@@ -363,7 +358,7 @@ const styles = StyleSheet.create({
         height: 100,
         borderRadius: 100,
         marginTop: 20,
-      },
+    },
     btn: {
         flexDirection: 'row',
         alignItems: 'center',

@@ -43,12 +43,9 @@ export default function EditPaycheck(props) {
   const showMode = (currentMode) => {
     if (Platform.OS === 'android') {
       setShow(true);
-     
+      // for iOS, add a button that closes the picker
     }
-    if (Platform.OS === 'ios') {
-      setShow(true);
-       // for iOS, add a button that closes the picker
-    }    
+    
   };
 
   const showDatepicker = () => {

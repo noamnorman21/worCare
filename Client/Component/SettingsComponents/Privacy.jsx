@@ -1,5 +1,5 @@
 import { View, Text, SafeAreaView, StyleSheet, Alert, TouchableOpacity, Dimensions, Modal } from 'react-native'
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FieldChange from './FieldChange';
 import { useUserContext } from '../../UserContext';
@@ -29,8 +29,6 @@ export default function Privacy({ navigation, route }) {
   const [password2, setPassword2] = useState('');
   const [passwordChanged, setpasswordChanged] = useState(false);
 
-
-
   const CheckEmailInDB = () => {
     console.log('CheckEmailInDB', Email);
     let checkMail = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetEmail';
@@ -47,11 +45,10 @@ export default function Privacy({ navigation, route }) {
     })
       .then(res => {
         if (res.ok) {
-          console.log('res.ok');
-          sendDataToNextDB();
+
         }
         else {
-         console.log('res not ok');
+          sendDataToNextDB();
         }
       })
       .catch((error) => {
@@ -92,6 +89,7 @@ export default function Privacy({ navigation, route }) {
                 updateUserContext(userToUpdate);
                 const jsonValue = JSON.stringify(userToUpdate)
                 AsyncStorage.setItem('userData', jsonValue);
+                route.params.updateUser("Email", userToUpdate.Email)
                 if (passwordChanged) {
                   checkPassowrd();
                 }
@@ -126,11 +124,14 @@ export default function Privacy({ navigation, route }) {
 
   }
 
-
+  const cancel = () => {
+    console.log('cancel');
+    setEmail(userContext.Email);
+  }
 
   const SaveAllChanges = () => {
     if (Email != userContext.Email) {
-      CheckEmailInDB();
+      sendDataToNextDB();
     }
     else if (Email == userContext.Email && passwordChanged) {
       checkPassowrd();
@@ -480,7 +481,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Urbanist-SemiBold',
   },
   fieldContainer: {
-    flex : 1,
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },

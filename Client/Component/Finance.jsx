@@ -8,6 +8,9 @@ import History from './PaymentsScreen/History';
 import Paychecks from './PaychecksComponents/Paychecks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
+import {
+  MenuProvider,
+} from "react-native-popup-menu";
 
 const Stack = createStackNavigator();
 
@@ -16,7 +19,12 @@ const Stack = createStackNavigator();
 // Second Button will navigate to Paycheck screen - [History]
 export default function Finance() {
   return (
+    <MenuProvider customStyles={{optionsContainer: {
+      borderRadius: 0,
+      elevation: 100, 
+    },}}>
     <NavigationContainer independent={true} zIndex='0' initialRouteName='choice'  >
+      
       <Stack.Navigator initialRouteName='choice'>
         <Stack.Screen name='choice' component={Choice} options={() => ({
           headerShown: false,
@@ -35,7 +43,9 @@ export default function Finance() {
           cardOverlayEnabled: true,
         })} />
       </Stack.Navigator>
+      
     </NavigationContainer>
+    </MenuProvider>
   );
 }
 
@@ -128,7 +138,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     paddingTop: 20,
-    // backgroundColor: 'white',
   },
   BigIMG: {
     height: Dimensions.get('screen').height * 0.55,

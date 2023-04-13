@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, Image, SafeAreaView, Dimensions, Alert } from 'react-native'
 
+const SCREEN_WIDTH = Dimensions.get('window').width;
+const SCREEN_HEIGHT = Dimensions.get('window').height;
+
 export default function GenderChange(props) {
    const [userGender, setUserGender] = useState(props.Gender);
    const Save = () => {
@@ -8,32 +11,7 @@ export default function GenderChange(props) {
          Id: props.userId,
          gender: userGender
       }
-      console.log("userToUpdate: ", userToUpdate)
       props.Save(userGender);
-      //  fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Settings/UpdateGender', {
-
-      //     method: 'PUT',
-      //     headers: {
-      //       'Content-Type': 'application/json; charset=UTF-8',
-      //     },
-      //     body: JSON.stringify(userToUpdate),
-      //   })
-      //     .then(res => {
-      //       if (res.ok) {
-      //         return res.json()
-      //       }
-      //       else {
-      //         console.log("not found")
-      //       }
-      //     })
-      //     .then(data => {
-      //       if (data != null) {
-      //         console.log("data: ", data)
-      //       }
-      //     })
-      //     .catch((error) => {
-      //       console.log("err=", error);
-      //     });
    }
 
    return (
@@ -69,12 +47,15 @@ export default function GenderChange(props) {
             <TouchableOpacity style={{ marginBottom: 40 }} onPress={() => setUserGender('O')} >
                <Text style={[styles.txtOther, userGender === 'O' && styles.selectedGenderTXT]}>Prefer not to say...</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={() => Save()}>
-               <Text style={styles.buttonText}>Save</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button2} onPress={props.cancel}>
-               <Text style={styles.buttonText2}>Cancel</Text>
-            </TouchableOpacity>
+
+            <View style={styles.bottom}>
+               <TouchableOpacity style={styles.button} onPress={() => Save()}>
+                  <Text style={styles.buttonText}>Save</Text>
+               </TouchableOpacity>
+               <TouchableOpacity style={styles.button2} onPress={props.cancel}>
+                  <Text style={styles.buttonText2}>Cancel</Text>
+               </TouchableOpacity>
+            </View>
          </View>
       </SafeAreaView>
    )
@@ -140,47 +121,41 @@ const styles = StyleSheet.create({
       fontFamily: 'Urbanist-SemiBold',
       color: '#626262',
    },
+   bottom: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: 20,
+   },
    button: {
-      width: Dimensions.get('window').width * 0.9,
+      width: SCREEN_WIDTH * 0.45,
       backgroundColor: '#548DFF',
       alignItems: 'center',
       justifyContent: 'center',
       borderRadius: 16,
-      borderWidth: 1,
-      borderColor: 'lightgray',
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.3,
-      shadowRadius: 3,
-      elevation: 1,
       margin: 7,
-      height: 45,
+      height: 54,
    },
    button2: {
-      width: Dimensions.get('window').width * 0.9,
-      backgroundColor: 'white',
+      width: SCREEN_WIDTH * 0.45,
+      backgroundColor: '#F5F8FF',
       alignItems: 'center',
       justifyContent: 'center',
       borderRadius: 16,
-      borderWidth: 1,
-      borderColor: 'lightgray',
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.3,
-      shadowRadius: 3,
-      elevation: 1,
+      borderWidth: 1.5,
+      borderColor: '#548DFF',
       margin: 7,
-      height: 45,
+      height: 54,
    },
    buttonText: {
-      color: 'white',
+      color: '#fff',
       fontSize: 18,
-      fontFamily: 'Urbanist-Bold',
+      fontFamily: 'Urbanist-SemiBold',
    },
    buttonText2: {
       color: '#548DFF',
       fontSize: 18,
-      fontFamily: 'Urbanist-Bold',
+      fontFamily: 'Urbanist-SemiBold',
    },
    selectedGenderTXT: {
       color: '#548DFF',
