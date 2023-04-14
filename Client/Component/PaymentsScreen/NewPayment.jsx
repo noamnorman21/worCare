@@ -51,9 +51,6 @@ export default function NewPayment(props) {
   const sendToFirebase = async (image) => {
     // if the user didn't upload an image, we will use the default image
     if (payment.requestProofDocument === '' || payment.requestProofDocument === undefined) {
-      //זה תמונה מכוערת -נועם תחליף אותה
-      // let defultImage="https://png.pngtree.com/element_our/20200610/ourmid/pngtree-character-default-avatar-image_2237203.jpg"
-      // sendDataToDB(defultImage);
       return Alert.alert('Please upload an image');
     }
     if (payment.amountToPay === '') {

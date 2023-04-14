@@ -3,7 +3,7 @@ import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } fr
 import { useState } from "react";
 import * as DocumentPicker from 'expo-document-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { Octicons } from '@expo/vector-icons';
+import { AntDesign, Octicons } from '@expo/vector-icons';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function EditPaycheck(props) {
@@ -95,15 +95,14 @@ export default function EditPaycheck(props) {
       props.cancel();
     }
   }
-
   const Delete = () => {
     Alert.alert(
-      'Cancel Changes',
-      'are you sure you want to Exit the Page? All changes will be lost',
+      'Delete Paycheck',
+      'are you sure you want to Delete the Paycheck?',
       [
-        { text: "Don't leave", style: 'cancel', onPress: () => { } },
+        { text: "Dont Delete", style: 'cancel', onPress: () => { } },
         {
-          text: 'Leave',
+          text: 'Delete',
           style: 'destructive',
           // If the user confirmed, then we dispatch the action we blocked earlier
           // This will continue the action that had triggered the removal of the screen
@@ -121,7 +120,6 @@ export default function EditPaycheck(props) {
       ]
     );
   }
-
   const sendToFirebase = async (image) => {
     // if the user didn't upload an image, we will use the default image
     if (imageChanged) {
@@ -155,9 +153,7 @@ export default function EditPaycheck(props) {
     } else {
       savePaycheck(Paycheck.requestProofDocument);
     }
-
   }
-
   const savePaycheck = async (downloadURL) => {
 
     const temp = {
@@ -189,32 +185,32 @@ export default function EditPaycheck(props) {
         });
   }
 
-
-
-
   return (
 
       <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
           <SafeAreaView style={styles.container}>
+          <TouchableOpacity style={styles.closeBtn} onPress={Cancel}>
+              <AntDesign name="close" size={24} color="black" />
+            </TouchableOpacity>
             <Text style={styles.title}>Edit Paycheck {Paycheck.payCheckNumber}</Text>
             <View style={styles.inputContainer}>
               <TouchableOpacity style={styles.datePicker} onPress={showDatepicker}>
-                <Octicons name="calendar" size={22} />
+                {/* <Octicons name="calendar" size={22} /> */}
                 <Text style={styles.dateInputTxt}>{Paycheck.paycheckDate.substring(0, 10)}</Text>
-              </TouchableOpacity>
+              </TouchableOpacity>             
               {show && (
                 <DateTimePicker
                   testID="dateTimePicker"
                   value={new Date(Paycheck.paycheckDate)}
-                  mode={"date"}
+                  // mode={"date"}
                   is24Hour={true}
                   onChange={(value) => onChangeDate(value)}
-                  display="default"
+                  display="spinner"
                   maximumDate={new Date()}
+                  
                 />
-              )} 
-                        
+              )}                         
               <TextInput
                 style={styles.input}
                 value={Paycheck.paycheckSummary}
@@ -235,19 +231,14 @@ export default function EditPaycheck(props) {
             <View style={styles.bottom}>
               <TouchableOpacity style={styles.savebutton} onPress={() => sendToFirebase(Paycheck.requestProofDocument)}>
                 <Text style={styles.savebuttonText}>Save</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.cancelbutton} onPress={Cancel}>
-                <Text style={styles.cancelbuttonText}>Cancel</Text>
-              </TouchableOpacity>
-            </View>
-            <TouchableOpacity style={styles.Deletebutton} onPress={Delete}>
+              </TouchableOpacity>             
+              <TouchableOpacity style={styles.Deletebutton} onPress={Delete}>
               <Text style={styles.cancelbuttonText}>Delete</Text>
             </TouchableOpacity>
+            </View>
           </SafeAreaView>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
-
-
   );
 }
 
@@ -256,11 +247,16 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#fff',
     height: Dimensions.get('window').height * 1
   },
   inputContainer: {
     padding: 20,
+  },
+  closeBtn: {
+    position: 'absolute',
+    top: 100,
+    right: 30,
   },
   input: {
     width: Dimensions.get('window').width * 0.95,
@@ -289,23 +285,8 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 1,
   },
-  cancelbutton: {
-    backgroundColor: '#F5F8FF',
-    borderRadius: 16,
-    height: 45,
-    width: SCREEN_WIDTH * 0.45,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1.5,
-    borderColor: '#548DFF',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 1,
-  },
   Deletebutton: {
-    width: Dimensions.get('window').width * 0.95,
+    width: Dimensions.get('window').width * 0.45,
     backgroundColor: '#F5F8FF',
     alignItems: 'center',
     justifyContent: 'center',
@@ -317,7 +298,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 3,
     elevation: 1,
-    marginTop: 10,
     height: 45,
   },
   bottom: {
@@ -344,10 +324,9 @@ const styles = StyleSheet.create({
   },
   datePicker: {
     flexDirection: 'row',
-    justifyContent: 'center',
     width: Dimensions.get('window').width * 0.95,
     marginBottom: 10,
-    paddingLeft: 20,
+    paddingLeft: 8,
     alignItems: 'center',
     borderRadius: 16,
     borderWidth: 1.5,
@@ -372,7 +351,8 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     marginBottom: 20,
     borderRadius: 16,
-    backgroundColor: '#548DFF'
+    backgroundColor: '#548DFF',
+    marginHorizontal: 10,
   },
   uploaddbuttonText: {
     color: 'white',
@@ -380,5 +360,4 @@ const styles = StyleSheet.create({
     fontFamily: 'Urbanist-SemiBold',
   },
   
-
 });

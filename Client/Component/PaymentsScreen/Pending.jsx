@@ -216,10 +216,6 @@ function Request(props) {
 
 
 
-
-
-
-
   return (
     <SafeAreaView>
       <View>

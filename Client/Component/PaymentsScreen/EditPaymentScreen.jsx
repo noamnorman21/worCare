@@ -2,7 +2,7 @@ import { TextInput, View, Text, StyleSheet, Alert, SafeAreaView, TouchableOpacit
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { useState } from "react";
 import { AntDesign, Octicons } from '@expo/vector-icons';
-import { DateTimePicker } from '@react-native-community/datetimepicker';
+import  DateTimePicker  from '@react-native-community/datetimepicker';
 // import DateTimePickerModal from "react-native-modal-datetime-picker";
 import * as DocumentPicker from 'expo-document-picker';
 
@@ -230,7 +230,7 @@ export default function EditPaymentScreen(props) {
                   <TouchableOpacity style={styles.savebutton} onPress={() => sendToFirebase(Payment.requestProofDocument)}>
                     <Text style={styles.savebuttonText}>Save</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.cancelbutton} onPress={Cancel}>
+                  <TouchableOpacity style={styles.cancelbutton} onPress={Delete}>
                     <Text style={styles.cancelbuttonText}>Delete</Text>
                   </TouchableOpacity>
                 </View>
