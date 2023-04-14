@@ -4,6 +4,7 @@ import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Alert, TextInput 
 import { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { AntDesign, Octicons } from '@expo/vector-icons';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
@@ -44,11 +45,11 @@ export default function Contact({ route, navigation }) {
     }
   }
 
-  // const validatePhoneNum = (phoneNum) => {
-  //   //only numbers allowed in phone number input - no spaces or dashes - 10 digits - starts with 0
-  //   const phoneNumRegex = /^(0)[0-9]{9}$/
-  //   return phoneNumRegex.test(phoneNum)
-  // }
+  const validatePhoneNum = (phoneNum) => {
+    //only numbers allowed in phone number input - no spaces or dashes - 10 digits - starts with 0
+    const phoneNumRegex = /^(0)[0-9]{9}$/
+    return phoneNumRegex.test(phoneNum)
+  }
   const validateEmail = (email) => {
     const emailRegex = /\S+@\S+\.\S+/
     return emailRegex.test(email)
@@ -128,6 +129,9 @@ export default function Contact({ route, navigation }) {
   }
   return (
     <SafeAreaView style={styles.container}>
+      <TouchableOpacity style={styles.closeBtn} onPress={Cancel}>
+              <AntDesign name="close" size={24} color="black" />
+            </TouchableOpacity>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
           <View style={styles.centeredView}>
@@ -184,13 +188,12 @@ export default function Contact({ route, navigation }) {
               <TouchableOpacity style={styles.savebutton} onPress={validateInput}>
                 <Text style={styles.savebuttonText}>Save</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.cancelbutton} onPress={Cancel}>
-                <Text style={styles.cancelbuttonText}>Cancel</Text>
+              <TouchableOpacity style={styles.deleteBtn} onPress={DeleteContact}>
+                <Text style={styles.deleteBtnTxt}>Delete</Text>
               </TouchableOpacity>
+             
             </View>
-            <TouchableOpacity style={styles.Deletebutton} onPress={DeleteContact}>
-              <Text style={styles.cancelbuttonText}>Delete</Text>
-            </TouchableOpacity>
+           
           </View>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
@@ -204,6 +207,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#fff',
+  },
+  closeBtn: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
   },
   centeredView: {
     flex: 1,
@@ -241,7 +249,7 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 1,
   },
-  cancelbutton: {
+  deleteBtn: {
     backgroundColor: '#F5F8FF',
     borderRadius: 16,
     height: 45,
@@ -256,22 +264,6 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 1,
   },
-  Deletebutton: {
-    width: Dimensions.get('window').width * 0.85,
-    backgroundColor: 'white',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: '#548DFF',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 1,
-    margin: 7,
-    height: 45,
-  },
   bottom: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -282,7 +274,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'Urbanist-SemiBold',
   },
-  cancelbuttonText: {
+  deleteBtnTxt: {
     color: '#548DFF',
     textAlign: 'center',
     fontFamily: 'Urbanist-SemiBold',
