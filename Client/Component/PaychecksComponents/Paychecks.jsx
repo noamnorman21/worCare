@@ -169,12 +169,12 @@ function Paycheck(props) {
   const DeletePaychek = async () => {
     console.log("Delete Paycheck: " + temp.payCheckNum);
     Alert.alert(
-      'Cancel Changes',
-      'are you sure you want to Exit the Page? All changes will be lost',
+      'Delete Paycheck',
+      'are you sure you want to Delete the Paycheck?',
       [
-        { text: "Don't leave", style: 'cancel', onPress: () => { } },
+        { text: "Dont Delete", style: 'cancel', onPress: () => { } },
         {
-          text: 'Leave',
+          text: 'Delete',
           style: 'destructive',
           // If the user confirmed, then we dispatch the action we blocked earlier
           // This will continue the action that had triggered the removal of the screen
@@ -446,27 +446,42 @@ const newStyles = StyleSheet.create({
     flexDirection: 'row',
     borderBottomColor: '#80808080',
     borderBottomWidth: 0.2,
-    padding: 5,
-    fontFamily: 'Urbanist-Regular',
+    padding: 7,
+    fontFamily: 'Urbanist-Medium',
   },
   optionsText: {
     fontFamily: 'Urbanist-Regular',
   },
   optionsWrapper: {
     position: 'absolute',
-    bottom: -65,
+    flexDirection: 'column',
+    top: -120,
     backgroundColor: '#fff',
     borderRadius: 10,
-    left: 65,
+    left: SCREEN_WIDTH * 0.09,
     elevation: 100,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
   optionsWrapperOpened: {
     position: 'absolute',
-    bottom: -60,
+    bottom: -56,
     backgroundColor: '#fff',
     borderRadius: 10,
-    left: 65,
+    left: SCREEN_WIDTH * 0.09,
     elevation: 100,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
   deleteTxt: {
     color: '#FF3C3C',

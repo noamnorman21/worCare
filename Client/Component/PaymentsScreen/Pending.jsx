@@ -241,12 +241,12 @@ function Request(props) {
                   </View>}
                 />
                 <MenuOptions customStyles={{
-                  optionsWrapper:newStyles.optionsWrapperOpened,
+                  optionsWrapper: newStyles.optionsWrapperOpened,
                 }}  >
                   <MenuOption style={{ borderRadius: 16 }} value={1} children={<View style={newStyles.options}><MaterialCommunityIcons name='bell-ring-outline' size={20} /><Text style={newStyles.optionsText}> Send Notification</Text></View>} />
                   <MenuOption style={{ borderRadius: 16 }} value={2} children={<View style={newStyles.options}><Feather name='eye' size={20} /><Text style={newStyles.optionsText}> View Document</Text></View>} />
-                  <MenuOption style={{ borderRadius: 16 }} value={3} children={<View style={newStyles.options}><Feather name='edit' size={20} /><Text style={newStyles.optionsText}> Edit Requset</Text></View>} />
-                  <MenuOption style={newStyles.deleteTxt} value={4} children={<View style={newStyles.options}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={newStyles.deleteTxt}> Delete Requset</Text></View>} />
+                  <MenuOption style={{ borderRadius: 16 }} value={3} children={<View style={newStyles.options}><Feather name='edit' size={20} /><Text style={newStyles.optionsText}> Edit Request</Text></View>} />
+                  <MenuOption style={newStyles.deleteTxt} value={4} children={<View style={newStyles.options}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={newStyles.deleteTxt}> Delete Request</Text></View>} />
                 </MenuOptions>
               </Menu>
               <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
@@ -291,7 +291,7 @@ function Request(props) {
                   <Text style={newStyles.requestItemText}>{dateString} - {props.subject}</Text>
                 </View>
               </TouchableOpacity>
-              <Menu style={{ flexDirection: 'column', marginVertical: 0 }} onSelect={value => openModal(value)} >
+              <Menu style={{ flexDirection: 'column', marginVertical: 0, position: 'relative' }} onSelect={value => openModal(value)} >
                 <MenuTrigger
                   children={<View>
                     <MaterialCommunityIcons name="dots-horizontal" size={28} color="gray" />
@@ -301,21 +301,14 @@ function Request(props) {
                   optionsContainer: {
                     borderRadius: 10,
                     elevation: 100,
-                    // position: 'absolute',
-                    // top: 50, // set the top position to 50px
-                    // left: 0, // set the left position to 0px
-                    // zIndex: 10,
-                    // marginTop: -130,
-                    // maxHeight: 200,
-                    // padding:0,
                   },
                   optionsWrapper: newStyles.optionsWrapper,
                 }}
                 >
                   <MenuOption value={1} children={<View style={newStyles.options}><MaterialCommunityIcons name='bell-ring-outline' size={20} /><Text style={newStyles.optionsText}> Send Notification</Text></View>} />
                   <MenuOption value={2} children={<View style={newStyles.options}><Feather name='eye' size={20} /><Text style={newStyles.optionsText}> View Document</Text></View>} />
-                  <MenuOption value={3} children={<View style={newStyles.options}><Feather name='edit' size={20} /><Text style={newStyles.optionsText}> Edit Requset</Text></View>} />
-                  <MenuOption value={4} children={<View style={newStyles.options}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={newStyles.deleteTxt}> Delete Requset</Text></View>} />
+                  <MenuOption value={3} children={<View style={newStyles.options}><Feather name='edit' size={20} /><Text style={newStyles.optionsText}> Edit Request</Text></View>} />
+                  <MenuOption value={4} children={<View style={newStyles.options}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={newStyles.deleteTxt}> Delete Request</Text></View>} />
                 </MenuOptions>
               </Menu>
               <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
@@ -339,71 +332,13 @@ function Request(props) {
       </View>
     </SafeAreaView >
   );
-
-  // return (
-  //   <List.Accordion style={!expanded ? styles.request : styles.requestunFocused}
-  //     theme={{ colors: { background: '#FFF' } }}
-  //     right={() =>
-  //       <View style={styles.requestRight}>
-  //         <Text style={styles.requestHeaderText}>{props.subject}</Text>
-  //         <TouchableOpacity>
-  //           <View>
-  //             <Feather name="bell" size={18} color={'#000000'} />
-  //           </View>
-  //         </TouchableOpacity>
-  //       </View>}
-  //     left={() => <View><Text style={styles.requestHeaderText}>{props.date.substring(0, 10)}</Text></View>}
-  //     expanded={!expanded}
-  //     onPress={toggle}
-  //   >
-  //     <View style={!expanded ? styles.Focused : styles.unFocused}>
-  //       <View style={styles.bodyRequest}>
-  //         <List.Item left={() => <Text style={styles.itemsText}>Date: {props.date.substring(0, 10)} </Text>} />
-  //         <List.Item title={() => <Text style={styles.itemsText}>Amount: {props.amountToPay} </Text>} />
-  //         <List.Item title={() => <Text style={[styles.itemsText, props.requestComment == null || props.requestComment == '' && { display: 'none' }]}>Comment: {props.requestComment} </Text>} />
-  //         <List.Item title={() =>
-  //           <View>
-  //             <View style={styles.bottomView}>
-  //               <TouchableOpacity style={[styles.itemsText, styles.viewButton]} onPress={!expanded ? () => { setModal1Visible(true) } : null}>
-  //                 <Text style={styles.viewbuttonText}>View Document</Text>
-  //               </TouchableOpacity>
-  //               <TouchableOpacity style={[styles.itemsText, styles.editButton]} onPress={!expanded ? () => { setModal2Visible(true) } : null}>
-  //                 <Text style={styles.editbuttonText}>Edit</Text>
-  //               </TouchableOpacity>
-  //               <Modal animationType='slide' transparent={true} visible={modal2Visible}>
-  //                 <EditPaymentScreen cancel={() => { setModal2Visible(false); props.getPending() }} data={props.data} />
-  //               </Modal>
-  //               <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
-  //                 <View style={styles.documentview}>
-  //                   <Image source={{ uri: props.data.requestProofDocument }} style={styles.documentImg} />
-  //                   <Text>{props.data.requestProofDocument}</Text>
-  //                   <TouchableOpacity style={styles.documentDownloadButton} onPress={downloadFile} >
-  //                     <Text style={styles.documentButtonText}>Download</Text>
-  //                   </TouchableOpacity>
-  //                   <TouchableOpacity style={styles.documentCancelButton} onPress={() => setModal1Visible(false)}>
-  //                     <Text style={styles.documentCancelText}>Go Back</Text>
-  //                   </TouchableOpacity>
-  //                 </View>
-  //               </Modal>
-  //               <View>
-  //                 <TouchableOpacity style={[styles.itemsText, styles.SaveButton]} onPress={!expanded ? () => { saveStatus(props.data.requestId) } : null}>
-  //                   <Text style={styles.editbuttonText}>Update Status to finished</Text>
-  //                 </TouchableOpacity>
-  //               </View>
-  //             </View>
-  //           </View>
-  //         } />
-  //       </View>
-  //     </View>
-  //   </List.Accordion>
-  // )
 }
 
 const newStyles = StyleSheet.create({
   requestItemHeader: {
     justifyContent: 'space-between',
     width: Dimensions.get('screen').width * 0.9,
-    height: 60,
+    height: 65,
     alignItems: 'center',
     borderRadius: 16,
     borderWidth: 1.5,
@@ -418,12 +353,12 @@ const newStyles = StyleSheet.create({
     alignItems: 'flex-end',
     paddingHorizontal: 12,
     paddingVertical: 5,
-    width: Dimensions.get('screen').width * 0.9,
+    width: SCREEN_WIDTH * 0.9,
   },
   requestItemHeaderOpen: {
     // justifyContent: 'flex-start',
-    width: Dimensions.get('screen').width * 0.9,
-    height: 60,
+    width: SCREEN_WIDTH * 0.9,
+    height: 65,
     alignItems: 'center',
     paddingHorizontal: 12,
     flexDirection: 'row',
@@ -432,7 +367,7 @@ const newStyles = StyleSheet.create({
     borderBottomWidth: 1.5,
   },
   requestOpen: {
-    width: Dimensions.get('screen').width * 0.9,
+    width: SCREEN_WIDTH * 0.9,
     alignItems: 'center',
     borderRadius: 16,
     borderWidth: 1.5,
@@ -443,7 +378,7 @@ const newStyles = StyleSheet.create({
   },
   requestItemBody: {
     justifyContent: 'space-between',
-    width: Dimensions.get('screen').width * 0.9,
+    width: SCREEN_WIDTH * 0.9,
     alignItems: 'flex-start',
     padding: 12,
     flexDirection: 'row',
@@ -480,37 +415,54 @@ const newStyles = StyleSheet.create({
     flexDirection: 'row',
     borderBottomColor: '#80808080',
     borderBottomWidth: 0.2,
-    padding: 5,
-    fontFamily: 'Urbanist-Regular',
+    padding: 7,
+    fontFamily: 'Urbanist-Medium',
   },
-  optionsText: {    
-    fontFamily: 'Urbanist-Regular',
+  optionsText: {
+    fontFamily: 'Urbanist-Medium',
+    fontSize: 16,
   },
   optionsWrapper: {
     position: 'absolute',
-    bottom: -65,
+    flexDirection: 'column',
+    top: -120,
     backgroundColor: '#fff',
     borderRadius: 10,
-    left: 65,
+    left: SCREEN_WIDTH * 0.09,
     elevation: 100,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
   optionsWrapperOpened: {
     position: 'absolute',
-    bottom: -60,
+    bottom: -56,
     backgroundColor: '#fff',
     borderRadius: 10,
-    left: 65,
+    left: SCREEN_WIDTH * 0.09,
     elevation: 100,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
   deleteTxt: {
-    color: '#FF3C3C',    
-    fontFamily: 'Urbanist-Regular',
+    color: '#FF3C3C',
+    fontFamily: 'Urbanist-Medium',
+    fontSize: 16,
   },
   requestItemBodyLeft: {
-    flex:2,
+    flex: 2,
   },
   requestItemBodyRight: {
-    flex:3,
+    flex: 3,
     alignItems: 'flex-start',
   },
 
@@ -525,7 +477,7 @@ const styles = StyleSheet.create({
   },
   requestunFocused: {
     justifyContent: 'center',
-    width: Dimensions.get('screen').width * 0.9,
+    width: SCREEN_WIDTH * 0.9,
     height: 'auto',
     borderRadius: 16,
     borderWidth: 1.5,
@@ -541,7 +493,7 @@ const styles = StyleSheet.create({
   request: {
     justifyContent: 'center',
     paddingLeft: 12,
-    width: Dimensions.get('screen').width * 0.9,
+    width: SCREEN_WIDTH * 0.9,
     borderColor: '#7DA9FF',
     borderWidth: 1.5,
     backgroundColor: '#F5F8FF',
@@ -554,7 +506,7 @@ const styles = StyleSheet.create({
   requestHeaderIcon: {
     zIndex: 0,
     position: 'absolute',
-    right: Dimensions.get('screen').width * 0,
+    right: SCREEN_WIDTH * 0,
     backgroundColor: 'orange',
   },
   requestHeader: {
@@ -567,7 +519,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    width: Dimensions.get('screen').width * 0.45,
+    width: SCREEN_WIDTH * 0.45,
   },
   Focused: {
     borderColor: '#7DA9FF',

@@ -131,7 +131,7 @@ export default function Privacy({ navigation, route }) {
 
   const SaveAllChanges = () => {
     if (Email != userContext.Email) {
-      CheckEmailInDB();
+      sendDataToNextDB();
     }
     else if (Email == userContext.Email && passwordChanged) {
       checkPassowrd();

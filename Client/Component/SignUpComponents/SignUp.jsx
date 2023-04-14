@@ -165,6 +165,7 @@ export default function CreateUser({ navigation, route }) {
                   placeholder="First Name"
                   placeholderTextColor={'#9E9E9E'}
                   keyboardType='ascii-capable'
+                  autoCorrect={false}
                   onChangeText={(value) => handleInputChange('firstName', value)}
                 />
                 <TextInput

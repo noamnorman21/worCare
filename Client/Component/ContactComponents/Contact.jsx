@@ -8,7 +8,6 @@ import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } fr
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function Contact({ route, navigation }) {
-
   const { contact } = route.params;
   const [isChanged, setIsChanged] = useState(false);
   const [Contact, setContact] = useState({
@@ -45,18 +44,18 @@ export default function Contact({ route, navigation }) {
     }
   }
 
-  const validatePhoneNum = (phoneNum) => {
-    //only numbers allowed in phone number input - no spaces or dashes - 10 digits - starts with 0
-    const phoneNumRegex = /^(0)[0-9]{9}$/
-    return phoneNumRegex.test(phoneNum)
-  }
+  // const validatePhoneNum = (phoneNum) => {
+  //   //only numbers allowed in phone number input - no spaces or dashes - 10 digits - starts with 0
+  //   const phoneNumRegex = /^(0)[0-9]{9}$/
+  //   return phoneNumRegex.test(phoneNum)
+  // }
   const validateEmail = (email) => {
     const emailRegex = /\S+@\S+\.\S+/
     return emailRegex.test(email)
   }
   const validateInput = () => {
-    const { email, mobileNo, contactName } = Contact
-    if (!mobileNo || !contactName) {
+    const { email, contactName } = Contact
+    if (!contactName) {
       return Alert.alert('Error', 'Email and Mobile Number are required')
     }
     if (email !== null) {

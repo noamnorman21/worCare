@@ -6,7 +6,8 @@ import * as DocumentPicker from 'expo-document-picker';
 import { useUserContext } from '../../UserContext';
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { Octicons } from '@expo/vector-icons';
+import { AntDesign, Octicons } from '@expo/vector-icons';
+
 
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -146,8 +147,11 @@ export default function NewPaycheck(props) {
 
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} >        
           <View style={styles.centeredView}>
+          <TouchableOpacity style={styles.closeBtn} onPress={props.cancel}>
+              <AntDesign name="close" size={24} color="black" />
+            </TouchableOpacity>
             <View style={styles.header}>
               <Text style={styles.title}>New Paycheck</Text>
             </View>
@@ -222,6 +226,11 @@ const styles = StyleSheet.create({
   inputContainer: {
     width: SCREEN_WIDTH * 0.95,
     marginTop: 10,
+  },
+  closeBtn: {
+    position: 'absolute',
+    top: 100,
+    right: 30,
   },
   input: {
     width: Dimensions.get('window').width * 0.95,
