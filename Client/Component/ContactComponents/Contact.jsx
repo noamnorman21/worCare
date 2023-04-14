@@ -7,6 +7,7 @@ import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } fr
 import { AntDesign, Octicons } from '@expo/vector-icons';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
+const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export default function Contact({ route, navigation }) {
   const { contact } = route.params;
@@ -40,42 +41,41 @@ export default function Contact({ route, navigation }) {
   }
   const handleInputChange = (field, value) => {
     setContact({ ...Contact, [field]: value });
-    if (!isChanged) {
-      setIsChanged(true);
-    }
+    if (field=='email' && value=='') {
+      setContact({ ...Contact, [field]: null });
+  }
+}
+
+  //validate that phone contains only digits
+  const validatePhone = (phone) => {
+    const phoneRegex = /^[0-9]*$/
+    return phoneRegex.test(phone)
   }
 
-  const validatePhoneNum = (phoneNum) => {
-    //only numbers allowed in phone number input - no spaces or dashes - 10 digits - starts with 0
-    const phoneNumRegex = /^(0)[0-9]{9}$/
-    return phoneNumRegex.test(phoneNum)
-  }
+
   const validateEmail = (email) => {
     const emailRegex = /\S+@\S+\.\S+/
     return emailRegex.test(email)
   }
   const validateInput = () => {
-    const { email, contactName } = Contact
+    const { email, contactName,mobileNo } = Contact
     if (!contactName) {
-      return Alert.alert('Error', 'Email and Mobile Number are required')
-    }
-    if (email !== null) {
-      console.log('email', email)
-      if (!validateEmail(email)) {
-        return Alert.alert('Invalid Email', 'Please enter a valid email')
-      }
-    }
-    if (contactName === '') {
       return Alert.alert('Invalid Contact Name', 'Please enter a valid contact name')
     }
-    if (!validatePhoneNum(mobileNo)) {
-      return Alert.alert('Invalid Phone Number', 'Please enter a valid phone number')
+    if (email !== null && email !== '' && !validateEmail(email)) {      
+        return Alert.alert('Invalid Email', 'Please enter a valid email')
+    }
+    if (!mobileNo) {
+      return Alert.alert('Mobile number is required', 'Please enter a valid mobile number')
+    }
+    if (!validatePhone(mobileNo)) {
+      return Alert.alert('Invalid Mobile Number', 'Please enter a valid mobile number')
     }
     SaveChanges(Contact);
   }
-  const SaveChanges = () => {
-    let urlContact = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/UpdateContact/';
-    fetch(urlContact, {
+  const SaveChanges = () => {    
+    let urlContactUpdate = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/UpdateContact/';
+    fetch(urlContactUpdate, {
       method: 'PUT',
       body: JSON.stringify(Contact),
       headers: new Headers({ 'Content-Type': 'application/json; charset=UTF-8' })
@@ -149,7 +149,7 @@ export default function Contact({ route, navigation }) {
                 <TextInput
                   style={[styles.input, styles.numInput]}
                   value={Contact.phoneNo}
-                  keyboardType='ascii-capable'
+                  keyboardType='numeric'
                   onChangeText={(value) => handleInputChange('phoneNo', value)}
                 />
               </View>
@@ -158,11 +158,11 @@ export default function Contact({ route, navigation }) {
                 <TextInput
                   style={[styles.input, styles.numInput]}
                   value={Contact.mobileNo}
-                  keyboardType='ascii-capable'
+                  keyboardType='numeric'
                   onChangeText={(value) => handleInputChange('mobileNo', value)}
                 />
               </View>
-              <Text style={styles.contactheader}>Role:</Text>
+              <Text style={styles.contactheader}>Role(optional):</Text>
               <TextInput
                 style={styles.input}
                 value={Contact.role}
@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   input: {
-    width: Dimensions.get('window').width * 0.95,
+    width: SCREEN_WIDTH * 0.95,
     marginBottom: 10,
     paddingLeft: 20,
     alignItems: 'center',
@@ -297,7 +297,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   Deletebutton: {
-    width: Dimensions.get('window').width * 0.95,
+    width: SCREEN_WIDTH * 0.95,
     backgroundColor: '#F5F8FF',
     alignItems: 'center',
     justifyContent: 'center',

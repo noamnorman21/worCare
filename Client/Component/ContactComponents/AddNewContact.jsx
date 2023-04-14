@@ -8,12 +8,12 @@ const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export default function AddNewContact(props) {
   const [Contact, setContact] = useState({
-    contactName: '',
-    phoneNo: '',
-    mobileNo: '',
+    contactName: null,
+    phoneNo: null,
+    mobileNo: null,
     email: null,
-    role: '',
-    contactComment: '',
+    role: null,
+    contactComment: null,
     patientId: props.patientId // will change when we finish context to get the patient id
   })
 
@@ -21,22 +21,26 @@ export default function AddNewContact(props) {
     setContact({ ...Contact, [field]: value });
   }
 
+  //validate that phone contains only digits
+  const validatePhone = (phone) => {
+    const phoneRegex = /^[0-9]*$/
+    return phoneRegex.test(phone)
+  }
+
+
   const validateInput = () => {
     if (!Contact.contactName ) {
       return Alert.alert('Error', 'Name is required')
     }
-    if (Contact.email !== null && !validateEmail(Contact.email)) {
-      console.log(Contact.email)
+    if (Contact.email !== null && Contact.email !=='' && !validateEmail(Contact.email)) {
       return Alert.alert('Invalid Email', 'Please enter a valid email')
     }
-    if (Contact.contactName === '') {
-      return Alert.alert('Invalid Contact Name', 'Please enter a valid contact name')
+    if (!Contact.mobileNo) {
+      return Alert.alert('Invalid Mobile number', 'mobile number is requiered')
     }
-    if (Contact.mobileNo !== '' && !validatePhoneNum(Contact.mobileNo)) {
-      console.log(validatePhoneNum(Contact.mobileNo))
-      return Alert.alert('Invalid Mobile Number', 'Please enter a valid mobile number')
+    if (!validatePhone(Contact.mobileNo)) {
+      return Alert.alert('Invalid Mobile number', 'mobile number must contain only digits')
     }
-
     sendToDB();
   }
 
@@ -67,11 +71,7 @@ export default function AddNewContact(props) {
     return emailRegex.test(email)
   }
 
-  const validatePhoneNum = (phoneNum) => {
-    //only numbers allowed in phone number input - no spaces or dashes - 10 digits - starts with 0
-    const phoneNumRegex = /^(0)[0-9]{9}$/
-    return phoneNumRegex.test(phoneNum)
-  }
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -90,7 +90,7 @@ export default function AddNewContact(props) {
                   />
                   <TextInput
                     style={styles.input}
-                    placeholder="Phone Number"
+                    placeholder="Phone Number ( optional )"
                     keyboardType='decimal-pad'
                     onChangeText={(value) => handleInputChange('phoneNo', value)}
                     returnKeyType='done'
@@ -106,7 +106,7 @@ export default function AddNewContact(props) {
                   />
                   <TextInput
                     style={styles.input}
-                    placeholder="Role"
+                    placeholder="Role ( optional )"
                     keyboardType='ascii-capable'
                     onChangeText={(value) => handleInputChange('role', value)}
                   />
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   input: {
-    width: Dimensions.get('window').width * 0.95,
+    width: SCREEN_WIDTH * 0.95,
     marginBottom: 10,
     paddingLeft: 20,
     alignItems: 'center',
@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: '#E6EBF2',
     height: 90,
-    width: Dimensions.get('window').width * 0.95,
+    width: SCREEN_WIDTH * 0.95,
     marginBottom: 10,
     paddingLeft: 20,
     fontFamily: 'Urbanist-Light',
