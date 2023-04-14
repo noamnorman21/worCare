@@ -41,10 +41,11 @@ export default function Contact({ route, navigation }) {
   }
   const handleInputChange = (field, value) => {
     setContact({ ...Contact, [field]: value });
-    if (field=='email' && value=='') {
+
+    if (field == 'email' && value == '') {
       setContact({ ...Contact, [field]: null });
+    }
   }
-}
 
   //validate that phone contains only digits
   const validatePhone = (phone) => {
@@ -52,18 +53,18 @@ export default function Contact({ route, navigation }) {
     return phoneRegex.test(phone)
   }
 
-
   const validateEmail = (email) => {
     const emailRegex = /\S+@\S+\.\S+/
     return emailRegex.test(email)
   }
+
   const validateInput = () => {
-    const { email, contactName,mobileNo } = Contact
+    const { email, contactName, mobileNo } = Contact
     if (!contactName) {
       return Alert.alert('Invalid Contact Name', 'Please enter a valid contact name')
     }
-    if (email !== null && email !== '' && !validateEmail(email)) {      
-        return Alert.alert('Invalid Email', 'Please enter a valid email')
+    if (email !== null && email !== '' && !validateEmail(email)) {
+      return Alert.alert('Invalid Email', 'Please enter a valid email')
     }
     if (!mobileNo) {
       return Alert.alert('Mobile number is required', 'Please enter a valid mobile number')
@@ -73,7 +74,7 @@ export default function Contact({ route, navigation }) {
     }
     SaveChanges(Contact);
   }
-  const SaveChanges = () => {    
+  const SaveChanges = () => {
     let urlContactUpdate = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/UpdateContact/';
     fetch(urlContactUpdate, {
       method: 'PUT',
@@ -130,8 +131,8 @@ export default function Contact({ route, navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <TouchableOpacity style={styles.closeBtn} onPress={Cancel}>
-              <AntDesign name="close" size={24} color="black" />
-            </TouchableOpacity>
+        <AntDesign name="close" size={24} color="black" />
+      </TouchableOpacity>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
           <View style={styles.centeredView}>
@@ -191,9 +192,7 @@ export default function Contact({ route, navigation }) {
               <TouchableOpacity style={styles.deleteBtn} onPress={DeleteContact}>
                 <Text style={styles.deleteBtnTxt}>Delete</Text>
               </TouchableOpacity>
-             
             </View>
-           
           </View>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
@@ -296,20 +295,5 @@ const styles = StyleSheet.create({
   numbersInput: {
     flexDirection: 'row',
   },
-  Deletebutton: {
-    width: SCREEN_WIDTH * 0.95,
-    backgroundColor: '#F5F8FF',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 16,
-    borderWidth: 1.5,
-    borderColor: '#548DFF',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 1,
-    marginTop: 10,
-    height: 45,
-  },
+
 });

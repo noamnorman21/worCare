@@ -94,6 +94,8 @@ function Request(props) {
   const month = date.getMonth() + 1;
   const day = date.getDate();
   const dateString = day + "/" + month + "/" + newYear;
+  const [valueChanged, setValueChanged] = useState(false);
+  const [status, setStatus] = useState(props.data.requestStatus);
 
   const toggle = () => {
     const config = {
@@ -104,7 +106,6 @@ function Request(props) {
     Animated.timing(animationController, config).start();
     setExpanded(!expanded);
   };
-
 
   const openModal = (value) => {
     if (value == 1) {
@@ -120,6 +121,29 @@ function Request(props) {
       DeleteRequest()
     }
   }
+
+  const Cancel = () => {
+    if (valueChanged) {
+      Alert.alert(
+        'Cancel Changes',
+        'are you sure you want to Exit the Page? All changes will be lost',
+        [
+          { text: "Don't leave", style: 'cancel', onPress: () => { } },
+          {
+            text: 'Leave',
+            style: 'destructive',
+            // If the user confirmed, then we dispatch the action we blocked earlier
+            // This will continue the action that had triggered the removal of the screen
+            onPress: () => props.cancel()
+          },
+        ]
+      );
+    }
+    else {
+      props.cancel();
+    }
+  }
+
 
   const DeleteRequest = () => {
     Alert.alert(
@@ -148,11 +172,11 @@ function Request(props) {
   }
 
   const saveStatus = async (id) => {
-    console.log("request", request)
     let request = {
       requestId: id,
       requestStatus: "F"
     }
+    
     try {
       const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/UpdateStatus/', {
         method: 'PUT',
@@ -163,7 +187,10 @@ function Request(props) {
       });
       const data = await response.json();
       console.log(data)
+      setStatus("F")
+      setTimeout(() => {
       props.getPending()
+      }, 1500);
     } catch (error) {
       console.log(error)
     }
@@ -206,19 +233,12 @@ function Request(props) {
             })
             .catch(error => { console.log("Error", error) })
         }
-
       }
       catch (error) {
         console.log("Error", error)
       }
     }
   }
-
-
-
-
-
-
 
   return (
     <SafeAreaView>
@@ -251,13 +271,12 @@ function Request(props) {
               </Menu>
               <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
                 <View style={styles.documentview}>
+                  <TouchableOpacity style={styles.closeBtn} onPress={() => setModal1Visible(false)}>
+                    <AntDesign name="close" size={24} color="black" />
+                  </TouchableOpacity>
                   <Image source={{ uri: props.data.requestProofDocument }} style={styles.documentImg} />
-                  <Text>{props.data.requestProofDocument}</Text>
                   <TouchableOpacity style={styles.documentDownloadButton} onPress={downloadFile} >
                     <Text style={styles.documentButtonText}>Download</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.documentCancelButton} onPress={() => setModal1Visible(false)}>
-                    <Text style={styles.documentCancelText}>Go Back</Text>
                   </TouchableOpacity>
                 </View>
               </Modal>
@@ -283,7 +302,12 @@ function Request(props) {
             <View style={newStyles.requestItemHeader}>
               <TouchableOpacity style={newStyles.request} onPress={() => saveStatus(props.data.requestId)}>
                 <View style={newStyles.requestItemLeft}>
-                  <MaterialCommunityIcons name="checkbox-blank-circle-outline" size={30} color="#548DFF" />
+                  {
+                    status != 'F' ?
+                      <Feather name="circle" size={30} color="#548DFF" />
+                      :
+                      <Feather name="check-circle" size={30} color="#548DFF" />
+                  }
                 </View>
               </TouchableOpacity>
               <TouchableOpacity onPress={toggle} style={newStyles.requestItemMiddle}>
@@ -313,13 +337,12 @@ function Request(props) {
               </Menu>
               <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
                 <View style={styles.documentview}>
+                  <TouchableOpacity style={styles.closeBtn} onPress={() => setModal1Visible(false)}>
+                    <AntDesign name="close" size={24} color="black" />
+                  </TouchableOpacity>
                   <Image source={{ uri: props.data.requestProofDocument }} style={styles.documentImg} />
-                  <Text>{props.data.requestProofDocument}</Text>
                   <TouchableOpacity style={styles.documentDownloadButton} onPress={downloadFile} >
                     <Text style={styles.documentButtonText}>Download</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.documentCancelButton} onPress={() => setModal1Visible(false)}>
-                    <Text style={styles.documentCancelText}>Go Back</Text>
                   </TouchableOpacity>
                 </View>
               </Modal>
@@ -469,135 +492,23 @@ const newStyles = StyleSheet.create({
 })
 
 const styles = StyleSheet.create({
+  closeBtn: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    width: Dimensions.get('window').width * 0.9,
+    marginVertical: 30,
+  },
   pending: {
     alignItems: 'center',
     paddingTop: 10,
     backgroundColor: '#FEFEFE',
     flexGrow: 1,
   },
-  requestunFocused: {
-    justifyContent: 'center',
-    width: SCREEN_WIDTH * 0.9,
-    height: 'auto',
-    borderRadius: 16,
-    borderWidth: 1.5,
-    borderColor: '#E6EBF2',
-    marginVertical: 10,
-    backgroundColor: '#FFF',
-    paddingLeft: 12,
-  },
-  bottomView: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  request: {
-    justifyContent: 'center',
-    paddingLeft: 12,
-    width: SCREEN_WIDTH * 0.9,
-    borderColor: '#7DA9FF',
-    borderWidth: 1.5,
-    backgroundColor: '#F5F8FF',
-    borderRadius: 16,
-  },
-  requestHeaderText: {
-    fontSize: 17,
-    fontFamily: 'Urbanist-Bold'
-  },
-  requestHeaderIcon: {
-    zIndex: 0,
-    position: 'absolute',
-    right: SCREEN_WIDTH * 0,
-    backgroundColor: 'orange',
-  },
-  requestHeader: {
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    flexDirection: 'row',
-    padding: 16,
-  },
-  requestRight: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    width: SCREEN_WIDTH * 0.45,
-  },
-  Focused: {
-    borderColor: '#7DA9FF',
-    backgroundColor: '#F5F8FF',
-    borderWidth: 1.5,
-    borderRadius: 16,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    marginBottom: 10,
-    padding: 20,
-  },
-  unFocused: {
-    borderColor: '#E6EBF2',
-    backgroundColor: '#FEFEFE',
-    borderWidth: 1.5,
-    borderRadius: 16,
-    marginBottom: 10,
-    padding: 16,
-  },
-  itemsText: {
-    fontSize: 16,
-    fontFamily: 'Urbanist-Regular',
-    // marginLeft: Dimensions.get('screen').width * -0.16,
-    // marginRight: Dimensions.get('screen').width * 0.02,
-  },
-  viewButton: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#548DFF',
-    height: 40,
-    width: Dimensions.get('screen').width * 0.4,
-    borderRadius: 16,
-  },
-  editButton: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#F5F8FF',
-    height: 40,
-    width: Dimensions.get('screen').width * 0.4,
-    borderRadius: 16,
-    borderWidth: 1.5,
-    borderColor: '#7DA9FF',
-  },
-  SaveButton: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 40,
-    width: Dimensions.get('screen').width * 0.8,
-    borderRadius: 16,
-    borderWidth: 1.5,
-    backgroundColor: '#F5F8FF',
-    borderColor: '#7DA9FF',
-    marginTop: 10,
-  },
-  viewbuttonText: {
-    color: '#fff',
-    fontSize: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontFamily: 'Urbanist-SemiBold'
-  },
-  editbuttonText: {
-    color: '#7DA9FF',
-    fontSize: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontFamily: 'Urbanist-SemiBold'
-  },
   addBtnView: {
     position: 'absolute',
     bottom: 20,
     right: 20,
-  },
-  addRequestText: {
-    color: 'white',
-    fontSize: 26,
-    marginBottom: 2,
-    fontFamily: 'Urbanist-SemiBold',
   },
   documentImg: {
     height: SCREEN_HEIGHT * 0.5,
@@ -607,13 +518,13 @@ const styles = StyleSheet.create({
   documentDownloadButton: {
     fontSize: 16,
     borderRadius: 16,
-    backgroundColor: '#7DA9FF',
+    marginVertical: 10,
+    backgroundColor: '#548DFF',
     fontFamily: 'Urbanist-Bold',
     alignItems: 'center',
     justifyContent: 'center',
     width: SCREEN_WIDTH * 0.9,
     height: SCREEN_HEIGHT * 0.06,
-    marginBottom: 10,
   },
   documentview: {
     alignItems: 'center',

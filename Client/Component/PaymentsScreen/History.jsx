@@ -274,28 +274,22 @@ function Request(props) {
                   </View>}
                 />
                 <MenuOptions customStyles={{
-                 optionsWrapper:newStyles.optionsWrapperOpened,
+                  optionsWrapper: newStyles.optionsWrapperOpened,
                 }}  >
-                  <MenuOption value={1} children={<View style={newStyles.options}><MaterialCommunityIcons name='bell-ring-outline' size={20} /><Text style={newStyles.optionsText}> Send Notification</Text></View>} />
                   <MenuOption value={2} children={<View style={newStyles.options}><Feather name='eye' size={20} /><Text style={newStyles.optionsText}> View Document</Text></View>} />
-                  <MenuOption value={3} children={<View style={newStyles.options}><Feather name='edit' size={20} /><Text style={newStyles.optionsText}> Edit Requset</Text></View>} />
                   <MenuOption style={newStyles.deleteTxt} value={4} children={<View style={newStyles.options}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={newStyles.deleteTxt}> Delete Requset</Text></View>} />
                 </MenuOptions>
               </Menu>
               <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
                 <View style={styles.documentview}>
+                  <TouchableOpacity style={styles.closeBtn} onPress={() => setModal1Visible(false)}>
+                    <AntDesign name="close" size={24} color="black" />
+                  </TouchableOpacity>
                   <Image source={{ uri: props.data.requestProofDocument }} style={styles.documentImg} />
-                  <Text>{props.data.requestProofDocument}</Text>
                   <TouchableOpacity style={styles.documentDownloadButton} onPress={downloadFile} >
                     <Text style={styles.documentButtonText}>Download</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.documentCancelButton} onPress={() => setModal1Visible(false)}>
-                    <Text style={styles.documentCancelText}>Go Back</Text>
-                  </TouchableOpacity>
                 </View>
-              </Modal>
-              <Modal animationType='slide' transparent={true} visible={modal2Visible}>
-                <EditPaymentScreen cancel={() => { setModal2Visible(false); props.getHistory() }} data={props.data} />
               </Modal>
             </View>
             <View style={newStyles.requestItemBody}>
@@ -303,13 +297,11 @@ function Request(props) {
                 <Text style={newStyles.requestItemText}>Date: </Text>
                 <Text style={newStyles.requestItemText}>Amount: </Text>
                 <Text style={[newStyles.requestItemText, props.requestComment == null || props.requestComment == '' && { display: 'none' }]}>Comment: </Text>
-                <Text style={newStyles.requestItemText}>Status: </Text>
               </View>
               <View style={newStyles.requestItemBodyRight}>
                 <Text style={newStyles.requestItemText}>{dateString}</Text>
                 <Text style={newStyles.requestItemText}>{props.data.amountToPay}</Text>
                 <Text style={[newStyles.requestItemText, props.data.requestComment == null || props.data.requestComment == '' && { display: 'none' }]}>{props.requestComment}</Text>
-                <Text style={newStyles.requestItemText}>{displayStatus()}</Text>
               </View>
             </View>
           </View>
@@ -331,33 +323,23 @@ function Request(props) {
                   </View>}
                 />
                 <MenuOptions customStyles={{
-                  optionsWrapper:newStyles.optionsWrapper,
+                  optionsWrapper: newStyles.optionsWrapper,
                 }}
                 >
-
-
-                  <MenuOption style={{ borderRadius: 16 }} value={1} children={<View style={newStyles.options}><MaterialCommunityIcons name='bell-ring-outline' size={20} /><Text style={newStyles.optionsText}> Send Notification</Text></View>} />
                   <MenuOption style={{ borderRadius: 16 }} value={2} children={<View style={newStyles.options}><Feather name='eye' size={20} /><Text style={newStyles.optionsText}> View Document</Text></View>} />
-                  <MenuOption style={{ borderRadius: 16 }} value={3} children={<View style={newStyles.options}><Feather name='edit' size={20} /><Text style={newStyles.optionsText}> Edit Requset</Text></View>} />
                   <MenuOption style={newStyles.deleteTxt} value={4} children={<View style={newStyles.options}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={newStyles.deleteTxt}> Delete Requset</Text></View>} />
-
-
                 </MenuOptions>
               </Menu>
               <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
                 <View style={styles.documentview}>
+                  <TouchableOpacity style={styles.closeBtn} onPress={() => setModal1Visible(false)}>
+                    <AntDesign name="close" size={24} color="black" />
+                  </TouchableOpacity>
                   <Image source={{ uri: props.data.requestProofDocument }} style={styles.documentImg} />
-                  <Text>{props.data.requestProofDocument}</Text>
                   <TouchableOpacity style={styles.documentDownloadButton} onPress={downloadFile} >
                     <Text style={styles.documentButtonText}>Download</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.documentCancelButton} onPress={() => setModal1Visible(false)}>
-                    <Text style={styles.documentCancelText}>Go Back</Text>
-                  </TouchableOpacity>
                 </View>
-              </Modal>
-              <Modal animationType='slide' transparent={true} visible={modal2Visible}>
-                <EditPaymentScreen cancel={() => { setModal2Visible(false); props.getHistory() }} data={props.data} />
               </Modal>
             </View>
           </View>
@@ -365,47 +347,6 @@ function Request(props) {
       </View>
     </SafeAreaView >
   );
-
-  // return (
-  //   <List.Accordion
-  //     style={!expanded ? (status == "F" ? [styles.requestFocused, styles.finishedRequestFocused] : [styles.requestFocused, styles.notCompleteRequestFocused]) : styles.requestunFocused}
-  //     theme={{ colors: { background: 'white' } }}
-  //     right={() => <View style={styles.requesRight}><Text style={styles.requestHeaderText}>{props.subject}</Text></View>}
-  //     left={() => <View><Text style={styles.requestHeaderText}>{props.date.substring(0, 10)}</Text></View>}
-  //     expanded={!expanded}
-  //     onPress={toggle}
-  //   >
-  //     <View style={!expanded ? status == "F" ? ([styles.Focused, styles.completeFocused]) : ([styles.Focused, styles.notCompleteFocused]) : null}>
-  //       <View>
-  //         <List.Item title={() => <Text style={styles.itemsText}>Date: {props.date.substring(0, 10)} </Text>} />
-  //         <List.Item title={() => <Text style={styles.itemsText}>Amount: {props.amountToPay} </Text>} />
-  //         <List.Item title={() => <Text style={styles.itemsText}>Comment: {props.requestComment} </Text>} />
-  //         <List.Item title={() => <Text style={styles.itemsText}>Status: {displayStatus()} </Text>} />
-  //         <List.Item title={() =>
-  //           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-  //             <TouchableOpacity style={[styles.itemsText, styles.viewButton]} onPress={!expanded ? () => { setModal2Visible(true) } : null}>
-  //               <Text style={styles.viewbuttonText}>View Document</Text>
-  //             </TouchableOpacity>
-  //             <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
-  //               <EditPaymentScreen cancel={() => { setModal1Visible(false); props.getHistory() }} data={props.data} />
-  //             </Modal>
-  //             <Modal animationType='slide' transparent={true} visible={modal2Visible} onRequestClose={() => setModal2Visible(false)}>
-  //               <View style={styles.documentview}>
-  //                 <Image source={{ uri: props.data.requestProofDocument }} style={styles.documentImg} />
-  //                 <Text>{props.data.requestProofDocument}</Text>
-  //                 <TouchableOpacity style={styles.documentDownloadButton} onPress={Download} >
-  //                   <Text style={styles.documentButtonText}>Download</Text>
-  //                 </TouchableOpacity>
-  //                 <TouchableOpacity style={styles.documentCancelButton} onPress={() => setModal2Visible(false)}>
-  //                   <Text style={styles.documentCancelText}>Go Back</Text>
-  //                 </TouchableOpacity>
-  //               </View>
-  //             </Modal>
-  //           </View>} />
-  //       </View>
-  //     </View>
-  //   </List.Accordion>
-  // )
 }
 
 const newStyles = StyleSheet.create({
@@ -489,7 +430,7 @@ const newStyles = StyleSheet.create({
     flexDirection: 'row',
     borderBottomColor: '#80808080',
     borderBottomWidth: 0.2,
-    padding: 7,
+    padding: 15,
     fontFamily: 'Urbanist-Medium',
   },
   optionsText: {
@@ -502,7 +443,7 @@ const newStyles = StyleSheet.create({
     top: -120,
     backgroundColor: '#fff',
     borderRadius: 10,
-    left: SCREEN_WIDTH * 0.09,
+    left: SCREEN_WIDTH * 0.065,
     elevation: 100,
     shadowColor: '#000',
     shadowOffset: {
@@ -514,10 +455,10 @@ const newStyles = StyleSheet.create({
   },
   optionsWrapperOpened: {
     position: 'absolute',
-    bottom: -56,
+    top: -130,
     backgroundColor: '#fff',
     borderRadius: 10,
-    left: SCREEN_WIDTH * 0.09,
+    left: SCREEN_WIDTH * 0.065,
     elevation: 100,
     shadowColor: '#000',
     shadowOffset: {
@@ -539,160 +480,26 @@ const newStyles = StyleSheet.create({
     flex: 3,
     alignItems: 'flex-start',
   },
-
 })
 
 const styles = StyleSheet.create({
+  closeBtn: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    width: Dimensions.get('window').width * 0.9,
+    marginVertical: 30,
+  },
   pending: {
     alignItems: 'center',
-    flexGrow: 1,
     paddingTop: 10,
-    backgroundColor: '#fff'
-  },
-  requestunFocused: {
-    justifyContent: 'center',
-    width: SCREEN_WIDTH * 0.9,
-    height: SCREEN_HEIGHT * 0.08,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: '#E6EBF2',
-    marginBottom: 10,
-    backgroundColor: 'white',
-    elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
-    shadowRadius: 2,
-    paddingLeft: 12,
-  },
-  requestFocused: {
-    justifyContent: 'center',
-    paddingLeft: 12,
-    width: SCREEN_WIDTH * 0.9,
-    height: SCREEN_HEIGHT * 0.073,
-    justifyContent: 'center',
-    borderLeftWidth: 2,
-    borderTopLeftRadius: 16,
-    borderTopWidth: 2,
-    borderRightWidth: 2,
-    borderTopRightRadius: 16,
-    borderBottomWidth: 1,
-    borderBottomMargin: 10,
-  },
-  finishedRequestFocused: {
-    borderTopColor: '#7DA9FF',
-    borderLeftColor: '#7DA9FF',
-    borderRightColor: '#7DA9FF',
-    borderBottomColor: '#7DA9FF',
-    shadowColor: '#000',
-  },
-  notCompleteRequestFocused: {
-    borderTopColor: '#E6EBF2',
-    borderLeftColor: '#E6EBF2',
-    borderRightColor: '#E6EBF2',
-    borderBottomColor: '#E6EBF2',
-  },
-  requestHeaderText: {
-    fontSize: 16,
-    fontFamily: 'Urbanist-Bold',
-  },
-  requestHeader: {
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: 'none',
-    height: SCREEN_HEIGHT * 0.08,
-    width: SCREEN_WIDTH * 0.85,
-    flexDirection: 'row',
-    padding: 16,
-  },
-  requestHeaderIcon: {
-    zIndex: 0,
-    position: 'absolute',
-    right: SCREEN_WIDTH * 0,
-    backgroundColor: 'orange',
-  },
-  Focused: {
-    borderLeftWidth: 2,
-    borderBottomWidth: 2,
-    borderRightWidth: 2,
-    borderBottomEndRadius: 16,
-    borderBottomStartRadius: 16,
-    marginBottom: 10,
-    padding: 16,
-  },
-  completeFocused: {
-    borderLeftColor: '#7DA9FF',
-    borderBottomColor: '#7DA9FF',
-    borderRightColor: '#7DA9FF',
-    borderBottomColor: '#7DA9FF',
-    borderBottomEndRadius: 16,
-  },
-  notCompleteFocused: {
-    borderLeftColor: '#E6EBF2',
-    borderBottomColor: '#E6EBF2',
-    borderRightColor: '#E6EBF2',
-    borderBottomColor: '#E6EBF2',
-    borderBottomEndRadius: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-  },
-  itemsText: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginLeft: SCREEN_WIDTH * -0.16, //NEED TO CHANGE
-    marginRight: SCREEN_WIDTH * 0.02,
-    fontFamily: 'Urbanist-Regular',
-  },
-  viewButton: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#7DA9FF',
-    height: 50,
-    width: SCREEN_WIDTH * 0.8,
-    borderRadius: 16,
-  },
-  editButton: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'white',
-    height: 40,
-    width: SCREEN_WIDTH * 0.36,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: '#7DA9FF',
-    marginLeft: 10,
-  },
-  viewbuttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontFamily: 'Urbanist-Bold',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  editbuttonText: {
-    color: '#7DA9FF',
-    fontSize: 16,
-    fontFamily: 'Urbanist-Bold',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: '#FEFEFE',
+    flexGrow: 1,
   },
   addBtnView: {
     position: 'absolute',
     bottom: 20,
     right: 20,
-  },
-  addRequestText: {
-    color: 'white',
-    fontSize: 26,
-    marginBottom: 2,
-    fontFamily: 'Urbanist-SemiBold',
-  },
-  documentview: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    alignContent: 'center',
-    backgroundColor: 'white',
-    flex: 1,
   },
   documentImg: {
     height: SCREEN_HEIGHT * 0.5,
@@ -702,13 +509,20 @@ const styles = StyleSheet.create({
   documentDownloadButton: {
     fontSize: 16,
     borderRadius: 16,
-    backgroundColor: '#7DA9FF',
+    marginVertical: 10,
+    backgroundColor: '#548DFF',
     fontFamily: 'Urbanist-Bold',
     alignItems: 'center',
     justifyContent: 'center',
     width: SCREEN_WIDTH * 0.9,
     height: SCREEN_HEIGHT * 0.06,
-    marginBottom: 10,
+  },
+  documentview: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignContent: 'center',
+    backgroundColor: 'white',
+    flex: 1,
   },
   documentCancelButton: {
     fontSize: 16,

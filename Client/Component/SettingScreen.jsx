@@ -155,6 +155,25 @@ function HomeScreen({ navigation, route }) {
         }
     }
 
+    const cancelChanges = () => {
+        if (isChanged)
+            Alert.alert(
+                "Cancel Changes",
+                "Are you sure you want leave without Saving?",
+                [
+                    {
+                        text: "Cancel",
+                        onPress: () => console.log("Cancel Pressed"),
+                        style: "cancel"
+                    },
+                    { text: "OK", onPress: () => route.params.Exit() }
+                ],
+                { cancelable: false }
+            )
+        else
+            route.params.Exit()
+    }
+
     useEffect(() => {
         const setNavigation = async () => navigation.setOptions({
             headerRight: () => (
@@ -164,20 +183,7 @@ function HomeScreen({ navigation, route }) {
             ),
             headerLeft: () => (
                 <View style={styles.headerLeft}>
-                    <TouchableOpacity
-                        onPress={() => Alert.alert(
-                            "Cancel Changes",
-                            "Are you sure you want leave without Saving?",
-                            [
-                                {
-                                    text: "Cancel",
-                                    onPress: () => console.log("Cancel Pressed"),
-                                    style: "cancel"
-                                },
-                                { text: "OK", onPress: () => route.params.Exit() }
-                            ],
-                            { cancelable: false }
-                        )}         >
+                    <TouchableOpacity onPress={cancelChanges}>
                         <Ionicons name="chevron-back" size={28} color="black" />
                     </TouchableOpacity>
                 </View>
@@ -187,7 +193,7 @@ function HomeScreen({ navigation, route }) {
             setIsChanged(true);
         }
         setNavigation();
-    }, [user, isFocused]);
+    }, [user]);
 
     //the user name will be taken from the database
     //the user image will be taken from the database

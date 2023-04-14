@@ -124,10 +124,27 @@ export default function Privacy({ navigation, route }) {
 
   }
 
-  const cancel = () => {
-    console.log('cancel');
-    setEmail(userContext.Email);
-  }
+const CancelChanges = () => {
+    if (Email != userContext.Email || passwordChanged) {
+        Alert.alert(
+        "Cancel Changes",
+        "Are you sure you want to cancel your changes?",
+        [
+          {
+            text: "Cancel",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel"
+          },
+          { text: "OK", onPress: () => navigation.goBack() }
+        ],
+        { cancelable: false }
+      )
+      }
+      else {
+        navigation.goBack();
+      }
+    }
+    
 
   const SaveAllChanges = () => {
     if (Email != userContext.Email) {
@@ -137,7 +154,6 @@ export default function Privacy({ navigation, route }) {
       checkPassowrd();
     }
     else if (Email == userContext.Email && !passwordChanged) {
-      Alert.alert("No Changes", "You didn't make any changes")
       navigation.goBack();
     }
 
@@ -178,19 +194,7 @@ export default function Privacy({ navigation, route }) {
       headerLeft: () => (
         <View style={styles.headerLeft}>
           <TouchableOpacity
-            onPress={() => Alert.alert(
-              "Cancel Changes",
-              "Are you sure you want to cancel your changes?",
-              [
-                {
-                  text: "Cancel",
-                  onPress: () => console.log("Cancel Pressed"),
-                  style: "cancel"
-                },
-                { text: "OK", onPress: () => navigation.goBack() }
-              ],
-              { cancelable: false }
-            )}
+            onPress={() => {CancelChanges()}}
           >
             <Ionicons name="chevron-back" size={28} color="black" />
           </TouchableOpacity>
