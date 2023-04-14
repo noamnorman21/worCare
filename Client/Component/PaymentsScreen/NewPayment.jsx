@@ -3,11 +3,11 @@ import { View, Text, TextInput, SafeAreaView, Alert, StyleSheet, TouchableOpacit
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { storage } from '../../config/firebase';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import * as DocumentPicker from 'expo-document-picker';
+import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useUserContext } from '../../UserContext';
 import moment from "moment";
-import { MaterialCommunityIcons, MaterialIcons, Octicons, Ionicons } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
@@ -30,15 +30,58 @@ export default function NewPayment(props) {
     })
   }, []);
 
-  const pickDocument = async () => {
-    let result = await DocumentPicker.getDocumentAsync({
+  const openCamera = async () => {
+    // Ask the user for the permission to access the camera
+    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+    if (permissionResult.granted === false) {
+      Alert.alert("You've refused to allow this appp to access your camera!");
+      return;
+    }
+
+    let result = await ImagePicker.launchCameraAsync(
+      {
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        quality: 0.1,
+      }
+    );
+    // Explore the result
+    console.log(result);
+    if (!result.canceled) {
+      changeIMG(result.assets[0].uri)
+    }
+  }
+
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
-      aspect: [4, 3],
       quality: 0.1,
     });
+    // Explore the result
     console.log(result);
-    changeIMG(result.uri);
+    if (!result.canceled) {
+      changeIMG(result.assets[0].uri)
+    }
   };
+
+  const pickOrTakeImage = async () => {
+    Alert.alert(
+      'Choose an option',
+      'Choose an option to upload an image',
+      [
+        {
+          text: 'Take a photo',
+          onPress: () => openCamera(),
+        },
+        {
+          text: 'Choose from gallery',
+          onPress: () => pickImage(),
+        },
+      ],
+    );
+  }
 
   const changeIMG = (imageFromUser) => {
     setPayment({ ...payment, requestProofDocument: imageFromUser });
@@ -61,7 +104,6 @@ export default function NewPayment(props) {
       Alert.alert('Please enter subject');
       return;
     }
-    console.log('image', image);
     const filename = image.substring(image.lastIndexOf('/') + 1);
     const storageRef = ref(storage, "requests/" + filename);
     const blob = await fetch(image).then(response => response.blob());
@@ -84,7 +126,8 @@ export default function NewPayment(props) {
           });
         }
       );
-    } catch (error) {
+    }
+    catch (error) {
       console.error(error);
       Alert.alert('Upload Error', 'Sorry, there was an error uploading your image. Please try again later.');
     }
@@ -127,14 +170,14 @@ export default function NewPayment(props) {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
           <View style={styles.centeredView}>
             <TouchableOpacity style={styles.cancelbutton} onPress={props.cancel}>
-              <Ionicons name="close" size={24} color="black" />
+              <AntDesign name="close" size={24} color="black" />
             </TouchableOpacity>
 
-            <Text style={styles.title}>New Payment Request</Text>
+            <Text style={styles.title}>Add New Request</Text>
             <View style={styles.inputContainer}>
               <TextInput
                 style={styles.input}
-                placeholder='Reason'
+                placeholder='Subject'
                 keyboardType='ascii-capable'
                 onChangeText={(value) => handleInputChange('requestSubject', value)}
               />
@@ -146,12 +189,16 @@ export default function NewPayment(props) {
                 inputMode='decimal'
               />
               <TextInput
-                style={styles.commentInput}
-                placeholder='Add comment ( optional )'
+                style={[styles.input, { height: 150 }]}
+                editable
+                multiline
+                numberOfLines={4}
+                maxLength={300}
+                placeholder='Add comment ( Optional )'
                 keyboardType='ascii-capable'
                 onChangeText={(value) => handleInputChange('requestComment', value)}
               />
-              <TouchableOpacity style={styles.uploadButton} onPress={pickDocument}>
+              <TouchableOpacity style={styles.uploadButton} onPress={pickOrTakeImage}>
                 <Text style={styles.buttonText}>Upload document</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.uploadButton} onPress={() => sendToFirebase(payment.requestProofDocument)}>
@@ -161,7 +208,7 @@ export default function NewPayment(props) {
           </View>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </SafeAreaView >
   );
 }
 
@@ -173,7 +220,8 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 26,
     fontFamily: 'Urbanist-Bold',
-    margin: 20,
+    marginVertical: 10,
+    textAlign: 'center',
   },
   centeredView: {
     flex: 1,
@@ -203,7 +251,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     alignContent: 'center',
-    marginBottom: 20,
+    marginVertical: 10,
     borderRadius: 16,
     backgroundColor: '#548DFF'
   },
@@ -221,13 +269,11 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   cancelbutton: {
-    position: 'absolute',
-    top: 10,
-    right: 20,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 1,
-    elevation: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    width: Dimensions.get('window').width * 0.9,
+    marginVertical: 30,
   },
   savebuttonText: {
     color: 'white',
@@ -239,17 +285,6 @@ const styles = StyleSheet.create({
     fontFamily: 'Urbanist-SemiBold',
     fontSize: 16,
     color: '#fff',
-  },
-  commentInput: {
-    borderRadius: 16,
-    borderWidth: 1.5,
-    borderColor: '#E6EBF2',
-    height: 200,
-    marginVertical: 10,
-    width: Dimensions.get('window').width * 0.95,
-    paddingLeft: 10,
-    fontFamily: 'Urbanist-Medium',
-    fontSize: 16,
   },
   bottom: {
     flexDirection: 'row',

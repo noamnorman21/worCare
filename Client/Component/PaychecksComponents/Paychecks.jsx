@@ -9,21 +9,13 @@ import { useUserContext } from '../../UserContext';
 import { AddBtn } from '../HelpComponents/AddNewTask';
 import { MaterialCommunityIcons, AntDesign, Feather, Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-navigation';
-import {
-  Menu,
-  MenuProvider,
-  MenuOptions,
-  MenuOption,
-  MenuTrigger,
-  renderers
-} from "react-native-popup-menu";
+import { Menu, MenuProvider, MenuOptions, MenuOption, MenuTrigger, renderers } from "react-native-popup-menu";
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function Paychecks({ navigation, route }) {
   const { userContext } = useUserContext();
-
   const [History, setHistory] = useState()
   const [arr, setArr] = useState()
   const isFocused = useIsFocused()
@@ -44,8 +36,6 @@ export default function Paychecks({ navigation, route }) {
   //     { cancelable: false }
   //   );
   // }
-
-
 
   useEffect(() => {
     if (isFocused && modal1Visible == false) {
@@ -85,9 +75,6 @@ export default function Paychecks({ navigation, route }) {
     }
   }
 
-
-
-
   const Notification = (id) => {
     Alert.alert(
       "Notification",
@@ -104,11 +91,10 @@ export default function Paychecks({ navigation, route }) {
     );
   }
 
-
   return (
     <ScrollView contentContainerStyle={newStyles.pending}>
       <View style={newStyles.headerText}>
-        <Text style={newStyles.header} >History</Text>
+        <Text style={newStyles.header}>Paychecks</Text>
       </View>
       {History}
       <View style={newStyles.addBtnView}><AddBtn onPress={() => setModal1Visible(true)} /></View>
@@ -138,7 +124,6 @@ function Paycheck(props) {
   const dateString = day + "/" + month + "/" + newYear;
   const paycheckNum = props.data.paycheckNum;
 
-
   const toggle = () => {
     const config = {
       toValue: expanded ? 0 : 1,
@@ -161,7 +146,7 @@ function Paycheck(props) {
       setModal2Visible(true)
     }
     else if (value == 4) {
-      
+
       DeletePaychek(props.data.paycheckNum)
     }
   }
@@ -276,7 +261,7 @@ function Paycheck(props) {
                 <MenuOptions customStyles={{
                   optionsWrapper: newStyles.optionsWrapperOpened,
                 }}  >
-                 <MenuOption style={{ borderRadius: 16 }} value={1} children={<View style={newStyles.options}><MaterialCommunityIcons name='bell-ring-outline' size={20} /><Text style={newStyles.optionsText}> Send Notification</Text></View>} />
+                  <MenuOption style={{ borderRadius: 16 }} value={1} children={<View style={newStyles.options}><MaterialCommunityIcons name='bell-ring-outline' size={20} /><Text style={newStyles.optionsText}> Send Notification</Text></View>} />
                   <MenuOption style={{ borderRadius: 16 }} value={2} children={<View style={newStyles.options}><Feather name='eye' size={20} /><Text style={newStyles.optionsText}> View Document</Text></View>} />
                   <MenuOption style={{ borderRadius: 16 }} value={3} children={<View style={newStyles.options}><Feather name='edit' size={20} /><Text style={newStyles.optionsText}> Edit Paycheck</Text></View>} />
                   <MenuOption style={newStyles.deleteTxt} value={4} children={<View style={newStyles.options}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={newStyles.deleteTxt}> Delete Paycheck</Text></View>} />

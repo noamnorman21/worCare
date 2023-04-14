@@ -2,13 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, SafeAreaView, Alert, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { storage } from '../../config/firebase';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import * as DocumentPicker from 'expo-document-picker';
+import * as ImagePicker from 'expo-image-picker';
 import { useUserContext } from '../../UserContext';
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { AntDesign, Octicons } from '@expo/vector-icons';
-
-
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
@@ -20,9 +18,8 @@ export default function NewPaycheck(props) {
     paycheckComment: '',
     userId: userContext.userId
   })
-  
-  const [show, setShow] = useState(false);
 
+  const [show, setShow] = useState(false);
   const showMode = (currentMode) => {
     if (Platform.OS === 'android') {
       setShow(true);
@@ -31,7 +28,6 @@ export default function NewPaycheck(props) {
     else {
       setShow(true);
     }
-
   };
 
   const showDatepicker = () => {
@@ -44,23 +40,58 @@ export default function NewPaycheck(props) {
     handleInputChange('paycheckDate', currentDate);
   };
 
+  const openCamera = async () => {
+    // Ask the user for the permission to access the camera
+    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+    if (permissionResult.granted === false) {
+      Alert.alert("You've refused to allow this appp to access your camera!");
+      return;
+    }
 
+    let result = await ImagePicker.launchCameraAsync(
+      {
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        quality: 0.1,
+      }
+    );
+    // Explore the result
+    console.log(result);
+    if (!result.canceled) {
+      sendToFirebase(result.assets[0].uri)
+    }
+  }
 
-
-
-  const pickDocument = async () => {
-
-    let result = await DocumentPicker.getDocumentAsync({
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
-      aspect: [4, 3],
       quality: 0.1,
     });
-
-    // changeIMG(result.uri);
-
+    // Explore the result
+    console.log(result);
+    if (!result.canceled) {
+      sendToFirebase(result.assets[0].uri)
+    }
   };
 
-
+  const pickOrTakeImage = async () => {
+    Alert.alert(
+      'Choose an option',
+      'Choose an option to upload an image',
+      [
+        {
+          text: 'Take a photo',
+          onPress: () => openCamera(),
+        },
+        {
+          text: 'Choose from gallery',
+          onPress: () => pickImage(),
+        },
+      ],
+    );
+  }
 
   const handleInputChange = (name, value) => {
     setPayCheck({ ...PayCheck, [name]: value });
@@ -68,11 +99,10 @@ export default function NewPaycheck(props) {
 
   const sendToFirebase = async (image) => {
     // if the user didn't upload an image, we will use the default image
-   
     if (PayCheck.paycheckDate === null) {
       Alert.alert('Please select date');
       return;
-    }    
+    }
     console.log('image', image);
     const filename = image.substring(image.lastIndexOf('/') + 1);
     const storageRef = ref(storage, "Paychecks/" + filename);
@@ -110,7 +140,7 @@ export default function NewPaycheck(props) {
       userId: PayCheck.userId
     }
     console.log("Newcheck", Newcheck);
-   if (Newcheck.paycheckDate === null) {
+    if (Newcheck.paycheckDate === null) {
       Alert.alert('Please select date');
       return;
     }
@@ -119,7 +149,6 @@ export default function NewPaycheck(props) {
       return;
     }
     console.log("Newcheck", Newcheck);
-
     fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/PayChecks/NewPayCheck', {
       method: 'POST',
       body: JSON.stringify(Newcheck),
@@ -138,26 +167,22 @@ export default function NewPaycheck(props) {
         (error) => {
           console.log("err post=", error);
         });
-
   }
 
-
-
   return (
-
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss} >        
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
           <View style={styles.centeredView}>
-          <TouchableOpacity style={styles.closeBtn} onPress={props.cancel}>
+            <TouchableOpacity style={styles.closeBtn} onPress={props.cancel}>
               <AntDesign name="close" size={24} color="black" />
             </TouchableOpacity>
             <View style={styles.header}>
-              <Text style={styles.title}>New Paycheck</Text>
+              <Text style={styles.title}>Add New Paycheck</Text>
             </View>
             <TouchableOpacity style={styles.datePicker} onPress={showDatepicker}>
-              <Octicons name="calendar" size={22} />
-              <Text style={styles.dateInputTxt}>{PayCheck.paycheckDate}</Text>
+              <Text style={styles.dateInputTxt}>Date</Text>
+              {/* <Octicons name="calendar" size={22} /> */}
             </TouchableOpacity>
             {show && (
               <DateTimePicker
@@ -174,26 +199,27 @@ export default function NewPaycheck(props) {
             <View style={styles.inputContainer}>
               <TextInput
                 style={[styles.input]}
-                placeholder='summary'
+                placeholder='Summary'
                 keyboardType='decimal-pad'
                 onChangeText={(value) => handleInputChange('paycheckSummary', value)}
                 inputMode='decimal'
               />
               <TextInput
-                style={styles.commentInput}
-                placeholder='Add comment'
+                style={[styles.input, { height: 150 }]}
+                editable
+                multiline
+                numberOfLines={4}
+                maxLength={300}
+                placeholder='Add comment ( Optional )'
                 keyboardType='ascii-capable'
                 onChangeText={(value) => handleInputChange('paycheckComment', value)}
               />
-              <TouchableOpacity style={styles.uploadButton} onPress={pickDocument}>
-                <Text style={styles.buttonText}>Upload document</Text>
-              </TouchableOpacity>
               <View style={styles.bottom}>
                 <TouchableOpacity style={styles.savebutton} onPress={() => savePaycheck()}>
-                  <Text style={styles.savebuttonText}>Upload Paycheck</Text>
+                  <Text style={styles.savebuttonText}>Save Paycheck</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.cancelbutton} onPress={props.cancel}>
-                  <Text style={styles.cancelbuttonText}>Cancel</Text>
+                <TouchableOpacity style={styles.cancelbutton} onPress={pickOrTakeImage}>
+                  <Text style={styles.cancelbuttonText}>Upload document</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -220,22 +246,23 @@ const styles = StyleSheet.create({
   title: {
     color: '#000',
     fontSize: 24,
-    padding: 20,
-    fontFamily: 'Urbanist-Bold'
+    fontFamily: 'Urbanist-Bold',
+    textAlign: 'center',
   },
   inputContainer: {
     width: SCREEN_WIDTH * 0.95,
     marginTop: 10,
   },
   closeBtn: {
-    position: 'absolute',
-    top: 100,
-    right: 30,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    width: Dimensions.get('window').width * 0.9,
   },
   input: {
     width: Dimensions.get('window').width * 0.95,
-    marginBottom: 10,
-    paddingLeft: 20,
+    marginVertical: 10,
+    paddingLeft: 10,
     alignItems: 'center',
     borderRadius: 16,
     borderWidth: 1.5,
@@ -250,7 +277,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'center',
-    height: 45,
+    height: 54,
     width: SCREEN_WIDTH * 0.45,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -258,19 +285,10 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 1,
   },
-  uploadButton: {
-    paddingVertical: 15,
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignContent: 'center',
-    marginBottom: 20,
-    borderRadius: 16,
-    backgroundColor: '#548DFF'
-  },
   cancelbutton: {
     backgroundColor: '#F5F8FF',
     borderRadius: 16,
-    height: 45,
+    height: 54,
     width: SCREEN_WIDTH * 0.45,
     justifyContent: 'center',
     alignItems: 'center',
@@ -299,17 +317,6 @@ const styles = StyleSheet.create({
     fontFamily: 'Urbanist-SemiBold',
     fontSize: 16,
   },
-  commentInput: {
-    borderRadius: 16,
-    borderWidth: 1.5,
-    borderColor: '#E6EBF2',
-    height: 90,
-    width: Dimensions.get('window').width * 0.95,
-    marginBottom: 10,
-    paddingLeft: 20,
-    fontFamily: 'Urbanist-Light',
-    fontSize: 16,
-  },
   bottom: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -318,10 +325,10 @@ const styles = StyleSheet.create({
   },
   datePicker: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    // justifyContent: 'center',
     width: Dimensions.get('window').width * 0.95,
-    marginBottom: 10,
-    paddingLeft: 20,
+    marginVertical: 10,
+    paddingLeft: 10,
     alignItems: 'center',
     borderRadius: 16,
     borderWidth: 1.5,
@@ -330,14 +337,11 @@ const styles = StyleSheet.create({
     height: 54,
     fontFamily: 'Urbanist-Light',
     fontSize: 16,
-
   },
   dateInputTxt: {
-    color: '#000',
-    paddingHorizontal: 10,
+    // color: '',
     fontSize: 16,
     fontFamily: 'Urbanist-Regular',
-    paddingRight: 10,
   },
   Deletebutton: {
     width: Dimensions.get('window').width * 0.95,

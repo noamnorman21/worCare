@@ -2,7 +2,7 @@ import { TextInput, View, Text, StyleSheet, Alert, SafeAreaView, TouchableOpacit
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { useState } from "react";
 import { AntDesign, Octicons } from '@expo/vector-icons';
-import  DateTimePicker  from '@react-native-community/datetimepicker';
+import DateTimePicker from '@react-native-community/datetimepicker';
 // import DateTimePickerModal from "react-native-modal-datetime-picker";
 import * as DocumentPicker from 'expo-document-picker';
 
@@ -22,6 +22,7 @@ export default function EditPaymentScreen(props) {
     requestStatus: props.data.requestStatus,
     userId: props.data.userId
   })
+  const [valueChanged, setValueChanged] = useState(false);
 
   const pickDocument = async () => {
     let result = await DocumentPicker.getDocumentAsync({});
@@ -49,35 +50,40 @@ export default function EditPaymentScreen(props) {
   const showDatepicker = () => {
     // showMode('date');
     setShow(true);
-
   };
 
   const onChangeDate = (selectedDate) => {
+    setValueChanged(true);
     const currentDate = new Date(selectedDate.nativeEvent.timestamp).toISOString().substring(0, 10);
-
     setShow(false);
     handleInputChange('requestDate', currentDate);
   };
 
   const handleInputChange = (name, value) => {
+    setValueChanged(true);
     setPayment({ ...Payment, [name]: value })
   }
 
   const Cancel = () => {
-    Alert.alert(
-      'Cancel Changes',
-      'are you sure you want to Exit the Page? All changes will be lost',
-      [
-        { text: "Don't leave", style: 'cancel', onPress: () => { } },
-        {
-          text: 'Leave',
-          style: 'destructive',
-          // If the user confirmed, then we dispatch the action we blocked earlier
-          // This will continue the action that had triggered the removal of the screen
-          onPress: () => props.cancel()
-        },
-      ]
-    );
+    if (valueChanged) {
+      Alert.alert(
+        'Cancel Changes',
+        'are you sure you want to Exit the Page? All changes will be lost',
+        [
+          { text: "Don't leave", style: 'cancel', onPress: () => { } },
+          {
+            text: 'Leave',
+            style: 'destructive',
+            // If the user confirmed, then we dispatch the action we blocked earlier
+            // This will continue the action that had triggered the removal of the screen
+            onPress: () => props.cancel()
+          },
+        ]
+      );
+    }
+    else {
+      props.cancel();
+    }
   }
 
   const Delete = () => {
@@ -178,12 +184,12 @@ export default function EditPaymentScreen(props) {
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
-          <View style={styles.container}>
-            <TouchableOpacity style={styles.closeBtn} onPress={Cancel}>
-              <AntDesign name="close" size={24} color="black" />
-            </TouchableOpacity>
+          <View>
             <View style={styles.centeredView}>
-              <Text style={styles.title}>Edit Payment {Payment.requestId}</Text>
+              <TouchableOpacity style={styles.closeBtn} onPress={Cancel}>
+                <AntDesign name="close" size={24} color="black" />
+              </TouchableOpacity>
+              <Text style={styles.title}>Edit Payment #{Payment.requestId}</Text>
               {/* close btn icon */}
               <View style={styles.inputContainer}>
                 <TextInput
@@ -194,8 +200,10 @@ export default function EditPaymentScreen(props) {
                   onChangeText={(value) => handleInputChange('requestSubject', value)}
                 />
                 <TouchableOpacity style={styles.datePicker} onPress={showDatepicker}>
-                  <Text style={styles.dateInputTxt}>{Payment.requestDate.substring(0, 10)}</Text>
-                  {/* <Octicons name="calendar" size={22} /> */}
+                  <Text style={styles.dateInputTxt}>
+                    {Payment.requestDate.substring(0, 10)}
+                  </Text>
+                  {/* <Octicons style={{ textAlign: 'right' }} name="calendar" size={22} /> */}
                 </TouchableOpacity>
                 {show && (
                   <DateTimePicker
@@ -217,21 +225,22 @@ export default function EditPaymentScreen(props) {
                   inputMode='decimal'
                 />
                 <TextInput
-                  style={styles.commentInput}
+                  style={[styles.input, { height: 150 }]}
+                  editable
+                  multiline
+                  numberOfLines={4}
+                  maxLength={200}
                   placeholder='Enter comment'
                   value={Payment.requestComment}
                   keyboardType='ascii-capable'
                   onChangeText={(value) => handleInputChange('requestComment', value)}
                 />
-                <TouchableOpacity style={styles.uploadButton} onPress={pickDocument}>
-                  <Text style={styles.uploaddbuttonText}>Upload document</Text>
-                </TouchableOpacity>
                 <View style={styles.bottom}>
-                  <TouchableOpacity style={styles.savebutton} onPress={() => sendToFirebase(Payment.requestProofDocument)}>
-                    <Text style={styles.savebuttonText}>Save</Text>
+                  <TouchableOpacity style={styles.cancelbutton} onPress={pickDocument}>
+                    <Text style={styles.cancelbuttonText}>Pick Document</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.cancelbutton} onPress={Delete}>
-                    <Text style={styles.cancelbuttonText}>Delete</Text>
+                  <TouchableOpacity style={styles.savebutton} onPress={() => sendToFirebase(Payment.requestProofDocument)}>
+                    <Text style={styles.savebuttonText}>Update</Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -245,25 +254,25 @@ export default function EditPaymentScreen(props) {
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#F5F5F5',
-    height: Dimensions.get('window').height * 1,
     backgroundColor: '#fff'
   },
   inputContainer: {
     padding: 20,
   },
   closeBtn: {
-    position: 'absolute',
-    top: 100,
-    right: 30,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    width: Dimensions.get('window').width * 1,
   },
   input: {
     width: Dimensions.get('window').width * 0.95,
     marginBottom: 10,
-    paddingLeft: 20,
+    paddingLeft: 10,
     alignItems: 'center',
     borderRadius: 16,
     borderWidth: 1.5,
@@ -273,23 +282,12 @@ const styles = StyleSheet.create({
     fontFamily: 'Urbanist-Light',
     fontSize: 16,
   },
-  commentInput: {
-    borderRadius: 16,
-    borderWidth: 1.5,
-    borderColor: '#E6EBF2',
-    height: 90,
-    width: Dimensions.get('window').width * 0.95,
-    marginBottom: 10,
-    paddingLeft: 20,
-    fontFamily: 'Urbanist-Light',
-    fontSize: 16,
-  },
   datePicker: {
     flexDirection: 'row',
     // justifyContent: 'center',
     width: Dimensions.get('window').width * 0.95,
     marginBottom: 10,
-    paddingLeft: 10,
+    // paddingLeft: 10,
     alignItems: 'center',
     borderRadius: 16,
     borderWidth: 1.5,
@@ -311,7 +309,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'center',
-    height: 45,
+    height: 54,
     width: SCREEN_WIDTH * 0.45,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -322,7 +320,7 @@ const styles = StyleSheet.create({
   cancelbutton: {
     backgroundColor: '#F5F8FF',
     borderRadius: 16,
-    height: 45,
+    height: 54,
     width: SCREEN_WIDTH * 0.45,
     justifyContent: 'center',
     alignItems: 'center',
@@ -348,7 +346,7 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 1,
     marginTop: 10,
-    height: 45,
+    height: 54,
   },
   bottom: {
     flexDirection: 'row',
