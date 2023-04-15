@@ -256,9 +256,9 @@ export default function EditPaycheck(props) {
                   {/* <Octicons style={{ textAlign: 'right' }} name="calendar" size={22} /> */}
                 </TouchableOpacity> : <DatePicker
                   useNativeDriver={'true'}
-                  iconComponent={<FontAwesome name="calendar-check-o" size={24} color="gray" />}
+                  showIcon={false}
                   style={styles.inputFull}
-                  date={props.data.requestDate}
+                  date={Paycheck.paycheckDate}
                   mode="date"
                   placeholder="Date"
                   format="YYYY-MM-DD"
@@ -285,7 +285,7 @@ export default function EditPaycheck(props) {
                       textAlign: 'left',
                     }
                   }}
-                  onDateChange={(value) => handleInputChange('amountToPay', value)}
+                  onDateChange={(value) => onChangeDate(value)}
                 />}
 
                 {show && (

@@ -8,14 +8,29 @@ import AddNewContact from './ContactComponents/AddNewContact'
 import { useIsFocused } from '@react-navigation/native';
 import Contact from './ContactComponents/Contact'
 import { useUserContext } from '../UserContext'
-import { Octicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, AntDesign, Feather, Octicons } from '@expo/vector-icons';
+
+import {
+  Menu,
+  MenuProvider,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+  renderers
+} from "react-native-popup-menu";
+
+const SCREEN_HEIGHT = Dimensions.get('window').height;
+const SCREEN_WIDTH = Dimensions.get('window').width;
+
 export default function Contacts() {
   const stack = createStackNavigator();
   return (
+    <MenuProvider>
     <stack.Navigator initialRouteName='Main' screenOptions={{ headerShown: false }} >
-      <stack.Screen name="Main" component={Main} options={{ headerShown: false }} />
-      <stack.Screen name="Contact" component={Contact} options={{ headerShown: false }} />
+      <stack.Screen name="Main" component={Main} options={{ headerShown: true , headerTitle:"Contacts", headerTitleAlign:'center'}} />
+      <stack.Screen name="Contact" component={Contact} options={{ headerShown: true, headerTitle:"Edit Contact", headerTitleAlign:'center' }} />
     </stack.Navigator>
+    </MenuProvider>
   )
 
 }
@@ -97,11 +112,84 @@ function Main({ navigation }) {
 
 function ContactCard(props) {
   const navigation = useNavigation();
+
+  const openModal = (value) => {
+    if (value == 1) {
+      console.log("Email")
+    }
+    else if (value == 2) {
+      console.log("call")
+    }
+    if (value == 3) {
+     navigation.navigate('Contact', { contact: props.contact })
+    }
+    if (value == 4) {
+      DeleteContact()
+    }
+  }
+
+  const DeleteContact = () => {
+    Alert.alert(
+      'Delete Contact',
+      'Are you sure you want to delete this contact?',
+      [
+        { text: "Don't Delete", style: 'cancel', onPress: () => { } },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          // If the user confirmed, then we dispatch the action we blocked earlier
+          // This will continue the action that had triggered the removal of the screen
+          onPress: () => {
+            fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/DeleteContact/', {
+              method: 'DELETE',
+              body: JSON.stringify(Contact),
+              headers: new Headers({
+                'Content-Type': 'application/json; charset=UTF-8',
+              })
+            })
+              .then(res => {
+                return res.json()
+              })
+              .then(
+                (result) => {
+                  console.log("fetch POST= ", result);
+                  navigation.goBack();
+                },
+                (error) => {
+                  console.log("err post=", error);
+                });
+          }
+        },
+      ]
+    );
+  }
+ 
   return (
-    <TouchableOpacity style={styles.contactcard} onPress={() => navigation.navigate('Contact', { contact: props.contact })}>
+    <Menu  onSelect={value => openModal(value)} renderer={renderers.SlideInMenu} >
+    <MenuTrigger
+      children={ <View style={styles.contactcard}>
       <Text style={styles.name}>{props.contact.contactName}</Text>
       <Text style={styles.number}>{props.contact.mobileNo}</Text>
-    </TouchableOpacity>
+    </View>}
+    />
+    <MenuOptions customStyles={{
+      optionsContainer: {
+        borderRadius: 10,
+        elevation: 100,
+      },
+      // optionsWrapper: newStyles.optionsWrapper,
+    }}
+    >
+      <MenuOption value={1} children={<View style={styles.options}><MaterialCommunityIcons name='bell-ring-outline' size={20} /><Text style={styles.optionsText}> Send Email</Text></View>} />
+      <MenuOption value={2} children={<View style={styles.options}><Feather name='eye' size={20} /><Text style={styles.optionsText}> Call Contact</Text></View>} />
+      <MenuOption value={3} children={<View style={styles.options}><Feather name='edit' size={20} /><Text style={styles.optionsText}> Edit Contact</Text></View>} />
+      <MenuOption value={4} children={<View style={styles.options}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={styles.deleteTxt}> Delete Contact</Text></View>} />
+    </MenuOptions>
+  </Menu>
+    // <TouchableOpacity style={styles.contactcard} onPress={() => navigation.navigate('Contact', { contact: props.contact })}>
+    //   <Text style={styles.name}>{props.contact.contactName}</Text>
+    //   <Text style={styles.number}>{props.contact.mobileNo}</Text>
+    // </TouchableOpacity>
   )
 }
 
@@ -232,6 +320,38 @@ const styles = StyleSheet.create({
   cancelbuttonText: {
     color: '#000',
     fontFamily: 'Urbanist-SemiBold',
+    fontSize: 16,
+  },
+  options: {
+    flexDirection: 'row',
+    borderBottomColor: '#80808080',
+    borderBottomWidth: 0.2,
+    padding: 7,
+    fontFamily: 'Urbanist-Medium',
+  },
+  optionsText: {
+    fontFamily: 'Urbanist-Medium',
+    fontSize: 16,
+  },
+  optionsWrapper: {
+    position: 'absolute',
+    flexDirection: 'column',
+    top: -120,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    left: SCREEN_WIDTH * 0.09,
+    elevation: 100,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  deleteTxt: {
+    color: '#FF3C3C',
+    fontFamily: 'Urbanist-Medium',
     fontSize: 16,
   },
 });

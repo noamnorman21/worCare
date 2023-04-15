@@ -88,7 +88,7 @@ function CustomHeader() {
                     presentation: 'stack',
                     cardOverlayEnabled: true,
                 })} />
-            <Stack.Screen name='Contacts' component={Contacts} options={{ unmountOnBlur: true }} />
+            <Stack.Screen name='Contacts' component={Contacts} options={{ unmountOnBlur: true , headerShown:false}} />
         </Stack.Navigator>
     );
 }
