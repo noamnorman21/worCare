@@ -196,6 +196,7 @@
     <EntitySetMapping Name="tblPaycheck">
       <EntityTypeMapping TypeName="igroup194_Db.tblPaycheck">
         <MappingFragment StoreEntitySet="tblPaycheck">
+          <ScalarProperty Name="payCheckProofDocument" ColumnName="payCheckProofDocument" />
           <ScalarProperty Name="payCheckNum" ColumnName="payCheckNum" />
           <ScalarProperty Name="paycheckDate" ColumnName="paycheckDate" />
           <ScalarProperty Name="paycheckSummary" ColumnName="paycheckSummary" />
@@ -305,5 +306,7 @@
     <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="igroup194_Db.Store.sp_renamediagram" />
     <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="igroup194_Db.Store.sp_upgraddiagrams" />
     <FunctionImportMapping FunctionImportName="updateStatusCaresForPatient" FunctionName="igroup194_Db.Store.updateStatusCaresForPatient" />
+    <FunctionImportMapping FunctionImportName="InsertActualList" FunctionName="igroup194_Db.Store.InsertActualList" />
+    <FunctionImportMapping FunctionImportName="InsertDrugForPatient" FunctionName="igroup194_Db.Store.InsertDrugForPatient" />
   </EntityContainerMapping>
 </Mapping>

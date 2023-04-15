@@ -229,6 +229,7 @@
     <Property Name="paycheckComment" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
     <Property Name="UserId" Type="Int32" Nullable="false" />
     <NavigationProperty Name="tblUser" Relationship="Self.FK__tblPayche__UserI__6A50C1DA" FromRole="tblPaycheck" ToRole="tblUser" />
+    <Property Name="payCheckProofDocument" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
   </EntityType>
   <EntityType Name="tblPaymentRequest">
     <Key>
@@ -852,6 +853,7 @@
       <Parameter Name="paycheckSummary" Mode="In" Type="String" />
       <Parameter Name="paycheckComment" Mode="In" Type="String" />
       <Parameter Name="UserId" Mode="In" Type="Int32" />
+      <Parameter Name="payCheckProofDocument" Mode="In" Type="String" />
     </FunctionImport>
     <FunctionImport Name="NewPaymentRequest">
       <Parameter Name="requestSubject" Mode="In" Type="String" />
@@ -896,6 +898,19 @@
       <Parameter Name="patientId" Mode="In" Type="String" />
       <Parameter Name="workerId" Mode="In" Type="Int32" />
       <Parameter Name="status" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="InsertActualList">
+      <Parameter Name="type" Mode="In" Type="Boolean" />
+    </FunctionImport>
+    <FunctionImport Name="InsertDrugForPatient">
+      <Parameter Name="listId" Mode="In" Type="Int32" />
+      <Parameter Name="fromDate" Mode="In" Type="DateTime" />
+      <Parameter Name="toDate" Mode="In" Type="DateTime" />
+      <Parameter Name="dosage" Mode="In" Type="Byte" />
+      <Parameter Name="qtyInBox" Mode="In" Type="Int32" />
+      <Parameter Name="minQuantity" Mode="In" Type="Byte" />
+      <Parameter Name="drugId" Mode="In" Type="Int32" />
+      <Parameter Name="patientId" Mode="In" Type="String" />
     </FunctionImport>
   </EntityContainer>
   <ComplexType Name="sp_helpdiagramdefinition_Result">

@@ -192,6 +192,7 @@
           <Property Name="paycheckSummary" Type="nvarchar" MaxLength="4000" Nullable="false" />
           <Property Name="paycheckComment" Type="nvarchar(max)" />
           <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="payCheckProofDocument" Type="nvarchar" MaxLength="4000" />
         </EntityType>
         <EntityType Name="tblPaymentRequest">
           <Key>
@@ -594,6 +595,16 @@
           <Parameter Name="status" Type="char" Mode="In" />
           <Parameter Name="linkTo" Type="varchar" Mode="In" />
         </Function>
+        <Function Name="InsertDrugForPatient" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="listId" Type="int" Mode="In" />
+          <Parameter Name="fromDate" Type="date" Mode="In" />
+          <Parameter Name="toDate" Type="date" Mode="In" />
+          <Parameter Name="dosage" Type="tinyint" Mode="In" />
+          <Parameter Name="qtyInBox" Type="int" Mode="In" />
+          <Parameter Name="minQuantity" Type="tinyint" Mode="In" />
+          <Parameter Name="drugId" Type="int" Mode="In" />
+          <Parameter Name="patientId" Type="char" Mode="In" />
+        </Function>
         <Function Name="InsertForeignUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="Id" Type="int" Mode="In" />
           <Parameter Name="DateOfBirth" Type="date" Mode="In" />
@@ -685,6 +696,7 @@
           <Parameter Name="paycheckSummary" Type="nvarchar" Mode="In" />
           <Parameter Name="paycheckComment" Type="varchar(max)" Mode="In" />
           <Parameter Name="UserId" Type="int" Mode="In" />
+          <Parameter Name="payCheckProofDocument" Type="nvarchar" Mode="In" />
         </Function>
         <Function Name="NewPaymentRequest" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="requestSubject" Type="varchar" Mode="In" />
@@ -1092,6 +1104,7 @@
           <Property Name="paycheckComment" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="UserId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="tblUser" Relationship="Self.FK__tblPayche__UserI__6A50C1DA" FromRole="tblPaycheck" ToRole="tblUser" />
+          <Property Name="payCheckProofDocument" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tblPaymentRequest">
           <Key>
@@ -1715,6 +1728,7 @@
             <Parameter Name="paycheckSummary" Mode="In" Type="String" />
             <Parameter Name="paycheckComment" Mode="In" Type="String" />
             <Parameter Name="UserId" Mode="In" Type="Int32" />
+            <Parameter Name="payCheckProofDocument" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="NewPaymentRequest">
             <Parameter Name="requestSubject" Mode="In" Type="String" />
@@ -1761,7 +1775,17 @@
             <Parameter Name="status" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="InsertActualList">
-            <Parameter Name="type" Mode="In" Type="Boolean" />
+          <Parameter Name="type" Mode="In" Type="Boolean" />
+          </FunctionImport>
+          <FunctionImport Name="InsertDrugForPatient">
+            <Parameter Name="listId" Mode="In" Type="Int32" />
+            <Parameter Name="fromDate" Mode="In" Type="DateTime" />
+            <Parameter Name="toDate" Mode="In" Type="DateTime" />
+            <Parameter Name="dosage" Mode="In" Type="Byte" />
+            <Parameter Name="qtyInBox" Mode="In" Type="Int32" />
+            <Parameter Name="minQuantity" Mode="In" Type="Byte" />
+            <Parameter Name="drugId" Mode="In" Type="Int32" />
+            <Parameter Name="patientId" Mode="In" Type="String" />
           </FunctionImport>
         </EntityContainer>
         <ComplexType Name="sp_helpdiagramdefinition_Result">
@@ -1976,6 +2000,7 @@
           <EntitySetMapping Name="tblPaycheck">
             <EntityTypeMapping TypeName="igroup194_Db.tblPaycheck">
               <MappingFragment StoreEntitySet="tblPaycheck">
+                <ScalarProperty Name="payCheckProofDocument" ColumnName="payCheckProofDocument" />
                 <ScalarProperty Name="payCheckNum" ColumnName="payCheckNum" />
                 <ScalarProperty Name="paycheckDate" ColumnName="paycheckDate" />
                 <ScalarProperty Name="paycheckSummary" ColumnName="paycheckSummary" />
@@ -2086,6 +2111,7 @@
           <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="igroup194_Db.Store.sp_upgraddiagrams" />
           <FunctionImportMapping FunctionImportName="updateStatusCaresForPatient" FunctionName="igroup194_Db.Store.updateStatusCaresForPatient" />
           <FunctionImportMapping FunctionImportName="InsertActualList" FunctionName="igroup194_Db.Store.InsertActualList" />
+          <FunctionImportMapping FunctionImportName="InsertDrugForPatient" FunctionName="igroup194_Db.Store.InsertDrugForPatient" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

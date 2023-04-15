@@ -23,7 +23,7 @@ export default function EditPaycheck(props) {
     paycheckComment: props.data.paycheckComment,
     payCheckNumber: props.data.payCheckNum,
     userId: props.data.UserId,
-    paycheckProofDocument: props.data.paycheckProofDocument,
+    payCheckProofDocument: props.data.payCheckProofDocument,
   })
   const [show, setShow] = useState(false);
   const [mode, setMode] = useState('date');
@@ -50,7 +50,7 @@ export default function EditPaycheck(props) {
     // Explore the result
     console.log(result);
     if (!result.canceled) {
-      setPaycheck({ ...Paycheck, paycheckProofDocument: result.assets[0].uri })
+      setPaycheck({ ...Paycheck, payCheckProofDocument: result.assets[0].uri })
       setimageChanged(true);
       setValueChanged(true);
     }
@@ -66,7 +66,7 @@ export default function EditPaycheck(props) {
     // Explore the result
     console.log(result);
     if (!result.canceled) {
-      setPaycheck({ ...Paycheck, paycheckProofDocument: result.assets[0].uri })
+      setPaycheck({ ...Paycheck, payCheckProofDocument: result.assets[0].uri })
       setimageChanged(true);
       setValueChanged(true);
     }
@@ -151,31 +151,7 @@ export default function EditPaycheck(props) {
     }
   }
 
-  const Delete = () => {
-    Alert.alert(
-      'Delete Paycheck',
-      'are you sure you want to Delete the Paycheck?',
-      [
-        { text: "Dont Delete", style: 'cancel', onPress: () => { } },
-        {
-          text: 'Delete',
-          style: 'destructive',
-          // If the user confirmed, then we dispatch the action we blocked earlier
-          // This will continue the action that had triggered the removal of the screen
-          onPress: () => {
-            let res = fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Paychecks/DeletePaycheck/' + Paycheck.payCheckNumber, {
-              method: 'DELETE',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-            });
-            console.log("Delete Paycheck: " + Paycheck.payCheckNumber);
-            props.cancel();
-          }
-        },
-      ]
-    );
-  }
+
   const sendToFirebase = async (image) => {
     // if the user didn't upload an image, we will use the default image
     if (imageChanged) {
@@ -207,7 +183,7 @@ export default function EditPaycheck(props) {
         Alert.alert('Upload Error', 'Sorry, there was an error uploading your image. Please try again later.');
       }
     } else {
-      savePaycheck(Paycheck.requestProofDocument);
+      savePaycheck(Paycheck.payCheckProofDocument);
     }
   }
   const savePaycheck = async (downloadURL) => {
@@ -218,10 +194,11 @@ export default function EditPaycheck(props) {
       paycheckComment: Paycheck.paycheckComment,
       payCheckNum: Paycheck.payCheckNumber,
       userId: Paycheck.userId,
+      payCheckProofDocument: downloadURL,
     }
     console.log(temp);
 
-    fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Paychecks/UpdatePayCheck', {
+    fetch('https://proj.ruppin.ac.il/cgroup94/prod/api/Paychecks/UpdatePayCheck', {
       method: 'PUT',
       body: JSON.stringify(temp),
       headers: new Headers({
@@ -331,7 +308,7 @@ export default function EditPaycheck(props) {
             <TouchableOpacity style={styles.cancelbutton} onPress={pickOrTakeImage}>
               <Text style={styles.cancelbuttonText}>Pick Document</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.savebutton} onPress={() => sendToFirebase(Paycheck.paycheckProofDocument)}>
+            <TouchableOpacity style={styles.savebutton} onPress={() => sendToFirebase(Paycheck.payCheckProofDocument)}>
               <Text style={styles.savebuttonText}>Update</Text>
             </TouchableOpacity>
           </View>

@@ -43,6 +43,7 @@ namespace WebApi.Controllers
                     paycheckSummary = y.paycheckSummary,
                     paycheckComment = y.paycheckComment,
                     UserId = y.UserId,
+                    payCheckProofDocument = y.payCheckProofDocument
                 }).ToList();
                 return Ok(payChecks);
 
@@ -61,8 +62,7 @@ namespace WebApi.Controllers
         {
             try
             {
-
-                db.NewPaycheck(paycheck.paycheckDate, paycheck.paycheckSummary, paycheck.paycheckComment, paycheck.UserId);
+                db.NewPaycheck(paycheck.paycheckDate, paycheck.paycheckSummary, paycheck.paycheckComment, paycheck.UserId, paycheck.payCheckProofDocument);
                 db.SaveChanges();
                 return Ok("Paycheck added successfully!");
             }
@@ -85,6 +85,7 @@ namespace WebApi.Controllers
                     p.paycheckSummary = pay.paycheckSummary;
                     p.paycheckComment = pay.paycheckComment;
                     p.UserId = pay.UserId;
+                    p.payCheckProofDocument = pay.payCheckProofDocument;
                     db.SaveChanges();
                     return Ok("Request added successfully!");
                 }

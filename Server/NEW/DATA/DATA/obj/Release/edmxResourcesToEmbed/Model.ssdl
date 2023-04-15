@@ -187,6 +187,7 @@
     <Property Name="paycheckSummary" Type="nvarchar" MaxLength="4000" Nullable="false" />
     <Property Name="paycheckComment" Type="nvarchar(max)" />
     <Property Name="UserId" Type="int" Nullable="false" />
+    <Property Name="payCheckProofDocument" Type="nvarchar" MaxLength="4000" />
   </EntityType>
   <EntityType Name="tblPaymentRequest">
     <Key>
@@ -575,6 +576,9 @@
     </ReferentialConstraint>
   </Association>
   <Function Name="fn_diagramobjects" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int" />
+  <Function Name="InsertActualList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="type" Type="bit" Mode="In" />
+  </Function>
   <Function Name="InsertCalendarForUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="calendarNum" Type="int" Mode="In" />
     <Parameter Name="userId" Type="int" Mode="In" />
@@ -585,6 +589,16 @@
     <Parameter Name="workerId" Type="int" Mode="In" />
     <Parameter Name="status" Type="char" Mode="In" />
     <Parameter Name="linkTo" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="InsertDrugForPatient" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="listId" Type="int" Mode="In" />
+    <Parameter Name="fromDate" Type="date" Mode="In" />
+    <Parameter Name="toDate" Type="date" Mode="In" />
+    <Parameter Name="dosage" Type="tinyint" Mode="In" />
+    <Parameter Name="qtyInBox" Type="int" Mode="In" />
+    <Parameter Name="minQuantity" Type="tinyint" Mode="In" />
+    <Parameter Name="drugId" Type="int" Mode="In" />
+    <Parameter Name="patientId" Type="char" Mode="In" />
   </Function>
   <Function Name="InsertForeignUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="Id" Type="int" Mode="In" />
@@ -677,6 +691,7 @@
     <Parameter Name="paycheckSummary" Type="nvarchar" Mode="In" />
     <Parameter Name="paycheckComment" Type="varchar(max)" Mode="In" />
     <Parameter Name="UserId" Type="int" Mode="In" />
+    <Parameter Name="payCheckProofDocument" Type="nvarchar" Mode="In" />
   </Function>
   <Function Name="NewPaymentRequest" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="requestSubject" Type="varchar" Mode="In" />

@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="b11ec852555b436b91a5627ede34b36b" Name="Diagram1">
+      <Diagram DiagramId="b11ec852555b436b91a5627ede34b36b" Name="Diagram1" ZoomLevel="55">
         <EntityTypeShape EntityType="igroup194_Db.sysdiagrams" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="igroup194_Db.tblActualList" Width="1.5" PointX="3" PointY="10.375" IsExpanded="true" />
         <EntityTypeShape EntityType="igroup194_Db.tblActualTask" Width="1.5" PointX="13.5" PointY="16.75" IsExpanded="true" />

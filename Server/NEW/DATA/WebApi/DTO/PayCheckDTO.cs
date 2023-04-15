@@ -12,5 +12,7 @@ namespace WebApi.DTO
         public string paycheckSummary { get; set; }
         public string paycheckComment { get; set; }
         public int UserId { get; set; }
+
+        public string payCheckProofDocument { get; set; }
     }
 }

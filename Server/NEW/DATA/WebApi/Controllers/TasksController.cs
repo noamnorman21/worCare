@@ -121,27 +121,27 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpPost]
-        [Route("InsertActualList")] 
-        public IHttpActionResult InsertActualList([FromBody] dynamic list)
-        {
-            //dynamic becouse the list can be drug or product list
-            bool isdrug = false;// defaul product list
+        //[HttpPost]
+        //[Route("InsertActualList")] 
+        ////public IHttpActionResult InsertActualList([FromBody] dynamic list)
+        //{
+        //    //dynamic becouse the list can be drug or product list
+        //    bool isdrug = false;// defaul product list
 
-            if (list.drugId!=null)
-            {
-                //isdrug mean that is drug list and not product list
-                isdrug = true;       
-            }
-            db.InsertActualList(isdrug);
-            db.SaveChanges();
-            int actualListId = db.tblActualList.Max(x => x.listId);// find the new id that was created in the db
-            if (isdrug)
-            {
-                db.tblDrugForPatient.InsertDrugForPatient
-            }
+        //    if (list.drugId!=null)
+        //    {
+        //        //isdrug mean that is drug list and not product list
+        //        isdrug = true;       
+        //    }
+        //    db.InsertActualList(isdrug);
+        //    db.SaveChanges();
+        //    int actualListId = db.tblActualList.Max(x => x.listId);// find the new id that was created in the db
+        //    if (isdrug)
+        //    {
+        //        db.tblDrugForPatient.InsertDrugForPatient
+        //    }
 
-        }
+        //}
         
         
     }

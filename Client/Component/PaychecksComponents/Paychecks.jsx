@@ -36,7 +36,7 @@ export default function Paychecks({ navigation, route }) {
     }
 
     try {
-      const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/PayChecks/GetPaychecks/', {
+      const response = await fetch('https://proj.ruppin.ac.il/cgroup94/prod/api/PayChecks/GetPaychecks/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -46,7 +46,6 @@ export default function Paychecks({ navigation, route }) {
       });
       const data = await response.json();
       setArr(data)
-      console.log(data)
       if (data != null && data.length != undefined) {
         let arr = data.map((item) => {
           return (
@@ -100,6 +99,8 @@ function Paycheck(props) {
     paycheckSummary: props.data.paycheckSummary,
     paycheckComment: props.data.paycheckComment,
     payCheckNum: props.data.payCheckNum,
+    userId: props.data.userId,
+    payCheckProofDocument: props.data.payCheckProofDocument,
   })
   const [modal2Visible, setModal2Visible] = useState(false);
   const date = new Date(temp.paycheckDate);
@@ -150,7 +151,7 @@ function Paycheck(props) {
           // If the user confirmed, then we dispatch the action we blocked earlier
           // This will continue the action that had triggered the removal of the screen
           onPress: () => {
-            let res = fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Paychecks/DeletePaycheck/' + temp.payCheckNum, {
+            let res = fetch('https://proj.ruppin.ac.il/cgroup94/prod/api/Paychecks/DeletePaycheck/' + temp.payCheckNum, {
               method: 'DELETE',
               headers: {
                 'Content-Type': 'application/json',
@@ -187,8 +188,6 @@ function Paycheck(props) {
     const url = props.data.requestProofDocument;
     const dot = url.lastIndexOf(".");
     const questionMark = url.lastIndexOf("?");
-    const type = url.substring(dot, questionMark);
-    console.log("Type", type)
     const id = props.data.requestId;
     const fileName = "Request " + id;
     const fileUri = FileSystem.documentDirectory + fileName;
@@ -255,8 +254,7 @@ function Paycheck(props) {
               </Menu>
               <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
                 <View style={newStyles.documentview}>
-                  <Image source={{ uri: props.data.requestProofDocument }} style={newStyles.documentImg} />
-                  <Text>{props.data.requestProofDocument}</Text>
+                  <Image source={{ uri: props.data.payCheckProofDocument }} style={newStyles.documentImg} />
                   <TouchableOpacity style={newStyles.documentDownloadButton} onPress={downloadFile} >
                     <Text style={newStyles.documentButtonText}>Download</Text>
                   </TouchableOpacity>
@@ -313,7 +311,7 @@ function Paycheck(props) {
               </Menu>
               <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
                 <View style={newStyles.documentview}>
-                  <Image source={{ uri: props.data.requestProofDocument }} style={newStyles.documentImg} />
+                  <Image source={{ uri: props.data.payCheckProofDocument}} style={newStyles.documentImg} />
                   <Text>{props.data.requestProofDocument}</Text>
                   <TouchableOpacity style={newStyles.documentDownloadButton} onPress={downloadFile} >
                     <Text style={newStyles.documentButtonText}>Download</Text>

@@ -87,3 +87,7 @@ C:\Users\noam1\OneDrive\Desktop\worCare_New\worCare\Server\NEW\DATA\DATA\obj\Rel
 C:\Users\amita\Desktop\WorCare\worCare\Server\NEW\DATA\DATA\bin\Release\HtmlAgilityPack.dll
 C:\Users\amita\Desktop\WorCare\worCare\Server\NEW\DATA\DATA\bin\Release\HtmlAgilityPack.pdb
 C:\Users\amita\Desktop\WorCare\worCare\Server\NEW\DATA\DATA\bin\Release\HtmlAgilityPack.xml
+C:\Users\oryan\Desktop\app dev\worCare\Server\NEW\DATA\DATA\bin\Release\HtmlAgilityPack.dll
+C:\Users\oryan\Desktop\app dev\worCare\Server\NEW\DATA\DATA\bin\Release\HtmlAgilityPack.pdb
+C:\Users\oryan\Desktop\app dev\worCare\Server\NEW\DATA\DATA\bin\Release\HtmlAgilityPack.xml
+C:\Users\oryan\Desktop\app dev\worCare\Server\NEW\DATA\DATA\obj\Release\DATA.csproj.CopyComplete

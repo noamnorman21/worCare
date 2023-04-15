@@ -19,7 +19,8 @@ export default function NewPaycheck(props) {
     paycheckDate: null,
     paycheckSummary: '',
     paycheckComment: '',
-    userId: userContext.userId
+    userId: userContext.userId,
+    paycheckProofDocument: null,
   })
 
   const [show, setShow] = useState(false);
@@ -77,7 +78,7 @@ export default function NewPaycheck(props) {
     // Explore the result
     console.log(result);
     if (!result.canceled) {
-      sendToFirebase(result.assets[0].uri)
+      setPayCheck({ ...PayCheck, paycheckProofDocument: result.assets[0].uri })
     }
   };
 
@@ -104,8 +105,8 @@ export default function NewPaycheck(props) {
 
   const sendToFirebase = async (image) => {
     // if the user didn't upload an image, we will use the default image
-    if (PayCheck.paycheckDate === null) {
-      Alert.alert('Please select date');
+    if (PayCheck.paycheckProofDocument === null) {
+      Alert.alert('Please select an image');
       return;
     }
     console.log('image', image);
@@ -137,12 +138,13 @@ export default function NewPaycheck(props) {
     }
   };
 
-  const savePaycheck = async () => {
+  const savePaycheck = async (downloadURL) => {
     const Newcheck = {
       paycheckDate: PayCheck.paycheckDate,
       paycheckSummary: PayCheck.paycheckSummary,
       paycheckComment: PayCheck.paycheckComment,
-      userId: PayCheck.userId
+      userId: PayCheck.userId,
+      paycheckProofDocument: downloadURL
     }
     console.log("Newcheck", Newcheck);
     if (Newcheck.paycheckDate === null) {
@@ -154,7 +156,7 @@ export default function NewPaycheck(props) {
       return;
     }
     console.log("Newcheck", Newcheck);
-    fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/PayChecks/NewPayCheck', {
+    fetch('https://proj.ruppin.ac.il/cgroup94/prod/api/PayChecks/NewPayCheck', {
       method: 'POST',
       body: JSON.stringify(Newcheck),
       headers: new Headers({
