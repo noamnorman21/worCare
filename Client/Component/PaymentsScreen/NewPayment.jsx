@@ -10,6 +10,7 @@ import moment from "moment";
 import { AntDesign } from '@expo/vector-icons';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
+const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export default function NewPayment(props) {
   const { userContext } = useUserContext();
@@ -189,7 +190,7 @@ export default function NewPayment(props) {
                 inputMode='decimal'
               />
               <TextInput
-                style={[styles.input, { height: 150 }]}
+                style={[styles.input, { height: 150, textAlignVertical: 'top' }]}
                 editable
                 multiline
                 numberOfLines={4}

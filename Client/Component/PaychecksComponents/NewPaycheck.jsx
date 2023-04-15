@@ -7,10 +7,13 @@ import { useUserContext } from '../../UserContext';
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { AntDesign, Octicons } from '@expo/vector-icons';
+import DatePicker from 'react-native-datepicker';
+import { FontAwesome, MaterialIcons } from '@expo/vector-icons'
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function NewPaycheck(props) {
+  const [PlatformType, setPlatformType] = useState(Platform.OS);
   const { userContext } = useUserContext();
   const [PayCheck, setPayCheck] = useState({
     paycheckDate: null,
@@ -20,6 +23,7 @@ export default function NewPaycheck(props) {
   })
 
   const [show, setShow] = useState(false);
+  const [dateSelected, setDateSelected] = useState(false);
   const showMode = (currentMode) => {
     if (Platform.OS === 'android') {
       setShow(true);
@@ -37,6 +41,7 @@ export default function NewPaycheck(props) {
   const onChangeDate = (selectedDate) => {
     const currentDate = new Date(selectedDate.nativeEvent.timestamp).toISOString().substring(0, 10);
     setShow(false);
+    setDateSelected(true);
     handleInputChange('paycheckDate', currentDate);
   };
 
@@ -58,7 +63,7 @@ export default function NewPaycheck(props) {
     // Explore the result
     console.log(result);
     if (!result.canceled) {
-      sendToFirebase(result.assets[0].uri)
+      setPayCheck({ ...PayCheck, paycheckProofDocument: result.assets[0].uri })
     }
   }
 
@@ -121,7 +126,7 @@ export default function NewPaycheck(props) {
         () => {
           getDownloadURL(storageRef).then(downloadURL => {
             console.log('File available at', downloadURL);
-            setPayment({ ...payment, requestProofDocument: downloadURL });
+            setPayCheck({ ...PayCheck, paycheckProofDocument: downloadURL });
             savePaycheck(downloadURL);
           });
         }
@@ -180,17 +185,62 @@ export default function NewPaycheck(props) {
             <View style={styles.header}>
               <Text style={styles.title}>Add New Paycheck</Text>
             </View>
-            <TouchableOpacity style={styles.datePicker} onPress={showDatepicker}>
-              <Text style={styles.dateInputTxt}>Date</Text>
-              {/* <Octicons name="calendar" size={22} /> */}
-            </TouchableOpacity>
+            {PlatformType !== 'ios' ? <TouchableOpacity style={styles.datePicker} onPress={showDatepicker}>
+              {!dateSelected ? <Text style={styles.dateInputTxt}>
+                {PayCheck.paycheckDate ? PayCheck.paycheckDate : 'Date'}
+              </Text> :
+                <Text style={styles.dateInputTxtSelected}>
+                  {PayCheck.paycheckDate ? PayCheck.paycheckDate : 'Date'}
+                </Text>}
+              {/* <Octicons style={{ textAlign: 'right' }} name="calendar" size={22} /> */}
+            </TouchableOpacity> :
+              <DatePicker
+                useNativeDriver={'true'}
+                showIcon={false}
+                style={styles.inputFull}
+                date={PayCheck.paycheckDate}
+                mode="date"
+                placeholder="Date"
+                format="YYYY-MM-DD"
+                minDate="2000-01-01"
+                maxDate={new Date()}
+                confirmBtnText="Confirm"
+                cancelBtnText="Cancel"
+                customStyles={{
+                  dateIcon: {
+                    position: 'absolute',
+                    right: 0,
+                    top: 0,
+                    marginLeft: 0.2
+                  },
+                  dateInput: {
+                    marginLeft: 0,
+                    alignItems: 'flex-start', //change to center for android
+                    borderWidth: 0,
+                  },
+                  placeholderText: {
+                    color: 'gray',
+                    fontFamily: 'Urbanist',
+                    fontSize: 16,
+                    textAlign: 'left',
+                  },
+                  dateText: {
+                    color: 'black',
+                    fontFamily: 'Urbanist-Medium',
+                    fontSize: 16,
+                    textAlign: 'left',
+                  }
+                }}
+                onDateChange={(value) =>   handleInputChange('paycheckDate', value)}
+              />}
+
             {show && (
               <DateTimePicker
-                testID="dateTimePicker"
+                //testID="dateTimePicker"
                 value={new Date(PayCheck.paycheckDate)}
-                mode={"date"}
-                minimumDate={new Date(2020, 0, 1)}
+                // mode={"date"}
                 is24Hour={true}
+                placeholder="Date"
                 onChange={(value) => onChangeDate(value)}
                 display="default"
                 maximumDate={new Date()}
@@ -205,7 +255,7 @@ export default function NewPaycheck(props) {
                 inputMode='decimal'
               />
               <TextInput
-                style={[styles.input, { height: 150 }]}
+                style={[styles.input, { height: 150, textAlignVertical: 'top' }]}
                 editable
                 multiline
                 numberOfLines={4}
@@ -214,14 +264,12 @@ export default function NewPaycheck(props) {
                 keyboardType='ascii-capable'
                 onChangeText={(value) => handleInputChange('paycheckComment', value)}
               />
-              <View style={styles.bottom}>
-                <TouchableOpacity style={styles.savebutton} onPress={() => savePaycheck()}>
-                  <Text style={styles.savebuttonText}>Save Paycheck</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.cancelbutton} onPress={pickOrTakeImage}>
-                  <Text style={styles.cancelbuttonText}>Upload document</Text>
-                </TouchableOpacity>
-              </View>
+              <TouchableOpacity style={styles.uploadButton} onPress={pickOrTakeImage}>
+                <Text style={styles.buttonText}>Upload document</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.uploadButton} onPress={() => sendToFirebase(PayCheck.paycheckProofDocument)}>
+                <Text style={styles.savebuttonText}>Send request</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </TouchableWithoutFeedback>
@@ -237,31 +285,32 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
+  title: {
+    fontSize: 26,
+    fontFamily: 'Urbanist-Bold',
+    marginVertical: 10,
+    textAlign: 'center',
+  },
   centeredView: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
   },
-  title: {
-    color: '#000',
-    fontSize: 24,
-    fontFamily: 'Urbanist-Bold',
-    textAlign: 'center',
-  },
   inputContainer: {
-    width: SCREEN_WIDTH * 0.95,
-    marginTop: 10,
+    padding: 10,
+    backgroundColor: '#fff',
   },
   closeBtn: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
     width: Dimensions.get('window').width * 0.9,
+    marginVertical: 30,
   },
-  input: {
+  inputFull: {
     width: Dimensions.get('window').width * 0.95,
-    marginVertical: 10,
+    marginBottom: 10,
     paddingLeft: 10,
     alignItems: 'center',
     borderRadius: 16,
@@ -271,63 +320,64 @@ const styles = StyleSheet.create({
     height: 54,
     fontFamily: 'Urbanist-Light',
     fontSize: 16,
+    justifyContent: 'center',
+  },
+  input: {
+    width: Dimensions.get('window').width * 0.95,
+    marginVertical: 10,
+    paddingHorizontal: 10,
+    alignItems: 'center',
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: '#E6EBF2',
+    shadowColor: '#000',
+    height: 54,
+    fontFamily: 'Urbanist-Medium',
+    fontSize: 16,
+  },
+  uploadButton: {
+    paddingVertical: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignContent: 'center',
+    marginVertical: 10,
+    borderRadius: 16,
+    backgroundColor: '#548DFF'
   },
   savebutton: {
     backgroundColor: '#548DFF',
     borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'center',
-    height: 54,
+    height: 45,
     width: SCREEN_WIDTH * 0.45,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 3,
     elevation: 1,
-  },
-  cancelbutton: {
-    backgroundColor: '#F5F8FF',
-    borderRadius: 16,
-    height: 54,
-    width: SCREEN_WIDTH * 0.45,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1.5,
-    borderColor: '#548DFF',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 1,
-  },
-  buttonText: {
-    textAlign: 'center',
-    color: '#fff',
-    fontFamily: 'Urbanist-SemiBold',
-    fontSize: 16,
   },
   savebuttonText: {
     color: 'white',
     fontSize: 16,
     fontFamily: 'Urbanist-SemiBold',
   },
-  cancelbuttonText: {
-    color: '#548DFF',
+  buttonText: {
     textAlign: 'center',
     fontFamily: 'Urbanist-SemiBold',
     fontSize: 16,
+    color: '#fff',
   },
   bottom: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: SCREEN_WIDTH * 0.95,
-    bottom: -50, //to make the buttons appear above the keyboard 
   },
   datePicker: {
     flexDirection: 'row',
     // justifyContent: 'center',
+    marginBottom: 0,
     width: Dimensions.get('window').width * 0.95,
-    marginVertical: 10,
     paddingLeft: 10,
     alignItems: 'center',
     borderRadius: 16,
@@ -339,25 +389,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   dateInputTxt: {
-    // color: '',
+    color: '#9E9E9E',
     fontSize: 16,
-    fontFamily: 'Urbanist-Regular',
+    fontFamily: 'Urbanist-Medium',
   },
-  Deletebutton: {
-    width: Dimensions.get('window').width * 0.95,
-    backgroundColor: '#F5F8FF',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 16,
-    borderWidth: 1.5,
-    borderColor: '#548DFF',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 1,
-    marginTop: 10,
-    height: 45,
+  dateInputTxtSelected: {
+    color: '#000',
+    fontSize: 16,
+    fontFamily: 'Urbanist-Medium',
   },
-
 });
+

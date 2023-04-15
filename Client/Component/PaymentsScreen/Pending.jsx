@@ -95,6 +95,7 @@ function Request(props) {
   const day = date.getDate();
   const dateString = day + "/" + month + "/" + newYear;
   const [valueChanged, setValueChanged] = useState(false);
+  const [status, setStatus] = useState(props.data.requestStatus);
 
   const toggle = () => {
     const config = {
@@ -171,11 +172,11 @@ function Request(props) {
   }
 
   const saveStatus = async (id) => {
-    console.log("request", request)
     let request = {
       requestId: id,
       requestStatus: "F"
     }
+    
     try {
       const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/UpdateStatus/', {
         method: 'PUT',
@@ -186,7 +187,10 @@ function Request(props) {
       });
       const data = await response.json();
       console.log(data)
+      setStatus("F")
+      setTimeout(() => {
       props.getPending()
+      }, 1500);
     } catch (error) {
       console.log(error)
     }
@@ -299,7 +303,7 @@ function Request(props) {
               <TouchableOpacity style={newStyles.request} onPress={() => saveStatus(props.data.requestId)}>
                 <View style={newStyles.requestItemLeft}>
                   {
-                    props.data.requestStatus != 'F' ?
+                    status != 'F' ?
                       <Feather name="circle" size={30} color="#548DFF" />
                       :
                       <Feather name="check-circle" size={30} color="#548DFF" />

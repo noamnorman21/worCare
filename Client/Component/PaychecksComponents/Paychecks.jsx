@@ -21,21 +21,7 @@ export default function Paychecks({ navigation, route }) {
   const isFocused = useIsFocused()
   const [modal1Visible, setModal1Visible] = useState(false);
 
-  // const Edit = (id, data) => {
-  //   Alert.alert(
-  //     "Edit",
-  //     "Are you sure you want to Edit this request?",
-  //     [
-  //       {
-  //         text: "Cancel",
-  //         onPress: () => console.log("Cancel Pressed"),
-  //         style: "cancel"
-  //       },
-  //       { text: "OK", onPress: () => navigation.navigate('EditPaymentScreen', {id:id, data:data}) }
-  //     ],
-  //     { cancelable: false }
-  //   );
-  // }
+
 
   useEffect(() => {
     if (isFocused && modal1Visible == false) {

@@ -3,8 +3,13 @@ import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } fr
 import { useState } from "react";
 import { AntDesign, Octicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import DatePicker from 'react-native-datepicker';
+import { FontAwesome, MaterialIcons } from '@expo/vector-icons'
 // import DateTimePickerModal from "react-native-modal-datetime-picker";
-import * as DocumentPicker from 'expo-document-picker';
+import * as ImagePicker from 'expo-image-picker';
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { storage } from '../../config/firebase';
+
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -23,29 +28,65 @@ export default function EditPaymentScreen(props) {
     userId: props.data.userId
   })
   const [valueChanged, setValueChanged] = useState(false);
+  const [PlatformType, setPlatformType] = useState(Platform.OS);
 
-  const pickDocument = async () => {
-    let result = await DocumentPicker.getDocumentAsync({});
-    alert(result.uri);
-    changeIMG(result.uri);
-  };
+  const openCamera = async () => {
+    // Ask the user for the permission to access the camera
+    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+    if (permissionResult.granted === false) {
+      Alert.alert("You've refused to allow this appp to access your camera!");
+      return;
+    }
 
-  const changeIMG = (imageFromUser) => {
-    setPayment({ ...Payment, requestProofDocument: imageFromUser });
-    if (!imageChanged) {
+    let result = await ImagePicker.launchCameraAsync(
+      {
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        quality: 0.1,
+      }
+    );
+    // Explore the result
+    console.log(result);
+    if (!result.canceled) {
+      setPayment({ ...Payment, ['requestProofDocument']: result.assets[0].uri })
       setimageChanged(true);
+
     }
   }
 
-  const showMode = (currentMode) => {
-    if (Platform.OS === 'android') {
-      setShow(true);
-      // for iOS, add a button that closes the picker
-    }
-    if (Platform.OS === 'ios') {
-      setShow(true);
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      quality: 0.1,
+    });
+    // Explore the result
+    console.log(result);
+    if (!result.canceled) {
+      setPayment({ ...Payment, ['requestProofDocument']: result.assets[0].uri })
+      setimageChanged(true);
     }
   };
+
+  const pickOrTakeImage = async () => {
+    Alert.alert(
+      'Choose an option',
+      'Choose an option to upload an image',
+      [
+        {
+          text: 'Take a photo',
+          onPress: () => openCamera(),
+        },
+        {
+          text: 'Choose from gallery',
+          onPress: () => pickImage(),
+        },
+      ],
+    );
+  }
+
+
 
   const showDatepicker = () => {
     // showMode('date');
@@ -86,31 +127,32 @@ export default function EditPaymentScreen(props) {
     }
   }
 
-  const Delete = () => {
-    Alert.alert(
-      'Delete request',
-      'are you sure you want to Delete? All changes will be lost',
-      [
-        { text: "Don't leave", style: 'cancel', onPress: () => { } },
-        {
-          text: 'Leave',
-          style: 'destructive',
-          // If the user confirmed, then we dispatch the action we blocked earlier
-          // This will continue the action that had triggered the removal of the screen
-          onPress: () => {
-            let res = fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/DeletePayment/' + Payment.requestId, {
-              method: 'DELETE',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-            });
-            console.log(res);
-            props.cancel();
-          }
-        },
-      ]
-    );
-  }
+  //removed from page
+  // const Delete = () => {
+  //   Alert.alert(
+  //     'Delete request',
+  //     'are you sure you want to Delete? All changes will be lost',
+  //     [
+  //       { text: "Don't leave", style: 'cancel', onPress: () => { } },
+  //       {
+  //         text: 'Leave',
+  //         style: 'destructive',
+  //         // If the user confirmed, then we dispatch the action we blocked earlier
+  //         // This will continue the action that had triggered the removal of the screen
+  //         onPress: () => {
+  //           let res = fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/DeletePayment/' + Payment.requestId, {
+  //             method: 'DELETE',
+  //             headers: {
+  //               'Content-Type': 'application/json',
+  //             },
+  //           });
+  //           console.log(res);
+  //           props.cancel();
+  //         }
+  //       },
+  //     ]
+  //   );
+  // }
 
   const sendToFirebase = async (image) => {
     // if the user didn't upload an image, we will use the default image
@@ -199,12 +241,45 @@ export default function EditPaymentScreen(props) {
                   keyboardType='ascii-capable'
                   onChangeText={(value) => handleInputChange('requestSubject', value)}
                 />
-                <TouchableOpacity style={styles.datePicker} onPress={showDatepicker}>
+                {PlatformType !== 'ios' ? <TouchableOpacity style={styles.datePicker} onPress={showDatepicker}>
                   <Text style={styles.dateInputTxt}>
                     {Payment.requestDate.substring(0, 10)}
                   </Text>
                   {/* <Octicons style={{ textAlign: 'right' }} name="calendar" size={22} /> */}
-                </TouchableOpacity>
+                </TouchableOpacity> : <DatePicker
+                  useNativeDriver={'true'}
+                  showIcon={false}
+                  style={styles.inputFull}
+                  date={Payment.requestDate}
+                  mode="date"
+                  placeholder="Date"
+                  format="YYYY-MM-DD"
+                  minDate="2000-01-01"
+                  maxDate={new Date()}
+                  confirmBtnText="Confirm"
+                  cancelBtnText="Cancel"
+                  customStyles={{
+                    dateInput: {
+                      marginLeft: 0,
+                      alignItems: 'flex-start', //change to center for android
+                      borderWidth: 0,
+                    },
+                    placeholderText: {
+                      color: 'gray',
+                      fontFamily: 'Urbanist',
+                      fontSize: 16,
+                      textAlign: 'left',
+                    },
+                    dateText: {
+                      color: 'black',
+                      fontFamily: 'Urbanist-Medium',
+                      fontSize: 16,
+                      textAlign: 'left',
+                    }
+                  }}
+                  onDateChange={(value) => handleInputChange('requestDate', value)}
+                />}
+
                 {show && (
                   <DateTimePicker
                     //testID="dateTimePicker"
@@ -212,7 +287,7 @@ export default function EditPaymentScreen(props) {
                     // mode={"date"}
                     is24Hour={true}
                     onChange={(value) => onChangeDate(value)}
-                    display="spinner"
+                    display="default"
                     maximumDate={new Date()}
                   />
                 )}
@@ -225,18 +300,18 @@ export default function EditPaymentScreen(props) {
                   inputMode='decimal'
                 />
                 <TextInput
-                  style={[styles.input, { height: 150 }]}
+                  style={[styles.input, { height: 150, textAlignVertical: 'top' }]}
                   editable
                   multiline
                   numberOfLines={4}
                   maxLength={200}
-                  placeholder='Enter comment'
+                  placeholder='Enter comment ( optional )'
                   value={Payment.requestComment}
                   keyboardType='ascii-capable'
                   onChangeText={(value) => handleInputChange('requestComment', value)}
                 />
                 <View style={styles.bottom}>
-                  <TouchableOpacity style={styles.cancelbutton} onPress={pickDocument}>
+                  <TouchableOpacity style={styles.cancelbutton} onPress={pickOrTakeImage}>
                     <Text style={styles.cancelbuttonText}>Pick Document</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={styles.savebutton} onPress={() => sendToFirebase(Payment.requestProofDocument)}>
@@ -279,8 +354,22 @@ const styles = StyleSheet.create({
     borderColor: '#E6EBF2',
     shadowColor: '#000',
     height: 54,
-    fontFamily: 'Urbanist-Light',
+    fontFamily: 'Urbanist-Medium',
     fontSize: 16,
+  },
+  inputFull: {
+    width: Dimensions.get('window').width * 0.95,
+    marginBottom: 10,
+    paddingLeft: 10,
+    alignItems: 'center',
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: '#E6EBF2',
+    shadowColor: '#000',
+    height: 54,
+    fontFamily: 'Urbanist-Medium',
+    fontSize: 16,
+    justifyContent: 'center',    
   },
   datePicker: {
     flexDirection: 'row',
