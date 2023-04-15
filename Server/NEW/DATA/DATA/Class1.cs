@@ -10,6 +10,8 @@ using System.Net.Http;
 using HtmlAgilityPack; // for HtmlDocument
 using Newtonsoft.Json.Linq; // for JObject
 
+
+
 namespace DATA
 {
     public partial class tblCalendarForUser
@@ -37,15 +39,6 @@ namespace DATA
                 return -1;
             }
         }
-    }
-    public partial class tblDrugForPatient
-    {
-        igroup194Db db = new igroup194Db();
-        public int InsertDrugForPatient()
-        {
-
-        }
-
     }
 
     class Program

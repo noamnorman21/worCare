@@ -585,5 +585,42 @@ namespace DATA
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertActualList", typeParameter);
         }
+    
+        public virtual int InsertDrugForPatient(Nullable<int> listId, Nullable<System.DateTime> fromDate, Nullable<System.DateTime> toDate, Nullable<byte> dosage, Nullable<int> qtyInBox, Nullable<byte> minQuantity, Nullable<int> drugId, string patientId)
+        {
+            var listIdParameter = listId.HasValue ?
+                new ObjectParameter("listId", listId) :
+                new ObjectParameter("listId", typeof(int));
+    
+            var fromDateParameter = fromDate.HasValue ?
+                new ObjectParameter("fromDate", fromDate) :
+                new ObjectParameter("fromDate", typeof(System.DateTime));
+    
+            var toDateParameter = toDate.HasValue ?
+                new ObjectParameter("toDate", toDate) :
+                new ObjectParameter("toDate", typeof(System.DateTime));
+    
+            var dosageParameter = dosage.HasValue ?
+                new ObjectParameter("dosage", dosage) :
+                new ObjectParameter("dosage", typeof(byte));
+    
+            var qtyInBoxParameter = qtyInBox.HasValue ?
+                new ObjectParameter("qtyInBox", qtyInBox) :
+                new ObjectParameter("qtyInBox", typeof(int));
+    
+            var minQuantityParameter = minQuantity.HasValue ?
+                new ObjectParameter("minQuantity", minQuantity) :
+                new ObjectParameter("minQuantity", typeof(byte));
+    
+            var drugIdParameter = drugId.HasValue ?
+                new ObjectParameter("drugId", drugId) :
+                new ObjectParameter("drugId", typeof(int));
+    
+            var patientIdParameter = patientId != null ?
+                new ObjectParameter("patientId", patientId) :
+                new ObjectParameter("patientId", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertDrugForPatient", listIdParameter, fromDateParameter, toDateParameter, dosageParameter, qtyInBoxParameter, minQuantityParameter, drugIdParameter, patientIdParameter);
+        }
     }
 }

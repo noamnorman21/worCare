@@ -60,9 +60,9 @@ namespace WebApi.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
-            } 
+            }
         }
-        
+
         [HttpPut]
         [Route("UpdatePrivateTasks")] //Update private task by foreign user
         public IHttpActionResult UpdatePrivateTasks([FromBody] PrivateTaskDTO taskDTO)
@@ -91,7 +91,7 @@ namespace WebApi.Controllers
         //Public Task section     
         [HttpPost]
         [Route("GetAllTasks")] //GET ALL TASKS BY PATIENT ID
-        public IHttpActionResult GetAllTasks([FromBody] PatientDTO patient )
+        public IHttpActionResult GetAllTasks([FromBody] PatientDTO patient)
         {
             List<PatientTaskDTO> tasks = new List<PatientTaskDTO>();
             try
@@ -117,32 +117,54 @@ namespace WebApi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);        
+                return BadRequest(ex.Message);
             }
         }
 
         [HttpPost]
-        [Route("InsertActualList")] 
+        [Route("InsertActualList")]
         public IHttpActionResult InsertActualList([FromBody] dynamic list)
         {
             //dynamic becouse the list can be drug or product list
-            bool isdrug = false;// defaul product list
+            bool isDrug = false;// defaul product list
+            try
+            {
+                if (list.drugId != null)
+                {
+                    //isdrug mean that is drug list and not product list
+                    isDrug = true;
+                }
+                db.InsertActualList(isDrug);
+                db.SaveChanges();
+                int actualListId = db.tblActualList.Max(x => x.listId);// find the new id that was created in the db
+                if (isDrug)
+                {
+                    DrugForPatientDTO drugFor = new DrugForPatientDTO();
+                    drugFor.fromDate = list.fromDate;
+                    drugFor.toDate = list.toDate;
+                    drugFor.patientId = list.patientId;
+                    drugFor.dosage = list.dosage;
+                    drugFor.drugId = list.drugId;
+                    drugFor.qtyInBox = list.qtyInBox;
+                    drugFor.minQuantity = list.minQuantity;
+                    drugFor.patientId = list.patientId;
+                    drugFor.listId = actualListId;
+                    int res = db.InsertDrugForPatient(actualListId, drugFor.fromDate, drugFor.toDate, drugFor.dosage, drugFor.qtyInBox, drugFor.minQuantity, drugFor.drugId, drugFor.patientId);
+                    db.SaveChanges();
+                    //next step will be to create a PatientTask and than actualTask
 
-            if (list.drugId!=null)
+
+                }
+                ///למחוק את השורה למטה!!, זה רק כדי שזה לא יכעס
+                return Ok("just for now!!!!");
+            }  
+            catch (Exception ex)
             {
-                //isdrug mean that is drug list and not product list
-                isdrug = true;       
-            }
-            db.InsertActualList(isdrug);
-            db.SaveChanges();
-            int actualListId = db.tblActualList.Max(x => x.listId);// find the new id that was created in the db
-            if (isdrug)
-            {
-                db.tblDrugForPatient.InsertDrugForPatient
+                return BadRequest(ex.Message);
             }
 
         }
-        
-        
+
+
     }
 }

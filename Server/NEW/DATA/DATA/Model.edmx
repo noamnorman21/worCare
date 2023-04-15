@@ -594,6 +594,16 @@
           <Parameter Name="status" Type="char" Mode="In" />
           <Parameter Name="linkTo" Type="varchar" Mode="In" />
         </Function>
+        <Function Name="InsertDrugForPatient" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="listId" Type="int" Mode="In" />
+          <Parameter Name="fromDate" Type="date" Mode="In" />
+          <Parameter Name="toDate" Type="date" Mode="In" />
+          <Parameter Name="dosage" Type="tinyint" Mode="In" />
+          <Parameter Name="qtyInBox" Type="int" Mode="In" />
+          <Parameter Name="minQuantity" Type="tinyint" Mode="In" />
+          <Parameter Name="drugId" Type="int" Mode="In" />
+          <Parameter Name="patientId" Type="char" Mode="In" />
+        </Function>
         <Function Name="InsertForeignUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="Id" Type="int" Mode="In" />
           <Parameter Name="DateOfBirth" Type="date" Mode="In" />
@@ -1761,7 +1771,17 @@
             <Parameter Name="status" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="InsertActualList">
-            <Parameter Name="type" Mode="In" Type="Boolean" />
+          <Parameter Name="type" Mode="In" Type="Boolean" />
+          </FunctionImport>
+          <FunctionImport Name="InsertDrugForPatient">
+            <Parameter Name="listId" Mode="In" Type="Int32" />
+            <Parameter Name="fromDate" Mode="In" Type="DateTime" />
+            <Parameter Name="toDate" Mode="In" Type="DateTime" />
+            <Parameter Name="dosage" Mode="In" Type="Byte" />
+            <Parameter Name="qtyInBox" Mode="In" Type="Int32" />
+            <Parameter Name="minQuantity" Mode="In" Type="Byte" />
+            <Parameter Name="drugId" Mode="In" Type="Int32" />
+            <Parameter Name="patientId" Mode="In" Type="String" />
           </FunctionImport>
         </EntityContainer>
         <ComplexType Name="sp_helpdiagramdefinition_Result">
@@ -2086,6 +2106,7 @@
           <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="igroup194_Db.Store.sp_upgraddiagrams" />
           <FunctionImportMapping FunctionImportName="updateStatusCaresForPatient" FunctionName="igroup194_Db.Store.updateStatusCaresForPatient" />
           <FunctionImportMapping FunctionImportName="InsertActualList" FunctionName="igroup194_Db.Store.InsertActualList" />
+          <FunctionImportMapping FunctionImportName="InsertDrugForPatient" FunctionName="igroup194_Db.Store.InsertDrugForPatient" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
