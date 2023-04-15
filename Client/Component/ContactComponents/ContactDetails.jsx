@@ -27,8 +27,8 @@ export default function ContactDetails({ route, navigation }) {
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <TouchableOpacity onPress={() => navigation.navigate('EditContact', { contact: route.params.contact })}>
-          <Feather name='edit' size={20} color="black" style={{ marginRight: 10 }} />
+        <TouchableOpacity style={styles.headerButton} onPress={() => navigation.navigate('EditContact', { contact: route.params.contact })}>
+          <Text style={styles.headerButtonText}>Edit</Text>
         </TouchableOpacity>
       ),
     });
@@ -79,34 +79,31 @@ export default function ContactDetails({ route, navigation }) {
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
           <View style={styles.centeredView}>
-            <Text style={styles.title}>Contact Details</Text>
             <Text style={styles.contactheader}>{Contact.contactName}</Text>
             <View style={styles.ButtonView}>
-              <TouchableOpacity style={Contact.email ? styles.button : styles.disabled} disabled={Contact.email ? false : true}>
-                <MaterialCommunityIcons name='email-send-outline' size={20} color={Contact.email ?"#548DFF":"grey"} />
-                <Text style={Contact.email ? styles.BtnTxt: styles.disabledBtnTxt}>Email</Text>
+              <TouchableOpacity style={Contact.email ? styles.button : styles.disabled} disabled={Contact.email ? false : true} onPress={() => console.log("Email")}>
+                <MaterialCommunityIcons name='email-send-outline' size={20} color={Contact.email ? "#548DFF" : "grey"} />
+                <Text style={Contact.email ? styles.BtnTxt : styles.disabledBtnTxt}>Email</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.button}>
+              <TouchableOpacity style={styles.button} onPress={() => console.log("Call")}>
                 <Feather name='phone-call' size={20} color={"#548DFF"} />
                 <Text style={styles.BtnTxt}>Call</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('EditContact', { contact: route.params.contact })}>
-                <Feather name='edit' size={20} color={"#548DFF"} />
-                <Text style={styles.BtnTxt}>Edit</Text>
+              <TouchableOpacity style={styles.button} onPress={() => console.log("Message")}>
+                <Feather name='message-circle' size={20} color={"#548DFF"} />
+                <Text style={styles.BtnTxt}>Message</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.deletebutton} onPress={DeleteContact}>
-                <Feather name='trash-2' size={20} color={"#FF3C3C"} />
-                <Text style={styles.deleteBtnTxt}>Delete</Text>
-              </TouchableOpacity>
+
             </View>
             <View style={styles.inputContainer}>
-              <View style={styles.phoneInput}>
-                {Contact.phoneNo ? <View style={styles.phoneNumbers}><Text style={styles.inputTxt}>Phone</Text><Text style={styles.inputTxt}>{Contact.phoneNo}</Text></View> : null}
-                <View style={styles.phoneNumbers}><Text style={styles.inputTxt}>Mobile</Text><Text style={styles.inputTxt}>{Contact.mobileNo}</Text></View>
-              </View>
-              {Contact.email ? <View style={styles.input}><Text style={styles.inputTxt}>Email</Text><Text style={styles.inputTxt}>{Contact.email}</Text></View> : null}
-              {Contact.role ? <View style={styles.input}><Text style={styles.inputTxt}>Role</Text><Text style={styles.inputTxt}>{Contact.role}</Text></View> : null}
-              {Contact.contactComment ? <View style={styles.input}><Text style={styles.inputTxt}>Comment:</Text><Text style={styles.inputTxt}>{Contact.contactComment}</Text></View> : null}
+            <View style={styles.input}><Text style={styles.inputTxtHeader}>Mobile</Text><Text style={styles.inputTxt}>{Contact.mobileNo}</Text></View>
+              {Contact.phoneNo ? <View style={styles.input}><Text style={styles.inputTxtHeader}>Phone</Text><Text style={styles.inputTxt}>{Contact.phoneNo}</Text></View> : null}
+              {Contact.email ? <View style={styles.input}><Text style={styles.inputTxtHeader}>Email</Text><Text style={styles.inputTxt}>{Contact.email}</Text></View> : null}
+              {Contact.role ? <View style={styles.input}><Text style={styles.inputTxtHeader}>Role</Text><Text style={styles.inputTxt}>{Contact.role}</Text></View> : null}
+              {Contact.contactComment ? <View style={styles.commentInput}><Text style={styles.inputTxtHeader}>Comment</Text><Text style={styles.inputTxt}>{Contact.contactComment}</Text></View> : null}
+              <TouchableOpacity style={styles.deletebutton} onPress={DeleteContact}>
+              <Text style={styles.deleteBtnTxt}>Delete Contact</Text>
+            </TouchableOpacity>
             </View>
           </View>
         </TouchableWithoutFeedback>
@@ -138,7 +135,23 @@ const styles = StyleSheet.create({
   input: {
     width: SCREEN_WIDTH * 0.95,
     marginBottom: 10,
-    paddingLeft: 20,
+    paddingLeft: 10,
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: '#E6EBF2',
+    shadowColor: '#000',
+    height: 54,
+    marginVertical: 15,
+    fontFamily: 'Urbanist-Medium',
+    fontSize: 16,
+  },
+  commentInput: {
+    width: SCREEN_WIDTH * 0.95,
+    marginBottom: 10,
+    paddingLeft: 10,
+    padding:8,
     alignItems: 'flex-start',
     justifyContent: 'center',
     borderRadius: 16,
@@ -146,7 +159,7 @@ const styles = StyleSheet.create({
     borderColor: '#E6EBF2',
     shadowColor: '#000',
     height: 'auto',
-    marginVertical: 5,
+    marginVertical: 15,
     fontFamily: 'Urbanist-Medium',
     fontSize: 16,
   },
@@ -155,63 +168,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginVertical: 1,
   },
-  phoneInput: {
-    width: SCREEN_WIDTH * 0.95,
-    borderRadius: 16,
-    borderColor: '#E6EBF2',
-    borderWidth: 1.5,
-    alignItems: 'flex-start',
-    justifyContent: 'center',
-    shadowColor: '#000',
-    height: 'auto',
-    marginVertical: 5,
+  inputTxtHeader: {
     fontFamily: 'Urbanist-Medium',
     fontSize: 16,
-  },
-  phoneNumbers: {
-    marginVertical: 5,
-    width: SCREEN_WIDTH * 0.95,
-    paddingLeft: 20,
-    alignItems: 'flex-start',
-    justifyContent: 'center',
-  },
-  savebutton: {
-    backgroundColor: '#548DFF',
-    borderRadius: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 45,
-    width: SCREEN_WIDTH * 0.45,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 1,
-  },
-  deleteBtn: {
-    backgroundColor: '#F5F8FF',
-    borderRadius: 16,
-    height: 45,
-    width: SCREEN_WIDTH * 0.45,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1.5,
-    borderColor: '#548DFF',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 1,
-  },
-  bottom: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: SCREEN_WIDTH * 0.95,
-  },
-  savebuttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontFamily: 'Urbanist-SemiBold',
+    marginVertical: 1,
   },
   BtnTxt: {
     color: '#548DFF',
@@ -225,22 +185,11 @@ const styles = StyleSheet.create({
     fontFamily: 'Urbanist-SemiBold',
     fontSize: 16,
   },
-  title: {
-    fontSize: 26,
-    fontFamily: 'Urbanist-Bold',
-  },
-  header: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   contactheader: {
     fontFamily: 'Urbanist-Bold',
     fontSize: 30,
     marginTop: 20,
 
-  },
-  numbersInput: {
-    flexDirection: 'row',
   },
   ButtonView: {
     flexDirection: 'row',
@@ -252,7 +201,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 16,
     height: 45,
-    width: SCREEN_WIDTH * 0.2,
+    width: SCREEN_WIDTH * 0.31,
     borderColor: '#548DFF',
     justifyContent: 'center',
     alignItems: 'center',
@@ -266,7 +215,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'lightgrey',
     borderRadius: 16,
     height: 45,
-    width: SCREEN_WIDTH * 0.2,
+    width: SCREEN_WIDTH * 0.31,
     borderColor: 'lightgrey',
     justifyContent: 'center',
     alignItems: 'center',
@@ -278,23 +227,26 @@ const styles = StyleSheet.create({
     opacity: 0.3,
   },
   deletebutton: {
-    backgroundColor: '#F5F8FF',
-    borderRadius: 16,
-    height: 45,
-    width: SCREEN_WIDTH * 0.2,
-    borderColor: '#FF3C3C',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1.5,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 1,
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    paddingLeft: 10,
+    marginTop: SCREEN_HEIGHT*0.03,
   },
   deleteBtnTxt: {
     color: '#FF3C3C',
-    textAlign: 'center',
     fontFamily: 'Urbanist-SemiBold',
     fontSize: 16,
   },
+  headerButton: {
+    width: SCREEN_WIDTH * 0.1,
+    height: SCREEN_HEIGHT * 0.05,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 10,
+},
+headerButtonText: {
+  color: '#548DFF',
+  fontFamily: 'Urbanist-SemiBold',
+  fontSize: 16,
+},
 });

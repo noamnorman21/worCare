@@ -4,7 +4,7 @@ import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Alert, TextInput 
 import { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
-import { AntDesign, Octicons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -33,7 +33,7 @@ export default function EditContact({ route, navigation }) {
       ),
       headerLeft: () => (
         <TouchableOpacity onPress={() => Cancel()}>
-          <AntDesign name='close' size={20} color="black" style={{ marginLeft: 10 }} />
+            <Ionicons name="chevron-back" size={28} color="black" />
         </TouchableOpacity>
       ),
     });
@@ -117,41 +117,7 @@ export default function EditContact({ route, navigation }) {
           console.log("err post2=", error);
         });
   }
-  const DeleteContact = () => {
-    Alert.alert(
-      'Delete Contact',
-      'Are you sure you want to delete this contact?',
-      [
-        { text: "Don't Delete", style: 'cancel', onPress: () => { } },
-        {
-          text: 'Delete',
-          style: 'destructive',
-          // If the user confirmed, then we dispatch the action we blocked earlier
-          // This will continue the action that had triggered the removal of the screen
-          onPress: () => {
-            fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/DeleteContact/', {
-              method: 'DELETE',
-              body: JSON.stringify(Contact),
-              headers: new Headers({
-                'Content-Type': 'application/json; charset=UTF-8',
-              })
-            })
-              .then(res => {
-                return res.json()
-              })
-              .then(
-                (result) => {
-                  console.log("fetch POST= ", result);
-                  navigation.goBack();
-                },
-                (error) => {
-                  console.log("err post=", error);
-                });
-          }
-        },
-      ]
-    );
-  }
+  
   return (
     <SafeAreaView style={styles.container}>
 
@@ -201,6 +167,10 @@ export default function EditContact({ route, navigation }) {
               />
               <Text style={styles.contactheader}>Comment(optional):</Text>
               <TextInput
+               multiline={true}
+               returnKeyType='done'
+               numberOfLines={6}
+               maxHeight={100}
                 style={styles.commentInput}
                 value={Contact.contactComment}
                 keyboardType='ascii-capable'

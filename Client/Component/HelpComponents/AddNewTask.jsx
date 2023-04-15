@@ -15,7 +15,7 @@ const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 function AddBtn(props) {
    return (
-      <TouchableOpacity onPress={props.onPress} mode="fixed">
+      <TouchableOpacity onPress={props.onPress}>
          <View style={styles.addBtn}>
             <Octicons name="plus" size={26} color="#fff" />
          </View>

@@ -131,13 +131,12 @@ export default function Privacy({ navigation, route }) {
 
   const SaveAllChanges = () => {
     if (Email != userContext.Email) {
-      sendDataToNextDB();
+      CheckEmailInDB();
     }
     else if (Email == userContext.Email && passwordChanged) {
       checkPassowrd();
     }
     else if (Email == userContext.Email && !passwordChanged) {
-      Alert.alert("No Changes", "You didn't make any changes")
       navigation.goBack();
     }
 
@@ -164,13 +163,13 @@ export default function Privacy({ navigation, route }) {
   useEffect(() => {
     const setNavigation = async () => navigation.setOptions({
       headerRight: () => (
-        <View style={styles.headerRight}>
+        <View style={styles.headerButton}>
           <TouchableOpacity
             onPress={() => {
               SaveAllChanges();
             }}
           >
-            <Text style={styles.headerRightText}>Save</Text>
+            <Text style={styles.headerButtonText}>Save</Text>
           </TouchableOpacity>
         </View>
 
@@ -556,4 +555,16 @@ const styles = StyleSheet.create({
     fontFamily: 'Urbanist-Bold',
     fontSize: 14,
   },
+  headerButton: {
+    width: SCREEN_WIDTH * 0.11,
+    height: SCREEN_HEIGHT * 0.05,
+    alignItems: 'center',
+    justifyContent: 'center',
+   
+},
+headerButtonText: {
+  color: '#548DFF',
+  fontFamily: 'Urbanist-SemiBold',
+  fontSize: 16,
+},
 })
