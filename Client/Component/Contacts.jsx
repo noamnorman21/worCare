@@ -6,9 +6,10 @@ import { useNavigation } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import AddNewContact from './ContactComponents/AddNewContact'
 import { useIsFocused } from '@react-navigation/native';
-import Contact from './ContactComponents/Contact'
+import EditContact from './ContactComponents/editContact'
+import ContactDetails from './ContactComponents/ContactDetails'
 import { useUserContext } from '../UserContext'
-import { MaterialCommunityIcons, AntDesign, Feather, Octicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, Feather, Octicons, Ionicons } from '@expo/vector-icons';
 import { AddBtn } from './HelpComponents/AddNewTask';
 
 import {
@@ -29,7 +30,8 @@ export default function Contacts() {
     <MenuProvider>
       <stack.Navigator initialRouteName='Main' screenOptions={{ headerShown: false }} >
         <stack.Screen name="Main" component={Main} options={{ headerShown: true, headerTitle: "Contacts", headerTitleAlign: 'center' }} />
-        <stack.Screen name="Contact" component={Contact} options={{ headerShown: true, headerTitle: "Edit Contact", headerTitleAlign: 'center' }} />
+        <stack.Screen name="EditContact" component={EditContact} options={{ headerShown: true, headerTitle: "Edit Contact", headerTitleAlign: 'center' }} />
+        <stack.Screen name="ContactDetails" component={ContactDetails} options={{ headerShown: true, headerTitle: "Contact Details", headerTitleAlign: 'center' }} />
       </stack.Navigator>
     </MenuProvider>
   )
@@ -120,7 +122,7 @@ function ContactCard(props) {
       console.log("call")
     }
     if (value == 3) {
-      navigation.navigate('Contact', { contact: props.contact })
+      navigation.navigate('EditContact', { contact: props.contact })
     }
     if (value == 4) {
       DeleteContact()
@@ -164,44 +166,10 @@ function ContactCard(props) {
     );
   }
   return (
-    <Menu onSelect={value => openModal(value)}  >
-      <MenuTrigger
-        children={<View style={styles.contactcard}>
-          <Text style={styles.name}>{props.contact.contactName}</Text>
-          <Text style={styles.number}>{props.contact.mobileNo}</Text>
-        </View>}
-      />
-      <MenuOptions
-
-        style={{ marginBottom: SCREEN_HEIGHT * 0.03 }}
-        customStyles={{
-          optionsContainer: {
-            borderRadius: 10,
-            elevation: 100,
-          },
-          optionsWrapper: {
-            position: 'absolute',
-            flexDirection: 'column',
-            left: SCREEN_WIDTH * 0.55,
-            backgroundColor: '#fff',
-            borderRadius: 10,
-            elevation: 100,
-            shadowColor: '#000',
-            shadowOffset: {
-              width: 0,
-              height: 2,
-            },
-            shadowOpacity: 0.25,
-            shadowRadius: 3.84,
-          },
-        }}
-      >
-        <MenuOption value={1} children={<View style={styles.options}><MaterialCommunityIcons name='bell-ring-outline' size={20} /><Text style={styles.optionsText}> Send Email</Text></View>} />
-        <MenuOption value={2} children={<View style={styles.options}><Feather name='eye' size={20} /><Text style={styles.optionsText}> Call Contact</Text></View>} />
-        <MenuOption value={3} children={<View style={styles.options}><Feather name='edit' size={20} /><Text style={styles.optionsText}> Edit Contact</Text></View>} />
-        <MenuOption value={4} children={<View style={styles.options}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={styles.deleteTxt}> Delete Contact</Text></View>} />
-      </MenuOptions>
-    </Menu>
+    <TouchableOpacity style={styles.contactcard} onPress={()=>navigation.navigate('ContactDetails', { contact: props.contact })} >
+    <Text style={styles.name}>{props.contact.contactName}</Text>
+    <Text style={styles.number}>{props.contact.mobileNo}</Text>
+  </TouchableOpacity>
   )
 }
 

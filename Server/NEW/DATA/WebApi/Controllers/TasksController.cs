@@ -7,6 +7,7 @@ using System.Web.Http;
 using DATA;
 using WebApi.DTO;
 using System.Web.Http.Cors;
+using Microsoft.Ajax.Utilities;
 
 namespace WebApi.Controllers
 {
@@ -122,35 +123,26 @@ namespace WebApi.Controllers
 
         [HttpPost]
         [Route("InsertActualList")] 
-        public IHttpActionResult InsertActualList([FromBody] string type)
+        public IHttpActionResult InsertActualList([FromBody] dynamic list)
         {
-            if (type=="Medicine")
-            {
-                try
-                {
-         
-                    
+            //dynamic becouse the list can be drug or product list
+            bool isdrug = false;// defaul product list
 
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(ex.Message);
-                }
-            }
-            else
+            if (list.drugId!=null)
             {
-                try
-                {
-                    //db.InsertActualList(type);
-                    db.SaveChanges();
-                    return Ok();
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(ex.Message);
-                }
+                //isdrug mean that is drug list and not product list
+                isdrug = true;       
             }
-            return Ok();
+            db.InsertActualList(isdrug);
+            db.SaveChanges();
+            int actualListId = db.tblActualList.Max(x => x.listId);// find the new id that was created in the db
+            if (isdrug)
+            {
+                db.tblDrugForPatient.InsertDrugForPatient
+            }
+
         }
+        
+        
     }
 }
