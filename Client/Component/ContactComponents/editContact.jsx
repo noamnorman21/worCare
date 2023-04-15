@@ -23,21 +23,45 @@ export default function EditContact({ route, navigation }) {
     patientId: 779355403 // will change when we finish context to get the patient id
   })
 
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity style={styles.headerButton} onPress={() => validateInput()}>
+          <Text style={styles.headerButtonText}>Done</Text>
+        </TouchableOpacity>
+
+      ),
+      headerLeft: () => (
+        <TouchableOpacity onPress={() => Cancel()}>
+          <AntDesign name='close' size={20} color="black" style={{ marginLeft: 10 }} />
+        </TouchableOpacity>
+      ),
+    });
+    if (Contact != route.params.contact) {
+      setIsChanged(true)
+    }
+  }, [Contact]);
+
   const Cancel = () => {
-    Alert.alert(
-      'Cancel Changes',
-      'are you sure you want to Exit the Page? All changes will be lost',
-      [
-        { text: "Don't leave", style: 'cancel', onPress: () => { } },
-        {
-          text: 'Leave',
-          style: 'destructive',
-          // If the user confirmed, then we dispatch the action we blocked earlier
-          // This will continue the action that had triggered the removal of the screen
-          onPress: () => navigation.goBack()
-        },
-      ]
-    );
+    if (isChanged) {
+      Alert.alert(
+        'Cancel Changes',
+        'are you sure you want to Exit the Page? All changes will be lost',
+        [
+          { text: "Don't leave", style: 'cancel', onPress: () => { } },
+          {
+            text: 'Leave',
+            style: 'destructive',
+            // If the user confirmed, then we dispatch the action we blocked earlier
+            // This will continue the action that had triggered the removal of the screen
+            onPress: () => navigation.goBack()
+          },
+        ]
+      );
+    }
+    else {
+      navigation.goBack()
+    }
   }
   const handleInputChange = (field, value) => {
     setContact({ ...Contact, [field]: value });
@@ -87,7 +111,7 @@ export default function EditContact({ route, navigation }) {
       .then(
         (result) => {
           console.log("fetch POST= ", result);
-          navigation.goBack();
+          navigation.popToTop();
         },
         (error) => {
           console.log("err post2=", error);
@@ -130,9 +154,7 @@ export default function EditContact({ route, navigation }) {
   }
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableOpacity style={styles.closeBtn} onPress={Cancel}>
-        <AntDesign name="close" size={24} color="black" />
-      </TouchableOpacity>
+
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
           <View style={styles.centeredView}>
@@ -179,19 +201,12 @@ export default function EditContact({ route, navigation }) {
               />
               <Text style={styles.contactheader}>Comment(optional):</Text>
               <TextInput
-                style={styles.input}
+                style={styles.commentInput}
                 value={Contact.contactComment}
                 keyboardType='ascii-capable'
                 onChangeText={(value) => handleInputChange('contactComment', value)}
+
               />
-            </View>
-            <View style={styles.bottom}>
-              <TouchableOpacity style={styles.savebutton} onPress={validateInput}>
-                <Text style={styles.savebuttonText}>Save</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.deleteBtn} onPress={DeleteContact}>
-                <Text style={styles.deleteBtnTxt}>Delete</Text>
-              </TouchableOpacity>
             </View>
           </View>
         </TouchableWithoutFeedback>
@@ -214,7 +229,6 @@ const styles = StyleSheet.create({
   },
   centeredView: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
   },
@@ -225,7 +239,7 @@ const styles = StyleSheet.create({
   input: {
     width: SCREEN_WIDTH * 0.95,
     marginBottom: 10,
-    paddingLeft: 20,
+    paddingLeft: 10,
     alignItems: 'center',
     borderRadius: 16,
     borderWidth: 1.5,
@@ -234,6 +248,20 @@ const styles = StyleSheet.create({
     height: 54,
     fontFamily: 'Urbanist-Light',
     fontSize: 16,
+  },
+  commentInput: {
+    width: SCREEN_WIDTH * 0.95,
+    marginBottom: 10,
+    paddingLeft: 10,
+    alignItems: 'center',
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: '#E6EBF2',
+    shadowColor: '#000',
+    height: 150,
+    fontFamily: 'Urbanist-Light',
+    fontSize: 16,
+    textAlignVertical: 'top',
   },
   savebutton: {
     backgroundColor: '#548DFF',
@@ -294,6 +322,16 @@ const styles = StyleSheet.create({
   },
   numbersInput: {
     flexDirection: 'row',
+  },
+  headerButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 10,
+  },
+  headerButtonText: {
+    color: '#548DFF',
+    fontFamily: 'Urbanist-SemiBold',
+    fontSize: 16,
   },
 
 });

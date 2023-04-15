@@ -82,16 +82,16 @@ export default function ContactDetails({ route, navigation }) {
             <Text style={styles.title}>Contact Details</Text>
             <Text style={styles.contactheader}>{Contact.contactName}</Text>
             <View style={styles.ButtonView}>
-              <TouchableOpacity style={styles.button}>
-              <MaterialCommunityIcons name='email-send-outline' size={20} color={"#548DFF"} />
-                <Text style={styles.BtnTxt}>Email</Text>
+              <TouchableOpacity style={Contact.email ? styles.button : styles.disabled} disabled={Contact.email ? false : true}>
+                <MaterialCommunityIcons name='email-send-outline' size={20} color={Contact.email ?"#548DFF":"grey"} />
+                <Text style={Contact.email ? styles.BtnTxt: styles.disabledBtnTxt}>Email</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.button}>
                 <Feather name='phone-call' size={20} color={"#548DFF"} />
                 <Text style={styles.BtnTxt}>Call</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.button} onPress={ ()=> navigation.navigate('EditContact', { contact: route.params.contact })}>
-                <Feather name='edit' size={20} color={"#548DFF"}/>
+              <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('EditContact', { contact: route.params.contact })}>
+                <Feather name='edit' size={20} color={"#548DFF"} />
                 <Text style={styles.BtnTxt}>Edit</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.deletebutton} onPress={DeleteContact}>
@@ -100,13 +100,14 @@ export default function ContactDetails({ route, navigation }) {
               </TouchableOpacity>
             </View>
             <View style={styles.inputContainer}>
-{Contact.phoneNo?<View style={styles.input}><Text style={styles.inputTxt}>Phone</Text><Text style={styles.inputTxt}>{Contact.phoneNo}</Text></View>:null}
-<View style={styles.input}><Text style={styles.inputTxt}>Mobile</Text><Text style={styles.inputTxt}>{Contact.mobileNo}</Text></View>
-{Contact.email?<View style={styles.input}><Text style={styles.inputTxt}>Email</Text><Text style={styles.inputTxt}>{Contact.email}</Text></View>:null}
-{Contact.role?<View style={styles.input}><Text style={styles.inputTxt}>Role</Text><Text style={styles.inputTxt}>{Contact.role}</Text></View>:null}
-{Contact.contactComment?<View style={styles.input}><Text style={styles.inputTxt}>Comment:</Text><Text style={styles.inputTxt}>{Contact.contactComment}</Text></View>:null}
+              <View style={styles.phoneInput}>
+                {Contact.phoneNo ? <View style={styles.phoneNumbers}><Text style={styles.inputTxt}>Phone</Text><Text style={styles.inputTxt}>{Contact.phoneNo}</Text></View> : null}
+                <View style={styles.phoneNumbers}><Text style={styles.inputTxt}>Mobile</Text><Text style={styles.inputTxt}>{Contact.mobileNo}</Text></View>
               </View>
-
+              {Contact.email ? <View style={styles.input}><Text style={styles.inputTxt}>Email</Text><Text style={styles.inputTxt}>{Contact.email}</Text></View> : null}
+              {Contact.role ? <View style={styles.input}><Text style={styles.inputTxt}>Role</Text><Text style={styles.inputTxt}>{Contact.role}</Text></View> : null}
+              {Contact.contactComment ? <View style={styles.input}><Text style={styles.inputTxt}>Comment:</Text><Text style={styles.inputTxt}>{Contact.contactComment}</Text></View> : null}
+            </View>
           </View>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
@@ -144,13 +145,35 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: '#E6EBF2',
     shadowColor: '#000',
-    height: 54,
+    height: 'auto',
+    marginVertical: 5,
     fontFamily: 'Urbanist-Medium',
     fontSize: 16,
   },
   inputTxt: {
     fontFamily: 'Urbanist-Light',
     fontSize: 16,
+    marginVertical: 1,
+  },
+  phoneInput: {
+    width: SCREEN_WIDTH * 0.95,
+    borderRadius: 16,
+    borderColor: '#E6EBF2',
+    borderWidth: 1.5,
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    height: 'auto',
+    marginVertical: 5,
+    fontFamily: 'Urbanist-Medium',
+    fontSize: 16,
+  },
+  phoneNumbers: {
+    marginVertical: 5,
+    width: SCREEN_WIDTH * 0.95,
+    paddingLeft: 20,
+    alignItems: 'flex-start',
+    justifyContent: 'center',
   },
   savebutton: {
     backgroundColor: '#548DFF',
@@ -196,6 +219,12 @@ const styles = StyleSheet.create({
     fontFamily: 'Urbanist-SemiBold',
     fontSize: 16,
   },
+  disabledBtnTxt: {
+    color: 'grey',
+    textAlign: 'center',
+    fontFamily: 'Urbanist-SemiBold',
+    fontSize: 16,
+  },
   title: {
     fontSize: 26,
     fontFamily: 'Urbanist-Bold',
@@ -206,8 +235,8 @@ const styles = StyleSheet.create({
   },
   contactheader: {
     fontFamily: 'Urbanist-Bold',
-fontSize: 30,
-marginTop: 20,
+    fontSize: 30,
+    marginTop: 20,
 
   },
   numbersInput: {
@@ -220,7 +249,7 @@ marginTop: 20,
     marginTop: 10,
   },
   button: {
-    backgroundColor: '#F5F8FF',
+    backgroundColor: '#fff',
     borderRadius: 16,
     height: 45,
     width: SCREEN_WIDTH * 0.2,
@@ -232,6 +261,21 @@ marginTop: 20,
     shadowOpacity: 0.3,
     shadowRadius: 3,
     elevation: 1,
+  },
+  disabled: {
+    backgroundColor: 'lightgrey',
+    borderRadius: 16,
+    height: 45,
+    width: SCREEN_WIDTH * 0.2,
+    borderColor: 'lightgrey',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1.5,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 1,
+    opacity: 0.3,
   },
   deletebutton: {
     backgroundColor: '#F5F8FF',

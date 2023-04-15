@@ -241,6 +241,8 @@ export default function NewPaycheck(props) {
                 // mode={"date"}
                 is24Hour={true}
                 placeholder="Date"
+                minimumDate={new Date(2020, 0, 1)}
+                maxDate={new Date()}
                 onChange={(value) => onChangeDate(value)}
                 display="default"
                 maximumDate={new Date()}

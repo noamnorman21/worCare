@@ -580,6 +580,9 @@
           </ReferentialConstraint>
         </Association>
         <Function Name="fn_diagramobjects" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int" />
+        <Function Name="InsertActualList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="type" Type="bit" Mode="In" />
+        </Function>
         <Function Name="InsertCalendarForUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="calendarNum" Type="int" Mode="In" />
           <Parameter Name="userId" Type="int" Mode="In" />
@@ -1757,6 +1760,9 @@
             <Parameter Name="workerId" Mode="In" Type="Int32" />
             <Parameter Name="status" Mode="In" Type="String" />
           </FunctionImport>
+          <FunctionImport Name="InsertActualList">
+            <Parameter Name="type" Mode="In" Type="Boolean" />
+          </FunctionImport>
         </EntityContainer>
         <ComplexType Name="sp_helpdiagramdefinition_Result">
           <Property Type="Int32" Name="version" Nullable="true" />
@@ -2079,6 +2085,7 @@
           <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="igroup194_Db.Store.sp_renamediagram" />
           <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="igroup194_Db.Store.sp_upgraddiagrams" />
           <FunctionImportMapping FunctionImportName="updateStatusCaresForPatient" FunctionName="igroup194_Db.Store.updateStatusCaresForPatient" />
+          <FunctionImportMapping FunctionImportName="InsertActualList" FunctionName="igroup194_Db.Store.InsertActualList" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

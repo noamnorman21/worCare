@@ -302,6 +302,8 @@ export default function EditPaycheck(props) {
                     value={new Date(Paycheck.paycheckDate)}
                     // mode={"date"}
                     is24Hour={true}
+                    minimumDate={new Date(2020, 0, 1)}
+                    maxDate={new Date()}
                     onChange={(value) => onChangeDate(value)}
                     display="default"
                     maximumDate={new Date()}

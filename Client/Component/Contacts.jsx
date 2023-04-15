@@ -27,13 +27,11 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 export default function Contacts() {
   const stack = createStackNavigator();
   return (
-    <MenuProvider>
       <stack.Navigator initialRouteName='Main' screenOptions={{ headerShown: false }} >
         <stack.Screen name="Main" component={Main} options={{ headerShown: true, headerTitle: "Contacts", headerTitleAlign: 'center' }} />
         <stack.Screen name="EditContact" component={EditContact} options={{ headerShown: true, headerTitle: "Edit Contact", headerTitleAlign: 'center' }} />
         <stack.Screen name="ContactDetails" component={ContactDetails} options={{ headerShown: true, headerTitle: "Contact Details", headerTitleAlign: 'center' }} />
       </stack.Navigator>
-    </MenuProvider>
   )
 
 }
