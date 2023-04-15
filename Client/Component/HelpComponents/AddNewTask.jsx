@@ -207,7 +207,7 @@ function AddNewMedicine(props) {
    }
 
    return (
-      <SafeAreaView>
+      <>
          <Modal visible={props.isVisible} presentationStyle='formSheet' animationType='slide' onRequestClose={props.onClose}>
             <KeyboardAvoidingView style={[styles.container, modalTimesVisible && { backgroundColor: 'rgba(0, 0, 0, 0.75)' }]} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
                <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
@@ -269,9 +269,13 @@ function AddNewMedicine(props) {
                                  renderRightIcon={() => <Ionicons style={styles.iconDropDown} name="md-caret-down-outline" size={17} color="#808080" />}
                                  fontFamily='Urbanist-Light'
                                  // style={[styles.input, taskAssignee && { borderColor: '#000' }]}
-                                 style={[styles.doubleRowItem, { paddingRight: 10 }, selectedFrequency && { borderColor: '#000' }]}
+                                 style={[styles.doubleRowItem, { paddingRight: 10, paddingLeft: 10 }, selectedFrequency && { borderColor: '#000' }]}
                                  itemTextStyle={styles.itemStyle}
-                                 placeholderStyle={styles.placeholderStyle}
+                                 placeholderStyle={{
+                                    color: '#9E9E9E',
+                                    fontSize: 16,
+                                    fontFamily: 'Urbanist-Light',
+                                 }}
                                  containerStyle={styles.containerMedStyle}
                                  inputSearchStyle={styles.inputSearchStyle}
                                  value={selectedFrequency}
@@ -327,16 +331,37 @@ function AddNewMedicine(props) {
                            <Text style={styles.subTitle}>Set end date</Text>
                            {/* THIRD ROW */}
                            <View style={[styles.doubleRow, modalTimesVisible && { display: 'none' }]}>
-                              <View style={[styles.doubleRowItem, medToDate && { borderColor: '#000' }]}>
-                                 <TextInput
-                                    style={[styles.inputNumber, medToDate && { textAlign: 'center' }]}
-                                    placeholder="dd/mm/yyyy"
-                                    placeholderTextColor="#9E9E9E"
-                                    editable={false}
-                                    value={medToDate ? medToDate : ''}
-                                 />
-                                 <MaterialCommunityIcons style={styles.addIcon} name="calendar-outline" size={24} color="#808080" />
-                              </View>
+                              <DatePicker
+                                 useNativeDriver={'true'}
+                                 iconComponent={<MaterialCommunityIcons style={styles.addIcon} name="calendar-outline" size={24} color="#808080" />}
+                                 style={[styles.doubleRowItem, medToDate && { borderColor: '#000' }]}
+                                 date={medToDate}
+                                 mode="date"
+                                 placeholder="dd/mm/yyyy"
+                                 format="YYYY-MM-DD"
+                                 minDate={new Date()}
+                                 // maxDate={new Date()+36}
+                                 confirmBtnText="Confirm"
+                                 cancelBtnText="Cancel"
+                                 customStyles={{
+                                    dateInput: {
+                                       marginLeft: 0,
+                                       alignItems: 'flex-start', //change to center for android
+                                       borderWidth: 0,
+                                    },
+                                    placeholderText: {
+                                       color: "#9E9E9E",
+                                       fontFamily: 'Urbanist-Light',
+                                       paddingLeft: 8,
+                                       fontSize: 16,
+                                       textAlign: 'left',
+                                    },
+                                    dateText:
+                                       [styles.inputNumber, medToDate && { fontFamily: 'Urbanist-Medium' }]
+
+                                 }}
+                                 onDateChange={(date) => setMedToDate(date)}
+                              />
                               {numberPerDay == 0 | numberPerDay == 1 ?
                                  <View >
                                     <DatePicker
@@ -365,7 +390,7 @@ function AddNewMedicine(props) {
                                           dateText: {
                                              color: '#000',
                                              fontSize: 16,
-                                             fontFamily: 'Urbanist-SemiBold',
+                                             fontFamily: 'Urbanist-Medium',
                                           },
                                        }}
                                        onDateChange={(date) => {
@@ -422,6 +447,7 @@ function AddNewMedicine(props) {
                                  </View>
                               </Modal>
                            </View>
+
                         </View>
                         <TextInput
                            style={[styles.commentInput, { padding: 0 }, medComment && { borderColor: '#000' }, modalTimesVisible && { display: 'none' }]}
@@ -447,7 +473,7 @@ function AddNewMedicine(props) {
                </TouchableWithoutFeedback>
             </KeyboardAvoidingView>
          </Modal>
-      </SafeAreaView >
+      </>
    )
 }
 
