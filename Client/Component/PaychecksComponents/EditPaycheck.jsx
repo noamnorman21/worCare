@@ -367,7 +367,7 @@ const styles = StyleSheet.create({
     borderColor: '#E6EBF2',
     shadowColor: '#000',
     height: 54,
-    fontFamily: 'Urbanist-Light',
+    fontFamily: 'Urbanist-Medium',
     fontSize: 16,
   },
   inputFull: {

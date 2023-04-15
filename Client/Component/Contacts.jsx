@@ -9,6 +9,7 @@ import { useIsFocused } from '@react-navigation/native';
 import Contact from './ContactComponents/Contact'
 import { useUserContext } from '../UserContext'
 import { MaterialCommunityIcons, AntDesign, Feather, Octicons } from '@expo/vector-icons';
+import { AddBtn } from './HelpComponents/AddNewTask';
 
 import {
   Menu,
@@ -99,9 +100,7 @@ function Main({ navigation }) {
         placeholderTextColor="#808080"
       />
       {ContactToRender}
-      <TouchableOpacity style={styles.button} mode="fixed" onPress={() => setModal1Visible(true)}>
-        <Text style={styles.buttonText}>+</Text>
-      </TouchableOpacity>
+      <View style={styles.addBtnView}><AddBtn onPress={() => setModal1Visible(true)} /></View>
       {/*NewContactModal*/}
       <Modal animationType="slide" visible={modal1Visible}>
         <AddNewContact patientId={patientId} cancel={() => { setModal1Visible(false); fetchContacts() }} />
@@ -165,7 +164,7 @@ function ContactCard(props) {
     );
   }
   return (
-    <Menu onSelect={value => openModal(value)} renderer={renderers.SlideInMenu} >
+    <Menu onSelect={value => openModal(value)}  >
       <MenuTrigger
         children={<View style={styles.contactcard}>
           <Text style={styles.name}>{props.contact.contactName}</Text>
@@ -180,7 +179,21 @@ function ContactCard(props) {
             borderRadius: 10,
             elevation: 100,
           },
-          // optionsWrapper: newStyles.optionsWrapper,
+          optionsWrapper: {
+            position: 'absolute',
+            flexDirection: 'column',
+            left: SCREEN_WIDTH * 0.55,
+            backgroundColor: '#fff',
+            borderRadius: 10,
+            elevation: 100,
+            shadowColor: '#000',
+            shadowOffset: {
+              width: 0,
+              height: 2,
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 3.84,
+          },
         }}
       >
         <MenuOption value={1} children={<View style={styles.options}><MaterialCommunityIcons name='bell-ring-outline' size={20} /><Text style={styles.optionsText}> Send Email</Text></View>} />
@@ -231,6 +244,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 16,
   },
+  addBtnView: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+  },
   contactcard: {
     backgroundColor: '#fff',
     height: 60,
@@ -275,6 +293,20 @@ const styles = StyleSheet.create({
     fontSize: 30,
     color: '#fff',
   },
+  addBtn: {
+    backgroundColor: '#548DFF',
+    borderRadius: 54,
+    height: 54,
+    width: 54,
+    justifyContent: 'center',
+    alignItems: 'center',
+ },
+ addBtnTxt: {
+  color: '#fff',
+  fontSize: 28,
+  marginBottom: 2,
+  fontFamily: 'Urbanist-SemiBold',
+},
   savebutton: {
     width: Dimensions.get('window').width * 0.45,
     backgroundColor: '#548DFF',
