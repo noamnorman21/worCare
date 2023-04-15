@@ -9,7 +9,7 @@ import { AntDesign, Octicons } from '@expo/vector-icons';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
-export default function Contact({ route, navigation }) {
+export default function EditContact({ route, navigation }) {
   const { contact } = route.params;
   const [isChanged, setIsChanged] = useState(false);
   const [Contact, setContact] = useState({
@@ -34,7 +34,7 @@ export default function Contact({ route, navigation }) {
           style: 'destructive',
           // If the user confirmed, then we dispatch the action we blocked earlier
           // This will continue the action that had triggered the removal of the screen
-          onPress: () => navigation.popToTop()
+          onPress: () => navigation.goBack()
         },
       ]
     );

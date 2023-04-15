@@ -186,59 +186,66 @@ export default function NewPaycheck(props) {
               <Text style={styles.title}>Add New Paycheck</Text>
             </View>
             {PlatformType !== 'ios' ? <TouchableOpacity style={styles.datePicker} onPress={showDatepicker}>
-                  {!dateSelected? <Text style={styles.dateInputTxt}>
-                    {PayCheck.paycheckDate? PayCheck.paycheckDate :'Date'}
-                  </Text>:
-                  <Text style={styles.dateInputTxtSelected}>
-                  {PayCheck.paycheckDate? PayCheck.paycheckDate :'Date'}
+              {!dateSelected ? <Text style={styles.dateInputTxt}>
+                {PayCheck.paycheckDate ? PayCheck.paycheckDate : 'Date'}
+              </Text> :
+                <Text style={styles.dateInputTxtSelected}>
+                  {PayCheck.paycheckDate ? PayCheck.paycheckDate : 'Date'}
                 </Text>}
-                  {/* <Octicons style={{ textAlign: 'right' }} name="calendar" size={22} /> */}
-                </TouchableOpacity> : <DatePicker
-                  useNativeDriver={'true'}
-                  iconComponent={<FontAwesome name="calendar-check-o" size={24} color="gray" />}
-                  style={styles.inputFull}
-                  date={0}
-                  mode="date"
-                  placeholder="Date"
-                  format="YYYY-MM-DD"
-                  minDate="2000-01-01"
-                  maxDate={new Date()}
-                  confirmBtnText="Confirm"
-                  cancelBtnText="Cancel"
-                  customStyles={{
-                    dateIcon: {
-                      position: 'absolute',
-                      right: 0,
-                      top: 0,
-                      marginLeft: 0.2
-                    },
-                    dateInput: {
-                      marginLeft: 0,
-                      alignItems: 'flex-start', //change to center for android
-                      borderWidth: 0,
-                    },
-                    placeholderText: {
-                      color: 'gray',
-                      fontFamily: 'Urbanist',
-                      fontSize: 16,
-                      textAlign: 'left',
-                    }
-                  }}
-                  onDateChange={(value) => onChangeDate(value)}
-                />}
+              {/* <Octicons style={{ textAlign: 'right' }} name="calendar" size={22} /> */}
+            </TouchableOpacity> :
+              <DatePicker
+                useNativeDriver={'true'}
+                showIcon={false}
+                style={styles.inputFull}
+                date={PayCheck.paycheckDate}
+                mode="date"
+                placeholder="Date"
+                format="YYYY-MM-DD"
+                minDate="2000-01-01"
+                maxDate={new Date()}
+                confirmBtnText="Confirm"
+                cancelBtnText="Cancel"
+                customStyles={{
+                  dateIcon: {
+                    position: 'absolute',
+                    right: 0,
+                    top: 0,
+                    marginLeft: 0.2
+                  },
+                  dateInput: {
+                    marginLeft: 0,
+                    alignItems: 'flex-start', //change to center for android
+                    borderWidth: 0,
+                  },
+                  placeholderText: {
+                    color: 'gray',
+                    fontFamily: 'Urbanist',
+                    fontSize: 16,
+                    textAlign: 'left',
+                  },
+                  dateText: {
+                    color: 'black',
+                    fontFamily: 'Urbanist-Medium',
+                    fontSize: 16,
+                    textAlign: 'left',
+                  }
+                }}
+                onDateChange={(value) =>   handleInputChange('paycheckDate', value)}
+              />}
 
-                {show && (
-                  <DateTimePicker
-                    //testID="dateTimePicker"
-                    value={new Date(PayCheck.paycheckDate)}
-                    // mode={"date"}
-                    is24Hour={true}
-                    placeholder="Date"
-                    onChange={(value) => onChangeDate(value)}
-                    display="default"
-                    maximumDate={new Date()}
-                  />
-                )}
+            {show && (
+              <DateTimePicker
+                //testID="dateTimePicker"
+                value={new Date(PayCheck.paycheckDate)}
+                // mode={"date"}
+                is24Hour={true}
+                placeholder="Date"
+                onChange={(value) => onChangeDate(value)}
+                display="default"
+                maximumDate={new Date()}
+              />
+            )}
             <View style={styles.inputContainer}>
               <TextInput
                 style={[styles.input]}
@@ -300,6 +307,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: Dimensions.get('window').width * 0.9,
     marginVertical: 30,
+  },
+  inputFull: {
+    width: Dimensions.get('window').width * 0.95,
+    marginBottom: 10,
+    paddingLeft: 10,
+    alignItems: 'center',
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: '#E6EBF2',
+    shadowColor: '#000',
+    height: 54,
+    fontFamily: 'Urbanist-Light',
+    fontSize: 16,
+    justifyContent: 'center',
   },
   input: {
     width: Dimensions.get('window').width * 0.95,
@@ -378,5 +399,4 @@ const styles = StyleSheet.create({
     fontFamily: 'Urbanist-Medium',
   },
 });
-
 

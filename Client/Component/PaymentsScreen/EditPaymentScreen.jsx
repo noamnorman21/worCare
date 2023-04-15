@@ -248,9 +248,9 @@ export default function EditPaymentScreen(props) {
                   {/* <Octicons style={{ textAlign: 'right' }} name="calendar" size={22} /> */}
                 </TouchableOpacity> : <DatePicker
                   useNativeDriver={'true'}
-                  iconComponent={<FontAwesome name="calendar-check-o" size={24} color="gray" />}
+                  showIcon={false}
                   style={styles.inputFull}
-                  date={props.data.requestDate}
+                  date={Payment.requestDate}
                   mode="date"
                   placeholder="Date"
                   format="YYYY-MM-DD"
@@ -259,15 +259,9 @@ export default function EditPaymentScreen(props) {
                   confirmBtnText="Confirm"
                   cancelBtnText="Cancel"
                   customStyles={{
-                    dateIcon: {
-                      position: 'absolute',
-                      right: 0,
-                      top: 0,
-                      marginLeft: 0.2
-                    },
                     dateInput: {
                       marginLeft: 0,
-                      alignItems: 'center', //change to center for android
+                      alignItems: 'flex-start', //change to center for android
                       borderWidth: 0,
                     },
                     placeholderText: {
@@ -275,9 +269,15 @@ export default function EditPaymentScreen(props) {
                       fontFamily: 'Urbanist',
                       fontSize: 16,
                       textAlign: 'left',
+                    },
+                    dateText: {
+                      color: 'black',
+                      fontFamily: 'Urbanist-Medium',
+                      fontSize: 16,
+                      textAlign: 'left',
                     }
                   }}
-                  onDateChange={(value) => handleInputChange('amountToPay', value)}
+                  onDateChange={(value) => handleInputChange('requestDate', value)}
                 />}
 
                 {show && (
@@ -354,22 +354,22 @@ const styles = StyleSheet.create({
     borderColor: '#E6EBF2',
     shadowColor: '#000',
     height: 54,
-    fontFamily: 'Urbanist-Light',
+    fontFamily: 'Urbanist-Medium',
     fontSize: 16,
   },
   inputFull: {
-    width: SCREEN_WIDTH * 0.95,
-alignContent: 'flex-start',
-    height: 50,
-    borderWidth: 1,
-    fontFamily: 'Urbanist',
-    fontSize: 16,
-    color: '#808080',
-    borderColor: 'gray',
+    width: Dimensions.get('window').width * 0.95,
+    marginBottom: 10,
+    paddingLeft: 10,
+    alignItems: 'center',
     borderRadius: 16,
-    paddingHorizontal: 16,
-    marginBottom: 20,
-    justifyContent: 'center',
+    borderWidth: 1.5,
+    borderColor: '#E6EBF2',
+    shadowColor: '#000',
+    height: 54,
+    fontFamily: 'Urbanist-Medium',
+    fontSize: 16,
+    justifyContent: 'center',    
   },
   datePicker: {
     flexDirection: 'row',

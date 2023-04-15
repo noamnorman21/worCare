@@ -108,6 +108,7 @@ export default function EditPaycheck(props) {
   };
 
   const onChangeDate = (selectedDate) => {
+    
     const currentDate = new Date(selectedDate.nativeEvent.timestamp).toISOString().substring(0, 10);
 
     setShow(false);
@@ -124,6 +125,7 @@ export default function EditPaycheck(props) {
     setPaycheck({ ...Paycheck, [name]: value })
     if (name == 'paycheckDate') {
       setShow(false);
+      console.log(value);
       console.log('date changed');
     }
   }
@@ -255,7 +257,7 @@ export default function EditPaycheck(props) {
                   </Text>
                   {/* <Octicons style={{ textAlign: 'right' }} name="calendar" size={22} /> */}
                 </TouchableOpacity> : <DatePicker
-                  useNativeDriver={'true'}
+                  useNativeDriver={"true"}  
                   showIcon={false}
                   style={styles.inputFull}
                   date={Paycheck.paycheckDate}
@@ -283,9 +285,15 @@ export default function EditPaycheck(props) {
                       fontFamily: 'Urbanist',
                       fontSize: 16,
                       textAlign: 'left',
+                    },
+                    dateText: {
+                      color: 'black',
+                      fontFamily: 'Urbanist-Medium',
+                      fontSize: 16,
+                      textAlign: 'left',
                     }
                   }}
-                  onDateChange={(value) => onChangeDate(value)}
+                  onDateChange={(value) => handleInputChange('paycheckDate', value)}
                 />}
 
                 {show && (
@@ -359,7 +367,7 @@ const styles = StyleSheet.create({
     borderColor: '#E6EBF2',
     shadowColor: '#000',
     height: 54,
-    fontFamily: 'Urbanist-Light',
+    fontFamily: 'Urbanist-Medium',
     fontSize: 16,
   },
   inputFull: {

@@ -6,9 +6,11 @@ import { useNavigation } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import AddNewContact from './ContactComponents/AddNewContact'
 import { useIsFocused } from '@react-navigation/native';
-import Contact from './ContactComponents/Contact'
+import EditContact from './ContactComponents/editContact'
+import ContactDetails from './ContactComponents/ContactDetails'
 import { useUserContext } from '../UserContext'
-import { MaterialCommunityIcons, AntDesign, Feather, Octicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, Feather, Octicons, Ionicons } from '@expo/vector-icons';
+import { AddBtn } from './HelpComponents/AddNewTask';
 
 import {
   Menu,
@@ -26,10 +28,11 @@ export default function Contacts() {
   const stack = createStackNavigator();
   return (
     <MenuProvider>
-    <stack.Navigator initialRouteName='Main' screenOptions={{ headerShown: false }} >
-      <stack.Screen name="Main" component={Main} options={{ headerShown: true , headerTitle:"Contacts", headerTitleAlign:'center'}} />
-      <stack.Screen name="Contact" component={Contact} options={{ headerShown: true, headerTitle:"Edit Contact", headerTitleAlign:'center' }} />
-    </stack.Navigator>
+      <stack.Navigator initialRouteName='Main' screenOptions={{ headerShown: false }} >
+        <stack.Screen name="Main" component={Main} options={{ headerShown: true, headerTitle: "Contacts", headerTitleAlign: 'center' }} />
+        <stack.Screen name="EditContact" component={EditContact} options={{ headerShown: true, headerTitle: "Edit Contact", headerTitleAlign: 'center' }} />
+        <stack.Screen name="ContactDetails" component={ContactDetails} options={{ headerShown: true, headerTitle: "Contact Details", headerTitleAlign: 'center' }} />
+      </stack.Navigator>
     </MenuProvider>
   )
 
@@ -42,7 +45,7 @@ function Main({ navigation }) {
   const [Search, setSearch] = useState([])
   const [ContactToRender, setContactToRender] = useState([])
   const [modal1Visible, setModal1Visible] = useState(false);
-  const { userContext, userContacts, setuserContacts, updateuserContacts } = useUserContext()  
+  const { userContext, userContacts, setuserContacts, updateuserContacts } = useUserContext()
   const isFocused = useIsFocused()
 
   const onChangeSearch = query => setSearch(query);
@@ -59,25 +62,25 @@ function Main({ navigation }) {
       },
       body: JSON.stringify(user)
     });
-    const data =await response.json();
-  
-    let contacts = data.map((item) => {      
-        return <ContactCard key={item.contactId} contact={item} />  
+    const data = await response.json();
+
+    let contacts = data.map((item) => {
+      return <ContactCard key={item.contactId} contact={item} fetchContacts={fetchContacts} />
     })
-    let idarr = data.map((item) => {      
-        return item.patientId
+    let idarr = data.map((item) => {
+      return item.patientId
     })
-    setpatientId(idarr[0]);    
+    setpatientId(idarr[0]);
     setContacts(data);
     setContactToRender(contacts);
   }
 
   useEffect(() => {
-    let temp = Contacts.filter((item) => {     
-        return item.contactName.includes(Search)
+    let temp = Contacts.filter((item) => {
+      return item.contactName.includes(Search)
     })
     let contacts = temp.map((item) => {
-        return <ContactCard key={item.contactId} contact={item} />
+      return <ContactCard key={item.contactId} contact={item} />
     })
     setContactToRender(contacts);
   }, [Search])
@@ -99,12 +102,10 @@ function Main({ navigation }) {
         placeholderTextColor="#808080"
       />
       {ContactToRender}
-      <TouchableOpacity style={styles.button} mode="fixed" onPress={() => setModal1Visible(true)}>
-        <Text style={styles.buttonText}>+</Text>
-      </TouchableOpacity>
+      <View style={styles.addBtnView}><AddBtn onPress={() => setModal1Visible(true)} /></View>
       {/*NewContactModal*/}
       <Modal animationType="slide" visible={modal1Visible}>
-        <AddNewContact patientId={patientId}cancel={() => { setModal1Visible(false); fetchContacts() }} />
+        <AddNewContact patientId={patientId} cancel={() => { setModal1Visible(false); fetchContacts() }} />
       </Modal>
     </View>
   )
@@ -121,7 +122,7 @@ function ContactCard(props) {
       console.log("call")
     }
     if (value == 3) {
-     navigation.navigate('Contact', { contact: props.contact })
+      navigation.navigate('EditContact', { contact: props.contact })
     }
     if (value == 4) {
       DeleteContact()
@@ -142,7 +143,7 @@ function ContactCard(props) {
           onPress: () => {
             fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/DeleteContact/', {
               method: 'DELETE',
-              body: JSON.stringify(Contact),
+              body: JSON.stringify(props.contact),
               headers: new Headers({
                 'Content-Type': 'application/json; charset=UTF-8',
               })
@@ -153,7 +154,8 @@ function ContactCard(props) {
               .then(
                 (result) => {
                   console.log("fetch POST= ", result);
-                  navigation.goBack();
+                  Alert.alert("Contact "+props.contact.contactName +" Deleted Successfully")
+                  props.fetchContacts();                
                 },
                 (error) => {
                   console.log("err post=", error);
@@ -163,33 +165,11 @@ function ContactCard(props) {
       ]
     );
   }
- 
   return (
-    <Menu  onSelect={value => openModal(value)} renderer={renderers.SlideInMenu} >
-    <MenuTrigger
-      children={ <View style={styles.contactcard}>
-      <Text style={styles.name}>{props.contact.contactName}</Text>
-      <Text style={styles.number}>{props.contact.mobileNo}</Text>
-    </View>}
-    />
-    <MenuOptions customStyles={{
-      optionsContainer: {
-        borderRadius: 10,
-        elevation: 100,
-      },
-      // optionsWrapper: newStyles.optionsWrapper,
-    }}
-    >
-      <MenuOption value={1} children={<View style={styles.options}><MaterialCommunityIcons name='bell-ring-outline' size={20} /><Text style={styles.optionsText}> Send Email</Text></View>} />
-      <MenuOption value={2} children={<View style={styles.options}><Feather name='eye' size={20} /><Text style={styles.optionsText}> Call Contact</Text></View>} />
-      <MenuOption value={3} children={<View style={styles.options}><Feather name='edit' size={20} /><Text style={styles.optionsText}> Edit Contact</Text></View>} />
-      <MenuOption value={4} children={<View style={styles.options}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={styles.deleteTxt}> Delete Contact</Text></View>} />
-    </MenuOptions>
-  </Menu>
-    // <TouchableOpacity style={styles.contactcard} onPress={() => navigation.navigate('Contact', { contact: props.contact })}>
-    //   <Text style={styles.name}>{props.contact.contactName}</Text>
-    //   <Text style={styles.number}>{props.contact.mobileNo}</Text>
-    // </TouchableOpacity>
+    <TouchableOpacity style={styles.contactcard} onPress={()=>navigation.navigate('ContactDetails', { contact: props.contact })} >
+    <Text style={styles.name}>{props.contact.contactName}</Text>
+    <Text style={styles.number}>{props.contact.mobileNo}</Text>
+  </TouchableOpacity>
   )
 }
 
@@ -231,6 +211,11 @@ const styles = StyleSheet.create({
     marginLeft: 0,
     backgroundColor: '#fff',
     borderRadius: 16,
+  },
+  addBtnView: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
   },
   contactcard: {
     backgroundColor: '#fff',
@@ -276,6 +261,20 @@ const styles = StyleSheet.create({
     fontSize: 30,
     color: '#fff',
   },
+  addBtn: {
+    backgroundColor: '#548DFF',
+    borderRadius: 54,
+    height: 54,
+    width: 54,
+    justifyContent: 'center',
+    alignItems: 'center',
+ },
+ addBtnTxt: {
+  color: '#fff',
+  fontSize: 28,
+  marginBottom: 2,
+  fontFamily: 'Urbanist-SemiBold',
+},
   savebutton: {
     width: Dimensions.get('window').width * 0.45,
     backgroundColor: '#548DFF',
