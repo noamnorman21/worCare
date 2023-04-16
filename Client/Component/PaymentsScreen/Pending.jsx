@@ -172,10 +172,6 @@ function Request(props) {
   }
 
   const saveStatus = async (id) => {
-    let request = {
-      requestId: id,
-      requestStatus: "F"
-    }
     
     try {
       const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/UpdateStatus/', {

@@ -99,7 +99,7 @@ function Paycheck(props) {
     paycheckSummary: props.data.paycheckSummary,
     paycheckComment: props.data.paycheckComment,
     payCheckNum: props.data.payCheckNum,
-    userId: props.data.userId,
+    UserId: props.data.UserId,
     payCheckProofDocument: props.data.payCheckProofDocument,
   })
   const [modal2Visible, setModal2Visible] = useState(false);
@@ -122,7 +122,6 @@ function Paycheck(props) {
   };
 
   const openModal = async (value) => {
-    console.log(temp)
     if (value == 1) {
       console.log("Notofication")
     }
@@ -139,7 +138,6 @@ function Paycheck(props) {
   }
 
   const DeletePaychek = async () => {
-    console.log("Delete Paycheck: " + temp.payCheckNum);
     Alert.alert(
       'Delete Paycheck',
       'are you sure you want to Delete the Paycheck?',
@@ -151,7 +149,7 @@ function Paycheck(props) {
           // If the user confirmed, then we dispatch the action we blocked earlier
           // This will continue the action that had triggered the removal of the screen
           onPress: () => {
-            let res = fetch('https://proj.ruppin.ac.il/cgroup94/prod/api/Paychecks/DeletePaycheck/' + temp.payCheckNum, {
+            let res = fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Paychecks/DeletePaycheck/' + temp.payCheckNum, {
               method: 'DELETE',
               headers: {
                 'Content-Type': 'application/json',
@@ -168,7 +166,7 @@ function Paycheck(props) {
               .then(
                 (result) => {
                   console.log("fetch DELETE= ", result);
-                  Alert.alert("Delete Paycheck: " + temp.payCheckNum);
+                  Alert.alert("Paycheck " + temp.payCheckNum + " was deleted");
                   props.getPaychecks()
                 },
                 (error) => {
@@ -254,12 +252,12 @@ function Paycheck(props) {
               </Menu>
               <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
                 <View style={newStyles.documentview}>
+                <TouchableOpacity style={newStyles.closeBtn} onPress={() => setModal1Visible(false)}>
+                    <AntDesign name="close" size={24} color="black" />
+                  </TouchableOpacity>
                   <Image source={{ uri: props.data.payCheckProofDocument }} style={newStyles.documentImg} />
                   <TouchableOpacity style={newStyles.documentDownloadButton} onPress={downloadFile} >
                     <Text style={newStyles.documentButtonText}>Download</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={newStyles.documentCancelButton} onPress={() => setModal1Visible(false)}>
-                    <Text style={newStyles.documentCancelText}>Go Back</Text>
                   </TouchableOpacity>
                 </View>
               </Modal>
@@ -311,13 +309,12 @@ function Paycheck(props) {
               </Menu>
               <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
                 <View style={newStyles.documentview}>
-                  <Image source={{ uri: props.data.payCheckProofDocument}} style={newStyles.documentImg} />
-                  <Text>{props.data.requestProofDocument}</Text>
+                  <TouchableOpacity style={newStyles.closeBtn} onPress={() => setModal1Visible(false)}>
+                    <AntDesign name="close" size={24} color="black" />
+                  </TouchableOpacity>
+                  <Image source={{ uri: props.data.payCheckProofDocument }} style={newStyles.documentImg} />
                   <TouchableOpacity style={newStyles.documentDownloadButton} onPress={downloadFile} >
                     <Text style={newStyles.documentButtonText}>Download</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={newStyles.documentCancelButton} onPress={() => setModal1Visible(false)}>
-                    <Text style={newStyles.documentCancelText}>Go Back</Text>
                   </TouchableOpacity>
                 </View>
               </Modal>
@@ -334,6 +331,13 @@ function Paycheck(props) {
 }
 
 const newStyles = StyleSheet.create({
+  closeBtn: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    width: Dimensions.get('window').width * 1,
+    marginRight: 30,
+  },
   requestItemHeader: {
     justifyContent: 'space-between',
     width: Dimensions.get('screen').width * 0.9,

@@ -22,7 +22,7 @@ export default function EditPaycheck(props) {
     paycheckSummary: props.data.paycheckSummary,
     paycheckComment: props.data.paycheckComment,
     payCheckNumber: props.data.payCheckNum,
-    userId: props.data.UserId,
+    UserId: props.data.UserId,
     payCheckProofDocument: props.data.payCheckProofDocument,
   })
   const [show, setShow] = useState(false);
@@ -115,11 +115,6 @@ export default function EditPaycheck(props) {
     handleInputChange('paycheckDate', currentDate);
   };
 
-
-
-
-
-
   const handleInputChange = (name, value) => {
     setValueChanged(true);
     setPaycheck({ ...Paycheck, [name]: value })
@@ -193,7 +188,7 @@ export default function EditPaycheck(props) {
       paycheckSummary: Paycheck.paycheckSummary,
       paycheckComment: Paycheck.paycheckComment,
       payCheckNum: Paycheck.payCheckNumber,
-      userId: Paycheck.userId,
+      UserId: Paycheck.UserId,
       payCheckProofDocument: downloadURL,
     }
     console.log(temp);

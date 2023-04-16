@@ -13,7 +13,7 @@ import { FontAwesome, MaterialIcons } from '@expo/vector-icons'
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function NewPaycheck(props) {
-  const [PlatformType, setPlatformType] = useState(Platform.OS);
+  const PlatformType = Platform.OS;
   const { userContext } = useUserContext();
   const [PayCheck, setPayCheck] = useState({
     paycheckDate: null,

@@ -112,57 +112,45 @@ function Main({ navigation }) {
 function ContactCard(props) {
   const navigation = useNavigation();
 
-  const openModal = (value) => {
-    if (value == 1) {
-      console.log("Email")
-    }
-    else if (value == 2) {
-      console.log("call")
-    }
-    if (value == 3) {
-      navigation.navigate('EditContact', { contact: props.contact })
-    }
-    if (value == 4) {
-      DeleteContact()
-    }
-  }
+ 
 
-  const DeleteContact = () => {
-    Alert.alert(
-      'Delete Contact',
-      'Are you sure you want to delete this contact?',
-      [
-        { text: "Don't Delete", style: 'cancel', onPress: () => { } },
-        {
-          text: 'Delete',
-          style: 'destructive',
-          // If the user confirmed, then we dispatch the action we blocked earlier
-          // This will continue the action that had triggered the removal of the screen
-          onPress: () => {
-            fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/DeleteContact/', {
-              method: 'DELETE',
-              body: JSON.stringify(props.contact),
-              headers: new Headers({
-                'Content-Type': 'application/json; charset=UTF-8',
-              })
-            })
-              .then(res => {
-                return res.json()
-              })
-              .then(
-                (result) => {
-                  console.log("fetch POST= ", result);
-                  Alert.alert("Contact "+props.contact.contactName +" Deleted Successfully")
-                  props.fetchContacts();                
-                },
-                (error) => {
-                  console.log("err post=", error);
-                });
-          }
-        },
-      ]
-    );
-  }
+  // const DeleteContact = () => {
+  //   Alert.alert(
+  //     'Delete Contact',
+  //     'Are you sure you want to delete this contact?',
+  //     [
+  //       { text: "Don't Delete", style: 'cancel', onPress: () => { } },
+  //       {
+  //         text: 'Delete',
+  //         style: 'destructive',
+  //         // If the user confirmed, then we dispatch the action we blocked earlier
+  //         // This will continue the action that had triggered the removal of the screen
+  //         onPress: () => {
+  //           fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/DeleteContact/', {
+  //             method: 'DELETE',
+  //             body: JSON.stringify(props.contact),
+  //             headers: new Headers({
+  //               'Content-Type': 'application/json; charset=UTF-8',
+  //             })
+  //           })
+  //             .then(res => {
+  //               return res.json()
+  //             })
+  //             .then(
+  //               (result) => {
+  //                 console.log("fetch POST= ", result);
+  //                 Alert.alert("Contact "+props.contact.contactName +" Deleted Successfully")
+  //                 props.fetchContacts();                
+  //               },
+  //               (error) => {
+  //                 console.log("err post=", error);
+  //               });
+  //         }
+  //       },
+  //     ]
+  //   );
+  // }
+  
   return (
     <TouchableOpacity style={styles.contactcard} onPress={()=>navigation.navigate('ContactDetails', { contact: props.contact })} >
     <Text style={styles.name}>{props.contact.contactName}</Text>
