@@ -152,8 +152,6 @@ namespace WebApi.Controllers
                     int res = db.InsertDrugForPatient(actualListId, drugFor.fromDate, drugFor.toDate, drugFor.dosage, drugFor.qtyInBox, drugFor.minQuantity, drugFor.drugId, drugFor.patientId);
                     db.SaveChanges();
                     //next step will be to create a PatientTask and than actualTask
-
-
                 }
                 ///למחוק את השורה למטה!!, זה רק כדי שזה לא יכעס
                 return Ok("just for now!!!!");

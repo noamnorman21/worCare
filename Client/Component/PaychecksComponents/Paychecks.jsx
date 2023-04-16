@@ -21,8 +21,6 @@ export default function Paychecks({ navigation, route }) {
   const isFocused = useIsFocused()
   const [modal1Visible, setModal1Visible] = useState(false);
 
-
-
   useEffect(() => {
     if (isFocused && modal1Visible == false) {
       getPaychecks()
@@ -36,17 +34,15 @@ export default function Paychecks({ navigation, route }) {
     }
 
     try {
-      const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/PayChecks/GetPaychecks/', {
+      const response = await fetch('https://proj.ruppin.ac.il/cgroup94/prod/api/PayChecks/GetPaychecks/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-
         },
         body: JSON.stringify(user)
       });
       const data = await response.json();
       setArr(data)
-      console.log(data)
       if (data != null && data.length != undefined) {
         let arr = data.map((item) => {
           return (
@@ -54,7 +50,6 @@ export default function Paychecks({ navigation, route }) {
           )
         })
         setHistory(arr)
-
       }
     } catch (error) {
       console.log(error)
@@ -78,12 +73,13 @@ export default function Paychecks({ navigation, route }) {
   }
 
   return (
-    <ScrollView contentContainerStyle={newStyles.pending}>
-      <View style={newStyles.headerText}>
-        <Text style={newStyles.header}>Paychecks</Text>
+    <ScrollView contentContainerStyle={styles.pending}>
+      <View style={styles.headerText}>
+        <Text style={styles.header}>Paychecks History</Text>
+        <View style={styles.line}></View>
       </View>
       {History}
-      <View style={newStyles.addBtnView}><AddBtn onPress={() => setModal1Visible(true)} /></View>
+      <View style={styles.addBtnView}><AddBtn onPress={() => setModal1Visible(true)} /></View>
       <Modal animationType='slide' transparent={true} visible={modal1Visible}>
         <NewPaycheck cancel={() => { setModal1Visible(false); getPaychecks() }} userId={userContext.userId} />
       </Modal>
@@ -92,14 +88,16 @@ export default function Paychecks({ navigation, route }) {
 }
 
 function Paycheck(props) {
-  const [expanded, setExpanded] = React.useState(false);
+  const [expanded, setExpanded] = useState(false);
   const animationController = useRef(new Animated.Value(0)).current;
   const [modal1Visible, setModal1Visible] = useState(false);
-  const [temp, settemp] = useState({
+  const [temp, setTemp] = useState({
     paycheckDate: props.data.paycheckDate,
     paycheckSummary: props.data.paycheckSummary,
     paycheckComment: props.data.paycheckComment,
     payCheckNum: props.data.payCheckNum,
+    UserId: props.data.UserId,
+    payCheckProofDocument: props.data.payCheckProofDocument,
   })
   const [modal2Visible, setModal2Visible] = useState(false);
   const date = new Date(temp.paycheckDate);
@@ -121,9 +119,8 @@ function Paycheck(props) {
   };
 
   const openModal = async (value) => {
-    console.log(temp)
     if (value == 1) {
-      console.log("Notofication")
+      console.log("Nottification")
     }
     else if (value == 2) {
       setModal1Visible(true)
@@ -132,12 +129,11 @@ function Paycheck(props) {
       setModal2Visible(true)
     }
     else if (value == 4) {
-
-      DeletePaychek(props.data.paycheckNum)
+      deletePaycheck(props.data.paycheckNum)
     }
   }
 
-  const DeletePaychek = async () => {
+  const deletePaycheck = async () => {
     console.log("Delete Paycheck: " + temp.payCheckNum);
     Alert.alert(
       'Delete Paycheck',
@@ -174,14 +170,11 @@ function Paycheck(props) {
                   console.log("err post=", error);
                 }
               );
-
-
           }
         },
       ]
     );
   }
-
 
   const downloadFile = async () => {
     const url = props.data.requestProofDocument;
@@ -231,11 +224,11 @@ function Paycheck(props) {
     <SafeAreaView>
       <View>
         {expanded ?
-          <View style={newStyles.requestOpen}>
-            <View style={newStyles.requestItemHeaderOpen}>
-              <TouchableOpacity onPress={toggle} style={newStyles.request}>
-                <View style={newStyles.requestItemLeft}>
-                  <Text style={newStyles.requestItemText}>{dateString}</Text>
+          <View style={styles.requestOpen}>
+            <View style={styles.requestItemHeaderOpen}>
+              <TouchableOpacity onPress={toggle} style={styles.request}>
+                <View style={styles.requestItemLeft}>
+                  <Text style={styles.requestItemText}>{dateString}</Text>
                 </View>
               </TouchableOpacity>
               <Menu style={{ flexDirection: 'column', marginVertical: 0 }} onSelect={value => openModal(value)} >
@@ -245,54 +238,53 @@ function Paycheck(props) {
                   </View>}
                 />
                 <MenuOptions customStyles={{
-                  optionsWrapper: newStyles.optionsWrapperOpened,
+                  optionsWrapper: styles.optionsWrapperOpened,
                 }}  >
-                  <MenuOption style={{ borderRadius: 16 }} value={1} children={<View style={newStyles.options}><MaterialCommunityIcons name='bell-ring-outline' size={20} /><Text style={newStyles.optionsText}> Send Notification</Text></View>} />
-                  <MenuOption style={{ borderRadius: 16 }} value={2} children={<View style={newStyles.options}><Feather name='eye' size={20} /><Text style={newStyles.optionsText}> View Document</Text></View>} />
-                  <MenuOption style={{ borderRadius: 16 }} value={3} children={<View style={newStyles.options}><Feather name='edit' size={20} /><Text style={newStyles.optionsText}> Edit Paycheck</Text></View>} />
-                  <MenuOption style={newStyles.deleteTxt} value={4} children={<View style={newStyles.options}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={newStyles.deleteTxt}> Delete Paycheck</Text></View>} />
+                  <MenuOption style={{ borderRadius: 16 }} value={1} children={<View style={styles.options}><MaterialCommunityIcons name='bell-ring-outline' size={20} /><Text style={styles.optionsText}> Send Notification</Text></View>} />
+                  <MenuOption style={{ borderRadius: 16 }} value={2} children={<View style={styles.options}><Feather name='eye' size={20} /><Text style={styles.optionsText}> View Document</Text></View>} />
+                  <MenuOption style={{ borderRadius: 16 }} value={3} children={<View style={styles.options}><Feather name='edit' size={20} /><Text style={styles.optionsText}> Edit Paycheck</Text></View>} />
+                  <MenuOption style={styles.deleteTxt} value={4} children={<View style={styles.options}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={styles.deleteTxt}> Delete Paycheck</Text></View>} />
                 </MenuOptions>
               </Menu>
               <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
-                <View style={newStyles.documentview}>
-                  <Image source={{ uri: props.data.requestProofDocument }} style={newStyles.documentImg} />
-                  <Text>{props.data.requestProofDocument}</Text>
-                  <TouchableOpacity style={newStyles.documentDownloadButton} onPress={downloadFile} >
-                    <Text style={newStyles.documentButtonText}>Download</Text>
+                <View style={styles.documentview}>
+                  <TouchableOpacity style={styles.closeBtn} onPress={() => setModal1Visible(false)}>
+                    <AntDesign name="close" size={24} color="black" />
                   </TouchableOpacity>
-                  <TouchableOpacity style={newStyles.documentCancelButton} onPress={() => setModal1Visible(false)}>
-                    <Text style={newStyles.documentCancelText}>Go Back</Text>
+                  <Image source={{ uri: props.data.payCheckProofDocument }} style={styles.documentImg} />
+                  <TouchableOpacity style={styles.documentDownloadButton} onPress={downloadFile} >
+                    <Text style={styles.documentButtonText}>Download</Text>
                   </TouchableOpacity>
                 </View>
               </Modal>
               <Modal animationType='slide' transparent={true} visible={modal2Visible}>
-                <EditPaycheck cancel={(value) => { setModal2Visible(false); setExpanded(true); props.getPaychecks() }} save={(value) => { setModal2Visible(false); setExpanded(false); props.getPaychecks(); settemp(value) }} data={props.data} />
+                <EditPaycheck cancel={(value) => { setModal2Visible(false); setExpanded(true); props.getPaychecks() }} save={(value) => { setModal2Visible(false); setExpanded(false); props.getPaychecks(); setTemp(value) }} data={props.data} />
               </Modal>
             </View>
-            <View style={newStyles.requestItemBody}>
-              <View style={newStyles.requestItemBodyLeft}>
-                <Text style={newStyles.requestItemText}>Date: </Text>
-                <Text style={newStyles.requestItemText}>Amount: </Text>
-                <Text style={[newStyles.requestItemText, temp.paycheckComment == null || temp.paycheckComment == '' && { display: 'none' }]}>Comment: </Text>
+            <View style={styles.requestItemBody}>
+              <View style={styles.requestItemBodyLeft}>
+                <Text style={styles.requestItemText}>Date: </Text>
+                <Text style={styles.requestItemText}>Amount: </Text>
+                <Text style={[styles.requestItemText, temp.paycheckComment == null || temp.paycheckComment == '' && { display: 'none' }]}>Comment: </Text>
 
               </View>
-              <View style={newStyles.requestItemBodyRight}>
-                <Text style={newStyles.requestItemText}>{dateString}</Text>
-                <Text style={newStyles.requestItemText}>{temp.paycheckSummary}</Text>
-                <Text style={[newStyles.requestItemText, temp.paycheckComment == null || temp.paycheckComment == "" && { display: 'none' }]}>{temp.paycheckComment}</Text>
+              <View style={styles.requestItemBodyRight}>
+                <Text style={styles.requestItemText}>{dateString}</Text>
+                <Text style={styles.requestItemText}>{temp.paycheckSummary}</Text>
+                <Text style={[styles.requestItemText, temp.paycheckComment == null || temp.paycheckComment == "" && { display: 'none' }]}>{temp.paycheckComment}</Text>
 
               </View>
             </View>
           </View>
           :
           <View>
-            <View style={newStyles.requestItemHeader}>
-              <TouchableOpacity onPress={toggle} style={newStyles.request}>
-                <View style={newStyles.requestItemLeft}>
-                  <Text style={newStyles.requestItemText}>{dateString}</Text>
+            <View style={styles.requestItemHeader}>
+              <TouchableOpacity onPress={toggle} style={styles.request}>
+                <View style={styles.requestItemLeft}>
+                  <Text style={styles.requestItemText}>{dateString}</Text>
                 </View>
-                <View style={newStyles.requestItemMiddle}>
-                  <Text style={newStyles.requestItemText}>{props.subject}</Text>
+                <View style={styles.requestItemMiddle}>
+                  <Text style={styles.requestItemText}>{props.subject}</Text>
                 </View>
               </TouchableOpacity>
               <Menu style={{ flexDirection: 'column', marginVertical: 0 }} onSelect={value => openModal(value)} >
@@ -302,29 +294,28 @@ function Paycheck(props) {
                   </View>}
                 />
                 <MenuOptions customStyles={{
-                  optionsWrapper: newStyles.optionsWrapper,
+                  optionsWrapper: styles.optionsWrapper,
                 }}
                 >
-                  <MenuOption style={{ borderRadius: 16 }} value={1} children={<View style={newStyles.options}><MaterialCommunityIcons name='bell-ring-outline' size={20} /><Text style={newStyles.optionsText}> Send Notification</Text></View>} />
-                  <MenuOption style={{ borderRadius: 16 }} value={2} children={<View style={newStyles.options}><Feather name='eye' size={20} /><Text style={newStyles.optionsText}> View Document</Text></View>} />
-                  <MenuOption style={{ borderRadius: 16 }} value={3} children={<View style={newStyles.options}><Feather name='edit' size={20} /><Text style={newStyles.optionsText}> Edit Paycheck</Text></View>} />
-                  <MenuOption style={newStyles.deleteTxt} value={4} children={<View style={newStyles.options}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={newStyles.deleteTxt}> Delete Paycheck</Text></View>} />
+                  <MenuOption style={{ borderRadius: 16 }} value={1} children={<View style={styles.options}><MaterialCommunityIcons name='bell-ring-outline' size={20} /><Text style={styles.optionsText}> Send Notification</Text></View>} />
+                  <MenuOption style={{ borderRadius: 16 }} value={2} children={<View style={styles.options}><Feather name='eye' size={20} /><Text style={styles.optionsText}> View Document</Text></View>} />
+                  <MenuOption style={{ borderRadius: 16 }} value={3} children={<View style={styles.options}><Feather name='edit' size={20} /><Text style={styles.optionsText}> Edit Paycheck</Text></View>} />
+                  <MenuOption style={styles.deleteTxt} value={4} children={<View style={styles.options}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={styles.deleteTxt}> Delete Paycheck</Text></View>} />
                 </MenuOptions>
               </Menu>
               <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
-                <View style={newStyles.documentview}>
-                  <Image source={{ uri: props.data.requestProofDocument }} style={newStyles.documentImg} />
-                  <Text>{props.data.requestProofDocument}</Text>
-                  <TouchableOpacity style={newStyles.documentDownloadButton} onPress={downloadFile} >
-                    <Text style={newStyles.documentButtonText}>Download</Text>
+                <View style={styles.documentview}>
+                  <TouchableOpacity style={styles.closeBtn} onPress={() => setModal1Visible(false)}>
+                    <AntDesign name="close" size={24} color="black" />
                   </TouchableOpacity>
-                  <TouchableOpacity style={newStyles.documentCancelButton} onPress={() => setModal1Visible(false)}>
-                    <Text style={newStyles.documentCancelText}>Go Back</Text>
+                  <Image source={{ uri: props.data.payCheckProofDocument }} style={styles.documentImg} />
+                  <TouchableOpacity style={styles.documentDownloadButton} onPress={downloadFile} >
+                    <Text style={styles.documentButtonText}>Download</Text>
                   </TouchableOpacity>
                 </View>
               </Modal>
               <Modal animationType='slide' transparent={true} visible={modal2Visible}>
-                <EditPaycheck cancel={(value) => { setModal2Visible(false); setExpanded(true); props.getPaychecks() }} save={(value) => { setModal2Visible(false); setExpanded(false); props.getPaychecks(); settemp(value) }} data={props.data} />
+                <EditPaycheck cancel={(value) => { setModal2Visible(false); setExpanded(true); props.getPaychecks() }} save={(value) => { setModal2Visible(false); setExpanded(false); props.getPaychecks(); setTemp(value) }} data={props.data} />
               </Modal>
             </View>
           </View>
@@ -332,10 +323,20 @@ function Paycheck(props) {
       </View>
     </SafeAreaView >
   );
-
 }
 
-const newStyles = StyleSheet.create({
+const styles = StyleSheet.create({
+  line: {
+    borderBottomColor: '#E6EBF2',
+    borderBottomWidth: 1.5,
+  },
+  closeBtn: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    width: Dimensions.get('window').width * 0.9,
+    marginVertical: 30,
+  },
   requestItemHeader: {
     justifyContent: 'space-between',
     width: Dimensions.get('screen').width * 0.9,
@@ -420,7 +421,8 @@ const newStyles = StyleSheet.create({
     fontFamily: 'Urbanist-Medium',
   },
   optionsText: {
-    fontFamily: 'Urbanist-Regular',
+    fontFamily: 'Urbanist-Medium',
+    fontSize: 16,
   },
   optionsWrapper: {
     position: 'absolute',
@@ -455,7 +457,8 @@ const newStyles = StyleSheet.create({
   },
   deleteTxt: {
     color: '#FF3C3C',
-    fontFamily: 'Urbanist-Regular',
+    fontFamily: 'Urbanist-Medium',
+    fontSize: 16,
   },
   requestItemBodyLeft: {
     flex: 2,
@@ -475,11 +478,12 @@ const newStyles = StyleSheet.create({
     height: SCREEN_HEIGHT * 0.5,
     width: SCREEN_WIDTH * 0.9,
     borderRadius: 16,
+    marginVertical: 20,
   },
   documentDownloadButton: {
     fontSize: 16,
     borderRadius: 16,
-    backgroundColor: '#7DA9FF',
+    backgroundColor: '#548DFF',
     fontFamily: 'Urbanist-Bold',
     alignItems: 'center',
     justifyContent: 'center',

@@ -13,17 +13,18 @@ import { FontAwesome, MaterialIcons } from '@expo/vector-icons'
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function NewPaycheck(props) {
-  const [PlatformType, setPlatformType] = useState(Platform.OS);
+  const PlatformType = Platform.OS;
   const { userContext } = useUserContext();
+  const [show, setShow] = useState(false);
+  const [dateSelected, setDateSelected] = useState(false);
   const [PayCheck, setPayCheck] = useState({
     paycheckDate: null,
     paycheckSummary: '',
     paycheckComment: '',
-    userId: userContext.userId
+    userId: userContext.userId,
+    payCheckProofDocument: null,
   })
 
-  const [show, setShow] = useState(false);
-  const [dateSelected, setDateSelected] = useState(false);
   const showMode = (currentMode) => {
     if (Platform.OS === 'android') {
       setShow(true);
@@ -77,7 +78,7 @@ export default function NewPaycheck(props) {
     // Explore the result
     console.log(result);
     if (!result.canceled) {
-      sendToFirebase(result.assets[0].uri)
+      setPayCheck({ ...PayCheck, paycheckProofDocument: result.assets[0].uri })
     }
   };
 
@@ -104,8 +105,8 @@ export default function NewPaycheck(props) {
 
   const sendToFirebase = async (image) => {
     // if the user didn't upload an image, we will use the default image
-    if (PayCheck.paycheckDate === null) {
-      Alert.alert('Please select date');
+    if (PayCheck.paycheckProofDocument === null) {
+      Alert.alert('Please select an image');
       return;
     }
     console.log('image', image);
@@ -137,16 +138,17 @@ export default function NewPaycheck(props) {
     }
   };
 
-  const savePaycheck = async () => {
+  const savePaycheck = async (downloadURL) => {
     const Newcheck = {
       paycheckDate: PayCheck.paycheckDate,
       paycheckSummary: PayCheck.paycheckSummary,
       paycheckComment: PayCheck.paycheckComment,
-      userId: PayCheck.userId
+      userId: PayCheck.userId,
+      paycheckProofDocument: downloadURL
     }
     console.log("Newcheck", Newcheck);
     if (Newcheck.paycheckDate === null) {
-      Alert.alert('Please select date');
+      Alert.alert('Please Choose a date');
       return;
     }
     if (Newcheck.paycheckSummary === '') {
@@ -154,7 +156,7 @@ export default function NewPaycheck(props) {
       return;
     }
     console.log("Newcheck", Newcheck);
-    fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/PayChecks/NewPayCheck', {
+    fetch('https://proj.ruppin.ac.il/cgroup94/prod/api/PayChecks/NewPayCheck', {
       method: 'POST',
       body: JSON.stringify(Newcheck),
       headers: new Headers({
@@ -231,7 +233,7 @@ export default function NewPaycheck(props) {
                     textAlign: 'left',
                   }
                 }}
-                onDateChange={(value) =>   handleInputChange('paycheckDate', value)}
+                onDateChange={(value) => handleInputChange('paycheckDate', value)}
               />}
 
             {show && (
@@ -275,9 +277,7 @@ export default function NewPaycheck(props) {
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
     </SafeAreaView>
-
   );
-
 }
 
 const styles = StyleSheet.create({
