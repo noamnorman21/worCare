@@ -7,6 +7,7 @@ namespace WebApi.DTO
 {
     public class DrugForPatientDTO
     {
+
         public int listId { get; set; }
         public System.DateTime fromDate { get; set; }
         public System.DateTime toDate { get; set; }
@@ -15,6 +16,14 @@ namespace WebApi.DTO
         public Nullable<byte> minQuantity { get; set; }
         public int drugId { get; set; }
         public string patientId { get; set; }
+
+
+        //array of TimeSpan
+        public TimeSpan[] timesInDayArray { get; set; }
+
+
+
+
 
     }
 }

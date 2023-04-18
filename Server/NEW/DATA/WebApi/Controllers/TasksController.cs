@@ -126,19 +126,56 @@ namespace WebApi.Controllers
         public IHttpActionResult InsertActualList([FromBody] dynamic list)
         {
             //dynamic becouse the list can be drug or product list
-            bool isDrug = false;// defaul product list
+            Nullable<bool> isDrug = null;// default  will be regular patient task
+            string taskName;
             try
             {
                 if (list.drugId != null)
                 {
                     //isdrug mean that is drug list and not product list
                     isDrug = true;
+                    taskName = list.drugName; //the name of the drug
                 }
+                
+                else if (list.listName != null)
+                {
+                    // product list
+                    isDrug = false;
+                    taskName = list.listName; //the name of the product list
+                }
+                else
+                {
+                    //regular patient task
+                    isDrug = null;
+                    taskName = list.taskName; //the name of the task that the user insert
+                }
+                
+                
                 db.InsertActualList(isDrug);
                 db.SaveChanges();
                 int actualListId = db.tblActualList.Max(x => x.listId);// find the new id that was created in the db
-                if (isDrug)
+                if (isDrug == true)
                 {
+                    TimeSpan[] timesInDayArray = new TimeSpan[1];
+                    foreach (var item in list.timesInDayArr)
+                    {
+                        TimeSpan time;
+                        if (!item is TimeSpan)
+                            time = TimeSpan.Parse(item);
+                        else
+                            time = item;
+                        
+                        if (timesInDayArray[0]==null)//for the first item
+                            timesInDayArray[0] = time;
+                        else
+                        {
+                            TimeSpan[] tempArr = new TimeSpan[timesInDayArray.Length];
+                            Array.Copy(timesInDayArray, tempArr, timesInDayArray.Length);
+                            tempArr[tempArr.Length - 1] = time;
+                            timesInDayArray = tempArr;
+                        }
+
+                    }
                     DrugForPatientDTO drugFor = new DrugForPatientDTO();
                     drugFor.fromDate = list.fromDate;
                     drugFor.toDate = list.toDate;
@@ -149,15 +186,41 @@ namespace WebApi.Controllers
                     drugFor.minQuantity = list.minQuantity;
                     drugFor.patientId = list.patientId;
                     drugFor.listId = actualListId;
+                  
+                    foreach (TimeSpan item in list.timesInDayArr)
+                    {
+                        
+                    }
                     int res = db.InsertDrugForPatient(actualListId, drugFor.fromDate, drugFor.toDate, drugFor.dosage, drugFor.qtyInBox, drugFor.minQuantity, drugFor.drugId, drugFor.patientId);
                     db.SaveChanges();
-                    //next step will be to create a PatientTask and than actualTask
-
 
                 }
+                else
+                {
+                    //here will be the code for add product list
+                }
+                //next step will be to create a PatientTask and than actualTask
+                PatientTaskDTO task = new PatientTaskDTO();
+                task.taskName = taskName;
+                task.taskFromDate = list.fromDate;
+                task.taskToDate = list.toDate;
+                task.taskComment = list.taskComment;
+                task.patientId = list.patientId;
+                task.workerId = list.workerId;
+                task.userId = list.userId;
+                task.listId = actualListId;
+                
+
+
+
+
+
+
+
+
                 ///למחוק את השורה למטה!!, זה רק כדי שזה לא יכעס
                 return Ok("just for now!!!!");
-            }  
+            }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
