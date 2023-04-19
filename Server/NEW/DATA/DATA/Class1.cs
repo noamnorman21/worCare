@@ -10,8 +10,6 @@ using System.Net.Http;
 using HtmlAgilityPack; // for HtmlDocument
 using Newtonsoft.Json.Linq; // for JObject
 
-
-
 namespace DATA
 {
     public partial class tblCalendarForUser

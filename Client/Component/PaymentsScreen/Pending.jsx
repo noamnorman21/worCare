@@ -144,7 +144,6 @@ function Request(props) {
     }
   }
 
-
   const DeleteRequest = () => {
     Alert.alert(
       'Delete request',
@@ -176,7 +175,7 @@ function Request(props) {
       requestId: id,
       requestStatus: "F"
     }
-    
+
     try {
       const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/UpdateStatus/', {
         method: 'PUT',
@@ -189,7 +188,7 @@ function Request(props) {
       console.log(data)
       setStatus("F")
       setTimeout(() => {
-      props.getPending()
+        props.getPending()
       }, 1500);
     } catch (error) {
       console.log(error)
@@ -488,7 +487,6 @@ const newStyles = StyleSheet.create({
     flex: 3,
     alignItems: 'flex-start',
   },
-
 })
 
 const styles = StyleSheet.create({

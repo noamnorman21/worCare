@@ -12,30 +12,18 @@ import { useUserContext } from '../UserContext'
 import { MaterialCommunityIcons, Feather, Octicons, Ionicons } from '@expo/vector-icons';
 import { AddBtn } from './HelpComponents/AddNewTask';
 
-import {
-  Menu,
-  MenuProvider,
-  MenuOptions,
-  MenuOption,
-  MenuTrigger,
-  renderers
-} from "react-native-popup-menu";
-
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function Contacts() {
   const stack = createStackNavigator();
   return (
-    <MenuProvider>
-      <stack.Navigator initialRouteName='Main' screenOptions={{ headerShown: false }} >
-        <stack.Screen name="Main" component={Main} options={{ headerShown: true, headerTitle: "Contacts", headerTitleAlign: 'center' }} />
-        <stack.Screen name="EditContact" component={EditContact} options={{ headerShown: true, headerTitle: "Edit Contact", headerTitleAlign: 'center' }} />
-        <stack.Screen name="ContactDetails" component={ContactDetails} options={{ headerShown: true, headerTitle: "Contact Details", headerTitleAlign: 'center' }} />
-      </stack.Navigator>
-    </MenuProvider>
+    <stack.Navigator initialRouteName='Main' screenOptions={{ headerShown: false }} >
+      <stack.Screen name="Main" component={Main} options={{ headerShown: true, headerTitle: "Contacts", headerTitleAlign: 'center' }} />
+      <stack.Screen name="EditContact" component={EditContact} options={{ headerShown: true, headerTitle: "Edit Contact", headerTitleAlign: 'center' }} />
+      <stack.Screen name="ContactDetails" component={ContactDetails} options={{ headerShown: true, headerTitle: "Contact Details", headerTitleAlign: 'center' }} />
+    </stack.Navigator>
   )
-
 }
 
 function Main({ navigation }) {
@@ -113,7 +101,6 @@ function Main({ navigation }) {
 
 function ContactCard(props) {
   const navigation = useNavigation();
-
   const openModal = (value) => {
     if (value == 1) {
       console.log("Email")
@@ -154,8 +141,8 @@ function ContactCard(props) {
               .then(
                 (result) => {
                   console.log("fetch POST= ", result);
-                  Alert.alert("Contact "+props.contact.contactName +" Deleted Successfully")
-                  props.fetchContacts();                
+                  Alert.alert("Contact " + props.contact.contactName + " Deleted Successfully")
+                  props.fetchContacts();
                 },
                 (error) => {
                   console.log("err post=", error);
@@ -166,10 +153,10 @@ function ContactCard(props) {
     );
   }
   return (
-    <TouchableOpacity style={styles.contactcard} onPress={()=>navigation.navigate('ContactDetails', { contact: props.contact })} >
-    <Text style={styles.name}>{props.contact.contactName}</Text>
-    <Text style={styles.number}>{props.contact.mobileNo}</Text>
-  </TouchableOpacity>
+    <TouchableOpacity style={styles.contactcard} onPress={() => navigation.navigate('ContactDetails', { contact: props.contact })} >
+      <Text style={styles.name}>{props.contact.contactName}</Text>
+      <Text style={styles.number}>{props.contact.mobileNo}</Text>
+    </TouchableOpacity>
   )
 }
 
@@ -268,13 +255,13 @@ const styles = StyleSheet.create({
     width: 54,
     justifyContent: 'center',
     alignItems: 'center',
- },
- addBtnTxt: {
-  color: '#fff',
-  fontSize: 28,
-  marginBottom: 2,
-  fontFamily: 'Urbanist-SemiBold',
-},
+  },
+  addBtnTxt: {
+    color: '#fff',
+    fontSize: 28,
+    marginBottom: 2,
+    fontFamily: 'Urbanist-SemiBold',
+  },
   savebutton: {
     width: Dimensions.get('window').width * 0.45,
     backgroundColor: '#548DFF',

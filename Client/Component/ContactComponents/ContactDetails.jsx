@@ -6,7 +6,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { MaterialCommunityIcons, AntDesign, Feather, Octicons } from '@expo/vector-icons';
 
-
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
@@ -33,7 +32,6 @@ export default function ContactDetails({ route, navigation }) {
       ),
     });
   }, []);
-
 
   const DeleteContact = () => {
     Alert.alert(
@@ -71,9 +69,6 @@ export default function ContactDetails({ route, navigation }) {
     );
   }
 
-
-
-
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
@@ -83,15 +78,15 @@ export default function ContactDetails({ route, navigation }) {
             <Text style={styles.contactheader}>{Contact.contactName}</Text>
             <View style={styles.ButtonView}>
               <TouchableOpacity style={styles.button}>
-              <MaterialCommunityIcons name='email-send-outline' size={20} color={"#548DFF"} />
+                <MaterialCommunityIcons name='email-send-outline' size={20} color={"#548DFF"} />
                 <Text style={styles.BtnTxt}>Email</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.button}>
                 <Feather name='phone-call' size={20} color={"#548DFF"} />
                 <Text style={styles.BtnTxt}>Call</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.button} onPress={ ()=> navigation.navigate('EditContact', { contact: route.params.contact })}>
-                <Feather name='edit' size={20} color={"#548DFF"}/>
+              <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('EditContact', { contact: route.params.contact })}>
+                <Feather name='edit' size={20} color={"#548DFF"} />
                 <Text style={styles.BtnTxt}>Edit</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.deletebutton} onPress={DeleteContact}>
@@ -100,12 +95,12 @@ export default function ContactDetails({ route, navigation }) {
               </TouchableOpacity>
             </View>
             <View style={styles.inputContainer}>
-{Contact.phoneNo?<View style={styles.input}><Text style={styles.inputTxt}>Phone</Text><Text style={styles.inputTxt}>{Contact.phoneNo}</Text></View>:null}
-<View style={styles.input}><Text style={styles.inputTxt}>Mobile</Text><Text style={styles.inputTxt}>{Contact.mobileNo}</Text></View>
-{Contact.email?<View style={styles.input}><Text style={styles.inputTxt}>Email</Text><Text style={styles.inputTxt}>{Contact.email}</Text></View>:null}
-{Contact.role?<View style={styles.input}><Text style={styles.inputTxt}>Role</Text><Text style={styles.inputTxt}>{Contact.role}</Text></View>:null}
-{Contact.contactComment?<View style={styles.input}><Text style={styles.inputTxt}>Comment:</Text><Text style={styles.inputTxt}>{Contact.contactComment}</Text></View>:null}
-              </View>
+              {Contact.phoneNo ? <View style={styles.input}><Text style={styles.inputTxt}>Phone</Text><Text style={styles.inputTxt}>{Contact.phoneNo}</Text></View> : null}
+              <View style={styles.input}><Text style={styles.inputTxt}>Mobile</Text><Text style={styles.inputTxt}>{Contact.mobileNo}</Text></View>
+              {Contact.email ? <View style={styles.input}><Text style={styles.inputTxt}>Email</Text><Text style={styles.inputTxt}>{Contact.email}</Text></View> : null}
+              {Contact.role ? <View style={styles.input}><Text style={styles.inputTxt}>Role</Text><Text style={styles.inputTxt}>{Contact.role}</Text></View> : null}
+              {Contact.contactComment ? <View style={styles.input}><Text style={styles.inputTxt}>Comment:</Text><Text style={styles.inputTxt}>{Contact.contactComment}</Text></View> : null}
+            </View>
 
           </View>
         </TouchableWithoutFeedback>
@@ -206,8 +201,8 @@ const styles = StyleSheet.create({
   },
   contactheader: {
     fontFamily: 'Urbanist-Bold',
-fontSize: 30,
-marginTop: 20,
+    fontSize: 30,
+    marginTop: 20,
 
   },
   numbersInput: {

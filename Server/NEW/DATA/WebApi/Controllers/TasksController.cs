@@ -127,6 +127,7 @@ namespace WebApi.Controllers
         {
             //dynamic becouse the list can be drug or product list
             Nullable<bool> isDrug = null;// default  will be regular patient task
+
             string taskName;
             try
             {
@@ -136,7 +137,7 @@ namespace WebApi.Controllers
                     isDrug = true;
                     taskName = list.drugName; //the name of the drug
                 }
-                
+
                 else if (list.listName != null)
                 {
                     // product list
@@ -149,8 +150,8 @@ namespace WebApi.Controllers
                     isDrug = null;
                     taskName = list.taskName; //the name of the task that the user insert
                 }
-                
-                
+
+
                 db.InsertActualList(isDrug);
                 db.SaveChanges();
                 int actualListId = db.tblActualList.Max(x => x.listId);// find the new id that was created in the db
@@ -164,8 +165,8 @@ namespace WebApi.Controllers
                             time = TimeSpan.Parse(item);
                         else
                             time = item;
-                        
-                        if (timesInDayArray[0]==null)//for the first item
+
+                        if (timesInDayArray[0] == null)//for the first item
                             timesInDayArray[0] = time;
                         else
                         {
@@ -186,13 +187,27 @@ namespace WebApi.Controllers
                     drugFor.minQuantity = list.minQuantity;
                     drugFor.patientId = list.patientId;
                     drugFor.listId = actualListId;
-                  
-                    foreach (TimeSpan item in list.timesInDayArr)
+                    drugFor.timesInDayArray = timesInDayArray;//will not send to the db
+                    int resInsertDrugForPatient = db.InsertDrugForPatient(actualListId, drugFor.fromDate, drugFor.toDate, drugFor.dosage, drugFor.qtyInBox, drugFor.minQuantity, drugFor.drugId, drugFor.patientId);
+                    if (resInsertDrugForPatient != 1)
+                        return BadRequest("error in insert drug for patient");
+                    PatientTaskDTO task = new PatientTaskDTO();
+                    task.taskName = taskName;
+                    task.taskFromDate = list.fromDate;
+                    task.taskToDate = list.toDate;
+                    task.taskComment = list.taskComment;
+                    task.patientId = list.patientId;
+                    task.workerId = list.workerId;
+                    task.frequency = list.frequency;
+                    task.userId = list.userId;
+                    task.listId = actualListId;
+                    task.timesInDayArr = timesInDayArray;
+                    int resInsertPatientTask = db.InsertPatientTask(task.taskName, task.taskFromDate, task.taskToDate, task.taskComment, task.patientId, task.workerId, task.userId, actualListId, task.frequency);
+                    if (resInsertPatientTask!=1)
                     {
-                        
+                        return BadRequest("error in insert Patient Task");
+
                     }
-                    int res = db.InsertDrugForPatient(actualListId, drugFor.fromDate, drugFor.toDate, drugFor.dosage, drugFor.qtyInBox, drugFor.minQuantity, drugFor.drugId, drugFor.patientId);
-                    db.SaveChanges();
 
                 }
                 else
@@ -200,16 +215,8 @@ namespace WebApi.Controllers
                     //here will be the code for add product list
                 }
                 //next step will be to create a PatientTask and than actualTask
-                PatientTaskDTO task = new PatientTaskDTO();
-                task.taskName = taskName;
-                task.taskFromDate = list.fromDate;
-                task.taskToDate = list.toDate;
-                task.taskComment = list.taskComment;
-                task.patientId = list.patientId;
-                task.workerId = list.workerId;
-                task.userId = list.userId;
-                task.listId = actualListId;
-                
+
+
 
 
 
