@@ -127,7 +127,6 @@ namespace WebApi.Controllers
         {
             //dynamic becouse the list can be drug or product list
             Nullable<bool> isDrug = null;// default  will be regular patient task
-
             string taskName;
             try
             {
@@ -137,7 +136,6 @@ namespace WebApi.Controllers
                     isDrug = true;
                     taskName = list.drugName; //the name of the drug
                 }
-
                 else if (list.listName != null)
                 {
                     // product list
@@ -150,91 +148,148 @@ namespace WebApi.Controllers
                     isDrug = null;
                     taskName = list.taskName; //the name of the task that the user insert
                 }
-
-
                 db.InsertActualList(isDrug);
                 db.SaveChanges();
                 int actualListId = db.tblActualList.Max(x => x.listId);// find the new id that was created in the db
                 if (isDrug == true)
                 {
-                    TimeSpan[] timesInDayArray = new TimeSpan[1];
-                    foreach (var item in list.timesInDayArr)
+                    try
                     {
-                        TimeSpan time;
-                        if (!item is TimeSpan)
-                            time = TimeSpan.Parse(item);
-                        else
-                            time = item;
-
-                        if (timesInDayArray[0] == null)//for the first item
-                            timesInDayArray[0] = time;
-                        else
+                        TimeSpan[] timesInDayArray = new TimeSpan[1];
+                        foreach (var item in list.timesInDayArr)
                         {
-                            TimeSpan[] tempArr = new TimeSpan[timesInDayArray.Length];
-                            Array.Copy(timesInDayArray, tempArr, timesInDayArray.Length);
-                            tempArr[tempArr.Length - 1] = time;
-                            timesInDayArray = tempArr;
+                            TimeSpan time;
+                            if (!item is TimeSpan)
+                                time = TimeSpan.Parse(item);
+                            else
+                                time = item;
+                            if (timesInDayArray[0] == null)//for the first item
+                                timesInDayArray[0] = time;
+                            else
+                            {
+                                TimeSpan[] tempArr = new TimeSpan[timesInDayArray.Length];
+                                Array.Copy(timesInDayArray, tempArr, timesInDayArray.Length);
+                                tempArr[tempArr.Length - 1] = time;
+                                timesInDayArray = tempArr;
+                            }
+                        }
+                        DrugForPatientDTO drugFor = new DrugForPatientDTO();
+                        drugFor.fromDate = list.fromDate;
+                        drugFor.toDate = list.toDate;
+                        drugFor.patientId = list.patientId;
+                        drugFor.dosage = list.dosage;
+                        drugFor.drugId = list.drugId;
+                        drugFor.qtyInBox = list.qtyInBox;
+                        drugFor.minQuantity = list.minQuantity;
+                        drugFor.patientId = list.patientId;
+                        drugFor.listId = actualListId;
+                        drugFor.timesInDayArray = timesInDayArray; //will not send to the db just a temp field
+                        int resInsertDrugForPatient = db.InsertDrugForPatient(actualListId, drugFor.fromDate, drugFor.toDate, drugFor.dosage, drugFor.qtyInBox, drugFor.minQuantity, drugFor.drugId, drugFor.patientId);
+                        db.SaveChanges();
+                        if (resInsertDrugForPatient != 1)
+                            return BadRequest("Error in insert drug for patient");
+                        PatientTaskDTO task = new PatientTaskDTO();
+                        task.taskName = taskName;
+                        task.taskFromDate = list.fromDate;
+                        task.taskToDate = list.toDate;
+                        task.taskComment = list.taskComment;
+                        task.patientId = list.patientId;
+                        task.workerId = list.workerId;
+                        task.frequency = list.frequency;
+                        task.userId = list.userId;
+                        task.listId = actualListId;
+                        task.timesInDayArr = timesInDayArray;
+                        int resInsertPatientTask = db.InsertPatientTask(task.taskName, task.taskFromDate, task.taskToDate, task.taskComment, task.patientId, task.workerId, task.userId, actualListId, task.frequency);
+                        db.SaveChanges();
+                        if (resInsertPatientTask != 1)
+                            return BadRequest("Error in insert Patient Task");
+                        int taskId = db.tblPatientTask.Max(x => x.taskId);
+                        //if: it only one time in day and once in a life
+                        if (task.frequency == "Once" && drugFor.timesInDayArray.Length == 1)
+                        {
+                            int ActualTask = db.ActualTask(taskId, task.taskToDate, drugFor.timesInDayArray[0], "P");
+                            db.SaveChanges();
+                            if (ActualTask == 1)
+                                return Ok("Actual task Added");
+                            else
+                                return BadRequest("error in insert Actual Task");
                         }
 
+                        //else: it more than 1 time
+                        DateTime tempDate = task.taskFromDate;
+                        if (task.frequency == "Once")
+                        {
+                            for (int i = 0; i < drugFor.timesInDayArray.Length; i++)
+                            {
+                                int ActualTask = db.ActualTask(taskId, task.taskToDate, drugFor.timesInDayArray[i], "P");
+                                db.SaveChanges();
+                                if (ActualTask != 1)
+                                    return BadRequest("Error in insert Actual Task");
+                            }
+                        }
+                        else if (task.frequency == "Daily")
+                        {
+                            while (tempDate < task.taskToDate)
+                            {
+                                tempDate = tempDate.AddDays(1);
+                                for (int i = 0; i < drugFor.timesInDayArray.Length; i++)
+                                {
+                                    int ActualTask = db.ActualTask(taskId, tempDate, drugFor.timesInDayArray[i], "P");
+                                    if (ActualTask != 1)
+                                        return BadRequest("Error in insert Actual Task");
+                                }
+                            }
+                        }
+                        else if (task.frequency == "Weekly")
+                        {
+                            while (tempDate < task.taskToDate)
+                            {
+                                tempDate = tempDate.AddDays(7);
+                                for (int i = 0; i < drugFor.timesInDayArray.Length; i++)
+                                {
+                                    int ActualTask = db.ActualTask(taskId, tempDate, drugFor.timesInDayArray[i], "P");
+                                    db.SaveChanges();
+                                    if (ActualTask != 1)
+                                        return BadRequest("error in insert Actual Task");
+                                }
+                            }
+                        }
+                        else   //else: task.frequency == "Monthly"
+                        {
+                            while (tempDate < task.taskToDate)
+                            {
+                                tempDate = tempDate.AddMonths(1);
+                                for (int i = 0; i < drugFor.timesInDayArray.Length; i++)
+                                {
+                                    int ActualTask = db.ActualTask(taskId, tempDate, drugFor.timesInDayArray[i], "P");
+                                    db.SaveChanges();
+                                    if (ActualTask != 1)
+                                        return BadRequest("Error in insert Actual Task");
+                                }
+
+                            }
+                        }
+                        return Ok("Actual tasks Added Succsesfully");
                     }
-                    DrugForPatientDTO drugFor = new DrugForPatientDTO();
-                    drugFor.fromDate = list.fromDate;
-                    drugFor.toDate = list.toDate;
-                    drugFor.patientId = list.patientId;
-                    drugFor.dosage = list.dosage;
-                    drugFor.drugId = list.drugId;
-                    drugFor.qtyInBox = list.qtyInBox;
-                    drugFor.minQuantity = list.minQuantity;
-                    drugFor.patientId = list.patientId;
-                    drugFor.listId = actualListId;
-                    drugFor.timesInDayArray = timesInDayArray;//will not send to the db
-                    int resInsertDrugForPatient = db.InsertDrugForPatient(actualListId, drugFor.fromDate, drugFor.toDate, drugFor.dosage, drugFor.qtyInBox, drugFor.minQuantity, drugFor.drugId, drugFor.patientId);
-                    if (resInsertDrugForPatient != 1)
-                        return BadRequest("error in insert drug for patient");
-                    PatientTaskDTO task = new PatientTaskDTO();
-                    task.taskName = taskName;
-                    task.taskFromDate = list.fromDate;
-                    task.taskToDate = list.toDate;
-                    task.taskComment = list.taskComment;
-                    task.patientId = list.patientId;
-                    task.workerId = list.workerId;
-                    task.frequency = list.frequency;
-                    task.userId = list.userId;
-                    task.listId = actualListId;
-                    task.timesInDayArr = timesInDayArray;
-                    int resInsertPatientTask = db.InsertPatientTask(task.taskName, task.taskFromDate, task.taskToDate, task.taskComment, task.patientId, task.workerId, task.userId, actualListId, task.frequency);
-                    if (resInsertPatientTask!=1)
+                    catch (Exception ex)
                     {
-                        return BadRequest("error in insert Patient Task");
-
+                        return BadRequest(ex.Message);
                     }
-
                 }
-                else
+                else if (isDrug==false) // Product List
                 {
-                    //here will be the code for add product list
+                    return Ok("sss");//רק לעכשיו, להעיף אחרי זה את הקוד
                 }
-                //next step will be to create a PatientTask and than actualTask
-
-
-
-
-
-
-
-
-
-
-                ///למחוק את השורה למטה!!, זה רק כדי שזה לא יכעס
-                return Ok("just for now!!!!");
+                else // Regular Tasks  List
+                {
+                    //here will be the code for the product list
+                    return Ok("sss");//רק לעכשיו, להעיף אחרי זה את הקוד
+                }
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
-
         }
-
-
     }
 }

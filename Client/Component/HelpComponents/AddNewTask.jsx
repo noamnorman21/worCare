@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { MaterialCommunityIcons, MaterialIcons, Octicons, Ionicons } from '@expo/vector-icons';
 //import DateTimePicker from '@react-native-community/datetimepicker';
 
+import { useUserContext } from '../../UserContext';
 import DatePicker from 'react-native-datepicker';
 import { Dropdown } from 'react-native-element-dropdown';
 import DateRangePicker from "rn-select-date-range";
@@ -24,8 +25,16 @@ function AddBtn(props) {
 }
 
 function AddNewMedicine(props) {
-   const [userData, setUserData] = useState('');
-   const [userId, setUserId] = useState('');
+   const {useUserContext} = useUserContext();
+   const [userData, setUserData] = useState(useUserContext);
+   
+   const getUserData = async () => {
+     
+      const userData = JSON.parse(user);
+      setUserId(userData.Id);
+      setUserData(userData);
+   }
+   const [userId, setUserId] = useState(useUserContext.userId);
    const [numberPerDay, setNumberPerDay] = useState(0)
    const [quantity, setQuantity] = useState(0)
    const [capacity, setCapacity] = useState(0)
@@ -48,10 +57,8 @@ function AddNewMedicine(props) {
    const medFrequencies = [
       { id: 0, name: 'Once' },
       { id: 1, name: 'Daily' },
-      // { id: 2, name: 'Twice In A Week' },
       { id: 3, name: 'Weekly' },
       { id: 4, name: 'Monthly' },
-      { id: 5, name: 'Yearly' },
    ]
 
    useEffect(() => {
@@ -82,12 +89,7 @@ function AddNewMedicine(props) {
       getUserData();
    }, []);
 
-   const getUserData = async () => {
-      const user = await AsyncStorage.getItem('userData');
-      const userData = JSON.parse(user);
-      setUserId(userData.Id);
-      setUserData(userData);
-   }
+
    const changeDateFormat = (date) => {
       return moment(date).format('DD/MM/YYYY');
    }
@@ -328,7 +330,12 @@ function AddNewMedicine(props) {
                               </View>
                            </View>
 
-                           <Text style={styles.subTitle}>Set end date</Text>
+                           <Text style={styles.subTitle}>
+                              {
+                                 selectedFrequency=='Once' ? 'Set date' : 'Set end date'
+                              }
+                              
+                              </Text>
                            {/* THIRD ROW */}
                            <View style={[styles.doubleRow, modalTimesVisible && { display: 'none' }]}>
                               <DatePicker

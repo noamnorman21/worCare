@@ -403,7 +403,7 @@ namespace DATA
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("NewContact", contactNameParameter, phoneNoParameter, mobileNoParameter, emailParameter, roleParameter, contactCommentParameter, patientIdParameter);
         }
     
-        public virtual int NewPaycheck(Nullable<System.DateTime> paycheckDate, string paycheckSummary, string paycheckComment, Nullable<int> userId)
+        public virtual int NewPaycheck(Nullable<System.DateTime> paycheckDate, string paycheckSummary, string paycheckComment, Nullable<int> userId, string payCheckProofDocument)
         {
             var paycheckDateParameter = paycheckDate.HasValue ?
                 new ObjectParameter("paycheckDate", paycheckDate) :
@@ -421,7 +421,11 @@ namespace DATA
                 new ObjectParameter("UserId", userId) :
                 new ObjectParameter("UserId", typeof(int));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("NewPaycheck", paycheckDateParameter, paycheckSummaryParameter, paycheckCommentParameter, userIdParameter);
+            var payCheckProofDocumentParameter = payCheckProofDocument != null ?
+                new ObjectParameter("payCheckProofDocument", payCheckProofDocument) :
+                new ObjectParameter("payCheckProofDocument", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("NewPaycheck", paycheckDateParameter, paycheckSummaryParameter, paycheckCommentParameter, userIdParameter, payCheckProofDocumentParameter);
         }
     
         public virtual int NewPaymentRequest(string requestSubject, Nullable<double> amountToPay, Nullable<System.DateTime> requestDate, string requestProofDocument, string requestComment, string requestStatus, Nullable<int> userId)
@@ -621,6 +625,27 @@ namespace DATA
                 new ObjectParameter("patientId", typeof(string));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertDrugForPatient", listIdParameter, fromDateParameter, toDateParameter, dosageParameter, qtyInBoxParameter, minQuantityParameter, drugIdParameter, patientIdParameter);
+        }
+    
+        public virtual int ActualTask(Nullable<int> taskId, Nullable<System.DateTime> taskDate, Nullable<System.TimeSpan> timeInDay, string taskStatus)
+        {
+            var taskIdParameter = taskId.HasValue ?
+                new ObjectParameter("taskId", taskId) :
+                new ObjectParameter("taskId", typeof(int));
+    
+            var taskDateParameter = taskDate.HasValue ?
+                new ObjectParameter("taskDate", taskDate) :
+                new ObjectParameter("taskDate", typeof(System.DateTime));
+    
+            var timeInDayParameter = timeInDay.HasValue ?
+                new ObjectParameter("TimeInDay", timeInDay) :
+                new ObjectParameter("TimeInDay", typeof(System.TimeSpan));
+    
+            var taskStatusParameter = taskStatus != null ?
+                new ObjectParameter("taskStatus", taskStatus) :
+                new ObjectParameter("taskStatus", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("ActualTask", taskIdParameter, taskDateParameter, timeInDayParameter, taskStatusParameter);
         }
     }
 }

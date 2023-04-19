@@ -192,6 +192,7 @@
           <Property Name="paycheckSummary" Type="nvarchar" MaxLength="4000" Nullable="false" />
           <Property Name="paycheckComment" Type="nvarchar(max)" />
           <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="payCheckProofDocument" Type="nvarchar" MaxLength="4000" />
         </EntityType>
         <EntityType Name="tblPaymentRequest">
           <Key>
@@ -579,6 +580,12 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Function Name="ActualTask" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="taskId" Type="int" Mode="In" />
+          <Parameter Name="taskDate" Type="date" Mode="In" />
+          <Parameter Name="TimeInDay" Type="time" Mode="In" />
+          <Parameter Name="taskStatus" Type="char" Mode="In" />
+        </Function>
         <Function Name="fn_diagramobjects" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int" />
         <Function Name="InsertActualList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="type" Type="bit" Mode="In" />
@@ -695,6 +702,7 @@
           <Parameter Name="paycheckSummary" Type="nvarchar" Mode="In" />
           <Parameter Name="paycheckComment" Type="varchar(max)" Mode="In" />
           <Parameter Name="UserId" Type="int" Mode="In" />
+          <Parameter Name="payCheckProofDocument" Type="nvarchar" Mode="In" />
         </Function>
         <Function Name="NewPaymentRequest" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="requestSubject" Type="varchar" Mode="In" />
@@ -1102,6 +1110,7 @@
           <Property Name="paycheckComment" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="UserId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="tblUser" Relationship="Self.FK__tblPayche__UserI__6A50C1DA" FromRole="tblPaycheck" ToRole="tblUser" />
+          <Property Name="payCheckProofDocument" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tblPaymentRequest">
           <Key>
@@ -1725,6 +1734,7 @@
             <Parameter Name="paycheckSummary" Mode="In" Type="String" />
             <Parameter Name="paycheckComment" Mode="In" Type="String" />
             <Parameter Name="UserId" Mode="In" Type="Int32" />
+            <Parameter Name="payCheckProofDocument" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="NewPaymentRequest">
             <Parameter Name="requestSubject" Mode="In" Type="String" />
@@ -1782,6 +1792,12 @@
             <Parameter Name="minQuantity" Mode="In" Type="Byte" />
             <Parameter Name="drugId" Mode="In" Type="Int32" />
             <Parameter Name="patientId" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="ActualTask">
+            <Parameter Name="taskId" Mode="In" Type="Int32" />
+            <Parameter Name="taskDate" Mode="In" Type="DateTime" />
+            <Parameter Name="TimeInDay" Mode="In" Type="Time" />
+            <Parameter Name="taskStatus" Mode="In" Type="String" />
           </FunctionImport>
         </EntityContainer>
         <ComplexType Name="sp_helpdiagramdefinition_Result">
@@ -1996,6 +2012,7 @@
           <EntitySetMapping Name="tblPaycheck">
             <EntityTypeMapping TypeName="igroup194_Db.tblPaycheck">
               <MappingFragment StoreEntitySet="tblPaycheck">
+                <ScalarProperty Name="payCheckProofDocument" ColumnName="payCheckProofDocument" />
                 <ScalarProperty Name="payCheckNum" ColumnName="payCheckNum" />
                 <ScalarProperty Name="paycheckDate" ColumnName="paycheckDate" />
                 <ScalarProperty Name="paycheckSummary" ColumnName="paycheckSummary" />
@@ -2107,6 +2124,7 @@
           <FunctionImportMapping FunctionImportName="updateStatusCaresForPatient" FunctionName="igroup194_Db.Store.updateStatusCaresForPatient" />
           <FunctionImportMapping FunctionImportName="InsertActualList" FunctionName="igroup194_Db.Store.InsertActualList" />
           <FunctionImportMapping FunctionImportName="InsertDrugForPatient" FunctionName="igroup194_Db.Store.InsertDrugForPatient" />
+          <FunctionImportMapping FunctionImportName="ActualTask" FunctionName="igroup194_Db.Store.ActualTask" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
