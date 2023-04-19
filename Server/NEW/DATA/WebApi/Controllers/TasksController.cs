@@ -214,15 +214,15 @@ namespace WebApi.Controllers
                             else
                                 return BadRequest("error in insert Actual Task");
                         }
-
                         //else: it more than 1 time
                         DateTime tempDate = task.taskFromDate;
                         if (task.frequency == "Once")
                         {
                             for (int i = 0; i < drugFor.timesInDayArray.Length; i++)
                             {
+                                //task.taskToDate in this content is the date of the task
                                 int ActualTask = db.ActualTask(taskId, task.taskToDate, drugFor.timesInDayArray[i], "P");
-                                db.SaveChanges();
+                                db.SaveChanges();   
                                 if (ActualTask != 1)
                                     return BadRequest("Error in insert Actual Task");
                             }

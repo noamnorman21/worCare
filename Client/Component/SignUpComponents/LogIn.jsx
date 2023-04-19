@@ -130,6 +130,9 @@ export default function LogIn({ navigation }) {
                         phoneNum: json.phoneNum,
                         userUri: json.userUri,
                         userType: json.userType,
+                        workerId: json.workerId,//if user is a caregiver, this field will be same as userId
+                        involvedInId: json.involvedInId,//if user is a not caregiver, this field will be same as userId
+                        patientId: json.patientId,
                     }
                     const jsonValue = JSON.stringify(userContext)
                     AsyncStorage.setItem('userData', jsonValue);
@@ -183,7 +186,7 @@ export default function LogIn({ navigation }) {
                                 placeholderTextColor={'#9E9E9E'}
                                 value={email}
                                 autoCapitalize='none'
-                                
+
                                 onChangeText={text => setEmail(text)}
                                 keyboardType="email-address"
                                 autoCorrect={false}

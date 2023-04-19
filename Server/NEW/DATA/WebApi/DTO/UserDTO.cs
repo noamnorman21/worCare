@@ -18,5 +18,8 @@ namespace WebApi.DTO
         public int[] Calendars { get; set; }
 
         public string userType { get; set; }
+        public string patientId { get; set; }
+        public int workerId { get; set; }
+        public int involvedInId { get; set; }
     }
 }

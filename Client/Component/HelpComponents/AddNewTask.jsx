@@ -28,19 +28,13 @@ function AddNewMedicine(props) {
    const {useUserContext} = useUserContext();
    const [userData, setUserData] = useState(useUserContext);
    
-   const getUserData = async () => {
-     
-      const userData = JSON.parse(user);
-      setUserId(userData.Id);
-      setUserData(userData);
-   }
    const [userId, setUserId] = useState(useUserContext.userId);
    const [numberPerDay, setNumberPerDay] = useState(0)
    const [quantity, setQuantity] = useState(0)
    const [capacity, setCapacity] = useState(0)
    const [selectedFrequency, setSelectedFrequency] = useState('')
    const [medComment, setMedComment] = useState('')
-   const [medFromDate, setMedFromDate] = useState('')
+   const [medFromDate, setMedFromDate] = useState(Date.now)
    const [medToDate, setMedToDate] = useState('')
    const [medTime, setMedTime] = useState('')
    const [medTimeArr, setMedTimeArr] = useState([]) //we will use this to get all the times from the user
@@ -86,7 +80,7 @@ function AddNewMedicine(props) {
          .catch((error) => {
             console.log("err=", error);
          });
-      getUserData();
+ 
    }, []);
 
 
@@ -96,6 +90,28 @@ function AddNewMedicine(props) {
    const addMed = () => {
       // Alert.alert('add med name');
       console.log(selectedDrugName.Type);
+      
+      if(medTime!=''&&medTimeArr.length==0){
+         medTimeArr.push(medTime);
+      }  
+      let newMedForDb= {
+         drugName: selectedDrugName.drugName,   
+         drugId: selectedDrugName.drugId,
+         timesInDayArr: medTimeArr,
+         fromDate: medFromDate,
+         toDate: medToDate,
+         qtyInBox: quantity,
+         minQuantity:Math.round(quantity*0.2),//default 20% of the quantity
+         patientId:userData.patientId,
+         workerId:userData.workerId,
+         userId:userData.userId,
+         dosage: medDosage,
+         taskComment: medComment,
+         frequency: selectedFrequency,       
+         //dosageUnit: medDosageUnit, //not relevant for now
+      }
+      console.log(newMedForDb);
+
    }
    const clearInputs = () => {
       setNumberPerDay(0);

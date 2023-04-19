@@ -81,13 +81,30 @@ namespace WebApi.Controllers
                 var userRole = from r in db.tblForeignUser
                                where r.Id == newUser.userId
                                select r.Id;
+
                 if (userRole.Count() > 0)
                 {
                     newUser.userType = "Caregiver";
+                    newUser.patientId = (from id in db.tblCaresForPatient
+                                         where id.workerId == newUser.userId
+                                         select id.patientId).First().ToString();
+                    newUser.involvedInId= (from id in db.tblPatient
+                                           where id.patientId == newUser.patientId
+                                           select id.userId).First();
+                    newUser.workerId = newUser.userId;
                 }
                 else
                 {
                     newUser.userType = "User";
+                    newUser.patientId = (from id in db.tblPatient
+                                        where id.userId == newUser.userId
+                                        select id.patientId).First().ToString();
+                    newUser.involvedInId = newUser.userId;
+                    newUser.workerId = (from id in db.tblCaresForPatient
+                                        where id.patientId == newUser.patientId
+                                        select id.workerId).First();
+
+
                 }
                 return Ok(newUser);
             }

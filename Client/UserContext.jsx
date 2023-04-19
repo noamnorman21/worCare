@@ -89,6 +89,10 @@ export function UserProvider({ children }) {
             phoneNum: userData.phoneNum,
             userUri: userData.userUri,
             gender: userData.gender,
+            workerId: userData.workerId,//if user is a caregiver, this field will be same as userId
+            involvedInId: userData.involvedInId,//if user is a not caregiver, this field will be same as userId
+            patientId: userData.patientId,
+            
         }
         setUserContext(usertoSync);
     }
