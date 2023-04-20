@@ -8,13 +8,12 @@ using System.Web.Http;
 
 namespace WebApi.Controllers
 {
-    [RoutePrefix("api/Calendars")]
+    [RoutePrefix("api/Calendars")] // Calendars Types
     public class CalendarsController : ApiController
     {
         igroup194Db db = new igroup194Db();
-
-        //get all calendars types
-        [HttpGet]
+       
+        [HttpGet] //get all calendars types
         [Route("GetAllCalendars")]
         public IHttpActionResult GetAllCalendars()
         {

@@ -67,10 +67,9 @@ namespace WebApi.Controllers
         [Route("UpdatePrivateTasks")] //Update private task by foreign user
         public IHttpActionResult UpdatePrivateTasks([FromBody] PrivateTaskDTO taskDTO)
         {
-            try
+            try //Update the task and save the changes
             {
-                //Update the task and save the changes
-                tblPrivateTask tblPrivate = db.tblPrivateTask.Where(x => x.taskName == taskDTO.taskName).First();
+                tblPrivateTask tblPrivate = db.tblPrivateTask.Where(x => x.taskName == taskDTO.taskName).FirstOrDefault();
                 tblPrivate.taskName = taskDTO.taskName;
                 tblPrivate.taskFromDate = taskDTO.taskFromDate;
                 tblPrivate.taskToDate = taskDTO.taskToDate;
@@ -90,7 +89,7 @@ namespace WebApi.Controllers
 
         //Public Task section     
         [HttpPost]
-        [Route("GetAllTasks")] //GET ALL TASKS BY PATIENT ID
+        [Route("GetAllTasks")] // POST - Because FromBody - ALL TASKS BY PATIENT ID
         public IHttpActionResult GetAllTasks([FromBody] PatientDTO patient)
         {
             List<PatientTaskDTO> tasks = new List<PatientTaskDTO>();
@@ -122,10 +121,9 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        [Route("InsertActualList")]
+        [Route("InsertActualList")] //dynamic because the list can be drug or product list
         public IHttpActionResult InsertActualList([FromBody] dynamic list)
         {
-            //dynamic becouse the list can be drug or product list
             Nullable<bool> isDrug = null;// default  will be regular patient task
             string taskName;
             try
@@ -163,7 +161,7 @@ namespace WebApi.Controllers
                                 time = TimeSpan.Parse(item);
                             else
                                 time = item;
-                            if (timesInDayArray[0] == null)//for the first item
+                            if (timesInDayArray[0] == null) //for the first item
                                 timesInDayArray[0] = time;
                             else
                             {
@@ -222,7 +220,7 @@ namespace WebApi.Controllers
                             {
                                 //task.taskToDate in this content is the date of the task
                                 int ActualTask = db.ActualTask(taskId, task.taskToDate, drugFor.timesInDayArray[i], "P");
-                                db.SaveChanges();   
+                                db.SaveChanges();
                                 if (ActualTask != 1)
                                     return BadRequest("Error in insert Actual Task");
                             }
@@ -266,7 +264,6 @@ namespace WebApi.Controllers
                                     if (ActualTask != 1)
                                         return BadRequest("Error in insert Actual Task");
                                 }
-
                             }
                         }
                         return Ok("Actual tasks Added Succsesfully");
@@ -276,7 +273,7 @@ namespace WebApi.Controllers
                         return BadRequest(ex.Message);
                     }
                 }
-                else if (isDrug==false) // Product List
+                else if (isDrug == false) // Product List
                 {
                     return Ok("sss");//רק לעכשיו, להעיף אחרי זה את הקוד
                 }

@@ -11,7 +11,6 @@ namespace WebApi.Controllers
     [RoutePrefix("api/LanguageCountry")]
     public class LanguageCountryController : ApiController
     {
-        // GET api/<controller>
         igroup194Db db = new igroup194Db();
 
         [HttpGet]
@@ -33,7 +32,7 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        // GET api/<controller>/5
+
         [HttpGet]
         [Route("GetAllCountries")]
         public IHttpActionResult GetAllCountries()
