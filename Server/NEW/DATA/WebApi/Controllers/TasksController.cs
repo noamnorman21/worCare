@@ -226,7 +226,7 @@ namespace WebApi.Controllers
                         }
                         else if (task.frequency == "Weekly")
                         {
-                            while (tempDate < task.taskToDate)
+                            while (tempDate.AddDays(7) < task.taskToDate)
                             {
                                 tempDate = tempDate.AddDays(7);
                                 for (int i = 0; i < drugFor.timesInDayArray.Length; i++)
@@ -239,7 +239,7 @@ namespace WebApi.Controllers
                         }
                         else   //else: task.frequency == "Monthly"
                         {
-                            while (tempDate < task.taskToDate)
+                            while (tempDate.AddMonths(1) < task.taskToDate)
                             {
                                 tempDate = tempDate.AddMonths(1);
                                 for (int i = 0; i < drugFor.timesInDayArray.Length; i++)

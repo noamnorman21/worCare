@@ -111,6 +111,36 @@ function AddNewMedicine(props) {
       }
       console.log(newMedForDb);
 
+      let addMedUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/InsertActualList';
+      fetch(addMedUrl, {
+         method: 'POST',
+         body: JSON.stringify(newMedForDb),
+         headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+         },
+      })
+         .then(res => {
+            if (res.ok) {
+               return res.json()
+            }
+            else {
+               console.log("not found")
+            }
+         }
+         )
+         .then(data => {
+            if (data != null) {
+               console.log(data);
+               clearInputs();
+            }
+         }
+         )
+         .catch((error) => {
+            console.log("err=", error);
+         }
+         );
+         
+
    }
    const clearInputs = () => {
       setNumberPerDay(0);
