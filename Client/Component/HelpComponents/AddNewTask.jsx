@@ -27,7 +27,7 @@ function AddBtn(props) {
 function AddNewMedicine(props) {
    //const {useUserContext} = useUserContext();
    const [userData, setUserData] = useState(useUserContext().userContext);
-   
+
    const [userId, setUserId] = useState(useUserContext.userId);
    const [numberPerDay, setNumberPerDay] = useState(0)
    const [quantity, setQuantity] = useState(0)
@@ -80,38 +80,32 @@ function AddNewMedicine(props) {
          .catch((error) => {
             console.log("err=", error);
          });
- 
+
    }, []);
 
-
-   const changeDateFormat = (date) => {
-      return moment(date).format('DD/MM/YYYY');
-   }
    const addMed = () => {
-      // Alert.alert('add med name');
-
-      
-      if(medTime!=''&&medTimeArr.length==0){
+      if (medTime != '' && medTimeArr.length == 0) {
          medTimeArr.push(medTime);
-      }  
-      let newMedForDb= {
-         drugName: selectedDrugName.drugName,   
+      }
+      let newMedForDb = {
+         drugName: selectedDrugName.drugName,
          drugId: selectedDrugName.drugId,
          timesInDayArr: medTimeArr,
          fromDate: medFromDate,
          toDate: medToDate,
          qtyInBox: capacity,
-         patientId:userData.patientId,
-         workerId:userData.workerId,
-         userId:userData.involvedInId,
+         patientId: userData.patientId,
+         workerId: userData.workerId,
+         userId: userData.involvedInId,
          dosage: quantity,
          taskComment: medComment,
-         frequency: selectedFrequency,       
+         frequency: selectedFrequency,
          //dosageUnit: medDosageUnit, //not relevant for now
       }
       console.log(newMedForDb);
 
    }
+
    const clearInputs = () => {
       setNumberPerDay(0);
       setQuantity(0);
@@ -162,6 +156,7 @@ function AddNewMedicine(props) {
       }
 
    })
+
    function rowForEachTime() {
       for (let i = 0; i < numberPerDay; i++) {
          timePickers.push(
@@ -230,7 +225,7 @@ function AddNewMedicine(props) {
                <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
                   <View style={styles.centeredView}>
                      <View style={styles.modalView}>
-                        <Text style={styles.modalText}>Add new Med </Text>
+                        <Text style={styles.modalText}>Add new Medicine </Text>
                         {/* SEARCH MED */}
                         <View style={[styles.inputView, modalTimesVisible && { display: 'none' }]}>
                            <Dropdown
@@ -347,10 +342,10 @@ function AddNewMedicine(props) {
 
                            <Text style={styles.subTitle}>
                               {
-                                 selectedFrequency=='Once' ? 'Set date' : 'Set end date'
+                                 selectedFrequency == 'Once' ? 'Set date' : 'Set end date'
                               }
-                              
-                              </Text>
+
+                           </Text>
                            {/* THIRD ROW */}
                            <View style={[styles.doubleRow, modalTimesVisible && { display: 'none' }]}>
                               <DatePicker
@@ -806,6 +801,7 @@ function NewTaskModal(props) {
       </SafeAreaView>
    )
 }
+
 
 export { NewTaskModal, AddBtn, AddNewMedicine }
 
