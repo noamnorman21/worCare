@@ -94,6 +94,7 @@ export function UserProvider({ children }) {
             patientId: userData.patientId,
             
         }
+
         setUserContext(usertoSync);
     }
 

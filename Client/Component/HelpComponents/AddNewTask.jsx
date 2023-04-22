@@ -25,8 +25,8 @@ function AddBtn(props) {
 }
 
 function AddNewMedicine(props) {
-   const {useUserContext} = useUserContext();
-   const [userData, setUserData] = useState(useUserContext);
+   //const {useUserContext} = useUserContext();
+   const [userData, setUserData] = useState(useUserContext().userContext);
    
    const [userId, setUserId] = useState(useUserContext.userId);
    const [numberPerDay, setNumberPerDay] = useState(0)
@@ -89,7 +89,8 @@ function AddNewMedicine(props) {
    }
    const addMed = () => {
       // Alert.alert('add med name');
-      console.log(selectedDrugName.Type);
+      console.log(userData);
+      return;
       
       if(medTime!=''&&medTimeArr.length==0){
          medTimeArr.push(medTime);
