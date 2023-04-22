@@ -89,8 +89,7 @@ function AddNewMedicine(props) {
    }
    const addMed = () => {
       // Alert.alert('add med name');
-      console.log(userData);
-      return;
+
       
       if(medTime!=''&&medTimeArr.length==0){
          medTimeArr.push(medTime);
@@ -101,12 +100,11 @@ function AddNewMedicine(props) {
          timesInDayArr: medTimeArr,
          fromDate: medFromDate,
          toDate: medToDate,
-         qtyInBox: quantity,
-         minQuantity:Math.round(quantity*0.2),//default 20% of the quantity
+         qtyInBox: capacity,
          patientId:userData.patientId,
          workerId:userData.workerId,
-         userId:userData.userId,
-         dosage: medDosage,
+         userId:userData.involvedInId,
+         dosage: quantity,
          taskComment: medComment,
          frequency: selectedFrequency,       
          //dosageUnit: medDosageUnit, //not relevant for now

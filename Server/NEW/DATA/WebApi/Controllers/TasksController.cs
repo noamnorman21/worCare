@@ -153,42 +153,35 @@ namespace WebApi.Controllers
                 {
                     try
                     {
-                        TimeSpan[] timesInDayArray = new TimeSpan[1];
+                        TimeSpan[] timesInDayArray = new TimeSpan[0];
                         foreach (var item in list.timesInDayArr)
                         {
-                            TimeSpan time;
-                            if (!item is TimeSpan)
-                                time = TimeSpan.Parse(item);
-                            else
-                                time = item;
-                            if (timesInDayArray[0] == null) //for the first item
-                                timesInDayArray[0] = time;
-                            else
-                            {
-                                TimeSpan[] tempArr = new TimeSpan[timesInDayArray.Length];
-                                Array.Copy(timesInDayArray, tempArr, timesInDayArray.Length);
-                                tempArr[tempArr.Length - 1] = time;
-                                timesInDayArray = tempArr;
-                            }
+                            //"15:16" this is how item will look when it will came from the client
+                            int hour = int.Parse(item.ToString().Substring(0, 2));
+                            int minutes = int.Parse(item.ToString().Substring(3, 2));
+                            TimeSpan time = new TimeSpan(hour, minutes, 0);
+                            TimeSpan[] tempArr = new TimeSpan[timesInDayArray.Length + 1];
+                            Array.Copy(timesInDayArray, tempArr, timesInDayArray.Length);
+                            tempArr[tempArr.Length - 1] = time;
+                            timesInDayArray = tempArr;
                         }
+                        Array.Sort(timesInDayArray);
                         DrugForPatientDTO drugFor = new DrugForPatientDTO();
-                        drugFor.fromDate = list.fromDate;
+                        drugFor.fromDate = DateTime.Now;
                         drugFor.toDate = list.toDate;
                         drugFor.patientId = list.patientId;
                         drugFor.dosage = list.dosage;
                         drugFor.drugId = list.drugId;
                         drugFor.qtyInBox = list.qtyInBox;
-                        drugFor.minQuantity = list.minQuantity;
+                        drugFor.minQuantity = list.qtyInBox*0.2;//defult will be 20% 
                         drugFor.patientId = list.patientId;
                         drugFor.listId = actualListId;
                         drugFor.timesInDayArray = timesInDayArray; //will not send to the db just a temp field
                         int resInsertDrugForPatient = db.InsertDrugForPatient(actualListId, drugFor.fromDate, drugFor.toDate, drugFor.dosage, drugFor.qtyInBox, drugFor.minQuantity, drugFor.drugId, drugFor.patientId);
                         db.SaveChanges();
-                        if (resInsertDrugForPatient != 1)
-                            return BadRequest("Error in insert drug for patient");
                         PatientTaskDTO task = new PatientTaskDTO();
                         task.taskName = taskName;
-                        task.taskFromDate = list.fromDate;
+                        task.taskFromDate = drugFor.fromDate;
                         task.taskToDate = list.toDate;
                         task.taskComment = list.taskComment;
                         task.patientId = list.patientId;
@@ -199,31 +192,25 @@ namespace WebApi.Controllers
                         task.timesInDayArr = timesInDayArray;
                         int resInsertPatientTask = db.InsertPatientTask(task.taskName, task.taskFromDate, task.taskToDate, task.taskComment, task.patientId, task.workerId, task.userId, actualListId, task.frequency);
                         db.SaveChanges();
-                        if (resInsertPatientTask != 1)
-                            return BadRequest("Error in insert Patient Task");
+        
                         int taskId = db.tblPatientTask.Max(x => x.taskId);
-                        //if: it only one time in day and once in a life
-                        if (task.frequency == "Once" && drugFor.timesInDayArray.Length == 1)
-                        {
-                            int ActualTask = db.ActualTask(taskId, task.taskToDate, drugFor.timesInDayArray[0], "P");
-                            db.SaveChanges();
-                            if (ActualTask == 1)
-                                return Ok("Actual task Added");
-                            else
-                                return BadRequest("error in insert Actual Task");
-                        }
-                        //else: it more than 1 time
                         DateTime tempDate = task.taskFromDate;
-                        if (task.frequency == "Once")
+                        //if: it only one time in day and once in a life
+                        if (task.frequency == "Once"  )
                         {
-                            for (int i = 0; i < drugFor.timesInDayArray.Length; i++)
+                            if (drugFor.timesInDayArray.Length > 1)
                             {
-                                //task.taskToDate in this content is the date of the task
-                                int ActualTask = db.ActualTask(taskId, task.taskToDate, drugFor.timesInDayArray[i], "P");
-                                db.SaveChanges();
-                                if (ActualTask != 1)
-                                    return BadRequest("Error in insert Actual Task");
+                                for (int i = 0; i < drugFor.timesInDayArray.Length; i++)
+                                {
+                                    //task.taskToDate in this content is the date of the task
+                                    int ActualTask = db.ActualTask(taskId, task.taskToDate, drugFor.timesInDayArray[i], "P");                              
+                                }
                             }
+                            else
+                            {
+                                int ActualTask = db.ActualTask(taskId, task.taskToDate, drugFor.timesInDayArray[0], "P");
+                            }       
+                            db.SaveChanges();
                         }
                         else if (task.frequency == "Daily")
                         {
@@ -233,8 +220,7 @@ namespace WebApi.Controllers
                                 for (int i = 0; i < drugFor.timesInDayArray.Length; i++)
                                 {
                                     int ActualTask = db.ActualTask(taskId, tempDate, drugFor.timesInDayArray[i], "P");
-                                    if (ActualTask != 1)
-                                        return BadRequest("Error in insert Actual Task");
+
                                 }
                             }
                         }
@@ -247,8 +233,7 @@ namespace WebApi.Controllers
                                 {
                                     int ActualTask = db.ActualTask(taskId, tempDate, drugFor.timesInDayArray[i], "P");
                                     db.SaveChanges();
-                                    if (ActualTask != 1)
-                                        return BadRequest("error in insert Actual Task");
+
                                 }
                             }
                         }
