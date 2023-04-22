@@ -33,7 +33,7 @@ function HomeScreen({ navigation, route }) {
     const [userEmail, setuserEmail] = useState(null);
     const [userId, setUserId] = useState(null);
     const isFocused = useIsFocused();
-    const { userContext, setUserContext, updateUserProfile } = useUserContext();
+    const { userContext, updateUserProfile } = useUserContext();
     const [user, setUser] = useState(userContext);
     const [isChanged, setIsChanged] = useState(false);
     const [ImageChange, setImageChange] = useState(false);
@@ -106,6 +106,10 @@ function HomeScreen({ navigation, route }) {
         }
     }
 
+    const updateUser = (userToUpdate) => {
+        setUser(userToUpdate);
+    }
+
     const sendDataToNextDB = (downloadURL) => {
         const userToUpdate = {
             Email: user.Email,
@@ -115,8 +119,12 @@ function HomeScreen({ navigation, route }) {
             FirstName: user.FirstName,
             LastName: user.LastName,
             userId: user.userId,
-            userType: user.userType
+            userType: user.userType,
+            workerId: userContext.workerId,//if user is a caregiver, this field will be same as userId
+            involvedInId: userContext.involvedInId,//if user is a not caregiver, this field will be same as userId
+            patientId: userContext.patientId,
         }
+        console.log(userToUpdate);
         if (userToUpdate.phoneNum != userContext.phoneNum) {
             fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetPhoneNum', {
                 method: 'POST',
@@ -230,7 +238,7 @@ function HomeScreen({ navigation, route }) {
                 </Modal>
             </View>
             <View style={styles.btnContainer}>
-                <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Privacy')}>
+                <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Privacy', {updateUser:updateUser})}>
                     <Text style={styles.btnText}>Privacy & My Account</Text>
                     <Ionicons style={styles.arrowLogoStyle} name="chevron-forward" size={24} color="grey" />
                 </TouchableOpacity>
@@ -261,6 +269,7 @@ export default function SettingScreen({ navigation }) {
                 }}>
                 <Stack.Screen name="Settings" component={HomeScreen} options={() => ({ headerTitle: 'Settings', headerShown: true, headerTitleAlign: 'center' })} initialParams={{ logout: () => { navigation.dispatch(StackActions.replace('LogIn')) }, Exit: () => navigation.navigate('AppBarDown') }} />
                 <Stack.Screen name="Privacy" component={Privacy} options={{ headerTitle: 'Privacy & My Account', headerTitleAlign: 'center', headerShown: true }} initialParams={{ logout: () => { navigation.dispatch(StackActions.replace('LogIn')) } }} />
+                <Stack.Screen name="ContactUs" component={ContactUs} options={{ headerTitle: 'Contact Us', headerTitleAlign: 'center', headerShown: true }} initialParams={{ logout: () => { navigation.dispatch(StackActions.replace('LogIn')) } }} />
             </Stack.Navigator>
         </NavigationContainer>
     )

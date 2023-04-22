@@ -175,7 +175,7 @@ export default function EditPaycheck(props) {
     }
     console.log(temp);
 
-    fetch('https://proj.ruppin.ac.il/cgroup94/prod/api/Paychecks/UpdatePayCheck', {
+    fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Paychecks/UpdatePayCheck', {
       method: 'PUT',
       body: JSON.stringify(temp),
       headers: new Headers({
@@ -187,6 +187,7 @@ export default function EditPaycheck(props) {
       })
       .then(
         (result) => {
+          Alert.alert('Paycheck Updated', 'Your paycheck was updated successfully');
           console.log("fetch POST= ", result);
           props.save(temp);
         },

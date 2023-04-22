@@ -34,7 +34,7 @@ export default function Paychecks({ navigation, route }) {
     }
 
     try {
-      const response = await fetch('https://proj.ruppin.ac.il/cgroup94/prod/api/PayChecks/GetPaychecks/', {
+      const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/PayChecks/GetPaychecks/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

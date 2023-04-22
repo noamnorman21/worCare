@@ -156,7 +156,7 @@ export default function NewPaycheck(props) {
       return;
     }
     console.log("Newcheck", Newcheck);
-    fetch('https://proj.ruppin.ac.il/cgroup94/prod/api/PayChecks/NewPayCheck', {
+    fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/PayChecks/NewPayCheck', {
       method: 'POST',
       body: JSON.stringify(Newcheck),
       headers: new Headers({
@@ -243,6 +243,7 @@ export default function NewPaycheck(props) {
                 // mode={"date"}
                 is24Hour={true}
                 placeholder="Date"
+                minimumDate={new Date(2000, 0, 1)}
                 onChange={(value) => onChangeDate(value)}
                 display="default"
                 maximumDate={new Date()}
