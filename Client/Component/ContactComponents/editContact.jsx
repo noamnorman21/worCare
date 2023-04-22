@@ -4,7 +4,7 @@ import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Alert, TextInput 
 import { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { AntDesign, Octicons } from '@expo/vector-icons';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -23,45 +23,21 @@ export default function EditContact({ route, navigation }) {
     patientId: 779355403 // will change when we finish context to get the patient id
   })
 
-  useEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-        <TouchableOpacity style={styles.headerButton} onPress={() => validateInput()}>
-          <Text style={styles.headerButtonText}>Done</Text>
-        </TouchableOpacity>
-
-      ),
-      headerLeft: () => (
-        <TouchableOpacity onPress={() => Cancel()}>
-            <Ionicons name="chevron-back" size={28} color="black" />
-        </TouchableOpacity>
-      ),
-    });
-    if (Contact != route.params.contact) {
-      setIsChanged(true)
-    }
-  }, [Contact]);
-
   const Cancel = () => {
-    if (isChanged) {
-      Alert.alert(
-        'Cancel Changes',
-        'are you sure you want to Exit the Page? All changes will be lost',
-        [
-          { text: "Don't leave", style: 'cancel', onPress: () => { } },
-          {
-            text: 'Leave',
-            style: 'destructive',
-            // If the user confirmed, then we dispatch the action we blocked earlier
-            // This will continue the action that had triggered the removal of the screen
-            onPress: () => navigation.goBack()
-          },
-        ]
-      );
-    }
-    else {
-      navigation.goBack()
-    }
+    Alert.alert(
+      'Cancel Changes',
+      'are you sure you want to Exit the Page? All changes will be lost',
+      [
+        { text: "Don't leave", style: 'cancel', onPress: () => { } },
+        {
+          text: 'Leave',
+          style: 'destructive',
+          // If the user confirmed, then we dispatch the action we blocked earlier
+          // This will continue the action that had triggered the removal of the screen
+          onPress: () => navigation.goBack()
+        },
+      ]
+    );
   }
   const handleInputChange = (field, value) => {
     setContact({ ...Contact, [field]: value });
@@ -111,16 +87,52 @@ export default function EditContact({ route, navigation }) {
       .then(
         (result) => {
           console.log("fetch POST= ", result);
-          navigation.popToTop();
+          navigation.goBack();
         },
         (error) => {
           console.log("err post2=", error);
         });
   }
-  
+  const DeleteContact = () => {
+    Alert.alert(
+      'Delete Contact',
+      'Are you sure you want to delete this contact?',
+      [
+        { text: "Don't Delete", style: 'cancel', onPress: () => { } },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          // If the user confirmed, then we dispatch the action we blocked earlier
+          // This will continue the action that had triggered the removal of the screen
+          onPress: () => {
+            fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/DeleteContact/', {
+              method: 'DELETE',
+              body: JSON.stringify(Contact),
+              headers: new Headers({
+                'Content-Type': 'application/json; charset=UTF-8',
+              })
+            })
+              .then(res => {
+                return res.json()
+              })
+              .then(
+                (result) => {
+                  console.log("fetch POST= ", result);
+                  navigation.goBack();
+                },
+                (error) => {
+                  console.log("err post=", error);
+                });
+          }
+        },
+      ]
+    );
+  }
   return (
     <SafeAreaView style={styles.container}>
-
+      <TouchableOpacity style={styles.closeBtn} onPress={Cancel}>
+        <AntDesign name="close" size={24} color="black" />
+      </TouchableOpacity>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
           <View style={styles.centeredView}>
@@ -167,16 +179,19 @@ export default function EditContact({ route, navigation }) {
               />
               <Text style={styles.contactheader}>Comment(optional):</Text>
               <TextInput
-               multiline={true}
-               returnKeyType='done'
-               numberOfLines={6}
-               maxHeight={100}
-                style={styles.commentInput}
+                style={styles.input}
                 value={Contact.contactComment}
                 keyboardType='ascii-capable'
                 onChangeText={(value) => handleInputChange('contactComment', value)}
-
               />
+            </View>
+            <View style={styles.bottom}>
+              <TouchableOpacity style={styles.savebutton} onPress={validateInput}>
+                <Text style={styles.savebuttonText}>Save</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.deleteBtn} onPress={DeleteContact}>
+                <Text style={styles.deleteBtnTxt}>Delete</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </TouchableWithoutFeedback>
@@ -199,6 +214,7 @@ const styles = StyleSheet.create({
   },
   centeredView: {
     flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
   },
@@ -209,7 +225,7 @@ const styles = StyleSheet.create({
   input: {
     width: SCREEN_WIDTH * 0.95,
     marginBottom: 10,
-    paddingLeft: 10,
+    paddingLeft: 20,
     alignItems: 'center',
     borderRadius: 16,
     borderWidth: 1.5,
@@ -218,20 +234,6 @@ const styles = StyleSheet.create({
     height: 54,
     fontFamily: 'Urbanist-Light',
     fontSize: 16,
-  },
-  commentInput: {
-    width: SCREEN_WIDTH * 0.95,
-    marginBottom: 10,
-    paddingLeft: 10,
-    alignItems: 'center',
-    borderRadius: 16,
-    borderWidth: 1.5,
-    borderColor: '#E6EBF2',
-    shadowColor: '#000',
-    height: 150,
-    fontFamily: 'Urbanist-Light',
-    fontSize: 16,
-    textAlignVertical: 'top',
   },
   savebutton: {
     backgroundColor: '#548DFF',
@@ -292,16 +294,6 @@ const styles = StyleSheet.create({
   },
   numbersInput: {
     flexDirection: 'row',
-  },
-  headerButton: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 10,
-  },
-  headerButtonText: {
-    color: '#548DFF',
-    fontFamily: 'Urbanist-SemiBold',
-    fontSize: 16,
   },
 
 });

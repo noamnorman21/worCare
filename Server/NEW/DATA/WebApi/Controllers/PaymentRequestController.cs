@@ -14,9 +14,8 @@ namespace WebApi.Controllers
     {
         igroup194Db db = new igroup194Db();
 
-        // GET: api/PaymentRequest
-        [Route("GetPending")]
         [HttpPost]
+        [Route("GetPending")]
         public IHttpActionResult GetPending([FromBody] UserDTO user)
         {
             try
@@ -28,9 +27,7 @@ namespace WebApi.Controllers
                     id = db.tblCaresForPatient.Where(x => x.patientId == patient).Select(y => y.workerId).FirstOrDefault();
                 }
                 else
-                {
                     id = user.userId;
-                }
                 var Pendings = db.tblPaymentRequest.Where(x => x.userId == id && x.requestStatus == "P").Select(y => new PaymentsRequestDTO
                 {
                     requestId = y.requestId,
@@ -50,8 +47,8 @@ namespace WebApi.Controllers
             }
         }
 
-        [Route("GetHistory")]
         [HttpPost]
+        [Route("GetHistory")]
         public IHttpActionResult GetHistory([FromBody] UserDTO user)
         {
             try
@@ -63,9 +60,7 @@ namespace WebApi.Controllers
                     id = db.tblCaresForPatient.Where(x => x.patientId == patient).Select(y => y.workerId).FirstOrDefault();
                 }
                 else
-                {
                     id = user.userId;
-                }
                 var Payments = db.tblPaymentRequest.Where(x => x.userId == id && x.requestStatus != "P").Select(y => new PaymentsRequestDTO
                 {
                     requestId = y.requestId,
@@ -85,7 +80,6 @@ namespace WebApi.Controllers
             }
         }
 
-        // POST: api/PaymentRequest
         [HttpPost]
         [Route("NewRequest")]
         public IHttpActionResult NewRequest([FromBody] PaymentsRequestDTO req)
@@ -102,7 +96,6 @@ namespace WebApi.Controllers
             }
         }
 
-        // PUT: api/PaymentRequest/5
         [HttpPut]
         [Route("UpdateRequest")]
         public IHttpActionResult UpdateRequest([FromBody] PaymentsRequestDTO req)

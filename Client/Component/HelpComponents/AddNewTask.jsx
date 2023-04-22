@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { MaterialCommunityIcons, MaterialIcons, Octicons, Ionicons } from '@expo/vector-icons';
 //import DateTimePicker from '@react-native-community/datetimepicker';
 
+import { useUserContext } from '../../UserContext';
 import DatePicker from 'react-native-datepicker';
 import { Dropdown } from 'react-native-element-dropdown';
 import DateRangePicker from "rn-select-date-range";
@@ -24,14 +25,16 @@ function AddBtn(props) {
 }
 
 function AddNewMedicine(props) {
-   const [userData, setUserData] = useState('');
-   const [userId, setUserId] = useState('');
+   //const {useUserContext} = useUserContext();
+   const [userData, setUserData] = useState(useUserContext().userContext);
+   
+   const [userId, setUserId] = useState(useUserContext.userId);
    const [numberPerDay, setNumberPerDay] = useState(0)
    const [quantity, setQuantity] = useState(0)
    const [capacity, setCapacity] = useState(0)
    const [selectedFrequency, setSelectedFrequency] = useState('')
    const [medComment, setMedComment] = useState('')
-   const [medFromDate, setMedFromDate] = useState('')
+   const [medFromDate, setMedFromDate] = useState(Date.now)
    const [medToDate, setMedToDate] = useState('')
    const [medTime, setMedTime] = useState('')
    const [medTimeArr, setMedTimeArr] = useState([]) //we will use this to get all the times from the user
@@ -48,10 +51,8 @@ function AddNewMedicine(props) {
    const medFrequencies = [
       { id: 0, name: 'Once' },
       { id: 1, name: 'Daily' },
-      // { id: 2, name: 'Twice In A Week' },
       { id: 3, name: 'Weekly' },
       { id: 4, name: 'Monthly' },
-      { id: 5, name: 'Yearly' },
    ]
 
    useEffect(() => {
@@ -79,21 +80,39 @@ function AddNewMedicine(props) {
          .catch((error) => {
             console.log("err=", error);
          });
-      getUserData();
+ 
    }, []);
 
-   const getUserData = async () => {
-      const user = await AsyncStorage.getItem('userData');
-      const userData = JSON.parse(user);
-      setUserId(userData.Id);
-      setUserData(userData);
-   }
+
    const changeDateFormat = (date) => {
       return moment(date).format('DD/MM/YYYY');
    }
    const addMed = () => {
       // Alert.alert('add med name');
-      console.log(selectedDrugName.Type);
+      console.log(userData);
+      return;
+      
+      if(medTime!=''&&medTimeArr.length==0){
+         medTimeArr.push(medTime);
+      }  
+      let newMedForDb= {
+         drugName: selectedDrugName.drugName,   
+         drugId: selectedDrugName.drugId,
+         timesInDayArr: medTimeArr,
+         fromDate: medFromDate,
+         toDate: medToDate,
+         qtyInBox: quantity,
+         minQuantity:Math.round(quantity*0.2),//default 20% of the quantity
+         patientId:userData.patientId,
+         workerId:userData.workerId,
+         userId:userData.userId,
+         dosage: medDosage,
+         taskComment: medComment,
+         frequency: selectedFrequency,       
+         //dosageUnit: medDosageUnit, //not relevant for now
+      }
+      console.log(newMedForDb);
+
    }
    const clearInputs = () => {
       setNumberPerDay(0);
@@ -328,7 +347,12 @@ function AddNewMedicine(props) {
                               </View>
                            </View>
 
-                           <Text style={styles.subTitle}>Set end date</Text>
+                           <Text style={styles.subTitle}>
+                              {
+                                 selectedFrequency=='Once' ? 'Set date' : 'Set end date'
+                              }
+                              
+                              </Text>
                            {/* THIRD ROW */}
                            <View style={[styles.doubleRow, modalTimesVisible && { display: 'none' }]}>
                               <DatePicker

@@ -14,6 +14,7 @@ namespace WebApi.Controllers
     public class ForeignUserController : ApiController
     {
         igroup194Db db = new igroup194Db();
+
         [HttpPost]
         [Route("InsertForeignUser")]
         public IHttpActionResult InsertForeignUser([FromBody] ForeignUserDTO user)
@@ -24,7 +25,6 @@ namespace WebApi.Controllers
                 if (userExist == null)
                     return NotFound();
                 db.InsertForeignUser(user.Id, user.DateOfBirth, user.VisaExpirationDate, user.LanguageName_En, user.CountryName_En);
-   
                 return Ok("Foreign user added");
             }
             catch (Exception ex)
@@ -32,19 +32,17 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        //function to link Foreign with patient        
+
         [HttpPost]
-        [Route("InsertCaresForPatient")]
+        [Route("InsertCaresForPatient")] //function to link Caregiver with patient
         public IHttpActionResult InsertCaresForPatient([FromBody] CaresForPatientDTO CaresForPatientDTO)
         {
             try
             {
                 foreach (tblCaresForPatient item in db.tblCaresForPatient)
                 {
-                    if (CaresForPatientDTO.workerId == item.workerId && CaresForPatientDTO.patientId == item.patientId &&item.status=="A")
-                    {
+                    if (CaresForPatientDTO.workerId == item.workerId && CaresForPatientDTO.patientId == item.patientId && item.status == "A")
                         return BadRequest("This worker already cares for this patient");
-                    }                   
                 }
                 //P is status pending, we will use triger to change it to A after the user will approve 
                 db.InsertCaresForPatient(CaresForPatientDTO.patientId, CaresForPatientDTO.workerId, "P", CaresForPatientDTO.linkTo);
@@ -54,17 +52,7 @@ namespace WebApi.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
-            }          
-        }
-
-        // PUT api/<controller>/5
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<controller>/5
-        public void Delete(int id)
-        {
+            }
         }
     }
 }

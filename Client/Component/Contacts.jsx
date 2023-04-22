@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import React from 'react'
 import { Searchbar } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
-import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
+import { createStackNavigator } from '@react-navigation/stack';
 import AddNewContact from './ContactComponents/AddNewContact'
 import { useIsFocused } from '@react-navigation/native';
 import EditContact from './ContactComponents/editContact'
@@ -12,28 +12,18 @@ import { useUserContext } from '../UserContext'
 import { MaterialCommunityIcons, Feather, Octicons, Ionicons } from '@expo/vector-icons';
 import { AddBtn } from './HelpComponents/AddNewTask';
 
-import {
-  Menu,
-  MenuProvider,
-  MenuOptions,
-  MenuOption,
-  MenuTrigger,
-  renderers
-} from "react-native-popup-menu";
-
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function Contacts() {
   const stack = createStackNavigator();
   return (
-      <stack.Navigator initialRouteName='Main' screenOptions={{ headerShown: false,  ...TransitionPresets.SlideFromRightIOS, }} >
-        <stack.Screen name="Main" component={Main} options={{ headerShown: true, headerTitle: "Contacts", headerTitleAlign: 'center' }} />
-        <stack.Screen name="EditContact" component={EditContact} options={{ headerShown: true, headerTitle: "Edit Contact", headerTitleAlign: 'center' }} />
-        <stack.Screen name="ContactDetails" component={ContactDetails} options={{ headerShown: true, headerTitle: "Contact Details", headerTitleAlign: 'center' }} />
-      </stack.Navigator>
+    <stack.Navigator initialRouteName='Main' screenOptions={{ headerShown: false }} >
+      <stack.Screen name="Main" component={Main} options={{ headerShown: true, headerTitle: "Contacts", headerTitleAlign: 'center' }} />
+      <stack.Screen name="EditContact" component={EditContact} options={{ headerShown: true, headerTitle: "Edit Contact", headerTitleAlign: 'center' }} />
+      <stack.Screen name="ContactDetails" component={ContactDetails} options={{ headerShown: true, headerTitle: "Contact Details", headerTitleAlign: 'center' }} />
+    </stack.Navigator>
   )
-
 }
 
 function Main({ navigation }) {
@@ -111,51 +101,62 @@ function Main({ navigation }) {
 
 function ContactCard(props) {
   const navigation = useNavigation();
+  const openModal = (value) => {
+    if (value == 1) {
+      console.log("Email")
+    }
+    else if (value == 2) {
+      console.log("call")
+    }
+    if (value == 3) {
+      navigation.navigate('EditContact', { contact: props.contact })
+    }
+    if (value == 4) {
+      DeleteContact()
+    }
+  }
 
- 
-
-  // const DeleteContact = () => {
-  //   Alert.alert(
-  //     'Delete Contact',
-  //     'Are you sure you want to delete this contact?',
-  //     [
-  //       { text: "Don't Delete", style: 'cancel', onPress: () => { } },
-  //       {
-  //         text: 'Delete',
-  //         style: 'destructive',
-  //         // If the user confirmed, then we dispatch the action we blocked earlier
-  //         // This will continue the action that had triggered the removal of the screen
-  //         onPress: () => {
-  //           fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/DeleteContact/', {
-  //             method: 'DELETE',
-  //             body: JSON.stringify(props.contact),
-  //             headers: new Headers({
-  //               'Content-Type': 'application/json; charset=UTF-8',
-  //             })
-  //           })
-  //             .then(res => {
-  //               return res.json()
-  //             })
-  //             .then(
-  //               (result) => {
-  //                 console.log("fetch POST= ", result);
-  //                 Alert.alert("Contact "+props.contact.contactName +" Deleted Successfully")
-  //                 props.fetchContacts();                
-  //               },
-  //               (error) => {
-  //                 console.log("err post=", error);
-  //               });
-  //         }
-  //       },
-  //     ]
-  //   );
-  // }
-  
+  const DeleteContact = () => {
+    Alert.alert(
+      'Delete Contact',
+      'Are you sure you want to delete this contact?',
+      [
+        { text: "Don't Delete", style: 'cancel', onPress: () => { } },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          // If the user confirmed, then we dispatch the action we blocked earlier
+          // This will continue the action that had triggered the removal of the screen
+          onPress: () => {
+            fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/DeleteContact/', {
+              method: 'DELETE',
+              body: JSON.stringify(props.contact),
+              headers: new Headers({
+                'Content-Type': 'application/json; charset=UTF-8',
+              })
+            })
+              .then(res => {
+                return res.json()
+              })
+              .then(
+                (result) => {
+                  console.log("fetch POST= ", result);
+                  Alert.alert("Contact " + props.contact.contactName + " Deleted Successfully")
+                  props.fetchContacts();
+                },
+                (error) => {
+                  console.log("err post=", error);
+                });
+          }
+        },
+      ]
+    );
+  }
   return (
-    <TouchableOpacity style={styles.contactcard} onPress={()=>navigation.navigate('ContactDetails', { contact: props.contact })} >
-    <Text style={styles.name}>{props.contact.contactName}</Text>
-    <Text style={styles.number}>{props.contact.mobileNo}</Text>
-  </TouchableOpacity>
+    <TouchableOpacity style={styles.contactcard} onPress={() => navigation.navigate('ContactDetails', { contact: props.contact })} >
+      <Text style={styles.name}>{props.contact.contactName}</Text>
+      <Text style={styles.number}>{props.contact.mobileNo}</Text>
+    </TouchableOpacity>
   )
 }
 
@@ -254,13 +255,13 @@ const styles = StyleSheet.create({
     width: 54,
     justifyContent: 'center',
     alignItems: 'center',
- },
- addBtnTxt: {
-  color: '#fff',
-  fontSize: 28,
-  marginBottom: 2,
-  fontFamily: 'Urbanist-SemiBold',
-},
+  },
+  addBtnTxt: {
+    color: '#fff',
+    fontSize: 28,
+    marginBottom: 2,
+    fontFamily: 'Urbanist-SemiBold',
+  },
   savebutton: {
     width: Dimensions.get('window').width * 0.45,
     backgroundColor: '#548DFF',

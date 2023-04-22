@@ -15,16 +15,16 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 export default function NewPaycheck(props) {
   const PlatformType = Platform.OS;
   const { userContext } = useUserContext();
+  const [show, setShow] = useState(false);
+  const [dateSelected, setDateSelected] = useState(false);
   const [PayCheck, setPayCheck] = useState({
     paycheckDate: null,
     paycheckSummary: '',
     paycheckComment: '',
     userId: userContext.userId,
-    paycheckProofDocument: null,
+    payCheckProofDocument: null,
   })
 
-  const [show, setShow] = useState(false);
-  const [dateSelected, setDateSelected] = useState(false);
   const showMode = (currentMode) => {
     if (Platform.OS === 'android') {
       setShow(true);
@@ -148,7 +148,7 @@ export default function NewPaycheck(props) {
     }
     console.log("Newcheck", Newcheck);
     if (Newcheck.paycheckDate === null) {
-      Alert.alert('Please select date');
+      Alert.alert('Please Choose a date');
       return;
     }
     if (Newcheck.paycheckSummary === '') {
@@ -233,7 +233,7 @@ export default function NewPaycheck(props) {
                     textAlign: 'left',
                   }
                 }}
-                onDateChange={(value) =>   handleInputChange('paycheckDate', value)}
+                onDateChange={(value) => handleInputChange('paycheckDate', value)}
               />}
 
             {show && (
@@ -243,8 +243,6 @@ export default function NewPaycheck(props) {
                 // mode={"date"}
                 is24Hour={true}
                 placeholder="Date"
-                minimumDate={new Date(2020, 0, 1)}
-                maxDate={new Date()}
                 onChange={(value) => onChangeDate(value)}
                 display="default"
                 maximumDate={new Date()}
@@ -279,9 +277,7 @@ export default function NewPaycheck(props) {
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
     </SafeAreaView>
-
   );
-
 }
 
 const styles = StyleSheet.create({

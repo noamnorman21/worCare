@@ -14,7 +14,6 @@ namespace WebApi.Controllers
     {
         igroup194Db db = new igroup194Db();
 
-        //GET: api/PayChecks -- > לתקן לפי מטופל בודד ומטפל בודד
         [HttpPost]
         [Route("GetPaychecks")]
         public IHttpActionResult GetPaychecks([FromBody] UserDTO user)
@@ -28,11 +27,10 @@ namespace WebApi.Controllers
                     userId = user.userId;
                     var Patients = db.tblPatient.Where(x => x.userId == user.userId).Select(y => y.patientId).FirstOrDefault();
                     CareGiverId = db.tblCaresForPatient.Where(x => x.patientId == Patients).Select(y => y.workerId).FirstOrDefault();
-                    
                 }
                 else
                 {
-                    CareGiverId = user.userId;                    
+                    CareGiverId = user.userId;
                     var Patients = db.tblCaresForPatient.Where(x => x.workerId == CareGiverId).Select(y => y.patientId).FirstOrDefault();
                     userId = db.tblPatient.Where(x => x.patientId == Patients).Select(y => y.userId).FirstOrDefault();
                 }
@@ -46,15 +44,12 @@ namespace WebApi.Controllers
                     payCheckProofDocument = y.payCheckProofDocument
                 }).ToList();
                 return Ok(payChecks);
-
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
         }
-
-        // POST: api/PayChecks
 
         [HttpPost]
         [Route("NewPayCheck")] // פונקציה להוספת פייקצ'ק חדש
@@ -90,29 +85,23 @@ namespace WebApi.Controllers
                     return Ok("Request added successfully!");
                 }
                 else
-                {
                     return BadRequest("Paycheck not found");
-                }
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
         }
-
-
-        // DELETE: api/PayChecks/5
+        
         [HttpDelete]
-        [Route("DeletePaycheck/{num}")]
+        [Route("DeletePaycheck/{num}")] // DELETE: api/PayChecks/5
         public IHttpActionResult DeletePaycheck(int num)
         {
             try
             {
                 var p = db.tblPaycheck.Where(x => x.payCheckNum == num).FirstOrDefault();
                 if (p == null)
-                {
                     return NotFound();
-                }
                 else
                 {
                     db.tblPaycheck.Remove(p);

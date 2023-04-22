@@ -8,11 +8,11 @@ using System.Web.Http;
 
 namespace WebApi.Controllers
 {
-    [RoutePrefix("api/Drug")]
+    [RoutePrefix("api/Drug")] //get all drugs for show in search
     public class DrugController : ApiController
     {
         igroup194Db db = new igroup194Db();
-        //get all drugs for show in search 
+         
         [HttpGet]
         [Route("GetAllDrugs")]
         public IHttpActionResult GetAllDrugs()

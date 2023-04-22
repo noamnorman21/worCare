@@ -13,7 +13,7 @@ export default function SignUpUserLVL5({ navigation, route }) {
   const [patientID, setPatientID] = useState('');
   const [patientFirstName, setPatientFirstName] = useState('');
   const [patientLastName, setPatientLastName] = useState('');
- 
+
   const handleInputAndContinue = () => {
     if (patientFirstName === '' || patientLastName === '' || patientID === '' || date === '' || valueLanguage === null) {
       Alert.alert('Please fill all the fields')
@@ -71,39 +71,41 @@ export default function SignUpUserLVL5({ navigation, route }) {
           onChangeText={(patientID) => setPatientID(patientID)}
         />
         {/* Date Picker for birth-date */}
-        <DatePicker
-          useNativeDriver={'true'}
-          iconComponent={<FontAwesome name="calendar-check-o" size={24} color="gray" />}
-          style={styles.inputFull}
-          date={date}
-          mode="date"
-          placeholder="Date Of Birth"
-          format="YYYY-MM-DD"
-          minDate="1900-01-01"
-          maxDate= "2002-01-01"
-          confirmBtnText="Confirm"
-          cancelBtnText="Cancel"
-          customStyles={{
-            dateIcon: {
-              position: 'absolute',
-              right: 0,
-              top: 0,
-              marginLeft: 0.2
-            },
-            dateInput: {
-              marginLeft: 0,
-              alignItems: 'center', //change to center for android
-              borderWidth: 0,
-            },
-            placeholderText: {
-              color: 'gray',
-              fontFamily: 'Urbanist',
-              fontSize: 16,
-              textAlign: 'left',
-            }
-          }}
-          onDateChange={(date) => { setDate(date) }}
-        />
+        {
+          <DatePicker
+            useNativeDriver={'true'}
+            iconComponent={<FontAwesome name="calendar-check-o" size={24} color="gray" />}
+            style={styles.inputFull}
+            date={date}
+            mode="date"
+            placeholder="Date Of Birth"
+            format="YYYY-MM-DD"
+            minDate="1900-01-01"
+            maxDate="2002-01-01"
+            confirmBtnText="Confirm"
+            cancelBtnText="Cancel"
+            customStyles={{
+              dateIcon: {
+                position: 'absolute',
+                right: 0,
+                top: 0,
+                marginLeft: 0.2
+              },
+              dateInput: {
+                marginLeft: 0,
+                alignItems: 'center', //change to center for android
+                borderWidth: 0,
+              },
+              placeholderText: {
+                color: 'gray',
+                fontFamily: 'Urbanist',
+                fontSize: 16,
+                textAlign: 'left',
+              }
+            }}
+            onDateChange={(date) => { setDate(date) }}
+          />
+        }
       </View>
 
       <View style={styles.listContainer}>

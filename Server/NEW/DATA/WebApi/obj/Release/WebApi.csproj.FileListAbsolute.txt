@@ -435,7 +435,3 @@ C:\Users\oryan\Desktop\app dev\worCare\Server\NEW\DATA\WebApi\obj\Release\WebApi
 C:\Users\amita\Desktop\WorCare\worCare\Server\NEW\DATA\WebApi\bin\HtmlAgilityPack.dll
 C:\Users\amita\Desktop\WorCare\worCare\Server\NEW\DATA\WebApi\bin\HtmlAgilityPack.pdb
 C:\Users\amita\Desktop\WorCare\worCare\Server\NEW\DATA\WebApi\bin\HtmlAgilityPack.xml
-C:\Users\oryan\Desktop\app dev\worCare\Server\NEW\DATA\WebApi\bin\HtmlAgilityPack.dll
-C:\Users\oryan\Desktop\app dev\worCare\Server\NEW\DATA\WebApi\bin\HtmlAgilityPack.pdb
-C:\Users\oryan\Desktop\app dev\worCare\Server\NEW\DATA\WebApi\bin\HtmlAgilityPack.xml
-C:\Users\oryan\Desktop\app dev\worCare\Server\NEW\DATA\WebApi\obj\Release\WebApi.csproj.CopyComplete

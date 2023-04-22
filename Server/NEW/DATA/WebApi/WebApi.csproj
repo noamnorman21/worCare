@@ -297,6 +297,7 @@
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="DTO\CaresForPatientDTO.cs" />
     <Compile Include="DTO\ContactDTO.cs" />
+    <Compile Include="DTO\DrugForPatientDTO.cs" />
     <Compile Include="DTO\ForeignUserDTO.cs" />
     <Compile Include="DTO\HobbiesAndLimitationsDTO.cs" />
     <Compile Include="DTO\PatientDTO.cs" />

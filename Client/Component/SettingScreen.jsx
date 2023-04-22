@@ -13,9 +13,12 @@ import { storage } from '../config/firebase';
 import * as ImagePicker from 'expo-image-picker';
 
 // Internal imports:
+import Profile from './SettingsComponents/Profile'
+import Notifications from './SettingsComponents/Notifications'
 import Privacy from './SettingsComponents/Privacy'
 import GenderChange from './SettingsComponents/GenderChange';
-
+import ContactUs from './SettingsComponents/ContactUs'
+import ImageChange from './SettingsComponents/ImageChange'
 
 
 const Stack = createNativeStackNavigator();

@@ -14,8 +14,9 @@ namespace WebApi.Controllers
     public class PatientController : ApiController
     {
         igroup194Db db = new igroup194Db();
+
         [HttpGet]
-        [Route("GetPatient/{id}")]
+        [Route("GetPatient/{id}")] // Just for testing
         public IHttpActionResult GetPatient(string id)
         {
             try
@@ -75,10 +76,10 @@ namespace WebApi.Controllers
                 string nightSleep = patient.nightSleep;
                 string other = patient.otherH;
                 string patientId = patient.patientId;
-                
-                db.InsertPatientHobbies(patientId, books, music, TVShow, radioChannel, food, drink, specialHabits, afternoonNap, movie, nightSleep, other);                
-                db.InsertPatientLimitations(patientId, patient.allergies, patient.sensitivities, patient.physicalAbilities, patient.bathRoutine, patient.sensitivityToNoise, patient.otherL);                
-                db.SaveChanges();                
+
+                db.InsertPatientHobbies(patientId, books, music, TVShow, radioChannel, food, drink, specialHabits, afternoonNap, movie, nightSleep, other);
+                db.InsertPatientLimitations(patientId, patient.allergies, patient.sensitivities, patient.physicalAbilities, patient.bathRoutine, patient.sensitivityToNoise, patient.otherL);
+                db.SaveChanges();
                 return Ok("Patient Details added");
             }
             catch (Exception ex)

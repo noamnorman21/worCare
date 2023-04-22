@@ -575,6 +575,12 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Function Name="ActualTask" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="taskId" Type="int" Mode="In" />
+    <Parameter Name="taskDate" Type="date" Mode="In" />
+    <Parameter Name="TimeInDay" Type="time" Mode="In" />
+    <Parameter Name="taskStatus" Type="char" Mode="In" />
+  </Function>
   <Function Name="fn_diagramobjects" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int" />
   <Function Name="InsertActualList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="type" Type="bit" Mode="In" />

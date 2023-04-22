@@ -10,12 +10,8 @@ import { storage } from '../../config/firebase';
 import DatePicker from 'react-native-datepicker';
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons'
 
-
-
 export default function EditPaycheck(props) {
-
-
-  const [imageChanged, setimageChanged] = useState(false);
+  const [imageChanged, setImageChanged] = useState(false);
   const [valueChanged, setValueChanged] = useState(false);
   const [Paycheck, setPaycheck] = useState({
     paycheckDate: props.data.paycheckDate,
@@ -29,9 +25,6 @@ export default function EditPaycheck(props) {
   const [mode, setMode] = useState('date');
   const [PlatformType, setPlatformType] = useState(Platform.OS);
 
-
-
-
   const openCamera = async () => {
     // Ask the user for the permission to access the camera
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
@@ -39,7 +32,6 @@ export default function EditPaycheck(props) {
       Alert.alert("You've refused to allow this appp to access your camera!");
       return;
     }
-
     let result = await ImagePicker.launchCameraAsync(
       {
         mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -51,7 +43,7 @@ export default function EditPaycheck(props) {
     console.log(result);
     if (!result.canceled) {
       setPaycheck({ ...Paycheck, payCheckProofDocument: result.assets[0].uri })
-      setimageChanged(true);
+      setImageChanged(true);
       setValueChanged(true);
     }
   }
@@ -67,7 +59,7 @@ export default function EditPaycheck(props) {
     console.log(result);
     if (!result.canceled) {
       setPaycheck({ ...Paycheck, payCheckProofDocument: result.assets[0].uri })
-      setimageChanged(true);
+      setImageChanged(true);
       setValueChanged(true);
     }
   };
@@ -89,18 +81,11 @@ export default function EditPaycheck(props) {
     );
   }
 
-
-
-
-
-
-
   const showMode = (currentMode) => {
     if (Platform.OS === 'android') {
       setShow(true);
       // for iOS, add a button that closes the picker
     }
-
   };
 
   const showDatepicker = () => {
@@ -108,9 +93,7 @@ export default function EditPaycheck(props) {
   };
 
   const onChangeDate = (selectedDate) => {
-    
     const currentDate = new Date(selectedDate.nativeEvent.timestamp).toISOString().substring(0, 10);
-
     setShow(false);
     handleInputChange('paycheckDate', currentDate);
   };
@@ -121,9 +104,9 @@ export default function EditPaycheck(props) {
     if (name == 'paycheckDate') {
       setShow(false);
       console.log(value);
-      console.log('date changed');
     }
   }
+
   const Cancel = () => {
     if (valueChanged) {
       Alert.alert(
@@ -146,13 +129,12 @@ export default function EditPaycheck(props) {
     }
   }
 
-
   const sendToFirebase = async (image) => {
     // if the user didn't upload an image, we will use the default image
     if (imageChanged) {
       console.log('image', image);
       const filename = image.substring(image.lastIndexOf('/') + 1);
-      const storageRef = ref(storage, "requests/" + filename);
+      const storageRef = ref(storage, "Paychecks/" + filename);
       const blob = await fetch(image).then(response => response.blob());
       try {
         const uploadTask = uploadBytesResumable(storageRef, blob);
@@ -168,7 +150,7 @@ export default function EditPaycheck(props) {
           () => {
             getDownloadURL(storageRef).then(downloadURL => {
               console.log('File available at', downloadURL);
-              setPaycheck({ ...Paycheck, requestProofDocument: downloadURL });
+              setPaycheck({ ...Paycheck, payCheckProofDocument: downloadURL });
               savePaycheck(downloadURL);
             });
           }
@@ -181,8 +163,8 @@ export default function EditPaycheck(props) {
       savePaycheck(Paycheck.payCheckProofDocument);
     }
   }
-  const savePaycheck = async (downloadURL) => {
 
+  const savePaycheck = async (downloadURL) => {
     const temp = {
       paycheckDate: Paycheck.paycheckDate,
       paycheckSummary: Paycheck.paycheckSummary,
@@ -214,73 +196,71 @@ export default function EditPaycheck(props) {
   }
 
   return (
-
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
         <SafeAreaView style={styles.container}>
           <TouchableOpacity style={styles.closeBtn} onPress={Cancel}>
             <AntDesign name="close" size={24} color="black" />
           </TouchableOpacity>
-          <Text style={styles.title}>Edit Paycheck {Paycheck.payCheckNumber}</Text>
+          <Text style={styles.title}>Edit Paycheck #{Paycheck.payCheckNumber}</Text>
           <View style={styles.inputContainer}>
-          {PlatformType !== 'ios' ? <TouchableOpacity style={styles.datePicker} onPress={showDatepicker}>
-                  <Text style={styles.dateInputTxt}>
-                    {Paycheck.paycheckDate.substring(0,10)}
-                  </Text>
-                  {/* <Octicons style={{ textAlign: 'right' }} name="calendar" size={22} /> */}
-                </TouchableOpacity> : <DatePicker
-                  useNativeDriver={"true"}  
-                  showIcon={false}
-                  style={styles.inputFull}
-                  date={Paycheck.paycheckDate}
-                  mode="date"
-                  placeholder="Date"
-                  format="YYYY-MM-DD"
-                  minDate="2000-01-01"
-                  maxDate={new Date()}
-                  confirmBtnText="Confirm"
-                  cancelBtnText="Cancel"
-                  customStyles={{
-                    dateIcon: {
-                      position: 'absolute',
-                      right: 0,
-                      top: 0,
-                      marginLeft: 0.2
-                    },
-                    dateInput: {
-                      marginLeft: 0,
-                      alignItems: 'flex-start', //change to center for android
-                      borderWidth: 0,
-                    },
-                    placeholderText: {
-                      color: 'gray',
-                      fontFamily: 'Urbanist',
-                      fontSize: 16,
-                      textAlign: 'left',
-                    },
-                    dateText: {
-                      color: 'black',
-                      fontFamily: 'Urbanist-Medium',
-                      fontSize: 16,
-                      textAlign: 'left',
-                    }
-                  }}
-                  onDateChange={(value) => handleInputChange('paycheckDate', value)}
-                />}
+            {PlatformType !== 'ios' ? <TouchableOpacity style={styles.datePicker} onPress={showDatepicker}>
+              <Text style={styles.dateInputTxt}>
+                {Paycheck.paycheckDate.substring(0, 10)}
+              </Text>
+              {/* <Octicons style={{ textAlign: 'right' }} name="calendar" size={22} /> */}
+            </TouchableOpacity> :
+              <DatePicker
+                useNativeDriver={"true"}
+                showIcon={false}
+                style={styles.inputFull}
+                date={Paycheck.paycheckDate}
+                mode="date"
+                placeholder="Date"
+                format="YYYY-MM-DD"
+                minDate="2000-01-01"
+                maxDate={new Date()}
+                confirmBtnText="Confirm"
+                cancelBtnText="Cancel"
+                customStyles={{
+                  dateIcon: {
+                    position: 'absolute',
+                    right: 0,
+                    top: 0,
+                    marginLeft: 0.2
+                  },
+                  dateInput: {
+                    marginLeft: 0,
+                    alignItems: 'flex-start', //change to center for android
+                    borderWidth: 0,
+                  },
+                  placeholderText: {
+                    color: 'gray',
+                    fontFamily: 'Urbanist',
+                    fontSize: 16,
+                    textAlign: 'left',
+                  },
+                  dateText: {
+                    color: 'black',
+                    fontFamily: 'Urbanist-Medium',
+                    fontSize: 16,
+                    textAlign: 'left',
+                  }
+                }}
+                onDateChange={(value) => handleInputChange('paycheckDate', value)}
+              />}
 
-                {show && (
-                  <DateTimePicker
-                    //testID="dateTimePicker"
-                    value={new Date(Paycheck.paycheckDate)}
-                    // mode={"date"}
-                    is24Hour={true}
-                    minimumDate={new Date(2020, 0, 1)}
-                    maxDate={new Date()}
-                    onChange={(value) => onChangeDate(value)}
-                    display="default"
-                    maximumDate={new Date()}
-                  />
-                )}
+            {show && (
+              <DateTimePicker
+                //testID="dateTimePicker"
+                value={new Date(Paycheck.paycheckDate)}
+                // mode={"date"}
+                is24Hour={true}
+                onChange={(value) => onChangeDate(value)}
+                display="default"
+                maximumDate={new Date()}
+              />
+            )}
             <TextInput
               style={styles.input}
               value={Paycheck.paycheckSummary}
@@ -356,7 +336,7 @@ const styles = StyleSheet.create({
     height: 54,
     fontFamily: 'Urbanist-Light',
     fontSize: 16,
-    justifyContent: 'center',    
+    justifyContent: 'center',
   },
   datePicker: {
     flexDirection: 'row',

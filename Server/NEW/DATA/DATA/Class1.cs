@@ -38,15 +38,6 @@ namespace DATA
             }
         }
     }
-    //public partial class tblDrugForPatient
-    //{
-    //    igroup194Db db = new igroup194Db();
-    //    public int InsertDrugForPatient()
-    //    {
-
-    //    }
-
-    //}
 
     class Program
     {
