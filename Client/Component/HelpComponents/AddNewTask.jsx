@@ -27,7 +27,6 @@ function AddBtn(props) {
 function AddNewMedicine(props) {
    //const {useUserContext} = useUserContext();
    const [userData, setUserData] = useState(useUserContext().userContext);
-
    const [userId, setUserId] = useState(useUserContext.userId);
    const [numberPerDay, setNumberPerDay] = useState(0)
    const [quantity, setQuantity] = useState(0)
@@ -132,7 +131,7 @@ function AddNewMedicine(props) {
             console.log("err=", error);
          }
          );
-         
+
 
    }
 
@@ -525,8 +524,8 @@ function AddNewMedicine(props) {
 }
 
 function NewTaskModal(props) {
-   const [userData, setUserData] = useState('');
-   const [userId, setUserId] = useState('');
+   const [userData, setUserData] = useState(useUserContext().userContext);
+   const [userId, setUserId] = useState(useUserContext.userId);
    const [userType, setUserType] = useState('');
    const [taskName, setTaskName] = useState('')
    const [taskComment, setTaskComment] = useState('')
@@ -539,38 +538,111 @@ function NewTaskModal(props) {
    const [taskAssignee, setTaskAssignee] = useState('')
    const [selectedRange, setRange] = useState({});
    const [taskNameBorder, setTaskNameBorder] = useState('')
-   const [modalVisibleDate, setModalVisibleDate] = useState(false);
    const taskCategorys = [
       { id: 1, name: 'General', color: '#FFC0CB' },
       { id: 2, name: 'Shop', color: '#FFC0CB' },
-      //{id: 3, name: 'Medicines', color: '#FFC0CB' },
    ]
    const taskFrequencies = [
       { id: 0, name: 'Once' },
       { id: 1, name: 'Daily' },
       { id: 2, name: 'Weekly' },
       { id: 3, name: 'Monthly' },
-      { id: 4, name: 'Yearly' },
    ]
-
-   useEffect(() => {
-      getUserData();
-   }, []);
-   const getUserData = async () => {
-      const user = await AsyncStorage.getItem('userData');
-      const userData = JSON.parse(user);
-      setUserId(userData.Id);
-      setUserData(userData);
-      setUserType(userData.userType);
-   }
-   const changeDateFormat = (date) => {
-      return moment(date).format('DD/MM/YYYY');
-   }
-
    const privateOrPublic = [
       { id: 1, name: 'Private' },
       { id: 2, name: 'Public' },
    ]
+   // Relevant only for General Task
+   const [modalVisibleDate, setModalVisibleDate] = useState(false);
+   const [numberPerDay, setNumberPerDay] = useState(0)
+   const timePickers = [];
+   const [modalTimesVisible, setModalTimesVisible] = useState(false);
+   const stylesForTimeModal = StyleSheet.create({
+      timePicker: {
+         flexDirection: 'row',
+         justifyContent: 'space-between',
+         alignItems: 'center',
+         width: '100%',
+         marginVertical: 10,
+      },
+      doubleRowItem: {
+         width: SCREEN_WIDTH * 0.5,
+         height: 54,
+         justifyContent: 'center',
+         alignItems: 'center',
+         borderColor: '#E6EBF2',
+         borderWidth: 1.5,
+         borderRadius: 16,
+         padding: 5,
+      }
+
+   })
+
+   function rowForEachTime() {
+      for (let i = 0; i < numberPerDay; i++) {
+         timePickers.push(
+            <View key={i} style={stylesForTimeModal.timePicker}>
+               <View>
+                  <Text style={{ fontFamily: 'Urbanist-Light', fontSize: 16, color: '#000' }}>Time {i + 1}</Text>
+               </View>
+               <View>
+                  <DatePicker
+                     style={[stylesForTimeModal.doubleRowItem, medTimeArr[i] != null && { borderColor: '#000' }]}
+                     date={medTimeArr[i]}
+                     iconComponent={<MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />}
+                     placeholder="Add Time"
+                     mode="time"
+                     format="HH:mm"
+                     is24Hour={true}
+                     confirmBtnText="Confirm"
+                     cancelBtnText="Cancel"
+                     showIcon={true}
+                     customStyles={{
+                        dateInput: {
+                           borderWidth: 0,
+                           alignItems: 'flex-start',
+                           paddingLeft: 10,
+                        },
+                        placeholderText: {
+                           color: '#9E9E9E',
+                           fontSize: 16,
+                           textAlign: 'left',
+                           fontFamily: 'Urbanist-Light',
+                        },
+                        dateText: {
+                           color: '#000',
+                           fontSize: 16,
+                           fontFamily: 'Urbanist-SemiBold',
+                        },
+                     }}
+                     onDateChange={(date) => {
+                        let newArr = [...medTimeArr];
+                        newArr[i] = date;
+                        setMedTimeArr(newArr);
+                     }}
+                  />
+               </View>
+            </View>
+         )
+      }
+      return timePickers;
+   }
+
+   const saveTimeArr = () => {
+      for (let i = 0; i < timePickers.length; i++) {
+         if (medTimeArr[i] == '' || medTimeArr[i] == null) {
+            Alert.alert('Please Fill all the time fields');
+            return;
+         }
+      }
+      setMedTimeArr(medTimeArr);
+      setModalTimesVisible(false);
+   }
+
+   const changeDateFormat = (date) => {
+      return moment(date).format('DD/MM/YYYY');
+   }
+
    const addPrivateTask = () => {
       let taskUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/InsertPrivateTask';
       let taskData = {
@@ -616,9 +688,11 @@ function NewTaskModal(props) {
          addPublicTask();
       }
    }
+
    const addPublicTask = () => {
       Alert.alert("Add Public Task");
    }
+
    const clearInputs = () => {
       setTaskName('')
       setTaskNameBorder('')
@@ -632,6 +706,7 @@ function NewTaskModal(props) {
       setIsPrivate(false)
       props.onClose()
    }
+
    return (
       <SafeAreaView>
          <Modal visible={props.isVisible} presentationStyle='formSheet' animationType='slide' onRequestClose={props.onClose}>
@@ -787,6 +862,29 @@ function NewTaskModal(props) {
                               }}
                               onDateChange={(date) => { setTaskTime(date) }}
                            />
+
+                           <View style={styles.doubleRowItem}>
+                              <TouchableOpacity onPress={() =>
+                                 setNumberPerDay(parseInt(numberPerDay + 1))
+                              } style={styles.arrowUp}>
+                                 {/* Change icon color only onPress to #548DFF  */}
+                                 <Ionicons name="md-caret-up-outline" size={17} color="#808080" />
+                              </TouchableOpacity>
+                              <TextInput
+                                 style={[styles.inputNumber, numberPerDay && { textAlign: 'center' }]}
+                                 placeholder="Number per day"
+                                 placeholderTextColor="#9E9E9E"
+                                 keyboardType='numeric'
+                                 returnKeyType='done'
+                                 value={numberPerDay == 0 ? '' : numberPerDay.toString()}
+                                 onChangeText={text => text == '' ? setNumberPerDay(0) && setMedTime('') : setNumberPerDay(parseInt(text))}
+                              />
+                              {/* Change icon color only onPress to #548DFF  */}
+                              <TouchableOpacity style={styles.arrowDown} onPress={() => numberPerDay == 0 ? setNumberPerDay(0) : setNumberPerDay(parseInt(numberPerDay - 1))}>
+                                 <Ionicons name="md-caret-down-outline" size={17} color="#808080" />
+                              </TouchableOpacity>
+                           </View>
+
                            <Dropdown
                               data={taskFrequencies}
                               labelField="name"
@@ -831,7 +929,6 @@ function NewTaskModal(props) {
       </SafeAreaView>
    )
 }
-
 
 export { NewTaskModal, AddBtn, AddNewMedicine }
 
