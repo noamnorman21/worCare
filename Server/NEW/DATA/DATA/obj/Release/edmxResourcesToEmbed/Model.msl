@@ -308,6 +308,6 @@
     <FunctionImportMapping FunctionImportName="updateStatusCaresForPatient" FunctionName="igroup194_Db.Store.updateStatusCaresForPatient" />
     <FunctionImportMapping FunctionImportName="InsertActualList" FunctionName="igroup194_Db.Store.InsertActualList" />
     <FunctionImportMapping FunctionImportName="InsertDrugForPatient" FunctionName="igroup194_Db.Store.InsertDrugForPatient" />
-    <FunctionImportMapping FunctionImportName="ActualTask" FunctionName="igroup194_Db.Store.ActualTask" />
+    <FunctionImportMapping FunctionImportName="InsertActualTask" FunctionName="igroup194_Db.Store.InsertActualTask" />
   </EntityContainerMapping>
 </Mapping>

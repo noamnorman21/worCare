@@ -918,6 +918,12 @@
       <Parameter Name="TimeInDay" Mode="In" Type="Time" />
       <Parameter Name="taskStatus" Mode="In" Type="String" />
     </FunctionImport>
+    <FunctionImport Name="InsertActualTask">
+      <Parameter Name="taskId" Mode="In" Type="Int32" />
+      <Parameter Name="taskDate" Mode="In" Type="DateTime" />
+      <Parameter Name="TimeInDay" Mode="In" Type="Time" />
+      <Parameter Name="taskStatus" Mode="In" Type="String" />
+    </FunctionImport>
   </EntityContainer>
   <ComplexType Name="sp_helpdiagramdefinition_Result">
     <Property Type="Int32" Name="version" Nullable="true" />

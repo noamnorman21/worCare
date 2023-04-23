@@ -712,7 +712,7 @@ function NewTaskModal(props) {
          frequency: taskFrequency,
       }
       console.log( newTaskForDb);
-      let addTaskdUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/InsertActualList';
+      let addTaskUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/InsertActualList';
       fetch(addTaskUrl, {
          method: 'POST',
          body: JSON.stringify(newTaskForDb),
