@@ -647,5 +647,26 @@ namespace DATA
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("ActualTask", taskIdParameter, taskDateParameter, timeInDayParameter, taskStatusParameter);
         }
+    
+        public virtual int InsertActualTask(Nullable<int> taskId, Nullable<System.DateTime> taskDate, Nullable<System.TimeSpan> timeInDay, string taskStatus)
+        {
+            var taskIdParameter = taskId.HasValue ?
+                new ObjectParameter("taskId", taskId) :
+                new ObjectParameter("taskId", typeof(int));
+    
+            var taskDateParameter = taskDate.HasValue ?
+                new ObjectParameter("taskDate", taskDate) :
+                new ObjectParameter("taskDate", typeof(System.DateTime));
+    
+            var timeInDayParameter = timeInDay.HasValue ?
+                new ObjectParameter("TimeInDay", timeInDay) :
+                new ObjectParameter("TimeInDay", typeof(System.TimeSpan));
+    
+            var taskStatusParameter = taskStatus != null ?
+                new ObjectParameter("taskStatus", taskStatus) :
+                new ObjectParameter("taskStatus", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertActualTask", taskIdParameter, taskDateParameter, timeInDayParameter, taskStatusParameter);
+        }
     }
 }

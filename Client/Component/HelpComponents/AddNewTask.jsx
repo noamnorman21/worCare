@@ -526,7 +526,7 @@ function AddNewMedicine(props) {
 function NewTaskModal(props) {
    const [userData, setUserData] = useState(useUserContext().userContext);
    const [userId, setUserId] = useState(useUserContext.userId);
-   const [userType, setUserType] = useState('');
+   const [userType, setUserType] = useState(userData.userType);
    const [taskName, setTaskName] = useState('')
    const [taskComment, setTaskComment] = useState('')
    const [taskFromDate, setTaskFromDate] = useState('')

@@ -194,7 +194,6 @@ namespace WebApi.Controllers
                         int resInsertPatientTask = db.InsertPatientTask(task.taskName, task.taskFromDate, task.taskToDate, task.taskComment, task.patientId, task.workerId, task.userId, actualListId, task.frequency);
                         db.SaveChanges();       
                         int taskId = db.tblPatientTask.Max(x => x.taskId);
-                        DateTime tempDate = task.taskFromDate;
                         //we use here partial class to add the actual tasks to the db                                  
                         if (!actualTask.InsertActualTask(task.frequency, task.timesInDayArr, taskId, task.taskFromDate, task.taskToDate))
                             throw new Exception("error Insert Actual Tasks ");
@@ -207,10 +206,39 @@ namespace WebApi.Controllers
                 }
                 else if (isDrug == false) // Product List
                 {
+                    TimeSpan[] timesInDayArray = new TimeSpan[1];
+                    foreach (var item in list.timesInDayArr)
+                    {
+                        //"15:16" this is how item will look when it will came from the client
+                        int hour = int.Parse(item.ToString().Substring(0, 2));
+                        int minutes = int.Parse(item.ToString().Substring(3, 2));
+                        TimeSpan time = new TimeSpan(hour, minutes, 0);
+                        timesInDayArray[0] = time;
+                    }
+                    PatientTaskDTO task = new PatientTaskDTO();
+                    task.taskName = taskName;
+                    task.taskFromDate = list.fromDate;
+                    task.taskToDate = list.toDate;
+                    task.taskComment = list.taskComment;
+                    task.patientId = list.patientId;
+                    task.workerId = list.workerId;
+                    task.frequency = list.frequency;
+                    task.userId = list.userId;
+                    task.listId = actualListId;
+                    task.timesInDayArr = timesInDayArray;                   
+                    int taskId = db.tblPatientTask.Max(x => x.taskId);
+                    db.InsertList(task.taskName, task.listId);
+                    db.SaveChanges();
+                    int resInsertPatientTask = db.InsertPatientTask(task.taskName, task.taskFromDate, task.taskToDate, task.taskComment, task.patientId, task.workerId, task.userId, actualListId, task.frequency);
+                    db.SaveChanges();
 
 
-                    
-                    return Ok("sss");//רק לעכשיו, להעיף אחרי זה את הקוד
+                    //we use here partial class to add the actual tasks to the db                                  
+                    if (!actualTask.InsertActualTask(task.frequency, task.timesInDayArr, taskId, task.taskFromDate, task.taskToDate))
+                        throw new Exception("error Insert Actual Tasks ");
+                    return Ok("Actual Tasks added");
+
+                 
                 }
                 else // Regular Tasks  List
                 {
@@ -261,5 +289,29 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+
+        //[HttpPost]
+        //[Route("InsertProductlList")]
+
+        //public IHttpActionResult InsertProductlList([FromBody] ProductListDTO list)
+        //{
+        //    try
+        //    {
+        //        int actualListId = db.tblActualList.Max(x => x.listId) + 1;
+        //        db.InsertList(list.listName, actualListId);
+        //        db.SaveChanges();
+        //        foreach (var item in list.products)
+        //        {
+        //            int resInsertProductForPatient = db.InsertProductForPatient(actualListId, item.fromDate, item.toDate, item.qtyInBox, item.minQuantity, item.productId, item.patientId);
+        //            db.SaveChanges();
+        //        }
+        //        return Ok("Product List added");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
     }
 }

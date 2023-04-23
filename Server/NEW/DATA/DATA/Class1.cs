@@ -54,12 +54,12 @@ namespace DATA
                         for (int i = 0; i < timesInDayArr.Length; i++)
                         {
                             //task.taskToDate in this content is the date of the task
-                            int ActualTask = db.ActualTask(taskId, taskToDate, timesInDayArr[i], "P");
+                            int ActualTask = db.InsertActualTask(taskId, taskToDate, timesInDayArr[i], "P");
                         }
                     }
                     else
                     {     //task.taskToDate in this content is the date of the task
-                        int ActualTask = db.ActualTask(taskId, taskToDate, timesInDayArr[0], "P");
+                        int ActualTask = db.InsertActualTask(taskId, taskToDate, timesInDayArr[0], "P");
                     }
                     db.SaveChanges();
                 }
