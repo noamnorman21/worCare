@@ -17,6 +17,7 @@ namespace DATA
         igroup194Db db = new igroup194Db();
         public int InsertCalendar(int id, int[] calendarsTypeArr)
         {
+
             try
             {
                 tblUser userExist = db.tblUser.Where(x => x.userId == id).First();
@@ -38,6 +39,80 @@ namespace DATA
             }
         }
     }
+    public partial class tblActualTask
+    {
+        igroup194Db db = new igroup194Db();
+        public bool InsertActualTask(string frequency, TimeSpan[] timesInDayArr, int taskId, DateTime taskFromDate, DateTime taskToDate)
+        {
+            try
+            {
+                DateTime tempDate = taskFromDate;
+                if (frequency == "Once")
+                {
+                    if (timesInDayArr.Length > 1)
+                    {
+                        for (int i = 0; i < timesInDayArr.Length; i++)
+                        {
+                            //task.taskToDate in this content is the date of the task
+                            int ActualTask = db.ActualTask(taskId, taskToDate, timesInDayArr[i], "P");
+                        }
+                    }
+                    else
+                    {     //task.taskToDate in this content is the date of the task
+                        int ActualTask = db.ActualTask(taskId, taskToDate, timesInDayArr[0], "P");
+                    }
+                    db.SaveChanges();
+                }
+                else if (frequency == "Daily")
+                {
+                    while (tempDate < taskToDate)
+                    {
+                        tempDate = tempDate.AddDays(1);
+                        for (int i = 0; i < timesInDayArr.Length; i++)
+                        {
+                            int ActualTask = db.ActualTask(taskId, tempDate, timesInDayArr[i], "P");
+
+                        }
+                    }
+                }
+                else if (frequency == "Weekly")
+                {
+                    while (tempDate.AddDays(7) < taskToDate)
+                    {
+                        tempDate = tempDate.AddDays(7);
+                        for (int i = 0; i < timesInDayArr.Length; i++)
+                        {
+                            int ActualTask = db.ActualTask(taskId, tempDate, timesInDayArr[i], "P");
+                            db.SaveChanges();
+
+                        }
+                    }
+                }
+                else   //else: task.frequency == "Monthly"
+                {
+                    while (tempDate.AddMonths(1) < taskToDate)
+                    {
+                        tempDate = tempDate.AddMonths(1);
+                        for (int i = 0; i < timesInDayArr.Length; i++)
+                        {
+                            int ActualTask = db.ActualTask(taskId, tempDate, timesInDayArr[i], "P");
+                            db.SaveChanges();
+
+                        }
+                    }
+                }
+                return true;
+
+            }
+            catch (Exception )
+            {
+
+                return false;
+            }
+
+        }
+    }
+
 
     class Program
     {

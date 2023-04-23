@@ -88,37 +88,37 @@ namespace WebApi.Controllers
         }
 
         //Public Task section     
-        [HttpPost]
-        [Route("GetAllTasks")] // POST - Because FromBody - ALL TASKS BY PATIENT ID
-        public IHttpActionResult GetAllTasks([FromBody] PatientDTO patient)
-        {
-            List<PatientTaskDTO> tasks = new List<PatientTaskDTO>();
-            try
-            {
-                var task = from t in db.tblPatientTask
-                           where t.patientId == patient.patientId
-                           select t;
-                foreach (var item in task)
-                {
-                    PatientTaskDTO taskDTO = new PatientTaskDTO();
-                    taskDTO.taskId = item.taskId;
-                    taskDTO.taskName = item.taskName;
-                    taskDTO.taskFromDate = item.taskFromDate;
-                    taskDTO.taskToDate = item.taskToDate;
-                    taskDTO.taskComment = item.taskComment;
-                    taskDTO.patientId = item.patientId;
-                    taskDTO.workerId = item.workerId;
-                    taskDTO.userId = item.userId;
-                    taskDTO.listId = item.listId;
-                    tasks.Add(taskDTO);
-                }
-                return Ok(tasks);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+        //[HttpPost]
+        //[Route("GetAllTasks")] // POST - Because FromBody - ALL TASKS BY PATIENT ID
+        //public IHttpActionResult GetAllTasks([FromBody] PatientDTO patient)
+        //{
+        //    List<PatientTaskDTO> tasks = new List<PatientTaskDTO>();
+        //    try
+        //    {
+        //        var task = from t in db.tblPatientTask
+        //                   where t.patientId == patient.patientId
+        //                   select t;
+        //        foreach (var item in task)
+        //        {
+        //            PatientTaskDTO taskDTO = new PatientTaskDTO();
+        //            taskDTO.taskId = item.taskId;
+        //            taskDTO.taskName = item.taskName;
+        //            taskDTO.taskFromDate = item.taskFromDate;
+        //            taskDTO.taskToDate = item.taskToDate;
+        //            taskDTO.taskComment = item.taskComment;
+        //            taskDTO.patientId = item.patientId;
+        //            taskDTO.workerId = item.workerId;
+        //            taskDTO.userId = item.userId;
+        //            taskDTO.listId = item.listId;
+        //            tasks.Add(taskDTO);
+        //        }
+        //        return Ok(tasks);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
 
         [HttpPost]
         [Route("InsertActualList")] //dynamic because the list can be drug or product list
@@ -126,6 +126,7 @@ namespace WebApi.Controllers
         {
             Nullable<bool> isDrug = null;// default  will be regular patient task
             string taskName;
+            tblActualTask actualTask = new tblActualTask();
             try
             {
                 if (list.drugId != null)
@@ -191,67 +192,13 @@ namespace WebApi.Controllers
                         task.listId = actualListId;
                         task.timesInDayArr = timesInDayArray;
                         int resInsertPatientTask = db.InsertPatientTask(task.taskName, task.taskFromDate, task.taskToDate, task.taskComment, task.patientId, task.workerId, task.userId, actualListId, task.frequency);
-                        db.SaveChanges();
-        
+                        db.SaveChanges();       
                         int taskId = db.tblPatientTask.Max(x => x.taskId);
                         DateTime tempDate = task.taskFromDate;
-                        //if: it only one time in day and once in a life
-                        if (task.frequency == "Once"  )
-                        {
-                            if (drugFor.timesInDayArray.Length > 1)
-                            {
-                                for (int i = 0; i < drugFor.timesInDayArray.Length; i++)
-                                {
-                                    //task.taskToDate in this content is the date of the task
-                                    int ActualTask = db.ActualTask(taskId, task.taskToDate, drugFor.timesInDayArray[i], "P");                              
-                                }
-                            }
-                            else
-                            {
-                                int ActualTask = db.ActualTask(taskId, task.taskToDate, drugFor.timesInDayArray[0], "P");
-                            }       
-                            db.SaveChanges();
-                        }
-                        else if (task.frequency == "Daily")
-                        {
-                            while (tempDate < task.taskToDate)
-                            {
-                                tempDate = tempDate.AddDays(1);
-                                for (int i = 0; i < drugFor.timesInDayArray.Length; i++)
-                                {
-                                    int ActualTask = db.ActualTask(taskId, tempDate, drugFor.timesInDayArray[i], "P");
-
-                                }
-                            }
-                        }
-                        else if (task.frequency == "Weekly")
-                        {
-                            while (tempDate.AddDays(7) < task.taskToDate)
-                            {
-                                tempDate = tempDate.AddDays(7);
-                                for (int i = 0; i < drugFor.timesInDayArray.Length; i++)
-                                {
-                                    int ActualTask = db.ActualTask(taskId, tempDate, drugFor.timesInDayArray[i], "P");
-                                    db.SaveChanges();
-
-                                }
-                            }
-                        }
-                        else   //else: task.frequency == "Monthly"
-                        {
-                            while (tempDate.AddMonths(1) < task.taskToDate)
-                            {
-                                tempDate = tempDate.AddMonths(1);
-                                for (int i = 0; i < drugFor.timesInDayArray.Length; i++)
-                                {
-                                    int ActualTask = db.ActualTask(taskId, tempDate, drugFor.timesInDayArray[i], "P");
-                                    db.SaveChanges();
-                                    if (ActualTask != 1)
-                                        return BadRequest("Error in insert Actual Task");
-                                }
-                            }
-                        }
-                        return Ok("Actual tasks Added Succsesfully");
+                        //we use here partial class to add the actual tasks to the db                                  
+                        if (!actualTask.InsertActualTask(task.frequency, task.timesInDayArr, taskId, task.taskFromDate, task.taskToDate))
+                            throw new Exception("error Insert Actual Tasks ");
+                        return Ok("Actual Tasks added");
                     }
                     catch (Exception ex)
                     {
@@ -260,12 +207,53 @@ namespace WebApi.Controllers
                 }
                 else if (isDrug == false) // Product List
                 {
+
+
+                    
                     return Ok("sss");//רק לעכשיו, להעיף אחרי זה את הקוד
                 }
                 else // Regular Tasks  List
                 {
-                    //here will be the code for the product list
-                    return Ok("sss");//רק לעכשיו, להעיף אחרי זה את הקוד
+                    try
+                    {
+                        TimeSpan[] timesInDayArray = new TimeSpan[0];
+                        foreach (var item in list.timesInDayArr)
+                        {
+                            //"15:16" this is how item will look when it will came from the client
+                            int hour = int.Parse(item.ToString().Substring(0, 2));
+                            int minutes = int.Parse(item.ToString().Substring(3, 2));
+                            TimeSpan time = new TimeSpan(hour, minutes, 0);
+                            TimeSpan[] tempArr = new TimeSpan[timesInDayArray.Length + 1];
+                            Array.Copy(timesInDayArray, tempArr, timesInDayArray.Length);
+                            tempArr[tempArr.Length - 1] = time;
+                            timesInDayArray = tempArr;
+                        }
+                        Array.Sort(timesInDayArray);
+                        PatientTaskDTO task = new PatientTaskDTO();
+                        task.taskName = taskName;
+                        task.taskFromDate = list.fromDate;
+                        task.taskToDate = list.toDate;
+                        task.taskComment = list.taskComment;
+                        task.patientId = list.patientId;
+                        task.workerId = list.workerId;
+                        task.frequency = list.frequency;
+                        task.userId = list.userId;
+                        task.listId = actualListId;
+                        task.timesInDayArr = timesInDayArray;
+                        int resInsertPatientTask = db.InsertPatientTask(task.taskName, task.taskFromDate, task.taskToDate, task.taskComment, task.patientId, task.workerId, task.userId, actualListId, task.frequency);
+                        db.SaveChanges();
+                        int taskId = db.tblPatientTask.Max(x => x.taskId);
+                        DateTime tempDate = task.taskFromDate;
+                        //we use here partial class to add the actual tasks to the db
+                        if (!actualTask.InsertActualTask(task.frequency, task.timesInDayArr, taskId, task.taskFromDate, task.taskToDate))
+                            throw new Exception("error Insert Actual Tasks ");
+                        return Ok("Actual Tasks added");
+                    }
+                    catch (Exception ex)
+                    {
+                        return BadRequest(ex.Message);
+                    }
+
                 }
             }
             catch (Exception ex)
