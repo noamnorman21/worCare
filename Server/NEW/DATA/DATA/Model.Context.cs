@@ -320,21 +320,13 @@ namespace DATA
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertPrivateTask", taskNameParameter, taskFromDateParameter, taskToDateParameter, taskCommentParameter, statusParameter, workerIdParameter, timeInDayParameter, frequencyParameter);
         }
     
-        public virtual int InsertProduct(string productName, Nullable<int> productQuantity, string commentForProduct)
+        public virtual int InsertProduct(string productName)
         {
             var productNameParameter = productName != null ?
                 new ObjectParameter("productName", productName) :
                 new ObjectParameter("productName", typeof(string));
     
-            var productQuantityParameter = productQuantity.HasValue ?
-                new ObjectParameter("productQuantity", productQuantity) :
-                new ObjectParameter("productQuantity", typeof(int));
-    
-            var commentForProductParameter = commentForProduct != null ?
-                new ObjectParameter("commentForProduct", commentForProduct) :
-                new ObjectParameter("commentForProduct", typeof(string));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertProduct", productNameParameter, productQuantityParameter, commentForProductParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertProduct", productNameParameter);
         }
     
         public virtual int InsertUser(string email, string password, string firstName, string lastName, string gender, string phoneNum, string userUri)
@@ -667,6 +659,27 @@ namespace DATA
                 new ObjectParameter("taskStatus", typeof(string));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertActualTask", taskIdParameter, taskDateParameter, timeInDayParameter, taskStatusParameter);
+        }
+    
+        public virtual int InsertProductList(Nullable<int> productId, Nullable<int> listId, string productStatus, Nullable<int> productQuantity)
+        {
+            var productIdParameter = productId.HasValue ?
+                new ObjectParameter("productId", productId) :
+                new ObjectParameter("productId", typeof(int));
+    
+            var listIdParameter = listId.HasValue ?
+                new ObjectParameter("listId", listId) :
+                new ObjectParameter("listId", typeof(int));
+    
+            var productStatusParameter = productStatus != null ?
+                new ObjectParameter("productStatus", productStatus) :
+                new ObjectParameter("productStatus", typeof(string));
+    
+            var productQuantityParameter = productQuantity.HasValue ?
+                new ObjectParameter("productQuantity", productQuantity) :
+                new ObjectParameter("productQuantity", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertProductList", productIdParameter, listIdParameter, productStatusParameter, productQuantityParameter);
         }
     }
 }

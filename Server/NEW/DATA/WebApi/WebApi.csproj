@@ -295,6 +295,7 @@
     <Compile Include="Controllers\TasksController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
+    <Compile Include="DTO\ActualTaskDTO.cs" />
     <Compile Include="DTO\CaresForPatientDTO.cs" />
     <Compile Include="DTO\ContactDTO.cs" />
     <Compile Include="DTO\DrugForPatientDTO.cs" />

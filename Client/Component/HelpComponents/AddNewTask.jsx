@@ -695,6 +695,50 @@ function NewTaskModal(props) {
    }
    const addShopTask = () => {
       console.log("addShopTask");
+      if (taskTime != '' && taskTimeArr.length == 0) {
+         taskTimeArr.push(taskTime);
+      }
+
+      let newTaskForDb = {
+         listName: taskName,
+         taskName: taskName,
+         timesInDayArr: taskTimeArr,
+         fromDate: taskFromDate,
+         toDate: taskToDate,
+         patientId: userData.patientId,
+         workerId: userData.workerId,
+         userId: userData.involvedInId,
+         taskComment: taskComment,
+         frequency: taskFrequency,
+      }
+      fetch(addTaskUrl, {
+         method: 'POST',
+         body: JSON.stringify(newTaskForDb),
+         headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+         },
+      })
+         .then(res => {
+            if (res.ok) {
+               return res.json()
+            }
+            else {
+               console.log("not found")
+            }
+         }
+         )
+         .then(data => {
+            if (data != null) {
+               console.log(data);
+               clearInputs();
+            }
+         }
+         )
+         .catch((error) => {
+            console.log("err=", error);
+         }
+         );
+
    }
    const addPublicTask = () => {
       if (taskTime != '' && taskTimeArr.length == 0) {
@@ -711,7 +755,7 @@ function NewTaskModal(props) {
          taskComment: taskComment,
          frequency: taskFrequency,
       }
-      console.log( newTaskForDb);
+      console.log(newTaskForDb);
       let addTaskUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/InsertActualList';
       fetch(addTaskUrl, {
          method: 'POST',
@@ -740,7 +784,7 @@ function NewTaskModal(props) {
             console.log("err=", error);
          }
          );
-      
+
    }
 
    const clearInputs = () => {
@@ -775,8 +819,8 @@ function NewTaskModal(props) {
                               value={taskName}
                               returnKeyType='done'
                               onChangeText={text => setTaskName(text)}
-                              onEndEditing={() => { setTaskNameBorder(true)  }}
-                              
+                              onEndEditing={() => { setTaskNameBorder(true) }}
+
                            />
                            { // if the user is a caregiver than display the assignee
                               userType == "Caregiver" ?

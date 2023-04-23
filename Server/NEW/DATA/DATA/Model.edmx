@@ -227,8 +227,6 @@
           </Key>
           <Property Name="productId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="productName" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="productQuantity" Type="int" Nullable="false" />
-          <Property Name="commentForProduct" Type="varchar(max)" />
         </EntityType>
         <EntityType Name="tblProductList">
           <Key>
@@ -238,6 +236,7 @@
           <Property Name="productId" Type="int" Nullable="false" />
           <Property Name="listId" Type="int" Nullable="false" />
           <Property Name="productStatus" Type="char" MaxLength="1" Nullable="false" />
+          <Property Name="productQuantity" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="tblUser">
           <Key>
@@ -676,8 +675,12 @@
         </Function>
         <Function Name="InsertProduct" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="productName" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="InsertProductList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="productId" Type="int" Mode="In" />
+          <Parameter Name="listId" Type="int" Mode="In" />
+          <Parameter Name="productStatus" Type="char" Mode="In" />
           <Parameter Name="productQuantity" Type="int" Mode="In" />
-          <Parameter Name="commentForProduct" Type="varchar(max)" Mode="In" />
         </Function>
         <Function Name="InsertUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="Email" Type="varchar" Mode="In" />
@@ -1147,8 +1150,6 @@
           </Key>
           <Property Name="productId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="productName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="productQuantity" Type="Int32" Nullable="false" />
-          <Property Name="commentForProduct" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="tblProductList" Relationship="Self.FK__tblProduc__produ__247D636F" FromRole="tblProduct" ToRole="tblProductList" />
         </EntityType>
         <EntityType Name="tblProductList">
@@ -1161,6 +1162,7 @@
           <Property Name="productStatus" Type="String" MaxLength="1" FixedLength="true" Unicode="false" Nullable="false" />
           <NavigationProperty Name="tblList" Relationship="Self.FK__tblProduc__listI__21A0F6C4" FromRole="tblProductList" ToRole="tblList" />
           <NavigationProperty Name="tblProduct" Relationship="Self.FK__tblProduc__produ__247D636F" FromRole="tblProductList" ToRole="tblProduct" />
+          <Property Name="productQuantity" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="tblUser">
           <Key>
@@ -1707,9 +1709,7 @@
             <Parameter Name="frequency" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="InsertProduct">
-            <Parameter Name="productName" Mode="In" Type="String" />
-            <Parameter Name="productQuantity" Mode="In" Type="Int32" />
-            <Parameter Name="commentForProduct" Mode="In" Type="String" />
+          <Parameter Name="productName" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="InsertUser">
             <Parameter Name="Email" Mode="In" Type="String" />
@@ -1804,6 +1804,12 @@
             <Parameter Name="taskDate" Mode="In" Type="DateTime" />
             <Parameter Name="TimeInDay" Mode="In" Type="Time" />
             <Parameter Name="taskStatus" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="InsertProductList">
+            <Parameter Name="productId" Mode="In" Type="Int32" />
+            <Parameter Name="listId" Mode="In" Type="Int32" />
+            <Parameter Name="productStatus" Mode="In" Type="String" />
+            <Parameter Name="productQuantity" Mode="In" Type="Int32" />
           </FunctionImport>
         </EntityContainer>
         <ComplexType Name="sp_helpdiagramdefinition_Result">
@@ -2061,14 +2067,13 @@
               <MappingFragment StoreEntitySet="tblProduct">
                 <ScalarProperty Name="productId" ColumnName="productId" />
                 <ScalarProperty Name="productName" ColumnName="productName" />
-                <ScalarProperty Name="productQuantity" ColumnName="productQuantity" />
-                <ScalarProperty Name="commentForProduct" ColumnName="commentForProduct" />
-              </MappingFragment>
+                </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tblProductList">
             <EntityTypeMapping TypeName="igroup194_Db.tblProductList">
               <MappingFragment StoreEntitySet="tblProductList">
+                <ScalarProperty Name="productQuantity" ColumnName="productQuantity" />
                 <ScalarProperty Name="productId" ColumnName="productId" />
                 <ScalarProperty Name="listId" ColumnName="listId" />
                 <ScalarProperty Name="productStatus" ColumnName="productStatus" />
@@ -2131,6 +2136,7 @@
           <FunctionImportMapping FunctionImportName="InsertActualList" FunctionName="igroup194_Db.Store.InsertActualList" />
           <FunctionImportMapping FunctionImportName="InsertDrugForPatient" FunctionName="igroup194_Db.Store.InsertDrugForPatient" />
           <FunctionImportMapping FunctionImportName="InsertActualTask" FunctionName="igroup194_Db.Store.InsertActualTask" />
+          <FunctionImportMapping FunctionImportName="InsertProductList" FunctionName="igroup194_Db.Store.InsertProductList" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

@@ -88,37 +88,56 @@ namespace WebApi.Controllers
         }
 
         //Public Task section     
-        //[HttpPost]
-        //[Route("GetAllTasks")] // POST - Because FromBody - ALL TASKS BY PATIENT ID
-        //public IHttpActionResult GetAllTasks([FromBody] PatientDTO patient)
-        //{
-        //    List<PatientTaskDTO> tasks = new List<PatientTaskDTO>();
-        //    try
-        //    {
-        //        var task = from t in db.tblPatientTask
-        //                   where t.patientId == patient.patientId
-        //                   select t;
-        //        foreach (var item in task)
-        //        {
-        //            PatientTaskDTO taskDTO = new PatientTaskDTO();
-        //            taskDTO.taskId = item.taskId;
-        //            taskDTO.taskName = item.taskName;
-        //            taskDTO.taskFromDate = item.taskFromDate;
-        //            taskDTO.taskToDate = item.taskToDate;
-        //            taskDTO.taskComment = item.taskComment;
-        //            taskDTO.patientId = item.patientId;
-        //            taskDTO.workerId = item.workerId;
-        //            taskDTO.userId = item.userId;
-        //            taskDTO.listId = item.listId;
-        //            tasks.Add(taskDTO);
-        //        }
-        //        return Ok(tasks);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(ex.Message);
-        //    }
-        //}
+        [HttpPost]
+        [Route("GetAllTasks")] //Get all public tasks
+        public IHttpActionResult GetAllTasks([FromBody] string patientId)
+        {
+            try
+            {
+                var tasksArr = from t in db.tblPatientTask
+                               where t.patientId == patientId && t.taskToDate >= DateTime.Now
+                               select t;
+
+
+                List<ActualTaskDTO> actualTasks = new List<ActualTaskDTO>();
+
+                foreach (var item in tasksArr)
+                {
+
+                    var task = from t in db.tblActualTask
+                               where t.taskId == item.taskId && t.taskDate >= DateTime.Now && t.taskDate <= DateTime.Now.AddDays(7)
+                               select t;
+
+                    foreach (var item2 in task)
+                    {
+                        {
+                            ActualTaskDTO actualTask = new ActualTaskDTO();
+                            actualTask.taskId = item2.taskId;
+                            actualTask.taskDate = item2.taskDate;                        
+                            actualTask.TimeInDay = item2.TimeInDay;
+                            actualTask.taskComment = item.taskComment;
+                            actualTask.taskStatus = item2.taskStatus;
+                            actualTask.workerId = item.workerId;
+                            actualTask.patientId = item.patientId;
+                            actualTask.taskName = item.taskName;
+                            actualTask.frequency = item.frequency;
+                            actualTask.listId = item.listId;
+                            actualTasks.Add(actualTask);
+                        }
+                    }
+                        
+                }
+                actualTasks.Sort((x, y) => DateTime.Compare(x.taskDate, y.taskDate));//sort by time small to large
+                return Ok(actualTasks);
+
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+
+        }
 
         [HttpPost]
         [Route("InsertActualList")] //dynamic because the list can be drug or product list
@@ -174,7 +193,7 @@ namespace WebApi.Controllers
                         drugFor.dosage = list.dosage;
                         drugFor.drugId = list.drugId;
                         drugFor.qtyInBox = list.qtyInBox;
-                        drugFor.minQuantity = list.qtyInBox*0.2;//defult will be 20% 
+                        drugFor.minQuantity = list.qtyInBox * 0.2;//defult will be 20% 
                         drugFor.patientId = list.patientId;
                         drugFor.listId = actualListId;
                         drugFor.timesInDayArray = timesInDayArray; //will not send to the db just a temp field
@@ -192,7 +211,7 @@ namespace WebApi.Controllers
                         task.listId = actualListId;
                         task.timesInDayArr = timesInDayArray;
                         int resInsertPatientTask = db.InsertPatientTask(task.taskName, task.taskFromDate, task.taskToDate, task.taskComment, task.patientId, task.workerId, task.userId, actualListId, task.frequency);
-                        db.SaveChanges();       
+                        db.SaveChanges();
                         int taskId = db.tblPatientTask.Max(x => x.taskId);
                         //we use here partial class to add the actual tasks to the db                                  
                         if (!actualTask.InsertActualTask(task.frequency, task.timesInDayArr, taskId, task.taskFromDate, task.taskToDate))
@@ -225,20 +244,18 @@ namespace WebApi.Controllers
                     task.frequency = list.frequency;
                     task.userId = list.userId;
                     task.listId = actualListId;
-                    task.timesInDayArr = timesInDayArray;                   
+                    task.timesInDayArr = timesInDayArray;
                     int taskId = db.tblPatientTask.Max(x => x.taskId);
                     db.InsertList(task.taskName, task.listId);
                     db.SaveChanges();
                     int resInsertPatientTask = db.InsertPatientTask(task.taskName, task.taskFromDate, task.taskToDate, task.taskComment, task.patientId, task.workerId, task.userId, actualListId, task.frequency);
                     db.SaveChanges();
-
-
                     //we use here partial class to add the actual tasks to the db                                  
                     if (!actualTask.InsertActualTask(task.frequency, task.timesInDayArr, taskId, task.taskFromDate, task.taskToDate))
                         throw new Exception("error Insert Actual Tasks ");
                     return Ok("Actual Tasks added");
 
-                 
+
                 }
                 else // Regular Tasks  List
                 {
@@ -289,28 +306,37 @@ namespace WebApi.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("InsertProductsToList")]
+        public IHttpActionResult InsertProductsToList([FromBody] ProductListDTO listId)
+        {         
+            try
+            {
+                //find if the product is already in the db, else add it
+                var isExsitProduct = from p in db.tblProduct
+                                     where p.productName == listId.productName
+                                     select p;
+                int productId;
+                if (isExsitProduct.Count() == 0)
+                {
+                    db.InsertProduct(listId.productName);
+                    productId = db.tblProduct.Max(x => x.productId);
+                    db.SaveChanges();
+                }
+                else
+                    productId = isExsitProduct.FirstOrDefault().productId;
+                //add the product to the list
+                db.InsertProductList(productId, listId.listId,"P", listId.productQuantity);
+                return Ok("Product added to list");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
 
-        //[HttpPost]
-        //[Route("InsertProductlList")]
 
-        //public IHttpActionResult InsertProductlList([FromBody] ProductListDTO list)
-        //{
-        //    try
-        //    {
-        //        int actualListId = db.tblActualList.Max(x => x.listId) + 1;
-        //        db.InsertList(list.listName, actualListId);
-        //        db.SaveChanges();
-        //        foreach (var item in list.products)
-        //        {
-        //            int resInsertProductForPatient = db.InsertProductForPatient(actualListId, item.fromDate, item.toDate, item.qtyInBox, item.minQuantity, item.productId, item.patientId);
-        //            db.SaveChanges();
-        //        }
-        //        return Ok("Product List added");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(ex.Message);
-        //    }
-        //}
+        }
+
+
     }
 }

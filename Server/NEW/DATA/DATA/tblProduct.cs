@@ -22,8 +22,6 @@ namespace DATA
     
         public int productId { get; set; }
         public string productName { get; set; }
-        public int productQuantity { get; set; }
-        public string commentForProduct { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tblProductList> tblProductList { get; set; }

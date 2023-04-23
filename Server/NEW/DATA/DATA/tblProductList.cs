@@ -17,6 +17,7 @@ namespace DATA
         public int productId { get; set; }
         public int listId { get; set; }
         public string productStatus { get; set; }
+        public int productQuantity { get; set; }
     
         public virtual tblList tblList { get; set; }
         public virtual tblProduct tblProduct { get; set; }
