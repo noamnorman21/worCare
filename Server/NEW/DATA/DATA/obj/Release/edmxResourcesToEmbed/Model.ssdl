@@ -222,8 +222,6 @@
     </Key>
     <Property Name="productId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="productName" Type="varchar" MaxLength="50" Nullable="false" />
-    <Property Name="productQuantity" Type="int" Nullable="false" />
-    <Property Name="commentForProduct" Type="varchar(max)" />
   </EntityType>
   <EntityType Name="tblProductList">
     <Key>
@@ -233,6 +231,7 @@
     <Property Name="productId" Type="int" Nullable="false" />
     <Property Name="listId" Type="int" Nullable="false" />
     <Property Name="productStatus" Type="char" MaxLength="1" Nullable="false" />
+    <Property Name="productQuantity" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="tblUser">
     <Key>
@@ -671,8 +670,12 @@
   </Function>
   <Function Name="InsertProduct" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="productName" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="InsertProductList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="productId" Type="int" Mode="In" />
+    <Parameter Name="listId" Type="int" Mode="In" />
+    <Parameter Name="productStatus" Type="char" Mode="In" />
     <Parameter Name="productQuantity" Type="int" Mode="In" />
-    <Parameter Name="commentForProduct" Type="varchar(max)" Mode="In" />
   </Function>
   <Function Name="InsertUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="Email" Type="varchar" Mode="In" />

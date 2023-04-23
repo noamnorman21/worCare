@@ -239,14 +239,13 @@
         <MappingFragment StoreEntitySet="tblProduct">
           <ScalarProperty Name="productId" ColumnName="productId" />
           <ScalarProperty Name="productName" ColumnName="productName" />
-          <ScalarProperty Name="productQuantity" ColumnName="productQuantity" />
-          <ScalarProperty Name="commentForProduct" ColumnName="commentForProduct" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="tblProductList">
       <EntityTypeMapping TypeName="igroup194_Db.tblProductList">
         <MappingFragment StoreEntitySet="tblProductList">
+          <ScalarProperty Name="productQuantity" ColumnName="productQuantity" />
           <ScalarProperty Name="productId" ColumnName="productId" />
           <ScalarProperty Name="listId" ColumnName="listId" />
           <ScalarProperty Name="productStatus" ColumnName="productStatus" />
@@ -309,5 +308,6 @@
     <FunctionImportMapping FunctionImportName="InsertActualList" FunctionName="igroup194_Db.Store.InsertActualList" />
     <FunctionImportMapping FunctionImportName="InsertDrugForPatient" FunctionName="igroup194_Db.Store.InsertDrugForPatient" />
     <FunctionImportMapping FunctionImportName="InsertActualTask" FunctionName="igroup194_Db.Store.InsertActualTask" />
+    <FunctionImportMapping FunctionImportName="InsertProductList" FunctionName="igroup194_Db.Store.InsertProductList" />
   </EntityContainerMapping>
 </Mapping>

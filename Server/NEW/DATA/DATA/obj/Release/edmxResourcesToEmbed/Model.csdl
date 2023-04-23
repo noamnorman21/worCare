@@ -266,8 +266,6 @@
     </Key>
     <Property Name="productId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="productName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-    <Property Name="productQuantity" Type="Int32" Nullable="false" />
-    <Property Name="commentForProduct" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
     <NavigationProperty Name="tblProductList" Relationship="Self.FK__tblProduc__produ__247D636F" FromRole="tblProduct" ToRole="tblProductList" />
   </EntityType>
   <EntityType Name="tblProductList">
@@ -280,6 +278,7 @@
     <Property Name="productStatus" Type="String" MaxLength="1" FixedLength="true" Unicode="false" Nullable="false" />
     <NavigationProperty Name="tblList" Relationship="Self.FK__tblProduc__listI__21A0F6C4" FromRole="tblProductList" ToRole="tblList" />
     <NavigationProperty Name="tblProduct" Relationship="Self.FK__tblProduc__produ__247D636F" FromRole="tblProductList" ToRole="tblProduct" />
+    <Property Name="productQuantity" Type="Int32" Nullable="false" />
   </EntityType>
   <EntityType Name="tblUser">
     <Key>
@@ -827,8 +826,6 @@
     </FunctionImport>
     <FunctionImport Name="InsertProduct">
       <Parameter Name="productName" Mode="In" Type="String" />
-      <Parameter Name="productQuantity" Mode="In" Type="Int32" />
-      <Parameter Name="commentForProduct" Mode="In" Type="String" />
     </FunctionImport>
     <FunctionImport Name="InsertUser">
       <Parameter Name="Email" Mode="In" Type="String" />
@@ -923,6 +920,12 @@
       <Parameter Name="taskDate" Mode="In" Type="DateTime" />
       <Parameter Name="TimeInDay" Mode="In" Type="Time" />
       <Parameter Name="taskStatus" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="InsertProductList">
+      <Parameter Name="productId" Mode="In" Type="Int32" />
+      <Parameter Name="listId" Mode="In" Type="Int32" />
+      <Parameter Name="productStatus" Mode="In" Type="String" />
+      <Parameter Name="productQuantity" Mode="In" Type="Int32" />
     </FunctionImport>
   </EntityContainer>
   <ComplexType Name="sp_helpdiagramdefinition_Result">
