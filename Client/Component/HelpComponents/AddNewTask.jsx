@@ -307,7 +307,6 @@ function AddNewMedicine(props) {
                                  labelField="name"
                                  valueField="name"
                                  placeholder="Frequency"
-                                 renderRightIcon={() => <Ionicons style={styles.iconDropDown} name="md-caret-down-outline" size={17} color="#808080" />}
                                  fontFamily='Urbanist-Light'
                                  // style={[styles.input, taskAssignee && { borderColor: '#000' }]}
                                  style={[styles.doubleRowItem, { paddingRight: 10, paddingLeft: 10 }, selectedFrequency && { borderColor: '#000' }]}
@@ -533,6 +532,7 @@ function NewTaskModal(props) {
    const [taskToDate, setTaskToDate] = useState('')
    const [taskFrequency, setTaskFrequency] = useState('')
    const [taskTime, setTaskTime] = useState('')
+   const [taskTimeArr, setTaskTimeArr] = useState([]) //will only be used if to general tasks
    const [taskCategory, setTaskCategory] = useState('')
    const [isPrivate, setIsPrivate] = useState(false)//for the assignee
    const [taskAssignee, setTaskAssignee] = useState('')
@@ -587,8 +587,8 @@ function NewTaskModal(props) {
                </View>
                <View>
                   <DatePicker
-                     style={[stylesForTimeModal.doubleRowItem, medTimeArr[i] != null && { borderColor: '#000' }]}
-                     date={medTimeArr[i]}
+                     style={[stylesForTimeModal.doubleRowItem, taskTimeArr[i] != null && { borderColor: '#000' }]}
+                     date={taskTimeArr[i]}
                      iconComponent={<MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />}
                      placeholder="Add Time"
                      mode="time"
@@ -616,9 +616,9 @@ function NewTaskModal(props) {
                         },
                      }}
                      onDateChange={(date) => {
-                        let newArr = [...medTimeArr];
+                        let newArr = [...taskTimeArr];
                         newArr[i] = date;
-                        setMedTimeArr(newArr);
+                        setTaskTimeArr(newArr);
                      }}
                   />
                </View>
@@ -630,12 +630,12 @@ function NewTaskModal(props) {
 
    const saveTimeArr = () => {
       for (let i = 0; i < timePickers.length; i++) {
-         if (medTimeArr[i] == '' || medTimeArr[i] == null) {
+         if (taskTimeArr[i] == '' || taskTimeArr[i] == null) {
             Alert.alert('Please Fill all the time fields');
             return;
          }
       }
-      setMedTimeArr(medTimeArr);
+      setTaskTimeArr(taskTimeArr);
       setModalTimesVisible(false);
    }
 
@@ -685,12 +685,62 @@ function NewTaskModal(props) {
             addPublicTask();
          }
       } else {
-         addPublicTask();
+         if (taskCategory == 'General') {
+            addPublicTask();
+         }
+         else {
+            addShopTask();
+         }
       }
    }
-
+   const addShopTask = () => {
+      console.log("addShopTask");
+   }
    const addPublicTask = () => {
-      Alert.alert("Add Public Task");
+      if (taskTime != '' && taskTimeArr.length == 0) {
+         taskTimeArr.push(taskTime);
+      }
+      let newTaskForDb = {
+         taskName: taskName,
+         timesInDayArr: taskTimeArr,
+         fromDate: taskFromDate,
+         toDate: taskToDate,
+         patientId: userData.patientId,
+         workerId: userData.workerId,
+         userId: userData.involvedInId,
+         taskComment: taskComment,
+         frequency: taskFrequency,
+      }
+      console.log( newTaskForDb);
+      let addTaskdUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/InsertActualList';
+      fetch(addTaskUrl, {
+         method: 'POST',
+         body: JSON.stringify(newTaskForDb),
+         headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+         },
+      })
+         .then(res => {
+            if (res.ok) {
+               return res.json()
+            }
+            else {
+               console.log("not found")
+            }
+         }
+         )
+         .then(data => {
+            if (data != null) {
+               console.log(data);
+               clearInputs();
+            }
+         }
+         )
+         .catch((error) => {
+            console.log("err=", error);
+         }
+         );
+      
    }
 
    const clearInputs = () => {
@@ -703,6 +753,8 @@ function NewTaskModal(props) {
       setTaskTime('')
       setTaskFrequency('')
       setTaskComment('')
+      setTaskTimeArr([])
+      setNumberPerDay(0)
       setIsPrivate(false)
       props.onClose()
    }
@@ -723,7 +775,8 @@ function NewTaskModal(props) {
                               value={taskName}
                               returnKeyType='done'
                               onChangeText={text => setTaskName(text)}
-                              onEndEditing={() => { setTaskNameBorder(taskName) }}
+                              onEndEditing={() => { setTaskNameBorder(true)  }}
+                              
                            />
                            { // if the user is a caregiver than display the assignee
                               userType == "Caregiver" ?
@@ -741,6 +794,7 @@ function NewTaskModal(props) {
                                     onChange={item => {
                                        setTaskAssignee(item.name)
                                        if (item.name == 'Private') {
+                                          setTaskCategory(taskCategorys[0].name)
                                           setIsPrivate(true)
                                        } else {
                                           setIsPrivate(false)
@@ -750,7 +804,6 @@ function NewTaskModal(props) {
                                  : null
                            }
                            {
-                              //if is private= true than display the category
                               !isPrivate ?
                                  <Dropdown
                                     data={taskCategorys}
@@ -833,57 +886,114 @@ function NewTaskModal(props) {
                                  </View>
                               </View>
                            </Modal>
+                           {taskCategory == 'General' ?
+                              <View style={styles.doubleRow}>
+                                 <View style={[styles.doubleRowItem, numberPerDay >= 1 && { borderColor: "black" }]}>
+                                    <TouchableOpacity onPress={() =>
+                                       setNumberPerDay(parseInt(numberPerDay + 1))
+                                    } style={styles.arrowUp}>
+                                       {/* Change icon color only onPress to #548DFF  */}
+                                       <Ionicons name="md-caret-up-outline" size={17} color="#808080" />
+                                    </TouchableOpacity>
+                                    <TextInput
+                                       style={[styles.inputNumber, numberPerDay && { textAlign: 'center' }]}
+                                       placeholder="Number per day"
+                                       placeholderTextColor="#9E9E9E"
+                                       keyboardType='numeric'
+                                       returnKeyType='done'
+                                       value={numberPerDay == 0 ? '' : numberPerDay.toString()}
+                                       onChangeText={text => text == '' ? setNumberPerDay(0) && setMedTime('') : setNumberPerDay(parseInt(text))}
+                                    />
+                                    {/* Change icon color only onPress to #548DFF  */}
+                                    <TouchableOpacity style={styles.arrowDown} onPress={() => numberPerDay == 0 ? setNumberPerDay(0) : setNumberPerDay(parseInt(numberPerDay - 1))}>
+                                       <Ionicons name="md-caret-down-outline" size={17} color="#808080" />
+                                    </TouchableOpacity>
+                                 </View>
+                                 {numberPerDay > 1 ?
+                                    <View>
+                                       <TouchableOpacity onPress={() => { setModalTimesVisible(true) }}>
+                                          <View style={[styles.doubleRowItem, taskTimeArr.length == numberPerDay && { borderColor: '#000' }]}>
+                                             <Text style={[styles.inputNumber, { color: '#9E9E9E' }, taskTimeArr.length == numberPerDay && { color: '#000' }]}>
+                                                {numberPerDay == taskTimeArr.length ? 'Times Selected' : 'Add Times'}
+                                             </Text>
+                                             <MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />
+                                          </View>
+                                       </TouchableOpacity>
+                                    </View>
+                                    :
+                                    <View >
+                                       <DatePicker
+                                          style={[styles.doubleRowItem, taskTime != '' && { borderColor: '#000' }]}
+                                          date={taskTime}
+                                          iconComponent={<MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />}
+                                          placeholder="Add Time"
+                                          mode="time"
+                                          format="HH:mm"
+                                          is24Hour={true}
+                                          confirmBtnText="Confirm"
+                                          cancelBtnText="Cancel"
+                                          showIcon={true}
+                                          customStyles={{
+                                             dateInput: {
+                                                borderWidth: 0,
+                                                alignItems: 'flex-start',
+                                                paddingLeft: 10,
+                                             },
+                                             placeholderText: {
+                                                color: '#9E9E9E',
+                                                fontSize: 16,
+                                                textAlign: 'left',
+                                                fontFamily: 'Urbanist-Light',
+                                             },
+                                             dateText: {
+                                                color: '#000',
+                                                fontSize: 16,
+                                                fontFamily: 'Urbanist-Medium',
+                                                textAlign: 'center',
+                                             },
+                                          }}
+                                          onDateChange={(date) => {
+                                             setTaskTime(date)
+                                          }}
+                                       />
+                                    </View>
+                                 }
+                              </View>
 
-                           <DatePicker
-                              style={[styles.input, taskTime != '' && { borderColor: '#000' }]}
-                              date={taskTime}
-                              mode="time"
-                              placeholder="Time"
-                              format="HH:mm"
-                              is24Hour={true}
-                              confirmBtnText="Confirm"
-                              cancelBtnText="Cancel"
-                              showIcon={false}
-                              customStyles={{
-                                 dateInput: {
-                                    borderWidth: 0,
-                                    alignItems: 'flex-start',
-                                 },
-                                 placeholderText: {
-                                    color: '#9E9E9E',
-                                    fontSize: 16,
-                                    fontFamily: 'Urbanist-Light',
-                                 },
-                                 dateText: {
-                                    color: '#000',
-                                    fontSize: 16,
-                                    fontFamily: 'Urbanist-SemiBold',
-                                 },
-                              }}
-                              onDateChange={(date) => { setTaskTime(date) }}
-                           />
-
-                           <View style={styles.doubleRowItem}>
-                              <TouchableOpacity onPress={() =>
-                                 setNumberPerDay(parseInt(numberPerDay + 1))
-                              } style={styles.arrowUp}>
-                                 {/* Change icon color only onPress to #548DFF  */}
-                                 <Ionicons name="md-caret-up-outline" size={17} color="#808080" />
-                              </TouchableOpacity>
-                              <TextInput
-                                 style={[styles.inputNumber, numberPerDay && { textAlign: 'center' }]}
-                                 placeholder="Number per day"
-                                 placeholderTextColor="#9E9E9E"
-                                 keyboardType='numeric'
-                                 returnKeyType='done'
-                                 value={numberPerDay == 0 ? '' : numberPerDay.toString()}
-                                 onChangeText={text => text == '' ? setNumberPerDay(0) && setMedTime('') : setNumberPerDay(parseInt(text))}
+                              :
+                              <DatePicker
+                                 style={[styles.input, taskTime != '' && { borderColor: '#000' }]}
+                                 date={taskTime}
+                                 mode="time"
+                                 placeholder="Time"
+                                 format="HH:mm"
+                                 is24Hour={true}
+                                 confirmBtnText="Confirm"
+                                 cancelBtnText="Cancel"
+                                 showIcon={false}
+                                 customStyles={{
+                                    dateInput: {
+                                       borderWidth: 0,
+                                       alignItems: 'flex-start',
+                                    },
+                                    placeholderText: {
+                                       color: '#9E9E9E',
+                                       fontSize: 16,
+                                       fontFamily: 'Urbanist-Light',
+                                    },
+                                    dateText: {
+                                       color: '#000',
+                                       fontSize: 16,
+                                       fontFamily: 'Urbanist-SemiBold',
+                                    },
+                                 }}
+                                 onDateChange={(date) => { setTaskTime(date) }}
                               />
-                              {/* Change icon color only onPress to #548DFF  */}
-                              <TouchableOpacity style={styles.arrowDown} onPress={() => numberPerDay == 0 ? setNumberPerDay(0) : setNumberPerDay(parseInt(numberPerDay - 1))}>
-                                 <Ionicons name="md-caret-down-outline" size={17} color="#808080" />
-                              </TouchableOpacity>
-                           </View>
+
+                           }
+                           {/* {taskCategory == 'General' ?
+
+                              : null} */}
 
                            <Dropdown
                               data={taskFrequencies}
@@ -897,18 +1007,51 @@ function NewTaskModal(props) {
                               containerStyle={styles.containerStyle}
                               onChange={item => { setTaskFrequency(item.name) }}
                            />
+                           {/* Modal Box For TIMES ARRAY */}
+                           <View>
+                              <Modal visible={modalTimesVisible} transparent={true} style={styles.modalDate} animationType='slide' onRequestClose={() => setModalTimesVisible(false)}>
+                                 <View style={styles.modalTimesView}>
+                                    {/* Header for add times*/}
+                                    <View style={styles.modalTimesHeader}>
+                                       <Text style={styles.modalText}>Select Med Times</Text>
+                                    </View>
+                                    {/* Body */}
+                                    <View style={styles.modalTimesBody}>
+                                       <View style={styles.modalTimesBodyContent}>
+                                          {rowForEachTime()}
+                                       </View>
+                                    </View>
 
+                                    <View style={styles.btnModalDate}>
+                                       <TouchableOpacity
+                                          style={styles.saveBtnDate}
+                                          onPress={saveTimeArr}
+                                       >
+                                          <Text style={styles.textStyle}>Save</Text>
+                                       </TouchableOpacity>
+                                       <TouchableOpacity
+                                          style={styles.closeBtnDate}
+                                          onPress={() => {
+                                             setTaskTime('');
+                                             setModalTimesVisible(false);
+                                          }}
+                                       >
+                                          <Text style={styles.closeTxt}>Cancel</Text>
+                                       </TouchableOpacity>
+                                    </View>
+                                 </View>
+                              </Modal>
+                           </View>
                            <TextInput
-                              style={[styles.commentInput, {
-                                 borderColor: taskComment != '' ? '#000' : '#E6EBF2'
-                              }]}
-                              placeholder='Comment ( optional )'
+                              style={[styles.commentInput, { padding: 0 }, taskComment && { borderColor: '#000' }, modalTimesVisible && { display: 'none' }]}
+                              placeholder="Comment ( Optional )"
+                              placeholderTextColor="#9E9E9E"
                               value={taskComment}
-                              numberOfLines={3}
+                              multiline={true}
                               returnKeyType='done'
-                              keyboardType='default'
                               onSubmitEditing={Keyboard.dismiss}
-                              placeholderTextColor='#9E9E9E'
+                              keyboardType='default'
+                              numberOfLines={4}
                               onChangeText={text => setTaskComment(text)}
                            />
                         </View>
@@ -983,7 +1126,7 @@ const styles = StyleSheet.create({
       color: '#9E9E9E',
       fontSize: 16,
       fontFamily: 'Urbanist-Light',
-      paddingLeft: 10
+      // paddingLeft: 10
    },
    textStyleDate: {
       padding: 10,

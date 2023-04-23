@@ -271,7 +271,6 @@ namespace WebApi.Controllers
                         int resInsertPatientTask = db.InsertPatientTask(task.taskName, task.taskFromDate, task.taskToDate, task.taskComment, task.patientId, task.workerId, task.userId, actualListId, task.frequency);
                         db.SaveChanges();
                         int taskId = db.tblPatientTask.Max(x => x.taskId);
-                        DateTime tempDate = task.taskFromDate;
                         //we use here partial class to add the actual tasks to the db
                         if (!actualTask.InsertActualTask(task.frequency, task.timesInDayArr, taskId, task.taskFromDate, task.taskToDate))
                             throw new Exception("error Insert Actual Tasks ");

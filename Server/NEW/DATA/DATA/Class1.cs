@@ -70,7 +70,7 @@ namespace DATA
                         tempDate = tempDate.AddDays(1);
                         for (int i = 0; i < timesInDayArr.Length; i++)
                         {
-                            int ActualTask = db.ActualTask(taskId, tempDate, timesInDayArr[i], "P");
+                            int ActualTask = db.InsertActualTask(taskId, tempDate, timesInDayArr[i], "P");
 
                         }
                     }
@@ -82,7 +82,7 @@ namespace DATA
                         tempDate = tempDate.AddDays(7);
                         for (int i = 0; i < timesInDayArr.Length; i++)
                         {
-                            int ActualTask = db.ActualTask(taskId, tempDate, timesInDayArr[i], "P");
+                            int ActualTask = db.InsertActualTask(taskId, tempDate, timesInDayArr[i], "P");
                             db.SaveChanges();
 
                         }
@@ -95,7 +95,7 @@ namespace DATA
                         tempDate = tempDate.AddMonths(1);
                         for (int i = 0; i < timesInDayArr.Length; i++)
                         {
-                            int ActualTask = db.ActualTask(taskId, tempDate, timesInDayArr[i], "P");
+                            int ActualTask = db.InsertActualTask(taskId, tempDate, timesInDayArr[i], "P");
                             db.SaveChanges();
 
                         }
