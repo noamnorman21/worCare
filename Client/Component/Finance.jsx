@@ -14,16 +14,14 @@ const Stack = createStackNavigator();
 // Big Image and 2 Buttons that will navigate to 2 different screens
 // First Button will navigate to Payment screen - [Pending, History] 
 // Second Button will navigate to Paycheck screen - [History]
-export default function Finance() {
+export default function Finance({navigation}) {
   return (
     <MenuProvider customStyles={{
       optionsContainer: {
         borderRadius: 0,
         elevation: 100,
       },
-    }}>
-
-      <NavigationContainer independent={true} zIndex='0' initialRouteName='choice'  >
+    }}>     
         <Stack.Navigator initialRouteName='choice'>
           <Stack.Screen name='choice' component={Choice} options={() => ({
             headerShown: false,
@@ -42,7 +40,6 @@ export default function Finance() {
             cardOverlayEnabled: true,
           })} />
         </Stack.Navigator>
-      </NavigationContainer>
     </MenuProvider>
   );
 }
@@ -80,7 +77,8 @@ function Choice({ navigation }) {
 }
 
 const Tab = createMaterialTopTabNavigator();
-function Payments({ route }) {
+function Payments({ route, navigation }) {
+
   return (
     <Tab.Navigator
       initialRouteName="Pending"

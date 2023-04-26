@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, Animated, Modal, Image, ScrollView, sagea } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
-import { List } from 'react-native-paper';
 import NewPayment from './NewPayment';
-import EditPaymentScreen from './EditPaymentScreen';
 import { useUserContext } from '../../UserContext';
 import { AddBtn } from '../HelpComponents/AddNewTask';
 import * as FileSystem from 'expo-file-system';
@@ -12,11 +10,9 @@ import { SafeAreaView } from 'react-navigation';
 import { MaterialCommunityIcons, AntDesign, Feather, Ionicons } from '@expo/vector-icons';
 import {
   Menu,
-  MenuProvider,
   MenuOptions,
   MenuOption,
   MenuTrigger,
-  renderers
 } from "react-native-popup-menu";
 
 
@@ -116,6 +112,7 @@ function Request(props) {
   const month = date.getMonth() + 1;
   const day = date.getDate();
   const dateString = day + "/" + month + "/" + newYear;
+  const {userContext} = useUserContext();
 
   const toggle = () => {
     const config = {
@@ -277,7 +274,7 @@ function Request(props) {
                   optionsWrapper: newStyles.optionsWrapperOpened,
                 }}  >
                   <MenuOption value={2} children={<View style={newStyles.options}><Feather name='eye' size={20} /><Text style={newStyles.optionsText}> View Document</Text></View>} />
-                  <MenuOption style={newStyles.deleteTxt} value={4} children={<View style={newStyles.options}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={newStyles.deleteTxt}> Delete Requset</Text></View>} />
+                  <MenuOption disableTouchable={userContext.userId==props.data.userId?false:true}style={newStyles.deleteTxt} value={4} children={<View style={userContext.userId==props.data.userId?newStyles.options:newStyles.disabledoptions}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={newStyles.deleteTxt}> Delete Requset</Text></View>} />
                 </MenuOptions>
               </Menu>
               <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
@@ -327,7 +324,7 @@ function Request(props) {
                 }}
                 >
                   <MenuOption style={{ borderRadius: 16 }} value={2} children={<View style={newStyles.options}><Feather name='eye' size={20} /><Text style={newStyles.optionsText}> View Document</Text></View>} />
-                  <MenuOption style={newStyles.deleteTxt} value={4} children={<View style={newStyles.options}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={newStyles.deleteTxt}> Delete Requset</Text></View>} />
+                  <MenuOption disableTouchable={userContext.userId==props.data.userId?false:true} style={newStyles.deleteTxt} value={4} children={<View style={userContext.userId==props.data.userId?newStyles.options:newStyles.disabledoptions}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={newStyles.deleteTxt}> Delete Requset</Text></View>} />
                 </MenuOptions>
               </Menu>
               <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
@@ -432,6 +429,14 @@ const newStyles = StyleSheet.create({
     borderBottomWidth: 0.2,
     padding: 15,
     fontFamily: 'Urbanist-Medium',
+  },
+  disabledoptions: {
+    flexDirection: 'row',
+    borderBottomColor: '#80808080',
+    borderBottomWidth: 0.2,
+    padding: 15,
+    fontFamily: 'Urbanist-Medium', 
+    opacity:0.5
   },
   optionsText: {
     fontFamily: 'Urbanist-Medium',
