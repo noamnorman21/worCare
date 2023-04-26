@@ -1,12 +1,48 @@
 import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Dimensions } from 'react-native'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { AddBtn, NewTaskModal } from '../HelpComponents/AddNewTask'
 import { Feather, Ionicons } from '@expo/vector-icons';
+import { useUserContext } from '../../UserContext'
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export default function ShopTasks() {
   const [modalVisible, setModalVisible] = useState(false)
+  const [userData, setUserData] = useState(useUserContext().userContext);
+  const [tasks, setTasks] = useState([])
+  const [shopTasks, setShopTasks] = useState([])
+  useEffect(() => {
+    getActiveTasks()
+  }, [])
+
+  const getActiveTasks = async () => {
+    let getAllTasksUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/GetAllTasks';
+    try {
+      fetch(getAllTasksUrl, {
+        method: 'POST',
+        headers: new Headers({ 'Content-Type': 'application/json; charset=UTF-8', }),
+        body: JSON.stringify(userData.patientId)
+      })
+        .then(res => { return res.json() })
+        .then(
+          (result) => {
+            // console.log("fetch POST= ", result);
+
+            // for (let i = 0; i < result.length; i++) {
+            //   if (result[i].type == false) {
+            //     setShopTasks(shopTasks => [...shopTasks, result[i]])
+            //   }
+            // }
+            setShopTasks(result.filter(task => task.type == false))
+            // setTasks(result)
+            //  setShopTasks(result.filter(task => task.type == false))
+          }
+        )
+    } catch (error) {
+      console.log('err post=', error);
+    }
+  }
+
   const handleAddBtnPress = () => {
     setModalVisible(true);
   };
@@ -16,7 +52,7 @@ export default function ShopTasks() {
   };
 
   const handleAddingSubTask = () => {
-    console.log('Adding sub task')
+    console.log('tasksTest', shopTasks)
   }
 
   const updateCompleted = () => {
@@ -28,9 +64,9 @@ export default function ShopTasks() {
       <Text style={styles.taskName}>Super Market</Text>
       <View style={styles.tasksContainer}>
         <View style={styles.addSubTask}>
-          <TouchableOpacity style={styles.left} onPress={updateCompleted}>
+          {/* <TouchableOpacity style={styles.left} onPress={updateCompleted}>
             <Feather name="circle" size={30} color="#548DFF" />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <TouchableOpacity style={styles.middle} onPress={handleAddingSubTask}>
             <Text style={styles.subtaskTxt}>Click here to add a sub-task...</Text>
           </TouchableOpacity>

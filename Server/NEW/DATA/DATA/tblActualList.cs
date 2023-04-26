@@ -22,7 +22,7 @@ namespace DATA
     
         public int listId { get; set; }
         public Nullable<bool> type { get; set; }
-    
+
         public virtual tblDrugForPatient tblDrugForPatient { get; set; }
         public virtual tblList tblList { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

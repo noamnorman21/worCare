@@ -20,6 +20,6 @@ namespace WebApi.DTO
         public int workerId { get; set; }
         public int userId { get; set; }
         public int listId { get; set; }
-
+        public Nullable<bool> type { get; set; }
     }
 }

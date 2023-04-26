@@ -8,6 +8,7 @@ using DATA;
 using WebApi.DTO;
 using System.Web.Http.Cors;
 using Microsoft.Ajax.Utilities;
+using System.Data.Entity.SqlServer;
 
 namespace WebApi.Controllers
 {
@@ -97,58 +98,65 @@ namespace WebApi.Controllers
                 var tasksArr = from t in db.tblPatientTask
                                where t.patientId == patientId && t.taskToDate >= DateTime.Now
                                select t;
-
-
                 List<ActualTaskDTO> actualTasks = new List<ActualTaskDTO>();
-
                 foreach (var item in tasksArr)
                 {
-
                     var task = from t in db.tblActualTask
-                               where t.taskId == item.taskId && t.taskDate >= DateTime.Now && t.taskDate <= DateTime.Now.AddDays(7)
+                               where t.taskId == item.taskId && 
+                               t.taskDate >= DateTime.Now &&
+                               t.taskDate <= SqlFunctions.DateAdd("d", 7, DateTime.Now) &&
+                               t.taskStatus == "P"
                                select t;
-
                     foreach (var item2 in task)
                     {
-                        {
-                            ActualTaskDTO actualTask = new ActualTaskDTO();
-                            actualTask.taskId = item2.taskId;
-                            actualTask.taskDate = item2.taskDate;                        
-                            actualTask.TimeInDay = item2.TimeInDay;
-                            actualTask.taskComment = item.taskComment;
-                            actualTask.taskStatus = item2.taskStatus;
-                            actualTask.workerId = item.workerId;
-                            actualTask.patientId = item.patientId;
-                            actualTask.taskName = item.taskName;
-                            actualTask.frequency = item.frequency;
-                            actualTask.listId = item.listId;
-                            actualTasks.Add(actualTask);
-                        }
+                        ActualTaskDTO actualTask = new ActualTaskDTO();
+                        actualTask.taskId = item2.taskId;
+                        actualTask.taskDate = item2.taskDate;
+                        actualTask.TimeInDay = item2.TimeInDay;
+                        actualTask.taskComment = item.taskComment;
+                        actualTask.taskStatus = item2.taskStatus;
+                        actualTask.workerId = item.workerId;
+                        actualTask.patientId = item.patientId;
+                        actualTask.taskName = item.taskName;
+                        actualTask.frequency = item.frequency;
+                        actualTask.listId = item.listId;
+                        actualTasks.Add(actualTask);
                     }
-                        
                 }
-                actualTasks.Sort((x, y) => DateTime.Compare(x.taskDate, y.taskDate));//sort by time small to large
+                foreach (var item in actualTasks)
+                {
+                    // add type of task from tblActualList
+                    var taskType = from t in db.tblActualList
+                                   where t.listId == item.listId
+                                   select t;
+                    foreach (var item2 in taskType)
+                    {
+                        item.type = item2.type;
+                    }
+                }                
+                actualTasks.Sort((x, y) => DateTime.Compare(x.taskDate, y.taskDate));               
                 return Ok(actualTasks);
-
             }
             catch (Exception ex)
             {
-
                 return BadRequest(ex.Message);
             }
-
         }
 
         [HttpPost]
         [Route("InsertActualList")] //dynamic because the list can be drug or product list
         public IHttpActionResult InsertActualList([FromBody] dynamic list)
         {
+            // type = 1 - True -  drug list
+            // type = 0 - False - product list
+            // type = null - regular task
+            
             Nullable<bool> isDrug = null;// default  will be regular patient task
             string taskName;
             tblActualTask actualTask = new tblActualTask();
             try
             {
-                if (list.drugId != null)
+                if (list.drugId != null) 
                 {
                     //isdrug mean that is drug list and not product list
                     isDrug = true;
@@ -254,8 +262,6 @@ namespace WebApi.Controllers
                     if (!actualTask.InsertActualTask(task.frequency, task.timesInDayArr, taskId, task.taskFromDate, task.taskToDate))
                         throw new Exception("error Insert Actual Tasks ");
                     return Ok("Actual Tasks added");
-
-
                 }
                 else // Regular Tasks  List
                 {
@@ -309,7 +315,7 @@ namespace WebApi.Controllers
         [HttpPost]
         [Route("InsertProductsToList")]
         public IHttpActionResult InsertProductsToList([FromBody] ProductListDTO listId)
-        {         
+        {
             try
             {
                 //find if the product is already in the db, else add it
@@ -326,7 +332,7 @@ namespace WebApi.Controllers
                 else
                     productId = isExsitProduct.FirstOrDefault().productId;
                 //add the product to the list
-                db.InsertProductList(productId, listId.listId,"P", listId.productQuantity);
+                db.InsertProductList(productId, listId.listId, "P", listId.productQuantity);
                 return Ok("Product added to list");
             }
             catch (Exception ex)
@@ -336,7 +342,5 @@ namespace WebApi.Controllers
 
 
         }
-
-
     }
 }

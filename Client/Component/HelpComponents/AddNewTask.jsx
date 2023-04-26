@@ -681,16 +681,13 @@ function NewTaskModal(props) {
       if (userType == "Caregiver") {
          if (isPrivate) {
             addPrivateTask();
-         } else {
-            addPublicTask();
          }
-      } else {
-         if (taskCategory == 'General') {
-            addPublicTask();
-         }
-         else {
-            addShopTask();
-         }
+      }
+      if (taskCategory == 'General') {
+         addPublicTask();
+      }
+      else {
+         addShopTask();
       }
    }
    const addShopTask = () => {
@@ -700,8 +697,8 @@ function NewTaskModal(props) {
       }
 
       let newTaskForDb = {
-         listName: taskName,
          taskName: taskName,
+         listName: taskName,
          timesInDayArr: taskTimeArr,
          fromDate: taskFromDate,
          toDate: taskToDate,
@@ -711,6 +708,8 @@ function NewTaskModal(props) {
          taskComment: taskComment,
          frequency: taskFrequency,
       }
+      console.log("newTaskForDb= ", newTaskForDb);
+      let addTaskUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/InsertActualList';
       fetch(addTaskUrl, {
          method: 'POST',
          body: JSON.stringify(newTaskForDb),
@@ -738,7 +737,6 @@ function NewTaskModal(props) {
             console.log("err=", error);
          }
          );
-
    }
    const addPublicTask = () => {
       if (taskTime != '' && taskTimeArr.length == 0) {
@@ -786,7 +784,6 @@ function NewTaskModal(props) {
          );
 
    }
-
    const clearInputs = () => {
       setTaskName('')
       setTaskNameBorder('')

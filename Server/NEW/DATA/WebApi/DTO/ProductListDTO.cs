@@ -13,6 +13,5 @@ namespace WebApi.DTO
         public string productStatus { get; set; }
         public int productQuantity { get; set; }
         public string productName { get; set; }
-
     }
 }
