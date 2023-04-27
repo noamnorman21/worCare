@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Alert } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Alert, ScrollView } from 'react-native'
 import { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
@@ -39,6 +39,7 @@ export default function ContactDetails({ route, navigation }) {
             <Text style={styles.headerButtonText}>Save</Text>
           </TouchableOpacity>
         ),
+        headerTitle: "Edit Contact Details",
       });
     }
     else {
@@ -53,6 +54,7 @@ export default function ContactDetails({ route, navigation }) {
             <Ionicons name="chevron-back" size={28} color="black" />
           </TouchableOpacity>
         ),
+        headerTitle: "Contact Details",
 
       });
     }
@@ -225,11 +227,11 @@ export default function ContactDetails({ route, navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
-          <View style={styles.centeredView}>
-            <Text style={styles.contactheader}>{Contact.contactName}</Text>
-            <View style={styles.ButtonView}>
+          <ScrollView contentContainerStyle={styles.centeredView}>
+            {Edit? null: <Text style={styles.contactheader}>{Contact.contactName}</Text>}
+            {!Edit?<View style={styles.ButtonView}>
               <TouchableOpacity style={Contact.email ? styles.button : styles.disabled} disabled={Contact.email ? false : true} onPress={() => console.log("Email")}>
                 <MaterialCommunityIcons name='email-send-outline' size={20} color={Contact.email ? "#548DFF" : "grey"} />
                 <Text style={Contact.email ? styles.BtnTxt : styles.disabledBtnTxt}>Email</Text>
@@ -243,25 +245,25 @@ export default function ContactDetails({ route, navigation }) {
                 <Text style={styles.BtnTxt}>Message</Text>
               </TouchableOpacity>
 
-            </View>
+            </View>:null}
             <View style={styles.inputContainer}>
-              <TextInput style={styles.inputTxt}
+              {Edit?<TextInput style={styles.inputTxt}
                 editable={Edit ? true : false}
                 mode='outlined'
                 label='Full Name'
                 value={Contact.contactName}
                 onChangeText={(val) => handleInputChange('contactName', val)}
-                placeholder="Full Name"
+                placeholder="Type Something"
                 outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
                 activeOutlineColor="#548DFF"
-                outlineColor='#E6EBF2' />
+                outlineColor='#E6EBF2' />: null}
               <TextInput style={styles.inputTxt}
                 editable={Edit ? true : false}
                 mode='outlined'
                 label='Mobile Number'
                 value={Contact.mobileNo}
                 onChangeText={(val) => handleInputChange('mobileNo', val)}
-                placeholder="Type Mobile Number"
+                placeholder="Type Something"
                 outlineStyle={{ borderRadius: 16, borderWidth: 1.5  }}
                 activeOutlineColor="#548DFF"
                 outlineColor='#E6EBF2' />
@@ -271,7 +273,7 @@ export default function ContactDetails({ route, navigation }) {
                 label='Telephone Number'
                 value={Contact.phoneNo}
                 onChangeText={(val) => handleInputChange('phoneNo', val)}
-                placeholder="Type Telephone number"
+                placeholder="Type Something"
                 outlineStyle={{ borderRadius: 16, borderWidth: 1.5  }}
                 activeOutlineColor="#548DFF"
                 outlineColor='#E6EBF2' />
@@ -281,7 +283,7 @@ export default function ContactDetails({ route, navigation }) {
                 label='Email Address'
                 value={Contact.email}
                 onChangeText={(val) => handleInputChange('email', val)}
-                placeholder="Type Email"
+                placeholder="Type Something"
                 outlineStyle={{ borderRadius: 16, borderWidth: 1.5  }}
                 activeOutlineColor="#548DFF"
                 outlineColor='#E6EBF2' />
@@ -294,7 +296,7 @@ export default function ContactDetails({ route, navigation }) {
                 onChangeText={(val) => handleInputChange('role', val)}
                 outlineStyle={{ borderRadius: 16, borderWidth: 1.5  }}
                 activeOutlineColor="#548DFF"
-                placeholder="Type Role"
+                placeholder="Type Something"
                 outlineColor='#E6EBF2' />
               <TextInput style={styles.inputTxt}
                 editable={Edit ? true : false}
@@ -302,7 +304,7 @@ export default function ContactDetails({ route, navigation }) {
                 label='Comment'
                 value={Contact.contactComment}
                 onChangeText={(val) => handleInputChange('contactName', val)}
-                placeholder="Enter Comment"
+                placeholder="Type Something"
                 numberOfLines={3}
                 multiline={true}
                 outlineStyle={{ borderRadius: 16, borderWidth: 1.5  }}
@@ -313,7 +315,7 @@ export default function ContactDetails({ route, navigation }) {
                 <Text style={styles.deleteBtnTxt}>Delete Contact</Text>
               </TouchableOpacity>
             </View>
-          </View>
+          </ScrollView>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -325,6 +327,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     backgroundColor: '#fff',
+    justifyContent: 'flex-end',
   },
   closeBtn: {
     position: 'absolute',
@@ -377,7 +380,7 @@ const styles = StyleSheet.create({
     marginVertical: 1,
     color: '#000',
     backgroundColor: '#fff',
-    marginVertical: 5,
+    marginVertical: 10,
   },
   inputTxtHeader: {
     fontFamily: 'Urbanist-Medium',
@@ -399,9 +402,8 @@ const styles = StyleSheet.create({
   },
   contactheader: {
     fontFamily: 'Urbanist-Bold',
-    fontSize: 30,
-    marginTop: 20,
-
+    fontSize: 30, 
+marginBottom: 10,
   },
   ButtonView: {
     flexDirection: 'row',
