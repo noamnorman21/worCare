@@ -6,20 +6,14 @@ import NewPayment from './NewPayment';
 import EditPaymentScreen from './EditPaymentScreen';
 import { useUserContext } from '../../UserContext';
 import { AddBtn } from '../HelpComponents/AddNewTask';
-import {
-  Menu,
-  MenuProvider,
-  MenuOptions,
-  MenuOption,
-  MenuTrigger,
-  renderers
-} from "react-native-popup-menu";
+import { Menu, MenuProvider, MenuOptions, MenuOption, MenuTrigger, renderers } from "react-native-popup-menu";
 import * as FileSystem from 'expo-file-system';
 import { SafeAreaView } from 'react-navigation';
+
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
-export default function Pending({ route }) {
+export default function Pending({ route, navigation }) {
   const { userContext, userPendingPayments } = useUserContext()
   const [modal1Visible, setModal1Visible] = useState(false);
   const [Pendings, setPendings] = useState()
@@ -30,6 +24,7 @@ export default function Pending({ route }) {
       getPending()
     }
   }, [isFocused])
+
 
   const getPending = async () => {
     try {
@@ -96,6 +91,7 @@ function Request(props) {
   const dateString = day + "/" + month + "/" + newYear;
   const [valueChanged, setValueChanged] = useState(false);
   const [status, setStatus] = useState(props.data.requestStatus);
+  const { userContext } = useUserContext();
 
   const toggle = () => {
     const config = {
@@ -118,7 +114,7 @@ function Request(props) {
       setModal2Visible(true)
     }
     if (value == 4) {
-      DeleteRequest()
+      deleteRequest()
     }
   }
 
@@ -144,7 +140,7 @@ function Request(props) {
     }
   }
 
-  const DeleteRequest = () => {
+  const deleteRequest = () => {
     Alert.alert(
       'Delete request',
       'are you sure you want to Delete? All changes will be lost',
@@ -164,6 +160,25 @@ function Request(props) {
             });
             console.log(res);
             props.getPending();
+          }
+        },
+      ]
+    );
+  }
+
+  const askUserBeforeSave = () => {
+    Alert.alert(
+      'Save Changes',
+      'are you sure you want to Save? This Action cannot be undone',
+      [
+        { text: "Don't save", style: 'cancel', onPress: () => { } },
+        {
+          text: 'Save',
+          style: 'destructive',
+          // If the user confirmed, then we dispatch the action we blocked earlier
+          // This will continue the action that had triggered the removal of the screen
+          onPress: () => {
+            saveStatus(props.data.requestId)
           }
         },
       ]
@@ -262,10 +277,10 @@ function Request(props) {
                 <MenuOptions customStyles={{
                   optionsWrapper: newStyles.optionsWrapperOpened,
                 }}  >
-                  <MenuOption style={{ borderRadius: 16 }} value={1} children={<View style={newStyles.options}><MaterialCommunityIcons name='bell-ring-outline' size={20} /><Text style={newStyles.optionsText}> Send Notification</Text></View>} />
-                  <MenuOption style={{ borderRadius: 16 }} value={2} children={<View style={newStyles.options}><Feather name='eye' size={20} /><Text style={newStyles.optionsText}> View Document</Text></View>} />
-                  <MenuOption style={{ borderRadius: 16 }} value={3} children={<View style={newStyles.options}><Feather name='edit' size={20} /><Text style={newStyles.optionsText}> Edit Request</Text></View>} />
-                  <MenuOption style={newStyles.deleteTxt} value={4} children={<View style={newStyles.options}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={newStyles.deleteTxt}> Delete Request</Text></View>} />
+                  <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} value={1} children={<View style={newStyles.options}><MaterialCommunityIcons name='bell-ring-outline' size={20} /><Text style={newStyles.optionsText}> Send Notification</Text></View>} />
+                  <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} value={2} children={<View style={newStyles.options}><Feather name='eye' size={20} /><Text style={newStyles.optionsText}> View Document</Text></View>} />
+                  <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} value={3} children={<View style={userContext.userId == props.data.userId ? newStyles.options : newStyles.disabledoptions}><Feather name='edit' size={20} /><Text style={newStyles.optionsText}> Edit Request</Text></View>} />
+                  <MenuOption style={newStyles.deleteTxt} value={4} children={<View style={userContext.userId == props.data.userId ? newStyles.options : newStyles.disabledoptions}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={newStyles.deleteTxt}> Delete Request</Text></View>} />
                 </MenuOptions>
               </Menu>
               <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
@@ -299,7 +314,7 @@ function Request(props) {
           :
           <View>
             <View style={newStyles.requestItemHeader}>
-              <TouchableOpacity style={newStyles.request} onPress={() => saveStatus(props.data.requestId)}>
+              <TouchableOpacity style={newStyles.request} onPress={() => askUserBeforeSave()}>
                 <View style={newStyles.requestItemLeft}>
                   {
                     status != 'F' ?
@@ -330,8 +345,8 @@ function Request(props) {
                 >
                   <MenuOption value={1} children={<View style={newStyles.options}><MaterialCommunityIcons name='bell-ring-outline' size={20} /><Text style={newStyles.optionsText}> Send Notification</Text></View>} />
                   <MenuOption value={2} children={<View style={newStyles.options}><Feather name='eye' size={20} /><Text style={newStyles.optionsText}> View Document</Text></View>} />
-                  <MenuOption value={3} children={<View style={newStyles.options}><Feather name='edit' size={20} /><Text style={newStyles.optionsText}> Edit Request</Text></View>} />
-                  <MenuOption value={4} children={<View style={newStyles.options}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={newStyles.deleteTxt}> Delete Request</Text></View>} />
+                  <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} value={3} children={<View style={userContext.userId == props.data.userId ? newStyles.options : newStyles.disabledoptions}><Feather name='edit' size={20} /><Text style={newStyles.optionsText}> Edit Request</Text></View>} />
+                  <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} value={4} children={<View style={userContext.userId == props.data.userId ? newStyles.options : newStyles.disabledoptions}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={newStyles.deleteTxt}> Delete Request</Text></View>} />
                 </MenuOptions>
               </Menu>
               <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
@@ -439,6 +454,14 @@ const newStyles = StyleSheet.create({
     borderBottomWidth: 0.2,
     padding: 7,
     fontFamily: 'Urbanist-Medium',
+  },
+  disabledoptions: {
+    flexDirection: 'row',
+    borderBottomColor: '#80808080',
+    borderBottomWidth: 0.2,
+    padding: 7,
+    fontFamily: 'Urbanist-Medium',
+    opacity: 0.5,
   },
   optionsText: {
     fontFamily: 'Urbanist-Medium',

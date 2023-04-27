@@ -3,12 +3,11 @@ import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } fr
 import { useState } from "react";
 import * as ImagePicker from 'expo-image-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { AntDesign, Octicons } from '@expo/vector-icons';
-const SCREEN_WIDTH = Dimensions.get('window').width;
+import { AntDesign, Octicons ,FontAwesome, MaterialIcons} from '@expo/vector-icons';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from '../../config/firebase';
 import DatePicker from 'react-native-datepicker';
-import { FontAwesome, MaterialIcons } from '@expo/vector-icons'
+const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function EditPaycheck(props) {
   const [imageChanged, setImageChanged] = useState(false);
@@ -175,7 +174,7 @@ export default function EditPaycheck(props) {
     }
     console.log(temp);
 
-    fetch('https://proj.ruppin.ac.il/cgroup94/prod/api/Paychecks/UpdatePayCheck', {
+    fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Paychecks/UpdatePayCheck', {
       method: 'PUT',
       body: JSON.stringify(temp),
       headers: new Headers({
@@ -187,6 +186,7 @@ export default function EditPaycheck(props) {
       })
       .then(
         (result) => {
+          Alert.alert('Paycheck Updated', 'Your paycheck was updated successfully');
           console.log("fetch POST= ", result);
           props.save(temp);
         },

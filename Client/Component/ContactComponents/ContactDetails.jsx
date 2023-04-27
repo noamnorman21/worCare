@@ -1,10 +1,11 @@
-// Path: Client\Component\Contact.jsx
-// Contact Page
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Alert, TextInput } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Alert, ScrollView, Linking } from 'react-native'
 import { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { MaterialCommunityIcons, AntDesign, Feather, Octicons } from '@expo/vector-icons';
+import { useUserContext } from "../../UserContext";
+import { Ionicons } from '@expo/vector-icons';
+import { TextInput } from 'react-native-paper';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -12,6 +13,10 @@ const SCREEN_HEIGHT = Dimensions.get('window').height;
 export default function ContactDetails({ route, navigation }) {
   const { contact } = route.params;
   const [isChanged, setIsChanged] = useState(false);
+
+  const [Edit, setEdit] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [cancel, setCancel] = useState(false);
   const [Contact, setContact] = useState({
     contactId: route.params.contact.contactId,
     contactName: route.params.contact.contactName,
@@ -20,20 +25,160 @@ export default function ContactDetails({ route, navigation }) {
     email: route.params.contact.email,
     role: route.params.contact.role,
     contactComment: route.params.contact.contactComment,
-    patientId: 779355403 // will change when we finish context to get the patient id
+    patientId: route.params.contact.patientId // will change when we finish context to get the patient id
   })
 
   useEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-        <TouchableOpacity onPress={() => navigation.navigate('EditContact', { contact: route.params.contact })}>
-          <Feather name='edit' size={20} color="black" style={{ marginRight: 10 }} />
-        </TouchableOpacity>
-      ),
-    });
-  }, []);
+    if (Edit) {
+      navigation.setOptions({
+        headerRight: () => (
+          <TouchableOpacity style={styles.headerButton} onPress={() => setSaving(true)}>
+            <Text style={styles.headerButtonText}>Save</Text>
+          </TouchableOpacity>
+        ),
+        headerTitle: "Edit Contact Details",
+      });
+    }
+    else {
+      navigation.setOptions({
+        headerRight: () => (
+          <TouchableOpacity style={styles.headerButton} onPress={() => setEdit(true)}>
+            <Text style={styles.headerButtonText}>Edit</Text>
+          </TouchableOpacity>
+        ),
+        headerLeft: () => (
+          <TouchableOpacity style={styles.backBtn} onPress={() => setCancel(true)}>
+            <Ionicons name="chevron-back" size={28} color="black" />
+          </TouchableOpacity>
+        ),
+        headerTitle: "Contact Details",
 
-  const DeleteContact = () => {
+      });
+    }
+  }, [Edit]);
+
+  useEffect(() => {
+    if (saving) {
+      validateInput();
+    }
+  }, [saving]);
+
+  useEffect(() => {
+    if (cancel) {
+      Cancel();
+    }
+  }, [cancel]);
+
+  const Cancel = () => {
+    if (isChanged) {
+      Alert.alert(
+        'Cancel Changes',
+        'Are you sure you want to cancel changes?',
+        [
+          {
+            text: 'Yes',
+            onPress: () => {
+              setEdit(false);
+              setCancel(false);
+              setSaving(false);
+              navigation.goBack();
+            }
+          },
+          {
+            text: 'No',
+            onPress: () => {
+              setCancel(false);
+            }
+          }
+        ]
+      )
+    }
+    else {
+      navigation.goBack();
+    }
+  }
+
+  const handleInputChange = (field, value) => {
+    setContact({ ...Contact, [field]: value });
+
+    if (field == 'email' && value == '') {
+      setContact({ ...Contact, [field]: null });
+    }
+    if (Contact != route.params.contact) {
+      setIsChanged(true)
+    }
+  }
+
+  const validatePhone = (phone) => {
+    const phoneRegex = /^[0-9]*$/
+    return phoneRegex.test(phone)
+  }
+
+  const validateEmail = (email) => {
+    const emailRegex = /\S+@\S+\.\S+/
+    return emailRegex.test(email)
+  }
+
+  const validateInput = () => {
+    const { email, contactName, mobileNo, phoneNo } = Contact
+    console.log(email)
+    console.log(Contact)
+    if (!contactName) {
+      return Alert.alert('Invalid Contact Name', 'Please enter a valid contact name')
+    }
+    if (email !== null && email !== '' && !validateEmail(email)) {
+      console.log("email = ", email)
+      setSaving(false);
+      return Alert.alert('Invalid Email', 'Please enter a valid email')
+    }
+    if (Contact.email === '') {
+      setContact({ ...Contact, email: null })
+    }
+    if (!mobileNo) {
+      setSaving(false);
+      return Alert.alert('Mobile number is required', 'Please enter a valid mobile number')
+    }
+    if (!mobileNo && !phoneNo) {
+      console.log("mobileNo = ", mobileNo)
+      console.log("phoneNo = ", phoneNo)
+      setSaving(false);
+      return Alert.alert('Invalid Mobile Number', 'Please enter a valid mobile number')
+    }
+    saveContact(Contact);
+  }
+
+  const saveContact = () => {
+    console.log("contact to save = ", Contact)
+    let urlContactUpdate = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/UpdateContact/';
+    fetch(urlContactUpdate, {
+      method: 'PUT',
+      body: JSON.stringify(Contact),
+      headers: new Headers({ 'Content-Type': 'application/json; charset=UTF-8' })
+    })
+      .then(res => {
+        if (res.status === 200) {
+          console.log('contact updated');
+          return res.json();
+        }
+        else {
+          Alert.alert('Something went wrong', 'Please try again');
+          console.log('cannot update contact');
+        }
+      })
+      .then(
+        (result) => {
+          console.log("fetch POST= ", result);
+          Alert.alert('Contact Saved', 'The contact was saved successfully');
+          setSaving(false);
+          setEdit(false);
+          setIsChanged(false);
+        },
+        (error) => {
+          console.log("err post2=", error);
+        });
+  }
+
+  const deleteContact = () => {
     Alert.alert(
       'Delete Contact',
       'Are you sure you want to delete this contact?',
@@ -58,6 +203,9 @@ export default function ContactDetails({ route, navigation }) {
               .then(
                 (result) => {
                   console.log("fetch POST= ", result);
+                  if (result === 1) {
+                    Alert.alert('Contact Deleted', 'The contact was deleted successfully');
+                  }
                   navigation.goBack();
                 },
                 (error) => {
@@ -71,38 +219,98 @@ export default function ContactDetails({ route, navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
-          <View style={styles.centeredView}>
-            <Text style={styles.title}>Contact Details</Text>
-            <Text style={styles.contactheader}>{Contact.contactName}</Text>
-            <View style={styles.ButtonView}>
-              <TouchableOpacity style={styles.button}>
-                <MaterialCommunityIcons name='email-send-outline' size={20} color={"#548DFF"} />
-                <Text style={styles.BtnTxt}>Email</Text>
+          <ScrollView contentContainerStyle={styles.centeredView}>
+            {Edit ? null : <Text style={styles.contactheader}>{Contact.contactName}</Text>}
+            {!Edit ? <View style={styles.ButtonView}>
+              <TouchableOpacity style={Contact.email ? styles.button : styles.disabled} disabled={Contact.email ? false : true}
+                onPress={() => Linking.openURL(`mailto:${Contact.email}`)}>
+                <MaterialCommunityIcons name='email-send-outline' size={20} color={Contact.email ? "#548DFF" : "grey"} />
+                <Text style={Contact.email ? styles.BtnTxt : styles.disabledBtnTxt}>Email</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.button}>
+              <TouchableOpacity style={styles.button}
+                onPress={() => Linking.openURL(`tel:${phoneNumber}`)}>
                 <Feather name='phone-call' size={20} color={"#548DFF"} />
                 <Text style={styles.BtnTxt}>Call</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('EditContact', { contact: route.params.contact })}>
-                <Feather name='edit' size={20} color={"#548DFF"} />
-                <Text style={styles.BtnTxt}>Edit</Text>
+              <TouchableOpacity style={styles.button}
+                onPress={() => Linking.openURL(`sms:${phoneNumber}`)}>
+                <Feather name='message-circle' size={20} color={"#548DFF"} />
+                <Text style={styles.BtnTxt}>Message</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.deletebutton} onPress={DeleteContact}>
-                <Feather name='trash-2' size={20} color={"#FF3C3C"} />
-                <Text style={styles.deleteBtnTxt}>Delete</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.inputContainer}>
-              {Contact.phoneNo ? <View style={styles.input}><Text style={styles.inputTxt}>Phone</Text><Text style={styles.inputTxt}>{Contact.phoneNo}</Text></View> : null}
-              <View style={styles.input}><Text style={styles.inputTxt}>Mobile</Text><Text style={styles.inputTxt}>{Contact.mobileNo}</Text></View>
-              {Contact.email ? <View style={styles.input}><Text style={styles.inputTxt}>Email</Text><Text style={styles.inputTxt}>{Contact.email}</Text></View> : null}
-              {Contact.role ? <View style={styles.input}><Text style={styles.inputTxt}>Role</Text><Text style={styles.inputTxt}>{Contact.role}</Text></View> : null}
-              {Contact.contactComment ? <View style={styles.input}><Text style={styles.inputTxt}>Comment:</Text><Text style={styles.inputTxt}>{Contact.contactComment}</Text></View> : null}
-            </View>
 
-          </View>
+            </View> : null}
+            <View style={styles.inputContainer}>
+              {Edit ? <TextInput style={styles.inputTxt}
+                editable={Edit ? true : false}
+                mode='outlined'
+                label='Full Name'
+                value={Contact.contactName}
+                onChangeText={(val) => handleInputChange('contactName', val)}
+                placeholder="Type Something..."
+                outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                activeOutlineColor="#548DFF"
+                outlineColor='#E6EBF2' /> : null}
+              <TextInput style={styles.inputTxt}
+                editable={Edit ? true : false}
+                mode='outlined'
+                label='Mobile Number'
+                value={Contact.mobileNo}
+                onChangeText={(val) => handleInputChange('mobileNo', val)}
+                placeholder="Type Something..."
+                outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                activeOutlineColor="#548DFF"
+                outlineColor='#E6EBF2' />
+              <TextInput style={styles.inputTxt}
+                editable={Edit ? true : false}
+                mode='outlined'
+                label='Phone Number'
+                value={Contact.phoneNo}
+                onChangeText={(val) => handleInputChange('phoneNo', val)}
+                placeholder="Type Something..."
+                outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                activeOutlineColor="#548DFF"
+                outlineColor='#E6EBF2' />
+              <TextInput style={styles.inputTxt}
+                editable={Edit ? true : false}
+                mode='outlined'
+                label='Email Address'
+                value={Contact.email}
+                onChangeText={(val) => handleInputChange('email', val)}
+                placeholder="Type Something..."
+                outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                activeOutlineColor="#548DFF"
+                outlineColor='#E6EBF2' />
+
+              <TextInput style={styles.inputTxt}
+                editable={Edit ? true : false}
+                mode='outlined'
+                label='Role'
+                value={Contact.role}
+                onChangeText={(val) => handleInputChange('role', val)}
+                outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                activeOutlineColor="#548DFF"
+                placeholder="Type Something..."
+                outlineColor='#E6EBF2' />
+              <TextInput style={styles.inputTxt}
+                editable={Edit ? true : false}
+                mode='outlined'
+                label='Comment'
+                value={Contact.contactComment}
+                onChangeText={(val) => handleInputChange('comment', val)}
+                placeholder="Type Something..."
+                numberOfLines={3}
+                multiline={true}
+                outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                activeOutlineColor="#548DFF"
+                outlineColor='#E6EBF2' />
+
+              <TouchableOpacity style={styles.deleteBtn} onPress={deleteContact}>
+                <Text style={styles.deleteBtnTxt}>Delete Contact</Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -114,6 +322,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     backgroundColor: '#fff',
+    justifyContent: 'flex-end',
   },
   closeBtn: {
     position: 'absolute',
@@ -132,7 +341,7 @@ const styles = StyleSheet.create({
   input: {
     width: SCREEN_WIDTH * 0.95,
     marginBottom: 10,
-    paddingLeft: 20,
+    paddingLeft: 10,
     alignItems: 'flex-start',
     justifyContent: 'center',
     borderRadius: 16,
@@ -140,50 +349,39 @@ const styles = StyleSheet.create({
     borderColor: '#E6EBF2',
     shadowColor: '#000',
     height: 54,
+    marginVertical: 15,
+    fontFamily: 'Urbanist-Medium',
+    fontSize: 16,
+  },
+  commentInput: {
+    width: SCREEN_WIDTH * 0.95,
+    marginBottom: 10,
+    paddingLeft: 10,
+    padding: 8,
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: '#E6EBF2',
+    shadowColor: '#000',
+    height: 'auto',
+    marginVertical: 15,
     fontFamily: 'Urbanist-Medium',
     fontSize: 16,
   },
   inputTxt: {
     fontFamily: 'Urbanist-Light',
     fontSize: 16,
+    marginVertical: 1,
+    color: '#000',
+    backgroundColor: '#fff',
+    marginVertical: 10,
   },
-  savebutton: {
-    backgroundColor: '#548DFF',
-    borderRadius: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 45,
-    width: SCREEN_WIDTH * 0.45,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 1,
-  },
-  deleteBtn: {
-    backgroundColor: '#F5F8FF',
-    borderRadius: 16,
-    height: 45,
-    width: SCREEN_WIDTH * 0.45,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1.5,
-    borderColor: '#548DFF',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 1,
-  },
-  bottom: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: SCREEN_WIDTH * 0.95,
-  },
-  savebuttonText: {
-    color: 'white',
+  inputTxtHeader: {
+    fontFamily: 'Urbanist-Medium',
     fontSize: 16,
-    fontFamily: 'Urbanist-SemiBold',
+    marginVertical: 1,
+    flex: 1,
   },
   BtnTxt: {
     color: '#548DFF',
@@ -191,22 +389,16 @@ const styles = StyleSheet.create({
     fontFamily: 'Urbanist-SemiBold',
     fontSize: 16,
   },
-  title: {
-    fontSize: 26,
-    fontFamily: 'Urbanist-Bold',
-  },
-  header: {
-    alignItems: 'center',
-    justifyContent: 'center',
+  disabledBtnTxt: {
+    color: 'grey',
+    textAlign: 'center',
+    fontFamily: 'Urbanist-SemiBold',
+    fontSize: 16,
   },
   contactheader: {
     fontFamily: 'Urbanist-Bold',
     fontSize: 30,
-    marginTop: 20,
-
-  },
-  numbersInput: {
-    flexDirection: 'row',
+    marginBottom: 10,
   },
   ButtonView: {
     flexDirection: 'row',
@@ -215,10 +407,10 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   button: {
-    backgroundColor: '#F5F8FF',
+    backgroundColor: '#fff',
     borderRadius: 16,
     height: 45,
-    width: SCREEN_WIDTH * 0.2,
+    width: SCREEN_WIDTH * 0.31,
     borderColor: '#548DFF',
     justifyContent: 'center',
     alignItems: 'center',
@@ -228,12 +420,12 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 1,
   },
-  deletebutton: {
-    backgroundColor: '#F5F8FF',
+  disabled: {
+    backgroundColor: 'lightgrey',
     borderRadius: 16,
     height: 45,
-    width: SCREEN_WIDTH * 0.2,
-    borderColor: '#FF3C3C',
+    width: SCREEN_WIDTH * 0.31,
+    borderColor: 'lightgrey',
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1.5,
@@ -241,11 +433,32 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 3,
     elevation: 1,
+    opacity: 0.3,
+  },
+  deleteBtn: {
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    paddingLeft: 10,
+    marginTop: SCREEN_HEIGHT * 0.03,
   },
   deleteBtnTxt: {
     color: '#FF3C3C',
-    textAlign: 'center',
     fontFamily: 'Urbanist-SemiBold',
     fontSize: 16,
+  },
+  headerButton: {
+    width: SCREEN_WIDTH * 0.15,
+    height: SCREEN_HEIGHT * 0.05,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 10,
+  },
+  headerButtonText: {
+    color: '#548DFF',
+    fontFamily: 'Urbanist-SemiBold',
+    fontSize: 16,
+  },
+  backBtn: {
+    paddingLeft: 10,
   },
 });

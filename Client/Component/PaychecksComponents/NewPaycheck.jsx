@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, SafeAreaView, Alert, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { AntDesign, Octicons,FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import { storage } from '../../config/firebase';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import * as ImagePicker from 'expo-image-picker';
 import { useUserContext } from '../../UserContext';
-import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { AntDesign, Octicons } from '@expo/vector-icons';
 import DatePicker from 'react-native-datepicker';
-import { FontAwesome, MaterialIcons } from '@expo/vector-icons'
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
@@ -156,7 +155,7 @@ export default function NewPaycheck(props) {
       return;
     }
     console.log("Newcheck", Newcheck);
-    fetch('https://proj.ruppin.ac.il/cgroup94/prod/api/PayChecks/NewPayCheck', {
+    fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/PayChecks/NewPayCheck', {
       method: 'POST',
       body: JSON.stringify(Newcheck),
       headers: new Headers({
@@ -243,6 +242,7 @@ export default function NewPaycheck(props) {
                 // mode={"date"}
                 is24Hour={true}
                 placeholder="Date"
+                minimumDate={new Date(2000, 0, 1)}
                 onChange={(value) => onChangeDate(value)}
                 display="default"
                 maximumDate={new Date()}
@@ -399,4 +399,3 @@ const styles = StyleSheet.create({
     fontFamily: 'Urbanist-Medium',
   },
 });
-

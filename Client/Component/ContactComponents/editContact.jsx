@@ -1,16 +1,16 @@
-// Path: Client\Component\Contact.jsx
-// Contact Page
 import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Alert, TextInput } from 'react-native'
 import { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { AntDesign, Octicons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export default function EditContact({ route, navigation }) {
-  const { contact } = route.params;
+  const [saving, setSaving] = useState(false);
+  const [cancel, setCancel] = useState(false);
   const [isChanged, setIsChanged] = useState(false);
   const [Contact, setContact] = useState({
     contactId: route.params.contact.contactId,
@@ -20,15 +20,40 @@ export default function EditContact({ route, navigation }) {
     email: route.params.contact.email,
     role: route.params.contact.role,
     contactComment: route.params.contact.contactComment,
-    patientId: 779355403 // will change when we finish context to get the patient id
+    patientId: route.params.contact.patientId
   })
 
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity style={styles.headerButton} onPress={() => setSaving(true)}>
+          <Text style={styles.headerButtonText}>Done</Text>
+        </TouchableOpacity>
+      ),
+      headerLeft: () => (
+        <TouchableOpacity style={styles.backBtn} onPress={() => setCancel(true)}>
+            <Ionicons name="chevron-back" size={28} color="black" />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
+
+  useEffect(() => {
+    if (saving) {
+      validateInput();
+    }
+    if (cancel) {
+      Cancel();
+    }
+  }, [saving, cancel]);
+
   const Cancel = () => {
+    if (isChanged) {
     Alert.alert(
       'Cancel Changes',
       'are you sure you want to Exit the Page? All changes will be lost',
       [
-        { text: "Don't leave", style: 'cancel', onPress: () => { } },
+        { text: "Don't leave", style: 'cancel', onPress: () => {setCancel(false) } },
         {
           text: 'Leave',
           style: 'destructive',
@@ -39,11 +64,19 @@ export default function EditContact({ route, navigation }) {
       ]
     );
   }
+  else {
+    navigation.goBack()
+  }
+  }
+
   const handleInputChange = (field, value) => {
     setContact({ ...Contact, [field]: value });
 
     if (field == 'email' && value == '') {
       setContact({ ...Contact, [field]: null });
+    }
+    if (Contact != route.params.contact) {
+      setIsChanged(true)
     }
   }
 
@@ -62,19 +95,24 @@ export default function EditContact({ route, navigation }) {
     const { email, contactName, mobileNo } = Contact
     if (!contactName) {
       return Alert.alert('Invalid Contact Name', 'Please enter a valid contact name')
+      setSaving(false);
     }
     if (email !== null && email !== '' && !validateEmail(email)) {
       return Alert.alert('Invalid Email', 'Please enter a valid email')
+      setSaving(false);
     }
     if (!mobileNo) {
       return Alert.alert('Mobile number is required', 'Please enter a valid mobile number')
+      setSaving(false);
     }
     if (!validatePhone(mobileNo)) {
       return Alert.alert('Invalid Mobile Number', 'Please enter a valid mobile number')
+      setSaving(false);
     }
-    SaveChanges(Contact);
+    saveChanges(Contact);
   }
-  const SaveChanges = () => {
+
+  const saveChanges = () => {
     let urlContactUpdate = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/UpdateContact/';
     fetch(urlContactUpdate, {
       method: 'PUT',
@@ -87,52 +125,15 @@ export default function EditContact({ route, navigation }) {
       .then(
         (result) => {
           console.log("fetch POST= ", result);
-          navigation.goBack();
+          navigation.popToTop();
         },
         (error) => {
           console.log("err post2=", error);
         });
   }
-  const DeleteContact = () => {
-    Alert.alert(
-      'Delete Contact',
-      'Are you sure you want to delete this contact?',
-      [
-        { text: "Don't Delete", style: 'cancel', onPress: () => { } },
-        {
-          text: 'Delete',
-          style: 'destructive',
-          // If the user confirmed, then we dispatch the action we blocked earlier
-          // This will continue the action that had triggered the removal of the screen
-          onPress: () => {
-            fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/DeleteContact/', {
-              method: 'DELETE',
-              body: JSON.stringify(Contact),
-              headers: new Headers({
-                'Content-Type': 'application/json; charset=UTF-8',
-              })
-            })
-              .then(res => {
-                return res.json()
-              })
-              .then(
-                (result) => {
-                  console.log("fetch POST= ", result);
-                  navigation.goBack();
-                },
-                (error) => {
-                  console.log("err post=", error);
-                });
-          }
-        },
-      ]
-    );
-  }
+
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableOpacity style={styles.closeBtn} onPress={Cancel}>
-        <AntDesign name="close" size={24} color="black" />
-      </TouchableOpacity>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
           <View style={styles.centeredView}>
@@ -145,16 +146,7 @@ export default function EditContact({ route, navigation }) {
                 keyboardType='ascii-capable'
                 onChangeText={(value) => handleInputChange('contactName', value)}
               />
-              <View>
-                <Text style={styles.contactheader}>Phone number(optional):</Text>
-                <TextInput
-                  style={[styles.input, styles.numInput]}
-                  value={Contact.phoneNo}
-                  keyboardType='numeric'
-                  onChangeText={(value) => handleInputChange('phoneNo', value)}
-                />
-              </View>
-              <View>
+               <View>
                 <Text style={styles.contactheader}>Mobile number:</Text>
                 <TextInput
                   style={[styles.input, styles.numInput]}
@@ -163,35 +155,36 @@ export default function EditContact({ route, navigation }) {
                   onChangeText={(value) => handleInputChange('mobileNo', value)}
                 />
               </View>
-              <Text style={styles.contactheader}>Role(optional):</Text>
+              <View>
+                <Text style={styles.contactheader}>Phone number (optional):</Text>
+                <TextInput
+                  style={[styles.input, styles.numInput]}
+                  value={Contact.phoneNo}
+                  keyboardType='numeric'
+                  onChangeText={(value) => handleInputChange('phoneNo', value)}
+                />
+              </View>
+              <Text style={styles.contactheader}>Role (optional):</Text>
               <TextInput
                 style={styles.input}
                 value={Contact.role}
                 keyboardType='ascii-capable'
                 onChangeText={(value) => handleInputChange('role', value)}
               />
-              <Text style={styles.contactheader}>Email(optional):</Text>
+              <Text style={styles.contactheader}>Email (optional):</Text>
               <TextInput
                 style={styles.input}
                 value={Contact.email}
                 keyboardType='ascii-capable'
                 onChangeText={(value) => handleInputChange('email', value)}
               />
-              <Text style={styles.contactheader}>Comment(optional):</Text>
+              <Text style={styles.contactheader}>Comment (optional):</Text>
               <TextInput
                 style={styles.input}
                 value={Contact.contactComment}
                 keyboardType='ascii-capable'
                 onChangeText={(value) => handleInputChange('contactComment', value)}
               />
-            </View>
-            <View style={styles.bottom}>
-              <TouchableOpacity style={styles.savebutton} onPress={validateInput}>
-                <Text style={styles.savebuttonText}>Save</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.deleteBtn} onPress={DeleteContact}>
-                <Text style={styles.deleteBtnTxt}>Delete</Text>
-              </TouchableOpacity>
             </View>
           </View>
         </TouchableWithoutFeedback>
@@ -214,7 +207,6 @@ const styles = StyleSheet.create({
   },
   centeredView: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
   },
@@ -295,5 +287,17 @@ const styles = StyleSheet.create({
   numbersInput: {
     flexDirection: 'row',
   },
-
+  headerButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingRight: 10,
+  },
+  headerButtonText: {
+    color: '#548DFF',
+    fontFamily: 'Urbanist-SemiBold',
+    fontSize: 16,
+  },
+  backBtn: {
+    paddingLeft: 10,
+  },
 });

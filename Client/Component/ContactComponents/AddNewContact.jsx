@@ -7,6 +7,7 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export default function AddNewContact(props) {
+  const { userContext } = useUserContext()
   const [Contact, setContact] = useState({
     contactName: null,
     phoneNo: null,
@@ -14,7 +15,7 @@ export default function AddNewContact(props) {
     email: null,
     role: null,
     contactComment: null,
-    patientId: props.patientId // will change when we finish context to get the patient id
+    patientId: userContext.patientId // will change when we finish context to get the patient id
   })
 
   const handleInputChange = (field, value) => {
@@ -27,16 +28,15 @@ export default function AddNewContact(props) {
     return phoneRegex.test(phone)
   }
 
-
   const validateInput = () => {
-    if (!Contact.contactName ) {
+    if (!Contact.contactName) {
       return Alert.alert('Error', 'Name is required')
     }
-    if (Contact.email !== null && Contact.email !=='' && !validateEmail(Contact.email)) {
+    if (Contact.email !== null && Contact.email !== '' && !validateEmail(Contact.email)) {
       return Alert.alert('Invalid Email', 'Please enter a valid email')
     }
-    if (!Contact.mobileNo) {
-      return Alert.alert('Invalid Mobile number', 'mobile number is requiered')
+    if (!Contact.mobileNo && !Contact.phoneNo) {
+      return Alert.alert('Invalid Mobile number', 'a phone number or a mobile number is required')
     }
     if (!validatePhone(Contact.mobileNo)) {
       return Alert.alert('Invalid Mobile number', 'mobile number must contain only digits')
@@ -71,7 +71,6 @@ export default function AddNewContact(props) {
     return emailRegex.test(email)
   }
 
-
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
@@ -89,17 +88,17 @@ export default function AddNewContact(props) {
                   />
                   <TextInput
                     style={styles.input}
-                    placeholder="Phone Number ( optional )"
+                    placeholder="Mobile Number"
                     keyboardType='decimal-pad'
-                    onChangeText={(value) => handleInputChange('phoneNo', value)}
+                    onChangeText={(value) => handleInputChange('mobileNo', value)}
                     returnKeyType='done'
                     inputMode='numeric'
                   />
                   <TextInput
                     style={styles.input}
-                    placeholder="Mobile Number"
+                    placeholder="Phone Number ( optional )"
                     keyboardType='decimal-pad'
-                    onChangeText={(value) => handleInputChange('mobileNo', value)}
+                    onChangeText={(value) => handleInputChange('phoneNo', value)}
                     returnKeyType='done'
                     inputMode='numeric'
                   />
@@ -111,7 +110,7 @@ export default function AddNewContact(props) {
                   />
                   <TextInput
                     style={styles.input}
-                    placeholder="Email ( optional )"
+                    placeholder="Email Address ( optional )"
                     keyboardType='ascii-capable'
                     onChangeText={(value) => handleInputChange('email', value)}
                   />
