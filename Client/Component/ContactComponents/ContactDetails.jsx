@@ -126,7 +126,7 @@ export default function ContactDetails({ route, navigation }) {
     if (!contactName) {
       return Alert.alert('Invalid Contact Name', 'Please enter a valid contact name')
     }
-    if (email !== null && email !== '' && !validateEmail(email)) {
+    if (email !== null && email !== '' && email != ' ' && !validateEmail(email)) {
       console.log("email = ", email)
       setSaving(false);
       return Alert.alert('Invalid Email', 'Please enter a valid email')
@@ -217,6 +217,70 @@ export default function ContactDetails({ route, navigation }) {
     );
   }
 
+  const optionsToCall = () => {
+    if (!Contact.mobileNo && !Contact.phoneNo) {
+      return Alert.alert('No Phone Number', 'This contact has no phone number');
+    }
+    if (Contact.mobileNo && !Contact.phoneNo) {
+      return Linking.openURL(`tel:${Contact.mobileNo}`)
+    }
+    if (!Contact.mobileNo && Contact.phoneNo) {
+      return Linking.openURL(`tel:${Contact.phoneNo}`)
+    }
+
+    Alert.alert(
+      'Call',
+      'Choose a number to call',
+      [
+        { text: "Close", style: 'cancel', onPress: () => { } },
+        {
+          text: Contact.mobileNo ? Contact.mobileNo : Contact.phoneNo,
+          onPress: () => {
+            Linking.openURL(`tel:${Contact.mobileNo ? Contact.mobileNo : Contact.phoneNo}`)
+          }
+        },
+        {
+          text: Contact.phoneNo ? Contact.phoneNo : Contact.mobileNo,
+          onPress: () => {
+            Linking.openURL(`tel:${Contact.phoneNo ? Contact.phoneNo : Contact.mobileNo}`)
+          }
+        },
+      ]
+    );
+  }
+
+  const optionsToSMS = () => {
+    if (!Contact.mobileNo && !Contact.phoneNo) {
+      return Alert.alert('No Phone Number', 'This contact has no phone number');
+    }
+    if (Contact.mobileNo && !Contact.phoneNo) {
+      return Linking.openURL(`sms:${Contact.mobileNo}`)
+    }
+    if (!Contact.mobileNo && Contact.phoneNo) {
+      return Linking.openURL(`sms:${Contact.phoneNo}`)
+    }
+
+    Alert.alert(
+      'SMS',
+      'Choose a number to send SMS',
+      [
+        { text: "Close", style: 'cancel', onPress: () => { } },
+        {
+          text: Contact.mobileNo ? Contact.mobileNo : Contact.phoneNo,
+          onPress: () => {
+            Linking.openURL(`sms:${Contact.mobileNo ? Contact.mobileNo : Contact.phoneNo}`)
+          }
+        },
+        {
+          text: Contact.phoneNo ? Contact.phoneNo : Contact.mobileNo,
+          onPress: () => {
+            Linking.openURL(`sms:${Contact.phoneNo ? Contact.phoneNo : Contact.mobileNo}`)
+          }
+        },
+      ]
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
@@ -230,28 +294,30 @@ export default function ContactDetails({ route, navigation }) {
                 <Text style={Contact.email ? styles.BtnTxt : styles.disabledBtnTxt}>Email</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.button}
-                onPress={() => Linking.openURL(`tel:${phoneNumber}`)}>
+                onPress={optionsToCall}>
                 <Feather name='phone-call' size={20} color={"#548DFF"} />
                 <Text style={styles.BtnTxt}>Call</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.button}
-                onPress={() => Linking.openURL(`sms:${phoneNumber}`)}>
+                onPress={optionsToSMS}>
                 <Feather name='message-circle' size={20} color={"#548DFF"} />
                 <Text style={styles.BtnTxt}>Message</Text>
               </TouchableOpacity>
 
             </View> : null}
             <View style={styles.inputContainer}>
-              {Edit ? <TextInput style={styles.inputTxt}
-                editable={Edit ? true : false}
-                mode='outlined'
-                label='Full Name'
-                value={Contact.contactName}
-                onChangeText={(val) => handleInputChange('contactName', val)}
-                placeholder="Type Something..."
-                outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
-                activeOutlineColor="#548DFF"
-                outlineColor='#E6EBF2' /> : null}
+              {Edit ?
+                <TextInput style={styles.inputTxt}
+                  editable={Edit ? true : false}
+                  mode='outlined'
+                  label='Full Name'
+                  value={Contact.contactName}
+                  onChangeText={(val) => handleInputChange('contactName', val)}
+                  placeholder="Type Something..."
+                  outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                  activeOutlineColor="#548DFF"
+                  outlineColor='#E6EBF2' />
+                : null}
               <TextInput style={styles.inputTxt}
                 editable={Edit ? true : false}
                 mode='outlined'
@@ -270,6 +336,7 @@ export default function ContactDetails({ route, navigation }) {
                 onChangeText={(val) => handleInputChange('phoneNo', val)}
                 placeholder="Type Something..."
                 outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                contentStyle={{ fontFamily: 'Urbanist-Regular' }}
                 activeOutlineColor="#548DFF"
                 outlineColor='#E6EBF2' />
               <TextInput style={styles.inputTxt}
@@ -279,10 +346,10 @@ export default function ContactDetails({ route, navigation }) {
                 value={Contact.email}
                 onChangeText={(val) => handleInputChange('email', val)}
                 placeholder="Type Something..."
+                contentStyle={{ fontFamily: 'Urbanist-Regular' }}
                 outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
                 activeOutlineColor="#548DFF"
                 outlineColor='#E6EBF2' />
-
               <TextInput style={styles.inputTxt}
                 editable={Edit ? true : false}
                 mode='outlined'
@@ -292,16 +359,19 @@ export default function ContactDetails({ route, navigation }) {
                 outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
                 activeOutlineColor="#548DFF"
                 placeholder="Type Something..."
+                contentStyle={{ fontFamily: 'Urbanist-Regular' }}
                 outlineColor='#E6EBF2' />
               <TextInput style={styles.inputTxt}
                 editable={Edit ? true : false}
                 mode='outlined'
                 label='Comment'
-                value={Contact.contactComment}
+                value={Contact.comment}
                 onChangeText={(val) => handleInputChange('comment', val)}
                 placeholder="Type Something..."
-                numberOfLines={3}
-                multiline={true}
+                multiline
+                numberOfLines={4}
+                maxLength={300}
+                contentStyle={{ height: 100, fontFamily: 'Urbanist-Regular' }}
                 outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
                 activeOutlineColor="#548DFF"
                 outlineColor='#E6EBF2' />
@@ -313,7 +383,7 @@ export default function ContactDetails({ route, navigation }) {
           </ScrollView>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </SafeAreaView >
   )
 }
 
@@ -336,11 +406,8 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     width: SCREEN_WIDTH * 0.95,
-    marginTop: 10,
   },
   input: {
-    width: SCREEN_WIDTH * 0.95,
-    marginBottom: 10,
     paddingLeft: 10,
     alignItems: 'flex-start',
     justifyContent: 'center',
@@ -353,35 +420,12 @@ const styles = StyleSheet.create({
     fontFamily: 'Urbanist-Medium',
     fontSize: 16,
   },
-  commentInput: {
-    width: SCREEN_WIDTH * 0.95,
-    marginBottom: 10,
-    paddingLeft: 10,
-    padding: 8,
-    alignItems: 'flex-start',
-    justifyContent: 'center',
-    borderRadius: 16,
-    borderWidth: 1.5,
-    borderColor: '#E6EBF2',
-    shadowColor: '#000',
-    height: 'auto',
-    marginVertical: 15,
-    fontFamily: 'Urbanist-Medium',
-    fontSize: 16,
-  },
   inputTxt: {
     fontFamily: 'Urbanist-Light',
     fontSize: 16,
-    marginVertical: 1,
     color: '#000',
     backgroundColor: '#fff',
     marginVertical: 10,
-  },
-  inputTxtHeader: {
-    fontFamily: 'Urbanist-Medium',
-    fontSize: 16,
-    marginVertical: 1,
-    flex: 1,
   },
   BtnTxt: {
     color: '#548DFF',
@@ -398,19 +442,19 @@ const styles = StyleSheet.create({
   contactheader: {
     fontFamily: 'Urbanist-Bold',
     fontSize: 30,
-    marginBottom: 10,
+    paddingBottom: 10,
   },
   ButtonView: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: SCREEN_WIDTH * 0.95,
-    marginTop: 10,
+    marginVertical: 10,
   },
   button: {
     backgroundColor: '#fff',
     borderRadius: 16,
-    height: 45,
-    width: SCREEN_WIDTH * 0.31,
+    height: 54,
+    width: SCREEN_WIDTH * 0.3,
     borderColor: '#548DFF',
     justifyContent: 'center',
     alignItems: 'center',
@@ -423,12 +467,12 @@ const styles = StyleSheet.create({
   disabled: {
     backgroundColor: 'lightgrey',
     borderRadius: 16,
-    height: 45,
-    width: SCREEN_WIDTH * 0.31,
-    borderColor: 'lightgrey',
+    height: 54,
+    width: SCREEN_WIDTH * 0.3,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1.5,
+    borderColor: 'black',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 3,
@@ -439,6 +483,8 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
     paddingLeft: 10,
+    flexDirection: 'row',
+    width: SCREEN_WIDTH * 0.95,
     marginTop: SCREEN_HEIGHT * 0.03,
   },
   deleteBtnTxt: {

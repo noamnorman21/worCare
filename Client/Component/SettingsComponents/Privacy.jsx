@@ -45,7 +45,6 @@ export default function Privacy({ navigation, route }) {
     })
       .then(res => {
         if (res.ok) {
-
         }
         else {
           sendDataToNextDB();
@@ -121,7 +120,6 @@ export default function Privacy({ navigation, route }) {
     if (Field == "Email") {
       setEmail(value)
     }
-
   }
 
   const cancel = () => {
@@ -140,7 +138,6 @@ export default function Privacy({ navigation, route }) {
       Alert.alert("No Changes", "You didn't make any changes")
       navigation.goBack();
     }
-
   }
 
   useEffect(() => {
@@ -284,7 +281,6 @@ export default function Privacy({ navigation, route }) {
     else if (password1 === '' || password2 === '') {
       Alert.alert('Password Change Failed', 'Sorry, you must enter Both passwords. Please try again.');
     }
-
   }
 
   return (
@@ -300,8 +296,9 @@ export default function Privacy({ navigation, route }) {
           </View>
           <View style={styles.fieldView}>
             <Text style={styles.fieldHeader}>Email Address</Text>
-            <TouchableOpacity underlayColor={'lightgrey'} style={styles.fields} onPress={() => openModal("Email", Email)}>
-              <Text style={styles.fieldTxt}>{Email}</Text>
+            <TouchableOpacity underlayColor={'lightgrey'} style={styles.fields} >
+              <TextInput style={styles.fieldTxt} editable={true} value={Email} />
+              {/* <Text style={styles.fieldTxt}>{Email}</Text> */}
             </TouchableOpacity>
           </View>
         </View>
@@ -437,7 +434,7 @@ const styles = StyleSheet.create({
   },
   fields: {
     justifyContent: 'center',
-    flex: 5,
+    flex: 4,
     borderRadius: 16,
     borderBottomWidth: 1.5,
     borderColor: '#E6EBF2',

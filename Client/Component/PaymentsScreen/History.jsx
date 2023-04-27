@@ -83,13 +83,15 @@ export default function History({ navigation, route }) {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.pending}>
-      {History}
+    <>
+      <ScrollView contentContainerStyle={styles.pending}>
+        {History}
+        <Modal animationType='slide' transparent={true} visible={modal1Visible}>
+          <NewPayment cancel={() => setModal1Visible(false)} />
+        </Modal>
+      </ScrollView>
       {userContext.userType == "Caregiver" ? <View style={styles.addBtnView}><AddBtn onPress={() => setModal1Visible(true)} /></View> : null}
-      <Modal animationType='slide' transparent={true} visible={modal1Visible}>
-        <NewPayment cancel={() => setModal1Visible(false)} />
-      </Modal>
-    </ScrollView>
+    </>
   );
 }
 
@@ -340,7 +342,6 @@ const newStyles = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 1.5,
     borderColor: '#E6EBF2',
-    marginVertical: 10,
     backgroundColor: '#FFF',
     padding: 12,
     flexDirection: 'row',

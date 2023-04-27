@@ -68,13 +68,15 @@ export default function Pending({ route, navigation }) {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.pending}>
-      {Pendings}
+    <>
+      <ScrollView contentContainerStyle={styles.pending}>
+        {Pendings}
+        <Modal animationType='slide' transparent={true} visible={modal1Visible}>
+          <NewPayment cancel={() => { setModal1Visible(false); getPending() }} />
+        </Modal>
+      </ScrollView>
       {userContext.userType == "Caregiver" ? <View style={styles.addBtnView}><AddBtn onPress={() => setModal1Visible(true)} /></View> : null}
-      <Modal animationType='slide' transparent={true} visible={modal1Visible}>
-        <NewPayment cancel={() => { setModal1Visible(false); getPending() }} />
-      </Modal>
-    </ScrollView>
+    </>
   );
 }
 
@@ -457,7 +459,7 @@ const newStyles = StyleSheet.create({
   },
   disabledoptions: {
     flexDirection: 'row',
-    borderBottomColor: '#80808080',
+    borderBottomColor: '#808080',
     borderBottomWidth: 0.2,
     padding: 7,
     fontFamily: 'Urbanist-Medium',

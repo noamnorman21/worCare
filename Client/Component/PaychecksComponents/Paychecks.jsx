@@ -73,17 +73,19 @@ export default function Paychecks({ navigation, route }) {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.pending}>
-      <View style={styles.headerText}>
-        <Text style={styles.header}>Paychecks History</Text>
-        <View style={styles.line}></View>
-      </View>
-      {History}
+    <>
+      <ScrollView contentContainerStyle={styles.pending}>
+        <View style={styles.headerText}>
+          <Text style={styles.header}>Paychecks History</Text>
+          <View style={styles.line}></View>
+        </View>
+        {History}
+        <Modal animationType='slide' transparent={true} visible={modal1Visible}>
+          <NewPaycheck cancel={() => { setModal1Visible(false); getPaychecks() }} userId={userContext.userId} />
+        </Modal>
+      </ScrollView>
       <View style={styles.addBtnView}><AddBtn onPress={() => setModal1Visible(true)} /></View>
-      <Modal animationType='slide' transparent={true} visible={modal1Visible}>
-        <NewPaycheck cancel={() => { setModal1Visible(false); getPaychecks() }} userId={userContext.userId} />
-      </Modal>
-    </ScrollView>
+    </>
   );
 }
 
