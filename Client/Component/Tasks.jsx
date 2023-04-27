@@ -7,28 +7,23 @@ import Main from './TasksComponents/MainTasks';
 import General from './TasksComponents/GeneralTasks';
 import Shop from './TasksComponents/ShopTasks';
 import Medicine from './TasksComponents/MedicineTasks';
-
+import { useUserContext } from '../UserContext';
 const Tab = createMaterialTopTabNavigator();
 
 export default function Tasks() {
-  const [userId, setUserId] = useState(null);
-  const [userData, setUserData] = useState(null);
-  const [userType, setUserType] = useState(null);
+
+  const [userData, setUserData] = useState(useUserContext().userContext);
+  const [userId, setUserId] = useState(useUserContext.userId);
+  const [userType, setUserType] = useState(userData.userType);
+
   const [allPrivateTasks, setAllPrivateTasks] = useState([]);
+  const [allPublicTasks, setAllPublicTasks] = useState([]);
+  const [allMedicineTasks, setAllMedicineTasks] = useState([]);
+  const [allShopTasks, setAllShopTasks] = useState([]);
   useEffect(() => {
-    getUserData();
+    getAllPublicTasks();
   }, []);
-  const getUserData = async () => {
-    const user = await AsyncStorage.getItem('userData');
-    const userData = JSON.parse(user);
-    setUserId(userData.Id);
-    setUserData(userData);
-    setUserType(userData.userType);
-    if (userData.userType === 'Caregiver') {
-      console.log('userType is caregiver');
-      getAllPrivateTasks(userData.Id);
-    }
-  }
+
   const getAllPrivateTasks = async (IdToSend) => {
     console.log('getAllPrivateTasks');
     let getAllPrivateTasksUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/GetAllPrivateTasks';
@@ -45,6 +40,32 @@ export default function Tasks() {
       console.log('err post=', error);
     }
   }
+
+  const getAllPublicTasks = async () => {
+    console.log('getAllPublicTasks');
+    let getAllPublicTasksUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/GetAllTasks';
+    try {
+      const response = await fetch(getAllPublicTasksUrl, {
+        method: 'POST',
+        headers: new Headers({ 'Content-Type': 'application/json; charset=UTF-8', }),
+        body: JSON.stringify(userData.patientId),
+      });
+      const result = await response.json();
+      setAllPublicTasks(result);
+      filterTasks(result);
+    } catch (error) {
+      console.log('err post=', error);
+    }
+  }
+  const filterTasks = (tasks) => {
+    let filteredTasks = tasks.filter(task => task.type == false);
+    setAllShopTasks(filteredTasks);
+    let filteredMedicineTasks = tasks.filter(task => task.type == true);
+    setAllMedicineTasks(filteredMedicineTasks);
+    console.log('allShopTasks=', allShopTasks);
+  }
+
+
 
   return (
     <Tab.Navigator
@@ -71,13 +92,18 @@ export default function Tasks() {
     >
       <Tab.Screen name="Main"
         //send allPrivateTasks to MainTasks, if userType is caregiver
-        children={() => <Main allPrivateTasks={allPrivateTasks} />}
+        children={() => <Main allPrivateTasks={allPrivateTasks} allTask={allPublicTasks} />}
       />
       <Tab.Screen name="General"
         children={() => <General allPrivateTasks={allPrivateTasks} />}
       />
-      <Tab.Screen name="Shop" component={Shop} />
-      <Tab.Screen name="Medicine" component={Medicine} />
+      <Tab.Screen name="Shop" children={
+        () => <Shop allShopTasks={allShopTasks
+        } />
+      } />
+      <Tab.Screen name="Medicine" children={
+        () => <Medicine allMedicineTasks={allMedicineTasks} />
+      } />
     </Tab.Navigator>
   );
 }
