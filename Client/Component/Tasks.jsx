@@ -11,11 +11,9 @@ import { useUserContext } from '../UserContext';
 const Tab = createMaterialTopTabNavigator();
 
 export default function Tasks() {
-
   const [userData, setUserData] = useState(useUserContext().userContext);
   const [userId, setUserId] = useState(useUserContext.userId);
   const [userType, setUserType] = useState(userData.userType);
-
   const [allPrivateTasks, setAllPrivateTasks] = useState([]);
   const [allPublicTasks, setAllPublicTasks] = useState([]);
   const [allMedicineTasks, setAllMedicineTasks] = useState([]);
@@ -63,7 +61,6 @@ export default function Tasks() {
     setAllShopTasks(filteredTasks);
     let filteredMedicineTasks = tasks.filter(task => task.type == true);
     setAllMedicineTasks(filteredMedicineTasks);
-    console.log('allShopTasks=', allShopTasks);
   }
 
   return (
@@ -90,11 +87,10 @@ export default function Tasks() {
       }}
     >
       <Tab.Screen name="Main"
-        //send allPrivateTasks to MainTasks, if userType is caregiver
         children={() => <Main allPrivateTasks={allPrivateTasks} allTask={allPublicTasks} />}
       />
       <Tab.Screen name="General"
-        children={() => <General allPrivateTasks={allPrivateTasks} />}
+        children={() => <General allPrivateTasks={allPrivateTasks} allTask={allPublicTasks} />}
       />
       <Tab.Screen name="Shop" children={
         () => <Shop allShopTasks={allShopTasks} />

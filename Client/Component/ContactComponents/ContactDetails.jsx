@@ -216,7 +216,6 @@ export default function ContactDetails({ route, navigation }) {
       ]
     );
   }
-
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
@@ -230,12 +229,12 @@ export default function ContactDetails({ route, navigation }) {
                 <Text style={Contact.email ? styles.BtnTxt : styles.disabledBtnTxt}>Email</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.button}
-                onPress={() => Linking.openURL(`tel:${phoneNumber}`)}>
+                onPress={() => Linking.openURL(`tel:${Contact.phoneNo}`)}>
                 <Feather name='phone-call' size={20} color={"#548DFF"} />
                 <Text style={styles.BtnTxt}>Call</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.button}
-                onPress={() => Linking.openURL(`sms:${phoneNumber}`)}>
+                onPress={() => Linking.openURL(`sms:${Contact.phoneNo}`)}>
                 <Feather name='message-circle' size={20} color={"#548DFF"} />
                 <Text style={styles.BtnTxt}>Message</Text>
               </TouchableOpacity>
