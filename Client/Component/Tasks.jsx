@@ -57,6 +57,7 @@ export default function Tasks() {
       console.log('err post=', error);
     }
   }
+  //filter tasks by type, medicine or shop, other tasks will be in allTasks
   const filterTasks = (tasks) => {
     let filteredTasks = tasks.filter(task => task.type == false);
     setAllShopTasks(filteredTasks);
@@ -64,8 +65,6 @@ export default function Tasks() {
     setAllMedicineTasks(filteredMedicineTasks);
     console.log('allShopTasks=', allShopTasks);
   }
-
-
 
   return (
     <Tab.Navigator
@@ -98,8 +97,7 @@ export default function Tasks() {
         children={() => <General allPrivateTasks={allPrivateTasks} />}
       />
       <Tab.Screen name="Shop" children={
-        () => <Shop allShopTasks={allShopTasks
-        } />
+        () => <Shop allShopTasks={allShopTasks} />
       } />
       <Tab.Screen name="Medicine" children={
         () => <Medicine allMedicineTasks={allMedicineTasks} />

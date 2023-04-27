@@ -10,38 +10,10 @@ export default function ShopTasks(props) {
   const [modalVisible, setModalVisible] = useState(false)
   const [userData, setUserData] = useState(useUserContext().userContext);
   const [tasks, setTasks] = useState([])
-  const [shopTasks, setShopTasks] = useState(props.allShopTasks)
+  const [shopTasks, setShopTasks] = useState(props.allShopTasks) 
   useEffect(() => {
     // getActiveTasks()
   }, [])
-
-  // const getActiveTasks = async () => {
-  //   let getAllTasksUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/GetAllTasks';
-  //   try {
-  //     fetch(getAllTasksUrl, {
-  //       method: 'POST',
-  //       headers: new Headers({ 'Content-Type': 'application/json; charset=UTF-8', }),
-  //       body: JSON.stringify(userData.patientId)
-  //     })
-  //       .then(res => { return res.json() })
-  //       .then(
-  //         (result) => {
-  //           // console.log("fetch POST= ", result);
-
-  //           // for (let i = 0; i < result.length; i++) {
-  //           //   if (result[i].type == false) {
-  //           //     setShopTasks(shopTasks => [...shopTasks, result[i]])
-  //           //   }
-  //           // }
-  //           setShopTasks(result.filter(task => task.type == false))
-  //           // setTasks(result)
-  //           //  setShopTasks(result.filter(task => task.type == false))
-  //         }
-  //       )
-  //   } catch (error) {
-  //     console.log('err post=', error);
-  //   }
-  // }
 
   const handleAddBtnPress = () => {
     setModalVisible(true);
@@ -52,7 +24,7 @@ export default function ShopTasks(props) {
   };
 
   const handleAddingSubTask = () => {
-    console.log(shopTasks)
+    console.log(props.allShopTasks)
   }
 
   const updateCompleted = () => {
