@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Dimensions } from 'react-native'
+import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Dimensions, FlatList } from 'react-native'
 import { useState, useEffect } from 'react'
 import { AddBtn, NewTaskModal } from '../HelpComponents/AddNewTask'
 import { Feather, Ionicons } from '@expo/vector-icons';
@@ -10,9 +10,8 @@ export default function ShopTasks(props) {
   const [modalVisible, setModalVisible] = useState(false)
   const [userData, setUserData] = useState(useUserContext().userContext);
   const [tasks, setTasks] = useState([])
-  const [shopTasks, setShopTasks] = useState(props.allShopTasks) 
+  const [shopTasks, setShopTasks] = useState(props.allShopTasks)
   useEffect(() => {
-    // getActiveTasks()
   }, [])
 
   const handleAddBtnPress = () => {
@@ -31,34 +30,40 @@ export default function ShopTasks(props) {
     console.log('Updating completed')
   }
 
+  // const temp =  () =>{
+  //  { <Text style={styles.taskName}>Super Market</Text>
+  //   <View style={styles.tasksContainer}>
+  //     <View style={styles.addSubTask}>
+  //       {/* <TouchableOpacity style={styles.left} onPress={updateCompleted}>
+  //         <Feather name="circle" size={30} color="#548DFF" />
+  //       </TouchableOpacity> */}
+  //       <TouchableOpacity style={styles.middle} onPress={handleAddingSubTask}>
+  //         <Text style={styles.subtaskTxt}>Click here to add a sub-task...</Text>
+  //       </TouchableOpacity>
+  //       <View style={styles.right}>
+  //         <View style={styles.rightInside}>
+  //           <TouchableOpacity style={styles.qtyTxt} onPress={handleAddingSubTask}>
+  //             {/* <Text style={styles.subtaskTxt}>Qty</Text> */}
+  //             {/* <Feather name="plus" size={30} color="#548DFF" /> */}
+  //           </TouchableOpacity>
+  //           <TouchableOpacity style={styles.iconUp} onPress={handleAddingSubTask}>
+  //             <Ionicons name="md-caret-up-outline" size={17} color="#808080" />
+  //           </TouchableOpacity>
+  //           <TouchableOpacity style={styles.iconDown} onPress={handleAddingSubTask}>
+  //             <Ionicons name="md-caret-down-outline" size={17} color="#808080" />
+  //             {/* <Feather name="plus" size={30} color="#548DFF" /> */}
+  //           </TouchableOpacity>
+  //         </View>
+  //       </View>
+  //     </View>
+  //   </View>}
+  // }
+
+
   return (
     <View style={styles.container}>
-      <Text style={styles.taskName}>Super Market</Text>
-      <View style={styles.tasksContainer}>
-        <View style={styles.addSubTask}>
-          {/* <TouchableOpacity style={styles.left} onPress={updateCompleted}>
-            <Feather name="circle" size={30} color="#548DFF" />
-          </TouchableOpacity> */}
-          <TouchableOpacity style={styles.middle} onPress={handleAddingSubTask}>
-            <Text style={styles.subtaskTxt}>Click here to add a sub-task...</Text>
-          </TouchableOpacity>
-          <View style={styles.right}>
-            <View style={styles.rightInside}>
-              <TouchableOpacity style={styles.qtyTxt} onPress={handleAddingSubTask}>
-                {/* <Text style={styles.subtaskTxt}>Qty</Text> */}
-                {/* <Feather name="plus" size={30} color="#548DFF" /> */}
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.iconUp} onPress={handleAddingSubTask}>
-                <Ionicons name="md-caret-up-outline" size={17} color="#808080" />
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.iconDown} onPress={handleAddingSubTask}>
-                <Ionicons name="md-caret-down-outline" size={17} color="#808080" />
-                {/* <Feather name="plus" size={30} color="#548DFF" /> */}
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </View>
+      {/* //FlatList */}
+
       <View style={styles.addBtnView}>
         <AddBtn onPress={handleAddBtnPress} />
       </View>
