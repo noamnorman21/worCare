@@ -37,10 +37,10 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
     <OutputPath>bin\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -295,6 +295,7 @@
     <Compile Include="Controllers\TasksController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
+    <Compile Include="DTO\ActualTaskDTO.cs" />
     <Compile Include="DTO\CaresForPatientDTO.cs" />
     <Compile Include="DTO\ContactDTO.cs" />
     <Compile Include="DTO\DrugForPatientDTO.cs" />
@@ -305,6 +306,7 @@
     <Compile Include="DTO\PayCheckDTO.cs" />
     <Compile Include="DTO\PaymentsRequestDTO.cs" />
     <Compile Include="DTO\PrivateTaskDTO.cs" />
+    <Compile Include="DTO\ProductListDTO.cs" />
     <Compile Include="DTO\UserDTO.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

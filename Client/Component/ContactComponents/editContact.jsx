@@ -146,6 +146,15 @@ export default function EditContact({ route, navigation }) {
                 keyboardType='ascii-capable'
                 onChangeText={(value) => handleInputChange('contactName', value)}
               />
+               <View>
+                <Text style={styles.contactheader}>Mobile number:</Text>
+                <TextInput
+                  style={[styles.input, styles.numInput]}
+                  value={Contact.mobileNo}
+                  keyboardType='numeric'
+                  onChangeText={(value) => handleInputChange('mobileNo', value)}
+                />
+              </View>
               <View>
                 <Text style={styles.contactheader}>Phone number(optional):</Text>
                 <TextInput
@@ -153,15 +162,6 @@ export default function EditContact({ route, navigation }) {
                   value={Contact.phoneNo}
                   keyboardType='numeric'
                   onChangeText={(value) => handleInputChange('phoneNo', value)}
-                />
-              </View>
-              <View>
-                <Text style={styles.contactheader}>Mobile number:</Text>
-                <TextInput
-                  style={[styles.input, styles.numInput]}
-                  value={Contact.mobileNo}
-                  keyboardType='numeric'
-                  onChangeText={(value) => handleInputChange('mobileNo', value)}
                 />
               </View>
               <Text style={styles.contactheader}>Role(optional):</Text>

@@ -27,7 +27,6 @@ function AddBtn(props) {
 function AddNewMedicine(props) {
    //const {useUserContext} = useUserContext();
    const [userData, setUserData] = useState(useUserContext().userContext);
-   
    const [userId, setUserId] = useState(useUserContext.userId);
    const [numberPerDay, setNumberPerDay] = useState(0)
    const [quantity, setQuantity] = useState(0)
@@ -80,40 +79,62 @@ function AddNewMedicine(props) {
          .catch((error) => {
             console.log("err=", error);
          });
- 
+
    }, []);
 
-
-   const changeDateFormat = (date) => {
-      return moment(date).format('DD/MM/YYYY');
-   }
    const addMed = () => {
-      // Alert.alert('add med name');
-      console.log(userData);
-      return;
-      
-      if(medTime!=''&&medTimeArr.length==0){
+      if (medTime != '' && medTimeArr.length == 0) {
          medTimeArr.push(medTime);
-      }  
-      let newMedForDb= {
-         drugName: selectedDrugName.drugName,   
+      }
+      let newMedForDb = {
+         drugName: selectedDrugName.drugName,
          drugId: selectedDrugName.drugId,
          timesInDayArr: medTimeArr,
          fromDate: medFromDate,
          toDate: medToDate,
-         qtyInBox: quantity,
-         minQuantity:Math.round(quantity*0.2),//default 20% of the quantity
-         patientId:userData.patientId,
-         workerId:userData.workerId,
-         userId:userData.userId,
-         dosage: medDosage,
+         qtyInBox: capacity,
+         patientId: userData.patientId,
+         workerId: userData.workerId,
+         userId: userData.involvedInId,
+         dosage: quantity,
          taskComment: medComment,
-         frequency: selectedFrequency,       
+         frequency: selectedFrequency,
          //dosageUnit: medDosageUnit, //not relevant for now
       }
       console.log(newMedForDb);
 
+      let addMedUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/InsertActualList';
+      fetch(addMedUrl, {
+         method: 'POST',
+         body: JSON.stringify(newMedForDb),
+         headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+         },
+      })
+         .then(res => {
+            if (res.ok) {
+               return res.json()
+            }
+            else {
+               console.log("not found")
+            }
+         }
+         )
+         .then(data => {
+            if (data != null) {
+               console.log(data);
+               clearInputs();
+            }
+         }
+         )
+         .catch((error) => {
+            console.log("err=", error);
+         }
+         );
+
+
    }
+
    const clearInputs = () => {
       setNumberPerDay(0);
       setQuantity(0);
@@ -164,6 +185,7 @@ function AddNewMedicine(props) {
       }
 
    })
+
    function rowForEachTime() {
       for (let i = 0; i < numberPerDay; i++) {
          timePickers.push(
@@ -232,7 +254,7 @@ function AddNewMedicine(props) {
                <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
                   <View style={styles.centeredView}>
                      <View style={styles.modalView}>
-                        <Text style={styles.modalText}>Add new Med </Text>
+                        <Text style={styles.modalText}>Add new Medicine </Text>
                         {/* SEARCH MED */}
                         <View style={[styles.inputView, modalTimesVisible && { display: 'none' }]}>
                            <Dropdown
@@ -285,7 +307,6 @@ function AddNewMedicine(props) {
                                  labelField="name"
                                  valueField="name"
                                  placeholder="Frequency"
-                                 renderRightIcon={() => <Ionicons style={styles.iconDropDown} name="md-caret-down-outline" size={17} color="#808080" />}
                                  fontFamily='Urbanist-Light'
                                  // style={[styles.input, taskAssignee && { borderColor: '#000' }]}
                                  style={[styles.doubleRowItem, { paddingRight: 10, paddingLeft: 10 }, selectedFrequency && { borderColor: '#000' }]}
@@ -349,10 +370,10 @@ function AddNewMedicine(props) {
 
                            <Text style={styles.subTitle}>
                               {
-                                 selectedFrequency=='Once' ? 'Set date' : 'Set end date'
+                                 selectedFrequency == 'Once' ? 'Set date' : 'Set end date'
                               }
-                              
-                              </Text>
+
+                           </Text>
                            {/* THIRD ROW */}
                            <View style={[styles.doubleRow, modalTimesVisible && { display: 'none' }]}>
                               <DatePicker
@@ -502,52 +523,126 @@ function AddNewMedicine(props) {
 }
 
 function NewTaskModal(props) {
-   const [userData, setUserData] = useState('');
-   const [userId, setUserId] = useState('');
-   const [userType, setUserType] = useState('');
+   const [userData, setUserData] = useState(useUserContext().userContext);
+   const [userId, setUserId] = useState(useUserContext.userId);
+   const [userType, setUserType] = useState(userData.userType);
    const [taskName, setTaskName] = useState('')
    const [taskComment, setTaskComment] = useState('')
    const [taskFromDate, setTaskFromDate] = useState('')
    const [taskToDate, setTaskToDate] = useState('')
    const [taskFrequency, setTaskFrequency] = useState('')
    const [taskTime, setTaskTime] = useState('')
+   const [taskTimeArr, setTaskTimeArr] = useState([]) //will only be used if to general tasks
    const [taskCategory, setTaskCategory] = useState('')
    const [isPrivate, setIsPrivate] = useState(false)//for the assignee
    const [taskAssignee, setTaskAssignee] = useState('')
    const [selectedRange, setRange] = useState({});
    const [taskNameBorder, setTaskNameBorder] = useState('')
-   const [modalVisibleDate, setModalVisibleDate] = useState(false);
    const taskCategorys = [
       { id: 1, name: 'General', color: '#FFC0CB' },
       { id: 2, name: 'Shop', color: '#FFC0CB' },
-      //{id: 3, name: 'Medicines', color: '#FFC0CB' },
    ]
    const taskFrequencies = [
       { id: 0, name: 'Once' },
       { id: 1, name: 'Daily' },
       { id: 2, name: 'Weekly' },
       { id: 3, name: 'Monthly' },
-      { id: 4, name: 'Yearly' },
    ]
-
-   useEffect(() => {
-      getUserData();
-   }, []);
-   const getUserData = async () => {
-      const user = await AsyncStorage.getItem('userData');
-      const userData = JSON.parse(user);
-      setUserId(userData.Id);
-      setUserData(userData);
-      setUserType(userData.userType);
-   }
-   const changeDateFormat = (date) => {
-      return moment(date).format('DD/MM/YYYY');
-   }
-
    const privateOrPublic = [
       { id: 1, name: 'Private' },
       { id: 2, name: 'Public' },
    ]
+   // Relevant only for General Task
+   const [modalVisibleDate, setModalVisibleDate] = useState(false);
+   const [numberPerDay, setNumberPerDay] = useState(0)
+   const timePickers = [];
+   const [modalTimesVisible, setModalTimesVisible] = useState(false);
+   const stylesForTimeModal = StyleSheet.create({
+      timePicker: {
+         flexDirection: 'row',
+         justifyContent: 'space-between',
+         alignItems: 'center',
+         width: '100%',
+         marginVertical: 10,
+      },
+      doubleRowItem: {
+         width: SCREEN_WIDTH * 0.5,
+         height: 54,
+         justifyContent: 'center',
+         alignItems: 'center',
+         borderColor: '#E6EBF2',
+         borderWidth: 1.5,
+         borderRadius: 16,
+         padding: 5,
+      }
+
+   })
+
+   function rowForEachTime() {
+      for (let i = 0; i < numberPerDay; i++) {
+         timePickers.push(
+            <View key={i} style={stylesForTimeModal.timePicker}>
+               <View>
+                  <Text style={{ fontFamily: 'Urbanist-Light', fontSize: 16, color: '#000' }}>Time {i + 1}</Text>
+               </View>
+               <View>
+                  <DatePicker
+                     style={[stylesForTimeModal.doubleRowItem, taskTimeArr[i] != null && { borderColor: '#000' }]}
+                     date={taskTimeArr[i]}
+                     iconComponent={<MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />}
+                     placeholder="Add Time"
+                     mode="time"
+                     format="HH:mm"
+                     is24Hour={true}
+                     confirmBtnText="Confirm"
+                     cancelBtnText="Cancel"
+                     showIcon={true}
+                     customStyles={{
+                        dateInput: {
+                           borderWidth: 0,
+                           alignItems: 'flex-start',
+                           paddingLeft: 10,
+                        },
+                        placeholderText: {
+                           color: '#9E9E9E',
+                           fontSize: 16,
+                           textAlign: 'left',
+                           fontFamily: 'Urbanist-Light',
+                        },
+                        dateText: {
+                           color: '#000',
+                           fontSize: 16,
+                           fontFamily: 'Urbanist-SemiBold',
+                        },
+                     }}
+                     onDateChange={(date) => {
+                        let newArr = [...taskTimeArr];
+                        newArr[i] = date;
+                        setTaskTimeArr(newArr);
+                     }}
+                  />
+               </View>
+            </View>
+         )
+      }
+      return timePickers;
+   }
+
+   const saveTimeArr = () => {
+      for (let i = 0; i < timePickers.length; i++) {
+         if (taskTimeArr[i] == '' || taskTimeArr[i] == null) {
+            Alert.alert('Please Fill all the time fields');
+            return;
+         }
+      }
+      setTaskTimeArr(taskTimeArr);
+      setModalTimesVisible(false);
+   }
+
+   const changeDateFormat = (date) => {
+      return moment(date).format('DD/MM/YYYY');
+   }
+
    const addPrivateTask = () => {
       let taskUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/InsertPrivateTask';
       let taskData = {
@@ -586,15 +681,108 @@ function NewTaskModal(props) {
       if (userType == "Caregiver") {
          if (isPrivate) {
             addPrivateTask();
-         } else {
-            addPublicTask();
          }
-      } else {
+      }
+      if (taskCategory == 'General') {
          addPublicTask();
       }
+      else {
+         addShopTask();
+      }
+   }
+   const addShopTask = () => {
+      console.log("addShopTask");
+      if (taskTime != '' && taskTimeArr.length == 0) {
+         taskTimeArr.push(taskTime);
+      }
+
+      let newTaskForDb = {
+         taskName: taskName,
+         listName: taskName,
+         timesInDayArr: taskTimeArr,
+         fromDate: taskFromDate,
+         toDate: taskToDate,
+         patientId: userData.patientId,
+         workerId: userData.workerId,
+         userId: userData.involvedInId,
+         taskComment: taskComment,
+         frequency: taskFrequency,
+      }
+      console.log("newTaskForDb= ", newTaskForDb);
+      let addTaskUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/InsertActualList';
+      fetch(addTaskUrl, {
+         method: 'POST',
+         body: JSON.stringify(newTaskForDb),
+         headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+         },
+      })
+         .then(res => {
+            if (res.ok) {
+               return res.json()
+            }
+            else {
+               console.log("not found")
+            }
+         }
+         )
+         .then(data => {
+            if (data != null) {
+               console.log(data);
+               clearInputs();
+            }
+         }
+         )
+         .catch((error) => {
+            console.log("err=", error);
+         }
+         );
    }
    const addPublicTask = () => {
-      Alert.alert("Add Public Task");
+      if (taskTime != '' && taskTimeArr.length == 0) {
+         taskTimeArr.push(taskTime);
+      }
+      let newTaskForDb = {
+         taskName: taskName,
+         timesInDayArr: taskTimeArr,
+         fromDate: taskFromDate,
+         toDate: taskToDate,
+         patientId: userData.patientId,
+         workerId: userData.workerId,
+         userId: userData.involvedInId,
+         taskComment: taskComment,
+         frequency: taskFrequency,
+      }
+      console.log(newTaskForDb);
+      let addTaskUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/InsertActualList';
+      fetch(addTaskUrl, {
+         method: 'POST',
+         body: JSON.stringify(newTaskForDb),
+         headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+         },
+      })
+         .then(res => {
+            if (res.ok) {
+               return res.json()
+            }
+            else {
+               console.log("not found")
+            }
+         }
+         )
+         .then(data => {
+            if (data != null) {
+               console.log(data);
+               clearInputs();
+            }
+         }
+         )
+         .catch((error) => {
+            console.log("err=", error);
+         }
+         );
+
    }
    const clearInputs = () => {
       setTaskName('')
@@ -606,9 +794,12 @@ function NewTaskModal(props) {
       setTaskTime('')
       setTaskFrequency('')
       setTaskComment('')
+      setTaskTimeArr([])
+      setNumberPerDay(0)
       setIsPrivate(false)
       props.onClose()
    }
+
    return (
       <SafeAreaView>
          <Modal visible={props.isVisible} presentationStyle='formSheet' animationType='slide' onRequestClose={props.onClose}>
@@ -625,7 +816,8 @@ function NewTaskModal(props) {
                               value={taskName}
                               returnKeyType='done'
                               onChangeText={text => setTaskName(text)}
-                              onEndEditing={() => { setTaskNameBorder(taskName) }}
+                              onEndEditing={() => { setTaskNameBorder(true) }}
+
                            />
                            { // if the user is a caregiver than display the assignee
                               userType == "Caregiver" ?
@@ -643,6 +835,7 @@ function NewTaskModal(props) {
                                     onChange={item => {
                                        setTaskAssignee(item.name)
                                        if (item.name == 'Private') {
+                                          setTaskCategory(taskCategorys[0].name)
                                           setIsPrivate(true)
                                        } else {
                                           setIsPrivate(false)
@@ -652,7 +845,6 @@ function NewTaskModal(props) {
                                  : null
                            }
                            {
-                              //if is private= true than display the category
                               !isPrivate ?
                                  <Dropdown
                                     data={taskCategorys}
@@ -735,35 +927,115 @@ function NewTaskModal(props) {
                                  </View>
                               </View>
                            </Modal>
+                           {taskCategory == 'General' ?
+                              <View style={styles.doubleRow}>
+                                 <View style={[styles.doubleRowItem, numberPerDay >= 1 && { borderColor: "black" }]}>
+                                    <TouchableOpacity onPress={() =>
+                                       setNumberPerDay(parseInt(numberPerDay + 1))
+                                    } style={styles.arrowUp}>
+                                       {/* Change icon color only onPress to #548DFF  */}
+                                       <Ionicons name="md-caret-up-outline" size={17} color="#808080" />
+                                    </TouchableOpacity>
+                                    <TextInput
+                                       style={[styles.inputNumber, numberPerDay && { textAlign: 'center' }]}
+                                       placeholder="Number per day"
+                                       placeholderTextColor="#9E9E9E"
+                                       keyboardType='numeric'
+                                       returnKeyType='done'
+                                       value={numberPerDay == 0 ? '' : numberPerDay.toString()}
+                                       onChangeText={text => text == '' ? setNumberPerDay(0) && setMedTime('') : setNumberPerDay(parseInt(text))}
+                                    />
+                                    {/* Change icon color only onPress to #548DFF  */}
+                                    <TouchableOpacity style={styles.arrowDown} onPress={() => numberPerDay == 0 ? setNumberPerDay(0) : setNumberPerDay(parseInt(numberPerDay - 1))}>
+                                       <Ionicons name="md-caret-down-outline" size={17} color="#808080" />
+                                    </TouchableOpacity>
+                                 </View>
+                                 {numberPerDay > 1 ?
+                                    <View>
+                                       <TouchableOpacity onPress={() => { setModalTimesVisible(true) }}>
+                                          <View style={[styles.doubleRowItem, taskTimeArr.length == numberPerDay && { borderColor: '#000' }]}>
+                                             <Text style={[styles.inputNumber, { color: '#9E9E9E' }, taskTimeArr.length == numberPerDay && { color: '#000' }]}>
+                                                {numberPerDay == taskTimeArr.length ? 'Times Selected' : 'Add Times'}
+                                             </Text>
+                                             <MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />
+                                          </View>
+                                       </TouchableOpacity>
+                                    </View>
+                                    :
+                                    <View >
+                                       <DatePicker
+                                          style={[styles.doubleRowItem, taskTime != '' && { borderColor: '#000' }]}
+                                          date={taskTime}
+                                          iconComponent={<MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />}
+                                          placeholder="Add Time"
+                                          mode="time"
+                                          format="HH:mm"
+                                          is24Hour={true}
+                                          confirmBtnText="Confirm"
+                                          cancelBtnText="Cancel"
+                                          showIcon={true}
+                                          customStyles={{
+                                             dateInput: {
+                                                borderWidth: 0,
+                                                alignItems: 'flex-start',
+                                                paddingLeft: 10,
+                                             },
+                                             placeholderText: {
+                                                color: '#9E9E9E',
+                                                fontSize: 16,
+                                                textAlign: 'left',
+                                                fontFamily: 'Urbanist-Light',
+                                             },
+                                             dateText: {
+                                                color: '#000',
+                                                fontSize: 16,
+                                                fontFamily: 'Urbanist-Medium',
+                                                textAlign: 'center',
+                                             },
+                                          }}
+                                          onDateChange={(date) => {
+                                             setTaskTime(date)
+                                          }}
+                                       />
+                                    </View>
+                                 }
+                              </View>
 
-                           <DatePicker
-                              style={[styles.input, taskTime != '' && { borderColor: '#000' }]}
-                              date={taskTime}
-                              mode="time"
-                              placeholder="Time"
-                              format="HH:mm"
-                              is24Hour={true}
-                              confirmBtnText="Confirm"
-                              cancelBtnText="Cancel"
-                              showIcon={false}
-                              customStyles={{
-                                 dateInput: {
-                                    borderWidth: 0,
-                                    alignItems: 'flex-start',
-                                 },
-                                 placeholderText: {
-                                    color: '#9E9E9E',
-                                    fontSize: 16,
-                                    fontFamily: 'Urbanist-Light',
-                                 },
-                                 dateText: {
-                                    color: '#000',
-                                    fontSize: 16,
-                                    fontFamily: 'Urbanist-SemiBold',
-                                 },
-                              }}
-                              onDateChange={(date) => { setTaskTime(date) }}
-                           />
+                              :
+                              <DatePicker
+                                 style={[styles.input, taskTime != '' && { borderColor: '#000' }]}
+                                 date={taskTime}
+                                 mode="time"
+                                 placeholder="Time"
+                                 format="HH:mm"
+                                 is24Hour={true}
+                                 confirmBtnText="Confirm"
+                                 cancelBtnText="Cancel"
+                                 showIcon={false}
+                                 customStyles={{
+                                    dateInput: {
+                                       borderWidth: 0,
+                                       alignItems: 'flex-start',
+                                    },
+                                    placeholderText: {
+                                       color: '#9E9E9E',
+                                       fontSize: 16,
+                                       fontFamily: 'Urbanist-Light',
+                                    },
+                                    dateText: {
+                                       color: '#000',
+                                       fontSize: 16,
+                                       fontFamily: 'Urbanist-SemiBold',
+                                    },
+                                 }}
+                                 onDateChange={(date) => { setTaskTime(date) }}
+                              />
+
+                           }
+                           {/* {taskCategory == 'General' ?
+
+                              : null} */}
+
                            <Dropdown
                               data={taskFrequencies}
                               labelField="name"
@@ -776,18 +1048,51 @@ function NewTaskModal(props) {
                               containerStyle={styles.containerStyle}
                               onChange={item => { setTaskFrequency(item.name) }}
                            />
+                           {/* Modal Box For TIMES ARRAY */}
+                           <View>
+                              <Modal visible={modalTimesVisible} transparent={true} style={styles.modalDate} animationType='slide' onRequestClose={() => setModalTimesVisible(false)}>
+                                 <View style={styles.modalTimesView}>
+                                    {/* Header for add times*/}
+                                    <View style={styles.modalTimesHeader}>
+                                       <Text style={styles.modalText}>Select Med Times</Text>
+                                    </View>
+                                    {/* Body */}
+                                    <View style={styles.modalTimesBody}>
+                                       <View style={styles.modalTimesBodyContent}>
+                                          {rowForEachTime()}
+                                       </View>
+                                    </View>
 
+                                    <View style={styles.btnModalDate}>
+                                       <TouchableOpacity
+                                          style={styles.saveBtnDate}
+                                          onPress={saveTimeArr}
+                                       >
+                                          <Text style={styles.textStyle}>Save</Text>
+                                       </TouchableOpacity>
+                                       <TouchableOpacity
+                                          style={styles.closeBtnDate}
+                                          onPress={() => {
+                                             setTaskTime('');
+                                             setModalTimesVisible(false);
+                                          }}
+                                       >
+                                          <Text style={styles.closeTxt}>Cancel</Text>
+                                       </TouchableOpacity>
+                                    </View>
+                                 </View>
+                              </Modal>
+                           </View>
                            <TextInput
-                              style={[styles.commentInput, {
-                                 borderColor: taskComment != '' ? '#000' : '#E6EBF2'
-                              }]}
-                              placeholder='Comment ( optional )'
+                              style={[styles.commentInput, { padding: 0 }, taskComment && { borderColor: '#000' }, modalTimesVisible && { display: 'none' }]}
+                              placeholder="Comment ( Optional )"
+                              placeholderTextColor="#9E9E9E"
                               value={taskComment}
-                              numberOfLines={3}
+                              multiline={true}
                               returnKeyType='done'
-                              keyboardType='default'
                               onSubmitEditing={Keyboard.dismiss}
-                              placeholderTextColor='#9E9E9E'
+                              keyboardType='default'
+                              numberOfLines={4}
                               onChangeText={text => setTaskComment(text)}
                            />
                         </View>
@@ -862,7 +1167,7 @@ const styles = StyleSheet.create({
       color: '#9E9E9E',
       fontSize: 16,
       fontFamily: 'Urbanist-Light',
-      paddingLeft: 10
+      // paddingLeft: 10
    },
    textStyleDate: {
       padding: 10,

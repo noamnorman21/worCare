@@ -21,7 +21,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                tblUser userExist = db.tblUser.Where(x => x.userId == user.Id).First();
+                tblUser userExist = db.tblUser.Where(x => x.userId == user.Id).FirstOrDefault();
                 if (userExist == null)
                     return NotFound();
                 db.InsertForeignUser(user.Id, user.DateOfBirth, user.VisaExpirationDate, user.LanguageName_En, user.CountryName_En);

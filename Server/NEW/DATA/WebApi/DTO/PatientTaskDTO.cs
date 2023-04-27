@@ -11,7 +11,7 @@ namespace WebApi.DTO
         public int taskId { get; set; }
         public string taskName { get; set; }
         public System.DateTime taskFromDate { get; set; }
-        public Nullable<System.DateTime> taskToDate { get; set; }
+        public DateTime taskToDate { get; set; }
         public string frequency { get; set; }
         public string taskComment { get; set; }
         public string patientId { get; set; }

@@ -111,12 +111,8 @@ export function UserProvider({ children }) {
             FirstName: user.FirstName,
             LastName: user.LastName,
             userId: user.userId,
-            userType: user.userType,
-            workerId: user.workerId,//if user is a caregiver, this field will be same as userId
-            involvedInId: user.involvedInId,//if user is a not caregiver, this field will be same as userId
-            patientId: user.patientId,
+            userType: user.userType
         }
-        console.log('userToUpdate', userToUpdate)
         fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Settings/UpdateUserProfile', {
             method: 'PUT',
             headers: new Headers({

@@ -34,12 +34,13 @@ export default function Contacts() {
 
 function Main({ navigation }) {
   const [idArr, setidArr] = useState([])
-  const [patientId, setpatientId] = useState()
+ 
   const [Contacts, setContacts] = useState([])
   const [Search, setSearch] = useState([])
   const [ContactToRender, setContactToRender] = useState([])
   const [modal1Visible, setModal1Visible] = useState(false);
   const { userContext, userContacts, setuserContacts, updateuserContacts } = useUserContext()
+  const [patientId, setpatientId] = useState(userContext.patientId)
   const isFocused = useIsFocused()
 
   const onChangeSearch = query => setSearch(query);
@@ -61,10 +62,6 @@ function Main({ navigation }) {
     let contacts = data.map((item) => {
       return <ContactCard key={item.contactId} contact={item} fetchContacts={fetchContacts} />
     })
-    let idarr = data.map((item) => {
-      return item.patientId
-    })
-    setpatientId(idarr[0]);
     setContacts(data);
     setContactToRender(contacts);
   }
