@@ -120,6 +120,7 @@ namespace WebApi.Controllers
                         actualTask.taskName = item.taskName;
                         actualTask.frequency = item.frequency;
                         actualTask.listId = item.listId;
+                        actualTask.actualId = item2.actualId;
                         actualTasks.Add(actualTask);
                     }
                 }
@@ -133,6 +134,30 @@ namespace WebApi.Controllers
                     {
                         item.type = item2.type;
                     }
+                    List<ProductListDTO> productListToSend = new List<ProductListDTO>();
+                    if (item.type==false)// mean its prodact list, than we will create the product list and add it to the actual list
+                    {
+                        var prodArr = from t in db.tblProductList //find all relavent ProductList for this task
+                                      where t.listId == item.listId
+                                      select t;
+                        if (prodArr.Count()>0) //that mean the we already have products in this list 
+                        {       
+                            foreach (var product in prodArr)
+                            {
+                                ProductListDTO productList = new ProductListDTO();
+                                productList.listId = product.listId;
+                                productList.productId = product.productId;
+                                var prodName = from t in db.tblProduct //find the name of the Product from tblProduct
+                                               where t.productId == product.productId
+                                               select t.productName;
+                                productList.productName = prodName.First();
+                                productList.productStatus = product.productStatus;
+                                productList.productQuantity = product.productQuantity;
+                                productListToSend.Add(productList);
+                            }
+                            item.prodtList = productListToSend; //add to the actual task the product list
+                        }
+                    }          
                 }                
                 actualTasks.Sort((x, y) => DateTime.Compare(x.taskDate, y.taskDate));               
                 return Ok(actualTasks);
@@ -253,10 +278,10 @@ namespace WebApi.Controllers
                     task.userId = list.userId;
                     task.listId = actualListId;
                     task.timesInDayArr = timesInDayArray;
-                    int taskId = db.tblPatientTask.Max(x => x.taskId);
                     db.InsertList(task.taskName, task.listId);
                     db.SaveChanges();
                     int resInsertPatientTask = db.InsertPatientTask(task.taskName, task.taskFromDate, task.taskToDate, task.taskComment, task.patientId, task.workerId, task.userId, actualListId, task.frequency);
+                    int taskId = db.tblPatientTask.Max(x => x.taskId);
                     db.SaveChanges();
                     //we use here partial class to add the actual tasks to the db                                  
                     if (!actualTask.InsertActualTask(task.frequency, task.timesInDayArr, taskId, task.taskFromDate, task.taskToDate))

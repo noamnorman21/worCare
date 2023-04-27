@@ -21,5 +21,7 @@ namespace WebApi.DTO
         public int userId { get; set; }
         public int listId { get; set; }
         public Nullable<bool> type { get; set; }
-    }
+
+        public List <ProductListDTO> prodtList  { get; set; } //will be relevant only if the type will be prodact list (type=false)
+}
 }
