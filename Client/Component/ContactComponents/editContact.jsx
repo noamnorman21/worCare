@@ -99,15 +99,19 @@ export default function EditContact({ route, navigation }) {
     const { email, contactName, mobileNo } = Contact
     if (!contactName) {
       return Alert.alert('Invalid Contact Name', 'Please enter a valid contact name')
+      setSaving(false);
     }
     if (email !== null && email !== '' && !validateEmail(email)) {
       return Alert.alert('Invalid Email', 'Please enter a valid email')
+      setSaving(false);
     }
     if (!mobileNo) {
       return Alert.alert('Mobile number is required', 'Please enter a valid mobile number')
+      setSaving(false);
     }
     if (!validatePhone(mobileNo)) {
       return Alert.alert('Invalid Mobile Number', 'Please enter a valid mobile number')
+      setSaving(false);
     }
     SaveChanges(Contact);
   }

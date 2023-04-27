@@ -10,6 +10,7 @@ const SCREEN_HEIGHT = Dimensions.get('window').height;
 import { Ionicons } from '@expo/vector-icons';
 import { Octicons } from '@expo/vector-icons';
 
+
 export default function Privacy({ navigation, route }) {
   const [userId, setUserId] = useState(null);
   const [firstName, setFirstName] = useState(null);
@@ -19,15 +20,15 @@ export default function Privacy({ navigation, route }) {
   const [userImg, setUserImg] = useState(null);
   const [Email, setEmail] = useState(null);
   const [userType, setUserType] = useState(null);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [modalType, setModalType] = useState('');
-  const [modalValue, setModalValue] = useState('');
-  const { userContext, updateUserContext } = useUserContext();
   const [showPassword, setShowPassword] = useState(false);
   const [showPassword2, setShowPassword2] = useState(false);
   const [password1, setPassword1] = useState('');
   const [password2, setPassword2] = useState('');
   const [passwordChanged, setpasswordChanged] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [cancel, setCancel] = useState(false);
+  const { userContext, updateUserContext } = useUserContext();
+
 
   const CheckEmailInDB = () => {
     console.log('CheckEmailInDB', Email);
@@ -45,10 +46,11 @@ export default function Privacy({ navigation, route }) {
     })
       .then(res => {
         if (res.ok) {
-
+          sendDataToNextDB();
         }
         else {
-          sendDataToNextDB();
+        Alert.alert('Email already exists', 'Please choose another email');
+        setSaving(false)
         }
       })
       .catch((error) => {
@@ -66,7 +68,10 @@ export default function Privacy({ navigation, route }) {
       FirstName: firstName,
       LastName: lastName,
       userId: userId,
-      userType: userType
+      userType: userType,
+      workerId: userContext.workerId,//if user is a caregiver, this field will be same as userId
+      involvedInId: userContext.involvedInId,//if user is a not caregiver, this field will be same as userId
+      patientId: userContext.patientId,
     }
 
     console.log('userToUpdate', userToUpdate)
@@ -87,9 +92,9 @@ export default function Privacy({ navigation, route }) {
                 console.log("fetch POST= ", result);
                 Alert.alert('Email Updated', 'Your Email has been changed successfully');
                 updateUserContext(userToUpdate);
+                route.params.updateUser(userToUpdate);
                 const jsonValue = JSON.stringify(userToUpdate)
                 AsyncStorage.setItem('userData', jsonValue);
-                route.params.updateUser("Email", userToUpdate.Email)
                 if (passwordChanged) {
                   checkPassowrd();
                 }
@@ -110,37 +115,39 @@ export default function Privacy({ navigation, route }) {
       );
   }
 
-  const openModal = (type, value) => {
-    setModalType(type);
-    setModalValue(value);
-    setModalVisible(true);
-  }
-
-  const Update = (Field, value) => {
-    setModalVisible(false);
-    if (Field == "Email") {
-      setEmail(value)
-    }
-
-  }
-
-  const cancel = () => {
-    console.log('cancel');
-    setEmail(userContext.Email);
-  }
 
   const SaveAllChanges = () => {
     if (Email != userContext.Email) {
-      sendDataToNextDB();
+      CheckEmailInDB();
     }
     else if (Email == userContext.Email && passwordChanged) {
       checkPassowrd();
     }
     else if (Email == userContext.Email && !passwordChanged) {
-      Alert.alert("No Changes", "You didn't make any changes")
       navigation.goBack();
     }
 
+  }
+
+  const CancelAllChanges = () => {
+    if (Email != userContext.Email || passwordChanged) {
+      Alert.alert(
+        "Cancel Changes",
+        "Are you sure you want to cancel your changes?",
+        [
+          {
+            text: "Cancel",
+            onPress: () => setCancel(false),
+            style: "cancel"
+          },
+          { text: "OK", onPress: () => navigation.goBack() }
+        ],
+        { cancelable: false }
+      )
+    }
+    else {
+      navigation.goBack();
+    }
   }
 
   useEffect(() => {
@@ -167,10 +174,10 @@ export default function Privacy({ navigation, route }) {
         <View style={styles.headerRight}>
           <TouchableOpacity
             onPress={() => {
-              SaveAllChanges();
+             setSaving(true);
             }}
           >
-            <Text style={styles.headerRightText}>Save</Text>
+            <Text style={styles.headerButtonText}>Save</Text>
           </TouchableOpacity>
         </View>
 
@@ -178,19 +185,7 @@ export default function Privacy({ navigation, route }) {
       headerLeft: () => (
         <View style={styles.headerLeft}>
           <TouchableOpacity
-            onPress={() => Alert.alert(
-              "Cancel Changes",
-              "Are you sure you want to cancel your changes?",
-              [
-                {
-                  text: "Cancel",
-                  onPress: () => console.log("Cancel Pressed"),
-                  style: "cancel"
-                },
-                { text: "OK", onPress: () => navigation.goBack() }
-              ],
-              { cancelable: false }
-            )}
+            onPress={() => {setCancel(true);}}
           >
             <Ionicons name="chevron-back" size={28} color="black" />
           </TouchableOpacity>
@@ -199,7 +194,16 @@ export default function Privacy({ navigation, route }) {
     });
     console.log("setnavigations")
     setNavigation();
-  }, [Email, password1, password2]);
+  }, [navigation]);
+
+  useEffect(() => {
+    if (saving) {
+      SaveAllChanges();
+    }
+    if (cancel) {
+      CancelAllChanges();
+    }
+  }, [saving, cancel]);
 
   const DeleteProfile = () => {
     fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/DeleteUser', {
@@ -264,13 +268,13 @@ export default function Privacy({ navigation, route }) {
               )
           }
           else {
-            return Alert.alert('Password Change Failed', 'Sorry, there was an error updating your password. Please try again later.');
+            return Alert.alert('Password Invallid', 'Sorry, there was an error updating your password. Please try again later.');
           }
         }
         )
     }
     else if (password1 !== password2) {
-      Alert.alert('Password Change Failed', 'Sorry, your passwords do not match. Please try again.');
+      Alert.alert('Password Dont Match', 'Sorry, your passwords do not match. Please try again.');
       // throw new Error('Passwords do not match')
       //   .catch((error) => {
       //     console.log('Error:', error.message);
@@ -300,9 +304,15 @@ export default function Privacy({ navigation, route }) {
           </View>
           <View style={styles.fieldView}>
             <Text style={styles.fieldHeader}>Email Address</Text>
-            <TouchableOpacity underlayColor={'lightgrey'} style={styles.fields} onPress={() => openModal("Email", Email)}>
-              <Text style={styles.fieldTxt}>{Email}</Text>
-            </TouchableOpacity>
+            <TextInput
+              style={styles.fields}
+              placeholderTextColor={'#9E9E9E'}
+              value={Email}
+              autoCapitalize='none'
+              autoCorrect={false}
+              keyboardType='ascii-capable'
+              onChangeText={text => { setEmail(text) }}
+            />
           </View>
         </View>
         <View style={styles.passwordView}>
@@ -352,9 +362,6 @@ export default function Privacy({ navigation, route }) {
             </TouchableOpacity>
           </View>
         </View>
-        <Modal animationType="slide" visible={modalVisible}>
-          <FieldChange userId={userId} type={modalType} value={modalValue} cancel={() => setModalVisible(false)} Save={(Field, value) => Update(Field, value)} />
-        </Modal>
       </View>
       <View style={styles.accountView}>
         <View style={styles.lineContainer}>
@@ -556,4 +563,9 @@ const styles = StyleSheet.create({
     fontFamily: 'Urbanist-Bold',
     fontSize: 14,
   },
+  headerButtonText: {
+    color: '#548DFF',
+    fontFamily: 'Urbanist-SemiBold',
+    fontSize: 16,
+},
 })
