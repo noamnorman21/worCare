@@ -216,7 +216,6 @@ export default function ContactDetails({ route, navigation }) {
       ]
     );
   }
-<<<<<<< HEAD
 
   const optionsToCall = () => {
     if (!Contact.mobileNo && !Contact.phoneNo) {
@@ -282,8 +281,6 @@ export default function ContactDetails({ route, navigation }) {
     );
   }
 
-=======
->>>>>>> 1048b5ca3664d189c0a088a4c1d188336544e928
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
@@ -297,20 +294,12 @@ export default function ContactDetails({ route, navigation }) {
                 <Text style={Contact.email ? styles.BtnTxt : styles.disabledBtnTxt}>Email</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.button}
-<<<<<<< HEAD
                 onPress={optionsToCall}>
-=======
-                onPress={() => Linking.openURL(`tel:${Contact.phoneNo}`)}>
->>>>>>> 1048b5ca3664d189c0a088a4c1d188336544e928
                 <Feather name='phone-call' size={20} color={"#548DFF"} />
                 <Text style={styles.BtnTxt}>Call</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.button}
-<<<<<<< HEAD
                 onPress={optionsToSMS}>
-=======
-                onPress={() => Linking.openURL(`sms:${Contact.phoneNo}`)}>
->>>>>>> 1048b5ca3664d189c0a088a4c1d188336544e928
                 <Feather name='message-circle' size={20} color={"#548DFF"} />
                 <Text style={styles.BtnTxt}>Message</Text>
               </TouchableOpacity>
