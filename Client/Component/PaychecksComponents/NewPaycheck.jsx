@@ -63,7 +63,7 @@ export default function NewPaycheck(props) {
     // Explore the result
     console.log(result);
     if (!result.canceled) {
-      setPayCheck({ ...PayCheck, paycheckProofDocument: result.assets[0].uri })
+      setPayCheck({ ...PayCheck, payCheckProofDocument: result.assets[0].uri })
     }
   }
 
@@ -77,7 +77,7 @@ export default function NewPaycheck(props) {
     // Explore the result
     console.log(result);
     if (!result.canceled) {
-      setPayCheck({ ...PayCheck, paycheckProofDocument: result.assets[0].uri })
+      setPayCheck({ ...PayCheck, payCheckProofDocument: result.assets[0].uri })
     }
   };
 
@@ -104,7 +104,7 @@ export default function NewPaycheck(props) {
 
   const sendToFirebase = async (image) => {
     // if the user didn't upload an image, we will use the default image
-    if (PayCheck.paycheckProofDocument === null) {
+    if (PayCheck.payCheckProofDocument === null) {
       Alert.alert('Please select an image');
       return;
     }
@@ -126,7 +126,7 @@ export default function NewPaycheck(props) {
         () => {
           getDownloadURL(storageRef).then(downloadURL => {
             console.log('File available at', downloadURL);
-            setPayCheck({ ...PayCheck, paycheckProofDocument: downloadURL });
+            setPayCheck({ ...PayCheck, payCheckProofDocument: downloadURL });
             savePaycheck(downloadURL);
           });
         }
@@ -143,7 +143,7 @@ export default function NewPaycheck(props) {
       paycheckSummary: PayCheck.paycheckSummary,
       paycheckComment: PayCheck.paycheckComment,
       userId: PayCheck.userId,
-      paycheckProofDocument: downloadURL
+      payCheckProofDocument: downloadURL
     }
     console.log("Newcheck", Newcheck);
     if (Newcheck.paycheckDate === null) {
@@ -269,8 +269,8 @@ export default function NewPaycheck(props) {
               <TouchableOpacity style={styles.uploadButton} onPress={pickOrTakeImage}>
                 <Text style={styles.buttonText}>Upload document</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.uploadButton} onPress={() => sendToFirebase(PayCheck.paycheckProofDocument)}>
-                <Text style={styles.savebuttonText}>Send request</Text>
+              <TouchableOpacity style={styles.uploadButton} onPress={() => sendToFirebase(PayCheck.payCheckProofDocument)}>
+                <Text style={styles.savebuttonText}>Send Paycheck</Text>
               </TouchableOpacity>
             </View>
           </View>

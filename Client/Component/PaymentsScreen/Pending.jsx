@@ -94,6 +94,8 @@ function Request(props) {
   const [valueChanged, setValueChanged] = useState(false);
   const [status, setStatus] = useState(props.data.requestStatus);
   const { userContext } = useUserContext();
+  const [DownloadProgress,setDownloadProgress]=useState();
+
 
   const toggle = () => {
     const config = {
@@ -212,7 +214,14 @@ function Request(props) {
     }
   }
 
+  const callback = downloadProgress => {
+    const progress = downloadProgress.totalBytesWritten / downloadProgress.totalBytesExpectedToWrite;
+    setDownloadProgress(progress);
+    console.log("Progress", progress)
+  }
+
   const downloadFile = async () => {
+    try{
     const url = props.data.requestProofDocument;
     const dot = url.lastIndexOf(".");
     const questionMark = url.lastIndexOf("?");
@@ -221,7 +230,14 @@ function Request(props) {
     const id = props.data.requestId;
     const fileName = "Request " + id;
     const fileUri = FileSystem.documentDirectory + fileName;
-    const DownloadedFile = await FileSystem.downloadAsync(url, fileUri);
+    const downloadResumable = FileSystem.createDownloadResumable(url,fileUri,{},callback);
+    const directoryInfo = await FileSystem.getInfoAsync(fileUri);
+   if (!directoryInfo.exists) {
+       await FileSystem.makeDirectoryAsync(fileUri, { intermediates: true 
+       });
+   }
+    console.log("downloadResumable", downloadResumable)
+    const DownloadedFile = await downloadResumable.downloadAsync();
     console.log("DownloadedFile", DownloadedFile)
     if (DownloadedFile.status == 200) {
       console.log("File Downloaded", DownloadedFile)
@@ -231,6 +247,11 @@ function Request(props) {
       console.log("File not Downloaded")
     }
   }
+  catch(error){
+    console.log(error)
+    Alert.alert("Error",error)
+  }
+}
 
   const saveFile = async (res, fileName, type) => {
     if (Platform.OS == "ios") {
@@ -280,9 +301,9 @@ function Request(props) {
                   optionsWrapper: newStyles.optionsWrapperOpened,
                 }}  >
                   <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} value={1} children={<View style={newStyles.options}><MaterialCommunityIcons name='bell-ring-outline' size={20} /><Text style={newStyles.optionsText}> Send Notification</Text></View>} />
-                  <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} value={2} children={<View style={newStyles.options}><Feather name='eye' size={20} /><Text style={newStyles.optionsText}> View Document</Text></View>} />
-                  <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} value={3} children={<View style={userContext.userId == props.data.userId ? newStyles.options : newStyles.disabledoptions}><Feather name='edit' size={20} /><Text style={newStyles.optionsText}> Edit Request</Text></View>} />
-                  <MenuOption style={newStyles.deleteTxt} value={4} children={<View style={userContext.userId == props.data.userId ? newStyles.options : newStyles.disabledoptions}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={newStyles.deleteTxt}> Delete Request</Text></View>} />
+                  <MenuOption value={2} children={<View style={newStyles.options}><Feather name='eye' size={20} /><Text style={newStyles.optionsText}> View Document</Text></View>} />
+                  <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true}value={3} children={<View style={userContext.userId == props.data.userId ? newStyles.options : newStyles.disabledoptions}><Feather name='edit' size={20} /><Text style={newStyles.optionsText}> Edit Request</Text></View>} />
+                  <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} style={[newStyles.deleteTxt,userContext.userId !== props.data.userId && newStyles.disabledoptions]} value={4} children={<View style={userContext.userId == props.data.userId ? newStyles.options : newStyles.disabledoptions}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={newStyles.deleteTxt}> Delete Request</Text></View>} />
                 </MenuOptions>
               </Menu>
               <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>

@@ -107,6 +107,7 @@ function Request(props) {
   const day = date.getDate();
   const dateString = day + "/" + month + "/" + newYear;
   const { userContext } = useUserContext();
+  const [downloadProgress, setDownloadProgress] = useState(0);
 
   const toggle = () => {
     const config = {
@@ -159,26 +160,31 @@ function Request(props) {
     );
   }
 
-  const saveStatus = async (id) => {
-    console.log("request", request)
-    let request = {
-      requestId: id,
-      requestStatus: "F"
-    }
-    try {
-      const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/UpdateStatus/', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(id)
-      });
-      const data = await response.json();
-      console.log(data)
-      props.getPending()
-    } catch (error) {
-      console.log(error)
-    }
+  // const saveStatus = async (id) => {
+  //   console.log("request", request)
+  //   let request = {
+  //     requestId: id,
+  //     requestStatus: "F"
+  //   }
+  //   try {
+  //     const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/UpdateStatus/', {
+  //       method: 'PUT',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify(id)
+  //     });
+  //     const data = await response.json();
+  //     console.log(data)
+  //     props.getPending()
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+  // }
+
+  const callback = downloadProgress => {
+    const progress = downloadProgress.totalBytesWritten / downloadProgress.totalBytesExpectedToWrite;
+    setDownloadProgress(progress);
   }
 
   const downloadFile = async () => {
@@ -190,7 +196,9 @@ function Request(props) {
     const id = props.data.requestId;
     const fileName = "Request " + id;
     const fileUri = FileSystem.documentDirectory + fileName;
-    const DownloadedFile = await FileSystem.downloadAsync(url, fileUri);
+    const downloadResumable = FileSystem.createDownloadResumable(url,fileUri,{},callback);
+    console.log("downloadResumable", downloadResumable)
+    const DownloadedFile = await downloadResumable.downloadAsync();
     console.log("DownloadedFile", DownloadedFile)
     if (DownloadedFile.status == 200) {
       console.log("File Downloaded", DownloadedFile)
@@ -290,7 +298,7 @@ function Request(props) {
             </View>
           </View>
           :
-          <View>
+          <View style={newStyles.requestClosed}>
             <View style={newStyles.requestItemHeader}>
               <TouchableOpacity onPress={toggle} style={newStyles.request}>
                 <View style={newStyles.requestItemLeft}>
@@ -372,6 +380,12 @@ const newStyles = StyleSheet.create({
     borderColor: '#7DA9FF',
     marginVertical: 10,
     backgroundColor: '#F5F8FF',
+    padding: 5,
+  },
+  requestClosed: {
+    width: SCREEN_WIDTH * 0.9,
+    alignItems: 'center',
+    marginVertical: 5,
     padding: 5,
   },
   requestItemBody: {

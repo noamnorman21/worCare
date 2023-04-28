@@ -22,8 +22,6 @@ export default function Finance() {
         elevation: 100,
       },
     }}>
-
-      <NavigationContainer independent={true} zIndex='0' initialRouteName='choice'  >
         <Stack.Navigator initialRouteName='choice'>
           <Stack.Screen name='choice' component={Choice} options={() => ({
             headerShown: false,
@@ -42,7 +40,6 @@ export default function Finance() {
             cardOverlayEnabled: true,
           })} />
         </Stack.Navigator>
-      </NavigationContainer>
     </MenuProvider>
   );
 }

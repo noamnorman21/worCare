@@ -286,8 +286,8 @@ export default function ContactDetails({ route, navigation }) {
       <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
           <ScrollView contentContainerStyle={styles.centeredView}>
-            {Edit ? null : <Text style={styles.contactheader}>{Contact.contactName}</Text>}
-            {!Edit ? <View style={styles.ButtonView}>
+            {!Edit && <Text style={styles.contactheader}>{Contact.contactName}</Text>}
+            {!Edit && <View style={styles.ButtonView}>
               <TouchableOpacity style={Contact.email ? styles.button : styles.disabled} disabled={Contact.email ? false : true}
                 onPress={() => Linking.openURL(`mailto:${Contact.email}`)}>
                 <MaterialCommunityIcons name='email-send-outline' size={20} color={Contact.email ? "#548DFF" : "grey"} />
@@ -304,9 +304,9 @@ export default function ContactDetails({ route, navigation }) {
                 <Text style={styles.BtnTxt}>Message</Text>
               </TouchableOpacity>
 
-            </View> : null}
+            </View>}
             <View style={styles.inputContainer}>
-              {Edit ?
+              {Edit &&
                 <TextInput style={styles.inputTxt}
                   editable={Edit ? true : false}
                   mode='outlined'
@@ -317,7 +317,7 @@ export default function ContactDetails({ route, navigation }) {
                   outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
                   activeOutlineColor="#548DFF"
                   outlineColor='#E6EBF2' />
-                : null}
+               }
               <TextInput style={styles.inputTxt}
                 editable={Edit ? true : false}
                 mode='outlined'

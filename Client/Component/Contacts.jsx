@@ -1,9 +1,9 @@
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Alert, Modal } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Alert, Modal,ScrollView } from 'react-native'
 import { useEffect, useState } from 'react'
 import React from 'react'
 import { Searchbar } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import AddNewContact from './ContactComponents/AddNewContact'
 import { useIsFocused } from '@react-navigation/native';
 import EditContact from './ContactComponents/editContact'
@@ -12,28 +12,35 @@ import { useUserContext } from '../UserContext'
 import { MaterialCommunityIcons, Feather, Octicons, Ionicons } from '@expo/vector-icons';
 import { AddBtn } from './HelpComponents/AddNewTask';
 
+
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function Contacts() {
   const stack = createStackNavigator();
   return (
-    <stack.Navigator initialRouteName='Main' screenOptions={{ headerShown: false }} >
+    <stack.Navigator initialRouteName='Main' screenOptions={{
+      //this is the animation for the navigation
+      ...TransitionPresets.SlideFromRightIOS,
+      headerBlurEffect: 'light',
+      headerShown: false
+    }} >
       <stack.Screen name="Main" component={Main} options={{ headerShown: true, headerTitle: "Contacts", headerTitleAlign: 'center' }} />
       <stack.Screen name="EditContact" component={EditContact} options={{ headerShown: true, headerTitle: "Edit Contact", headerTitleAlign: 'center' }} />
-      <stack.Screen name="ContactDetails" component={ContactDetails} options={{ headerShown: true, headerTitle: "Contact Details", headerTitleAlign: 'center' }} />
+      <stack.Screen name="ContactDetails" component={ContactDetails} options={{ headerShown: true, headerTitle: "Contact Details", headerTitleAlign: 'center', animationEnabled: true, animation: 'slide_from_right' }} />
     </stack.Navigator>
   )
 }
 
 function Main({ navigation }) {
   const [idArr, setidArr] = useState([])
-  const [patientId, setpatientId] = useState()
+
   const [Contacts, setContacts] = useState([])
   const [Search, setSearch] = useState([])
   const [ContactToRender, setContactToRender] = useState([])
   const [modal1Visible, setModal1Visible] = useState(false);
   const { userContext, userContacts, setuserContacts, updateuserContacts } = useUserContext()
+  const [patientId, setpatientId] = useState(userContext.patientId)
   const isFocused = useIsFocused()
 
   const onChangeSearch = query => setSearch(query);
@@ -55,10 +62,6 @@ function Main({ navigation }) {
     let contacts = data.map((item) => {
       return <ContactCard key={item.contactId} contact={item} fetchContacts={fetchContacts} />
     })
-    let idarr = data.map((item) => {
-      return item.patientId
-    })
-    setpatientId(idarr[0]);
     setContacts(data);
     setContactToRender(contacts);
   }
@@ -89,7 +92,9 @@ function Main({ navigation }) {
         inputStyle={{ fontFamily: 'Urbanist-Medium', fontSize: 18 }}
         placeholderTextColor="#808080"
       />
-      {ContactToRender}
+      <ScrollView alwaysBounceVertical={false}>
+        {ContactToRender}
+      </ScrollView>
       <View style={styles.addBtnView}><AddBtn onPress={() => setModal1Visible(true)} /></View>
       {/*NewContactModal*/}
       <Modal animationType="slide" visible={modal1Visible}>
