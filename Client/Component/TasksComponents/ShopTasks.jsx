@@ -73,22 +73,31 @@ export default function ShopTasks(props) {
       <View style={{ width: SCREEN_WIDTH * 0.88 }}>
 
         <List.Section title="Accordions">
-          <ScrollView>
-            {/* <List.Accordion
-              title="Uncontrolled Accordion"
-              left={props => <List.Icon {...props} icon="folder" />}>
-              <List.Item title="First item" />
-              <List.Item title="Second item" />
-            </List.Accordion> */}
+          <ScrollView
+          
+          >
             {
               props.allShopTasks.map((task, index) => {
                 return (
                   <List.Accordion
                     key={index}
-                    title={task.taskName}
-                    left={props => <List.Icon {...props} icon="folder" />}>
+                    titleStyle  = {{
+                      fontSize: 20,
+                      fontFamily: 'Urbanist-Bold',
+                      color: '#000',
+                      backgroundColor: 'transparent',
+                      marginVertical: 10,
+                    }}
+                    style={{
+                      backgroundColor: 'none',
+                    }}
+                    left={()=>
+                      <Text style={styles.taskName}>{task.taskName}</Text>
+                    
+                    }>
+
                     {
-                     // if there are prodtList items in the task then show them,else there is no subtask
+                      // if there are prodtList items in the task then show them,else there is no subtask
                       task.prodtList != null ?
                         task.prodtList.map((prod, index) => {
                           return (
@@ -96,10 +105,7 @@ export default function ShopTasks(props) {
                           )
                         }
                         ) :
-                        <List.Item title="No subtasks" />
-
-
-
+                        null
                     }
                   </List.Accordion>
                 )
