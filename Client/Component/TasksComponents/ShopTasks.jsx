@@ -51,14 +51,10 @@ export default function ShopTasks(props) {
   // const temp =  () =>{
   //  { <Text style={styles.taskName}>Super Market</Text>
   //   <View style={styles.tasksContainer}>
-  //     <View style={styles.addSubTask}>
   //       {/* <TouchableOpacity style={styles.left} onPress={updateCompleted}>
   //         <Feather name="circle" size={30} color="#548DFF" />
-  //       </TouchableOpacity> */}
-  //       <TouchableOpacity style={styles.middle} onPress={handleAddingSubTask}>
-  //         <Text style={styles.subtaskTxt}>Click here to add a sub-task...</Text>
-  //       </TouchableOpacity>
-  //       <View style={styles.right}>
+  //       </TouchableOpacity> */} 
+  //style={styles.right}>
   //         <View style={styles.rightInside}>
   //           <TouchableOpacity style={styles.qtyTxt} onPress={handleAddingSubTask}>
   //             {/* <Text style={styles.subtaskTxt}>Qty</Text> */}
@@ -77,15 +73,15 @@ export default function ShopTasks(props) {
   //   </View>}
   // }
 
-  const isProductChecked = (prod,actualTask) => {
-   // update the product status to 'F'
+  const isProductChecked = (prod, actualTask) => {
+    // update the product status to 'F'
     setShopTasks(shopTasks.map((task) => {
       if (task.listId === prod.listId && task.actualId === actualTask.actualId) {
         task.prodtList.map((product) => {
           if (product.productId === prod.productId) {
-           if(product.productStatus=='P'){
-            product.productStatus = 'F'
-            }else{
+            if (product.productStatus == 'P') {
+              product.productStatus = 'F'
+            } else {
               product.productStatus = 'P'
             }
           }
@@ -99,108 +95,97 @@ export default function ShopTasks(props) {
   return (
     <View style={styles.container}>
       <View style={{ width: SCREEN_WIDTH * 0.92 }}>
-
         <List.Section>
-          <ScrollView
-
-          >
-            {
-            shopTasks.map((task, index) => {
-                return (
-                  <List.Accordion
-                    key={index}
-                    titleStyle={{
-                      fontSize: 20,
-                      fontFamily: 'Urbanist-Bold',
-                      color: '#000',
-                      backgroundColor: 'transparent',
-                      marginVertical: 10,
-                    }}
-                    style={{
-                      backgroundColor: 'none',
-                    }}
+          <ScrollView>
+            {shopTasks.map((task, index) => {
+              return (
+                <List.Accordion key={index} style={{ backgroundColor: '#F2F2F2' }}
+                  left={() => <Text style={styles.taskName}>{task.taskName}</Text>}
+                  right={() => { return <Feather name="chevron-down" size={26} color="#548DFF" /> }}
+                >
+                  <List.Item key={null} style={styles.productItem}
                     left={() =>
-                      <Text style={styles.taskName}>{task.taskName}</Text>
-
-                    }>
-                    {
-                      // if there are prodtList items in the task then show them,else there is no subtask
-                      task.prodtList != null ?
-                      //here we can add a button to add a subtask                    
-                        task.prodtList.map((prod, index) => {
-                          return (
-                            <List.Item
-                              key={prod.producId} style={styles.productItem} title={prod.productName}
-                              left={
-                                () =>
-                                  <TouchableOpacity onPress={() => isProductChecked(prod,task)}>
-                                    <Feather name={
-                                      prod.productStatus=='P' ? checkIcon[1] : checkIcon[0]
-                                    } size={27} color="#548DFF" />
-                                  </TouchableOpacity>}
-                              right={() => <Text style={styles.subtaskTxt}>{prod.productQuantity}</Text>}
-                            />
-                          )
-                        }
-                        ) :
-                        null //here we can add a button to add a subtask
+                      <TouchableOpacity onPress={handleAddingSubTask}>
+                        <Text style={styles.subtaskTxt}>Click here to add a product...</Text>
+                      </TouchableOpacity>
                     }
-                  </List.Accordion>
-                )
-              })
-            }
+                    right={() => { return <Feather style={styles.iconPlus} name="plus" size={25} color="#548DFF" /> }}
+                  />
 
+                  {/* 
+                  </TouchableOpacity> */}
+                  {
+                    // if there are prodtList items in the task then show them,else there is no subtask
+                    task.prodtList != null ?
+                      task.prodtList.map((prod, index) => {
+                        return (
+                          <List.Item
+                            key={prod.producId} style={styles.productItem}
+                            title={prod.productName}
+                            titleStyle={{
+                              fontSize: 18,
+                              fontFamily: 'Urbanist-SemiBold',
+                              color: '#000',
+                            }}
+                            left={() =>
+                              <TouchableOpacity onPress={() => isProductChecked(prod, task)}>
+                                <Feather name={prod.productStatus == 'P' ? checkIcon[1] : checkIcon[0]} size={27} color="#548DFF" />
+                              </TouchableOpacity>}
+                            right={() => <Text style={styles.qtyTxt}>{prod.productQuantity}</Text>}
+                          />
+                        )
+                      }
+                      ) : null
+                  }
+                </List.Accordion>
+              )
+            })
+            }
           </ScrollView>
         </List.Section>
-
       </View>
       <View style={styles.addBtnView}>
         <AddBtn onPress={handleAddBtnPress} />
       </View>
       <NewTaskModal isVisible={modalVisible} onClose={handleModalClose} />
-    </View>
+    </View >
   )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#F2F2F2',
     alignItems: 'center',
-    // justifyContent: 'center',
   },
-  subtaskTxt: {
-    fontSize: 16,
-    fontFamily: 'Urbanist-Regular',
-    color: '#808080',
-    marginTop: 7,
+  iconPlus: {
+    position: 'absolute',
+    right: -5,
+  },
+  iconUp: {
+    position: 'absolute',
+    right: 0,
+    top: 0,
+  },
+  iconDown: {
+    position: 'absolute',
+    right: 0,
+    bottom: 0,
   },
   qtyTxt: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    fontSize: 16,
+    paddingTop: 5,
+    fontFamily: 'Urbanist-Regular',
+    color: '#808080',
   },
-  rightInside: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  left: {
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-    flex: 0.5,
-  },
-  middle: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    flex: 4,
-  },
-  right: {
-    justifyContent: 'center',
-    alignItems: 'flex-end',
-    flex: 0.5,
+  subtaskTxt: {
+    fontSize: 18,
+    paddingLeft: 10,
+    fontFamily: 'Urbanist-Regular',
+    color: '#808080',
   },
   taskName: {
-    fontSize: 20,
+    fontSize: 24,
     fontFamily: 'Urbanist-Bold',
     color: '#000',
     marginVertical: 10,
@@ -210,34 +195,6 @@ const styles = StyleSheet.create({
     bottom: 20,
     right: 20,
   },
-  task: {
-    justifyContent: 'space-between',
-    flexDirection: 'row',
-    flex: 1,
-  },
-  addSubTask: {
-    flexDirection: 'row',
-    width: SCREEN_WIDTH * 0.9,
-    height: 54,
-    backgroundColor: '#EBF1FF',
-    borderRadius: 16,
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-    padding: 10,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 4,
-      height: 4,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-
-
-
-
-
   productItem: {
     flexDirection: 'row',
     width: SCREEN_WIDTH * 0.88,
@@ -246,8 +203,8 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'flex-start',
-    padding: 10,
-    marginVertical: 5,
+    paddingLeft: 10,
+    marginVertical: 10,
     marginHorizontal: 5,
     shadowColor: '#000',
     shadowOffset: {
@@ -258,5 +215,4 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
-
 });
