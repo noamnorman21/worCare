@@ -63,7 +63,7 @@ export default function Tasks() {
     setAllShopTasks(filteredTasks);
     let filteredMedicineTasks = tasks.filter(task => task.type == true);
     setAllMedicineTasks(filteredMedicineTasks);
-    console.log('allShopTasks=', allShopTasks);
+   
   }
 
   return (

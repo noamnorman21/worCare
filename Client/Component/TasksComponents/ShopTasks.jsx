@@ -1,7 +1,10 @@
-import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Dimensions, FlatList } from 'react-native'
+import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Dimensions, ScrollView } from 'react-native'
 import { useState, useEffect } from 'react'
-import { AddBtn, NewTaskModal } from '../HelpComponents/AddNewTask'
+import { List } from 'react-native-paper';
 import { Feather, Ionicons } from '@expo/vector-icons';
+
+import { AddBtn, NewTaskModal } from '../HelpComponents/AddNewTask'
+
 import { useUserContext } from '../../UserContext'
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -11,11 +14,16 @@ export default function ShopTasks(props) {
   const [userData, setUserData] = useState(useUserContext().userContext);
   const [tasks, setTasks] = useState([])
   const [shopTasks, setShopTasks] = useState(props.allShopTasks)
+
+  const [expanded, setExpanded] = useState(true);
+  const handlePress = () => setExpanded(!expanded);
+
   useEffect(() => {
   }, [])
 
   const handleAddBtnPress = () => {
-    setModalVisible(true);
+    console.log(props.allShopTasks)
+
   };
 
   const handleModalClose = () => {
@@ -62,8 +70,46 @@ export default function ShopTasks(props) {
 
   return (
     <View style={styles.container}>
-      {/* //FlatList */}
+      <View style={{ width: SCREEN_WIDTH * 0.88 }}>
 
+        <List.Section title="Accordions">
+          <ScrollView>
+            {/* <List.Accordion
+              title="Uncontrolled Accordion"
+              left={props => <List.Icon {...props} icon="folder" />}>
+              <List.Item title="First item" />
+              <List.Item title="Second item" />
+            </List.Accordion> */}
+            {
+              props.allShopTasks.map((task, index) => {
+                return (
+                  <List.Accordion
+                    key={index}
+                    title={task.taskName}
+                    left={props => <List.Icon {...props} icon="folder" />}>
+                    {
+                     // if there are prodtList items in the task then show them,else there is no subtask
+                      task.prodtList != undefined ?
+                        task.prodList.map((prod, index) => {
+                          return (
+                            <List.Item key={index} title={"prod.productName"} />
+                          )
+                        }
+                        ) :
+                        <List.Item title="No subtasks" />
+
+
+
+                    }
+                  </List.Accordion>
+                )
+              })
+            }
+
+          </ScrollView>
+        </List.Section>
+
+      </View>
       <View style={styles.addBtnView}>
         <AddBtn onPress={handleAddBtnPress} />
       </View>

@@ -155,7 +155,7 @@ namespace WebApi.Controllers
                                 productList.productQuantity = product.productQuantity;
                                 productListToSend.Add(productList);
                             }
-                            item.prodList = productListToSend; //add to the actual task the product list
+                            item.prodtList = productListToSend; //add to the actual task the product list
                         }
                     }          
                 }                
