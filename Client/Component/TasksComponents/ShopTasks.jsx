@@ -89,10 +89,10 @@ export default function ShopTasks(props) {
                     left={props => <List.Icon {...props} icon="folder" />}>
                     {
                      // if there are prodtList items in the task then show them,else there is no subtask
-                      task.prodtList != undefined ?
-                        task.prodList.map((prod, index) => {
+                      task.prodtList != null ?
+                        task.prodtList.map((prod, index) => {
                           return (
-                            <List.Item key={index} title={"prod.productName"} />
+                            <List.Item key={index} title={prod.productName} />
                           )
                         }
                         ) :
