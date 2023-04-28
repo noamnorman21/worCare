@@ -1,13 +1,14 @@
-import { Alert, View, StyleSheet, Text, SafeAreaView, TextInput, Dimensions, TouchableOpacity } from "react-native"
+import { Alert, View, StyleSheet, Text, SafeAreaView, Dimensions, TouchableOpacity } from "react-native"
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { useState, useEffect } from "react"
 import { useUserContext } from "../../UserContext";
+import { TextInput } from "react-native-paper";
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export default function AddNewContact(props) {
-  const { userContext} = useUserContext()
+  const { userContext } = useUserContext()
   const [Contact, setContact] = useState({
     contactName: null,
     phoneNo: null,
@@ -28,12 +29,11 @@ export default function AddNewContact(props) {
     return phoneRegex.test(phone)
   }
 
-
   const validateInput = () => {
-    if (!Contact.contactName ) {
+    if (!Contact.contactName) {
       return Alert.alert('Error', 'Name is required')
     }
-    if (Contact.email !== null && Contact.email !=='' && !validateEmail(Contact.email)) {
+    if (Contact.email !== null && Contact.email !== '' && !validateEmail(Contact.email)) {
       return Alert.alert('Invalid Email', 'Please enter a valid email')
     }
     if (!Contact.mobileNo && !Contact.phoneNo) {
@@ -72,7 +72,6 @@ export default function AddNewContact(props) {
     return emailRegex.test(email)
   }
 
-
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
@@ -82,50 +81,73 @@ export default function AddNewContact(props) {
               <Text style={styles.title}>Add New Contact</Text>
               <View style={styles.inputContainer}>
                 <View >
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Contact Name"
-                    keyboardType='ascii-capable'
-                    onChangeText={(value) => handleInputChange('contactName', value)}
-                  />
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Mobile Number"
-                    keyboardType='decimal-pad'
-                    onChangeText={(value) => handleInputChange('mobileNo', value)}
-                    returnKeyType='done'
-                    inputMode='numeric'
-                  />
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Phone Number ( optional )"
-                    keyboardType='decimal-pad'
-                    onChangeText={(value) => handleInputChange('phoneNo', value)}
-                    returnKeyType='done'
-                    inputMode='numeric'
-                  />
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Role ( optional )"
-                    keyboardType='ascii-capable'
-                    onChangeText={(value) => handleInputChange('role', value)}
-                  />
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Email ( optional )"
-                    keyboardType='ascii-capable'
-                    onChangeText={(value) => handleInputChange('email', value)}
-                  />
-                  <TextInput
-                    multiline={true}
-                    returnKeyType='done'
-                    numberOfLines={6}
-                    maxHeight={100}
-                    style={styles.commentInput}
-                    placeholder="Comment ( optional )"
-                    keyboardType='ascii-capable'
-                    onChangeText={(value) => handleInputChange('contactComment', value)}
-                  />
+                <TextInput style={styles.inputTxt}
+                mode='outlined'
+                label='Full Name'
+                value={Contact.contactName}
+                onChangeText={(value) => handleInputChange('contactName', value)}
+                placeholder="Type Something..."
+                contentStyle={{ fontFamily: 'Urbanist-Regular' }}
+                outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                activeOutlineColor="#548DFF"
+                outlineColor='#E6EBF2' />
+                <TextInput style={styles.inputTxt}
+                mode='outlined'
+                label='Mobile Number'
+                value={Contact.mobileNo}
+                keyboardType='decimal-pad'
+                onChangeText={(value) => handleInputChange('mobileNo', value)}
+                placeholder="Type Something..."
+                contentStyle={{ fontFamily: 'Urbanist-Regular' }}
+                outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                activeOutlineColor="#548DFF"
+                outlineColor='#E6EBF2'
+                inputMode="numeric" />
+                <TextInput style={styles.inputTxt}
+                mode='outlined'
+                label='Telephone Number (optional)'
+                keyboardType='decimal-pad'
+                value={Contact.phoneNo}
+                onChangeText={(value) => handleInputChange('phoneNo', value)}
+                placeholder="Type Something..."
+                contentStyle={{ fontFamily: 'Urbanist-Regular' }}
+                outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                activeOutlineColor="#548DFF"
+                outlineColor='#E6EBF2'
+                inputMode="numeric" />
+                 <TextInput style={styles.inputTxt}
+                mode='outlined'
+                label='Role (optional)'
+                value={Contact.role}
+                onChangeText={(value) => handleInputChange('role', value)}
+                placeholder="Type Something..."
+                contentStyle={{ fontFamily: 'Urbanist-Regular' }}
+                outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                activeOutlineColor="#548DFF"
+                outlineColor='#E6EBF2' />
+                <TextInput style={styles.inputTxt}
+                mode='outlined'
+                label='Email Address (optional)'
+                value={Contact.email}
+                onChangeText={(value) => handleInputChange('email', value)}
+                placeholder="Type Something..."
+                contentStyle={{ fontFamily: 'Urbanist-Regular' }}
+                outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                activeOutlineColor="#548DFF"
+                outlineColor='#E6EBF2' />
+                 <TextInput style={styles.inputTxt}
+                mode='outlined'
+                label='Comment (optional)'
+                value={Contact.comment}
+                onChangeText={(val) => handleInputChange('comment', val)}
+                placeholder="Type Something..."
+                multiline
+                numberOfLines={4}
+                maxLength={300}
+                contentStyle={{ height: 100, fontFamily: 'Urbanist-Regular' }}
+                outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                activeOutlineColor="#548DFF"
+                outlineColor='#E6EBF2' />
                 </View>
               </View>
               <View style={styles.bottom}>
@@ -158,29 +180,12 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH * 0.95,
     marginTop: 10,
   },
-  input: {
-    width: SCREEN_WIDTH * 0.95,
-    marginBottom: 10,
-    paddingLeft: 20,
-    alignItems: 'center',
-    borderRadius: 16,
-    borderWidth: 1.5,
-    borderColor: '#E6EBF2',
-    shadowColor: '#000',
-    height: 54,
+  inputTxt: {
     fontFamily: 'Urbanist-Light',
     fontSize: 16,
-  },
-  commentInput: {
-    borderRadius: 16,
-    borderWidth: 1.5,
-    borderColor: '#E6EBF2',
-    height: 90,
-    width: SCREEN_WIDTH * 0.95,
-    marginBottom: 10,
-    paddingLeft: 20,
-    fontFamily: 'Urbanist-Light',
-    fontSize: 16,
+    color: '#000',
+    backgroundColor: '#fff',
+    marginVertical: 10,
   },
   savebutton: {
     backgroundColor: '#548DFF',
@@ -214,7 +219,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: SCREEN_WIDTH * 0.95,
-    bottom: -50, //to make the buttons appear above the keyboard 
+    bottom: -20, //to make the buttons appear above the keyboard 
   },
   savebuttonText: {
     color: 'white',

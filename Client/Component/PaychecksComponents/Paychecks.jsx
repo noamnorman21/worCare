@@ -9,6 +9,7 @@ import { useUserContext } from '../../UserContext';
 import { AddBtn } from '../HelpComponents/AddNewTask';
 import { MaterialCommunityIcons, AntDesign, Feather, Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-navigation';
+import * as FileSystem from 'expo-file-system';
 import { Menu, MenuProvider, MenuOptions, MenuOption, MenuTrigger, renderers } from "react-native-popup-menu";
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -20,6 +21,7 @@ export default function Paychecks({ navigation, route }) {
   const [arr, setArr] = useState()
   const isFocused = useIsFocused()
   const [modal1Visible, setModal1Visible] = useState(false);
+ 
 
   useEffect(() => {
     if (isFocused && modal1Visible == false) {
@@ -73,17 +75,19 @@ export default function Paychecks({ navigation, route }) {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.pending}>
-      <View style={styles.headerText}>
-        <Text style={styles.header}>Paychecks History</Text>
-        <View style={styles.line}></View>
-      </View>
-      {History}
+    <>
+      <ScrollView contentContainerStyle={styles.pending}>
+        <View style={styles.headerText}>
+          <Text style={styles.header}>Paychecks History</Text>
+          <View style={styles.line}></View>
+        </View>
+        {History}
+        <Modal animationType='slide' transparent={true} visible={modal1Visible}>
+          <NewPaycheck cancel={() => { setModal1Visible(false); getPaychecks() }} userId={userContext.userId} />
+        </Modal>
+      </ScrollView>
       <View style={styles.addBtnView}><AddBtn onPress={() => setModal1Visible(true)} /></View>
-      <Modal animationType='slide' transparent={true} visible={modal1Visible}>
-        <NewPaycheck cancel={() => { setModal1Visible(false); getPaychecks() }} userId={userContext.userId} />
-      </Modal>
-    </ScrollView>
+    </>
   );
 }
 
@@ -107,6 +111,7 @@ function Paycheck(props) {
   const day = date.getDate();
   const dateString = day + "/" + month + "/" + newYear;
   const paycheckNum = props.data.paycheckNum;
+  const [DownloadProgress,setDownloadProgress] = useState(0);
 
   const toggle = () => {
     const config = {
@@ -129,7 +134,7 @@ function Paycheck(props) {
       setModal2Visible(true)
     }
     else if (value == 4) {
-      deletePaycheck(props.data.paycheckNum)
+      deletePaycheck(props.data.payCheckNum)
     }
   }
 
@@ -176,16 +181,23 @@ function Paycheck(props) {
     );
   }
 
+  const callback = downloadProgress => {
+    const progress = downloadProgress.totalBytesWritten / downloadProgress.totalBytesExpectedToWrite;
+    setDownloadProgress(progress);
+  }
+
   const downloadFile = async () => {
-    const url = props.data.requestProofDocument;
+    const url = props.data.payCheckProofDocument;
     const dot = url.lastIndexOf(".");
     const questionMark = url.lastIndexOf("?");
     const type = url.substring(dot, questionMark);
     console.log("Type", type)
-    const id = props.data.requestId;
-    const fileName = "Request " + id;
+    const id = props.data.payCheckNum;
+    const fileName = "Paycheck " + id;
     const fileUri = FileSystem.documentDirectory + fileName;
-    const DownloadedFile = await FileSystem.downloadAsync(url, fileUri);
+    const downloadResumable = FileSystem.createDownloadResumable(url,fileUri,{},callback);
+    console.log("downloadResumable", downloadResumable)
+    const DownloadedFile = await downloadResumable.downloadAsync();
     console.log("DownloadedFile", DownloadedFile)
     if (DownloadedFile.status == 200) {
       console.log("File Downloaded", DownloadedFile)

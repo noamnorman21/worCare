@@ -6,20 +6,14 @@ import NewPayment from './NewPayment';
 import EditPaymentScreen from './EditPaymentScreen';
 import { useUserContext } from '../../UserContext';
 import { AddBtn } from '../HelpComponents/AddNewTask';
-import {
-  Menu,
-  MenuProvider,
-  MenuOptions,
-  MenuOption,
-  MenuTrigger,
-  renderers
-} from "react-native-popup-menu";
+import { Menu, MenuProvider, MenuOptions, MenuOption, MenuTrigger, renderers } from "react-native-popup-menu";
 import * as FileSystem from 'expo-file-system';
 import { SafeAreaView } from 'react-navigation';
+
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
-export default function Pending({ route , navigation}) {
+export default function Pending({ route, navigation }) {
   const { userContext, userPendingPayments } = useUserContext()
   const [modal1Visible, setModal1Visible] = useState(false);
   const [Pendings, setPendings] = useState()
@@ -30,8 +24,8 @@ export default function Pending({ route , navigation}) {
       getPending()
     }
   }, [isFocused])
-  
- 
+
+
   const getPending = async () => {
     try {
       const user = {
@@ -74,13 +68,15 @@ export default function Pending({ route , navigation}) {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.pending}>
-      {Pendings}
+    <>
+      <ScrollView contentContainerStyle={styles.pending}>
+        {Pendings}
+        <Modal animationType='slide' transparent={true} visible={modal1Visible}>
+          <NewPayment cancel={() => { setModal1Visible(false); getPending() }} />
+        </Modal>
+      </ScrollView>
       {userContext.userType == "Caregiver" ? <View style={styles.addBtnView}><AddBtn onPress={() => setModal1Visible(true)} /></View> : null}
-      <Modal animationType='slide' transparent={true} visible={modal1Visible}>
-        <NewPayment cancel={() => { setModal1Visible(false); getPending() }} />
-      </Modal>
-    </ScrollView>
+    </>
   );
 }
 
@@ -97,7 +93,9 @@ function Request(props) {
   const dateString = day + "/" + month + "/" + newYear;
   const [valueChanged, setValueChanged] = useState(false);
   const [status, setStatus] = useState(props.data.requestStatus);
-  const {userContext} = useUserContext()
+  const { userContext } = useUserContext();
+  const [DownloadProgress,setDownloadProgress]=useState();
+
 
   const toggle = () => {
     const config = {
@@ -120,7 +118,7 @@ function Request(props) {
       setModal2Visible(true)
     }
     if (value == 4) {
-      DeleteRequest()
+      deleteRequest()
     }
   }
 
@@ -146,7 +144,7 @@ function Request(props) {
     }
   }
 
-  const DeleteRequest = () => {
+  const deleteRequest = () => {
     Alert.alert(
       'Delete request',
       'are you sure you want to Delete? All changes will be lost',
@@ -191,7 +189,6 @@ function Request(props) {
     );
   }
 
-
   const saveStatus = async (id) => {
     let request = {
       requestId: id,
@@ -217,7 +214,14 @@ function Request(props) {
     }
   }
 
+  const callback = downloadProgress => {
+    const progress = downloadProgress.totalBytesWritten / downloadProgress.totalBytesExpectedToWrite;
+    setDownloadProgress(progress);
+    console.log("Progress", progress)
+  }
+
   const downloadFile = async () => {
+    try{
     const url = props.data.requestProofDocument;
     const dot = url.lastIndexOf(".");
     const questionMark = url.lastIndexOf("?");
@@ -226,7 +230,9 @@ function Request(props) {
     const id = props.data.requestId;
     const fileName = "Request " + id;
     const fileUri = FileSystem.documentDirectory + fileName;
-    const DownloadedFile = await FileSystem.downloadAsync(url, fileUri);
+    const downloadResumable = FileSystem.createDownloadResumable(url,fileUri,{},callback);
+    console.log("downloadResumable", downloadResumable)
+    const DownloadedFile = await downloadResumable.downloadAsync();
     console.log("DownloadedFile", DownloadedFile)
     if (DownloadedFile.status == 200) {
       console.log("File Downloaded", DownloadedFile)
@@ -236,6 +242,11 @@ function Request(props) {
       console.log("File not Downloaded")
     }
   }
+  catch(error){
+    console.log(error)
+    Alert.alert("Error",error)
+  }
+}
 
   const saveFile = async (res, fileName, type) => {
     if (Platform.OS == "ios") {
@@ -284,10 +295,10 @@ function Request(props) {
                 <MenuOptions customStyles={{
                   optionsWrapper: newStyles.optionsWrapperOpened,
                 }}  >
-                  <MenuOption disableTouchable={userContext.userId==props.data.userId?false:true} value={1} children={<View style={newStyles.options}><MaterialCommunityIcons name='bell-ring-outline' size={20} /><Text style={newStyles.optionsText}> Send Notification</Text></View>} />
-                  <MenuOption disableTouchable={userContext.userId==props.data.userId?false:true} value={2} children={<View style={newStyles.options}><Feather name='eye' size={20} /><Text style={newStyles.optionsText}> View Document</Text></View>} />
-                  <MenuOption disableTouchable={userContext.userId==props.data.userId?false:true} value={3} children={<View style={userContext.userId==props.data.userId?newStyles.options:newStyles.disabledoptions}><Feather name='edit' size={20} /><Text style={newStyles.optionsText}> Edit Request</Text></View>} />
-                  <MenuOption style={newStyles.deleteTxt} value={4} children={<View style={userContext.userId==props.data.userId?newStyles.options:newStyles.disabledoptions}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={newStyles.deleteTxt}> Delete Request</Text></View>} />
+                  <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} value={1} children={<View style={newStyles.options}><MaterialCommunityIcons name='bell-ring-outline' size={20} /><Text style={newStyles.optionsText}> Send Notification</Text></View>} />
+                  <MenuOption value={2} children={<View style={newStyles.options}><Feather name='eye' size={20} /><Text style={newStyles.optionsText}> View Document</Text></View>} />
+                  <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true}value={3} children={<View style={userContext.userId == props.data.userId ? newStyles.options : newStyles.disabledoptions}><Feather name='edit' size={20} /><Text style={newStyles.optionsText}> Edit Request</Text></View>} />
+                  <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} style={[newStyles.deleteTxt,userContext.userId !== props.data.userId && newStyles.disabledoptions]} value={4} children={<View style={userContext.userId == props.data.userId ? newStyles.options : newStyles.disabledoptions}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={newStyles.deleteTxt}> Delete Request</Text></View>} />
                 </MenuOptions>
               </Menu>
               <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
@@ -352,8 +363,8 @@ function Request(props) {
                 >
                   <MenuOption value={1} children={<View style={newStyles.options}><MaterialCommunityIcons name='bell-ring-outline' size={20} /><Text style={newStyles.optionsText}> Send Notification</Text></View>} />
                   <MenuOption value={2} children={<View style={newStyles.options}><Feather name='eye' size={20} /><Text style={newStyles.optionsText}> View Document</Text></View>} />
-                  <MenuOption disableTouchable={userContext.userId==props.data.userId?false:true} value={3} children={<View style={userContext.userId==props.data.userId?newStyles.options:newStyles.disabledoptions}><Feather name='edit' size={20} /><Text style={newStyles.optionsText}> Edit Request</Text></View>} />
-                  <MenuOption disableTouchable={userContext.userId==props.data.userId?false:true} value={4} children={<View style={userContext.userId==props.data.userId?newStyles.options:newStyles.disabledoptions}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={newStyles.deleteTxt}> Delete Request</Text></View>} />
+                  <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} value={3} children={<View style={userContext.userId == props.data.userId ? newStyles.options : newStyles.disabledoptions}><Feather name='edit' size={20} /><Text style={newStyles.optionsText}> Edit Request</Text></View>} />
+                  <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} value={4} children={<View style={userContext.userId == props.data.userId ? newStyles.options : newStyles.disabledoptions}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={newStyles.deleteTxt}> Delete Request</Text></View>} />
                 </MenuOptions>
               </Menu>
               <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
@@ -464,7 +475,7 @@ const newStyles = StyleSheet.create({
   },
   disabledoptions: {
     flexDirection: 'row',
-    borderBottomColor: '#80808080',
+    borderBottomColor: '#808080',
     borderBottomWidth: 0.2,
     padding: 7,
     fontFamily: 'Urbanist-Medium',

@@ -1,12 +1,9 @@
-// Path: Client\Component\Contact.jsx
-// Contact Page
 import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Alert, TextInput } from 'react-native'
 import { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { AntDesign, Octicons } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
-
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -32,7 +29,6 @@ export default function EditContact({ route, navigation }) {
         <TouchableOpacity style={styles.headerButton} onPress={() => setSaving(true)}>
           <Text style={styles.headerButtonText}>Done</Text>
         </TouchableOpacity>
-
       ),
       headerLeft: () => (
         <TouchableOpacity style={styles.backBtn} onPress={() => setCancel(true)}>
@@ -113,9 +109,10 @@ export default function EditContact({ route, navigation }) {
       return Alert.alert('Invalid Mobile Number', 'Please enter a valid mobile number')
       setSaving(false);
     }
-    SaveChanges(Contact);
+    saveChanges(Contact);
   }
-  const SaveChanges = () => {
+
+  const saveChanges = () => {
     let urlContactUpdate = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/UpdateContact/';
     fetch(urlContactUpdate, {
       method: 'PUT',
@@ -134,7 +131,6 @@ export default function EditContact({ route, navigation }) {
           console.log("err post2=", error);
         });
   }
-
 
   return (
     <SafeAreaView style={styles.container}>
@@ -160,7 +156,7 @@ export default function EditContact({ route, navigation }) {
                 />
               </View>
               <View>
-                <Text style={styles.contactheader}>Phone number(optional):</Text>
+                <Text style={styles.contactheader}>Phone number (optional):</Text>
                 <TextInput
                   style={[styles.input, styles.numInput]}
                   value={Contact.phoneNo}
@@ -168,21 +164,21 @@ export default function EditContact({ route, navigation }) {
                   onChangeText={(value) => handleInputChange('phoneNo', value)}
                 />
               </View>
-              <Text style={styles.contactheader}>Role(optional):</Text>
+              <Text style={styles.contactheader}>Role (optional):</Text>
               <TextInput
                 style={styles.input}
                 value={Contact.role}
                 keyboardType='ascii-capable'
                 onChangeText={(value) => handleInputChange('role', value)}
               />
-              <Text style={styles.contactheader}>Email(optional):</Text>
+              <Text style={styles.contactheader}>Email (optional):</Text>
               <TextInput
                 style={styles.input}
                 value={Contact.email}
                 keyboardType='ascii-capable'
                 onChangeText={(value) => handleInputChange('email', value)}
               />
-              <Text style={styles.contactheader}>Comment(optional):</Text>
+              <Text style={styles.contactheader}>Comment (optional):</Text>
               <TextInput
                 style={styles.input}
                 value={Contact.contactComment}
@@ -304,5 +300,4 @@ const styles = StyleSheet.create({
   backBtn: {
     paddingLeft: 10,
   },
-
 });

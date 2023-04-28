@@ -261,6 +261,7 @@ export default function SettingScreen({ navigation }) {
                 }}>
                 <Stack.Screen name="Settings" component={HomeScreen} options={() => ({ headerTitle: 'Settings', headerShown: true, headerTitleAlign: 'center' })} initialParams={{ logout: () => { navigation.dispatch(StackActions.replace('LogIn')) }, Exit: () => navigation.navigate('AppBarDown') }} />
                 <Stack.Screen name="Privacy" component={Privacy} options={{ headerTitle: 'Privacy & My Account', headerTitleAlign: 'center', headerShown: true }} initialParams={{ logout: () => { navigation.dispatch(StackActions.replace('LogIn')) } }} />
+                <Stack.Screen name="ContactUs" component={ContactUs} options={{ headerTitle: 'ContactUs', headerTitleAlign: 'center', headerShown: true }} />           
             </Stack.Navigator>
         </NavigationContainer>
     )

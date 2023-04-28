@@ -3,12 +3,11 @@ import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } fr
 import { useState } from "react";
 import * as ImagePicker from 'expo-image-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { AntDesign, Octicons } from '@expo/vector-icons';
-const SCREEN_WIDTH = Dimensions.get('window').width;
+import { AntDesign, Octicons ,FontAwesome, MaterialIcons} from '@expo/vector-icons';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from '../../config/firebase';
 import DatePicker from 'react-native-datepicker';
-import { FontAwesome, MaterialIcons } from '@expo/vector-icons'
+const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function EditPaycheck(props) {
   const [imageChanged, setImageChanged] = useState(false);

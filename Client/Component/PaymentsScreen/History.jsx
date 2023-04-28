@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, Animated, Modal, Image, ScrollView, sagea } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, Animated, Modal, Image, ScrollView } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import NewPayment from './NewPayment';
 import { useUserContext } from '../../UserContext';
@@ -8,13 +8,7 @@ import * as FileSystem from 'expo-file-system';
 import { shareAsync } from 'expo-sharing';
 import { SafeAreaView } from 'react-navigation';
 import { MaterialCommunityIcons, AntDesign, Feather, Ionicons } from '@expo/vector-icons';
-import {
-  Menu,
-  MenuOptions,
-  MenuOption,
-  MenuTrigger,
-} from "react-native-popup-menu";
-
+import { Menu, MenuOptions, MenuOption, MenuTrigger, } from "react-native-popup-menu";
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -89,15 +83,15 @@ export default function History({ navigation, route }) {
   }
 
   return (
-
-    <ScrollView contentContainerStyle={styles.pending}>
-      {History}
+    <>
+      <ScrollView contentContainerStyle={styles.pending}>
+        {History}
+        <Modal animationType='slide' transparent={true} visible={modal1Visible}>
+          <NewPayment cancel={() => setModal1Visible(false)} />
+        </Modal>
+      </ScrollView>
       {userContext.userType == "Caregiver" ? <View style={styles.addBtnView}><AddBtn onPress={() => setModal1Visible(true)} /></View> : null}
-      <Modal animationType='slide' transparent={true} visible={modal1Visible}>
-        <NewPayment cancel={() => setModal1Visible(false)} />
-      </Modal>
-    </ScrollView>
-
+    </>
   );
 }
 
@@ -112,7 +106,8 @@ function Request(props) {
   const month = date.getMonth() + 1;
   const day = date.getDate();
   const dateString = day + "/" + month + "/" + newYear;
-  const {userContext} = useUserContext();
+  const { userContext } = useUserContext();
+  const [downloadProgress, setDownloadProgress] = useState(0);
 
   const toggle = () => {
     const config = {
@@ -123,7 +118,6 @@ function Request(props) {
     Animated.timing(animationController, config).start();
     setExpanded(!expanded);
   };
-
 
   const openModal = (value) => {
     if (value == 1) {
@@ -136,11 +130,11 @@ function Request(props) {
       setModal2Visible(true)
     }
     if (value == 4) {
-      DeleteRequest()
+      deleteRequest()
     }
   }
 
-  const DeleteRequest = () => {
+  const deleteRequest = () => {
     Alert.alert(
       'Delete request',
       'are you sure you want to Delete? All changes will be lost',
@@ -166,26 +160,31 @@ function Request(props) {
     );
   }
 
-  const saveStatus = async (id) => {
-    console.log("request", request)
-    let request = {
-      requestId: id,
-      requestStatus: "F"
-    }
-    try {
-      const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/UpdateStatus/', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(id)
-      });
-      const data = await response.json();
-      console.log(data)
-      props.getPending()
-    } catch (error) {
-      console.log(error)
-    }
+  // const saveStatus = async (id) => {
+  //   console.log("request", request)
+  //   let request = {
+  //     requestId: id,
+  //     requestStatus: "F"
+  //   }
+  //   try {
+  //     const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/UpdateStatus/', {
+  //       method: 'PUT',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify(id)
+  //     });
+  //     const data = await response.json();
+  //     console.log(data)
+  //     props.getPending()
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+  // }
+
+  const callback = downloadProgress => {
+    const progress = downloadProgress.totalBytesWritten / downloadProgress.totalBytesExpectedToWrite;
+    setDownloadProgress(progress);
   }
 
   const downloadFile = async () => {
@@ -197,7 +196,9 @@ function Request(props) {
     const id = props.data.requestId;
     const fileName = "Request " + id;
     const fileUri = FileSystem.documentDirectory + fileName;
-    const DownloadedFile = await FileSystem.downloadAsync(url, fileUri);
+    const downloadResumable = FileSystem.createDownloadResumable(url,fileUri,{},callback);
+    console.log("downloadResumable", downloadResumable)
+    const DownloadedFile = await downloadResumable.downloadAsync();
     console.log("DownloadedFile", DownloadedFile)
     if (DownloadedFile.status == 200) {
       console.log("File Downloaded", DownloadedFile)
@@ -222,11 +223,9 @@ function Request(props) {
               console.log("File", res)
               await FileSystem.writeAsStringAsync(res, base64, { encoding: FileSystem.EncodingType.Base64 });
               return Alert.alert("File Saved")
-
             })
             .catch(error => { console.log("Error", error) })
         }
-
       }
       catch (error) {
         console.log("Error", error)
@@ -235,7 +234,6 @@ function Request(props) {
   }
 
   const displayStatus = () => {
-
     if (props.data.requestStatus == "F") {
       return "Finished"
     }
@@ -246,9 +244,6 @@ function Request(props) {
       return "Rejected"
     }
   }
-
-
-
 
   return (
     <SafeAreaView>
@@ -274,7 +269,7 @@ function Request(props) {
                   optionsWrapper: newStyles.optionsWrapperOpened,
                 }}  >
                   <MenuOption value={2} children={<View style={newStyles.options}><Feather name='eye' size={20} /><Text style={newStyles.optionsText}> View Document</Text></View>} />
-                  <MenuOption disableTouchable={userContext.userId==props.data.userId?false:true}style={newStyles.deleteTxt} value={4} children={<View style={userContext.userId==props.data.userId?newStyles.options:newStyles.disabledoptions}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={newStyles.deleteTxt}> Delete Requset</Text></View>} />
+                  <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} style={newStyles.deleteTxt} value={4} children={<View style={userContext.userId == props.data.userId ? newStyles.options : newStyles.disabledoptions}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={newStyles.deleteTxt}> Delete Requset</Text></View>} />
                 </MenuOptions>
               </Menu>
               <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
@@ -303,7 +298,7 @@ function Request(props) {
             </View>
           </View>
           :
-          <View>
+          <View style={newStyles.requestClosed}>
             <View style={newStyles.requestItemHeader}>
               <TouchableOpacity onPress={toggle} style={newStyles.request}>
                 <View style={newStyles.requestItemLeft}>
@@ -324,7 +319,7 @@ function Request(props) {
                 }}
                 >
                   <MenuOption style={{ borderRadius: 16 }} value={2} children={<View style={newStyles.options}><Feather name='eye' size={20} /><Text style={newStyles.optionsText}> View Document</Text></View>} />
-                  <MenuOption disableTouchable={userContext.userId==props.data.userId?false:true} style={newStyles.deleteTxt} value={4} children={<View style={userContext.userId==props.data.userId?newStyles.options:newStyles.disabledoptions}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={newStyles.deleteTxt}> Delete Requset</Text></View>} />
+                  <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} style={newStyles.deleteTxt} value={4} children={<View style={userContext.userId == props.data.userId ? newStyles.options : newStyles.disabledoptions}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={newStyles.deleteTxt}> Delete Requset</Text></View>} />
                 </MenuOptions>
               </Menu>
               <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
@@ -355,7 +350,6 @@ const newStyles = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 1.5,
     borderColor: '#E6EBF2',
-    marginVertical: 10,
     backgroundColor: '#FFF',
     padding: 12,
     flexDirection: 'row',
@@ -386,6 +380,12 @@ const newStyles = StyleSheet.create({
     borderColor: '#7DA9FF',
     marginVertical: 10,
     backgroundColor: '#F5F8FF',
+    padding: 5,
+  },
+  requestClosed: {
+    width: SCREEN_WIDTH * 0.9,
+    alignItems: 'center',
+    marginVertical: 5,
     padding: 5,
   },
   requestItemBody: {
@@ -435,8 +435,8 @@ const newStyles = StyleSheet.create({
     borderBottomColor: '#80808080',
     borderBottomWidth: 0.2,
     padding: 15,
-    fontFamily: 'Urbanist-Medium', 
-    opacity:0.5
+    fontFamily: 'Urbanist-Medium',
+    opacity: 0.5
   },
   optionsText: {
     fontFamily: 'Urbanist-Medium',
