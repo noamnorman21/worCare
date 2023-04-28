@@ -13,17 +13,27 @@ export default function ShopTasks(props) {
   const [modalVisible, setModalVisible] = useState(false)
   const [userData, setUserData] = useState(useUserContext().userContext);
   const [tasks, setTasks] = useState([])
-  const [shopTasks, setShopTasks] = useState(props.allShopTasks)
 
+
+  const [shopTasks, setShopTasks] = useState(props.allShopTasks)
   const [expanded, setExpanded] = useState(true);
   const handlePress = () => setExpanded(!expanded);
 
+  const getShopTasks = () => {
+    return props.allShopTasks
+  }
+
+  const [isCheck, setIsCheck] = useState(false)
+  const checkIcon = [
+    "check-circle",
+    "circle"
+  ]
   useEffect(() => {
+    setShopTasks(props.allShopTasks)
   }, [])
 
   const handleAddBtnPress = () => {
-    console.log(props.allShopTasks)
-
+    setModalVisible(true);
   };
 
   const handleModalClose = () => {
@@ -67,21 +77,39 @@ export default function ShopTasks(props) {
   //   </View>}
   // }
 
+  const isProductChecked = (prod,actualTask) => {
+   // update the product status to 'F'
+    setShopTasks(shopTasks.map((task) => {
+      if (task.listId === prod.listId && task.actualId === actualTask.actualId) {
+        task.prodtList.map((product) => {
+          if (product.productId === prod.productId) {
+           if(product.productStatus=='P'){
+            product.productStatus = 'F'
+            }else{
+              product.productStatus = 'P'
+            }
+          }
+        })
+      }
+      return task
+    }))
+
+  }
 
   return (
     <View style={styles.container}>
-      <View style={{ width: SCREEN_WIDTH * 0.88 }}>
+      <View style={{ width: SCREEN_WIDTH * 0.92 }}>
 
-        <List.Section title="Accordions">
+        <List.Section>
           <ScrollView
-          
+
           >
             {
-              props.allShopTasks.map((task, index) => {
+            shopTasks.map((task, index) => {
                 return (
                   <List.Accordion
                     key={index}
-                    titleStyle  = {{
+                    titleStyle={{
                       fontSize: 20,
                       fontFamily: 'Urbanist-Bold',
                       color: '#000',
@@ -91,21 +119,31 @@ export default function ShopTasks(props) {
                     style={{
                       backgroundColor: 'none',
                     }}
-                    left={()=>
+                    left={() =>
                       <Text style={styles.taskName}>{task.taskName}</Text>
-                    
-                    }>
 
+                    }>
                     {
                       // if there are prodtList items in the task then show them,else there is no subtask
                       task.prodtList != null ?
+                      //here we can add a button to add a subtask                    
                         task.prodtList.map((prod, index) => {
                           return (
-                            <List.Item key={index} title={prod.productName} />
+                            <List.Item
+                              key={prod.producId} style={styles.productItem} title={prod.productName}
+                              left={
+                                () =>
+                                  <TouchableOpacity onPress={() => isProductChecked(prod,task)}>
+                                    <Feather name={
+                                      prod.productStatus=='P' ? checkIcon[1] : checkIcon[0]
+                                    } size={27} color="#548DFF" />
+                                  </TouchableOpacity>}
+                              right={() => <Text style={styles.subtaskTxt}>{prod.productQuantity}</Text>}
+                            />
                           )
                         }
                         ) :
-                        null
+                        null //here we can add a button to add a subtask
                     }
                   </List.Accordion>
                 )
@@ -195,4 +233,30 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
+
+
+
+
+
+  productItem: {
+    flexDirection: 'row',
+    width: SCREEN_WIDTH * 0.88,
+    height: 54,
+    backgroundColor: '#EBF1FF',
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    padding: 10,
+    marginVertical: 5,
+    marginHorizontal: 5,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 4,
+      height: 4,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+
 });

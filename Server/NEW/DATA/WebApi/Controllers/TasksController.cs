@@ -339,25 +339,25 @@ namespace WebApi.Controllers
 
         [HttpPost]
         [Route("InsertProductsToList")]
-        public IHttpActionResult InsertProductsToList([FromBody] ProductListDTO listId)
+        public IHttpActionResult InsertProductsToList([FromBody] ProductListDTO prodList)
         {
             try
             {
                 //find if the product is already in the db, else add it
                 var isExsitProduct = from p in db.tblProduct
-                                     where p.productName == listId.productName
+                                     where p.productName == prodList.productName
                                      select p;
                 int productId;
                 if (isExsitProduct.Count() == 0)
                 {
-                    db.InsertProduct(listId.productName);
-                    productId = db.tblProduct.Max(x => x.productId);
+                    db.InsertProduct(prodList.productName);
                     db.SaveChanges();
+                    productId = db.tblProduct.Max(x => x.productId);                  
                 }
                 else
-                    productId = isExsitProduct.FirstOrDefault().productId;
+                    productId = isExsitProduct.First().productId;
                 //add the product to the list
-                db.InsertProductList(productId, listId.listId, "P", listId.productQuantity);
+                db.InsertProductList(productId, prodList.listId, "P", prodList.productQuantity);
                 return Ok("Product added to list");
             }
             catch (Exception ex)
