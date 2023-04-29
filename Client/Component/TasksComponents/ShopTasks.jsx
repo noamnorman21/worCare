@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Dimensions, ScrollView } from 'react-native'
+import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Dimensions, ScrollView, TextInput, Alert } from 'react-native'
 import { useState, useEffect } from 'react'
 import { List } from 'react-native-paper';
 import { Feather, Ionicons } from '@expo/vector-icons';
@@ -13,6 +13,7 @@ export default function ShopTasks(props) {
   const [modalVisible, setModalVisible] = useState(false)
   const [userData, setUserData] = useState(useUserContext().userContext);
   const [tasks, setTasks] = useState([])
+  const [newProductName, setNewProductName] = useState('')
 
 
   const [shopTasks, setShopTasks] = useState(props.allShopTasks)
@@ -30,7 +31,8 @@ export default function ShopTasks(props) {
   ]
   useEffect(() => {
     setShopTasks(props.allShopTasks)
-  }, [])
+  }, [props.allShopTasks])
+
 
   const handleAddBtnPress = () => {
     setModalVisible(true);
@@ -40,8 +42,46 @@ export default function ShopTasks(props) {
     setModalVisible(false);
   };
 
-  const handleAddingSubTask = () => {
-    console.log(props.allShopTasks)
+  const handleAddingSubTask = (taskToAddProduct) => {
+    if (newProductName === '') {
+      Alert.alert('Please enter a product name')
+      return
+    }
+    console.log(newProductName)
+    let newProductUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/InsertProductsToList'
+    let newProductData = {
+      listId: taskToAddProduct.listId,
+      productQuantity: 0,// will change to the value from the input field
+      productName: newProductName,
+    }
+    fetch(newProductUrl, {
+      method: 'POST',
+      body: JSON.stringify(newProductData),
+      headers: new Headers({
+        'Content-type': 'application/json; charset=UTF-8'
+      })
+    })
+      .then(res => {
+        console.log('res=', res);
+        //if res status is ok or 200
+        if (res.ok) {
+          setNewProductName('')
+          props.refreshlPublicTask()
+          console.log('product added')
+        }
+        return res.json()
+      }
+      )
+      .then(
+        (result) => {
+          console.log("fetch btnFetchGetAllTasks= ", result);
+        }
+      )
+      .catch(
+        (error) => {
+          console.log("err post=", error);
+        }
+      )
   }
 
   const updateCompleted = () => {
@@ -65,7 +105,7 @@ export default function ShopTasks(props) {
   //           </TouchableOpacity>
   //           <TouchableOpacity style={styles.iconDown} onPress={handleAddingSubTask}>
   //             <Ionicons name="md-caret-down-outline" size={17} color="#808080" />
-  //             {/* <Feather name="plus" size={30} color="#548DFF" /> */}
+
   //           </TouchableOpacity>
   //         </View>
   //       </View>
@@ -74,7 +114,7 @@ export default function ShopTasks(props) {
   // }
 
   const isProductChecked = (prod, actualTask) => {
-    // update the product status to 'F'
+    // update the product status to 'F' for now its only on the client side
     setShopTasks(shopTasks.map((task) => {
       if (task.listId === prod.listId && task.actualId === actualTask.actualId) {
         task.prodtList.map((product) => {
@@ -89,9 +129,48 @@ export default function ShopTasks(props) {
       }
       return task
     }))
-
   }
-
+const handleQtyChange = (qty,prod,actualTask) => {
+  // add the qty to the product
+  setShopTasks(shopTasks.map((task) => {
+    if (task.listId === prod.listId && task.actualId === actualTask.actualId) {
+      task.prodtList.map((product) => {
+        if (product.productId === prod.productId) {
+          product.productQuantity = qty
+        }
+      })
+    }
+    return task
+  }))
+}
+const handleQtyPlus = (prod,actualTask) => {
+  // add the qty to the product
+  setShopTasks(shopTasks.map((task) => {
+    if (task.listId === prod.listId && task.actualId === actualTask.actualId) {
+      task.prodtList.map((product) => {
+        if (product.productId === prod.productId) {
+          product.productQuantity = product.productQuantity + 1
+        }
+      })
+    }
+    return task
+  }))
+}
+const handleQtyMinus = (prod,actualTask) => {
+  // add the qty to the product
+  setShopTasks(shopTasks.map((task) => {
+    if (task.listId === prod.listId && task.actualId === actualTask.actualId) {
+      task.prodtList.map((product) => {
+        if (product.productId === prod.productId) {
+          if (product.productQuantity > 0) {
+            product.productQuantity = product.productQuantity - 1
+          }
+        }
+      })
+    }
+    return task
+  }))
+}
   return (
     <View style={styles.container}>
       <View style={{ width: SCREEN_WIDTH * 0.92 }}>
@@ -104,34 +183,48 @@ export default function ShopTasks(props) {
                   right={() => { return <Feather name="chevron-down" size={26} color="#548DFF" /> }}
                 >
                   <List.Item key={null} style={styles.productItem}
-                    left={() =>
-                      <TouchableOpacity onPress={handleAddingSubTask}>
-                        <Text style={styles.subtaskTxt}>Click here to add a product...</Text>
-                      </TouchableOpacity>
+                    left={() => {
+                      return (
+                        <TextInput value={newProductName} style={styles.subtaskTxt} placeholder="Click here to add a product..." onChangeText={setNewProductName} />
+                      )
                     }
-                    right={() => { return <Feather style={styles.iconPlus} name="plus" size={25} color="#548DFF" /> }}
+                    }
+                    right={() => {
+                      return (<TouchableOpacity onPress={() => handleAddingSubTask(task)}>
+                        <Feather style={styles.iconPlus} name="plus" size={25} color="#548DFF" />
+                      </TouchableOpacity>
+                      )
+                    }}
                   />
-
-                  {/* 
-                  </TouchableOpacity> */}
                   {
                     // if there are prodtList items in the task then show them,else there is no subtask
                     task.prodtList != null ?
                       task.prodtList.map((prod, index) => {
                         return (
                           <List.Item
-                            key={prod.producId} style={styles.productItem}
+                            key={prod.productId} style={styles.productItem}
                             title={prod.productName}
                             titleStyle={{
                               fontSize: 18,
                               fontFamily: 'Urbanist-SemiBold',
                               color: '#000',
+                              textDecorationLine: prod.productStatus == 'F' ? 'line-through' : 'none'
                             }}
                             left={() =>
                               <TouchableOpacity onPress={() => isProductChecked(prod, task)}>
                                 <Feather name={prod.productStatus == 'P' ? checkIcon[1] : checkIcon[0]} size={27} color="#548DFF" />
                               </TouchableOpacity>}
-                            right={() => <Text style={styles.qtyTxt}>{prod.productQuantity}</Text>}
+                            right={() =>
+                              <View>
+                                <TouchableOpacity style={styles.iconUp} onPress={()=>handleQtyPlus(prod,task)}>
+                                  <Ionicons name="md-caret-up-outline" size={17} color="#808080" />
+                                </TouchableOpacity>
+                                <TouchableOpacity style={styles.iconDown} onPress={()=>handleQtyMinus(prod,task)}>
+                                  <Ionicons name="md-caret-down-outline" size={17} color="#808080" />
+                                </TouchableOpacity>
+                                <TextInput returnKeyType='done' keyboardType='numeric' value={prod.productQuantity=!0?`${prod.productQuantity}`:''} style={styles.qtyTxt} placeholder='Qty' onChangeText={(text) => handleQtyChange(text, prod, task)} />
+                              </View>
+                            }
                           />
                         )
                       }
@@ -164,17 +257,20 @@ const styles = StyleSheet.create({
   },
   iconUp: {
     position: 'absolute',
-    right: 0,
-    top: 0,
+    right:-20,
+    bottom: 9,
+    width: 20,
   },
   iconDown: {
     position: 'absolute',
-    right: 0,
-    bottom: 0,
+    right: -20,
+    bottom: -9,
+    width: 20,
   },
   qtyTxt: {
     fontSize: 16,
     paddingTop: 5,
+    paddingRight: 10,
     fontFamily: 'Urbanist-Regular',
     color: '#808080',
   },
@@ -182,6 +278,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     paddingLeft: 10,
     fontFamily: 'Urbanist-Regular',
+    width: SCREEN_WIDTH * 0.72,
     color: '#808080',
   },
   taskName: {
@@ -215,4 +312,5 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
+
 });

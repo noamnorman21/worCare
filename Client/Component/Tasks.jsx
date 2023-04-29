@@ -97,7 +97,7 @@ export default function Tasks() {
         children={() => <General allPrivateTasks={allPrivateTasks} />}
       />
       <Tab.Screen name="Shop" children={
-        () => <Shop allShopTasks={allShopTasks} />
+        () => <Shop allShopTasks={allShopTasks} refreshlPublicTask={getAllPublicTasks} />
       } />
       <Tab.Screen name="Medicine" children={
         () => <Medicine allMedicineTasks={allMedicineTasks} />
