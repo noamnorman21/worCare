@@ -86,7 +86,7 @@ export default function Privacy({ navigation, route }) {
                 if (passwordChanged) {
                   checkPassowrd();
                 }
-                else if (Notifications != userContext.Notifications) {
+                else if (Notifications != userNotifications) {
                   updateNotifications();
                 }
                 else {
@@ -166,7 +166,7 @@ export default function Privacy({ navigation, route }) {
                 (result) => {
                   console.log("fetch POST= ", result);
                   Alert.alert('Password Updated', 'Your Password has been changed successfully');
-                  if (Notifications != userContext.Notifications) {
+                  if (Notifications != userNotifications) {
                     updateNotifications();
                   }
                   else {
@@ -228,7 +228,9 @@ export default function Privacy({ navigation, route }) {
     else if (Email == userContext.Email && passwordChanged) {
       checkPassowrd();
     }
-    else if (Email == userContext.Email && !passwordChanged && Notifications != userContext.Notifications) {
+    else if (Email == userContext.Email && !passwordChanged && Notifications !== userNotifications) {
+      console.log('Notifications', Notifications);
+      console.log('userContext.Notifications', userNotifications);
       updateNotifications();
     }
     else {
