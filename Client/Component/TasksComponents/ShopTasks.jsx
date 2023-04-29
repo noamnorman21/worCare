@@ -166,14 +166,14 @@ export default function ShopTasks(props) {
                             </TouchableOpacity>
                           }
                           right={() =>
-                            <View>
+                            <View style={[{ display: prod.productStatus == 'F' ? 'none' : 'flex' }, { paddingRight: 10 }]}>
                               <TouchableOpacity style={styles.iconUp} onPress={() => handleQtyArrows(true, prod, task, 0)}>
                                 <Ionicons name="caret-up-outline" size={20} color="#808080" />
                               </TouchableOpacity>
                               <TouchableOpacity style={styles.iconDown} onPress={() => handleQtyArrows(false, prod, task, 0)}>
                                 <Ionicons name="caret-down-outline" size={20} color="#808080" />
                               </TouchableOpacity>
-                              <TextInput returnKeyType='done' keyboardType='number-pad' value={prod.productQuantity != 0 ? `${prod.productQuantity}` : ''} style={styles.qtyTxt} placeholder='Qty' onChangeText={(text) => handleQtyArrows(null, prod, task, text)} />
+                              <TextInput style={styles.qtyTxt} returnKeyType='done' keyboardType='number-pad' value={prod.productQuantity != 0 ? `${prod.productQuantity}` : ''} placeholder='Qty' onChangeText={(text) => handleQtyArrows(null, prod, task, text)} />
                             </View>
                           }
                         />
@@ -220,8 +220,9 @@ const styles = StyleSheet.create({
   },
   qtyTxt: {
     fontSize: 16,
-    paddingTop: 5,
-    paddingRight: 10,
+    paddingTop: 3,
+    textAlign: 'right',
+    width: 45,
     fontFamily: 'Urbanist-Regular',
     color: '#808080',
   },

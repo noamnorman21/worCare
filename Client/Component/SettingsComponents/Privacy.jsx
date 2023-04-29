@@ -45,16 +45,16 @@ export default function Privacy({ navigation, route }) {
     })
       .then(res => {
         if (res.ok) {
+          sendDataToNextDB();
         }
         else {
-          sendDataToNextDB();
+          Alert.alert('This email is already in use')
         }
       })
       .catch((error) => {
         console.log("err=", error);
       });
   }
-
 
   const sendDataToNextDB = () => {
     const userToUpdate = {
@@ -129,7 +129,7 @@ export default function Privacy({ navigation, route }) {
 
   const SaveAllChanges = () => {
     if (Email != userContext.Email) {
-      sendDataToNextDB();
+      CheckEmailInDB();
     }
     else if (Email == userContext.Email && passwordChanged) {
       checkPassowrd();
@@ -235,6 +235,7 @@ export default function Privacy({ navigation, route }) {
     const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/ //at least 8 characters, 1 letter, 1 number
     return passwordRegex.test(password);
   }
+  
   const checkPassowrd = () => {
     if (password1 === password2 && validatePassword(password1)) {
       let user = {
