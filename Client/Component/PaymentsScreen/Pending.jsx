@@ -231,6 +231,11 @@ function Request(props) {
     const fileName = "Request " + id;
     const fileUri = FileSystem.documentDirectory + fileName;
     const downloadResumable = FileSystem.createDownloadResumable(url,fileUri,{},callback);
+    const directoryInfo = await FileSystem.getInfoAsync(fileUri);
+   if (!directoryInfo.exists) {
+       await FileSystem.makeDirectoryAsync(fileUri, { intermediates: true 
+       });
+   }
     console.log("downloadResumable", downloadResumable)
     const DownloadedFile = await downloadResumable.downloadAsync();
     console.log("DownloadedFile", DownloadedFile)

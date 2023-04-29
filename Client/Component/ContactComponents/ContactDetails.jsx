@@ -286,7 +286,7 @@ export default function ContactDetails({ route, navigation }) {
       <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
           <ScrollView contentContainerStyle={styles.centeredView}>
-            {Edit && <Text style={styles.contactheader}>{Contact.contactName}</Text>}
+            {!Edit && <Text style={styles.contactheader}>{Contact.contactName}</Text>}
             {!Edit && <View style={styles.ButtonView}>
               <TouchableOpacity style={Contact.email ? styles.button : styles.disabled} disabled={Contact.email ? false : true}
                 onPress={() => Linking.openURL(`mailto:${Contact.email}`)}>

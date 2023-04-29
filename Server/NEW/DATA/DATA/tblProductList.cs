@@ -15,9 +15,11 @@ namespace DATA
     public partial class tblProductList
     {
         public int productId { get; set; }
-        public int listId { get; set; }
+        public int actualId { get; set; }
+        public int taskId { get; set; }
         public string productStatus { get; set; }
         public int productQuantity { get; set; }
+        public string commentForProduct { get; set; }
     
         public virtual tblList tblList { get; set; }
         public virtual tblProduct tblProduct { get; set; }

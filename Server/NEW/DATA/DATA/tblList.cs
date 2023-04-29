@@ -20,10 +20,13 @@ namespace DATA
             this.tblProductList = new HashSet<tblProductList>();
         }
     
-        public int listId { get; set; }
+        public Nullable<int> listId { get; set; }
         public string listName { get; set; }
+        public int actualId { get; set; }
+        public int taskId { get; set; }
     
         public virtual tblActualList tblActualList { get; set; }
+        public virtual tblActualTask tblActualTask { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tblProductList> tblProductList { get; set; }
     }

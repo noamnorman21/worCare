@@ -21,5 +21,6 @@ namespace DATA
         public string taskStatus { get; set; }
     
         public virtual tblPatientTask tblPatientTask { get; set; }
+        public virtual tblList tblList { get; set; }
     }
 }

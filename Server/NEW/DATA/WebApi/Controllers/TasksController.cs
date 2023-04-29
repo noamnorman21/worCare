@@ -23,7 +23,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                db.InsertPrivateTask(taskDTO.taskName, taskDTO.taskFromDate, taskDTO.taskToDate, taskDTO.taskComment, taskDTO.status, taskDTO.workerId, taskDTO.TimeInDay, taskDTO.frequency);
+                db.InsertPrivateTask(taskDTO.taskName, taskDTO.taskFromDate, taskDTO.taskToDate, taskDTO.frequency, taskDTO.taskComment, taskDTO.workerId);
                 db.SaveChanges();
                 return Ok(taskDTO);
             }
@@ -50,9 +50,7 @@ namespace WebApi.Controllers
                     taskDTO.taskFromDate = item.taskFromDate;
                     taskDTO.taskToDate = item.taskToDate;
                     taskDTO.taskComment = item.taskComment;
-                    taskDTO.status = item.status;
                     taskDTO.workerId = item.workerId;
-                    taskDTO.TimeInDay = item.TimeInDay;
                     taskDTO.frequency = item.frequency;
                     privateTasks.Add(taskDTO);
                 }
@@ -75,9 +73,7 @@ namespace WebApi.Controllers
                 tblPrivate.taskFromDate = taskDTO.taskFromDate;
                 tblPrivate.taskToDate = taskDTO.taskToDate;
                 tblPrivate.taskComment = taskDTO.taskComment;
-                tblPrivate.status = taskDTO.status;
                 tblPrivate.workerId = taskDTO.workerId;
-                tblPrivate.TimeInDay = taskDTO.TimeInDay;
                 tblPrivate.frequency = taskDTO.frequency;
                 db.SaveChanges();
                 return Ok(taskDTO);
@@ -87,8 +83,9 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-        //Public Task section     
+        
+        // ----------------------- Public Tasks Section --------------------------
+        
         [HttpPost]
         [Route("GetAllTasks")] //Get all public tasks
         public IHttpActionResult GetAllTasks([FromBody] string patientId)
@@ -102,7 +99,7 @@ namespace WebApi.Controllers
                 foreach (var item in tasksArr)
                 {
                     var task = from t in db.tblActualTask
-                               where t.taskId == item.taskId && 
+                               where t.taskId == item.taskId &&
                                t.taskDate >= DateTime.Now &&
                                t.taskDate <= SqlFunctions.DateAdd("d", 7, DateTime.Now) &&
                                t.taskStatus == "P"
@@ -120,6 +117,7 @@ namespace WebApi.Controllers
                         actualTask.taskName = item.taskName;
                         actualTask.frequency = item.frequency;
                         actualTask.listId = item.listId;
+                        actualTask.actualId = item2.actualId;
                         actualTasks.Add(actualTask);
                     }
                 }
@@ -133,8 +131,34 @@ namespace WebApi.Controllers
                     {
                         item.type = item2.type;
                     }
-                }                
-                actualTasks.Sort((x, y) => DateTime.Compare(x.taskDate, y.taskDate));               
+                    List<ProductListDTO> productListToSend = new List<ProductListDTO>();
+                    if (item.type == false)// we will create the product list and add it to the actual list
+                    {
+                        var prodArr = from t in db.tblProductList //find all relavent ProductList for this task
+                                      where t.taskId == item.taskId && t.actualId == item.actualId
+                                      select t;
+                        if (prodArr.Count() > 0) //that mean the we already have products in this list 
+                        {
+                            foreach (var product in prodArr)
+                            {
+                                ProductListDTO productList = new ProductListDTO();
+                                productList.taskId = item.taskId;
+                                productList.actualId = item.actualId;
+                                productList.productId = product.productId;
+                                var prodName = from t in db.tblProduct //find the name of the Product from tblProduct
+                                               where t.productId == product.productId
+                                               select t.productName;
+                                productList.productName = prodName.First();
+                                productList.productStatus = product.productStatus;
+                                productList.productQuantity = product.productQuantity;
+                                productList.commentForProduct = product.commentForProduct;
+                                productListToSend.Add(productList);
+                            }
+                            item.prodList = productListToSend; //add to the actual task the product list
+                        }
+                    }
+                }
+                actualTasks.Sort((x, y) => DateTime.Compare(x.taskDate, y.taskDate));
                 return Ok(actualTasks);
             }
             catch (Exception ex)
@@ -150,13 +174,12 @@ namespace WebApi.Controllers
             // type = 1 - True -  drug list
             // type = 0 - False - product list
             // type = null - regular task
-            
             Nullable<bool> isDrug = null;// default  will be regular patient task
             string taskName;
             tblActualTask actualTask = new tblActualTask();
             try
             {
-                if (list.drugId != null) 
+                if (list.drugId != null)
                 {
                     //isdrug mean that is drug list and not product list
                     isDrug = true;
@@ -205,7 +228,7 @@ namespace WebApi.Controllers
                         drugFor.patientId = list.patientId;
                         drugFor.listId = actualListId;
                         drugFor.timesInDayArray = timesInDayArray; //will not send to the db just a temp field
-                        int resInsertDrugForPatient = db.InsertDrugForPatient(actualListId, drugFor.fromDate, drugFor.toDate, drugFor.dosage, drugFor.qtyInBox, drugFor.minQuantity, drugFor.drugId, drugFor.patientId);
+                        db.InsertDrugForPatient(actualListId, drugFor.fromDate, drugFor.toDate, drugFor.dosage, drugFor.qtyInBox, drugFor.minQuantity, drugFor.drugId, drugFor.patientId);
                         db.SaveChanges();
                         PatientTaskDTO task = new PatientTaskDTO();
                         task.taskName = taskName;
@@ -218,11 +241,11 @@ namespace WebApi.Controllers
                         task.userId = list.userId;
                         task.listId = actualListId;
                         task.timesInDayArr = timesInDayArray;
-                        int resInsertPatientTask = db.InsertPatientTask(task.taskName, task.taskFromDate, task.taskToDate, task.taskComment, task.patientId, task.workerId, task.userId, actualListId, task.frequency);
+                        db.InsertPatientTask(task.taskName, task.taskFromDate, task.taskToDate, task.taskComment, task.patientId, task.workerId, task.userId, actualListId, task.frequency);
                         db.SaveChanges();
                         int taskId = db.tblPatientTask.Max(x => x.taskId);
                         //we use here partial class to add the actual tasks to the db                                  
-                        if (!actualTask.InsertActualTask(task.frequency, task.timesInDayArr, taskId, task.taskFromDate, task.taskToDate))
+                        if (!actualTask.InsertActualTask(task.frequency, task.timesInDayArr, taskId, task.taskFromDate, task.taskToDate, task.listId, isDrug, task.taskName))
                             throw new Exception("error Insert Actual Tasks ");
                         return Ok("Actual Tasks added");
                     }
@@ -253,13 +276,11 @@ namespace WebApi.Controllers
                     task.userId = list.userId;
                     task.listId = actualListId;
                     task.timesInDayArr = timesInDayArray;
+                    db.InsertPatientTask(task.taskName, task.taskFromDate, task.taskToDate, task.taskComment, task.patientId, task.workerId, task.userId, actualListId, task.frequency);
                     int taskId = db.tblPatientTask.Max(x => x.taskId);
-                    db.InsertList(task.taskName, task.listId);
-                    db.SaveChanges();
-                    int resInsertPatientTask = db.InsertPatientTask(task.taskName, task.taskFromDate, task.taskToDate, task.taskComment, task.patientId, task.workerId, task.userId, actualListId, task.frequency);
                     db.SaveChanges();
                     //we use here partial class to add the actual tasks to the db                                  
-                    if (!actualTask.InsertActualTask(task.frequency, task.timesInDayArr, taskId, task.taskFromDate, task.taskToDate))
+                    if (!actualTask.InsertActualTask(task.frequency, task.timesInDayArr, taskId, task.taskFromDate, task.taskToDate,task.listId,isDrug, task.taskName))
                         throw new Exception("error Insert Actual Tasks ");
                     return Ok("Actual Tasks added");
                 }
@@ -295,7 +316,7 @@ namespace WebApi.Controllers
                         db.SaveChanges();
                         int taskId = db.tblPatientTask.Max(x => x.taskId);
                         //we use here partial class to add the actual tasks to the db
-                        if (!actualTask.InsertActualTask(task.frequency, task.timesInDayArr, taskId, task.taskFromDate, task.taskToDate))
+                        if (!actualTask.InsertActualTask(task.frequency, task.timesInDayArr, taskId, task.taskFromDate, task.taskToDate, task.listId, isDrug, task.taskName))
                             throw new Exception("error Insert Actual Tasks ");
                         return Ok("Actual Tasks added");
                     }
@@ -303,7 +324,6 @@ namespace WebApi.Controllers
                     {
                         return BadRequest(ex.Message);
                     }
-
                 }
             }
             catch (Exception ex)
@@ -314,33 +334,33 @@ namespace WebApi.Controllers
 
         [HttpPost]
         [Route("InsertProductsToList")]
-        public IHttpActionResult InsertProductsToList([FromBody] ProductListDTO listId)
+        public IHttpActionResult InsertProductsToList([FromBody] ProductListDTO prodList)
         {
             try
             {
                 //find if the product is already in the db, else add it
                 var isExsitProduct = from p in db.tblProduct
-                                     where p.productName == listId.productName
+                                     where p.productName == prodList.productName
                                      select p;
                 int productId;
                 if (isExsitProduct.Count() == 0)
                 {
-                    db.InsertProduct(listId.productName);
-                    productId = db.tblProduct.Max(x => x.productId);
+                    db.InsertProduct(prodList.productName);
                     db.SaveChanges();
+                    productId = db.tblProduct.Max(x => x.productId);
                 }
                 else
-                    productId = isExsitProduct.FirstOrDefault().productId;
-                //add the product to the list
-                db.InsertProductList(productId, listId.listId, "P", listId.productQuantity);
+                    productId = isExsitProduct.First().productId;
+                
+                //add the product to the list                
+                db.InsertProductList(productId, prodList.actualId,prodList.taskId, "P", prodList.productQuantity, prodList.commentForProduct);
+                db.SaveChanges();
                 return Ok("Product added to list");
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
-
-
         }
     }
 }

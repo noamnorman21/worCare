@@ -42,10 +42,11 @@ namespace DATA
     public partial class tblActualTask
     {
         igroup194Db db = new igroup194Db();
-        public bool InsertActualTask(string frequency, TimeSpan[] timesInDayArr, int taskId, DateTime taskFromDate, DateTime taskToDate)
+        public bool InsertActualTask(string frequency, TimeSpan[] timesInDayArr, int taskId, DateTime taskFromDate, DateTime taskToDate, int listId, Nullable<bool> type, string taskName)
         {
             try
             {
+                var list = db.tblActualList.Where(x => x.listId == listId).First();
                 DateTime tempDate = taskFromDate;
                 if (frequency == "Once")
                 {
@@ -54,14 +55,25 @@ namespace DATA
                         for (int i = 0; i < timesInDayArr.Length; i++)
                         {
                             //task.taskToDate in this content is the date of the task
-                            int ActualTask = db.InsertActualTask(taskId, taskToDate, timesInDayArr[i], "P");
+                            db.InsertActualTask(taskId, taskToDate, timesInDayArr[i], "P");
+                            if (type == false)
+                            {
+                                int actualId = db.tblActualTask.Max(x => x.actualId);
+                                var task = db.tblActualTask.Where(x => x.actualId == actualId).First();
+                                db.InsertList(taskName, list.listId, actualId, task.taskId);
+                            }
                         }
                     }
                     else
                     {     //task.taskToDate in this content is the date of the task
-                        int ActualTask = db.InsertActualTask(taskId, taskToDate, timesInDayArr[0], "P");
+                        db.InsertActualTask(taskId, taskToDate, timesInDayArr[0], "P");
+                        if (type == false)
+                        {
+                            int actualId = db.tblActualTask.Max(x => x.actualId);
+                            var task = db.tblActualTask.Where(x => x.actualId == actualId).First();
+                            db.InsertList(taskName, list.listId, actualId, task.taskId);
+                        }
                     }
-                    db.SaveChanges();
                 }
                 else if (frequency == "Daily")
                 {
@@ -70,8 +82,13 @@ namespace DATA
                         tempDate = tempDate.AddDays(1);
                         for (int i = 0; i < timesInDayArr.Length; i++)
                         {
-                            int ActualTask = db.InsertActualTask(taskId, tempDate, timesInDayArr[i], "P");
-
+                            db.InsertActualTask(taskId, tempDate, timesInDayArr[i], "P");
+                            if (type == false)
+                            {
+                                int actualId = db.tblActualTask.Max(x => x.actualId);
+                                var task = db.tblActualTask.Where(x => x.actualId == actualId).First();
+                                db.InsertList(taskName, list.listId, actualId, task.taskId);
+                            }
                         }
                     }
                 }
@@ -82,9 +99,13 @@ namespace DATA
                         tempDate = tempDate.AddDays(7);
                         for (int i = 0; i < timesInDayArr.Length; i++)
                         {
-                            int ActualTask = db.InsertActualTask(taskId, tempDate, timesInDayArr[i], "P");
-                            db.SaveChanges();
-
+                            db.InsertActualTask(taskId, tempDate, timesInDayArr[i], "P");
+                            if (type == false)
+                            {
+                                int actualId = db.tblActualTask.Max(x => x.actualId);
+                                var task = db.tblActualTask.Where(x => x.actualId == actualId).First();
+                                db.InsertList(taskName, list.listId, actualId, task.taskId);
+                            }
                         }
                     }
                 }
@@ -95,24 +116,24 @@ namespace DATA
                         tempDate = tempDate.AddMonths(1);
                         for (int i = 0; i < timesInDayArr.Length; i++)
                         {
-                            int ActualTask = db.InsertActualTask(taskId, tempDate, timesInDayArr[i], "P");
-                            db.SaveChanges();
-
+                            db.InsertActualTask(taskId, tempDate, timesInDayArr[i], "P");
+                            if (type == false)
+                            {
+                                var task = db.tblActualTask.Where(x => x.actualId == actualId).First();
+                                db.InsertList(taskName, list.listId, task.actualId, task.taskId);
+                            }
                         }
                     }
                 }
+                db.SaveChanges();
                 return true;
-
             }
             catch (Exception )
             {
-
                 return false;
             }
-
         }
     }
-
 
     class Program
     {

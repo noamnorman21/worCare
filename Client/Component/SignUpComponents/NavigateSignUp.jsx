@@ -24,7 +24,7 @@ import { useUserContext } from '../../UserContext';
 const Stack = createStackNavigator();
 
 export default function NavigateSignUp() {
-  const { updateUserContext } = useUserContext();
+  const { updateUserContext, updateuserNotifications } = useUserContext();
   const [isSigned, setIsSigned] = useState('bla');
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -41,6 +41,19 @@ export default function NavigateSignUp() {
         setIsSigned(true);
         const storageUser2 = await AsyncStorage.getItem("userData");
         updateUserContext(JSON.parse(storageUser2))
+        let notifications = await AsyncStorage.getItem("notifications");
+        if (notifications == null) {
+          notifications = {
+            emailNotifications: true,
+            financeNotifications: true,
+            chatNotifications: true,
+            tasksNotifications: true,
+          }
+        } else {
+          notifications = JSON.parse(notifications)
+        }
+        updateuserNotifications(notifications)
+
       }
     }
     catch (error) {

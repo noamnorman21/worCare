@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Alert, Modal } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Alert, Modal,ScrollView } from 'react-native'
 import { useEffect, useState } from 'react'
 import React from 'react'
 import { Searchbar } from 'react-native-paper';
@@ -24,17 +24,17 @@ export default function Contacts() {
       ...TransitionPresets.SlideFromRightIOS,
       headerBlurEffect: 'light',
       headerShown: false
-      }} >
+    }} >
       <stack.Screen name="Main" component={Main} options={{ headerShown: true, headerTitle: "Contacts", headerTitleAlign: 'center' }} />
       <stack.Screen name="EditContact" component={EditContact} options={{ headerShown: true, headerTitle: "Edit Contact", headerTitleAlign: 'center' }} />
-      <stack.Screen name="ContactDetails" component={ContactDetails} options={{ headerShown: true, headerTitle: "Contact Details", headerTitleAlign: 'center', animationEnabled:true, animation:'slide_from_right' }} />
+      <stack.Screen name="ContactDetails" component={ContactDetails} options={{ headerShown: true, headerTitle: "Contact Details", headerTitleAlign: 'center', animationEnabled: true, animation: 'slide_from_right' }} />
     </stack.Navigator>
   )
 }
 
 function Main({ navigation }) {
   const [idArr, setidArr] = useState([])
- 
+
   const [Contacts, setContacts] = useState([])
   const [Search, setSearch] = useState([])
   const [ContactToRender, setContactToRender] = useState([])
@@ -92,7 +92,9 @@ function Main({ navigation }) {
         inputStyle={{ fontFamily: 'Urbanist-Medium', fontSize: 18 }}
         placeholderTextColor="#808080"
       />
-      {ContactToRender}
+      <ScrollView alwaysBounceVertical={false}>
+        {ContactToRender}
+      </ScrollView>
       <View style={styles.addBtnView}><AddBtn onPress={() => setModal1Visible(true)} /></View>
       {/*NewContactModal*/}
       <Modal animationType="slide" visible={modal1Visible}>

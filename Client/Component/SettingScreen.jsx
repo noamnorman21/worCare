@@ -194,6 +194,7 @@ function HomeScreen({ navigation, route }) {
         }
         setNavigation();
     }, [user]);
+    
 
     //the user name will be taken from the database
     //the user image will be taken from the database

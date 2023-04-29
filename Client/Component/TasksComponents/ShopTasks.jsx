@@ -1,49 +1,35 @@
-import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Dimensions } from 'react-native'
+import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Dimensions, ScrollView, TextInput, Alert } from 'react-native'
 import { useState, useEffect } from 'react'
-import { AddBtn, NewTaskModal } from '../HelpComponents/AddNewTask'
+import { List } from 'react-native-paper';
 import { Feather, Ionicons } from '@expo/vector-icons';
+import { AddBtn, NewTaskModal } from '../HelpComponents/AddNewTask'
 import { useUserContext } from '../../UserContext'
+
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
-export default function ShopTasks() {
+export default function ShopTasks(props) {
   const [modalVisible, setModalVisible] = useState(false)
   const [userData, setUserData] = useState(useUserContext().userContext);
   const [tasks, setTasks] = useState([])
-  const [shopTasks, setShopTasks] = useState([])
-  useEffect(() => {
-    getActiveTasks()
-  }, [])
+  const [newProductName, setNewProductName] = useState('')
+  const [shopTasks, setShopTasks] = useState(props.allShopTasks)
+  const [expanded, setExpanded] = useState(true);
+  const handlePress = () => setExpanded(!expanded);
 
-  const getActiveTasks = async () => {
-    let getAllTasksUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/GetAllTasks';
-    try {
-      fetch(getAllTasksUrl, {
-        method: 'POST',
-        headers: new Headers({ 'Content-Type': 'application/json; charset=UTF-8', }),
-        body: JSON.stringify(userData.patientId)
-      })
-        .then(res => { return res.json() })
-        .then(
-          (result) => {
-            // console.log("fetch POST= ", result);
-
-            // for (let i = 0; i < result.length; i++) {
-            //   if (result[i].type == false) {
-            //     setShopTasks(shopTasks => [...shopTasks, result[i]])
-            //   }
-            // }
-            setShopTasks(result.filter(task => task.type == false))
-            // setTasks(result)
-            //  setShopTasks(result.filter(task => task.type == false))
-          }
-        )
-    } catch (error) {
-      console.log('err post=', error);
-    }
+  const getShopTasks = () => {
+    return props.allShopTasks
   }
 
+  const [isCheck, setIsCheck] = useState(false)
+  const checkIcon = ["check-circle", "circle"]
+  useEffect(() => {
+    setShopTasks(props.allShopTasks)
+  }, [props.allShopTasks])
+
+
   const handleAddBtnPress = () => {
+    // console.log(shopTasks)
     setModalVisible(true);
   };
 
@@ -51,89 +37,204 @@ export default function ShopTasks() {
     setModalVisible(false);
   };
 
-  const handleAddingSubTask = () => {
-    console.log('tasksTest', shopTasks)
+  const handleAddingSubTask = (taskToAddProduct) => {
+    if (newProductName === '') {
+      Alert.alert('Please enter a product name')
+      return
+    }
+    let newProductUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/InsertProductsToList'
+    let newProductData = {
+      productQuantity: 0,// will change to the value from the input field
+      productName: newProductName,
+      actualId: taskToAddProduct.actualId,
+      taskId: taskToAddProduct.taskId,
+      commentForProduct: '',
+    }
+    // fix this amitai
+    fetch(newProductUrl, {
+      method: 'POST',
+      body: JSON.stringify(newProductData),
+      headers: new Headers({
+        'Content-type': 'application/json; charset=UTF-8'
+      })
+    })
+      .then(res => {
+        console.log('res=', res);
+        //if res status is ok or 200
+        if (res.ok) {
+          setNewProductName('')
+          props.refreshlPublicTask()
+          console.log('product added')
+        }
+        return res.json()
+      }
+      )
+      .then(
+        (result) => {
+          console.log("fetch btnFetchGetAllTasks= ", result);
+        }
+      )
+      .catch(
+        (error) => {
+          console.log("err post=", error);
+        }
+      )
   }
 
   const updateCompleted = () => {
     console.log('Updating completed')
   }
 
+  const isProductChecked = (prod, actualTask) => {
+    // update the product status to 'F' for now its only on the client side
+    setShopTasks(shopTasks.map((task) => {
+      if (task.taskId === prod.taskId && task.actualId === actualTask.actualId) {
+        task.prodList.map((product) => {
+          if (product.productId === prod.productId) {
+            if (product.productStatus == 'P') {
+              product.productStatus = 'F'
+            } else {
+              product.productStatus = 'P'
+            }
+          }
+        })
+      }
+      return task
+    }))
+  }
+
+  const handleQtyArrows = (isPlus, prod, actualTask, qty) => {
+    setShopTasks(shopTasks.map((task) => {
+      if (task.taskId === prod.taskId && task.actualId === actualTask.actualId) {
+        task.prodList.map((product) => {
+          if (product.productId === prod.productId) {
+            if (isPlus && qty == 0) {
+              product.productQuantity = parseInt(product.productQuantity) + 1
+            }
+            else if (isPlus == false && product.productQuantity > 0 && qty == 0) {
+              product.productQuantity = parseInt(product.productQuantity) - 1
+            }
+            else if (isPlus == null && qty >= 0) {
+              if (isNaN(qty) || qty == '' || qty == null) {
+                product.productQuantity = 0
+              }
+              else
+                product.productQuantity = qty
+            }
+          }
+        })
+      }
+      return task
+    }))
+  }
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.taskName}>Super Market</Text>
-      <View style={styles.tasksContainer}>
-        <View style={styles.addSubTask}>
-          {/* <TouchableOpacity style={styles.left} onPress={updateCompleted}>
-            <Feather name="circle" size={30} color="#548DFF" />
-          </TouchableOpacity> */}
-          <TouchableOpacity style={styles.middle} onPress={handleAddingSubTask}>
-            <Text style={styles.subtaskTxt}>Click here to add a sub-task...</Text>
-          </TouchableOpacity>
-          <View style={styles.right}>
-            <View style={styles.rightInside}>
-              <TouchableOpacity style={styles.qtyTxt} onPress={handleAddingSubTask}>
-                {/* <Text style={styles.subtaskTxt}>Qty</Text> */}
-                {/* <Feather name="plus" size={30} color="#548DFF" /> */}
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.iconUp} onPress={handleAddingSubTask}>
-                <Ionicons name="md-caret-up-outline" size={17} color="#808080" />
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.iconDown} onPress={handleAddingSubTask}>
-                <Ionicons name="md-caret-down-outline" size={17} color="#808080" />
-                {/* <Feather name="plus" size={30} color="#548DFF" /> */}
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
+    <SafeAreaView style={styles.container}>
+      <View style={{ width: SCREEN_WIDTH * 0.92 }}>
+        <List.Section>
+          <ScrollView>
+            {shopTasks.map((task, index) => {
+              return (
+                <List.Accordion
+                  key={task.actualId}
+                  style={{ backgroundColor: '#F2F2F2' }}
+                  left={() => <Text style={styles.taskName}>{task.taskName}</Text>}
+                >
+                  <List.Item key={null} style={styles.productItem}
+                    left={() => <TextInput value={newProductName} style={styles.subtaskTxt} placeholder="Click here to add a product..." onChangeText={setNewProductName} />}
+                    right={() =>
+                      <TouchableOpacity onPress={() => handleAddingSubTask(task)}>
+                        <Feather style={styles.iconPlus} name="plus" size={25} color="#548DFF" />
+                      </TouchableOpacity>
+                    }
+                  />
+                  {task.prodList != null ? // if there are prodtList items in the task then show them,else there is no subtask
+                    task.prodList.map((prod) => {
+                      return (
+                        <List.Item
+                          key={prod.productId} style={styles.productItem}
+                          title={prod.productName}
+                          titleStyle={{
+                            fontSize: 18,
+                            fontFamily: 'Urbanist-SemiBold',
+                            color: '#000',
+                            textDecorationLine: prod.productStatus == 'F' ? 'line-through' : 'none'
+                          }}
+                          left={() =>
+                            <TouchableOpacity onPress={() => isProductChecked(prod, task)}>
+                              <Feather name={prod.productStatus == 'P' ? checkIcon[1] : checkIcon[0]} size={27} color="#548DFF" />
+                            </TouchableOpacity>
+                          }
+                          right={() =>
+                            <View style={[{ display: prod.productStatus == 'F' ? 'none' : 'flex' }, { paddingRight: 10 }]}>
+                              <TouchableOpacity style={styles.iconUp} onPress={() => handleQtyArrows(true, prod, task, 0)}>
+                                <Ionicons name="caret-up-outline" size={20} color="#808080" />
+                              </TouchableOpacity>
+                              <TouchableOpacity style={styles.iconDown} onPress={() => handleQtyArrows(false, prod, task, 0)}>
+                                <Ionicons name="caret-down-outline" size={20} color="#808080" />
+                              </TouchableOpacity>
+                              <TextInput style={styles.qtyTxt} returnKeyType='done' keyboardType='number-pad' value={prod.productQuantity != 0 ? `${prod.productQuantity}` : ''} placeholder='Qty' onChangeText={(text) => handleQtyArrows(null, prod, task, text)} />
+                            </View>
+                          }
+                        />
+                      )
+                    }
+                    ) : null
+                  }
+                </List.Accordion>
+              )
+            })
+            }
+          </ScrollView>
+        </List.Section>
       </View>
       <View style={styles.addBtnView}>
         <AddBtn onPress={handleAddBtnPress} />
       </View>
       <NewTaskModal isVisible={modalVisible} onClose={handleModalClose} />
-    </View>
+    </SafeAreaView >
   )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#F2F2F2',
     alignItems: 'center',
-    // justifyContent: 'center',
   },
-  subtaskTxt: {
-    fontSize: 16,
-    fontFamily: 'Urbanist-Regular',
-    color: '#808080',
-    marginTop: 7,
+  iconPlus: {
+    position: 'absolute',
+    right: -15,
+  },
+  iconUp: {
+    position: 'absolute',
+    right: -22,
+    bottom: 11,
+    width: 25,
+  },
+  iconDown: {
+    position: 'absolute',
+    right: -22,
+    bottom: -7,
+    width: 25,
   },
   qtyTxt: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    fontSize: 16,
+    paddingTop: 3,
+    textAlign: 'right',
+    width: 45,
+    fontFamily: 'Urbanist-Regular',
+    color: '#808080',
   },
-  rightInside: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  left: {
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-    flex: 0.5,
-  },
-  middle: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    flex: 4,
-  },
-  right: {
-    justifyContent: 'center',
-    alignItems: 'flex-end',
-    flex: 0.5,
+  subtaskTxt: {
+    fontSize: 18,
+    paddingLeft: 10,
+    fontFamily: 'Urbanist-Regular',
+    width: SCREEN_WIDTH * 0.72,
+    color: '#808080',
   },
   taskName: {
-    fontSize: 20,
+    fontSize: 24,
     fontFamily: 'Urbanist-Bold',
     color: '#000',
     marginVertical: 10,
@@ -143,20 +244,17 @@ const styles = StyleSheet.create({
     bottom: 20,
     right: 20,
   },
-  task: {
-    justifyContent: 'space-between',
+  productItem: {
     flexDirection: 'row',
-    flex: 1,
-  },
-  addSubTask: {
-    flexDirection: 'row',
-    width: SCREEN_WIDTH * 0.9,
+    width: SCREEN_WIDTH * 0.88,
     height: 54,
     backgroundColor: '#EBF1FF',
     borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'flex-start',
-    padding: 10,
+    paddingLeft: 10,
+    marginVertical: 10,
+    marginHorizontal: 5,
     shadowColor: '#000',
     shadowOffset: {
       width: 4,
@@ -166,4 +264,5 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
+
 });
