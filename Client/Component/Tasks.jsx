@@ -42,7 +42,6 @@ export default function Tasks() {
   }
 
   const getAllPublicTasks = async () => {
-    console.log('getAllPublicTasks');
     let getAllPublicTasksUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/GetAllTasks';
     try {
       const response = await fetch(getAllPublicTasksUrl, {
@@ -63,7 +62,6 @@ export default function Tasks() {
     setAllShopTasks(filteredTasks);
     let filteredMedicineTasks = tasks.filter(task => task.type == true);
     setAllMedicineTasks(filteredMedicineTasks);
-   
   }
 
   return (
@@ -89,8 +87,7 @@ export default function Tasks() {
         },
       }}
     >
-      <Tab.Screen name="Main"
-        //send allPrivateTasks to MainTasks, if userType is caregiver
+      <Tab.Screen name="Main" //send allPrivateTasks to MainTasks, if userType is caregiver        
         children={() => <Main allPrivateTasks={allPrivateTasks} allTask={allPublicTasks} />}
       />
       <Tab.Screen name="General"

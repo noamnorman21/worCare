@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-  <EntityContainerMapping StorageEntityContainer="igroup194_DbStoreContainer" CdmEntityContainer="igroup194Db">
+  <EntityContainerMapping StorageEntityContainer="igroup194_prodModelStoreContainer" CdmEntityContainer="igroup194Db">
     <EntitySetMapping Name="sysdiagrams">
-      <EntityTypeMapping TypeName="igroup194_Db.sysdiagrams">
+      <EntityTypeMapping TypeName="igroup194_prodModel.sysdiagrams">
         <MappingFragment StoreEntitySet="sysdiagrams">
           <ScalarProperty Name="name" ColumnName="name" />
           <ScalarProperty Name="principal_id" ColumnName="principal_id" />
@@ -13,7 +13,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="tblActualList">
-      <EntityTypeMapping TypeName="igroup194_Db.tblActualList">
+      <EntityTypeMapping TypeName="igroup194_prodModel.tblActualList">
         <MappingFragment StoreEntitySet="tblActualList">
           <ScalarProperty Name="listId" ColumnName="listId" />
           <ScalarProperty Name="type" ColumnName="type" />
@@ -21,7 +21,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="tblActualTask">
-      <EntityTypeMapping TypeName="igroup194_Db.tblActualTask">
+      <EntityTypeMapping TypeName="igroup194_prodModel.tblActualTask">
         <MappingFragment StoreEntitySet="tblActualTask">
           <ScalarProperty Name="actualId" ColumnName="actualId" />
           <ScalarProperty Name="taskId" ColumnName="taskId" />
@@ -32,7 +32,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="tblCalendarForUser">
-      <EntityTypeMapping TypeName="igroup194_Db.tblCalendarForUser">
+      <EntityTypeMapping TypeName="igroup194_prodModel.tblCalendarForUser">
         <MappingFragment StoreEntitySet="tblCalendarForUser">
           <ScalarProperty Name="calendarNum" ColumnName="calendarNum" />
           <ScalarProperty Name="userId" ColumnName="userId" />
@@ -41,7 +41,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="tblCalendarsType">
-      <EntityTypeMapping TypeName="igroup194_Db.tblCalendarsType">
+      <EntityTypeMapping TypeName="igroup194_prodModel.tblCalendarsType">
         <MappingFragment StoreEntitySet="tblCalendarsType">
           <ScalarProperty Name="calendarNum" ColumnName="calendarNum" />
           <ScalarProperty Name="calendarName" ColumnName="calendarName" />
@@ -50,7 +50,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="tblCaresForPatient">
-      <EntityTypeMapping TypeName="igroup194_Db.tblCaresForPatient">
+      <EntityTypeMapping TypeName="igroup194_prodModel.tblCaresForPatient">
         <MappingFragment StoreEntitySet="tblCaresForPatient">
           <ScalarProperty Name="patientId" ColumnName="patientId" />
           <ScalarProperty Name="workerId" ColumnName="workerId" />
@@ -60,7 +60,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="tblContacts">
-      <EntityTypeMapping TypeName="igroup194_Db.tblContacts">
+      <EntityTypeMapping TypeName="igroup194_prodModel.tblContacts">
         <MappingFragment StoreEntitySet="tblContacts">
           <ScalarProperty Name="contactId" ColumnName="contactId" />
           <ScalarProperty Name="contactName" ColumnName="contactName" />
@@ -74,14 +74,14 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="tblCountry">
-      <EntityTypeMapping TypeName="igroup194_Db.tblCountry">
+      <EntityTypeMapping TypeName="igroup194_prodModel.tblCountry">
         <MappingFragment StoreEntitySet="tblCountry">
           <ScalarProperty Name="CountryName_En" ColumnName="CountryName_En" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="tblDrug">
-      <EntityTypeMapping TypeName="igroup194_Db.tblDrug">
+      <EntityTypeMapping TypeName="igroup194_prodModel.tblDrug">
         <MappingFragment StoreEntitySet="tblDrug">
           <ScalarProperty Name="drugId" ColumnName="drugId" />
           <ScalarProperty Name="drugName" ColumnName="drugName" />
@@ -92,7 +92,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="tblDrugForPatient">
-      <EntityTypeMapping TypeName="igroup194_Db.tblDrugForPatient">
+      <EntityTypeMapping TypeName="igroup194_prodModel.tblDrugForPatient">
         <MappingFragment StoreEntitySet="tblDrugForPatient">
           <ScalarProperty Name="listId" ColumnName="listId" />
           <ScalarProperty Name="fromDate" ColumnName="fromDate" />
@@ -106,7 +106,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="tblForeignUser">
-      <EntityTypeMapping TypeName="igroup194_Db.tblForeignUser">
+      <EntityTypeMapping TypeName="igroup194_prodModel.tblForeignUser">
         <MappingFragment StoreEntitySet="tblForeignUser">
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="DateOfBirth" ColumnName="DateOfBirth" />
@@ -117,7 +117,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="tblHobbies">
-      <EntityTypeMapping TypeName="igroup194_Db.tblHobbies">
+      <EntityTypeMapping TypeName="igroup194_prodModel.tblHobbies">
         <MappingFragment StoreEntitySet="tblHobbies">
           <ScalarProperty Name="patientId" ColumnName="patientId" />
           <ScalarProperty Name="books" ColumnName="books" />
@@ -135,7 +135,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="tblLanguage">
-      <EntityTypeMapping TypeName="igroup194_Db.tblLanguage">
+      <EntityTypeMapping TypeName="igroup194_prodModel.tblLanguage">
         <MappingFragment StoreEntitySet="tblLanguage">
           <ScalarProperty Name="LanguageName_En" ColumnName="LanguageName_En" />
           <ScalarProperty Name="LanguageName_He" ColumnName="LanguageName_He" />
@@ -145,7 +145,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="tblLimitations">
-      <EntityTypeMapping TypeName="igroup194_Db.tblLimitations">
+      <EntityTypeMapping TypeName="igroup194_prodModel.tblLimitations">
         <MappingFragment StoreEntitySet="tblLimitations">
           <ScalarProperty Name="patientId" ColumnName="patientId" />
           <ScalarProperty Name="allergies" ColumnName="allergies" />
@@ -158,15 +158,17 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="tblList">
-      <EntityTypeMapping TypeName="igroup194_Db.tblList">
+      <EntityTypeMapping TypeName="igroup194_prodModel.tblList">
         <MappingFragment StoreEntitySet="tblList">
           <ScalarProperty Name="listId" ColumnName="listId" />
           <ScalarProperty Name="listName" ColumnName="listName" />
+          <ScalarProperty Name="actualId" ColumnName="actualId" />
+          <ScalarProperty Name="taskId" ColumnName="taskId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="tblPatient">
-      <EntityTypeMapping TypeName="igroup194_Db.tblPatient">
+      <EntityTypeMapping TypeName="igroup194_prodModel.tblPatient">
         <MappingFragment StoreEntitySet="tblPatient">
           <ScalarProperty Name="patientId" ColumnName="patientId" />
           <ScalarProperty Name="FirstName" ColumnName="FirstName" />
@@ -178,7 +180,7 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="tblPatientTask">
-      <EntityTypeMapping TypeName="igroup194_Db.tblPatientTask">
+      <EntityTypeMapping TypeName="igroup194_prodModel.tblPatientTask">
         <MappingFragment StoreEntitySet="tblPatientTask">
           <ScalarProperty Name="taskId" ColumnName="taskId" />
           <ScalarProperty Name="taskName" ColumnName="taskName" />
@@ -194,19 +196,19 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="tblPaycheck">
-      <EntityTypeMapping TypeName="igroup194_Db.tblPaycheck">
+      <EntityTypeMapping TypeName="igroup194_prodModel.tblPaycheck">
         <MappingFragment StoreEntitySet="tblPaycheck">
-          <ScalarProperty Name="payCheckProofDocument" ColumnName="payCheckProofDocument" />
           <ScalarProperty Name="payCheckNum" ColumnName="payCheckNum" />
           <ScalarProperty Name="paycheckDate" ColumnName="paycheckDate" />
           <ScalarProperty Name="paycheckSummary" ColumnName="paycheckSummary" />
           <ScalarProperty Name="paycheckComment" ColumnName="paycheckComment" />
+          <ScalarProperty Name="payCheckProofDocument" ColumnName="payCheckProofDocument" />
           <ScalarProperty Name="UserId" ColumnName="UserId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="tblPaymentRequest">
-      <EntityTypeMapping TypeName="igroup194_Db.tblPaymentRequest">
+      <EntityTypeMapping TypeName="igroup194_prodModel.tblPaymentRequest">
         <MappingFragment StoreEntitySet="tblPaymentRequest">
           <ScalarProperty Name="requestId" ColumnName="requestId" />
           <ScalarProperty Name="requestSubject" ColumnName="requestSubject" />
@@ -219,23 +221,32 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="tblPrivateActualTask">
+      <EntityTypeMapping TypeName="igroup194_prodModel.tblPrivateActualTask">
+        <MappingFragment StoreEntitySet="tblPrivateActualTask">
+          <ScalarProperty Name="actualId" ColumnName="actualId" />
+          <ScalarProperty Name="taskId" ColumnName="taskId" />
+          <ScalarProperty Name="TimeInDay" ColumnName="TimeInDay" />
+          <ScalarProperty Name="taskDate" ColumnName="taskDate" />
+          <ScalarProperty Name="taskStatus" ColumnName="taskStatus" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <EntitySetMapping Name="tblPrivateTask">
-      <EntityTypeMapping TypeName="igroup194_Db.tblPrivateTask">
+      <EntityTypeMapping TypeName="igroup194_prodModel.tblPrivateTask">
         <MappingFragment StoreEntitySet="tblPrivateTask">
           <ScalarProperty Name="taskId" ColumnName="taskId" />
           <ScalarProperty Name="taskName" ColumnName="taskName" />
           <ScalarProperty Name="taskFromDate" ColumnName="taskFromDate" />
           <ScalarProperty Name="taskToDate" ColumnName="taskToDate" />
-          <ScalarProperty Name="taskComment" ColumnName="taskComment" />
-          <ScalarProperty Name="status" ColumnName="status" />
-          <ScalarProperty Name="workerId" ColumnName="workerId" />
-          <ScalarProperty Name="TimeInDay" ColumnName="TimeInDay" />
           <ScalarProperty Name="frequency" ColumnName="frequency" />
+          <ScalarProperty Name="taskComment" ColumnName="taskComment" />
+          <ScalarProperty Name="workerId" ColumnName="workerId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="tblProduct">
-      <EntityTypeMapping TypeName="igroup194_Db.tblProduct">
+      <EntityTypeMapping TypeName="igroup194_prodModel.tblProduct">
         <MappingFragment StoreEntitySet="tblProduct">
           <ScalarProperty Name="productId" ColumnName="productId" />
           <ScalarProperty Name="productName" ColumnName="productName" />
@@ -243,17 +254,19 @@
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="tblProductList">
-      <EntityTypeMapping TypeName="igroup194_Db.tblProductList">
+      <EntityTypeMapping TypeName="igroup194_prodModel.tblProductList">
         <MappingFragment StoreEntitySet="tblProductList">
-          <ScalarProperty Name="productQuantity" ColumnName="productQuantity" />
           <ScalarProperty Name="productId" ColumnName="productId" />
-          <ScalarProperty Name="listId" ColumnName="listId" />
+          <ScalarProperty Name="actualId" ColumnName="actualId" />
+          <ScalarProperty Name="taskId" ColumnName="taskId" />
           <ScalarProperty Name="productStatus" ColumnName="productStatus" />
+          <ScalarProperty Name="productQuantity" ColumnName="productQuantity" />
+          <ScalarProperty Name="commentForProduct" ColumnName="commentForProduct" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="tblUser">
-      <EntityTypeMapping TypeName="igroup194_Db.tblUser">
+      <EntityTypeMapping TypeName="igroup194_prodModel.tblUser">
         <MappingFragment StoreEntitySet="tblUser">
           <ScalarProperty Name="userId" ColumnName="userId" />
           <ScalarProperty Name="Email" ColumnName="Email" />
@@ -266,34 +279,39 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <FunctionImportMapping FunctionImportName="InsertCalendarForUser" FunctionName="igroup194_Db.Store.InsertCalendarForUser" />
-    <FunctionImportMapping FunctionImportName="InsertCaresForPatient" FunctionName="igroup194_Db.Store.InsertCaresForPatient" />
-    <FunctionImportMapping FunctionImportName="InsertForeignUser" FunctionName="igroup194_Db.Store.InsertForeignUser" />
-    <FunctionImportMapping FunctionImportName="InsertList" FunctionName="igroup194_Db.Store.InsertList" />
-    <FunctionImportMapping FunctionImportName="InsertPatient" FunctionName="igroup194_Db.Store.InsertPatient" />
-    <FunctionImportMapping FunctionImportName="InsertPatientHobbies" FunctionName="igroup194_Db.Store.InsertPatientHobbies" />
-    <FunctionImportMapping FunctionImportName="InsertPatientLimitations" FunctionName="igroup194_Db.Store.InsertPatientLimitations" />
-    <FunctionImportMapping FunctionImportName="InsertPatientTask" FunctionName="igroup194_Db.Store.InsertPatientTask" />
-    <FunctionImportMapping FunctionImportName="InsertPrivateTask" FunctionName="igroup194_Db.Store.InsertPrivateTask" />
-    <FunctionImportMapping FunctionImportName="InsertProduct" FunctionName="igroup194_Db.Store.InsertProduct" />
-    <FunctionImportMapping FunctionImportName="InsertUser" FunctionName="igroup194_Db.Store.InsertUser" />
-    <FunctionImportMapping FunctionImportName="NewContact" FunctionName="igroup194_Db.Store.NewContact" />
-    <FunctionImportMapping FunctionImportName="NewPaycheck" FunctionName="igroup194_Db.Store.NewPaycheck" />
-    <FunctionImportMapping FunctionImportName="NewPaymentRequest" FunctionName="igroup194_Db.Store.NewPaymentRequest" />
-    <FunctionImportMapping FunctionImportName="sp_alterdiagram" FunctionName="igroup194_Db.Store.sp_alterdiagram" />
-    <FunctionImportMapping FunctionImportName="sp_creatediagram" FunctionName="igroup194_Db.Store.sp_creatediagram" />
-    <FunctionImportMapping FunctionImportName="sp_dropdiagram" FunctionName="igroup194_Db.Store.sp_dropdiagram" />
-    <FunctionImportMapping FunctionImportName="sp_helpdiagramdefinition" FunctionName="igroup194_Db.Store.sp_helpdiagramdefinition">
+    <FunctionImportMapping FunctionImportName="InsertActualList" FunctionName="igroup194_prodModel.Store.InsertActualList" />
+    <FunctionImportMapping FunctionImportName="InsertActualTask" FunctionName="igroup194_prodModel.Store.InsertActualTask" />
+    <FunctionImportMapping FunctionImportName="InsertCalendarForUser" FunctionName="igroup194_prodModel.Store.InsertCalendarForUser" />
+    <FunctionImportMapping FunctionImportName="InsertCaresForPatient" FunctionName="igroup194_prodModel.Store.InsertCaresForPatient" />
+    <FunctionImportMapping FunctionImportName="InsertDrugForPatient" FunctionName="igroup194_prodModel.Store.InsertDrugForPatient" />
+    <FunctionImportMapping FunctionImportName="InsertForeignUser" FunctionName="igroup194_prodModel.Store.InsertForeignUser" />
+    <FunctionImportMapping FunctionImportName="InsertList" FunctionName="igroup194_prodModel.Store.InsertList" />
+    <FunctionImportMapping FunctionImportName="InsertPatient" FunctionName="igroup194_prodModel.Store.InsertPatient" />
+    <FunctionImportMapping FunctionImportName="InsertPatientHobbies" FunctionName="igroup194_prodModel.Store.InsertPatientHobbies" />
+    <FunctionImportMapping FunctionImportName="InsertPatientLimitations" FunctionName="igroup194_prodModel.Store.InsertPatientLimitations" />
+    <FunctionImportMapping FunctionImportName="InsertPatientTask" FunctionName="igroup194_prodModel.Store.InsertPatientTask" />
+    <FunctionImportMapping FunctionImportName="InsertPrivateActualTask" FunctionName="igroup194_prodModel.Store.InsertPrivateActualTask" />
+    <FunctionImportMapping FunctionImportName="InsertPrivateTask" FunctionName="igroup194_prodModel.Store.InsertPrivateTask" />
+    <FunctionImportMapping FunctionImportName="InsertProduct" FunctionName="igroup194_prodModel.Store.InsertProduct" />
+    <FunctionImportMapping FunctionImportName="InsertProductList" FunctionName="igroup194_prodModel.Store.InsertProductList" />
+    <FunctionImportMapping FunctionImportName="InsertUser" FunctionName="igroup194_prodModel.Store.InsertUser" />
+    <FunctionImportMapping FunctionImportName="NewContact" FunctionName="igroup194_prodModel.Store.NewContact" />
+    <FunctionImportMapping FunctionImportName="NewPaycheck" FunctionName="igroup194_prodModel.Store.NewPaycheck" />
+    <FunctionImportMapping FunctionImportName="NewPaymentRequest" FunctionName="igroup194_prodModel.Store.NewPaymentRequest" />
+    <FunctionImportMapping FunctionImportName="sp_alterdiagram" FunctionName="igroup194_prodModel.Store.sp_alterdiagram" />
+    <FunctionImportMapping FunctionImportName="sp_creatediagram" FunctionName="igroup194_prodModel.Store.sp_creatediagram" />
+    <FunctionImportMapping FunctionImportName="sp_dropdiagram" FunctionName="igroup194_prodModel.Store.sp_dropdiagram" />
+    <FunctionImportMapping FunctionImportName="sp_helpdiagramdefinition" FunctionName="igroup194_prodModel.Store.sp_helpdiagramdefinition">
       <ResultMapping>
-        <ComplexTypeMapping TypeName="igroup194_Db.sp_helpdiagramdefinition_Result">
+        <ComplexTypeMapping TypeName="igroup194_prodModel.sp_helpdiagramdefinition_Result">
           <ScalarProperty Name="version" ColumnName="version" />
           <ScalarProperty Name="definition" ColumnName="definition" />
         </ComplexTypeMapping>
       </ResultMapping>
     </FunctionImportMapping>
-    <FunctionImportMapping FunctionImportName="sp_helpdiagrams" FunctionName="igroup194_Db.Store.sp_helpdiagrams">
+    <FunctionImportMapping FunctionImportName="sp_helpdiagrams" FunctionName="igroup194_prodModel.Store.sp_helpdiagrams">
       <ResultMapping>
-        <ComplexTypeMapping TypeName="igroup194_Db.sp_helpdiagrams_Result">
+        <ComplexTypeMapping TypeName="igroup194_prodModel.sp_helpdiagrams_Result">
           <ScalarProperty Name="Database" ColumnName="Database" />
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="ID" ColumnName="ID" />
@@ -302,12 +320,8 @@
         </ComplexTypeMapping>
       </ResultMapping>
     </FunctionImportMapping>
-    <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="igroup194_Db.Store.sp_renamediagram" />
-    <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="igroup194_Db.Store.sp_upgraddiagrams" />
-    <FunctionImportMapping FunctionImportName="updateStatusCaresForPatient" FunctionName="igroup194_Db.Store.updateStatusCaresForPatient" />
-    <FunctionImportMapping FunctionImportName="InsertActualList" FunctionName="igroup194_Db.Store.InsertActualList" />
-    <FunctionImportMapping FunctionImportName="InsertDrugForPatient" FunctionName="igroup194_Db.Store.InsertDrugForPatient" />
-    <FunctionImportMapping FunctionImportName="InsertActualTask" FunctionName="igroup194_Db.Store.InsertActualTask" />
-    <FunctionImportMapping FunctionImportName="InsertProductList" FunctionName="igroup194_Db.Store.InsertProductList" />
+    <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="igroup194_prodModel.Store.sp_renamediagram" />
+    <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="igroup194_prodModel.Store.sp_upgraddiagrams" />
+    <FunctionImportMapping FunctionImportName="updateStatusCaresForPatient" FunctionName="igroup194_prodModel.Store.updateStatusCaresForPatient" />
   </EntityContainerMapping>
 </Mapping>

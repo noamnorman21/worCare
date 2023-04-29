@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Schema Namespace="igroup194_Db.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+<Schema Namespace="igroup194_prodModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
   <EntityType Name="sysdiagrams">
     <Key>
       <PropertyRef Name="diagram_id" />
@@ -62,7 +62,7 @@
     <Property Name="contactId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="contactName" Type="varchar" MaxLength="50" Nullable="false" />
     <Property Name="phoneNo" Type="varchar" MaxLength="20" />
-    <Property Name="mobileNo" Type="varchar" MaxLength="10" Nullable="false" />
+    <Property Name="mobileNo" Type="varchar" MaxLength="10" />
     <Property Name="email" Type="varchar" MaxLength="50" />
     <Property Name="role" Type="varchar" MaxLength="50" />
     <Property Name="contactComment" Type="varchar" MaxLength="50" />
@@ -147,10 +147,13 @@
   </EntityType>
   <EntityType Name="tblList">
     <Key>
-      <PropertyRef Name="listId" />
+      <PropertyRef Name="actualId" />
+      <PropertyRef Name="taskId" />
     </Key>
-    <Property Name="listId" Type="int" Nullable="false" />
+    <Property Name="listId" Type="int" />
     <Property Name="listName" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="actualId" Type="int" Nullable="false" />
+    <Property Name="taskId" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="tblPatient">
     <Key>
@@ -186,8 +189,8 @@
     <Property Name="paycheckDate" Type="date" Nullable="false" />
     <Property Name="paycheckSummary" Type="nvarchar" MaxLength="4000" Nullable="false" />
     <Property Name="paycheckComment" Type="nvarchar(max)" />
+    <Property Name="payCheckProofDocument" Type="nvarchar" MaxLength="4000" Nullable="false" />
     <Property Name="UserId" Type="int" Nullable="false" />
-    <Property Name="payCheckProofDocument" Type="nvarchar" MaxLength="4000" />
   </EntityType>
   <EntityType Name="tblPaymentRequest">
     <Key>
@@ -202,6 +205,17 @@
     <Property Name="requestStatus" Type="char" MaxLength="1" Nullable="false" />
     <Property Name="userId" Type="int" Nullable="false" />
   </EntityType>
+  <EntityType Name="tblPrivateActualTask">
+    <Key>
+      <PropertyRef Name="actualId" />
+      <PropertyRef Name="taskId" />
+    </Key>
+    <Property Name="actualId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="taskId" Type="int" Nullable="false" />
+    <Property Name="TimeInDay" Type="time" Precision="7" Nullable="false" />
+    <Property Name="taskDate" Type="date" Nullable="false" />
+    <Property Name="taskStatus" Type="char" MaxLength="1" Nullable="false" />
+  </EntityType>
   <EntityType Name="tblPrivateTask">
     <Key>
       <PropertyRef Name="taskId" />
@@ -210,11 +224,9 @@
     <Property Name="taskName" Type="varchar" MaxLength="50" Nullable="false" />
     <Property Name="taskFromDate" Type="date" Nullable="false" />
     <Property Name="taskToDate" Type="date" />
-    <Property Name="taskComment" Type="nvarchar(max)" />
-    <Property Name="status" Type="char" MaxLength="1" Nullable="false" />
-    <Property Name="workerId" Type="int" Nullable="false" />
-    <Property Name="TimeInDay" Type="time" Precision="7" />
     <Property Name="frequency" Type="varchar" MaxLength="15" />
+    <Property Name="taskComment" Type="nvarchar(max)" />
+    <Property Name="workerId" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="tblProduct">
     <Key>
@@ -226,12 +238,15 @@
   <EntityType Name="tblProductList">
     <Key>
       <PropertyRef Name="productId" />
-      <PropertyRef Name="listId" />
+      <PropertyRef Name="actualId" />
+      <PropertyRef Name="taskId" />
     </Key>
     <Property Name="productId" Type="int" Nullable="false" />
-    <Property Name="listId" Type="int" Nullable="false" />
+    <Property Name="actualId" Type="int" Nullable="false" />
+    <Property Name="taskId" Type="int" Nullable="false" />
     <Property Name="productStatus" Type="char" MaxLength="1" Nullable="false" />
     <Property Name="productQuantity" Type="int" Nullable="false" />
+    <Property Name="commentForProduct" Type="varchar(max)" />
   </EntityType>
   <EntityType Name="tblUser">
     <Key>
@@ -246,7 +261,7 @@
     <Property Name="phoneNum" Type="varchar" MaxLength="10" Nullable="false" />
     <Property Name="userUri" Type="nvarchar" MaxLength="4000" />
   </EntityType>
-  <Association Name="FK__tblActual__taskI__041093DD">
+  <Association Name="FK__tblActual__taskI__795DFB40">
     <End Role="tblPatientTask" Type="Self.tblPatientTask" Multiplicity="1" />
     <End Role="tblActualTask" Type="Self.tblActualTask" Multiplicity="*" />
     <ReferentialConstraint>
@@ -258,7 +273,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__tblCalend__calen__09C96D33">
+  <Association Name="FK__tblCalend__calen__07AC1A97">
     <End Role="tblCalendarsType" Type="Self.tblCalendarsType" Multiplicity="1" />
     <End Role="tblCalendarForUser" Type="Self.tblCalendarForUser" Multiplicity="*" />
     <ReferentialConstraint>
@@ -270,7 +285,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__tblCalend__userI__08D548FA">
+  <Association Name="FK__tblCalend__userI__06B7F65E">
     <End Role="tblUser" Type="Self.tblUser" Multiplicity="1" />
     <End Role="tblCalendarForUser" Type="Self.tblCalendarForUser" Multiplicity="*" />
     <ReferentialConstraint>
@@ -282,7 +297,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__tblCaresF__patie__0CA5D9DE">
+  <Association Name="FK__tblCaresF__patie__0A888742">
     <End Role="tblPatient" Type="Self.tblPatient" Multiplicity="1">
       <OnDelete Action="Cascade" />
     </End>
@@ -296,7 +311,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__tblCaresF__worke__0D99FE17">
+  <Association Name="FK__tblCaresF__worke__0B7CAB7B">
     <End Role="tblForeignUser" Type="Self.tblForeignUser" Multiplicity="1" />
     <End Role="tblCaresForPatient" Type="Self.tblCaresForPatient" Multiplicity="*" />
     <ReferentialConstraint>
@@ -308,7 +323,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__tblContac__patie__125EB334">
+  <Association Name="FK__tblContac__patie__10416098">
     <End Role="tblPatient" Type="Self.tblPatient" Multiplicity="0..1">
       <OnDelete Action="Cascade" />
     </End>
@@ -322,7 +337,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__tblDrugFo__drugI__162F4418">
+  <Association Name="FK__tblDrugFo__drugI__1411F17C">
     <End Role="tblDrug" Type="Self.tblDrug" Multiplicity="1" />
     <End Role="tblDrugForPatient" Type="Self.tblDrugForPatient" Multiplicity="*" />
     <ReferentialConstraint>
@@ -334,7 +349,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__tblDrugFo__listI__153B1FDF">
+  <Association Name="FK__tblDrugFo__listI__131DCD43">
     <End Role="tblActualList" Type="Self.tblActualList" Multiplicity="1" />
     <End Role="tblDrugForPatient" Type="Self.tblDrugForPatient" Multiplicity="0..1" />
     <ReferentialConstraint>
@@ -346,7 +361,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__tblDrugFo__patie__17236851">
+  <Association Name="FK__tblDrugFo__patie__150615B5">
     <End Role="tblPatient" Type="Self.tblPatient" Multiplicity="0..1">
       <OnDelete Action="Cascade" />
     </End>
@@ -360,7 +375,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__tblForeig__Count__70099B30">
+  <Association Name="FK__tblForeig__Count__673F4B05">
     <End Role="tblCountry" Type="Self.tblCountry" Multiplicity="1" />
     <End Role="tblForeignUser" Type="Self.tblForeignUser" Multiplicity="*" />
     <ReferentialConstraint>
@@ -372,7 +387,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__tblForeig__Langu__6F1576F7">
+  <Association Name="FK__tblForeig__Langu__664B26CC">
     <End Role="tblLanguage" Type="Self.tblLanguage" Multiplicity="1" />
     <End Role="tblForeignUser" Type="Self.tblForeignUser" Multiplicity="*" />
     <ReferentialConstraint>
@@ -384,7 +399,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__tblForeignUs__Id__6D2D2E85">
+  <Association Name="FK__tblForeignUs__Id__6462DE5A">
     <End Role="tblUser" Type="Self.tblUser" Multiplicity="1" />
     <End Role="tblForeignUser" Type="Self.tblForeignUser" Multiplicity="0..1" />
     <ReferentialConstraint>
@@ -396,7 +411,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__tblHobbie__patie__62AFA012">
+  <Association Name="FK__tblHobbie__patie__59E54FE7">
     <End Role="tblPatient" Type="Self.tblPatient" Multiplicity="1">
       <OnDelete Action="Cascade" />
     </End>
@@ -410,7 +425,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__tblLimita__patie__658C0CBD">
+  <Association Name="FK__tblLimita__patie__5CC1BC92">
     <End Role="tblPatient" Type="Self.tblPatient" Multiplicity="1">
       <OnDelete Action="Cascade" />
     </End>
@@ -424,9 +439,23 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__tblList__listId__51851410">
-    <End Role="tblActualList" Type="Self.tblActualList" Multiplicity="1" />
+  <Association Name="FK__tblList__7F16D496">
+    <End Role="tblActualTask" Type="Self.tblActualTask" Multiplicity="1" />
     <End Role="tblList" Type="Self.tblList" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="tblActualTask">
+        <PropertyRef Name="actualId" />
+        <PropertyRef Name="taskId" />
+      </Principal>
+      <Dependent Role="tblList">
+        <PropertyRef Name="actualId" />
+        <PropertyRef Name="taskId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__tblList__listId__7E22B05D">
+    <End Role="tblActualList" Type="Self.tblActualList" Multiplicity="0..1" />
+    <End Role="tblList" Type="Self.tblList" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="tblActualList">
         <PropertyRef Name="listId" />
@@ -436,7 +465,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__tblPatien__Langu__5EDF0F2E">
+  <Association Name="FK__tblPatien__Langu__5614BF03">
     <End Role="tblLanguage" Type="Self.tblLanguage" Multiplicity="1" />
     <End Role="tblPatient" Type="Self.tblPatient" Multiplicity="*" />
     <ReferentialConstraint>
@@ -448,7 +477,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__tblPatien__listI__004002F9">
+  <Association Name="FK__tblPatien__listI__758D6A5C">
     <End Role="tblActualList" Type="Self.tblActualList" Multiplicity="1" />
     <End Role="tblPatientTask" Type="Self.tblPatientTask" Multiplicity="*" />
     <ReferentialConstraint>
@@ -460,7 +489,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__tblPatien__patie__7D63964E">
+  <Association Name="FK__tblPatien__patie__72B0FDB1">
     <End Role="tblPatient" Type="Self.tblPatient" Multiplicity="0..1">
       <OnDelete Action="Cascade" />
     </End>
@@ -474,7 +503,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__tblPatien__userI__5DEAEAF5">
+  <Association Name="FK__tblPatien__userI__55209ACA">
     <End Role="tblUser" Type="Self.tblUser" Multiplicity="1" />
     <End Role="tblPatient" Type="Self.tblPatient" Multiplicity="*" />
     <ReferentialConstraint>
@@ -486,7 +515,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__tblPatien__userI__7F4BDEC0">
+  <Association Name="FK__tblPatien__userI__74994623">
     <End Role="tblUser" Type="Self.tblUser" Multiplicity="1" />
     <End Role="tblPatientTask" Type="Self.tblPatientTask" Multiplicity="*" />
     <ReferentialConstraint>
@@ -498,7 +527,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__tblPatien__worke__7E57BA87">
+  <Association Name="FK__tblPatien__worke__73A521EA">
     <End Role="tblForeignUser" Type="Self.tblForeignUser" Multiplicity="1" />
     <End Role="tblPatientTask" Type="Self.tblPatientTask" Multiplicity="*" />
     <ReferentialConstraint>
@@ -510,7 +539,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__tblPayche__UserI__2942188C">
+  <Association Name="FK__tblPayche__UserI__618671AF">
     <End Role="tblUser" Type="Self.tblUser" Multiplicity="1">
       <OnDelete Action="Cascade" />
     </End>
@@ -524,7 +553,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__tblPaymen__userI__2FEF161B">
+  <Association Name="FK__tblPaymen__userI__1CA7377D">
     <End Role="tblForeignUser" Type="Self.tblForeignUser" Multiplicity="1">
       <OnDelete Action="Cascade" />
     </End>
@@ -538,7 +567,19 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__tblPrivat__worke__77AABCF8">
+  <Association Name="FK__tblPrivat__taskI__01F34141">
+    <End Role="tblPrivateTask" Type="Self.tblPrivateTask" Multiplicity="1" />
+    <End Role="tblPrivateActualTask" Type="Self.tblPrivateActualTask" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblPrivateTask">
+        <PropertyRef Name="taskId" />
+      </Principal>
+      <Dependent Role="tblPrivateActualTask">
+        <PropertyRef Name="taskId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__tblPrivat__worke__6CF8245B">
     <End Role="tblForeignUser" Type="Self.tblForeignUser" Multiplicity="1" />
     <End Role="tblPrivateTask" Type="Self.tblPrivateTask" Multiplicity="*" />
     <ReferentialConstraint>
@@ -550,19 +591,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__tblProduc__listI__21A0F6C4">
-    <End Role="tblList" Type="Self.tblList" Multiplicity="1" />
-    <End Role="tblProductList" Type="Self.tblProductList" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="tblList">
-        <PropertyRef Name="listId" />
-      </Principal>
-      <Dependent Role="tblProductList">
-        <PropertyRef Name="listId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK__tblProduc__produ__247D636F">
+  <Association Name="FK__tblProduc__produ__2354350C">
     <End Role="tblProduct" Type="Self.tblProduct" Multiplicity="1" />
     <End Role="tblProductList" Type="Self.tblProductList" Multiplicity="*" />
     <ReferentialConstraint>
@@ -571,6 +600,20 @@
       </Principal>
       <Dependent Role="tblProductList">
         <PropertyRef Name="productId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__tblProductList__226010D3">
+    <End Role="tblList" Type="Self.tblList" Multiplicity="1" />
+    <End Role="tblProductList" Type="Self.tblProductList" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblList">
+        <PropertyRef Name="actualId" />
+        <PropertyRef Name="taskId" />
+      </Principal>
+      <Dependent Role="tblProductList">
+        <PropertyRef Name="actualId" />
+        <PropertyRef Name="taskId" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -615,6 +658,8 @@
   <Function Name="InsertList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="listName" Type="varchar" Mode="In" />
     <Parameter Name="listId" Type="int" Mode="In" />
+    <Parameter Name="actualId" Type="int" Mode="In" />
+    <Parameter Name="taskId" Type="int" Mode="In" />
   </Function>
   <Function Name="InsertPatient" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="patientId" Type="char" Mode="In" />
@@ -658,24 +703,30 @@
     <Parameter Name="listId" Type="int" Mode="In" />
     <Parameter Name="frequency" Type="varchar" Mode="In" />
   </Function>
+  <Function Name="InsertPrivateActualTask" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="taskId" Type="int" Mode="In" />
+    <Parameter Name="taskDate" Type="date" Mode="In" />
+    <Parameter Name="TimeInDay" Type="time" Mode="In" />
+    <Parameter Name="taskStatus" Type="char" Mode="In" />
+  </Function>
   <Function Name="InsertPrivateTask" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="taskName" Type="varchar" Mode="In" />
     <Parameter Name="taskFromDate" Type="date" Mode="In" />
     <Parameter Name="taskToDate" Type="date" Mode="In" />
-    <Parameter Name="taskComment" Type="nvarchar(max)" Mode="In" />
-    <Parameter Name="status" Type="char" Mode="In" />
-    <Parameter Name="workerId" Type="int" Mode="In" />
-    <Parameter Name="TimeInDay" Type="time" Mode="In" />
     <Parameter Name="frequency" Type="varchar" Mode="In" />
+    <Parameter Name="taskComment" Type="nvarchar(max)" Mode="In" />
+    <Parameter Name="workerId" Type="int" Mode="In" />
   </Function>
   <Function Name="InsertProduct" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="productName" Type="varchar" Mode="In" />
   </Function>
   <Function Name="InsertProductList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="productId" Type="int" Mode="In" />
-    <Parameter Name="listId" Type="int" Mode="In" />
+    <Parameter Name="actualId" Type="int" Mode="In" />
+    <Parameter Name="taskId" Type="int" Mode="In" />
     <Parameter Name="productStatus" Type="char" Mode="In" />
     <Parameter Name="productQuantity" Type="int" Mode="In" />
+    <Parameter Name="commentForProduct" Type="varchar(max)" Mode="In" />
   </Function>
   <Function Name="InsertUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="Email" Type="varchar" Mode="In" />
@@ -746,7 +797,7 @@
     <Parameter Name="workerId" Type="int" Mode="In" />
     <Parameter Name="status" Type="char" Mode="In" />
   </Function>
-  <EntityContainer Name="igroup194_DbStoreContainer">
+  <EntityContainer Name="igroup194_prodModelStoreContainer">
     <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="tblActualList" EntityType="Self.tblActualList" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="tblActualTask" EntityType="Self.tblActualTask" Schema="dbo" store:Type="Tables" />
@@ -766,112 +817,121 @@
     <EntitySet Name="tblPatientTask" EntityType="Self.tblPatientTask" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="tblPaycheck" EntityType="Self.tblPaycheck" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="tblPaymentRequest" EntityType="Self.tblPaymentRequest" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="tblPrivateActualTask" EntityType="Self.tblPrivateActualTask" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="tblPrivateTask" EntityType="Self.tblPrivateTask" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="tblProduct" EntityType="Self.tblProduct" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="tblProductList" EntityType="Self.tblProductList" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="tblUser" EntityType="Self.tblUser" Schema="dbo" store:Type="Tables" />
-    <AssociationSet Name="FK__tblActual__taskI__041093DD" Association="Self.FK__tblActual__taskI__041093DD">
+    <AssociationSet Name="FK__tblActual__taskI__795DFB40" Association="Self.FK__tblActual__taskI__795DFB40">
       <End Role="tblPatientTask" EntitySet="tblPatientTask" />
       <End Role="tblActualTask" EntitySet="tblActualTask" />
     </AssociationSet>
-    <AssociationSet Name="FK__tblCalend__calen__09C96D33" Association="Self.FK__tblCalend__calen__09C96D33">
+    <AssociationSet Name="FK__tblCalend__calen__07AC1A97" Association="Self.FK__tblCalend__calen__07AC1A97">
       <End Role="tblCalendarsType" EntitySet="tblCalendarsType" />
       <End Role="tblCalendarForUser" EntitySet="tblCalendarForUser" />
     </AssociationSet>
-    <AssociationSet Name="FK__tblCalend__userI__08D548FA" Association="Self.FK__tblCalend__userI__08D548FA">
+    <AssociationSet Name="FK__tblCalend__userI__06B7F65E" Association="Self.FK__tblCalend__userI__06B7F65E">
       <End Role="tblUser" EntitySet="tblUser" />
       <End Role="tblCalendarForUser" EntitySet="tblCalendarForUser" />
     </AssociationSet>
-    <AssociationSet Name="FK__tblCaresF__patie__0CA5D9DE" Association="Self.FK__tblCaresF__patie__0CA5D9DE">
+    <AssociationSet Name="FK__tblCaresF__patie__0A888742" Association="Self.FK__tblCaresF__patie__0A888742">
       <End Role="tblPatient" EntitySet="tblPatient" />
       <End Role="tblCaresForPatient" EntitySet="tblCaresForPatient" />
     </AssociationSet>
-    <AssociationSet Name="FK__tblCaresF__worke__0D99FE17" Association="Self.FK__tblCaresF__worke__0D99FE17">
+    <AssociationSet Name="FK__tblCaresF__worke__0B7CAB7B" Association="Self.FK__tblCaresF__worke__0B7CAB7B">
       <End Role="tblForeignUser" EntitySet="tblForeignUser" />
       <End Role="tblCaresForPatient" EntitySet="tblCaresForPatient" />
     </AssociationSet>
-    <AssociationSet Name="FK__tblContac__patie__125EB334" Association="Self.FK__tblContac__patie__125EB334">
+    <AssociationSet Name="FK__tblContac__patie__10416098" Association="Self.FK__tblContac__patie__10416098">
       <End Role="tblPatient" EntitySet="tblPatient" />
       <End Role="tblContacts" EntitySet="tblContacts" />
     </AssociationSet>
-    <AssociationSet Name="FK__tblDrugFo__drugI__162F4418" Association="Self.FK__tblDrugFo__drugI__162F4418">
+    <AssociationSet Name="FK__tblDrugFo__drugI__1411F17C" Association="Self.FK__tblDrugFo__drugI__1411F17C">
       <End Role="tblDrug" EntitySet="tblDrug" />
       <End Role="tblDrugForPatient" EntitySet="tblDrugForPatient" />
     </AssociationSet>
-    <AssociationSet Name="FK__tblDrugFo__listI__153B1FDF" Association="Self.FK__tblDrugFo__listI__153B1FDF">
+    <AssociationSet Name="FK__tblDrugFo__listI__131DCD43" Association="Self.FK__tblDrugFo__listI__131DCD43">
       <End Role="tblActualList" EntitySet="tblActualList" />
       <End Role="tblDrugForPatient" EntitySet="tblDrugForPatient" />
     </AssociationSet>
-    <AssociationSet Name="FK__tblDrugFo__patie__17236851" Association="Self.FK__tblDrugFo__patie__17236851">
+    <AssociationSet Name="FK__tblDrugFo__patie__150615B5" Association="Self.FK__tblDrugFo__patie__150615B5">
       <End Role="tblPatient" EntitySet="tblPatient" />
       <End Role="tblDrugForPatient" EntitySet="tblDrugForPatient" />
     </AssociationSet>
-    <AssociationSet Name="FK__tblForeig__Count__70099B30" Association="Self.FK__tblForeig__Count__70099B30">
+    <AssociationSet Name="FK__tblForeig__Count__673F4B05" Association="Self.FK__tblForeig__Count__673F4B05">
       <End Role="tblCountry" EntitySet="tblCountry" />
       <End Role="tblForeignUser" EntitySet="tblForeignUser" />
     </AssociationSet>
-    <AssociationSet Name="FK__tblForeig__Langu__6F1576F7" Association="Self.FK__tblForeig__Langu__6F1576F7">
+    <AssociationSet Name="FK__tblForeig__Langu__664B26CC" Association="Self.FK__tblForeig__Langu__664B26CC">
       <End Role="tblLanguage" EntitySet="tblLanguage" />
       <End Role="tblForeignUser" EntitySet="tblForeignUser" />
     </AssociationSet>
-    <AssociationSet Name="FK__tblForeignUs__Id__6D2D2E85" Association="Self.FK__tblForeignUs__Id__6D2D2E85">
+    <AssociationSet Name="FK__tblForeignUs__Id__6462DE5A" Association="Self.FK__tblForeignUs__Id__6462DE5A">
       <End Role="tblUser" EntitySet="tblUser" />
       <End Role="tblForeignUser" EntitySet="tblForeignUser" />
     </AssociationSet>
-    <AssociationSet Name="FK__tblHobbie__patie__62AFA012" Association="Self.FK__tblHobbie__patie__62AFA012">
+    <AssociationSet Name="FK__tblHobbie__patie__59E54FE7" Association="Self.FK__tblHobbie__patie__59E54FE7">
       <End Role="tblPatient" EntitySet="tblPatient" />
       <End Role="tblHobbies" EntitySet="tblHobbies" />
     </AssociationSet>
-    <AssociationSet Name="FK__tblLimita__patie__658C0CBD" Association="Self.FK__tblLimita__patie__658C0CBD">
+    <AssociationSet Name="FK__tblLimita__patie__5CC1BC92" Association="Self.FK__tblLimita__patie__5CC1BC92">
       <End Role="tblPatient" EntitySet="tblPatient" />
       <End Role="tblLimitations" EntitySet="tblLimitations" />
     </AssociationSet>
-    <AssociationSet Name="FK__tblList__listId__51851410" Association="Self.FK__tblList__listId__51851410">
+    <AssociationSet Name="FK__tblList__7F16D496" Association="Self.FK__tblList__7F16D496">
+      <End Role="tblActualTask" EntitySet="tblActualTask" />
+      <End Role="tblList" EntitySet="tblList" />
+    </AssociationSet>
+    <AssociationSet Name="FK__tblList__listId__7E22B05D" Association="Self.FK__tblList__listId__7E22B05D">
       <End Role="tblActualList" EntitySet="tblActualList" />
       <End Role="tblList" EntitySet="tblList" />
     </AssociationSet>
-    <AssociationSet Name="FK__tblPatien__Langu__5EDF0F2E" Association="Self.FK__tblPatien__Langu__5EDF0F2E">
+    <AssociationSet Name="FK__tblPatien__Langu__5614BF03" Association="Self.FK__tblPatien__Langu__5614BF03">
       <End Role="tblLanguage" EntitySet="tblLanguage" />
       <End Role="tblPatient" EntitySet="tblPatient" />
     </AssociationSet>
-    <AssociationSet Name="FK__tblPatien__listI__004002F9" Association="Self.FK__tblPatien__listI__004002F9">
+    <AssociationSet Name="FK__tblPatien__listI__758D6A5C" Association="Self.FK__tblPatien__listI__758D6A5C">
       <End Role="tblActualList" EntitySet="tblActualList" />
       <End Role="tblPatientTask" EntitySet="tblPatientTask" />
     </AssociationSet>
-    <AssociationSet Name="FK__tblPatien__patie__7D63964E" Association="Self.FK__tblPatien__patie__7D63964E">
+    <AssociationSet Name="FK__tblPatien__patie__72B0FDB1" Association="Self.FK__tblPatien__patie__72B0FDB1">
       <End Role="tblPatient" EntitySet="tblPatient" />
       <End Role="tblPatientTask" EntitySet="tblPatientTask" />
     </AssociationSet>
-    <AssociationSet Name="FK__tblPatien__userI__5DEAEAF5" Association="Self.FK__tblPatien__userI__5DEAEAF5">
+    <AssociationSet Name="FK__tblPatien__userI__55209ACA" Association="Self.FK__tblPatien__userI__55209ACA">
       <End Role="tblUser" EntitySet="tblUser" />
       <End Role="tblPatient" EntitySet="tblPatient" />
     </AssociationSet>
-    <AssociationSet Name="FK__tblPatien__userI__7F4BDEC0" Association="Self.FK__tblPatien__userI__7F4BDEC0">
+    <AssociationSet Name="FK__tblPatien__userI__74994623" Association="Self.FK__tblPatien__userI__74994623">
       <End Role="tblUser" EntitySet="tblUser" />
       <End Role="tblPatientTask" EntitySet="tblPatientTask" />
     </AssociationSet>
-    <AssociationSet Name="FK__tblPatien__worke__7E57BA87" Association="Self.FK__tblPatien__worke__7E57BA87">
+    <AssociationSet Name="FK__tblPatien__worke__73A521EA" Association="Self.FK__tblPatien__worke__73A521EA">
       <End Role="tblForeignUser" EntitySet="tblForeignUser" />
       <End Role="tblPatientTask" EntitySet="tblPatientTask" />
     </AssociationSet>
-    <AssociationSet Name="FK__tblPayche__UserI__2942188C" Association="Self.FK__tblPayche__UserI__2942188C">
+    <AssociationSet Name="FK__tblPayche__UserI__618671AF" Association="Self.FK__tblPayche__UserI__618671AF">
       <End Role="tblUser" EntitySet="tblUser" />
       <End Role="tblPaycheck" EntitySet="tblPaycheck" />
     </AssociationSet>
-    <AssociationSet Name="FK__tblPaymen__userI__2FEF161B" Association="Self.FK__tblPaymen__userI__2FEF161B">
+    <AssociationSet Name="FK__tblPaymen__userI__1CA7377D" Association="Self.FK__tblPaymen__userI__1CA7377D">
       <End Role="tblForeignUser" EntitySet="tblForeignUser" />
       <End Role="tblPaymentRequest" EntitySet="tblPaymentRequest" />
     </AssociationSet>
-    <AssociationSet Name="FK__tblPrivat__worke__77AABCF8" Association="Self.FK__tblPrivat__worke__77AABCF8">
+    <AssociationSet Name="FK__tblPrivat__taskI__01F34141" Association="Self.FK__tblPrivat__taskI__01F34141">
+      <End Role="tblPrivateTask" EntitySet="tblPrivateTask" />
+      <End Role="tblPrivateActualTask" EntitySet="tblPrivateActualTask" />
+    </AssociationSet>
+    <AssociationSet Name="FK__tblPrivat__worke__6CF8245B" Association="Self.FK__tblPrivat__worke__6CF8245B">
       <End Role="tblForeignUser" EntitySet="tblForeignUser" />
       <End Role="tblPrivateTask" EntitySet="tblPrivateTask" />
     </AssociationSet>
-    <AssociationSet Name="FK__tblProduc__listI__21A0F6C4" Association="Self.FK__tblProduc__listI__21A0F6C4">
-      <End Role="tblList" EntitySet="tblList" />
+    <AssociationSet Name="FK__tblProduc__produ__2354350C" Association="Self.FK__tblProduc__produ__2354350C">
+      <End Role="tblProduct" EntitySet="tblProduct" />
       <End Role="tblProductList" EntitySet="tblProductList" />
     </AssociationSet>
-    <AssociationSet Name="FK__tblProduc__produ__247D636F" Association="Self.FK__tblProduc__produ__247D636F">
-      <End Role="tblProduct" EntitySet="tblProduct" />
+    <AssociationSet Name="FK__tblProductList__226010D3" Association="Self.FK__tblProductList__226010D3">
+      <End Role="tblList" EntitySet="tblList" />
       <End Role="tblProductList" EntitySet="tblProductList" />
     </AssociationSet>
   </EntityContainer>

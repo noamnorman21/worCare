@@ -46,10 +46,41 @@ namespace DATA
         public virtual DbSet<tblPatientTask> tblPatientTask { get; set; }
         public virtual DbSet<tblPaycheck> tblPaycheck { get; set; }
         public virtual DbSet<tblPaymentRequest> tblPaymentRequest { get; set; }
+        public virtual DbSet<tblPrivateActualTask> tblPrivateActualTask { get; set; }
         public virtual DbSet<tblPrivateTask> tblPrivateTask { get; set; }
         public virtual DbSet<tblProduct> tblProduct { get; set; }
         public virtual DbSet<tblProductList> tblProductList { get; set; }
         public virtual DbSet<tblUser> tblUser { get; set; }
+    
+        public virtual int InsertActualList(Nullable<bool> type)
+        {
+            var typeParameter = type.HasValue ?
+                new ObjectParameter("type", type) :
+                new ObjectParameter("type", typeof(bool));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertActualList", typeParameter);
+        }
+    
+        public virtual int InsertActualTask(Nullable<int> taskId, Nullable<System.DateTime> taskDate, Nullable<System.TimeSpan> timeInDay, string taskStatus)
+        {
+            var taskIdParameter = taskId.HasValue ?
+                new ObjectParameter("taskId", taskId) :
+                new ObjectParameter("taskId", typeof(int));
+    
+            var taskDateParameter = taskDate.HasValue ?
+                new ObjectParameter("taskDate", taskDate) :
+                new ObjectParameter("taskDate", typeof(System.DateTime));
+    
+            var timeInDayParameter = timeInDay.HasValue ?
+                new ObjectParameter("TimeInDay", timeInDay) :
+                new ObjectParameter("TimeInDay", typeof(System.TimeSpan));
+    
+            var taskStatusParameter = taskStatus != null ?
+                new ObjectParameter("taskStatus", taskStatus) :
+                new ObjectParameter("taskStatus", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertActualTask", taskIdParameter, taskDateParameter, timeInDayParameter, taskStatusParameter);
+        }
     
         public virtual int InsertCalendarForUser(Nullable<int> calendarNum, Nullable<int> userId, Nullable<bool> isPrimary)
         {
@@ -89,6 +120,43 @@ namespace DATA
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertCaresForPatient", patientIdParameter, workerIdParameter, statusParameter, linkToParameter);
         }
     
+        public virtual int InsertDrugForPatient(Nullable<int> listId, Nullable<System.DateTime> fromDate, Nullable<System.DateTime> toDate, Nullable<byte> dosage, Nullable<int> qtyInBox, Nullable<byte> minQuantity, Nullable<int> drugId, string patientId)
+        {
+            var listIdParameter = listId.HasValue ?
+                new ObjectParameter("listId", listId) :
+                new ObjectParameter("listId", typeof(int));
+    
+            var fromDateParameter = fromDate.HasValue ?
+                new ObjectParameter("fromDate", fromDate) :
+                new ObjectParameter("fromDate", typeof(System.DateTime));
+    
+            var toDateParameter = toDate.HasValue ?
+                new ObjectParameter("toDate", toDate) :
+                new ObjectParameter("toDate", typeof(System.DateTime));
+    
+            var dosageParameter = dosage.HasValue ?
+                new ObjectParameter("dosage", dosage) :
+                new ObjectParameter("dosage", typeof(byte));
+    
+            var qtyInBoxParameter = qtyInBox.HasValue ?
+                new ObjectParameter("qtyInBox", qtyInBox) :
+                new ObjectParameter("qtyInBox", typeof(int));
+    
+            var minQuantityParameter = minQuantity.HasValue ?
+                new ObjectParameter("minQuantity", minQuantity) :
+                new ObjectParameter("minQuantity", typeof(byte));
+    
+            var drugIdParameter = drugId.HasValue ?
+                new ObjectParameter("drugId", drugId) :
+                new ObjectParameter("drugId", typeof(int));
+    
+            var patientIdParameter = patientId != null ?
+                new ObjectParameter("patientId", patientId) :
+                new ObjectParameter("patientId", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertDrugForPatient", listIdParameter, fromDateParameter, toDateParameter, dosageParameter, qtyInBoxParameter, minQuantityParameter, drugIdParameter, patientIdParameter);
+        }
+    
         public virtual int InsertForeignUser(Nullable<int> id, Nullable<System.DateTime> dateOfBirth, Nullable<System.DateTime> visaExpirationDate, string languageName_En, string countryName_En)
         {
             var idParameter = id.HasValue ?
@@ -114,7 +182,7 @@ namespace DATA
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertForeignUser", idParameter, dateOfBirthParameter, visaExpirationDateParameter, languageName_EnParameter, countryName_EnParameter);
         }
     
-        public virtual int InsertList(string listName, Nullable<int> listId)
+        public virtual int InsertList(string listName, Nullable<int> listId, Nullable<int> actualId, Nullable<int> taskId)
         {
             var listNameParameter = listName != null ?
                 new ObjectParameter("listName", listName) :
@@ -124,7 +192,15 @@ namespace DATA
                 new ObjectParameter("listId", listId) :
                 new ObjectParameter("listId", typeof(int));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertList", listNameParameter, listIdParameter);
+            var actualIdParameter = actualId.HasValue ?
+                new ObjectParameter("actualId", actualId) :
+                new ObjectParameter("actualId", typeof(int));
+    
+            var taskIdParameter = taskId.HasValue ?
+                new ObjectParameter("taskId", taskId) :
+                new ObjectParameter("taskId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertList", listNameParameter, listIdParameter, actualIdParameter, taskIdParameter);
         }
     
         public virtual int InsertPatient(string patientId, string firstName, string lastName, Nullable<System.DateTime> dateOfBirth, Nullable<int> userId, string languageName_En)
@@ -283,7 +359,28 @@ namespace DATA
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertPatientTask", taskNameParameter, taskFromDateParameter, taskToDateParameter, taskCommentParameter, patientIdParameter, workerIdParameter, userIdParameter, listIdParameter, frequencyParameter);
         }
     
-        public virtual int InsertPrivateTask(string taskName, Nullable<System.DateTime> taskFromDate, Nullable<System.DateTime> taskToDate, string taskComment, string status, Nullable<int> workerId, Nullable<System.TimeSpan> timeInDay, string frequency)
+        public virtual int InsertPrivateActualTask(Nullable<int> taskId, Nullable<System.DateTime> taskDate, Nullable<System.TimeSpan> timeInDay, string taskStatus)
+        {
+            var taskIdParameter = taskId.HasValue ?
+                new ObjectParameter("taskId", taskId) :
+                new ObjectParameter("taskId", typeof(int));
+    
+            var taskDateParameter = taskDate.HasValue ?
+                new ObjectParameter("taskDate", taskDate) :
+                new ObjectParameter("taskDate", typeof(System.DateTime));
+    
+            var timeInDayParameter = timeInDay.HasValue ?
+                new ObjectParameter("TimeInDay", timeInDay) :
+                new ObjectParameter("TimeInDay", typeof(System.TimeSpan));
+    
+            var taskStatusParameter = taskStatus != null ?
+                new ObjectParameter("taskStatus", taskStatus) :
+                new ObjectParameter("taskStatus", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertPrivateActualTask", taskIdParameter, taskDateParameter, timeInDayParameter, taskStatusParameter);
+        }
+    
+        public virtual int InsertPrivateTask(string taskName, Nullable<System.DateTime> taskFromDate, Nullable<System.DateTime> taskToDate, string frequency, string taskComment, Nullable<int> workerId)
         {
             var taskNameParameter = taskName != null ?
                 new ObjectParameter("taskName", taskName) :
@@ -297,27 +394,19 @@ namespace DATA
                 new ObjectParameter("taskToDate", taskToDate) :
                 new ObjectParameter("taskToDate", typeof(System.DateTime));
     
+            var frequencyParameter = frequency != null ?
+                new ObjectParameter("frequency", frequency) :
+                new ObjectParameter("frequency", typeof(string));
+    
             var taskCommentParameter = taskComment != null ?
                 new ObjectParameter("taskComment", taskComment) :
                 new ObjectParameter("taskComment", typeof(string));
-    
-            var statusParameter = status != null ?
-                new ObjectParameter("status", status) :
-                new ObjectParameter("status", typeof(string));
     
             var workerIdParameter = workerId.HasValue ?
                 new ObjectParameter("workerId", workerId) :
                 new ObjectParameter("workerId", typeof(int));
     
-            var timeInDayParameter = timeInDay.HasValue ?
-                new ObjectParameter("TimeInDay", timeInDay) :
-                new ObjectParameter("TimeInDay", typeof(System.TimeSpan));
-    
-            var frequencyParameter = frequency != null ?
-                new ObjectParameter("frequency", frequency) :
-                new ObjectParameter("frequency", typeof(string));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertPrivateTask", taskNameParameter, taskFromDateParameter, taskToDateParameter, taskCommentParameter, statusParameter, workerIdParameter, timeInDayParameter, frequencyParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertPrivateTask", taskNameParameter, taskFromDateParameter, taskToDateParameter, frequencyParameter, taskCommentParameter, workerIdParameter);
         }
     
         public virtual int InsertProduct(string productName)
@@ -327,6 +416,35 @@ namespace DATA
                 new ObjectParameter("productName", typeof(string));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertProduct", productNameParameter);
+        }
+    
+        public virtual int InsertProductList(Nullable<int> productId, Nullable<int> actualId, Nullable<int> taskId, string productStatus, Nullable<int> productQuantity, string commentForProduct)
+        {
+            var productIdParameter = productId.HasValue ?
+                new ObjectParameter("productId", productId) :
+                new ObjectParameter("productId", typeof(int));
+    
+            var actualIdParameter = actualId.HasValue ?
+                new ObjectParameter("actualId", actualId) :
+                new ObjectParameter("actualId", typeof(int));
+    
+            var taskIdParameter = taskId.HasValue ?
+                new ObjectParameter("taskId", taskId) :
+                new ObjectParameter("taskId", typeof(int));
+    
+            var productStatusParameter = productStatus != null ?
+                new ObjectParameter("productStatus", productStatus) :
+                new ObjectParameter("productStatus", typeof(string));
+    
+            var productQuantityParameter = productQuantity.HasValue ?
+                new ObjectParameter("productQuantity", productQuantity) :
+                new ObjectParameter("productQuantity", typeof(int));
+    
+            var commentForProductParameter = commentForProduct != null ?
+                new ObjectParameter("commentForProduct", commentForProduct) :
+                new ObjectParameter("commentForProduct", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertProductList", productIdParameter, actualIdParameter, taskIdParameter, productStatusParameter, productQuantityParameter, commentForProductParameter);
         }
     
         public virtual int InsertUser(string email, string password, string firstName, string lastName, string gender, string phoneNum, string userUri)
@@ -571,115 +689,6 @@ namespace DATA
                 new ObjectParameter("status", typeof(string));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("updateStatusCaresForPatient", patientIdParameter, workerIdParameter, statusParameter);
-        }
-    
-        public virtual int InsertActualList(Nullable<bool> type)
-        {
-            var typeParameter = type.HasValue ?
-                new ObjectParameter("type", type) :
-                new ObjectParameter("type", typeof(bool));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertActualList", typeParameter);
-        }
-    
-        public virtual int InsertDrugForPatient(Nullable<int> listId, Nullable<System.DateTime> fromDate, Nullable<System.DateTime> toDate, Nullable<byte> dosage, Nullable<int> qtyInBox, Nullable<byte> minQuantity, Nullable<int> drugId, string patientId)
-        {
-            var listIdParameter = listId.HasValue ?
-                new ObjectParameter("listId", listId) :
-                new ObjectParameter("listId", typeof(int));
-    
-            var fromDateParameter = fromDate.HasValue ?
-                new ObjectParameter("fromDate", fromDate) :
-                new ObjectParameter("fromDate", typeof(System.DateTime));
-    
-            var toDateParameter = toDate.HasValue ?
-                new ObjectParameter("toDate", toDate) :
-                new ObjectParameter("toDate", typeof(System.DateTime));
-    
-            var dosageParameter = dosage.HasValue ?
-                new ObjectParameter("dosage", dosage) :
-                new ObjectParameter("dosage", typeof(byte));
-    
-            var qtyInBoxParameter = qtyInBox.HasValue ?
-                new ObjectParameter("qtyInBox", qtyInBox) :
-                new ObjectParameter("qtyInBox", typeof(int));
-    
-            var minQuantityParameter = minQuantity.HasValue ?
-                new ObjectParameter("minQuantity", minQuantity) :
-                new ObjectParameter("minQuantity", typeof(byte));
-    
-            var drugIdParameter = drugId.HasValue ?
-                new ObjectParameter("drugId", drugId) :
-                new ObjectParameter("drugId", typeof(int));
-    
-            var patientIdParameter = patientId != null ?
-                new ObjectParameter("patientId", patientId) :
-                new ObjectParameter("patientId", typeof(string));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertDrugForPatient", listIdParameter, fromDateParameter, toDateParameter, dosageParameter, qtyInBoxParameter, minQuantityParameter, drugIdParameter, patientIdParameter);
-        }
-    
-        public virtual int ActualTask(Nullable<int> taskId, Nullable<System.DateTime> taskDate, Nullable<System.TimeSpan> timeInDay, string taskStatus)
-        {
-            var taskIdParameter = taskId.HasValue ?
-                new ObjectParameter("taskId", taskId) :
-                new ObjectParameter("taskId", typeof(int));
-    
-            var taskDateParameter = taskDate.HasValue ?
-                new ObjectParameter("taskDate", taskDate) :
-                new ObjectParameter("taskDate", typeof(System.DateTime));
-    
-            var timeInDayParameter = timeInDay.HasValue ?
-                new ObjectParameter("TimeInDay", timeInDay) :
-                new ObjectParameter("TimeInDay", typeof(System.TimeSpan));
-    
-            var taskStatusParameter = taskStatus != null ?
-                new ObjectParameter("taskStatus", taskStatus) :
-                new ObjectParameter("taskStatus", typeof(string));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("ActualTask", taskIdParameter, taskDateParameter, timeInDayParameter, taskStatusParameter);
-        }
-    
-        public virtual int InsertActualTask(Nullable<int> taskId, Nullable<System.DateTime> taskDate, Nullable<System.TimeSpan> timeInDay, string taskStatus)
-        {
-            var taskIdParameter = taskId.HasValue ?
-                new ObjectParameter("taskId", taskId) :
-                new ObjectParameter("taskId", typeof(int));
-    
-            var taskDateParameter = taskDate.HasValue ?
-                new ObjectParameter("taskDate", taskDate) :
-                new ObjectParameter("taskDate", typeof(System.DateTime));
-    
-            var timeInDayParameter = timeInDay.HasValue ?
-                new ObjectParameter("TimeInDay", timeInDay) :
-                new ObjectParameter("TimeInDay", typeof(System.TimeSpan));
-    
-            var taskStatusParameter = taskStatus != null ?
-                new ObjectParameter("taskStatus", taskStatus) :
-                new ObjectParameter("taskStatus", typeof(string));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertActualTask", taskIdParameter, taskDateParameter, timeInDayParameter, taskStatusParameter);
-        }
-    
-        public virtual int InsertProductList(Nullable<int> productId, Nullable<int> listId, string productStatus, Nullable<int> productQuantity)
-        {
-            var productIdParameter = productId.HasValue ?
-                new ObjectParameter("productId", productId) :
-                new ObjectParameter("productId", typeof(int));
-    
-            var listIdParameter = listId.HasValue ?
-                new ObjectParameter("listId", listId) :
-                new ObjectParameter("listId", typeof(int));
-    
-            var productStatusParameter = productStatus != null ?
-                new ObjectParameter("productStatus", productStatus) :
-                new ObjectParameter("productStatus", typeof(string));
-    
-            var productQuantityParameter = productQuantity.HasValue ?
-                new ObjectParameter("productQuantity", productQuantity) :
-                new ObjectParameter("productQuantity", typeof(int));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertProductList", productIdParameter, listIdParameter, productStatusParameter, productQuantityParameter);
         }
     }
 }

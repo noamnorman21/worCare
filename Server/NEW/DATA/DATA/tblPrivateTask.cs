@@ -14,16 +14,22 @@ namespace DATA
     
     public partial class tblPrivateTask
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public tblPrivateTask()
+        {
+            this.tblPrivateActualTask = new HashSet<tblPrivateActualTask>();
+        }
+    
         public int taskId { get; set; }
         public string taskName { get; set; }
         public System.DateTime taskFromDate { get; set; }
         public Nullable<System.DateTime> taskToDate { get; set; }
-        public string taskComment { get; set; }
-        public string status { get; set; }
-        public int workerId { get; set; }
-        public Nullable<System.TimeSpan> TimeInDay { get; set; }
         public string frequency { get; set; }
+        public string taskComment { get; set; }
+        public int workerId { get; set; }
     
         public virtual tblForeignUser tblForeignUser { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<tblPrivateActualTask> tblPrivateActualTask { get; set; }
     }
 }

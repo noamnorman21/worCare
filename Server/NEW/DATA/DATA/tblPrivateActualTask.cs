@@ -12,7 +12,7 @@ namespace DATA
     using System;
     using System.Collections.Generic;
     
-    public partial class tblActualTask
+    public partial class tblPrivateActualTask
     {
         public int actualId { get; set; }
         public int taskId { get; set; }
@@ -20,7 +20,6 @@ namespace DATA
         public System.DateTime taskDate { get; set; }
         public string taskStatus { get; set; }
     
-        public virtual tblPatientTask tblPatientTask { get; set; }
-        public virtual tblList tblList { get; set; }
+        public virtual tblPrivateTask tblPrivateTask { get; set; }
     }
 }

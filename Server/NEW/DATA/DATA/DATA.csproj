@@ -152,6 +152,9 @@
     <Compile Include="tblPaymentRequest.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="tblPrivateActualTask.cs">
+      <DependentUpon>Model.tt</DependentUpon>
+    </Compile>
     <Compile Include="tblPrivateTask.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>

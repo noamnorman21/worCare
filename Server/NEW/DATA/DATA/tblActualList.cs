@@ -17,14 +17,16 @@ namespace DATA
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public tblActualList()
         {
+            this.tblList = new HashSet<tblList>();
             this.tblPatientTask = new HashSet<tblPatientTask>();
         }
     
         public int listId { get; set; }
         public Nullable<bool> type { get; set; }
-
+    
         public virtual tblDrugForPatient tblDrugForPatient { get; set; }
-        public virtual tblList tblList { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<tblList> tblList { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tblPatientTask> tblPatientTask { get; set; }
     }
