@@ -15,6 +15,7 @@ export default function MainTasks(props) {
 
   const handleModalClose = () => {
     setModalVisible(false);
+    props.refreshlPublicTask()
   };
   return (
     <View style={styles.container}>
