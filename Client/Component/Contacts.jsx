@@ -38,7 +38,7 @@ function Main({ navigation }) {
   const [Contacts, setContacts] = useState([])
   const [Search, setSearch] = useState([])
   const [ContactToRender, setContactToRender] = useState([])
-  const [modal1Visible, setModal1Visible] = useState(false);
+  const [addModalVisible, setaddModalVisible] = useState(false);
   const { userContext, userContacts, setuserContacts, updateuserContacts } = useUserContext()
   const [patientId, setpatientId] = useState(userContext.patientId)
   const isFocused = useIsFocused()
@@ -58,13 +58,19 @@ function Main({ navigation }) {
       body: JSON.stringify(user)
     });
     const data = await response.json();
-
+    if (data.length > 0) {
     let contacts = data.map((item) => {
       return <ContactCard key={item.contactId} contact={item} fetchContacts={fetchContacts} />
     })
     setContacts(data);
     setContactToRender(contacts);
   }
+  else {
+    setContacts([])
+    setContactToRender([])
+    setaddModalVisible(true)
+  }
+}
 
   useEffect(() => {
     let temp = Contacts.filter((item) => {
@@ -95,10 +101,10 @@ function Main({ navigation }) {
       <ScrollView alwaysBounceVertical={false}>
         {ContactToRender}
       </ScrollView>
-      <View style={styles.addBtnView}><AddBtn onPress={() => setModal1Visible(true)} /></View>
+      <View style={styles.addBtnView}><AddBtn onPress={() => setaddModalVisible(true)} /></View>
       {/*NewContactModal*/}
-      <Modal animationType="slide" visible={modal1Visible}>
-        <AddNewContact patientId={patientId} cancel={() => { setModal1Visible(false); fetchContacts() }} />
+      <Modal animationType="slide" visible={addModalVisible}>
+        <AddNewContact contacts={Contacts} patientId={patientId} cancel={() => fetchContacts()} closeModal={()=> setaddModalVisible(false)} goBack={()=>navigation.goBack()}  />
       </Modal>
     </View>
   )
@@ -106,61 +112,10 @@ function Main({ navigation }) {
 
 function ContactCard(props) {
   const navigation = useNavigation();
-  const openModal = (value) => {
-    if (value == 1) {
-      console.log("Email")
-    }
-    else if (value == 2) {
-      console.log("call")
-    }
-    if (value == 3) {
-      navigation.navigate('EditContact', { contact: props.contact })
-    }
-    if (value == 4) {
-      DeleteContact()
-    }
-  }
-
-  const DeleteContact = () => {
-    Alert.alert(
-      'Delete Contact',
-      'Are you sure you want to delete this contact?',
-      [
-        { text: "Don't Delete", style: 'cancel', onPress: () => { } },
-        {
-          text: 'Delete',
-          style: 'destructive',
-          // If the user confirmed, then we dispatch the action we blocked earlier
-          // This will continue the action that had triggered the removal of the screen
-          onPress: () => {
-            fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/DeleteContact/', {
-              method: 'DELETE',
-              body: JSON.stringify(props.contact),
-              headers: new Headers({
-                'Content-Type': 'application/json; charset=UTF-8',
-              })
-            })
-              .then(res => {
-                return res.json()
-              })
-              .then(
-                (result) => {
-                  console.log("fetch POST= ", result);
-                  Alert.alert("Contact " + props.contact.contactName + " Deleted Successfully")
-                  props.fetchContacts();
-                },
-                (error) => {
-                  console.log("err post=", error);
-                });
-          }
-        },
-      ]
-    );
-  }
   return (
     <TouchableOpacity style={styles.contactcard} onPress={() => navigation.navigate('ContactDetails', { contact: props.contact })} >
       <Text style={styles.name}>{props.contact.contactName}</Text>
-      <Text style={styles.number}>{props.contact.mobileNo}</Text>
+      <Text style={styles.number}>{props.contact.mobileNo? props.contact.mobileNo:props.contact.phoneNo}</Text>
     </TouchableOpacity>
   )
 }
@@ -172,15 +127,6 @@ const styles = StyleSheet.create({
   },
   contact: {
     justifyContent: 'center',
-  },
-  details: {
-    marginTop: -20, // fix style
-    margin: 10,
-    padding: 10,
-    textAlign: 'left',
-  },
-  detailsheader: {
-    fontSize: 15,
   },
   contactheader: {
     fontSize: 18,
@@ -237,112 +183,5 @@ const styles = StyleSheet.create({
     fontFamily: 'Urbanist-Medium',
     borderColor: '#E6EBF2',
     height: Dimensions.get('window').height * 0.06,
-  },
-  button: {
-    borderRadius: 54,
-    backgroundColor: '#548DFF',
-    width: 64,
-    height: 64,
-    position: 'absolute',
-    bottom: Platform.OS === 'ios' ? 40 : 10,
-    right: Platform.OS === 'ios' ? 15 : 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  buttonText: {
-    fontSize: 30,
-    color: '#fff',
-  },
-  addBtn: {
-    backgroundColor: '#548DFF',
-    borderRadius: 54,
-    height: 54,
-    width: 54,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  addBtnTxt: {
-    color: '#fff',
-    fontSize: 28,
-    marginBottom: 2,
-    fontFamily: 'Urbanist-SemiBold',
-  },
-  savebutton: {
-    width: Dimensions.get('window').width * 0.45,
-    backgroundColor: '#548DFF',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: 'lightgray',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 1,
-    margin: 7,
-    height: 45,
-  },
-  cancelbutton: {
-    width: Dimensions.get('window').width * 0.45,
-    backgroundColor: 'white',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: 'lightgray',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 1,
-    margin: 7,
-    height: 45,
-  },
-  bottom: {
-    flexDirection: 'row',
-    marginTop: 20,
-  },
-  savebuttonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontFamily: 'Urbanist-SemiBold',
-  },
-  cancelbuttonText: {
-    color: '#000',
-    fontFamily: 'Urbanist-SemiBold',
-    fontSize: 16,
-  },
-  options: {
-    flexDirection: 'row',
-    borderBottomColor: '#80808080',
-    borderBottomWidth: 0.2,
-    padding: 7,
-    fontFamily: 'Urbanist-Medium',
-  },
-  optionsText: {
-    fontFamily: 'Urbanist-Medium',
-    fontSize: 16,
-  },
-  optionsWrapper: {
-    position: 'absolute',
-    flexDirection: 'column',
-    top: -120,
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    left: SCREEN_WIDTH * 0.09,
-    elevation: 100,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-  },
-  deleteTxt: {
-    color: '#FF3C3C',
-    fontFamily: 'Urbanist-Medium',
-    fontSize: 16,
   },
 });
