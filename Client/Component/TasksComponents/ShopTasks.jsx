@@ -1,5 +1,6 @@
 import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Dimensions, ScrollView, TextInput, Alert } from 'react-native'
 import { useState, useEffect } from 'react'
+import { useIsFocused } from '@react-navigation/native';
 import { List } from 'react-native-paper';
 import { Feather, Ionicons } from '@expo/vector-icons';
 import { AddBtn, NewTaskModal } from '../HelpComponents/AddNewTask'
@@ -16,6 +17,10 @@ export default function ShopTasks(props) {
   const [shopTasks, setShopTasks] = useState(props.allShopTasks)
   const [expanded, setExpanded] = useState(true);
   const handlePress = () => setExpanded(!expanded);
+  const isFocused = useIsFocused()
+  const[productsForUpdateInDB,setProductsForUpdateInDB] = useState([])
+
+
 
   const getShopTasks = () => {
     return props.allShopTasks
@@ -27,7 +32,14 @@ export default function ShopTasks(props) {
     setShopTasks(props.allShopTasks)
   }, [props.allShopTasks])
 
-
+  useEffect(() => {
+    if (!isFocused) {
+      updateProductsInDB()
+    }
+  }, [isFocused])
+  const testfuncToRunWenTheScreenIsChange = () => {
+    console.log('testfuncToRunWenTheScreenIsChange');
+  }
   const handleAddBtnPress = () => {
     // console.log(shopTasks)
     setModalVisible(true);
@@ -35,6 +47,7 @@ export default function ShopTasks(props) {
 
   const handleModalClose = () => {
     setModalVisible(false);
+    props.refreshlPublicTask()
   };
 
   const handleAddingSubTask = (taskToAddProduct) => {
@@ -99,6 +112,18 @@ export default function ShopTasks(props) {
           }
         })
       }
+      //check if this product is in the array of products that need to be updated in the DB
+      if(productsForUpdateInDB.find(p => p.productId == prod.productId) == null){
+        productsForUpdateInDB.push(prod)
+      }
+      else{
+        productsForUpdateInDB.map(p => {
+          if(p.productId == prod.productId){
+            p.productStatus = prod.productStatus
+          }
+        })
+      }
+
       return task
     }))
   }
@@ -124,9 +149,51 @@ export default function ShopTasks(props) {
           }
         })
       }
+      //check if this product is in the array of products that need to be updated in the DB
+      if(productsForUpdateInDB.find(p => p.productId == prod.productId) == null){
+        productsForUpdateInDB.push(prod)
+      }
+      else{
+        productsForUpdateInDB.map(p => {
+          if(p.productId == prod.productId){
+            p.productQuantity = prod.productQuantity
+          }
+        })
+      }
       return task
     }))
   }
+  const updateProductsInDB = () => {
+    let updateProductsUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/UpdateProductsToList'
+    fetch(updateProductsUrl, {
+      method: 'PUT',
+      body: JSON.stringify(productsForUpdateInDB),
+      headers: new Headers({
+        'Content-type': 'application/json; charset=UTF-8'
+      })
+    })
+      .then(res => {
+        console.log('res=', res);
+        //if res status is ok or 200
+        if (res.ok) {
+          console.log('products updated')
+        }
+        return res.json()
+      }
+      )
+      .then(
+        (result) => {
+          console.log("fetch btnFetchGetAllTasks= ", result);
+        }
+      )
+      .catch(
+        (error) => {
+          console.log("err post=", error);
+        }
+      )
+  }
+
+
 
   return (
     <SafeAreaView style={styles.container}>

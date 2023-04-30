@@ -139,16 +139,11 @@ function AppBarDown() {
 }
 
 const styles = StyleSheet.create({
-    container:
-        { flex: 1, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' },
-    tabBar:
-        { backgroundColor: '#fff', paddingTop: 10 },
-    headerLeft:
-        { marginTop: 10, marginLeft: Dimensions.get('screen').width * 0.075, flex: 1, justifyContent: 'space-between', alignContent: 'space-between' },
-    headerRight:
-        { marginTop: 10, marginLeft: Dimensions.get('screen').width * 0.075, flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignContent: 'space-between' },
-    headerLogo:
-        { width: 50, height: 50, bottom: Dimensions.get('screen').height * 0.01, left: Dimensions.get('screen').width * 0.005 }
+    container:{ flex: 1, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' },
+    tabBar:{ backgroundColor: '#fff', paddingTop: 10 },
+    headerLeft:{ marginTop: 10, marginLeft: Dimensions.get('screen').width * 0.075, flex: 1, justifyContent: 'space-between', alignContent: 'space-between' },
+    headerRight:{ marginTop: 10, marginLeft: Dimensions.get('screen').width * 0.075, flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignContent: 'space-between' },
+    headerLogo:{ width: 50, height: 50, bottom: Dimensions.get('screen').height * 0.01, left: Dimensions.get('screen').width * 0.005 }
 });
 
 export { AppBarDown, CustomHeader }
