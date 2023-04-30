@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, Animated, Modal, Image, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions,LayoutAnimation, Animated, Modal, Image, ScrollView } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import NewPayment from './NewPayment';
 import { useUserContext } from '../../UserContext';
@@ -9,6 +9,7 @@ import { shareAsync } from 'expo-sharing';
 import { SafeAreaView } from 'react-navigation';
 import { MaterialCommunityIcons, AntDesign, Feather, Ionicons } from '@expo/vector-icons';
 import { Menu, MenuOptions, MenuOption, MenuTrigger, } from "react-native-popup-menu";
+
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -109,15 +110,21 @@ function Request(props) {
   const { userContext } = useUserContext();
   const [downloadProgress, setDownloadProgress] = useState(0);
 
+  // const toggle = () => {
+  //   const config = {
+  //     toValue: expanded ? 0 : 1,
+  //     duration: 2000,
+  //     useNativeDriver: true,
+  //   }
+  //   Animated.timing(animationController, config).start();
+  //   setExpanded(!expanded);
+  // };
+
+  
   const toggle = () => {
-    const config = {
-      toValue: expanded ? 0 : 1,
-      duration: 2000,
-      useNativeDriver: true,
-    }
-    Animated.timing(animationController, config).start();
-    setExpanded(!expanded);
+    LayoutAnimation.easeInEaseOut(setExpanded(!expanded));
   };
+
 
   const openModal = (value) => {
     if (value == 1) {
@@ -188,50 +195,58 @@ function Request(props) {
   }
 
   const downloadFile = async () => {
-    const url = props.data.requestProofDocument;
-    const dot = url.lastIndexOf(".");
-    const questionMark = url.lastIndexOf("?");
-    const type = url.substring(dot, questionMark);
-    console.log("Type", type)
-    const id = props.data.requestId;
-    const fileName = "Request " + id;
-    const fileUri = FileSystem.documentDirectory + fileName;
-    const downloadResumable = FileSystem.createDownloadResumable(url,fileUri,{},callback);
-    console.log("downloadResumable", downloadResumable)
-    const DownloadedFile = await downloadResumable.downloadAsync();
-    console.log("DownloadedFile", DownloadedFile)
-    if (DownloadedFile.status == 200) {
-      console.log("File Downloaded", DownloadedFile)
-      saveFile(DownloadedFile.uri, fileName, DownloadedFile.headers['content-type']);
+    try {
+      const url = props.data.requestProofDocument;
+      const dot = url.lastIndexOf(".");
+      const questionMark = url.lastIndexOf("?");
+      const type = url.substring(dot, questionMark);
+      const id = props.data.requestId;
+      const fileName = "Request_" + id + type;
+      const fileUri = FileSystem.documentDirectory + fileName;
+      // const downloadResumable = FileSystem.createDownloadResumable(url,fileUri,{},callback);
+      const directoryInfo = await FileSystem.getInfoAsync(fileUri);
+      if (!directoryInfo.exists) {
+        FileSystem.makeDirectoryAsync(fileUri, { intermediates: true });
+      }
+      const DownloadedFile = await FileSystem.downloadAsync(url, fileUri, {}, callback);
+      if (DownloadedFile.status == 200) {
+        saveFile(DownloadedFile.uri, fileName, DownloadedFile.headers['content-type']);
+      }
+      else {
+        console.log("File not Downloaded")
+      }
     }
-    else {
-      console.log("File not Downloaded")
+    catch (error) {
+      console.log(error)
+      Alert.alert("Error", error)
     }
-  }
+  
+}
 
-  const saveFile = async (res, fileName, type) => {
-    if (Platform.OS == "ios") {
-      shareAsync(res.uri)
+
+const saveFile = async (res, fileName, type) => {
+  if (Platform.OS == "ios") {
+    Sharing.shareAsync(res)
+  }
+  else { //ios download with share
+    try {
+      const permission = await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
+      if (permission.granted) {
+        const base64 = await FileSystem.readAsStringAsync(res, { encoding: FileSystem.EncodingType.Base64 });
+        await FileSystem.StorageAccessFramework.createFileAsync(permission.directoryUri, fileName, type)
+          .then(async (res) => {
+            console.log("File", res)
+            await FileSystem.writeAsStringAsync(res, base64, { encoding: FileSystem.EncodingType.Base64 });
+            return Alert.alert("File Saved")
+          })
+          .catch(error => { console.log("Error", error) })
+      }
     }
-    else { //ios download with share
-      try {
-        const permission = await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
-        if (permission.granted) {
-          const base64 = await FileSystem.readAsStringAsync(res, { encoding: FileSystem.EncodingType.Base64 });
-          await FileSystem.StorageAccessFramework.createFileAsync(permission.directoryUri, fileName, type)
-            .then(async (res) => {
-              console.log("File", res)
-              await FileSystem.writeAsStringAsync(res, base64, { encoding: FileSystem.EncodingType.Base64 });
-              return Alert.alert("File Saved")
-            })
-            .catch(error => { console.log("Error", error) })
-        }
-      }
-      catch (error) {
-        console.log("Error", error)
-      }
+    catch (error) {
+      console.log("Error", error)
     }
   }
+}
 
   const displayStatus = () => {
     if (props.data.requestStatus == "F") {

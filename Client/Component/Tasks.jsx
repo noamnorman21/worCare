@@ -63,6 +63,7 @@ export default function Tasks() {
     let filteredMedicineTasks = tasks.filter(task => task.type == true);
     setAllMedicineTasks(filteredMedicineTasks);
   }
+
   return (
     <Tab.Navigator
       initialRouteName="Main"
@@ -87,23 +88,16 @@ export default function Tasks() {
       }}
     >
       <Tab.Screen name="Main" //send allPrivateTasks to MainTasks, if userType is caregiver        
-        children={() => <Main allPrivateTasks={allPrivateTasks} allTask={allPublicTasks} refreshlPublicTask={getAllPublicTasks} />}
+        children={() => <Main allPrivateTasks={allPrivateTasks} allTask={allPublicTasks} />}
       />
       <Tab.Screen name="General"
-        children={() => <General allPrivateTasks={allPrivateTasks} refreshlPublicTask={getAllPublicTasks} />}
+        children={() => <General allPrivateTasks={allPrivateTasks} />}
       />
-      <Tab.Screen
-        name="Shop"
-        children={() => (
-          <Shop
-            allShopTasks={allShopTasks}
-            refreshlPublicTask={getAllPublicTasks}
-          />
-        )}
-      />
-
+      <Tab.Screen name="Shop" children={
+        () => <Shop allShopTasks={allShopTasks} refreshlPublicTask={getAllPublicTasks} />
+      } />
       <Tab.Screen name="Medicine" children={
-        () => <Medicine allMedicineTasks={allMedicineTasks} refreshlPublicTask={getAllPublicTasks} />
+        () => <Medicine allMedicineTasks={allMedicineTasks} />
       } />
     </Tab.Navigator>
   );

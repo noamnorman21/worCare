@@ -1,13 +1,11 @@
 // External imports:
-import { StyleSheet, View, Text, Alert, SafeAreaView, TouchableOpacity, Dimensions, Image, LogBox, TextInput, Modal } from 'react-native'
+import { StyleSheet, View, Text, Alert, SafeAreaView, TouchableOpacity, Dimensions, Image, LogBox, TextInput, Modal,Linking } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { NavigationContainer, StackActions } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AntDesign, Ionicons, SimpleLineIcons } from '@expo/vector-icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
 import { useUserContext } from '../UserContext';
-import { Octicons } from '@expo/vector-icons';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from '../config/firebase';
 import * as ImagePicker from 'expo-image-picker';
@@ -38,6 +36,7 @@ function HomeScreen({ navigation, route }) {
     const [isChanged, setIsChanged] = useState(false);
     const [ImageChange, setImageChange] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
+    const appEmail = 'worcare21@gmail.com';
 
     LogBox.ignoreLogs([
         'Non-serializable values were found in the navigation state',
@@ -46,12 +45,10 @@ function HomeScreen({ navigation, route }) {
     useEffect(() => {
         const getData = async () => {
             try {
-                const jsonValue = await AsyncStorage.getItem('userData');
-                const userData = jsonValue != null ? JSON.parse(jsonValue) : null;
                 setUserName(userContext.FirstName);
-                setuserEmail(userData.Email);
-                setUserImg(userData.userUri);
-                setUserId(userData.UserId);
+                setuserEmail(userContext.Email);
+                setUserImg(userContext.userUri);
+                setUserId(userContext.UserId);
             } catch (e) {
                 console.log('error', e);
             }
@@ -94,6 +91,10 @@ function HomeScreen({ navigation, route }) {
         }
     }
 
+    const updateuserEmail = (newEmail) => {
+        setuserEmail(newEmail);
+    }
+
     const displayGender = () => {
         if (user.gender == "M") {
             return "Male"
@@ -104,18 +105,21 @@ function HomeScreen({ navigation, route }) {
         else {
             return "Other"
         }
-    }
+    }    
 
     const sendDataToNextDB = (downloadURL) => {
         const userToUpdate = {
-            Email: user.Email,
-            userUri: downloadURL == null ? user.userUri : downloadURL,
+            Email:userEmail,
+            userUri: downloadURL == null ? userContext.userUri : downloadURL,
             phoneNum: user.phoneNum,
             gender: user.gender,
             FirstName: user.FirstName,
             LastName: user.LastName,
-            userId: user.userId,
-            userType: user.userType
+            userId: userContext.userId,
+            userType: userContext.userType,
+            workerId: userContext.workerId,//if user is a caregiver, this field will be same as userId
+            involvedInId: userContext.involvedInId,//if user is a not caregiver, this field will be same as userId
+            patientId: userContext.patientId,
         }
         if (userToUpdate.phoneNum != userContext.phoneNum) {
             fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetPhoneNum', {
@@ -195,6 +199,11 @@ function HomeScreen({ navigation, route }) {
         setNavigation();
     }, [user]);
 
+    const optionsToEmail = () => {
+        Linking.openURL(`mailto:${appEmail}`)  
+      }
+    
+
     //the user name will be taken from the database
     //the user image will be taken from the database
     return (
@@ -230,11 +239,11 @@ function HomeScreen({ navigation, route }) {
                 </Modal>
             </View>
             <View style={styles.btnContainer}>
-                <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Privacy')}>
+                <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Privacy',{updateuserEmail:(value)=>{updateuserEmail(value)}})}>
                     <Text style={styles.btnText}>Privacy & My Account</Text>
                     <Ionicons style={styles.arrowLogoStyle} name="chevron-forward" size={24} color="grey" />
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('ContactUs', { userImg: userImg })}>
+                <TouchableOpacity style={styles.btn} onPress={() => optionsToEmail()}>
                     <Text style={styles.btnText}>Contact Us</Text>
                     <Ionicons style={styles.arrowLogoStyle} name="chevron-forward" size={24} color="grey" />
                 </TouchableOpacity>
@@ -261,7 +270,6 @@ export default function SettingScreen({ navigation }) {
                 }}>
                 <Stack.Screen name="Settings" component={HomeScreen} options={() => ({ headerTitle: 'Settings', headerShown: true, headerTitleAlign: 'center' })} initialParams={{ logout: () => { navigation.dispatch(StackActions.replace('LogIn')) }, Exit: () => navigation.navigate('AppBarDown') }} />
                 <Stack.Screen name="Privacy" component={Privacy} options={{ headerTitle: 'Privacy & My Account', headerTitleAlign: 'center', headerShown: true }} initialParams={{ logout: () => { navigation.dispatch(StackActions.replace('LogIn')) } }} />
-                <Stack.Screen name="ContactUs" component={ContactUs} options={{ headerTitle: 'ContactUs', headerTitleAlign: 'center', headerShown: true }} />           
             </Stack.Navigator>
         </NavigationContainer>
     )
@@ -312,7 +320,6 @@ const styles = StyleSheet.create({
         right: SCREEN_WIDTH * 0.03,
     },
     title: {
-        //the title, it will be on the left side of the screen,just above the image
         fontSize: 25,
         marginLeft: SCREEN_WIDTH * 0.03,
         marginRight: SCREEN_WIDTH * 0.6,
@@ -377,8 +384,8 @@ const styles = StyleSheet.create({
     },
     btnText: {
         marginLeft: SCREEN_WIDTH * 0.03,
-        fontSize: 20,
-        fontFamily: 'Urbanist'
+        fontSize: 18,
+        fontFamily: 'Urbanist-Medium',
     },
     btnText2: {
         fontSize: 18,
