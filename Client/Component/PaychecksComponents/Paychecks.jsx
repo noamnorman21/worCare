@@ -21,7 +21,7 @@ export default function Paychecks({ navigation, route }) {
   const [arr, setArr] = useState()
   const isFocused = useIsFocused()
   const [modal1Visible, setModal1Visible] = useState(false);
- 
+
 
   useEffect(() => {
     if (isFocused && modal1Visible == false) {
@@ -76,11 +76,11 @@ export default function Paychecks({ navigation, route }) {
 
   return (
     <>
+      <View style={styles.headerText}>
+        <Text style={styles.header}>Paychecks History</Text>
+        <View style={styles.line}></View>
+      </View>
       <ScrollView contentContainerStyle={styles.pending}>
-        <View style={styles.headerText}>
-          <Text style={styles.header}>Paychecks History</Text>
-          <View style={styles.line}></View>
-        </View>
         {History}
         <Modal animationType='slide' transparent={true} visible={modal1Visible}>
           <NewPaycheck cancel={() => { setModal1Visible(false); getPaychecks() }} userId={userContext.userId} />
@@ -111,7 +111,7 @@ function Paycheck(props) {
   const day = date.getDate();
   const dateString = day + "/" + month + "/" + newYear;
   const paycheckNum = props.data.paycheckNum;
-  const [DownloadProgress,setDownloadProgress] = useState(0);
+  const [DownloadProgress, setDownloadProgress] = useState(0);
 
   const toggle = () => {
     const config = {
@@ -195,7 +195,7 @@ function Paycheck(props) {
     const id = props.data.payCheckNum;
     const fileName = "Paycheck " + id;
     const fileUri = FileSystem.documentDirectory + fileName;
-    const downloadResumable = FileSystem.createDownloadResumable(url,fileUri,{},callback);
+    const downloadResumable = FileSystem.createDownloadResumable(url, fileUri, {}, callback);
     console.log("downloadResumable", downloadResumable)
     const DownloadedFile = await downloadResumable.downloadAsync();
     console.log("DownloadedFile", DownloadedFile)
