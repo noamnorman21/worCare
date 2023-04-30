@@ -37,10 +37,13 @@ export default function AddNewContact(props) {
       return Alert.alert('Invalid Email', 'Please enter a valid email')
     }
     if (!Contact.mobileNo && !Contact.phoneNo) {
-      return Alert.alert('Invalid Mobile number', 'a phone number or a mobile number is required')
+      return Alert.alert('Invalid numbers', 'a phone number or a mobile number is required')
     }
-    if (!validatePhone(Contact.mobileNo)) {
+    if (Contact.mobileNo && !validatePhone(Contact.mobileNo)) {
       return Alert.alert('Invalid Mobile number', 'mobile number must contain only digits')
+    }
+    if (Contact.phoneNo && !validatePhone(Contact.phoneNo)) {
+      return Alert.alert('Invalid Telephone number', 'Telephone number must contain only digits')
     }
     sendToDB();
   }
@@ -60,6 +63,7 @@ export default function AddNewContact(props) {
         (result) => {
           console.log("fetch POST= ", result);
           Alert.alert("Contact added successfully");
+          props.closeModal();
           props.cancel();
         },
         (error) => {
@@ -70,6 +74,18 @@ export default function AddNewContact(props) {
   const validateEmail = (email) => {
     const emailRegex = /\S+@\S+\.\S+/
     return emailRegex.test(email)
+  }
+
+  const closeModal = () => {
+    console.log("closeModal");
+    if (props.contacts.length==0){
+       props.closeModal();
+      props.goBack();
+    }
+    else{
+      props.closeModal();
+      props.cancel();
+    }
   }
 
   return (
@@ -105,7 +121,7 @@ export default function AddNewContact(props) {
                 inputMode="numeric" />
                 <TextInput style={styles.inputTxt}
                 mode='outlined'
-                label='Telephone Number (optional)'
+                label='Telephone Number'
                 keyboardType='decimal-pad'
                 value={Contact.phoneNo}
                 onChangeText={(value) => handleInputChange('phoneNo', value)}
@@ -154,7 +170,7 @@ export default function AddNewContact(props) {
                 <TouchableOpacity style={styles.savebutton} onPress={validateInput}>
                   <Text style={styles.savebuttonText}>Create</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.cancelbutton} onPress={props.cancel}>
+                <TouchableOpacity style={styles.cancelbutton} onPress={closeModal}>
                   <Text style={styles.cancelbuttonText}>Close</Text>
                 </TouchableOpacity>
               </View>

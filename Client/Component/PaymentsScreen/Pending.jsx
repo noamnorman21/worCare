@@ -9,6 +9,7 @@ import { AddBtn } from '../HelpComponents/AddNewTask';
 import { Menu, MenuProvider, MenuOptions, MenuOption, MenuTrigger, renderers } from "react-native-popup-menu";
 import * as FileSystem from 'expo-file-system';
 import { SafeAreaView } from 'react-navigation';
+import { Tooltip } from 'react-native-paper';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -119,28 +120,6 @@ function Request(props) {
     }
     if (value == 4) {
       deleteRequest()
-    }
-  }
-
-  const Cancel = () => {
-    if (valueChanged) {
-      Alert.alert(
-        'Cancel Changes',
-        'are you sure you want to Exit the Page? All changes will be lost',
-        [
-          { text: "Don't leave", style: 'cancel', onPress: () => { } },
-          {
-            text: 'Leave',
-            style: 'destructive',
-            // If the user confirmed, then we dispatch the action we blocked earlier
-            // This will continue the action that had triggered the removal of the screen
-            onPress: () => props.cancel()
-          },
-        ]
-      );
-    }
-    else {
-      props.cancel();
     }
   }
 

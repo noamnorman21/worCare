@@ -21,8 +21,96 @@ export default function Privacy({ navigation, route }) {
   const [cancel, setCancel] = useState(false);
   const [Notifications, setNotifications] = useState(userNotifications);
 
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        setEmail(userContext.Email)
+      } catch (e) {
+        console.log('error', e);
+      }
+    };
+    const setNavigation = async () => navigation.setOptions({
+      headerRight: () => (
+        <View style={styles.headerRight}>
+          <TouchableOpacity
+            onPress={() => {
+              setSaving(true);
+            }}
+          >
+            <Text style={styles.headerButtonText}>Save</Text>
+          </TouchableOpacity>
+        </View>
+
+      ),
+      headerLeft: () => (
+        <View style={styles.headerLeft}>
+          <TouchableOpacity
+            onPress={() => { setCancel(true); }}
+          >
+            <Ionicons name="chevron-back" size={28} color="black" />
+          </TouchableOpacity>
+        </View>
+      ),
+    });
+    console.log("setnavigations")
+    setNavigation();
+    getData();
+  }, []);
+
+  useEffect(() => {
+    console.log("useEffect")
+    console.log("saving", saving)
+    if (saving) {
+      saveAllChanges();
+    }
+    if (cancel) {
+      cancelAllChanges();
+    }
+  }, [saving, cancel]);
+
+  //checking which fields were changed and updating them in the DB
+  const saveAllChanges = (field) => {
+    if (Email != userContext.Email) {
+      checkEmailInDB();
+    }
+    else if (Email == userContext.Email && passwordChanged) {
+      checkPassowrd();
+    }
+    else if (Email == userContext.Email && !passwordChanged && Notifications !== userNotifications) {
+      console.log('Notifications', Notifications);
+      console.log('userContext.Notifications', userNotifications);
+      updateNotifications();
+    }
+    else {
+      navigation.goBack();
+    }
+  }
+
+  const cancelAllChanges = () => {
+    if (Email != userContext.Email || passwordChanged) {
+      Alert.alert(
+        "Cancel Changes",
+        "Are you sure you want to cancel your changes?",
+        [
+          {
+            text: "Cancel",
+            onPress: () => setCancel(false),
+            style: "cancel"
+          },
+          { text: "OK", onPress: () => navigation.goBack() }
+        ],
+        { cancelable: false }
+      )
+    }
+    else {
+      navigation.goBack();
+    }
+  }
+
+  // check if email already exists in DB
   const checkEmailInDB = () => {
     console.log('checkEmailInDB', Email);
+    if (Email == null && validateEmail(Email)) {    
     let checkMail = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetEmail';
     let userDto = {
       Email: Email,
@@ -46,8 +134,14 @@ export default function Privacy({ navigation, route }) {
       .catch((error) => {
         console.log("err=", error);
       });
+    }
+    else{
+      setSaving(false);
+      Alert.alert('Invalid Email', 'Please enter a valid email')
+    }
   }
 
+  //save email in DB
   const sendDataToNextDB = () => {
     const userToUpdate = {
       Email: Email,
@@ -63,8 +157,6 @@ export default function Privacy({ navigation, route }) {
       patientId: userContext.patientId,
       userUri: userContext.userUri,
     }
-
-    console.log('userToUpdate', userToUpdate)
 
     fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Settings/UpdateUserEmail', {
       method: 'PUT',
@@ -83,6 +175,7 @@ export default function Privacy({ navigation, route }) {
                 updateUserContext(userToUpdate);
                 const jsonValue = JSON.stringify(userToUpdate)
                 AsyncStorage.setItem('userData', jsonValue);
+                route.params.updateuserEmail(Email);
                 if (passwordChanged) {
                   checkPassowrd();
                 }
@@ -97,6 +190,7 @@ export default function Privacy({ navigation, route }) {
             )
         }
         else {
+          setSaving(false);
           return Alert.alert('Error updating email', 'Sorry, there was an error updating your email. Please try again later.');
         }
       }
@@ -140,11 +234,7 @@ export default function Privacy({ navigation, route }) {
 
   }
 
-  const validatePassword = (password) => {
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/ //at least 8 characters, 1 letter, 1 number
-    return passwordRegex.test(password);
-  }
-
+  //save new password in DB
   const checkPassowrd = () => {
     if (password1 === password2 && validatePassword(password1)) {
       let user = {
@@ -176,28 +266,30 @@ export default function Privacy({ navigation, route }) {
               )
           }
           else {
+            setSaving(false);
+            console.log("blaa",saving);
             return Alert.alert('Password Change Failed', 'Sorry, there was an error updating your password. Please try again later.');
           }
         }
         )
     }
     else if (password1 !== password2) {
+      setSaving(false);
       Alert.alert('Password Change Failed', 'Sorry, your passwords do not match. Please try again.');
-      // throw new Error('Passwords do not match')
-      //   .catch((error) => {
-      //     console.log('Error:', error.message);
-      //   }
-      //   );
     }
-    else if (!validatePassword(password1)) {
+    else if (password1 && !validatePassword(password1)) {
+      setSaving(false);
       Alert.alert('Password Change Failed', 'Sorry, your password must be at least 8 characters long, and contain at least one letter and one number. Please try again.');
     }
-    else if (password1 === '' || password2 === '') {
-      Alert.alert('Password Change Failed', 'Sorry, you must enter Both passwords. Please try again.');
+    else if (password1 === '' && password2 === '' && Notifications != userNotifications) {
+      updateNotifications();
+    }
+    else {
+      navigation.goBack();
     }
   }
 
-
+  //save notifications in DB- for now only in userContext
   const updateNotifications = () => {
     let notificationsUpdate = {
       userId: userContext.userId,
@@ -219,95 +311,17 @@ export default function Privacy({ navigation, route }) {
     navigation.goBack();   
   }
 
-
-
-  const saveAllChanges = (field) => {
-    if (Email != userContext.Email) {
-      checkEmailInDB();
-    }
-    else if (Email == userContext.Email && passwordChanged) {
-      checkPassowrd();
-    }
-    else if (Email == userContext.Email && !passwordChanged && Notifications !== userNotifications) {
-      console.log('Notifications', Notifications);
-      console.log('userContext.Notifications', userNotifications);
-      updateNotifications();
-    }
-    else {
-      navigation.goBack();
-    }
+  const validateEmail = (email) => {
+    var re = /\S+@\S+\.\S+/;
+    return re.test(email);
   }
 
-  const cancelAllChanges = () => {
-    if (Email != userContext.Email || passwordChanged) {
-      Alert.alert(
-        "Cancel Changes",
-        "Are you sure you want to cancel your changes?",
-        [
-          {
-            text: "Cancel",
-            onPress: () => setCancel(false),
-            style: "cancel"
-          },
-          { text: "OK", onPress: () => navigation.goBack() }
-        ],
-        { cancelable: false }
-      )
-    }
-    else {
-      navigation.goBack();
-    }
+  const validatePassword = (password) => {
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/ //at least 8 characters, 1 letter, 1 number
+    return passwordRegex.test(password);
   }
-
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        setEmail(userContext.Email)
-      } catch (e) {
-        console.log('error', e);
-      }
-    };
-    const setNavigation = async () => navigation.setOptions({
-      headerRight: () => (
-        <View style={styles.headerRight}>
-          <TouchableOpacity
-            onPress={() => {
-              setSaving(true);
-            }}
-          >
-            <Text style={styles.headerButtonText}>Save</Text>
-          </TouchableOpacity>
-        </View>
-
-      ),
-      headerLeft: () => (
-        <View style={styles.headerLeft}>
-          <TouchableOpacity
-            onPress={() => { setCancel(true); }}
-          >
-            <Ionicons name="chevron-back" size={28} color="black" />
-          </TouchableOpacity>
-        </View>
-      ),
-    });
-    console.log("setnavigations")
-    setNavigation();
-    getData();
-  }, []);
-
-  useEffect(() => {
-    if (saving) {
-      saveAllChanges();
-    }
-    if (cancel) {
-      cancelAllChanges();
-    }
-  }, [saving, cancel]);
-
-
-
-
- 
+  
+  // operations on notifications
   const toggleNotifications = (field) => {
     if (field == 'Email') {
       if (Notifications.emailNotifications) {
@@ -373,12 +387,7 @@ export default function Privacy({ navigation, route }) {
         });
       }
     }    
-  }
-    
-
-
-
-
+  } 
 
   return (
     <ScrollView alwaysBounceVertical={false} contentContainerStyle={styles.container}>
@@ -455,16 +464,7 @@ export default function Privacy({ navigation, route }) {
         <View style={styles.lineContainer}>
           <View style={styles.line} />
         </View>
-        <View style={styles.notificationContainer}>
-          <Text style={styles.notificationSmallHeader}>Email Notifications</Text>
-          <Switch
-            trackColor={{ false: "#E6EBF2", true: "#81b0ff" }}
-            thumbColor={Notifications.emailNotifications ? "#548DFF" : "#f4f3f4"}
-            ios_backgroundColor="#3e3e3e"
-            onValueChange={() => toggleNotifications('Email')}
-            value={Notifications.emailNotifications}
-          />
-        </View>
+        {/*Finance notifications toggle */}
         <View style={styles.notificationContainer}>
           <Text style={styles.notificationSmallHeader}>Finance Notifications</Text>
           <Switch
@@ -475,6 +475,7 @@ export default function Privacy({ navigation, route }) {
             value={Notifications.financeNotifications}
           />
         </View>
+        {/*Tasks notifications toggle */}
         <View style={styles.notificationContainer}>
           <Text style={styles.notificationSmallHeader}>Tasks Notifications</Text>
           <Switch
@@ -485,6 +486,7 @@ export default function Privacy({ navigation, route }) {
             value={Notifications.tasksNotifications}
           />
         </View>
+        {/* Chat notification toggle */}
         <View style={styles.notificationContainer}>
           <Text style={styles.notificationSmallHeader}>Chat Notifications</Text>
           <Switch
@@ -495,6 +497,7 @@ export default function Privacy({ navigation, route }) {
             value={Notifications.chatNotifications}
           />
         </View>
+        {/* Contact notification toggle */}
         <View style={styles.notificationContainer}>
           <Text style={styles.notificationSmallHeader}>Contacts Notifications</Text>
           <Switch
@@ -505,6 +508,18 @@ export default function Privacy({ navigation, route }) {
             value={Notifications.contactNotifications}
           />
         </View>
+        {/* Email notification toggle */}
+        <View style={styles.notificationContainer}> 
+          <Text style={styles.notificationSmallHeader}>Email Notifications</Text>
+          <Switch
+            trackColor={{ false: "#E6EBF2", true: "#81b0ff" }}
+            thumbColor={Notifications.emailNotifications ? "#548DFF" : "#f4f3f4"}
+            ios_backgroundColor="#3e3e3e"
+            onValueChange={() => toggleNotifications('Email')}
+            value={Notifications.emailNotifications}
+          />
+        </View>
+        {/* All notification toggle */}
         <View style={styles.notificationContainer}>
           <Text style={styles.notificationSmallHeader}>All Notifications</Text>
           <Switch
@@ -721,11 +736,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: SCREEN_WIDTH * 0.05,
     top: 25,
-  },
-  passwordButtonText: {
-    color: '#000',
-    fontFamily: 'Urbanist-Bold',
-    fontSize: 14,
   },
   headerButtonText: {
     color: '#548DFF',

@@ -112,7 +112,7 @@ export function UserProvider({ children }) {
         setUserContext(null)
     }
 
-    function updateUserProfile(user) {
+    function updateUserProfile(userData) {
         const userToUpdate = {
             userId: userData.userId,
             userType: userData.userType,

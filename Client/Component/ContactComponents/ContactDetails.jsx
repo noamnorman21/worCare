@@ -58,8 +58,15 @@ export default function ContactDetails({ route, navigation }) {
   }, [Edit]);
 
   useEffect(() => {
-    if (saving) {
+    if (saving && isChanged) {
       validateInput();
+    }
+    else if (saving && !isChanged) {
+      setSaving(false);
+      setEdit(false);
+    }
+    else {
+      setSaving(false);
     }
   }, [saving]);
 
@@ -134,15 +141,11 @@ export default function ContactDetails({ route, navigation }) {
     if (Contact.email === '') {
       setContact({ ...Contact, email: null })
     }
-    if (!mobileNo) {
-      setSaving(false);
-      return Alert.alert('Mobile number is required', 'Please enter a valid mobile number')
-    }
     if (!mobileNo && !phoneNo) {
       console.log("mobileNo = ", mobileNo)
       console.log("phoneNo = ", phoneNo)
       setSaving(false);
-      return Alert.alert('Invalid Mobile Number', 'Please enter a valid mobile number')
+      return Alert.alert('Invalid Phone Number', 'Please enter a valid mobile or Telephone number')
     }
     saveContact(Contact);
   }
@@ -280,6 +283,8 @@ export default function ContactDetails({ route, navigation }) {
       ]
     );
   }
+
+  
 
   return (
     <SafeAreaView style={styles.container}>
