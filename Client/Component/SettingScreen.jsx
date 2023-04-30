@@ -105,9 +105,7 @@ function HomeScreen({ navigation, route }) {
         else {
             return "Other"
         }
-    }
-
-    
+    }    
 
     const sendDataToNextDB = (downloadURL) => {
         const userToUpdate = {
@@ -387,8 +385,8 @@ const styles = StyleSheet.create({
     },
     btnText: {
         marginLeft: SCREEN_WIDTH * 0.03,
-        fontSize: 20,
-        fontFamily: 'Urbanist'
+        fontSize: 18,
+        fontFamily: 'Urbanist-Medium',
     },
     btnText2: {
         fontSize: 18,
