@@ -10,6 +10,7 @@ import { AddBtn } from '../HelpComponents/AddNewTask';
 import { MaterialCommunityIcons, AntDesign, Feather, Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-navigation';
 import * as FileSystem from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
 import { Menu, MenuProvider, MenuOptions, MenuOption, MenuTrigger, renderers } from "react-native-popup-menu";
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -75,12 +76,12 @@ export default function Paychecks({ navigation, route }) {
   }
 
   return (
-    <>
-      <ScrollView contentContainerStyle={styles.pending}>
+    <> 
         <View style={styles.headerText}>
           <Text style={styles.header}>Paychecks History</Text>
           <View style={styles.line}></View>
         </View>
+        <ScrollView contentContainerStyle={styles.pending}>
         {History}
         <Modal animationType='slide' transparent={true} visible={modal1Visible}>
           <NewPaycheck cancel={() => { setModal1Visible(false); getPaychecks() }} userId={userContext.userId} />
@@ -193,12 +194,13 @@ function Paycheck(props) {
     const type = url.substring(dot, questionMark);
     console.log("Type", type)
     const id = props.data.payCheckNum;
-    const fileName = "Paycheck " + id;
+    const fileName = "Paycheck_" + id+type;
     const fileUri = FileSystem.documentDirectory + fileName;
-    const downloadResumable = FileSystem.createDownloadResumable(url,fileUri,{},callback);
-    console.log("downloadResumable", downloadResumable)
-    const DownloadedFile = await downloadResumable.downloadAsync();
-    console.log("DownloadedFile", DownloadedFile)
+    const directoryInfo = await FileSystem.getInfoAsync(fileUri);
+        if (!directoryInfo.exists) {
+          FileSystem.makeDirectoryAsync(fileUri, { intermediates: true });
+        }
+    const DownloadedFile = await FileSystem.downloadAsync(url,fileUri,{},callback);
     if (DownloadedFile.status == 200) {
       console.log("File Downloaded", DownloadedFile)
       saveFile(DownloadedFile.uri, fileName, DownloadedFile.headers['content-type']);
@@ -210,7 +212,7 @@ function Paycheck(props) {
 
   const saveFile = async (res, fileName, type) => {
     if (Platform.OS == "ios") {
-      shareAsync(res.uri)
+      Sharing.shareAsync(res)
     }
     else { //ios download with share
       try {
@@ -536,9 +538,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerText: {
-    height: Dimensions.get('screen').height * 0.05,
-    width: Dimensions.get('screen').width * 0.85,
-    marginBottom: Dimensions.get('screen').height * 0.02,
+    justifyContent: 'center',
+    backgroundColor: '#fff',
   },
   header: {
     fontSize: 30,
