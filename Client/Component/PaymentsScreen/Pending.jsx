@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, Animated, Modal, ScrollView, Image, layoutView, Platform } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, LayoutAnimation,Animated, Modal, ScrollView, Image, layoutView, Platform } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { MaterialCommunityIcons, AntDesign, Feather, Ionicons } from '@expo/vector-icons';
 import NewPayment from './NewPayment';
@@ -84,7 +84,7 @@ export default function Pending({ route, navigation }) {
 
 function Request(props) {
   const [expanded, setExpanded] = useState(false);
-  const animationController = useRef(new Animated.Value(0)).current;
+  // const animationController = useRef(new Animated.Value(0)).current;
   const [modal1Visible, setModal1Visible] = useState(false);
   const [modal2Visible, setModal2Visible] = useState(false);
   const date = new Date(props.date);
@@ -105,8 +105,8 @@ function Request(props) {
       duration: 2000,
       useNativeDriver: true,
     }
-    Animated.timing(animationController, config).start();
-    setExpanded(!expanded);
+    LayoutAnimation.easeInEaseOut(setExpanded(!expanded));
+    
   };
 
   const openModal = (value) => {
@@ -206,7 +206,6 @@ function Request(props) {
         const dot = url.lastIndexOf(".");
         const questionMark = url.lastIndexOf("?");
         const type = url.substring(dot, questionMark);
-        console.log("Type", type)
         const id = props.data.requestId;
         const fileName = "Request_" + id + type;
         const fileUri = FileSystem.documentDirectory + fileName;
@@ -216,9 +215,7 @@ function Request(props) {
           FileSystem.makeDirectoryAsync(fileUri, { intermediates: true });
         }
         const DownloadedFile = await FileSystem.downloadAsync(url, fileUri, {}, callback);
-        console.log("DownloadedFile", DownloadedFile)
         if (DownloadedFile.status == 200) {
-          console.log("File Downloaded", DownloadedFile)
           saveFile(DownloadedFile.uri, fileName, DownloadedFile.headers['content-type']);
         }
         else {
@@ -315,7 +312,6 @@ function Request(props) {
             </View>
           </View>
           :
-          <View>
             <View style={newStyles.requestItemHeader}>
               <TouchableOpacity style={newStyles.request} onPress={() => askUserBeforeSave()}>
                 <View style={newStyles.requestItemLeft}>
@@ -367,7 +363,6 @@ function Request(props) {
                 <EditPaymentScreen cancel={() => { setModal2Visible(false); props.getPending() }} data={props.data} />
               </Modal>
             </View>
-          </View>
         }
       </View>
     </SafeAreaView >

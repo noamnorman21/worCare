@@ -320,7 +320,6 @@ const styles = StyleSheet.create({
         right: SCREEN_WIDTH * 0.03,
     },
     title: {
-        //the title, it will be on the left side of the screen,just above the image
         fontSize: 25,
         marginLeft: SCREEN_WIDTH * 0.03,
         marginRight: SCREEN_WIDTH * 0.6,

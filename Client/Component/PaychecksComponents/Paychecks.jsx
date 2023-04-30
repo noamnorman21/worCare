@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, Animated, Modal, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, LayoutAnimation, Modal, Image } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { ScrollView } from 'react-native-gesture-handler';
 import NewPaycheck from './NewPaycheck';
@@ -94,7 +94,7 @@ export default function Paychecks({ navigation, route }) {
 
 function Paycheck(props) {
   const [expanded, setExpanded] = useState(false);
-  const animationController = useRef(new Animated.Value(0)).current;
+  // const animationController = useRef(new LayoutAnimation.Value(0)).current;
   const [modal1Visible, setModal1Visible] = useState(false);
   const [temp, setTemp] = useState({
     paycheckDate: props.data.paycheckDate,
@@ -120,8 +120,8 @@ function Paycheck(props) {
       duration: 2000,
       useNativeDriver: true,
     }
-    Animated.timing(animationController, config).start();
-    setExpanded(!expanded);
+    LayoutAnimation.easeInEaseOut(setExpanded(!expanded));
+    
   };
 
   const openModal = async (value) => {
@@ -202,7 +202,6 @@ function Paycheck(props) {
         }
     const DownloadedFile = await FileSystem.downloadAsync(url,fileUri,{},callback);
     if (DownloadedFile.status == 200) {
-      console.log("File Downloaded", DownloadedFile)
       saveFile(DownloadedFile.uri, fileName, DownloadedFile.headers['content-type']);
     }
     else {

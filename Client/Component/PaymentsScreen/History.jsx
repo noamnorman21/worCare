@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, Animated, Modal, Image, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions,LayoutAnimation, Animated, Modal, Image, ScrollView } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import NewPayment from './NewPayment';
 import { useUserContext } from '../../UserContext';
@@ -110,15 +110,21 @@ function Request(props) {
   const { userContext } = useUserContext();
   const [downloadProgress, setDownloadProgress] = useState(0);
 
+  // const toggle = () => {
+  //   const config = {
+  //     toValue: expanded ? 0 : 1,
+  //     duration: 2000,
+  //     useNativeDriver: true,
+  //   }
+  //   Animated.timing(animationController, config).start();
+  //   setExpanded(!expanded);
+  // };
+
+  
   const toggle = () => {
-    const config = {
-      toValue: expanded ? 0 : 1,
-      duration: 2000,
-      useNativeDriver: true,
-    }
-    Animated.timing(animationController, config).start();
-    setExpanded(!expanded);
+    LayoutAnimation.easeInEaseOut(setExpanded(!expanded));
   };
+
 
   const openModal = (value) => {
     if (value == 1) {
@@ -189,13 +195,11 @@ function Request(props) {
   }
 
   const downloadFile = async () => {
-  
     try {
       const url = props.data.requestProofDocument;
       const dot = url.lastIndexOf(".");
       const questionMark = url.lastIndexOf("?");
       const type = url.substring(dot, questionMark);
-      console.log("Type", type)
       const id = props.data.requestId;
       const fileName = "Request_" + id + type;
       const fileUri = FileSystem.documentDirectory + fileName;
@@ -205,9 +209,7 @@ function Request(props) {
         FileSystem.makeDirectoryAsync(fileUri, { intermediates: true });
       }
       const DownloadedFile = await FileSystem.downloadAsync(url, fileUri, {}, callback);
-      console.log("DownloadedFile", DownloadedFile)
       if (DownloadedFile.status == 200) {
-        console.log("File Downloaded", DownloadedFile)
         saveFile(DownloadedFile.uri, fileName, DownloadedFile.headers['content-type']);
       }
       else {
