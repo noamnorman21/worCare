@@ -41,6 +41,7 @@ export function useUserContext() {
 
 export function UserProvider({ children }) {
     const [userContext, setUserContext] = useState(null)
+    const [userNotifications, setUserNotifications] = useState(null)
     const [userType, setUserType] = useState(null)
     const [userLanguage, setUserLanguage] = useState(null)
     const [userCountry, setUserCountry] = useState(null)
@@ -96,22 +97,34 @@ export function UserProvider({ children }) {
         }
 
         setUserContext(usertoSync);
+        let notifications = {
+            emailNotifications: true,
+            financeNotifications: true,
+            chatNotifications: true,
+            tasksNotifications: true,
+            contactNotifications: true,
+            allNotifications: true,
+        }
+        setUserNotifications(notifications)
     }
 
     function logOutContext() {
         setUserContext(null)
     }
 
-    function updateUserProfile(user) {
+    function updateUserProfile(userData) {
         const userToUpdate = {
-            Email: user.Email,
-            userUri: user.userUri,
-            phoneNum: user.phoneNum,
-            gender: user.gender,
-            FirstName: user.FirstName,
-            LastName: user.LastName,
-            userId: user.userId,
-            userType: user.userType
+            userId: userData.userId,
+            userType: userData.userType,
+            FirstName: userData.FirstName,
+            LastName: userData.LastName,
+            Email: userData.Email,
+            phoneNum: userData.phoneNum,
+            userUri: userData.userUri,
+            gender: userData.gender,
+            workerId: userData.workerId,//if user is a caregiver, this field will be same as userId
+            involvedInId: userData.involvedInId,//if user is a not caregiver, this field will be same as userId
+            patientId: userData.patientId,
         }
         fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Settings/UpdateUserProfile', {
             method: 'PUT',
@@ -152,6 +165,10 @@ export function UserProvider({ children }) {
         setUserContext(userContext)
     }
 
+    function updateuserNotifications(notifications) {
+        setUserNotifications(notifications)
+    }
+
     function updateRememberUserContext(userContext) {
         console.log("updateUser", userContext);
         setUserContext(userContext)
@@ -165,7 +182,7 @@ export function UserProvider({ children }) {
         setUserPendingPayments(pendings);
     }
 
-    const value = { userContext, userContacts, logInContext, logOutContext, updateUserContext, updateUserContacts, updatePendings, updateUserProfile }
+    const value = { userContext, userContacts,userNotifications, logInContext, logOutContext, updateUserContext, updateUserContacts, updatePendings, updateUserProfile, updateuserNotifications }
     return (
         <UserContext.Provider value={value}>
             {children}
