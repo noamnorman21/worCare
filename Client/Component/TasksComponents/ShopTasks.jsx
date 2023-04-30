@@ -1,11 +1,11 @@
 import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Dimensions, ScrollView, TextInput, Alert } from 'react-native'
 import { useState, useEffect } from 'react'
-import { useIsFocused } from '@react-navigation/native';
+import { useIsFocused, useFocusEffect } from '@react-navigation/native';
 import { List } from 'react-native-paper';
 import { Feather, Ionicons } from '@expo/vector-icons';
 import { AddBtn, NewTaskModal } from '../HelpComponents/AddNewTask'
 import { useUserContext } from '../../UserContext'
-
+import React from 'react';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
@@ -18,9 +18,7 @@ export default function ShopTasks(props) {
   const [expanded, setExpanded] = useState(true);
   const handlePress = () => setExpanded(!expanded);
   const isFocused = useIsFocused()
-  const[productsForUpdateInDB,setProductsForUpdateInDB] = useState([])
-
-
+  const [productsForUpdateInDB, setProductsForUpdateInDB] = useState([])
 
   const getShopTasks = () => {
     return props.allShopTasks
@@ -32,14 +30,13 @@ export default function ShopTasks(props) {
     setShopTasks(props.allShopTasks)
   }, [props.allShopTasks])
 
-  useEffect(() => {
-    if (!isFocused) {
-      updateProductsInDB()
-    }
-  }, [isFocused])
-  const testfuncToRunWenTheScreenIsChange = () => {
-    console.log('testfuncToRunWenTheScreenIsChange');
-  }
+  useFocusEffect( //we need to update the products in the db when we leave the screen
+    React.useCallback(() => {
+      return () => {
+        updateProductsInDB()
+      };
+    }, [])
+  );
   const handleAddBtnPress = () => {
     // console.log(shopTasks)
     setModalVisible(true);
@@ -94,10 +91,6 @@ export default function ShopTasks(props) {
       )
   }
 
-  const updateCompleted = () => {
-    console.log('Updating completed')
-  }
-
   const isProductChecked = (prod, actualTask) => {
     // update the product status to 'F' for now its only on the client side
     setShopTasks(shopTasks.map((task) => {
@@ -113,12 +106,12 @@ export default function ShopTasks(props) {
         })
       }
       //check if this product is in the array of products that need to be updated in the DB
-      if(productsForUpdateInDB.find(p => p.productId == prod.productId) == null){
+      if (productsForUpdateInDB.find(p => p.productId == prod.productId) == null) {
         productsForUpdateInDB.push(prod)
       }
-      else{
+      else {
         productsForUpdateInDB.map(p => {
-          if(p.productId == prod.productId){
+          if (p.productId == prod.productId) {
             p.productStatus = prod.productStatus
           }
         })
@@ -150,12 +143,12 @@ export default function ShopTasks(props) {
         })
       }
       //check if this product is in the array of products that need to be updated in the DB
-      if(productsForUpdateInDB.find(p => p.productId == prod.productId) == null){
+      if (productsForUpdateInDB.find(p => p.productId == prod.productId) == null) {
         productsForUpdateInDB.push(prod)
       }
-      else{
+      else {
         productsForUpdateInDB.map(p => {
-          if(p.productId == prod.productId){
+          if (p.productId == prod.productId) {
             p.productQuantity = prod.productQuantity
           }
         })

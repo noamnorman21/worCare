@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, Animated, Modal, ScrollView, Image, layoutView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, LayoutAnimation,Animated, Modal, ScrollView, Image, layoutView, Platform } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { MaterialCommunityIcons, AntDesign, Feather, Ionicons } from '@expo/vector-icons';
 import NewPayment from './NewPayment';
@@ -9,6 +9,8 @@ import { AddBtn } from '../HelpComponents/AddNewTask';
 import { Menu, MenuProvider, MenuOptions, MenuOption, MenuTrigger, renderers } from "react-native-popup-menu";
 import * as FileSystem from 'expo-file-system';
 import { SafeAreaView } from 'react-navigation';
+import { Tooltip } from 'react-native-paper';
+import * as Sharing from 'expo-sharing';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -82,7 +84,7 @@ export default function Pending({ route, navigation }) {
 
 function Request(props) {
   const [expanded, setExpanded] = useState(false);
-  const animationController = useRef(new Animated.Value(0)).current;
+  // const animationController = useRef(new Animated.Value(0)).current;
   const [modal1Visible, setModal1Visible] = useState(false);
   const [modal2Visible, setModal2Visible] = useState(false);
   const date = new Date(props.date);
@@ -103,8 +105,8 @@ function Request(props) {
       duration: 2000,
       useNativeDriver: true,
     }
-    Animated.timing(animationController, config).start();
-    setExpanded(!expanded);
+    LayoutAnimation.easeInEaseOut(setExpanded(!expanded));
+    
   };
 
   const openModal = (value) => {
@@ -119,28 +121,6 @@ function Request(props) {
     }
     if (value == 4) {
       deleteRequest()
-    }
-  }
-
-  const Cancel = () => {
-    if (valueChanged) {
-      Alert.alert(
-        'Cancel Changes',
-        'are you sure you want to Exit the Page? All changes will be lost',
-        [
-          { text: "Don't leave", style: 'cancel', onPress: () => { } },
-          {
-            text: 'Leave',
-            style: 'destructive',
-            // If the user confirmed, then we dispatch the action we blocked earlier
-            // This will continue the action that had triggered the removal of the screen
-            onPress: () => props.cancel()
-          },
-        ]
-      );
-    }
-    else {
-      props.cancel();
     }
   }
 
@@ -220,42 +200,39 @@ function Request(props) {
     console.log("Progress", progress)
   }
 
-  const downloadFile = async () => {
-    try{
-    const url = props.data.requestProofDocument;
-    const dot = url.lastIndexOf(".");
-    const questionMark = url.lastIndexOf("?");
-    const type = url.substring(dot, questionMark);
-    console.log("Type", type)
-    const id = props.data.requestId;
-    const fileName = "Request " + id;
-    const fileUri = FileSystem.documentDirectory + fileName;
-    const downloadResumable = FileSystem.createDownloadResumable(url,fileUri,{},callback);
-    const directoryInfo = await FileSystem.getInfoAsync(fileUri);
-   if (!directoryInfo.exists) {
-       await FileSystem.makeDirectoryAsync(fileUri, { intermediates: true 
-       });
-   }
-    console.log("downloadResumable", downloadResumable)
-    const DownloadedFile = await downloadResumable.downloadAsync();
-    console.log("DownloadedFile", DownloadedFile)
-    if (DownloadedFile.status == 200) {
-      console.log("File Downloaded", DownloadedFile)
-      saveFile(DownloadedFile.uri, fileName, DownloadedFile.headers['content-type']);
-    }
-    else {
-      console.log("File not Downloaded")
-    }
+  const downloadFile = async () => {  
+      try {
+        const url = props.data.requestProofDocument;
+        const dot = url.lastIndexOf(".");
+        const questionMark = url.lastIndexOf("?");
+        const type = url.substring(dot, questionMark);
+        const id = props.data.requestId;
+        const fileName = "Request_" + id + type;
+        const fileUri = FileSystem.documentDirectory + fileName;
+        // const downloadResumable = FileSystem.createDownloadResumable(url,fileUri,{},callback);
+        const directoryInfo = await FileSystem.getInfoAsync(fileUri);
+        if (!directoryInfo.exists) {
+          FileSystem.makeDirectoryAsync(fileUri, { intermediates: true });
+        }
+        const DownloadedFile = await FileSystem.downloadAsync(url, fileUri, {}, callback);
+        if (DownloadedFile.status == 200) {
+          saveFile(DownloadedFile.uri, fileName, DownloadedFile.headers['content-type']);
+        }
+        else {
+          console.log("File not Downloaded")
+        }
+      }
+      catch (error) {
+        console.log(error)
+        Alert.alert("Error", error)
+      }
+    
   }
-  catch(error){
-    console.log(error)
-    Alert.alert("Error",error)
-  }
-}
+ 
 
   const saveFile = async (res, fileName, type) => {
     if (Platform.OS == "ios") {
-      shareAsync(res.uri)
+      Sharing.shareAsync(res)
     }
     else { //ios download with share
       try {
@@ -335,7 +312,6 @@ function Request(props) {
             </View>
           </View>
           :
-          <View>
             <View style={newStyles.requestItemHeader}>
               <TouchableOpacity style={newStyles.request} onPress={() => askUserBeforeSave()}>
                 <View style={newStyles.requestItemLeft}>
@@ -387,7 +363,6 @@ function Request(props) {
                 <EditPaymentScreen cancel={() => { setModal2Visible(false); props.getPending() }} data={props.data} />
               </Modal>
             </View>
-          </View>
         }
       </View>
     </SafeAreaView >

@@ -362,5 +362,32 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+
+        [HttpPut]
+        [Route("UpdateProductsToList")]
+        public IHttpActionResult UpdateProductsToList([FromBody]List <ProductListDTO> prodList)
+        {
+            //Find the list of products that are already in the db and update the productQuantity and productStatus 
+            try
+            {
+                foreach (ProductListDTO product in prodList)
+                {
+                    tblProductList tblProductList = db.tblProductList.Where(x => x.productId == product.productId && x.actualId == product.actualId).FirstOrDefault();
+                    if (tblProductList != null)
+                    {
+                        tblProductList.productQuantity = product.productQuantity;
+                        tblProductList.productStatus = product.productStatus;
+                        db.SaveChanges();
+                    }                 
+                }
+                return Ok("Product updated");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
     }
 }
