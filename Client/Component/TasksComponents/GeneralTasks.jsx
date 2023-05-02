@@ -26,7 +26,7 @@ export default function GeneralTasks(props) {
   };
   const handleModalClose = () => {
     setModalVisible(false);
-    props.refreshlPublicTask()
+    //props.refreshlPublicTask()
   };
 
   return (
