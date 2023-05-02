@@ -22,7 +22,7 @@ export default function Paychecks({ navigation, route }) {
   const [arr, setArr] = useState()
   const isFocused = useIsFocused()
   const [modal1Visible, setModal1Visible] = useState(false);
- 
+
 
   useEffect(() => {
     if (isFocused && modal1Visible == false) {
@@ -76,12 +76,12 @@ export default function Paychecks({ navigation, route }) {
   }
 
   return (
-    <> 
-        <View style={styles.headerText}>
-          <Text style={styles.header}>Paychecks History</Text>
-          <View style={styles.line}></View>
-        </View>
-        <ScrollView contentContainerStyle={styles.pending}>
+    <>
+      <View style={styles.headerText} >
+        <Text style={styles.header}>Paychecks History</Text>
+        <View style={styles.line}></View>
+      </View>
+      <ScrollView contentContainerStyle={styles.pending}>
         {History}
         <Modal animationType='slide' transparent={true} visible={modal1Visible}>
           <NewPaycheck cancel={() => { setModal1Visible(false); getPaychecks() }} userId={userContext.userId} />
@@ -112,7 +112,7 @@ function Paycheck(props) {
   const day = date.getDate();
   const dateString = day + "/" + month + "/" + newYear;
   const paycheckNum = props.data.paycheckNum;
-  const [DownloadProgress,setDownloadProgress] = useState(0);
+  const [DownloadProgress, setDownloadProgress] = useState(0);
 
   const toggle = () => {
     const config = {
@@ -121,7 +121,7 @@ function Paycheck(props) {
       useNativeDriver: true,
     }
     LayoutAnimation.easeInEaseOut(setExpanded(!expanded));
-    
+
   };
 
   const openModal = async (value) => {
@@ -194,13 +194,13 @@ function Paycheck(props) {
     const type = url.substring(dot, questionMark);
     console.log("Type", type)
     const id = props.data.payCheckNum;
-    const fileName = "Paycheck_" + id+type;
+    const fileName = "Paycheck_" + id + type;
     const fileUri = FileSystem.documentDirectory + fileName;
     const directoryInfo = await FileSystem.getInfoAsync(fileUri);
-        if (!directoryInfo.exists) {
-          FileSystem.makeDirectoryAsync(fileUri, { intermediates: true });
-        }
-    const DownloadedFile = await FileSystem.downloadAsync(url,fileUri,{},callback);
+    if (!directoryInfo.exists) {
+      FileSystem.makeDirectoryAsync(fileUri, { intermediates: true });
+    }
+    const DownloadedFile = await FileSystem.downloadAsync(url, fileUri, {}, callback);
     if (DownloadedFile.status == 200) {
       saveFile(DownloadedFile.uri, fileName, DownloadedFile.headers['content-type']);
     }
@@ -234,8 +234,8 @@ function Paycheck(props) {
   }
 
   return (
-    <SafeAreaView>
-      <View>
+    <SafeAreaView >
+      <View >
         {expanded ?
           <View style={styles.requestOpen}>
             <View style={styles.requestItemHeaderOpen}>
@@ -538,6 +538,7 @@ const styles = StyleSheet.create({
   },
   headerText: {
     justifyContent: 'center',
+    paddingVertical: 20,
     backgroundColor: '#fff',
   },
   header: {

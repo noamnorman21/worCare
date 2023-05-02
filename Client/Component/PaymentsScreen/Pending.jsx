@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, LayoutAnimation,Animated, Modal, ScrollView, Image, layoutView, Platform } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, LayoutAnimation, Animated, Modal, ScrollView, Image, layoutView, Platform } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { MaterialCommunityIcons, AntDesign, Feather, Ionicons } from '@expo/vector-icons';
 import NewPayment from './NewPayment';
@@ -96,7 +96,7 @@ function Request(props) {
   const [valueChanged, setValueChanged] = useState(false);
   const [status, setStatus] = useState(props.data.requestStatus);
   const { userContext } = useUserContext();
-  const [DownloadProgress,setDownloadProgress]=useState();
+  const [DownloadProgress, setDownloadProgress] = useState();
 
 
   const toggle = () => {
@@ -106,7 +106,7 @@ function Request(props) {
       useNativeDriver: true,
     }
     LayoutAnimation.easeInEaseOut(setExpanded(!expanded));
-    
+
   };
 
   const openModal = (value) => {
@@ -151,6 +151,13 @@ function Request(props) {
   }
 
   const askUserBeforeSave = () => {
+    if (status == "F") {
+      setStatus("P")
+    }
+    else if (status == "P") {
+      setStatus("F");
+    }
+    return
     Alert.alert(
       'Save Changes',
       'are you sure you want to Save? This Action cannot be undone',
@@ -200,35 +207,34 @@ function Request(props) {
     console.log("Progress", progress)
   }
 
-  const downloadFile = async () => {  
-      try {
-        const url = props.data.requestProofDocument;
-        const dot = url.lastIndexOf(".");
-        const questionMark = url.lastIndexOf("?");
-        const type = url.substring(dot, questionMark);
-        const id = props.data.requestId;
-        const fileName = "Request_" + id + type;
-        const fileUri = FileSystem.documentDirectory + fileName;
-        // const downloadResumable = FileSystem.createDownloadResumable(url,fileUri,{},callback);
-        const directoryInfo = await FileSystem.getInfoAsync(fileUri);
-        if (!directoryInfo.exists) {
-          FileSystem.makeDirectoryAsync(fileUri, { intermediates: true });
-        }
-        const DownloadedFile = await FileSystem.downloadAsync(url, fileUri, {}, callback);
-        if (DownloadedFile.status == 200) {
-          saveFile(DownloadedFile.uri, fileName, DownloadedFile.headers['content-type']);
-        }
-        else {
-          console.log("File not Downloaded")
-        }
+  const downloadFile = async () => {
+    try {
+      const url = props.data.requestProofDocument;
+      const dot = url.lastIndexOf(".");
+      const questionMark = url.lastIndexOf("?");
+      const type = url.substring(dot, questionMark);
+      const id = props.data.requestId;
+      const fileName = "Request_" + id + type;
+      const fileUri = FileSystem.documentDirectory + fileName;
+      // const downloadResumable = FileSystem.createDownloadResumable(url,fileUri,{},callback);
+      const directoryInfo = await FileSystem.getInfoAsync(fileUri);
+      if (!directoryInfo.exists) {
+        FileSystem.makeDirectoryAsync(fileUri, { intermediates: true });
       }
-      catch (error) {
-        console.log(error)
-        Alert.alert("Error", error)
+      const DownloadedFile = await FileSystem.downloadAsync(url, fileUri, {}, callback);
+      if (DownloadedFile.status == 200) {
+        saveFile(DownloadedFile.uri, fileName, DownloadedFile.headers['content-type']);
       }
-    
+      else {
+        console.log("File not Downloaded")
+      }
+    }
+    catch (error) {
+      console.log(error)
+      Alert.alert("Error", error)
+    }
+
   }
- 
 
   const saveFile = async (res, fileName, type) => {
     if (Platform.OS == "ios") {
@@ -279,8 +285,8 @@ function Request(props) {
                 }}  >
                   <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} value={1} children={<View style={newStyles.options}><MaterialCommunityIcons name='bell-ring-outline' size={20} /><Text style={newStyles.optionsText}> Send Notification</Text></View>} />
                   <MenuOption value={2} children={<View style={newStyles.options}><Feather name='eye' size={20} /><Text style={newStyles.optionsText}> View Document</Text></View>} />
-                  <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true}value={3} children={<View style={userContext.userId == props.data.userId ? newStyles.options : newStyles.disabledoptions}><Feather name='edit' size={20} /><Text style={newStyles.optionsText}> Edit Request</Text></View>} />
-                  <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} style={[newStyles.deleteTxt,userContext.userId !== props.data.userId && newStyles.disabledoptions]} value={4} children={<View style={userContext.userId == props.data.userId ? newStyles.options : newStyles.disabledoptions}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={newStyles.deleteTxt}> Delete Request</Text></View>} />
+                  <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} value={3} children={<View style={userContext.userId == props.data.userId ? newStyles.options : newStyles.disabledoptions}><Feather name='edit' size={20} /><Text style={newStyles.optionsText}> Edit Request</Text></View>} />
+                  <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} style={[newStyles.deleteTxt, userContext.userId !== props.data.userId && newStyles.disabledoptions]} value={4} children={<View style={userContext.userId == props.data.userId ? newStyles.options : newStyles.disabledoptions}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={newStyles.deleteTxt}> Delete Request</Text></View>} />
                 </MenuOptions>
               </Menu>
               <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
@@ -312,59 +318,59 @@ function Request(props) {
             </View>
           </View>
           :
-            <View style={newStyles.requestItemHeader}>
-              <TouchableOpacity style={newStyles.request} onPress={() => askUserBeforeSave()}>
-                <View style={newStyles.requestItemLeft}>
-                  {
-                    status != 'F' ?
-                      <Feather name="circle" size={30} color="#548DFF" />
-                      :
-                      <Feather name="check-circle" size={30} color="#548DFF" />
-                  }
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={toggle} style={newStyles.requestItemMiddle}>
-                <View>
-                  <Text style={newStyles.requestItemText}>{dateString} - {props.subject}</Text>
-                </View>
-              </TouchableOpacity>
-              <Menu style={{ flexDirection: 'column', marginVertical: 0, position: 'relative' }} onSelect={value => openModal(value)} >
-                <MenuTrigger
-                  children={<View>
-                    <MaterialCommunityIcons name="dots-horizontal" size={28} color="gray" />
-                  </View>}
-                />
-                <MenuOptions customStyles={{
-                  optionsContainer: {
-                    borderRadius: 10,
-                    elevation: 100,
-                  },
-                  optionsWrapper: newStyles.optionsWrapper,
-                }}
-                >
-                  <MenuOption value={1} children={<View style={newStyles.options}><MaterialCommunityIcons name='bell-ring-outline' size={20} /><Text style={newStyles.optionsText}> Send Notification</Text></View>} />
-                  <MenuOption value={2} children={<View style={newStyles.options}><Feather name='eye' size={20} /><Text style={newStyles.optionsText}> View Document</Text></View>} />
-                  <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} value={3} children={<View style={userContext.userId == props.data.userId ? newStyles.options : newStyles.disabledoptions}><Feather name='edit' size={20} /><Text style={newStyles.optionsText}> Edit Request</Text></View>} />
-                  <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} value={4} children={<View style={userContext.userId == props.data.userId ? newStyles.options : newStyles.disabledoptions}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={newStyles.deleteTxt}> Delete Request</Text></View>} />
-                </MenuOptions>
-              </Menu>
-              <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
-                <View style={styles.documentview}>
-                  <TouchableOpacity style={styles.closeBtn} onPress={() => setModal1Visible(false)}>
-                    <AntDesign name="close" size={24} color="black" />
-                  </TouchableOpacity>
-                  <Image source={{ uri: props.data.requestProofDocument }} style={styles.documentImg} />
-                  <TouchableOpacity style={styles.documentDownloadButton} onPress={downloadFile} >
-                    <Text style={styles.documentButtonText}>Download</Text>
-                  </TouchableOpacity>
-                </View>
-              </Modal>
-              <Modal animationType='slide' transparent={true} visible={modal2Visible}>
-                <EditPaymentScreen cancel={() => { setModal2Visible(false); props.getPending() }} data={props.data} />
-              </Modal>
-            </View>
+          <View style={newStyles.requestItemHeader}>
+            <TouchableOpacity style={newStyles.request} onPress={() => askUserBeforeSave()}>
+              <View style={newStyles.requestItemLeft}>
+                {
+                  status != 'F' ?
+                    <Feather name="circle" size={30} color="#548DFF" />
+                    :
+                    <Feather name="check-circle" size={30} color="#548DFF" />
+                }
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={toggle} style={newStyles.requestItemMiddle}>
+              <View>
+                <Text style={[newStyles.requestItemText, status == 'F' ? { textDecorationLine: 'line-through' } : {}]}>{dateString} - {props.subject}</Text>
+              </View>
+            </TouchableOpacity>
+            <Menu style={{ flexDirection: 'column', marginVertical: 0, position: 'relative' }} onSelect={value => openModal(value)} >
+              <MenuTrigger
+                children={<View>
+                  <MaterialCommunityIcons name="dots-horizontal" size={28} color="gray" />
+                </View>}
+              />
+              <MenuOptions customStyles={{
+                optionsContainer: {
+                  borderRadius: 10,
+                  elevation: 100,
+                },
+                optionsWrapper: newStyles.optionsWrapper,
+              }}
+              >
+                <MenuOption value={1} children={<View style={newStyles.options}><MaterialCommunityIcons name='bell-ring-outline' size={20} /><Text style={newStyles.optionsText}> Send Notification</Text></View>} />
+                <MenuOption value={2} children={<View style={newStyles.options}><Feather name='eye' size={20} /><Text style={newStyles.optionsText}> View Document</Text></View>} />
+                <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} value={3} children={<View style={userContext.userId == props.data.userId ? newStyles.options : newStyles.disabledoptions}><Feather name='edit' size={20} /><Text style={newStyles.optionsText}> Edit Request</Text></View>} />
+                <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} value={4} children={<View style={userContext.userId == props.data.userId ? newStyles.options : newStyles.disabledoptions}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={newStyles.deleteTxt}> Delete Request</Text></View>} />
+              </MenuOptions>
+            </Menu>
+            <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
+              <View style={styles.documentview}>
+                <TouchableOpacity style={styles.closeBtn} onPress={() => setModal1Visible(false)}>
+                  <AntDesign name="close" size={24} color="black" />
+                </TouchableOpacity>
+                <Image source={{ uri: props.data.requestProofDocument }} style={styles.documentImg} />
+                <TouchableOpacity style={styles.documentDownloadButton} onPress={downloadFile} >
+                  <Text style={styles.documentButtonText}>Download</Text>
+                </TouchableOpacity>
+              </View>
+            </Modal>
+            <Modal animationType='slide' transparent={true} visible={modal2Visible}>
+              <EditPaymentScreen cancel={() => { setModal2Visible(false); props.getPending() }} data={props.data} />
+            </Modal>
+          </View>
         }
-      </View>
+      </View >
     </SafeAreaView >
   );
 }

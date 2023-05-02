@@ -1,15 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions,LayoutAnimation, Animated, Modal, Image, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, LayoutAnimation, Animated, Modal, Image, ScrollView } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import NewPayment from './NewPayment';
 import { useUserContext } from '../../UserContext';
 import { AddBtn } from '../HelpComponents/AddNewTask';
 import * as FileSystem from 'expo-file-system';
-import { shareAsync } from 'expo-sharing';
 import { SafeAreaView } from 'react-navigation';
 import { MaterialCommunityIcons, AntDesign, Feather, Ionicons } from '@expo/vector-icons';
 import { Menu, MenuOptions, MenuOption, MenuTrigger, } from "react-native-popup-menu";
-
+import * as Sharing from 'expo-sharing';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -120,7 +119,7 @@ function Request(props) {
   //   setExpanded(!expanded);
   // };
 
-  
+
   const toggle = () => {
     LayoutAnimation.easeInEaseOut(setExpanded(!expanded));
   };
@@ -146,9 +145,9 @@ function Request(props) {
       'Delete request',
       'are you sure you want to Delete? All changes will be lost',
       [
-        { text: "Don't leave", style: 'cancel', onPress: () => { } },
+        { text: "Don't Delete", style: 'cancel', onPress: () => { } },
         {
-          text: 'Leave',
+          text: 'Delete',
           style: 'destructive',
           // If the user confirmed, then we dispatch the action we blocked earlier
           // This will continue the action that had triggered the removal of the screen
@@ -166,28 +165,6 @@ function Request(props) {
       ]
     );
   }
-
-  // const saveStatus = async (id) => {
-  //   console.log("request", request)
-  //   let request = {
-  //     requestId: id,
-  //     requestStatus: "F"
-  //   }
-  //   try {
-  //     const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/UpdateStatus/', {
-  //       method: 'PUT',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify(id)
-  //     });
-  //     const data = await response.json();
-  //     console.log(data)
-  //     props.getPending()
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // }
 
   const callback = downloadProgress => {
     const progress = downloadProgress.totalBytesWritten / downloadProgress.totalBytesExpectedToWrite;
@@ -220,33 +197,32 @@ function Request(props) {
       console.log(error)
       Alert.alert("Error", error)
     }
-  
-}
 
-
-const saveFile = async (res, fileName, type) => {
-  if (Platform.OS == "ios") {
-    Sharing.shareAsync(res)
   }
-  else { //ios download with share
-    try {
-      const permission = await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
-      if (permission.granted) {
-        const base64 = await FileSystem.readAsStringAsync(res, { encoding: FileSystem.EncodingType.Base64 });
-        await FileSystem.StorageAccessFramework.createFileAsync(permission.directoryUri, fileName, type)
-          .then(async (res) => {
-            console.log("File", res)
-            await FileSystem.writeAsStringAsync(res, base64, { encoding: FileSystem.EncodingType.Base64 });
-            return Alert.alert("File Saved")
-          })
-          .catch(error => { console.log("Error", error) })
+
+  const saveFile = async (res, fileName, type) => {
+    if (Platform.OS == "ios") {
+      Sharing.shareAsync(res)
+    }
+    else { //ios download with share
+      try {
+        const permission = await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
+        if (permission.granted) {
+          const base64 = await FileSystem.readAsStringAsync(res, { encoding: FileSystem.EncodingType.Base64 });
+          await FileSystem.StorageAccessFramework.createFileAsync(permission.directoryUri, fileName, type)
+            .then(async (res) => {
+              console.log("File", res)
+              await FileSystem.writeAsStringAsync(res, base64, { encoding: FileSystem.EncodingType.Base64 });
+              return Alert.alert("Document Saved")
+            })
+            .catch(error => { console.log("Error", error) })
+        }
+      }
+      catch (error) {
+        console.log("Error", error)
       }
     }
-    catch (error) {
-      console.log("Error", error)
-    }
   }
-}
 
   const displayStatus = () => {
     if (props.data.requestStatus == "F") {

@@ -110,7 +110,7 @@ export default function Privacy({ navigation, route }) {
   // check if email already exists in DB
   const checkEmailInDB = () => {
     console.log('checkEmailInDB', Email);
-    if (Email == null && validateEmail(Email)) {
+    if (Email !== null && validateEmail(Email)) {
       let checkMail = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetEmail';
       let userDto = {
         Email: Email,
@@ -714,7 +714,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     alignItems: 'center',
     borderRadius: 16,
-    borderBottomWidth: 1.5,    
+    borderBottomWidth: 1.5,
     borderBottomColor: '#E6EBF2',
     shadowColor: '#000',
     height: 54,
