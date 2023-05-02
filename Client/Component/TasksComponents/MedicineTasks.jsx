@@ -2,16 +2,15 @@ import { View, Text, SafeAreaView, StyleSheet } from 'react-native'
 import { useState } from 'react'
 import { AddBtn, AddNewMedicine } from '../HelpComponents/AddNewTask'
 
-export default function MedicineTasks() {
+export default function MedicineTasks(props) {
    const [modalVisible, setModalVisible] = useState(false)
-   const handleAddBtnPress = () => {
-   
+   const handleAddBtnPress = () => {   
       setModalVisible(true);
    };
 
    const handleModalClose = () => {
       setModalVisible(false);
-      props.refreshlPublicTask()
+      // props.refreshlPublicTask()
    };
 
    return (
@@ -34,7 +33,6 @@ const styles = StyleSheet.create({
       flex: 1,
       alignItems: 'center',
       justifyContent: 'center',
-
    },
    addBtn: {
       width: 54,

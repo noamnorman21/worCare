@@ -212,17 +212,17 @@ export default function LogIn({ navigation }) {
                             </View>
                             {/* remmeber me check box  in one line*/}
                             <View style={styles.rememberMeContainer}>
-                                <TouchableOpacity onPress={toggeleRememberMe}>
+                                <TouchableOpacity style={{ flexDirection: 'row' }} onPress={toggeleRememberMe}>
                                     {isChecked
                                         ?
                                         <MaterialCommunityIcons style={styles.rememberMeIcon} name="checkbox-intermediate" size={24} color="#979797" />
                                         :
                                         <MaterialCommunityIcons style={styles.rememberMeIcon} name="checkbox-blank-outline" size={24} color="#979797" />
                                     }
+                                    <Text style={styles.rememberMe}>Remember Me</Text>
                                 </TouchableOpacity>
-                                <Text style={styles.rememberMe}>Remember Me</Text>
                                 {/* forgot password button */}
-                                <TouchableOpacity onPress={NavigateToForgotPassword}>
+                                <TouchableOpacity style={{ flexDirection: 'row', marginLeft: SCREEN_WIDTH * 0.235 }} onPress={NavigateToForgotPassword}>
                                     <View style={styles.forgotPasswordContainer}>
                                         <Text style={styles.btnForgotPassword}>Forgot Password?</Text>
                                     </View>
@@ -290,7 +290,7 @@ const styles = StyleSheet.create({
         borderColor: '#E6EBF2',
         height: 54,
         fontFamily: 'Urbanist-Medium',
-        fontSize: 14
+        fontSize: 15
     },
     button: {
         width: SCREEN_WIDTH * 0.9,
@@ -331,15 +331,11 @@ const styles = StyleSheet.create({
         fontFamily: 'Urbanist',
         marginTop: 10,
         marginBottom: 10,
+        paddingLeft: 5
     },
     rememberMeIcon: {
         marginTop: SCREEN_HEIGHT * 0.01,
         marginBottom: SCREEN_WIDTH * 0.01,
-    },
-    forgotPasswordContainer: {
-        flexDirection: 'row',
-        alignSelf: 'flex-end',
-        marginLeft: SCREEN_WIDTH * 0.25,
     },
     rememberMeContainer: {
         width: SCREEN_WIDTH * 0.9,

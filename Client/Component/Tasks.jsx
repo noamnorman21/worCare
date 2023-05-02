@@ -2,44 +2,28 @@ import { View, Text, StyleSheet } from 'react-native'
 import { useEffect, useState } from 'react'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { useIsFocused, useFocusEffect } from '@react-navigation/native';
 import Main from './TasksComponents/MainTasks';
 import General from './TasksComponents/GeneralTasks';
 import Shop from './TasksComponents/ShopTasks';
 import Medicine from './TasksComponents/MedicineTasks';
 import { useUserContext } from '../UserContext';
+import React from 'react';
+
 const Tab = createMaterialTopTabNavigator();
 
 export default function Tasks() {
-
   const [userData, setUserData] = useState(useUserContext().userContext);
   const [userId, setUserId] = useState(useUserContext.userId);
   const [userType, setUserType] = useState(userData.userType);
-
   const [allPrivateTasks, setAllPrivateTasks] = useState([]);
   const [allPublicTasks, setAllPublicTasks] = useState([]);
   const [allMedicineTasks, setAllMedicineTasks] = useState([]);
   const [allShopTasks, setAllShopTasks] = useState([]);
+
   useEffect(() => {
     getAllPublicTasks();
   }, []);
-
-  const getAllPrivateTasks = async (IdToSend) => {
-    console.log('getAllPrivateTasks');
-    let getAllPrivateTasksUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/GetAllPrivateTasks';
-    try {
-      const response = await fetch(getAllPrivateTasksUrl, {
-        method: 'POST',
-        headers: new Headers({ 'Content-Type': 'application/json; charset=UTF-8', }),
-        body: JSON.stringify({ Id: IdToSend }),
-      });
-      const result = await response.json();
-      setAllPrivateTasks(result);
-      console.log('allPrivateTasks=', allPrivateTasks);
-    } catch (error) {
-      console.log('err post=', error);
-    }
-  }
 
   const getAllPublicTasks = async () => {
     let getAllPublicTasksUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/GetAllTasks';
@@ -56,6 +40,7 @@ export default function Tasks() {
       console.log('err post=', error);
     }
   }
+
   //filter tasks by type, medicine or shop, other tasks will be in allTasks
   const filterTasks = (tasks) => {
     let filteredTasks = tasks.filter(task => task.type == false);
@@ -88,17 +73,10 @@ export default function Tasks() {
       }}
     >
       <Tab.Screen name="Main" //send allPrivateTasks to MainTasks, if userType is caregiver        
-        children={() => <Main allPrivateTasks={allPrivateTasks} allTask={allPublicTasks} />}
-      />
-      <Tab.Screen name="General"
-        children={() => <General allPrivateTasks={allPrivateTasks} />}
-      />
-      <Tab.Screen name="Shop" children={
-        () => <Shop allShopTasks={allShopTasks} refreshlPublicTask={getAllPublicTasks} />
-      } />
-      <Tab.Screen name="Medicine" children={
-        () => <Medicine allMedicineTasks={allMedicineTasks} />
-      } />
+        children={() => <Main allPrivateTasks={allPrivateTasks} allTask={allPublicTasks} />} />
+      <Tab.Screen name="General" children={() => <General allPrivateTasks={allPrivateTasks} allPublicTasks={allPublicTasks} allMedicineTasks={allMedicineTasks} />} />
+      <Tab.Screen name="Shop" children={() => <Shop allShopTasks={allShopTasks} refreshPublicTask={getAllPublicTasks} />} />
+      <Tab.Screen name="Medicine" children={() => <Medicine allMedicineTasks={allMedicineTasks} refreshPublicTask={getAllPublicTasks}/>} />
     </Tab.Navigator>
   );
 }

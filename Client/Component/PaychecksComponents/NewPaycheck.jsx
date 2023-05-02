@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, SafeAreaView, Alert, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
-import { AntDesign, Octicons,FontAwesome, MaterialIcons } from '@expo/vector-icons';
+import { AntDesign, Octicons, FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import { storage } from '../../config/firebase';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import * as ImagePicker from 'expo-image-picker';
@@ -237,7 +237,6 @@ export default function NewPaycheck(props) {
 
             {show && (
               <DateTimePicker
-                //testID="dateTimePicker"
                 value={new Date(PayCheck.paycheckDate)}
                 // mode={"date"}
                 is24Hour={true}
@@ -266,12 +265,14 @@ export default function NewPaycheck(props) {
                 keyboardType='ascii-capable'
                 onChangeText={(value) => handleInputChange('paycheckComment', value)}
               />
-              <TouchableOpacity style={styles.uploadButton} onPress={pickOrTakeImage}>
-                <Text style={styles.buttonText}>Upload document</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.uploadButton} onPress={() => sendToFirebase(PayCheck.payCheckProofDocument)}>
-                <Text style={styles.savebuttonText}>Send Paycheck</Text>
-              </TouchableOpacity>
+              <View style={styles.footerContainer}>
+                <TouchableOpacity style={styles.uploadButton} onPress={pickOrTakeImage}>
+                  <Text style={styles.buttonText}>Upload document</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.saveBtn} onPress={() => sendToFirebase(PayCheck.payCheckProofDocument)}>
+                  <Text style={styles.savebuttonText}>Create New Paycheck</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         </TouchableWithoutFeedback>
@@ -285,6 +286,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
+  footerContainer: {
+    marginTop: 20,
+  },
   title: {
     fontSize: 26,
     fontFamily: 'Urbanist-Bold',
@@ -293,7 +297,6 @@ const styles = StyleSheet.create({
   },
   centeredView: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
   },
@@ -306,26 +309,26 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: 'center',
     width: Dimensions.get('window').width * 0.9,
-    marginVertical: 30,
+    paddingVertical: 30,
   },
   inputFull: {
     width: Dimensions.get('window').width * 0.95,
-    marginBottom: 10,
     paddingLeft: 10,
+    marginTop: 15,
     alignItems: 'center',
     borderRadius: 16,
     borderWidth: 1.5,
     borderColor: '#E6EBF2',
     shadowColor: '#000',
     height: 54,
-    fontFamily: 'Urbanist-Light',
+    fontFamily: 'Urbanist-Medium',
     fontSize: 16,
     justifyContent: 'center',
   },
   input: {
     width: Dimensions.get('window').width * 0.95,
-    marginVertical: 10,
-    paddingHorizontal: 10,
+    marginVertical: 15,
+    paddingLeft: 10,
     alignItems: 'center',
     borderRadius: 16,
     borderWidth: 1.5,
@@ -336,29 +339,31 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   uploadButton: {
-    paddingVertical: 15,
     justifyContent: 'center',
     alignItems: 'center',
     alignContent: 'center',
-    marginVertical: 10,
+    marginVertical: 15,
     borderRadius: 16,
-    backgroundColor: '#548DFF'
-  },
-  savebutton: {
     backgroundColor: '#548DFF',
+    height: 54,
+  },
+  saveBtn: {
     borderRadius: 16,
+    marginVertical: 15,
     justifyContent: 'center',
     alignItems: 'center',
-    height: 45,
-    width: SCREEN_WIDTH * 0.45,
+    height: 54,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 3,
     elevation: 1,
+    backgroundColor: '#F5F8FF',
+    borderColor: '#548DFF',
+    borderWidth: 1.5
   },
   savebuttonText: {
-    color: 'white',
+    color: '#548DFF',
     fontSize: 16,
     fontFamily: 'Urbanist-SemiBold',
   },
@@ -375,8 +380,7 @@ const styles = StyleSheet.create({
   },
   datePicker: {
     flexDirection: 'row',
-    // justifyContent: 'center',
-    marginBottom: 0,
+    marginTop: 15,
     width: Dimensions.get('window').width * 0.95,
     paddingLeft: 10,
     alignItems: 'center',

@@ -24,7 +24,7 @@ import { useUserContext } from '../../UserContext';
 const Stack = createStackNavigator();
 
 export default function NavigateSignUp() {
-  const { updateRememberUserContext, updateuserNotifications,fetchUserContacts } = useUserContext();
+  const { updateUserContext, updateuserNotifications } = useUserContext();
   const [isSigned, setIsSigned] = useState('bla');
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -40,21 +40,20 @@ export default function NavigateSignUp() {
       } else { // if the user is signed in- if he is, update the context
         setIsSigned(true);
         const storageUser2 = await AsyncStorage.getItem("userData");
-        updateRememberUserContext(JSON.parse(storageUser2))
-        let notifications = await AsyncStorage.getItem("userNotifications");
-        console.log("notifications", notifications)
-        if (notifications == null) {
+        updateUserContext(JSON.parse(storageUser2))
+        let notifications = await AsyncStorage.getItem("notifications");
+        if (notifications !== null) {
           notifications = {
             emailNotifications: true,
             financeNotifications: true,
             chatNotifications: true,
             tasksNotifications: true,
+            contactNotifications: true,
           }
         } else {
           notifications = JSON.parse(notifications)
         }
         updateuserNotifications(notifications)
-        fetchUserContacts(JSON.parse(storageUser2));
       }
     }
     catch (error) {

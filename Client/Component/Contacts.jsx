@@ -39,61 +39,38 @@ function Main({ navigation }) {
   const [Search, setSearch] = useState([])
   const [ContactToRender, setContactToRender] = useState([])
   const [addModalVisible, setaddModalVisible] = useState(false);
-  const { userContext, setuserContacts, updateuserContacts } = useUserContext()
-  const userContacts= useUserContext().userContacts;
+  const { userContext, userContacts, setuserContacts, updateuserContacts } = useUserContext()
   const [patientId, setpatientId] = useState(userContext.patientId)
   const isFocused = useIsFocused()
 
   const onChangeSearch = query => setSearch(query);
-//   const fetchContacts = async () => {
-//     const user = {
-//       userId: userContext.userId,
-//       userType: userContext.userType,
-//     }
-//     // new part when server is uploaded
-//     const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/GetContacts', {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//       body: JSON.stringify(user)
-//     });
-//     const data = await response.json();
-  //   if (data.length > 0) {
-  //   let contacts = data.map((item) => {
-  //     return <ContactCard key={item.contactId} contact={item} fetchContacts={fetchContacts} />
-  //   })
-  //   setContacts(data);
-  //   setContactToRender(contacts);
-  // }
-  // else {
-  //   setContacts([])
-  //   setContactToRender([])
-  //   setaddModalVisible(true)
-  // }
-// }
-
   const fetchContacts = async () => {
-    if (userContacts.length > 0) {
-      let contacts = userContacts.map((item) => {
-        return <ContactCard key={item.contactId} contact={item} />
-      })
-      setContacts(userContacts);
-      setContactToRender(contacts);
+    const user = {
+      userId: userContext.userId,
+      userType: userContext.userType,
     }
-    else {
-      setContacts([])
-      setContactToRender([])
-      setaddModalVisible(true)
-    }
-    
-   
+    // new part when server is uploaded
+    const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/GetContacts', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(user)
+    });
+    const data = await response.json();
+    if (data.length > 0) {
+    let contacts = data.map((item) => {
+      return <ContactCard key={item.contactId} contact={item} fetchContacts={fetchContacts} />
+    })
+    setContacts(data);
+    setContactToRender(contacts);
   }
-
-  useEffect(() => {
-    fetchContacts();
-  }, [userContacts])
-
+  else {
+    setContacts([])
+    setContactToRender([])
+    setaddModalVisible(true)
+  }
+}
 
   useEffect(() => {
     let temp = Contacts.filter((item) => {
@@ -110,8 +87,6 @@ function Main({ navigation }) {
       fetchContacts();
     }
   }, [isFocused])
-
-  
 
   return (
     <View style={styles.container}>

@@ -199,12 +199,14 @@ export default function NewPayment(props) {
                 keyboardType='ascii-capable'
                 onChangeText={(value) => handleInputChange('requestComment', value)}
               />
-              <TouchableOpacity style={styles.uploadButton} onPress={pickOrTakeImage}>
-                <Text style={styles.buttonText}>Upload document</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.uploadButton} onPress={() => sendToFirebase(payment.requestProofDocument)}>
-                <Text style={styles.savebuttonText}>Send request</Text>
-              </TouchableOpacity>
+              <View style={styles.footerContainer}>
+                <TouchableOpacity style={styles.uploadButton} onPress={pickOrTakeImage}>
+                  <Text style={styles.buttonText}>Upload document</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.saveBtn} onPress={() => sendToFirebase(payment.requestProofDocument)}>
+                  <Text style={styles.savebuttonText}>Create Request</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         </TouchableWithoutFeedback>
@@ -218,6 +220,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
+  footerContainer: {
+    marginTop: 10,
+  },
   title: {
     fontSize: 26,
     fontFamily: 'Urbanist-Bold',
@@ -226,9 +231,7 @@ const styles = StyleSheet.create({
   },
   centeredView: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
-    position: 'relative',
   },
   inputContainer: {
     padding: 20,
@@ -236,7 +239,7 @@ const styles = StyleSheet.create({
   },
   input: {
     width: Dimensions.get('window').width * 0.95,
-    marginVertical: 10,
+    marginVertical: 15,
     paddingHorizontal: 10,
     alignItems: 'center',
     borderRadius: 16,
@@ -248,26 +251,32 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   uploadButton: {
-    paddingVertical: 15,
+    height: 54,
     justifyContent: 'center',
     alignItems: 'center',
-    alignContent: 'center',
-    marginVertical: 10,
+    marginVertical: 15,
     borderRadius: 16,
-    backgroundColor: '#548DFF'
-  },
-  savebutton: {
     backgroundColor: '#548DFF',
-    borderRadius: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 45,
-    width: SCREEN_WIDTH * 0.45,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 3,
     elevation: 1,
+  },
+  saveBtn: {
+    borderRadius: 16,
+    marginVertical: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 54,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 1,
+    backgroundColor: '#F5F8FF',
+    borderColor: '#548DFF',
+    borderWidth: 1.5
   },
   cancelbutton: {
     flexDirection: 'row',
@@ -277,7 +286,7 @@ const styles = StyleSheet.create({
     marginVertical: 30,
   },
   savebuttonText: {
-    color: 'white',
+    color: '#548DFF',
     fontSize: 16,
     fontFamily: 'Urbanist-SemiBold',
   },
@@ -286,10 +295,5 @@ const styles = StyleSheet.create({
     fontFamily: 'Urbanist-SemiBold',
     fontSize: 16,
     color: '#fff',
-  },
-  bottom: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: SCREEN_WIDTH * 0.95,
   },
 });

@@ -15,6 +15,6 @@ namespace WebApi.DTO
         public Nullable<byte> minQuantity { get; set; }
         public int drugId { get; set; }
         public string patientId { get; set; }        
-        public TimeSpan[] timesInDayArray { get; set; } //array of TimeSpan
+        public TimeSpan[] timesInDayArray { get; set; } //array of TimeSpan        
     }
 }

@@ -109,11 +109,13 @@ export default function Privacy({ navigation, route }) {
 
   // check if email already exists in DB
   const checkEmailInDB = () => {
-    if (Email == null && validateEmail(Email)) {
+    console.log('checkEmailInDB', Email);
+    if (Email !== null && validateEmail(Email)) {
       let checkMail = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetEmail';
       let userDto = {
         Email: Email,
       }
+      console.log('userDto', userDto);
       fetch(checkMail, {
         method: 'POST',
         body: JSON.stringify(userDto),
@@ -265,6 +267,7 @@ export default function Privacy({ navigation, route }) {
           }
           else {
             setSaving(false);
+            console.log("blaa", saving);
             return Alert.alert('Password Change Failed', 'Sorry, there was an error updating your password. Please try again later.');
           }
         }
@@ -618,19 +621,6 @@ const styles = StyleSheet.create({
     borderColor: '#E6EBF2',
     padding: 10,
   },
-  input: {
-    flex: 4,
-    marginVertical: 5,
-    paddingLeft: 10,
-    alignItems: 'center',
-    borderRadius: 16,
-    borderBottomWidth: 1.5,    
-    borderBottomColor: '#E6EBF2',
-    shadowColor: '#000',
-    height: 54,
-    fontFamily: 'Urbanist-Light',
-    fontSize: 16,
-  },
   lineContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -668,6 +658,13 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     fontFamily: 'Urbanist-SemiBold',
   },
+  passwordSmallHeader: {
+    fontSize: 16,
+    fontFamily: 'Urbanist-SemiBold',
+    color: '#000',
+    paddingLeft: 10,
+    flex: 2,
+  },
   notificationSmallHeader: {
     fontSize: 18,
     fontFamily: 'Urbanist-Medium',
@@ -676,13 +673,6 @@ const styles = StyleSheet.create({
     flex: 2,
   },
   emailSmallHeader: {
-    fontSize: 16,
-    fontFamily: 'Urbanist-SemiBold',
-    color: '#000',
-    paddingLeft: 10,
-    flex: 2,
-  },
-   passwordSmallHeader: {
     fontSize: 16,
     fontFamily: 'Urbanist-SemiBold',
     color: '#000',
@@ -717,6 +707,19 @@ const styles = StyleSheet.create({
   },
   accountView: {
     marginVertical: 10,
+  },
+  input: {
+    flex: 5,
+    marginVertical: 5,
+    paddingLeft: 10,
+    alignItems: 'center',
+    borderRadius: 16,
+    borderBottomWidth: 1.5,
+    borderBottomColor: '#E6EBF2',
+    shadowColor: '#000',
+    height: 54,
+    fontFamily: 'Urbanist-Light',
+    fontSize: 16,
   },
   passwordContainer: {
     width: '100%',

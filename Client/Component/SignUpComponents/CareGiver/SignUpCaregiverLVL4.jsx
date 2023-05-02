@@ -1,6 +1,6 @@
 import { View, Text, Alert, SafeAreaView, TouchableOpacity, Dimensions, StyleSheet } from 'react-native'
-import { useState, useEffect } from 'react'
-import { FontAwesome, Entypo, MaterialIcons, AntDesign } from '@expo/vector-icons';
+import { useState } from 'react'
+import { FontAwesome, Entypo, MaterialIcons } from '@expo/vector-icons';
 import DatePicker from 'react-native-datepicker';
 import { Dropdown } from 'react-native-element-dropdown';
 import { OrLine, HaveAccount } from '../FooterLine';
@@ -25,6 +25,7 @@ export default function SignUpCaregiverLVL4({ navigation, route }) {
     var year = new Date().getFullYear() + 20; //Current Year
     return year + '-' + month + '-' + date;
   }
+
   const [visaExpiration, setVisaExpiration] = useState('');
   const [date, setDate] = useState('');
 
@@ -49,13 +50,6 @@ export default function SignUpCaregiverLVL4({ navigation, route }) {
         phoneNum: userData.phoneNum,
         userUri: userData.userUri,
       }
-      // foreign user data testing 
-      // const newForeignUserData = {
-      //   CountryName_En: 'Egypt',
-      //   LanguageName_En: 'Arabic',
-      //   DateOfBirth: '1999-01-01',
-      //   VisaExpirationDate: '2025-01-01',
-      // };
 
       //Foreign User Data
       const newForeignUserData = {
@@ -71,9 +65,7 @@ export default function SignUpCaregiverLVL4({ navigation, route }) {
   return (
     <SafeAreaView style={styles.container}>
       {/* Header Text */}
-      <View style={styles.headerContainer}>
-        <Text style={styles.header}>Only few more details...</Text>
-      </View>
+      <View style={styles.headerContainer}><Text style={styles.header}>Only few more details...</Text></View>
 
       {/* Input Container */}
       <View style={styles.inputContainer}>
@@ -99,7 +91,7 @@ export default function SignUpCaregiverLVL4({ navigation, route }) {
             },
             dateInput: {
               marginLeft: 0,
-              alignItems: 'flex-left',
+              alignItems: 'flex-start',
               borderWidth: 0,
             },
             placeholderText: {
@@ -135,7 +127,7 @@ export default function SignUpCaregiverLVL4({ navigation, route }) {
             },
             dateInput: {
               marginLeft: 0,
-              alignItems: 'flex-left',
+              alignItems: 'flex-start',
               borderWidth: 0,
             },
             placeholderText: {
@@ -190,12 +182,8 @@ export default function SignUpCaregiverLVL4({ navigation, route }) {
           valueField="value"
           searchPlaceholder="Search..."
           value={valueLanguage}
-          onChange={item => {
-            setValueLanguage(item.value);
-          }}
-          renderRightIcon={() => (
-            <MaterialIcons name="translate" size={24} color="gray" />
-          )}
+          onChange={item => { setValueLanguage(item.value); }}
+          renderRightIcon={() => (<MaterialIcons name="translate" size={24} color="gray" />)}
           containerStyle={styles.containerStyle}
         />
       </View>
@@ -230,15 +218,16 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     padding: 16,
-    height: 50,
-    borderColor: 'gray',
-    borderWidth: 1,
+    height: 54,
+    borderColor: '#E6EBF2',
+    borderWidth: 1.5,
     borderRadius: 16,
-    width: SCREEN_WIDTH * 0.85,
+    width: SCREEN_WIDTH * 0.9,
+    marginVertical: 10,
   },
   placeholderStyle: {
     fontSize: 16,
-    width: SCREEN_WIDTH * 0.85,
+    width: SCREEN_WIDTH * 0.9,
     fontFamily: 'Urbanist-Medium',
     color: 'gray',
   },
@@ -265,7 +254,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   headerContainer: {
-    alignItems: 'flex-start', 
+    alignItems: 'flex-start',
     // how to align the text for android
     justifyContent: 'center',
     flex: 1
@@ -274,7 +263,8 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     justifyContent: 'space-between',
     paddingHorizontal: 10,
-    flex: 0.35
+    flex: 0.35,
+    marginVertical: 10,
   },
   buttonContainer: {
     width: SCREEN_WIDTH * 1,
@@ -284,8 +274,8 @@ const styles = StyleSheet.create({
     flex: 1
   },
   button: {
-    width: SCREEN_WIDTH * 0.85,
-    height: 50,
+    width: SCREEN_WIDTH * 0.9,
+    height: 54,
     backgroundColor: '#548DFF',
     alignItems: 'center',
     justifyContent: 'center',
@@ -311,18 +301,20 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 10,
     flex: 0.35,
+    marginVertical: 10,
   },
   input: {
-    width: SCREEN_WIDTH * 0.85,
-    height: 50,
+    width: SCREEN_WIDTH * 0.9,
+    height: 54,
     backgroundColor: '#fff',
     borderRadius: 16,
     paddingHorizontal: 16,
     fontSize: 16,
     fontFamily: 'Urbanist-Medium',
     color: 'gray',
-    borderColor: 'gray',
-    borderWidth: 1,
+    borderColor: '#E6EBF2',
+    borderWidth: 1.5,
     justifyContent: 'center',
+    marginVertical: 10,
   }
 })

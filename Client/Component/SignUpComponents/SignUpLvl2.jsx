@@ -1,17 +1,9 @@
 import { View, Text, SafeAreaView, StyleSheet, Dimensions, Image, TouchableOpacity, Alert } from 'react-native'
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { OrLine, HaveAccount } from './FooterLine';
-import * as Font from 'expo-font';
-Font.loadAsync({
-  'Urbanist': require('../../assets/fonts/Urbanist-Regular.ttf'),
-  'Urbanist-Bold': require('../../assets/fonts/Urbanist-Bold.ttf'),
-  'Urbanist-Light': require('../../assets/fonts/Urbanist-Light.ttf'),
-  'Urbanist-Medium': require('../../assets/fonts/Urbanist-Medium.ttf'),
-  'Urbanist-SemiBold': require('../../assets/fonts/Urbanist-SemiBold.ttf'),
-});
-
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from '../../config/firebase';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function SignUpLvl2({ navigation, route }) {
   const userData = route.params.user;
@@ -21,18 +13,21 @@ export default function SignUpLvl2({ navigation, route }) {
   const [language, setLanguage] = useState([]);
   const [country, setCountry] = useState([]);
   const [holidaysType, setHolidaysType] = useState([]);
+  const isFocused = useIsFocused();
 
   useEffect(() => {
-    // setPatientId(route.params.patienId);
-    // console.log("patient ID: ", patientId);
+    if (isFocused) {
+      getData();
+    }
+  }, [isFocused]);
+
+  const getData = async () => {
     let urlforLanguages = 'https://proj.ruppin.ac.il/cgroup94/test1/api/LanguageCountry/GetAllLanguages';
     let urlforCountries = 'https://proj.ruppin.ac.il/cgroup94/test1/api/LanguageCountry/GetAllCountries';
     let calendarUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Calendars/GetAllCalendars';
     fetch(calendarUrl, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
+      headers: { 'Content-Type': 'application/json; charset=UTF-8', },
     })
       .then(res => {
         if (res.ok) {
@@ -71,10 +66,12 @@ export default function SignUpLvl2({ navigation, route }) {
       })
       .then(data => {
         if (data != null) {
-          let coun = data.map((item) => {
-            return { label: item, value: item }
-          })
-          setCountry(coun);
+          for (let i = 0; i < data.length; i++) {
+            country.push({
+              label: data[i],
+              value: data[i],
+            })
+          }
         }
       })
       .catch((error) => {
@@ -96,16 +93,19 @@ export default function SignUpLvl2({ navigation, route }) {
       })
       .then(data => {
         if (data != null) {
-          let lang = data.map((item) => {
-            return { label: item.LanguageName_Origin, value: item.LanguageName_En }
-          })
-          setLanguage(lang);
+          for (let i = 0; i < data.length; i++) {
+            language.push({
+              label: data[i].LanguageName_Origin,
+              value: data[i].LanguageName_En,
+            })
+          }
         }
       })
       .catch((error) => {
         console.log("err=", error);
       });
-  }, []);
+  }
+
   // Send the image to firebase storage and get the image url
   const sendToFirebase = async (image) => {
     if (userGender === '') {
@@ -159,59 +159,33 @@ export default function SignUpLvl2({ navigation, route }) {
       phoneNum: userData.phoneNum,
       userUri: downloadURL,
     }
-
-    // for testing only
-    // const newUserToDB = {
-    //   Email: 'noam@gmail.com',
-    //   Password: '12345678',
-    //   FirstName: 'Noam',
-    //   LastName: 'Norman',
-    //   phoneNum: '0541234567',
-    //   gender: 'F',
-    //   userUri: downloadURL,
-    // }
     const userType = route.params.userType;
     const patientId = route.params.patientId;
+    console.log(route.params.userType)
+
     if (userType == 'User') {
-      navigation.navigate('SignUpLvl3', { userData: newUserToDB, holidaysType: holidaysType, language: language })
+      navigation.navigate('SignUpLvl3', { userData: newUserToDB, holidaysType: holidaysType, language: language, country: country })
     }
     else if (userType === 'Caregiver') {
-      navigation.navigate('SignUpCaregiverLVL4', { userData: newUserToDB, patientId: patientId ,holidaysType: holidaysType, language: language, country: country })
+      navigation.navigate('SignUpCaregiverLVL4', { userData: newUserToDB, patientId: patientId, holidaysType: holidaysType, language: language, country: country })
     }
-  }
 
+  }
   const NavigateToLogIn = () => {
     navigation.navigate('LogIn')
   }
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.header}>
-        We love to know you...
-      </Text>
-      <Text style={styles.smallHeader}>
-        It will take only 5 minutes
-      </Text>
-
-      <View>
-        <Text style={styles.TitleGender}> I am a...</Text>
-      </View>
-
+      <Text style={styles.header}>We love to know you...</Text>
+      <Text style={styles.smallHeader}>It will take only 5 minutes</Text>
+      <View><Text style={styles.TitleGender}> I am a...</Text></View>
       <View style={styles.GenderContainer}>
-        <TouchableOpacity
-          style={[styles.GenderButton, userGender === 'M' && styles.selectedGender]}
-          onPress={() => setUserGender('M')}
-        >
-          <Image
-            source={require('../../images/hero.png')}
-            style={styles.imgGender}
-          />
+        <TouchableOpacity style={[styles.GenderButton, userGender === 'M' && styles.selectedGender]} onPress={() => setUserGender('M')}>
+          <Image source={require('../../images/hero.png')} style={styles.imgGender} />
         </TouchableOpacity>
         <View style={{ margin: 20 }}></View>
-        <TouchableOpacity
-          style={[styles.GenderButton, userGender === 'F' && styles.selectedGender]}
-          onPress={() => setUserGender('F')}
-        >
+        <TouchableOpacity style={[styles.GenderButton, userGender === 'F' && styles.selectedGender]} onPress={() => setUserGender('F')}>
           <Image
             source={require('../../images/superhero.png')}
             style={styles.imgGender}
@@ -307,18 +281,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 16,
-    borderWidth: 1,
-    borderColor: 'lightgray',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 1,
-    margin: 7,
-    height: 45,
+    marginVertical: 10,
+    height: 54,
   },
   buttonText: {
-    color: 'white',
+    color: '#fff',
     fontSize: 18,
     fontFamily: 'Urbanist-Bold',
   },

@@ -33,7 +33,7 @@ function AddNewMedicine(props) {
    const [capacity, setCapacity] = useState(0)
    const [selectedFrequency, setSelectedFrequency] = useState('')
    const [medComment, setMedComment] = useState('')
-   const [medFromDate, setMedFromDate] = useState(Date.now)
+   const [medFromDate, setMedFromDate] = useState(Date.now())
    const [medToDate, setMedToDate] = useState('')
    const [medTime, setMedTime] = useState('')
    const [medTimeArr, setMedTimeArr] = useState([]) //we will use this to get all the times from the user
@@ -79,7 +79,6 @@ function AddNewMedicine(props) {
          .catch((error) => {
             console.log("err=", error);
          });
-
    }, []);
 
    const addMed = () => {
@@ -131,8 +130,6 @@ function AddNewMedicine(props) {
             console.log("err=", error);
          }
          );
-
-
    }
 
    const clearInputs = () => {
@@ -165,6 +162,7 @@ function AddNewMedicine(props) {
          setQuantity(0);
       }
    }
+
    const stylesForTimeModal = StyleSheet.create({
       timePicker: {
          flexDirection: 'row',

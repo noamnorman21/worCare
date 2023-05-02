@@ -1,22 +1,21 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, LayoutAnimation,Animated, Modal, ScrollView, Image, layoutView, Platform } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { SafeAreaView, View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, LayoutAnimation, Modal, ScrollView, Image, Platform } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
-import { MaterialCommunityIcons, AntDesign, Feather, Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, AntDesign, Feather } from '@expo/vector-icons';
 import NewPayment from './NewPayment';
 import EditPaymentScreen from './EditPaymentScreen';
 import { useUserContext } from '../../UserContext';
 import { AddBtn } from '../HelpComponents/AddNewTask';
-import { Menu, MenuProvider, MenuOptions, MenuOption, MenuTrigger, renderers } from "react-native-popup-menu";
+import { Menu, MenuOptions, MenuOption, MenuTrigger } from "react-native-popup-menu";
 import * as FileSystem from 'expo-file-system';
-import { SafeAreaView } from 'react-navigation';
-import { Tooltip } from 'react-native-paper';
 import * as Sharing from 'expo-sharing';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
-export default function Pending({ route, navigation }) {
-  const { userContext, userPendingPayments } = useUserContext()
+export default function Pending() {
+  const { userContext } = useUserContext()
+  //  const {userPendingPayments} = useUserContext()
   const [modal1Visible, setModal1Visible] = useState(false);
   const [Pendings, setPendings] = useState()
   const isFocused = useIsFocused()
@@ -44,7 +43,13 @@ export default function Pending({ route, navigation }) {
       const data = await response.json();
       let arr = data.map((item) => {
         return (
-          <Request key={item.requestId} getPending={getPending} data={item} id={item.requestId} Notification={Notification} View={View} subject={item.requestSubject} amountToPay={item.amountToPay} date={item.requestDate} requestComment={item.requestComment} />
+          <Request
+            key={item.requestId} getPending={getPending} data={item}
+            id={item.requestId} Notification={Notification}
+            View={View} subject={item.requestSubject}
+            amountToPay={item.amountToPay}
+            date={item.requestDate} requestComment={item.requestComment}
+          />
         )
       })
       setPendings(arr)
@@ -96,8 +101,7 @@ function Request(props) {
   const [valueChanged, setValueChanged] = useState(false);
   const [status, setStatus] = useState(props.data.requestStatus);
   const { userContext } = useUserContext();
-  const [DownloadProgress,setDownloadProgress]=useState();
-
+  const [DownloadProgress, setDownloadProgress] = useState();
 
   const toggle = () => {
     const config = {
@@ -106,8 +110,22 @@ function Request(props) {
       useNativeDriver: true,
     }
     LayoutAnimation.easeInEaseOut(setExpanded(!expanded));
-    
   };
+
+  const editRequest = () => {
+    if (status == "F") {
+      Alert.alert(
+        'Edit Payment request',
+        'You cannot edit a paid request',
+        [
+          { text: "OK", style: 'cancel', onPress: () => { } },
+        ],
+      );
+    }
+    else if (status == "P") {
+      setModal2Visible(true)
+    }
+  }
 
   const openModal = (value) => {
     if (value == 1) {
@@ -117,7 +135,7 @@ function Request(props) {
       setModal1Visible(true)
     }
     if (value == 3) {
-      setModal2Visible(true)
+      editRequest()
     }
     if (value == 4) {
       deleteRequest()
@@ -125,22 +143,28 @@ function Request(props) {
   }
 
   const deleteRequest = () => {
+    let userTypeResult;
+    if (userContext.userType == "Caregiver") {
+      userTypeResult = "C"
+    }
+    else {
+      userTypeResult = "R"
+    }
     Alert.alert(
       'Delete request',
       'are you sure you want to Delete? All changes will be lost',
       [
-        { text: "Don't leave", style: 'cancel', onPress: () => { } },
+        { text: "Don't delete", style: 'cancel', onPress: () => { } },
         {
-          text: 'Leave',
+          text: 'Delete',
           style: 'destructive',
           // If the user confirmed, then we dispatch the action we blocked earlier
           // This will continue the action that had triggered the removal of the screen
           onPress: () => {
-            let res = fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/DeletePayment/' + props.data.requestId, {
-              method: 'DELETE',
-              headers: {
-                'Content-Type': 'application/json',
-              },
+            let res = fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/DeletePayment/', {
+              method: 'POST',
+              body: JSON.stringify({ requestId: props.data.requestId, requestStatus: userTypeResult }),
+              headers: { 'Content-Type': 'application/json', },
             });
             console.log(res);
             props.getPending();
@@ -151,30 +175,17 @@ function Request(props) {
   }
 
   const askUserBeforeSave = () => {
-    Alert.alert(
-      'Save Changes',
-      'are you sure you want to Save? This Action cannot be undone',
-      [
-        { text: "Don't save", style: 'cancel', onPress: () => { } },
-        {
-          text: 'Save',
-          style: 'destructive',
-          // If the user confirmed, then we dispatch the action we blocked earlier
-          // This will continue the action that had triggered the removal of the screen
-          onPress: () => {
-            saveStatus(props.data.requestId)
-          }
-        },
-      ]
-    );
+    if (status == "F") {
+      setStatus("P")
+    }
+    else if (status == "P") {
+      setTimeout(() => {
+        saveStatus(props.data.requestId)
+      }, 5000);
+    }
   }
 
   const saveStatus = async (id) => {
-    let request = {
-      requestId: id,
-      requestStatus: "F"
-    }
-
     try {
       const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/UpdateStatus/', {
         method: 'PUT',
@@ -188,7 +199,7 @@ function Request(props) {
       setStatus("F")
       setTimeout(() => {
         props.getPending()
-      }, 1500);
+      }, 1000);
     } catch (error) {
       console.log(error)
     }
@@ -200,35 +211,34 @@ function Request(props) {
     console.log("Progress", progress)
   }
 
-  const downloadFile = async () => {  
-      try {
-        const url = props.data.requestProofDocument;
-        const dot = url.lastIndexOf(".");
-        const questionMark = url.lastIndexOf("?");
-        const type = url.substring(dot, questionMark);
-        const id = props.data.requestId;
-        const fileName = "Request_" + id + type;
-        const fileUri = FileSystem.documentDirectory + fileName;
-        // const downloadResumable = FileSystem.createDownloadResumable(url,fileUri,{},callback);
-        const directoryInfo = await FileSystem.getInfoAsync(fileUri);
-        if (!directoryInfo.exists) {
-          FileSystem.makeDirectoryAsync(fileUri, { intermediates: true });
-        }
-        const DownloadedFile = await FileSystem.downloadAsync(url, fileUri, {}, callback);
-        if (DownloadedFile.status == 200) {
-          saveFile(DownloadedFile.uri, fileName, DownloadedFile.headers['content-type']);
-        }
-        else {
-          console.log("File not Downloaded")
-        }
+  const downloadFile = async () => {
+    try {
+      const url = props.data.requestProofDocument;
+      const dot = url.lastIndexOf(".");
+      const questionMark = url.lastIndexOf("?");
+      const type = url.substring(dot, questionMark);
+      const id = props.data.requestId;
+      const fileName = "Request_" + id + type;
+      const fileUri = FileSystem.documentDirectory + fileName;
+      // const downloadResumable = FileSystem.createDownloadResumable(url,fileUri,{},callback);
+      const directoryInfo = await FileSystem.getInfoAsync(fileUri);
+      if (!directoryInfo.exists) {
+        FileSystem.makeDirectoryAsync(fileUri, { intermediates: true });
       }
-      catch (error) {
-        console.log(error)
-        Alert.alert("Error", error)
+      const DownloadedFile = await FileSystem.downloadAsync(url, fileUri, {}, callback);
+      if (DownloadedFile.status == 200) {
+        saveFile(DownloadedFile.uri, fileName, DownloadedFile.headers['content-type']);
       }
-    
+      else {
+        console.log("File not Downloaded")
+      }
+    }
+    catch (error) {
+      console.log(error)
+      Alert.alert("Error", error)
+    }
+
   }
- 
 
   const saveFile = async (res, fileName, type) => {
     if (Platform.OS == "ios") {
@@ -258,14 +268,14 @@ function Request(props) {
     <SafeAreaView>
       <View>
         {expanded ?
-          <View style={newStyles.requestOpen}>
-            <View style={newStyles.requestItemHeaderOpen}>
-              <TouchableOpacity onPress={toggle} style={newStyles.request}>
-                <View style={newStyles.requestItemLeft}>
-                  <Text style={newStyles.requestItemText}>{dateString}</Text>
+          <View style={styles.requestOpen}>
+            <View style={styles.requestItemHeaderOpen}>
+              <TouchableOpacity onPress={toggle} style={styles.request}>
+                <View style={styles.requestItemLeft}>
+                  <Text style={styles.requestItemText}>{dateString}</Text>
                 </View>
-                <View style={newStyles.requestItemMiddle}>
-                  <Text style={newStyles.requestItemText}>{props.subject}</Text>
+                <View style={styles.requestItemMiddle}>
+                  <Text style={styles.requestItemText}>{props.subject}</Text>
                 </View>
               </TouchableOpacity>
               <Menu style={{ flexDirection: 'column', marginVertical: 0 }} onSelect={value => openModal(value)} >
@@ -275,12 +285,12 @@ function Request(props) {
                   </View>}
                 />
                 <MenuOptions customStyles={{
-                  optionsWrapper: newStyles.optionsWrapperOpened,
+                  optionsWrapper: styles.optionsWrapperOpened,
                 }}  >
-                  <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} value={1} children={<View style={newStyles.options}><MaterialCommunityIcons name='bell-ring-outline' size={20} /><Text style={newStyles.optionsText}> Send Notification</Text></View>} />
-                  <MenuOption value={2} children={<View style={newStyles.options}><Feather name='eye' size={20} /><Text style={newStyles.optionsText}> View Document</Text></View>} />
-                  <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true}value={3} children={<View style={userContext.userId == props.data.userId ? newStyles.options : newStyles.disabledoptions}><Feather name='edit' size={20} /><Text style={newStyles.optionsText}> Edit Request</Text></View>} />
-                  <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} style={[newStyles.deleteTxt,userContext.userId !== props.data.userId && newStyles.disabledoptions]} value={4} children={<View style={userContext.userId == props.data.userId ? newStyles.options : newStyles.disabledoptions}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={newStyles.deleteTxt}> Delete Request</Text></View>} />
+                  <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} value={1} children={<View style={styles.options}><MaterialCommunityIcons name='bell-ring-outline' size={20} /><Text style={styles.optionsText}> Send Notification</Text></View>} />
+                  <MenuOption value={2} children={<View style={styles.options}><Feather name='eye' size={20} /><Text style={styles.optionsText}> View Document</Text></View>} />
+                  <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} value={3} children={<View style={userContext.userId == props.data.userId ? styles.options : styles.disabledoptions}><Feather name='edit' size={20} /><Text style={styles.optionsText}> Edit Request</Text></View>} />
+                  <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} style={[styles.deleteTxt, userContext.userId !== props.data.userId && styles.disabledoptions]} value={4} children={<View style={userContext.userId == props.data.userId ? styles.options : styles.disabledoptions}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={styles.deleteTxt}> Delete Request</Text></View>} />
                 </MenuOptions>
               </Menu>
               <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
@@ -298,78 +308,78 @@ function Request(props) {
                 <EditPaymentScreen cancel={() => { setModal2Visible(false); props.getPending() }} data={props.data} />
               </Modal>
             </View>
-            <View style={newStyles.requestItemBody}>
-              <View style={newStyles.requestItemBodyLeft}>
-                <Text style={newStyles.requestItemText}>Date: </Text>
-                <Text style={newStyles.requestItemText}>Amount: </Text>
-                <Text style={[newStyles.requestItemText, props.requestComment == null || props.requestComment == '' && { display: 'none' }]}>Comment: </Text>
+            <View style={styles.requestItemBody}>
+              <View style={styles.requestItemBodyLeft}>
+                <Text style={styles.requestItemText}>Date: </Text>
+                <Text style={styles.requestItemText}>Amount: </Text>
+                <Text style={[styles.requestItemText, props.requestComment == null || props.requestComment == '' && { display: 'none' }]}>Comment: </Text>
               </View>
-              <View style={newStyles.requestItemBodyRight}>
-                <Text style={newStyles.requestItemText}>{dateString}</Text>
-                <Text style={newStyles.requestItemText}>{props.amountToPay}</Text>
-                <Text style={[newStyles.requestItemText, props.requestComment == null || props.requestComment == '' && { display: 'none' }]}>{props.requestComment}</Text>
+              <View style={styles.requestItemBodyRight}>
+                <Text style={styles.requestItemText}>{dateString}</Text>
+                <Text style={styles.requestItemText}>{props.amountToPay}</Text>
+                <Text style={[styles.requestItemText, props.requestComment == null || props.requestComment == '' && { display: 'none' }]}>{props.requestComment}</Text>
               </View>
             </View>
           </View>
           :
-            <View style={newStyles.requestItemHeader}>
-              <TouchableOpacity style={newStyles.request} onPress={() => askUserBeforeSave()}>
-                <View style={newStyles.requestItemLeft}>
-                  {
-                    status != 'F' ?
-                      <Feather name="circle" size={30} color="#548DFF" />
-                      :
-                      <Feather name="check-circle" size={30} color="#548DFF" />
-                  }
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={toggle} style={newStyles.requestItemMiddle}>
-                <View>
-                  <Text style={newStyles.requestItemText}>{dateString} - {props.subject}</Text>
-                </View>
-              </TouchableOpacity>
-              <Menu style={{ flexDirection: 'column', marginVertical: 0, position: 'relative' }} onSelect={value => openModal(value)} >
-                <MenuTrigger
-                  children={<View>
-                    <MaterialCommunityIcons name="dots-horizontal" size={28} color="gray" />
-                  </View>}
-                />
-                <MenuOptions customStyles={{
-                  optionsContainer: {
-                    borderRadius: 10,
-                    elevation: 100,
-                  },
-                  optionsWrapper: newStyles.optionsWrapper,
-                }}
-                >
-                  <MenuOption value={1} children={<View style={newStyles.options}><MaterialCommunityIcons name='bell-ring-outline' size={20} /><Text style={newStyles.optionsText}> Send Notification</Text></View>} />
-                  <MenuOption value={2} children={<View style={newStyles.options}><Feather name='eye' size={20} /><Text style={newStyles.optionsText}> View Document</Text></View>} />
-                  <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} value={3} children={<View style={userContext.userId == props.data.userId ? newStyles.options : newStyles.disabledoptions}><Feather name='edit' size={20} /><Text style={newStyles.optionsText}> Edit Request</Text></View>} />
-                  <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} value={4} children={<View style={userContext.userId == props.data.userId ? newStyles.options : newStyles.disabledoptions}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={newStyles.deleteTxt}> Delete Request</Text></View>} />
-                </MenuOptions>
-              </Menu>
-              <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
-                <View style={styles.documentview}>
-                  <TouchableOpacity style={styles.closeBtn} onPress={() => setModal1Visible(false)}>
-                    <AntDesign name="close" size={24} color="black" />
-                  </TouchableOpacity>
-                  <Image source={{ uri: props.data.requestProofDocument }} style={styles.documentImg} />
-                  <TouchableOpacity style={styles.documentDownloadButton} onPress={downloadFile} >
-                    <Text style={styles.documentButtonText}>Download</Text>
-                  </TouchableOpacity>
-                </View>
-              </Modal>
-              <Modal animationType='slide' transparent={true} visible={modal2Visible}>
-                <EditPaymentScreen cancel={() => { setModal2Visible(false); props.getPending() }} data={props.data} />
-              </Modal>
-            </View>
+          <View style={styles.requestItemHeader}>
+            <TouchableOpacity style={styles.request} onPress={() => askUserBeforeSave()}>
+              <View style={styles.requestItemLeft}>
+                {
+                  status != 'F' ?
+                    <Feather name="circle" size={30} color="#548DFF" />
+                    :
+                    <Feather name="check-circle" size={30} color="#548DFF" />
+                }
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={toggle} style={styles.requestItemMiddle}>
+              <View>
+                <Text style={[styles.requestItemText, status == 'F' ? { textDecorationLine: 'line-through' } : {}]}>{dateString} - {props.subject}</Text>
+              </View>
+            </TouchableOpacity>
+            <Menu style={{ flexDirection: 'column', marginVertical: 0, position: 'relative' }} onSelect={value => openModal(value)} >
+              <MenuTrigger
+                children={<View>
+                  <MaterialCommunityIcons name="dots-horizontal" size={28} color="gray" />
+                </View>}
+              />
+              <MenuOptions customStyles={{
+                optionsContainer: {
+                  borderRadius: 10,
+                  elevation: 100,
+                },
+                optionsWrapper: styles.optionsWrapper,
+              }}
+              >
+                <MenuOption value={1} children={<View style={styles.options}><MaterialCommunityIcons name='bell-ring-outline' size={20} /><Text style={styles.optionsText}> Send Notification</Text></View>} />
+                <MenuOption value={2} children={<View style={styles.options}><Feather name='eye' size={20} /><Text style={styles.optionsText}> View Document</Text></View>} />
+                <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} value={3} children={<View style={userContext.userId == props.data.userId ? styles.options : styles.disabledoptions}><Feather name='edit' size={20} /><Text style={styles.optionsText}> Edit Request</Text></View>} />
+                <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} value={4} children={<View style={userContext.userId == props.data.userId ? styles.options : styles.disabledoptions}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={styles.deleteTxt}> Delete Request</Text></View>} />
+              </MenuOptions>
+            </Menu>
+            <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
+              <View style={styles.documentview}>
+                <TouchableOpacity style={styles.closeBtn} onPress={() => setModal1Visible(false)}>
+                  <AntDesign name="close" size={24} color="black" />
+                </TouchableOpacity>
+                <Image source={{ uri: props.data.requestProofDocument }} style={styles.documentImg} />
+                <TouchableOpacity style={styles.documentDownloadButton} onPress={downloadFile} >
+                  <Text style={styles.documentButtonText}>Download</Text>
+                </TouchableOpacity>
+              </View>
+            </Modal>
+            <Modal animationType='slide' transparent={true} visible={modal2Visible}>
+              <EditPaymentScreen cancel={() => { setModal2Visible(false); props.getPending() }} data={props.data} />
+            </Modal>
+          </View>
         }
-      </View>
+      </View >
     </SafeAreaView >
   );
 }
 
-const newStyles = StyleSheet.create({
+const styles = StyleSheet.create({
   requestItemHeader: {
     justifyContent: 'space-between',
     width: Dimensions.get('screen').width * 0.9,
@@ -382,13 +392,6 @@ const newStyles = StyleSheet.create({
     backgroundColor: '#FFF',
     padding: 12,
     flexDirection: 'row',
-  },
-  requestItemBodyEdit: {
-    justifyContent: 'center',
-    alignItems: 'flex-end',
-    paddingHorizontal: 12,
-    paddingVertical: 5,
-    width: SCREEN_WIDTH * 0.9,
   },
   requestItemHeaderOpen: {
     // justifyContent: 'flex-start',
@@ -423,13 +426,6 @@ const newStyles = StyleSheet.create({
     justifyContent: 'space-between',
     flexDirection: 'row',
     flex: 1,
-  },
-  requestItemRight: {
-    justifyContent: 'center',
-    alignItems: 'flex-end',
-    width: 54,
-    height: 54,
-    borderRadius: 16,
   },
   requestItemMiddle: {
     justifyContent: 'center',
@@ -508,9 +504,6 @@ const newStyles = StyleSheet.create({
     flex: 3,
     alignItems: 'flex-start',
   },
-})
-
-const styles = StyleSheet.create({
   closeBtn: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
@@ -552,28 +545,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     flex: 1,
   },
-  documentCancelButton: {
-    fontSize: 16,
-    borderRadius: 16,
-    borderColor: '#7DA9FF',
-    borderWidth: 1,
-    fontFamily: 'Urbanist-Bold',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: SCREEN_WIDTH * 0.9,
-    height: SCREEN_HEIGHT * 0.06,
-    borderWidth: 1.5,
-    backgroundColor: '#F5F8FF',
-    borderColor: '#548DFF',
-  },
   documentButtonText: {
     color: '#fff',
-    fontSize: 16,
-    fontFamily: 'Urbanist-Bold',
-    alignItems: 'center',
-  },
-  documentCancelText: {
-    color: '#7DA9FF',
     fontSize: 16,
     fontFamily: 'Urbanist-Bold',
     alignItems: 'center',

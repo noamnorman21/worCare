@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, LayoutAnimation, Modal, Image } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -7,22 +6,21 @@ import NewPaycheck from './NewPaycheck';
 import EditPaycheck from './EditPaycheck';
 import { useUserContext } from '../../UserContext';
 import { AddBtn } from '../HelpComponents/AddNewTask';
-import { MaterialCommunityIcons, AntDesign, Feather, Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, AntDesign, Feather } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-navigation';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
-import { Menu, MenuProvider, MenuOptions, MenuOption, MenuTrigger, renderers } from "react-native-popup-menu";
+import { Menu, MenuOptions, MenuOption, MenuTrigger } from "react-native-popup-menu";
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
-export default function Paychecks({ navigation, route }) {
+export default function Paychecks() {
   const { userContext } = useUserContext();
   const [History, setHistory] = useState()
   const [arr, setArr] = useState()
   const isFocused = useIsFocused()
   const [modal1Visible, setModal1Visible] = useState(false);
- 
 
   useEffect(() => {
     if (isFocused && modal1Visible == false) {
@@ -59,29 +57,13 @@ export default function Paychecks({ navigation, route }) {
     }
   }
 
-  const Notification = (id) => {
-    Alert.alert(
-      "Notification",
-      "Are you sure you want to send a notification to the user?",
-      [
-        {
-          text: "Cancel",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel"
-        },
-        { text: "OK", onPress: () => console.log("OK Pressed") }
-      ],
-      { cancelable: false }
-    );
-  }
-
   return (
-    <> 
-        <View style={styles.headerText}>
-          <Text style={styles.header}>Paychecks History</Text>
-          <View style={styles.line}></View>
-        </View>
-        <ScrollView contentContainerStyle={styles.pending}>
+    <>
+      <View style={styles.headerText} >
+        <Text style={styles.header}>Paychecks History</Text>
+        <View style={styles.line}></View>
+      </View>
+      <ScrollView contentContainerStyle={styles.pending}>
         {History}
         <Modal animationType='slide' transparent={true} visible={modal1Visible}>
           <NewPaycheck cancel={() => { setModal1Visible(false); getPaychecks() }} userId={userContext.userId} />
@@ -96,7 +78,7 @@ function Paycheck(props) {
   const [expanded, setExpanded] = useState(false);
   // const animationController = useRef(new LayoutAnimation.Value(0)).current;
   const [modal1Visible, setModal1Visible] = useState(false);
-  const [temp, setTemp] = useState({
+  const [paycheck, setPaycheck] = useState({
     paycheckDate: props.data.paycheckDate,
     paycheckSummary: props.data.paycheckSummary,
     paycheckComment: props.data.paycheckComment,
@@ -104,31 +86,22 @@ function Paycheck(props) {
     UserId: props.data.UserId,
     payCheckProofDocument: props.data.payCheckProofDocument,
   })
+
   const [modal2Visible, setModal2Visible] = useState(false);
-  const date = new Date(temp.paycheckDate);
+  const date = new Date(paycheck.paycheckDate);
   const year = date.getFullYear();
   const newYear = year.toString().substr(-2);
   const month = date.getMonth() + 1;
   const day = date.getDate();
   const dateString = day + "/" + month + "/" + newYear;
-  const paycheckNum = props.data.paycheckNum;
-  const [DownloadProgress,setDownloadProgress] = useState(0);
+  const [DownloadProgress, setDownloadProgress] = useState(0);
 
   const toggle = () => {
-    const config = {
-      toValue: expanded ? 0 : 1,
-      duration: 2000,
-      useNativeDriver: true,
-    }
     LayoutAnimation.easeInEaseOut(setExpanded(!expanded));
-    
   };
 
   const openModal = async (value) => {
-    if (value == 1) {
-      console.log("Nottification")
-    }
-    else if (value == 2) {
+    if (value == 2) {
       setModal1Visible(true)
     }
     else if (value == 3) {
@@ -140,7 +113,7 @@ function Paycheck(props) {
   }
 
   const deletePaycheck = async () => {
-    console.log("Delete Paycheck: " + temp.payCheckNum);
+    console.log("Delete Paycheck: " + paycheck.payCheckNum);
     Alert.alert(
       'Delete Paycheck',
       'are you sure you want to Delete the Paycheck?',
@@ -152,8 +125,9 @@ function Paycheck(props) {
           // If the user confirmed, then we dispatch the action we blocked earlier
           // This will continue the action that had triggered the removal of the screen
           onPress: () => {
-            let res = fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Paychecks/DeletePaycheck/' + temp.payCheckNum, {
-              method: 'DELETE',
+            fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Paychecks/DeletePaycheck/', {
+              method: 'POST',
+              body: JSON.stringify(paycheck.payCheckNum),
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -169,7 +143,6 @@ function Paycheck(props) {
               .then(
                 (result) => {
                   console.log("fetch DELETE= ", result);
-                  Alert.alert("Delete Paycheck: " + temp.payCheckNum);
                   props.getPaychecks()
                 },
                 (error) => {
@@ -194,18 +167,18 @@ function Paycheck(props) {
     const type = url.substring(dot, questionMark);
     console.log("Type", type)
     const id = props.data.payCheckNum;
-    const fileName = "Paycheck_" + id+type;
+    const fileName = "Paycheck_" + id + type;
     const fileUri = FileSystem.documentDirectory + fileName;
     const directoryInfo = await FileSystem.getInfoAsync(fileUri);
-        if (!directoryInfo.exists) {
-          FileSystem.makeDirectoryAsync(fileUri, { intermediates: true });
-        }
-    const DownloadedFile = await FileSystem.downloadAsync(url,fileUri,{},callback);
+    if (!directoryInfo.exists) {
+      FileSystem.makeDirectoryAsync(fileUri, { intermediates: true });
+    }
+    const DownloadedFile = await FileSystem.downloadAsync(url, fileUri, {}, callback);
     if (DownloadedFile.status == 200) {
       saveFile(DownloadedFile.uri, fileName, DownloadedFile.headers['content-type']);
     }
     else {
-      console.log("File not Downloaded")
+      console.log("File didn't Downloaded")
     }
   }
 
@@ -234,8 +207,8 @@ function Paycheck(props) {
   }
 
   return (
-    <SafeAreaView>
-      <View>
+    <SafeAreaView >
+      <View >
         {expanded ?
           <View style={styles.requestOpen}>
             <View style={styles.requestItemHeaderOpen}>
@@ -253,7 +226,6 @@ function Paycheck(props) {
                 <MenuOptions customStyles={{
                   optionsWrapper: styles.optionsWrapperOpened,
                 }}  >
-                  <MenuOption style={{ borderRadius: 16 }} value={1} children={<View style={styles.options}><MaterialCommunityIcons name='bell-ring-outline' size={20} /><Text style={styles.optionsText}> Send Notification</Text></View>} />
                   <MenuOption style={{ borderRadius: 16 }} value={2} children={<View style={styles.options}><Feather name='eye' size={20} /><Text style={styles.optionsText}> View Document</Text></View>} />
                   <MenuOption style={{ borderRadius: 16 }} value={3} children={<View style={styles.options}><Feather name='edit' size={20} /><Text style={styles.optionsText}> Edit Paycheck</Text></View>} />
                   <MenuOption style={styles.deleteTxt} value={4} children={<View style={styles.options}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={styles.deleteTxt}> Delete Paycheck</Text></View>} />
@@ -271,20 +243,20 @@ function Paycheck(props) {
                 </View>
               </Modal>
               <Modal animationType='slide' transparent={true} visible={modal2Visible}>
-                <EditPaycheck cancel={(value) => { setModal2Visible(false); setExpanded(true); props.getPaychecks() }} save={(value) => { setModal2Visible(false); setExpanded(false); props.getPaychecks(); setTemp(value) }} data={props.data} />
+                <EditPaycheck cancel={(value) => { setModal2Visible(false); setExpanded(true); props.getPaychecks() }} save={(value) => { setModal2Visible(false); setExpanded(false); props.getPaychecks(); setPaycheck(value) }} data={props.data} />
               </Modal>
             </View>
             <View style={styles.requestItemBody}>
               <View style={styles.requestItemBodyLeft}>
                 <Text style={styles.requestItemText}>Date: </Text>
                 <Text style={styles.requestItemText}>Amount: </Text>
-                <Text style={[styles.requestItemText, temp.paycheckComment == null || temp.paycheckComment == '' && { display: 'none' }]}>Comment: </Text>
+                <Text style={[styles.requestItemText, paycheck.paycheckComment == null || paycheck.paycheckComment == '' && { display: 'none' }]}>Comment: </Text>
 
               </View>
               <View style={styles.requestItemBodyRight}>
                 <Text style={styles.requestItemText}>{dateString}</Text>
-                <Text style={styles.requestItemText}>{temp.paycheckSummary}</Text>
-                <Text style={[styles.requestItemText, temp.paycheckComment == null || temp.paycheckComment == "" && { display: 'none' }]}>{temp.paycheckComment}</Text>
+                <Text style={styles.requestItemText}>{paycheck.paycheckSummary}</Text>
+                <Text style={[styles.requestItemText, paycheck.paycheckComment == null || paycheck.paycheckComment == "" && { display: 'none' }]}>{paycheck.paycheckComment}</Text>
 
               </View>
             </View>
@@ -310,7 +282,6 @@ function Paycheck(props) {
                   optionsWrapper: styles.optionsWrapper,
                 }}
                 >
-                  <MenuOption style={{ borderRadius: 16 }} value={1} children={<View style={styles.options}><MaterialCommunityIcons name='bell-ring-outline' size={20} /><Text style={styles.optionsText}> Send Notification</Text></View>} />
                   <MenuOption style={{ borderRadius: 16 }} value={2} children={<View style={styles.options}><Feather name='eye' size={20} /><Text style={styles.optionsText}> View Document</Text></View>} />
                   <MenuOption style={{ borderRadius: 16 }} value={3} children={<View style={styles.options}><Feather name='edit' size={20} /><Text style={styles.optionsText}> Edit Paycheck</Text></View>} />
                   <MenuOption style={styles.deleteTxt} value={4} children={<View style={styles.options}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={styles.deleteTxt}> Delete Paycheck</Text></View>} />
@@ -328,7 +299,7 @@ function Paycheck(props) {
                 </View>
               </Modal>
               <Modal animationType='slide' transparent={true} visible={modal2Visible}>
-                <EditPaycheck cancel={(value) => { setModal2Visible(false); setExpanded(true); props.getPaychecks() }} save={(value) => { setModal2Visible(false); setExpanded(false); props.getPaychecks(); setTemp(value) }} data={props.data} />
+                <EditPaycheck cancel={(value) => { setModal2Visible(false); setExpanded(true); props.getPaychecks() }} save={(value) => { setModal2Visible(false); setExpanded(false); props.getPaychecks(); setPaycheck(value) }} data={props.data} />
               </Modal>
             </View>
           </View>
@@ -538,6 +509,7 @@ const styles = StyleSheet.create({
   },
   headerText: {
     justifyContent: 'center',
+    paddingVertical: 20,
     backgroundColor: '#fff',
   },
   header: {
