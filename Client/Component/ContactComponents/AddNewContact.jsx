@@ -8,7 +8,7 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export default function AddNewContact(props) {
-  const { userContext } = useUserContext()
+  const { userContext ,fetchUserContacts} = useUserContext()
   const [Contact, setContact] = useState({
     contactName: null,
     phoneNo: null,
@@ -63,6 +63,7 @@ export default function AddNewContact(props) {
         (result) => {
           console.log("fetch POST= ", result);
           Alert.alert("Contact added successfully");
+          fetchUserContacts();
           props.closeModal();
           props.cancel();
         },

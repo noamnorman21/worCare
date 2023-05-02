@@ -11,9 +11,8 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export default function ContactDetails({ route, navigation }) {
-  const { contact } = route.params;
   const [isChanged, setIsChanged] = useState(false);
-
+const { fetchUserContacts } = useUserContext()
   const [Edit, setEdit] = useState(false);
   const [saving, setSaving] = useState(false);
   const [cancel, setCancel] = useState(false);
@@ -175,6 +174,7 @@ export default function ContactDetails({ route, navigation }) {
           setSaving(false);
           setEdit(false);
           setIsChanged(false);
+          fetchUserContacts();
         },
         (error) => {
           console.log("err post2=", error);
@@ -209,6 +209,7 @@ export default function ContactDetails({ route, navigation }) {
                   if (result === 1) {
                     Alert.alert('Contact Deleted', 'The contact was deleted successfully');
                   }
+                  fetchUserContacts();
                   navigation.goBack();
                 },
                 (error) => {

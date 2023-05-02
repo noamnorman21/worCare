@@ -106,6 +106,7 @@ export function UserProvider({ children }) {
             allNotifications: true,
         }
         setUserNotifications(notifications)
+        fetchUserContacts(usertoSync);
     }
 
     function logOutContext() {
@@ -165,24 +166,70 @@ export function UserProvider({ children }) {
         setUserContext(userContext)
     }
 
+    async function fetchUserContacts(temp) {
+        let user={}
+        if (temp != undefined) {
+            console.log("temp", temp);
+            user = {
+                userId: temp.userId,
+                userType: temp.userType,
+            }
+        }
+        else {
+            console.log("userContext", userContext);
+            user = {
+                userId: userContext.userId,
+                userType: userContext.userType,
+            }
+        }
+        // new part when server is uploaded
+        const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/GetContacts', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(user)
+        });
+        const data = await response.json();
+        if (data != null) {
+            setUserContacts(data);
+            return data;
+        }
+        // if (data.length > 0) {
+        //     let contacts = data.map((item) => {
+        //         return <ContactCard key={item.contactId} contact={item} fetchContacts={fetchContacts} />
+        //     })
+        //     setUserContacts(data);
+        // }
+        // else {
+        //     setContacts([])
+        //     setContactToRender([])
+        //     setaddModalVisible(true)
+        // }
+    }
+
+    function updateUserContacts() {
+        fetchUserContacts();
+    }
+
     function updateuserNotifications(notifications) {
+        console.log("updateUser", notifications)
         setUserNotifications(notifications)
+        AsyncStorage.setItem('userNotifications', JSON.stringify(notifications));
     }
 
-    function updateRememberUserContext(userContext) {
-        console.log("updateUser", userContext);
-        setUserContext(userContext)
+    async function updateRememberUserContext(userContext) {
+        console.log("updateRememberUser", userContext);
+        setUserContext(userContext);
     }
 
-    function updateUserContacts(Contacts) {
-        setUserContacts(Contacts)
-    }
+
 
     function updatePendings(pendings) {
         setUserPendingPayments(pendings);
     }
 
-    const value = { userContext, userContacts,userNotifications, logInContext, logOutContext, updateUserContext, updateUserContacts, updatePendings, updateUserProfile, updateuserNotifications }
+    const value = { userContext, userContacts,userNotifications,updateRememberUserContext, logInContext,fetchUserContacts, logOutContext, updateUserContext, updateUserContacts, updatePendings, updateUserProfile, updateuserNotifications }
     return (
         <UserContext.Provider value={value}>
             {children}

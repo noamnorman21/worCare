@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, StyleSheet, Alert, TouchableOpacity, Dimensions, Modal, ScrollView } from 'react-native'
+import { View, Text, StyleSheet, Alert, TouchableOpacity, Dimensions, ScrollView, Platform } from 'react-native'
 import React, { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useUserContext } from '../../UserContext';
@@ -109,33 +109,31 @@ export default function Privacy({ navigation, route }) {
 
   // check if email already exists in DB
   const checkEmailInDB = () => {
-    console.log('checkEmailInDB', Email);
-    if (Email == null && validateEmail(Email)) {    
-    let checkMail = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetEmail';
-    let userDto = {
-      Email: Email,
-    }
-    console.log('userDto', userDto);
-    fetch(checkMail, {
-      method: 'POST',
-      body: JSON.stringify(userDto),
-      headers: {
-        'Content-Type': 'application/json; charset=UTF-8',
+    if (Email == null && validateEmail(Email)) {
+      let checkMail = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetEmail';
+      let userDto = {
+        Email: Email,
       }
-    })
-      .then(res => {
-        if (res.ok) {
-          sendDataToNextDB();
-        }
-        else {
-          Alert.alert('This email is already in use')
+      fetch(checkMail, {
+        method: 'POST',
+        body: JSON.stringify(userDto),
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
         }
       })
-      .catch((error) => {
-        console.log("err=", error);
-      });
+        .then(res => {
+          if (res.ok) {
+            sendDataToNextDB();
+          }
+          else {
+            Alert.alert('This email is already in use')
+          }
+        })
+        .catch((error) => {
+          console.log("err=", error);
+        });
     }
-    else{
+    else {
       setSaving(false);
       Alert.alert('Invalid Email', 'Please enter a valid email')
     }
@@ -260,14 +258,13 @@ export default function Privacy({ navigation, route }) {
                     updateNotifications();
                   }
                   else {
-                  navigation.goBack();
+                    navigation.goBack();
                   }
                 }
               )
           }
           else {
             setSaving(false);
-            console.log("blaa",saving);
             return Alert.alert('Password Change Failed', 'Sorry, there was an error updating your password. Please try again later.');
           }
         }
@@ -308,7 +305,7 @@ export default function Privacy({ navigation, route }) {
     catch (e) {
       console.log('error', e);
     }
-    navigation.goBack();   
+    navigation.goBack();
   }
 
   const validateEmail = (email) => {
@@ -320,7 +317,7 @@ export default function Privacy({ navigation, route }) {
     const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/ //at least 8 characters, 1 letter, 1 number
     return passwordRegex.test(password);
   }
-  
+
   // operations on notifications
   const toggleNotifications = (field) => {
     if (field == 'Email') {
@@ -386,8 +383,8 @@ export default function Privacy({ navigation, route }) {
           allNotifications: true
         });
       }
-    }    
-  } 
+    }
+  }
 
   return (
     <ScrollView alwaysBounceVertical={false} contentContainerStyle={styles.container}>
@@ -403,7 +400,6 @@ export default function Privacy({ navigation, route }) {
           <Text style={styles.emailSmallHeader}>Email Address</Text>
           <TouchableOpacity underlayColor={'lightgrey'} style={styles.fields} >
             <TextInput style={styles.fieldTxt} editable={true} value={Email} onChangeText={text => { setEmail(text) }} />
-            {/* <Text style={styles.fieldTxt}>{Email}</Text> */}
           </TouchableOpacity>
         </View>
       </View>
@@ -466,8 +462,9 @@ export default function Privacy({ navigation, route }) {
         </View>
         {/*Finance notifications toggle */}
         <View style={styles.notificationContainer}>
-          <Text style={styles.notificationSmallHeader}>Finance Notifications</Text>
+          <Text style={styles.notificationSmallHeader}>Finance</Text>
           <Switch
+            style={Platform.OS == 'ios' ? { marginVertical: 5, marginRight: 10, transform: [{ scaleX: .85 }, { scaleY: .85 }] } : { marginRight: 5 }} // ios style
             trackColor={{ false: "#E6EBF2", true: "#81b0ff" }}
             thumbColor={Notifications.financeNotifications ? "#548DFF" : "#f4f3f4"}
             ios_backgroundColor="#3e3e3e"
@@ -477,8 +474,9 @@ export default function Privacy({ navigation, route }) {
         </View>
         {/*Tasks notifications toggle */}
         <View style={styles.notificationContainer}>
-          <Text style={styles.notificationSmallHeader}>Tasks Notifications</Text>
+          <Text style={styles.notificationSmallHeader}>Tasks</Text>
           <Switch
+            style={Platform.OS == 'ios' ? { marginVertical: 5, marginRight: 10, transform: [{ scaleX: .85 }, { scaleY: .85 }] } : { marginRight: 5 }} // ios style
             trackColor={{ false: "#E6EBF2", true: "#81b0ff" }}
             thumbColor={Notifications.tasksNotifications ? "#548DFF" : "#f4f3f4"}
             ios_backgroundColor="#3e3e3e"
@@ -488,8 +486,9 @@ export default function Privacy({ navigation, route }) {
         </View>
         {/* Chat notification toggle */}
         <View style={styles.notificationContainer}>
-          <Text style={styles.notificationSmallHeader}>Chat Notifications</Text>
+          <Text style={styles.notificationSmallHeader}>Chat</Text>
           <Switch
+            style={Platform.OS == 'ios' ? { marginVertical: 5, marginRight: 10, transform: [{ scaleX: .85 }, { scaleY: .85 }] } : { marginRight: 5 }} // ios style
             trackColor={{ false: "#E6EBF2", true: "#81b0ff" }}
             thumbColor={Notifications.chatNotifications ? "#548DFF" : "#f4f3f4"}
             ios_backgroundColor="#3e3e3e"
@@ -499,8 +498,9 @@ export default function Privacy({ navigation, route }) {
         </View>
         {/* Contact notification toggle */}
         <View style={styles.notificationContainer}>
-          <Text style={styles.notificationSmallHeader}>Contacts Notifications</Text>
+          <Text style={styles.notificationSmallHeader}>Contacts </Text>
           <Switch
+            style={Platform.OS == 'ios' ? { marginVertical: 5, marginRight: 10, transform: [{ scaleX: .85 }, { scaleY: .85 }] } : { marginRight: 5 }} // ios style
             trackColor={{ false: "#E6EBF2", true: "#81b0ff" }}
             thumbColor={Notifications.contactNotifications ? "#548DFF" : "#f4f3f4"}
             ios_backgroundColor="#3e3e3e"
@@ -509,9 +509,10 @@ export default function Privacy({ navigation, route }) {
           />
         </View>
         {/* Email notification toggle */}
-        <View style={styles.notificationContainer}> 
-          <Text style={styles.notificationSmallHeader}>Email Notifications</Text>
+        <View style={styles.notificationContainer}>
+          <Text style={styles.notificationSmallHeader}>Email </Text>
           <Switch
+            style={Platform.OS == 'ios' ? { marginVertical: 5, marginRight: 10, transform: [{ scaleX: .85 }, { scaleY: .85 }] } : { marginRight: 5 }} // ios style
             trackColor={{ false: "#E6EBF2", true: "#81b0ff" }}
             thumbColor={Notifications.emailNotifications ? "#548DFF" : "#f4f3f4"}
             ios_backgroundColor="#3e3e3e"
@@ -523,6 +524,8 @@ export default function Privacy({ navigation, route }) {
         <View style={styles.notificationContainer}>
           <Text style={styles.notificationSmallHeader}>All Notifications</Text>
           <Switch
+            // transform: [{ scaleX: 1.5 }, { scaleY: 1.5 }],
+            style={Platform.OS == 'ios' ? { marginVertical: 5, marginRight: 10, transform: [{ scaleX: .85 }, { scaleY: .85 }] } : { marginRight: 5 }} // ios style
             trackColor={{ false: "#E6EBF2", true: "#81b0ff" }}
             thumbColor={Notifications.allNotifications ? "#548DFF" : "#f4f3f4"}
             ios_backgroundColor="#3e3e3e"
@@ -615,6 +618,19 @@ const styles = StyleSheet.create({
     borderColor: '#E6EBF2',
     padding: 10,
   },
+  input: {
+    flex: 4,
+    marginVertical: 5,
+    paddingLeft: 10,
+    alignItems: 'center',
+    borderRadius: 16,
+    borderBottomWidth: 1.5,    
+    borderBottomColor: '#E6EBF2',
+    shadowColor: '#000',
+    height: 54,
+    fontFamily: 'Urbanist-Light',
+    fontSize: 16,
+  },
   lineContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -652,21 +668,21 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     fontFamily: 'Urbanist-SemiBold',
   },
-  passwordSmallHeader: {
-    fontSize: 16,
-    fontFamily: 'Urbanist-SemiBold',
-    color: '#000',
-    paddingLeft: 10,
-    flex: 2,
-  },
   notificationSmallHeader: {
-    fontSize: 16,
-    fontFamily: 'Urbanist-SemiBold',
+    fontSize: 18,
+    fontFamily: 'Urbanist-Medium',
     color: '#000',
     paddingLeft: 10,
     flex: 2,
   },
   emailSmallHeader: {
+    fontSize: 16,
+    fontFamily: 'Urbanist-SemiBold',
+    color: '#000',
+    paddingLeft: 10,
+    flex: 2,
+  },
+   passwordSmallHeader: {
     fontSize: 16,
     fontFamily: 'Urbanist-SemiBold',
     color: '#000',
@@ -701,19 +717,6 @@ const styles = StyleSheet.create({
   },
   accountView: {
     marginVertical: 10,
-  },
-  input: {
-    flex: 5,
-    marginVertical: 5,
-    paddingLeft: 10,
-    alignItems: 'center',
-    borderRadius: 16,
-    borderBottomWidth: 1.5,
-    borderBottomColor: '#E6EBF2',
-    shadowColor: '#000',
-    height: 54,
-    fontFamily: 'Urbanist-Light',
-    fontSize: 16,
   },
   passwordContainer: {
     width: '100%',
