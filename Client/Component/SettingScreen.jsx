@@ -26,6 +26,7 @@ function HomeScreen({ navigation, route }) {
     const [isChanged, setIsChanged] = useState(false);
     const [ImageChange, setImageChange] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
+    const [saving, setSaving] = useState(false);
 
     LogBox.ignoreLogs([
         'Non-serializable values were found in the navigation state',
@@ -145,6 +146,7 @@ function HomeScreen({ navigation, route }) {
         if (!result.canceled) {
             setUser({ ...user, ["userUri"]: result.assets[0].uri })
             setImageChange(true)
+            setIsChanged(true);
         }
     }
 
@@ -168,9 +170,26 @@ function HomeScreen({ navigation, route }) {
     }
 
     useEffect(() => {
+        console.log("saving", isChanged);
+        if (saving && isChanged) {
+            if (ImageChange) {
+                sendToFirebase(user.userUri);
+            }
+            else {
+                sendDataToNextDB();
+            }
+        }
+        else if (saving && !isChanged) {
+            console.log("no changes");
+            route.params.Exit();
+        }
+        
+    }, [saving]);
+
+    useEffect(() => {
         const setNavigation = async () => navigation.setOptions({
             headerRight: () => (
-                <TouchableOpacity style={styles.headerButton} onPress={() => isChanged ? (ImageChange ? sendToFirebase(user.userUri) : sendDataToNextDB()) : route.params.Exit()}>
+                <TouchableOpacity style={styles.headerButton} onPress={()=>setSaving(true)}>
                     <Text style={styles.headerButtonText}>Done</Text>
                 </TouchableOpacity>
             ),
@@ -200,15 +219,15 @@ function HomeScreen({ navigation, route }) {
 
             <View style={styles.fieldView} >
                 <Text style={styles.fieldHeader}>First Name</Text>
-                <TextInput style={styles.fields} value={user.FirstName} onChangeText={(value) => setUser({ ...user, ["FirstName"]: value })} />
+                <TextInput style={styles.fields} value={user.FirstName} onChangeText={(value) => {setUser({ ...user, ["FirstName"]: value });setIsChanged(true)}} />
             </View>
             <View style={styles.fieldView} >
                 <Text style={styles.fieldHeader}>Last Name</Text>
-                <TextInput style={styles.fields} value={user.LastName} onChangeText={(value) => setUser({ ...user, ["LastName"]: value })} />
+                <TextInput style={styles.fields} value={user.LastName} onChangeText={(value) => {setUser({ ...user, ["LastName"]: value });setIsChanged(true)}} />
             </View>
             <View style={styles.fieldView} >
                 <Text style={styles.fieldHeader}>Phone Number</Text>
-                <TextInput keyboardType='numeric' style={styles.fields} value={user.phoneNum} onChangeText={(value) => setUser({ ...user, ["phoneNum"]: value })} />
+                <TextInput keyboardType='numeric' style={styles.fields} value={user.phoneNum} onChangeText={(value) => {setUser({ ...user, ["phoneNum"]: value });setIsChanged(true)}} />
             </View>
             <View style={styles.fieldView} >
                 <Text style={styles.fieldHeader}>Gender</Text>
@@ -217,7 +236,7 @@ function HomeScreen({ navigation, route }) {
                     <Ionicons style={styles.arrowLogoStyle} name="chevron-forward" size={24} color="grey" />
                 </TouchableOpacity>
                 <Modal animationType="slide" visible={modalVisible} onRequestClose={() => setModalVisible(false)}>
-                    <GenderChange userId={user.userId} Gender={user.gender} cancel={() => setModalVisible(false)} Save={(Gender) => { setModalVisible(false); setUser({ ...user, ["gender"]: Gender }) }} />
+                    <GenderChange userId={user.userId} Gender={user.gender} cancel={() => setModalVisible(false)} Save={(Gender) => { setModalVisible(false); setUser({ ...user, ["gender"]: Gender });setIsChanged(true)}} />
                 </Modal>
             </View>
             <View style={styles.btnContainer}>

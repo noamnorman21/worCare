@@ -166,14 +166,20 @@ function Request(props) {
               method: 'POST',
               body: JSON.stringify({ requestId: props.data.requestId, requestStatus: userTypeResult }),
               headers: { 'Content-Type': 'application/json', },
+            }).then(res => {
+              if (res.ok) {
+                console.log('res.ok', res.ok);
+                props.getPending()
+                return res.json()
+              }
             })
-              .then(res => {
-                if (res.ok) {
-                  props.getPending();
-                  return res.json();
-                }
-              })
-              .then(err => { console.log(err); });
+              .then(
+                (result) => {
+                  console.log("fetch POST= ", result);
+                },
+                (error) => {
+                  console.log("err post=", error);
+                });
           }
         },
       ]
@@ -185,12 +191,13 @@ function Request(props) {
       setStatus("P")
     }
     else if (status == "P") {
+      setStatus("F")
       setTimeout(() => {
         saveStatus(props.data.requestId)
-      }, 5000);
+      }, 3000);
     }
   }
-
+  
   const saveStatus = async (id) => {
     try {
       const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/UpdateStatus/', {
