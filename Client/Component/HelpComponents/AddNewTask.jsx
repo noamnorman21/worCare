@@ -41,8 +41,8 @@ function AddNewMedicine(props) {
    const [medDosageUnit, setMedDosageUnit] = useState('')
    const [selectedRange, setRange] = useState({});
    const [modalVisibleDate, setModalVisibleDate] = useState(false);
-   const [allDrugs, setAllDrugs] = useState([]);//we will use this to get all the drugs from the server
-   const [selectedDrugName, setSelectedDrugName] = useState('');//we will use this to get the selected drug from the user
+   const [allDrugs, setAllDrugs] = useState([]); //we will use this to get all the drugs from the server
+   const [selectedDrugName, setSelectedDrugName] = useState(''); //we will use this to get the selected drug from the user
    const [editMode, setEditMode] = useState(true);
    const timePickers = [];
 
@@ -367,10 +367,7 @@ function AddNewMedicine(props) {
                            </View>
 
                            <Text style={styles.subTitle}>
-                              {
-                                 selectedFrequency == 'Once' ? 'Set date' : 'Set end date'
-                              }
-
+                              {selectedFrequency == 'Once' ? 'Set date' : 'Set end date'}
                            </Text>
                            {/* THIRD ROW */}
                            <View style={[styles.doubleRow, modalTimesVisible && { display: 'none' }]}>
@@ -490,7 +487,6 @@ function AddNewMedicine(props) {
                                  </View>
                               </Modal>
                            </View>
-
                         </View>
                         <TextInput
                            style={[styles.commentInput, { padding: 0 }, medComment && { borderColor: '#000' }, modalTimesVisible && { display: 'none' }]}
@@ -804,7 +800,7 @@ function NewTaskModal(props) {
             <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                   <View style={styles.centeredView}>
-                     <Text style={styles.modalText}>Add new task </Text>
+                     <Text style={styles.modalText}>Add New task </Text>
                      <View style={styles.modalView}>
                         <View style={styles.inputView}>
                            <TextInput
@@ -815,7 +811,6 @@ function NewTaskModal(props) {
                               returnKeyType='done'
                               onChangeText={text => setTaskName(text)}
                               onEndEditing={() => { setTaskNameBorder(true) }}
-
                            />
                            { // if the user is a caregiver than display the assignee
                               userType == "Caregiver" ?
@@ -842,41 +837,39 @@ function NewTaskModal(props) {
                                  />
                                  : null
                            }
-                           {
-                              !isPrivate ?
-                                 <Dropdown
-                                    data={taskCategorys}
-                                    labelField="name"
-                                    valueField="name"
-                                    placeholder="Category"
-                                    placeholderStyle={styles.placeholderStyle}
-                                    style={[styles.input, taskCategory && { borderColor: '#000' }]}
-                                    containerStyle={styles.containerStyle}
-                                    maxHeight={300}
-                                    value={taskCategory}
-                                    onChange={item => { setTaskCategory(item.name) }}
-                                 /> : //if is private= true than display like the user already choose the category of General
-                                 <TextInput
-                                    style={[styles.input, { borderColor: '#000' }]}
-                                    placeholder='Category'
-                                    placeholderTextColor='#9E9E9E'
-                                    value='General'
-                                    editable={false}
-                                 />
+                           {!isPrivate ?
+                              <Dropdown
+                                 data={taskCategorys}
+                                 labelField="name"
+                                 valueField="name"
+                                 placeholder="Category"
+                                 placeholderStyle={styles.placeholderStyle}
+                                 style={[styles.input, taskCategory && { borderColor: '#000' }]}
+                                 containerStyle={styles.containerStyle}
+                                 maxHeight={300}
+                                 value={taskCategory}
+                                 onChange={item => { setTaskCategory(item.name) }}
+                              /> : //if is private= true than display like the user already choose the category of General
+                              <TextInput
+                                 style={[styles.input, { borderColor: '#000' }]}
+                                 placeholder='Category'
+                                 placeholderTextColor='#9E9E9E'
+                                 value='General'
+                                 editable={false}
+                              />
                            }
 
                            <TouchableOpacity onPress={() => { setModalVisibleDate(true); }}>
-                              {
-                                 taskFromDate && taskToDate ?
-                                    <View style={[styles.input, { borderColor: '#000' }]}>
-                                       <Text style={[styles.regularTxt, { color: '#000', fontFamily: 'Urbanist-SemiBold' }]}>
-                                          {changeDateFormat(taskFromDate)} - {changeDateFormat(taskToDate)}
-                                       </Text>
-                                    </View>
-                                    :
-                                    <View style={styles.input}>
-                                       <Text style={[styles.regularTxt, { color: '#9E9E9E' }]}>Start Date - End Date</Text>
-                                    </View>
+                              {taskFromDate && taskToDate ?
+                                 <View style={[styles.input, { borderColor: '#000' }]}>
+                                    <Text style={[styles.regularTxt, { color: '#000', fontFamily: 'Urbanist-SemiBold' }]}>
+                                       {changeDateFormat(taskFromDate)} - {changeDateFormat(taskToDate)}
+                                    </Text>
+                                 </View>
+                                 :
+                                 <View style={styles.input}>
+                                    <Text style={[styles.regularTxt, { color: '#9E9E9E' }]}>Start Date - End Date</Text>
+                                 </View>
                               }
                            </TouchableOpacity>
 

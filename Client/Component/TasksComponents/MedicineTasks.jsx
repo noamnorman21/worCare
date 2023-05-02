@@ -10,7 +10,7 @@ export default function MedicineTasks(props) {
 
    const handleModalClose = () => {
       setModalVisible(false);
-      // props.refreshlPublicTask()
+      props.refreshPublicTask()
    };
 
    return (
@@ -25,8 +25,6 @@ export default function MedicineTasks(props) {
       </SafeAreaView>
    )
 }
-
-// Path: Component\TasksComponents\MedicineTasks.jsx
 
 const styles = StyleSheet.create({
    container: {

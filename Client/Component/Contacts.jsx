@@ -39,7 +39,8 @@ function Main({ navigation }) {
   const [Search, setSearch] = useState([])
   const [ContactToRender, setContactToRender] = useState([])
   const [addModalVisible, setaddModalVisible] = useState(false);
-  const { userContext, userContacts, setuserContacts, updateuserContacts } = useUserContext()
+  const { userContext, setuserContacts, updateuserContacts } = useUserContext()
+  const userContacts= useUserContext().userContacts;
   const [patientId, setpatientId] = useState(userContext.patientId)
   const isFocused = useIsFocused()
 

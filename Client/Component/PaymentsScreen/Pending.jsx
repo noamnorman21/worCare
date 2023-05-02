@@ -21,10 +21,10 @@ export default function Pending() {
   const isFocused = useIsFocused()
 
   useEffect(() => {
-    if (isFocused) {
+    if (isFocused && !modal1Visible) {
       getPending()
     }
-  }, [isFocused])
+  }, [isFocused, modal1Visible])
 
 
   const getPending = async () => {
@@ -37,6 +37,7 @@ export default function Pending() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache'
         },
         body: JSON.stringify(user)
       });
@@ -165,9 +166,14 @@ function Request(props) {
               method: 'POST',
               body: JSON.stringify({ requestId: props.data.requestId, requestStatus: userTypeResult }),
               headers: { 'Content-Type': 'application/json', },
-            });
-            console.log(res);
-            props.getPending();
+            })
+              .then(res => {
+                if (res.ok) {
+                  props.getPending();
+                  return res.json();
+                }
+              })
+              .then(err => { console.log(err); });
           }
         },
       ]
@@ -199,7 +205,7 @@ function Request(props) {
       setStatus("F")
       setTimeout(() => {
         props.getPending()
-      }, 1000);
+      }, 3000);
     } catch (error) {
       console.log(error)
     }

@@ -156,7 +156,7 @@ namespace WebApi.Controllers
                             }
                             item.prodList = productListToSend; //add to the actual task the product list
                         }
-                    }
+                    } 
                 }
                 actualTasks.Sort((x, y) => DateTime.Compare(x.taskDate, y.taskDate));
                 return Ok(actualTasks);
@@ -362,7 +362,6 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
 
         [HttpPut]
         [Route("UpdateProductsToList")]

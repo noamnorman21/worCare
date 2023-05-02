@@ -1,11 +1,10 @@
 import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Dimensions, ScrollView, TextInput, Alert } from 'react-native'
 import { useState, useEffect, useCallback } from 'react'
-import { useIsFocused, useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 import { List } from 'react-native-paper';
 import { Feather, Ionicons } from '@expo/vector-icons';
 import { AddBtn, NewTaskModal } from '../HelpComponents/AddNewTask'
 import { useUserContext } from '../../UserContext'
-import React from 'react';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
@@ -75,9 +74,7 @@ export default function ShopTasks(props) {
   const [shopTasks, setShopTasks] = useState(props.allShopTasks)
   const [expanded, setExpanded] = useState(true);
   const handlePress = () => setExpanded(!expanded);
-  const isFocused = useIsFocused()
   const [productsForUpdateInDB, setProductsForUpdateInDB] = useState([])
-  const [isCheck, setIsCheck] = useState(false)
   const checkIcon = ["check-circle", "circle"]
   useEffect(() => {
     setShopTasks(props.allShopTasks)
@@ -98,7 +95,7 @@ export default function ShopTasks(props) {
 
   const handleModalClose = () => {
     setModalVisible(false);
-    props.refreshlPublicTask()
+    props.refreshPublicTask()
   };
 
   const isProductChecked = (prod, actualTask) => {
@@ -250,7 +247,7 @@ export default function ShopTasks(props) {
         <AddBtn onPress={handleAddBtnPress} />
       </View>
       <NewTaskModal isVisible={modalVisible} onClose={handleModalClose} />
-    </SafeAreaView >
+    </SafeAreaView>
   )
 }
 

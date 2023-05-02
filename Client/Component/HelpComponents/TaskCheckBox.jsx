@@ -1,12 +1,22 @@
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Alert } from 'react-native'
 import { useState, useEffect } from 'react'
-import React from 'react'
-import { RoundedCheckbox, PureRoundedCheckbox, } from "react-native-rounded-checkbox";
-import { Octicons } from '@expo/vector-icons';
+import { Feather, Octicons } from '@expo/vector-icons';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
+
 export default function TaskCheckBox(props) {
     const [isDone, setIsDone] = useState(false);
+    const checkIcon = ["check-circle", "circle"]
+    useEffect(() => {
+        //timer for 5 seconds, after 5 seconds the id of the task will be sent to the parent component
+        if (isDone) {
+            setTimeout(() => {
+                setIsDone(false);
+                // props.onPress(props.task.id);לא קיים כרגע, להוסיף בהמשך בשביל לסמן משימה כבוצעה 
+            }, 3000);
+        }
+    }, [isDone]);
+
     const openTaskList = () => {
         //צריך ליצור את ההמשך במסכים
         //if it a private task, open nevaigation to MainTasks
@@ -26,47 +36,26 @@ export default function TaskCheckBox(props) {
             props.navigation.navigate('MedicineTasks', { task: props.task });
         }
     }
-    useEffect(() => {
-        //timer for 5 seconds, after 5 seconds the id of the task will be sent to the parent component
-        if (isDone) {
-            setTimeout(() => {
-                setIsDone(false);
-                // props.onPress(props.task.id);לא קיים כרגע, להוסיף בהמשך בשביל לסמן משימה כבוצעה 
-            }, 3000);
-        }
-    }, [isDone]);
 
     // let isPrivate=props.task.isPrivate; //להוציא מההערה אחרי שנשלח 
-    let isPrivate = false;//רק לבדיקה עד שנשלח, כי אין עדיין פונקציה שמחזירה את הפרטים של המשימה
+    const isPrivate = false;//רק לבדיקה עד שנשלח, כי אין עדיין פונקציה שמחזירה את הפרטים של המשימה
     return (
         <View style={[styles.container, isPrivate ? { backgroundColor: '#FFF7EB' } : {}]}>
 
-            <TouchableOpacity onPress={openTaskList}>
-                <View style={{ backgroundColor: isPrivate ? '#FFF7EB' : '#EBF1FF' }}>
-                    <RoundedCheckbox
-                        innerStyle={[styles.checkboxOuterStyle, { borderColor: isPrivate ? '#FEA529' : '#548DFF' }]}
-                        outerStyle={[styles.checkboxOuterStyle, { borderColor: isPrivate ? '#FEA529' : '#548DFF' }]}
-                        uncheckedTextColor='transparent'
-                        uncheckedColor='transparent'
-                        checkedColor='transparent'
-                        children={isDone ? <Octicons name="check" size={20} color={isPrivate ? '#FEA529' : '#548DFF'} /> : ''}
-                        text=''
-                        checked={isDone}
-                        onPress={() => setIsDone(!isDone)}
-                    />
-                </View>
-            </TouchableOpacity>
+            <TouchableOpacity onPress={() => setIsDone(!isDone)}>
+                <Feather name={isDone ? checkIcon[0] : checkIcon[1]} size={27} color={!isPrivate ? '#548DFF' : '#FEA529'} />
+            </TouchableOpacity >
 
             <Text style={styles.text}>
                 {[props.task.type == true ? 'Pill - ' + props.task.taskName : props.task.taskName]}
             </Text>
 
-            <TouchableOpacity style={styles.iconArrow} onPress={() => props.onPress(props.task.id)}>
+            <TouchableOpacity style={styles.iconArrow} onPress={() => (Alert.alert('Not Working For Now...\n סבלנות'))}>
                 <View style={{ paddingHorizontal: 20 }}>
-                    <Octicons name="chevron-right" size={22} color="black" />
+                    <Octicons name="chevron-right" size={24} color="#548DFF" />
                 </View>
             </TouchableOpacity>
-        </View>
+        </View >
     )
 }
 const styles = StyleSheet.create({
@@ -89,18 +78,11 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         marginVertical: 10,
     },
-    checkboxOuterStyle: {
-        height: 30,
-        width: 30,
-        borderRadius: 50,
-        borderWidth: 2,
-        backgroundColor: 'transparent',
-    },
     text: {
         fontSize: 17,
         fontFamily: 'Urbanist-Bold',
-        color: '#000000',
-        marginLeft: 20,
+        color: '#000',
+        paddingLeft: 20,
     },
     iconArrow: {
         position: 'absolute',

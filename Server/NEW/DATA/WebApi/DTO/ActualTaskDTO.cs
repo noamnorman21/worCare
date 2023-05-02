@@ -22,5 +22,6 @@ namespace WebApi.DTO
         public int listId { get; set; }
         public Nullable<bool> type { get; set; }
         public List<ProductListDTO> prodList { get; set; } //will be relevant only if the type will be prodact list (type=false)
+        public DrugForPatientDTO drug { get; set; } //will be relevant only if the type will be drug (type=true)
     }
 }
