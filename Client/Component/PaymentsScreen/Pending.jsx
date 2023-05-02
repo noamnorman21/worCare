@@ -21,10 +21,10 @@ export default function Pending() {
   const isFocused = useIsFocused()
 
   useEffect(() => {
-    if (isFocused) {
+    if (isFocused && !modal1Visible) {
       getPending()
     }
-  }, [isFocused])
+  }, [isFocused, modal1Visible])
 
 
   const getPending = async () => {
@@ -37,10 +37,12 @@ export default function Pending() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache'
         },
         body: JSON.stringify(user)
       });
       const data = await response.json();
+      console.log("Pending", data)
       let arr = data.map((item) => {
         return (
           <Request
@@ -52,6 +54,7 @@ export default function Pending() {
           />
         )
       })
+      console.log("Arr",arr.length)
       setPendings(arr)
     } catch (error) {
       console.log(error)
@@ -165,9 +168,20 @@ function Request(props) {
               method: 'POST',
               body: JSON.stringify({ requestId: props.data.requestId, requestStatus: userTypeResult }),
               headers: { 'Content-Type': 'application/json', },
-            });
-            console.log(res);
-            props.getPending();
+            }).then(res => {
+             if (res.ok) {
+                console.log('res.ok', res.ok);
+                props.getPending()
+                return res.json()
+              }
+            })
+            .then(
+              (result) => {
+                console.log("fetch POST= ", result);
+              },
+              (error) => {
+                console.log("err post=", error);
+              });
           }
         },
       ]
@@ -179,9 +193,10 @@ function Request(props) {
       setStatus("P")
     }
     else if (status == "P") {
+      setStatus("F")
       setTimeout(() => {
         saveStatus(props.data.requestId)
-      }, 5000);
+      }, 3000);
     }
   }
 
@@ -196,10 +211,7 @@ function Request(props) {
       });
       const data = await response.json();
       console.log(data)
-      setStatus("F")
-      setTimeout(() => {
-        props.getPending()
-      }, 1000);
+      props.getPending()
     } catch (error) {
       console.log(error)
     }
@@ -290,7 +302,7 @@ function Request(props) {
                   <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} value={1} children={<View style={styles.options}><MaterialCommunityIcons name='bell-ring-outline' size={20} /><Text style={styles.optionsText}> Send Notification</Text></View>} />
                   <MenuOption value={2} children={<View style={styles.options}><Feather name='eye' size={20} /><Text style={styles.optionsText}> View Document</Text></View>} />
                   <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} value={3} children={<View style={userContext.userId == props.data.userId ? styles.options : styles.disabledoptions}><Feather name='edit' size={20} /><Text style={styles.optionsText}> Edit Request</Text></View>} />
-                  <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} style={[styles.deleteTxt, userContext.userId !== props.data.userId && styles.disabledoptions]} value={4} children={<View style={userContext.userId == props.data.userId ? styles.options : styles.disabledoptions}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={styles.deleteTxt}> Delete Request</Text></View>} />
+                  <MenuOption style={[styles.deleteTxt]} value={4} children={<View style={userContext.userId == props.data.userId ? styles.options : styles.disabledoptions}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={styles.deleteTxt}> Delete Request</Text></View>} />
                 </MenuOptions>
               </Menu>
               <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
@@ -355,7 +367,7 @@ function Request(props) {
                 <MenuOption value={1} children={<View style={styles.options}><MaterialCommunityIcons name='bell-ring-outline' size={20} /><Text style={styles.optionsText}> Send Notification</Text></View>} />
                 <MenuOption value={2} children={<View style={styles.options}><Feather name='eye' size={20} /><Text style={styles.optionsText}> View Document</Text></View>} />
                 <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} value={3} children={<View style={userContext.userId == props.data.userId ? styles.options : styles.disabledoptions}><Feather name='edit' size={20} /><Text style={styles.optionsText}> Edit Request</Text></View>} />
-                <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} value={4} children={<View style={userContext.userId == props.data.userId ? styles.options : styles.disabledoptions}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={styles.deleteTxt}> Delete Request</Text></View>} />
+                <MenuOption value={4} children={<View style={styles.options}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={styles.deleteTxt}> Delete Request</Text></View>} />
               </MenuOptions>
             </Menu>
             <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>

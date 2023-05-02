@@ -123,36 +123,10 @@ function Request(props) {
     if (value == 3) {
       setModal2Visible(true)
     }
-    if (value == 4) {
-      deleteRequest()
-    }
+
   }
 
-  const deleteRequest = () => {
-    Alert.alert(
-      'Delete request',
-      'are you sure you want to Delete? All changes will be lost',
-      [
-        { text: "Don't Delete", style: 'cancel', onPress: () => { } },
-        {
-          text: 'Delete',
-          style: 'destructive',
-          // If the user confirmed, then we dispatch the action we blocked earlier
-          // This will continue the action that had triggered the removal of the screen
-          onPress: () => {
-            let res = fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/DeletePayment/' + props.data.requestId, {
-              method: 'DELETE',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-            });
-            console.log(res);
-            props.getHistory();
-          }
-        },
-      ]
-    );
-  }
+
 
   const callback = downloadProgress => {
     const progress = downloadProgress.totalBytesWritten / downloadProgress.totalBytesExpectedToWrite;
@@ -247,7 +221,7 @@ function Request(props) {
                   optionsWrapper: styles.optionsWrapperOpened,
                 }}  >
                   <MenuOption value={2} children={<View style={styles.options}><Feather name='eye' size={20} /><Text style={styles.optionsText}> View Document</Text></View>} />
-                  <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} style={styles.deleteTxt} value={4} children={<View style={userContext.userId == props.data.userId ? styles.options : styles.disabledoptions}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={styles.deleteTxt}> Delete Requset</Text></View>} />
+                  <MenuOption disableTouchable={true} style={styles.deleteTxt} value={4} children={<View style={styles.disabledoptions}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={styles.deleteTxt}> Delete Requset</Text></View>} />
                 </MenuOptions>
               </Menu>
               <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
@@ -299,7 +273,7 @@ function Request(props) {
                 }}
                 >
                   <MenuOption style={{ borderRadius: 16 }} value={2} children={<View style={styles.options}><Feather name='eye' size={20} /><Text style={styles.optionsText}> View Document</Text></View>} />
-                  <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} style={styles.deleteTxt} value={4} children={<View style={userContext.userId == props.data.userId ? styles.options : styles.disabledoptions}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={styles.deleteTxt}> Delete Requset</Text></View>} />
+                  <MenuOption disableTouchable={true} style={styles.deleteTxt} value={4} children={<View style={styles.disabledoptions}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={styles.deleteTxt}> Delete Requset</Text></View>} />
                 </MenuOptions>
               </Menu>
               <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
