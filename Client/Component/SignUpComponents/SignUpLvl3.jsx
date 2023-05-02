@@ -1,13 +1,6 @@
-import { SafeAreaView, View, Text, StyleSheet, TouchableOpacity, Dimensions ,Alert} from 'react-native'
+import { SafeAreaView, View, Text, StyleSheet, TouchableOpacity, Dimensions, Alert } from 'react-native'
 import { useState, useEffect } from 'react';
 import { OrLine, HaveAccount } from './FooterLine';
-import * as Font from 'expo-font';
-Font.loadAsync({
-  'Urbanist': require('../../assets/fonts/Urbanist-Regular.ttf'),
-  'Urbanist-Bold': require('../../assets/fonts/Urbanist-Bold.ttf'),
-  'Urbanist-Light': require('../../assets/fonts/Urbanist-Light.ttf'),
-  'Urbanist-Medium': require('../../assets/fonts/Urbanist-Medium.ttf'),
-});
 
 export default function SignUpLvl3({ navigation, route }) {
   const userData = route.params.userData;
@@ -76,15 +69,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 16,
-    borderWidth: 1,
-    borderColor: 'lightgray',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 1,
-    margin: 7,
-    height: 45,
+    marginVertical: 10,
+    height: 54,
   },
   buttonText: {
     color: 'white',
@@ -110,16 +96,17 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 1,
     margin: 15,
-    height: 75,
+    height: 100,
   },
   titleRole: {
-    marginLeft: 15,
+    paddingLeft: 15,
+    marginBottom: 5,
     fontSize: 20,
     fontFamily: 'Urbanist-Bold',
     color: '#548DFF',
   },
   txtRole: {
-    marginLeft: 15,
+    paddingLeft: 15,
     fontSize: 16,
     fontFamily: 'Urbanist-SemiBold',
     color: '#9E9E9E',

@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH * 0.9,
     padding: 10,
     margin: 10,
-    alignItems: 'flex-left',
+    alignItems: 'flex-start',
     borderRadius: 16,
     borderWidth: 1.5,
     backgroundColor: '#FFFFFF',

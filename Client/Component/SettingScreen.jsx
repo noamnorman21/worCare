@@ -1,42 +1,31 @@
-// External imports:
-import { StyleSheet, View, Text, Alert, SafeAreaView, TouchableOpacity, Dimensions, Image, LogBox, TextInput, Modal,Linking } from 'react-native'
+import { StyleSheet, View, Text, Alert, SafeAreaView, TouchableOpacity, Dimensions, Image, LogBox, TextInput, Modal, Linking } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { NavigationContainer, StackActions } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { AntDesign, Ionicons, SimpleLineIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { useIsFocused } from '@react-navigation/native';
 import { useUserContext } from '../UserContext';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from '../config/firebase';
 import * as ImagePicker from 'expo-image-picker';
-
-// Internal imports:
-import Profile from './SettingsComponents/Profile'
-import Notifications from './SettingsComponents/Notifications'
 import Privacy from './SettingsComponents/Privacy'
 import GenderChange from './SettingsComponents/GenderChange';
-import ContactUs from './SettingsComponents/ContactUs'
-import ImageChange from './SettingsComponents/ImageChange'
-
 
 const Stack = createNativeStackNavigator();
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
-//this is the Setting Main screen, 
-//need to add the personal setting (יצירת פרופיל)
 function HomeScreen({ navigation, route }) {
     const [userImg, setUserImg] = useState(null);
     const [userName, setUserName] = useState(null);
     const [userEmail, setuserEmail] = useState(null);
     const [userId, setUserId] = useState(null);
     const isFocused = useIsFocused();
-    const { userContext, setUserContext, updateUserProfile } = useUserContext();
+    const { userContext, setUserContext, updateUserProfile, appEmail } = useUserContext();
     const [user, setUser] = useState(userContext);
     const [isChanged, setIsChanged] = useState(false);
     const [ImageChange, setImageChange] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
-    const appEmail = 'worcare21@gmail.com';
 
     LogBox.ignoreLogs([
         'Non-serializable values were found in the navigation state',
@@ -105,11 +94,11 @@ function HomeScreen({ navigation, route }) {
         else {
             return "Other"
         }
-    }    
+    }
 
     const sendDataToNextDB = (downloadURL) => {
         const userToUpdate = {
-            Email:userEmail,
+            Email: userEmail,
             userUri: downloadURL == null ? userContext.userUri : downloadURL,
             phoneNum: user.phoneNum,
             gender: user.gender,
@@ -193,22 +182,15 @@ function HomeScreen({ navigation, route }) {
                 </View>
             ),
         });
-        if (!isChanged) {
-            setIsChanged(true);
-        }
         setNavigation();
-    }, [user]);
+    }, [navigation]);
 
     const optionsToEmail = () => {
-        Linking.openURL(`mailto:${appEmail}`)  
-      }
-    
+        Linking.openURL(`mailto:${appEmail}`)
+    }
 
-    //the user name will be taken from the database
-    //the user image will be taken from the database
     return (
         <SafeAreaView style={styles.container}>
-            {/* <Profile updateUser={(Field, value) => updateUser(Field, value)} /> */}
             <TouchableOpacity onPress={() => pickImage()}>
                 <Image style={styles.image} source={{ uri: user.userUri }} />
             </TouchableOpacity>
@@ -239,7 +221,7 @@ function HomeScreen({ navigation, route }) {
                 </Modal>
             </View>
             <View style={styles.btnContainer}>
-                <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Privacy',{updateuserEmail:(value)=>{updateuserEmail(value)}})}>
+                <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Privacy', { updateuserEmail: (value) => { updateuserEmail(value) } })}>
                     <Text style={styles.btnText}>Privacy & My Account</Text>
                     <Ionicons style={styles.arrowLogoStyle} name="chevron-forward" size={24} color="grey" />
                 </TouchableOpacity>
@@ -287,30 +269,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
         marginVertical: 10,
     },
-    ColorBtnContainer: {
-        justifyContent: 'space-between',
-        width: SCREEN_WIDTH * 0.95,
-        marginTop: SCREEN_HEIGHT * 0.06,
-    },
-    colorBtn1: {
-        backgroundColor: '#548DFF',
-        width: SCREEN_WIDTH * 0.95,
-        height: 54,
-        borderRadius: 16,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    colorBtn2: {
-        width: SCREEN_WIDTH * 0.95,
-        height: 54,
-        borderRadius: 16,
-        borderWidth: 1.5,
-        backgroundColor: '#F5F8FF',
-        borderColor: '#548DFF',
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: SCREEN_HEIGHT * 0.02,
-    },
     logoStyle: {
         marginLeft: SCREEN_WIDTH * 0.03,
         marginRight: SCREEN_WIDTH * 0.06
@@ -336,27 +294,6 @@ const styles = StyleSheet.create({
         flex: 4,
         alignItems: 'center',
         justifyContent: 'flex-start',
-    },
-    personalContainer: {
-        flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'flex-start',
-        width: SCREEN_WIDTH * 1,
-        // paddingVertical: SCREEN_HEIGHT * 0.04,
-    },
-    imageContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginLeft: SCREEN_WIDTH * 0.0,
-        marginTop: SCREEN_HEIGHT * 0.02,
-    },
-    personalText: {
-        fontSize: 25,
-        marginRight: SCREEN_WIDTH * 0.03,
-        marginLeft: SCREEN_WIDTH * 0.03,
-        fontFamily: 'Urbanist-Bold',
     },
     logo: {
         width: SCREEN_WIDTH * 0.2,
@@ -386,16 +323,6 @@ const styles = StyleSheet.create({
         marginLeft: SCREEN_WIDTH * 0.03,
         fontSize: 18,
         fontFamily: 'Urbanist-Medium',
-    },
-    btnText2: {
-        fontSize: 18,
-        color: '#548DFF',
-        fontFamily: 'Urbanist-SemiBold',
-    },
-    btnText1: {
-        fontSize: 18,
-        color: 'white',
-        fontFamily: 'Urbanist-SemiBold'
     },
     headerButton: {
         alignItems: 'center',

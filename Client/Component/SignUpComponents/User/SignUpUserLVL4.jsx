@@ -5,10 +5,10 @@ import Holidays from '../../HelpComponents/Holidays'
 import { HaveAccount, OrLine } from '../FooterLine'
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
-export default function SignUpUserLVL4({ navigation , route}, props) {
+export default function SignUpUserLVL4({ navigation, route }, props) {
   const [selectedHolidays, setSelectedHolidays] = useState([]);
   const holidaysType = route.params.holidaysType;
-  
+
   const isItemSelected = (arr) => {
     setSelectedHolidays(arr); //arr is the array of the selected holidays
   };
@@ -18,7 +18,7 @@ export default function SignUpUserLVL4({ navigation , route}, props) {
     tblUser.Calendars = selectedHolidays;
     navigation.navigate('SignUpUserLVL5', {
       language: route.params.language,
-      tblUser : tblUser
+      tblUser: tblUser
     });
   };
 

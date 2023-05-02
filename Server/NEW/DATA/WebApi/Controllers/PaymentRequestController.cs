@@ -144,20 +144,20 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpDelete]
-        [Route("DeletePayment/{id}")]
-        public IHttpActionResult DeletePayment(int id)
+        [HttpPost]
+        [Route("DeletePayment")]
+        public IHttpActionResult DeletePayment([FromBody] PaymentsRequestDTO payment)
         {
             try
             {
-                var request = db.tblPaymentRequest.Where(x => x.requestId == id).FirstOrDefault();
+                var request = db.tblPaymentRequest.Where(x => x.requestId == payment.requestId).FirstOrDefault();
                 if (request == null)
                 {
                     return NotFound();
                 }
-                db.tblPaymentRequest.Remove(request);
+                request.requestStatus = payment.requestStatus;
                 db.SaveChanges();
-                return Ok("Payment Request Deleted Successfully");
+                return Ok("Payment Request Changed Successfully");
             }
             catch (Exception ex)
             {

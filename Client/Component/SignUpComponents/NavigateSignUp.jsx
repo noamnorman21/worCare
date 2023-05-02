@@ -42,18 +42,18 @@ export default function NavigateSignUp() {
         const storageUser2 = await AsyncStorage.getItem("userData");
         updateUserContext(JSON.parse(storageUser2))
         let notifications = await AsyncStorage.getItem("notifications");
-        if (notifications == null) {
+        if (notifications !== null) {
           notifications = {
             emailNotifications: true,
             financeNotifications: true,
             chatNotifications: true,
             tasksNotifications: true,
+            contactNotifications: true,
           }
         } else {
           notifications = JSON.parse(notifications)
         }
         updateuserNotifications(notifications)
-
       }
     }
     catch (error) {

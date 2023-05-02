@@ -113,7 +113,7 @@ export default function CreateUser({ navigation, route }) {
       imagePath: userImage,
     }
 
-    console.log(userData)
+    console.log(route.params.userType)
     if (route.params.userType === 'User') {
       navigation.navigate('SignUpLvl2', { user: userData, userType: route.params.userType })
     }
@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
     flex: 4.5,
   },
   imageContainer: {
-    flex: 1.5,
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -284,13 +284,13 @@ const styles = StyleSheet.create({
   input: {
     width: Dimensions.get('window').width * 0.85,
     padding: 10,
-    margin: 7,
+    marginVertical: 10,
     alignItems: 'center',
     borderRadius: 16,
     borderWidth: 1.5,
     borderColor: '#E6EBF2',
     fontFamily: 'Urbanist-Medium',
-    height: 48,
+    height: 54,
   },
   button: {
     width: Dimensions.get('window').width * 0.85,
@@ -298,8 +298,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 16,
-    margin: 7,
-    height: 48,
+    marginVertical: 7,
+    height: 54,
   },
   buttonText: {
     color: '#fff',
@@ -331,7 +331,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   smallTitle: {
-    fontFamily: 'Urbanist',
+    fontFamily: 'Urbanist-Regular',
     fontSize: 14,
     marginBottom: 5,
   },

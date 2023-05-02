@@ -1,5 +1,5 @@
 import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Dimensions, ScrollView, TextInput, Alert } from 'react-native'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useIsFocused, useFocusEffect } from '@react-navigation/native';
 import { List } from 'react-native-paper';
 import { Feather, Ionicons } from '@expo/vector-icons';
@@ -9,44 +9,8 @@ import React from 'react';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
-export default function ShopTasks(props) {
-  const [modalVisible, setModalVisible] = useState(false)
-  const [userData, setUserData] = useState(useUserContext().userContext);
-  const [tasks, setTasks] = useState([])
-  const [newProductName, setNewProductName] = useState('')
-  const [shopTasks, setShopTasks] = useState(props.allShopTasks)
-  const [expanded, setExpanded] = useState(true);
-  const handlePress = () => setExpanded(!expanded);
-  const isFocused = useIsFocused()
-  const [productsForUpdateInDB, setProductsForUpdateInDB] = useState([])
-
-  const getShopTasks = () => {
-    return props.allShopTasks
-  }
-
-  const [isCheck, setIsCheck] = useState(false)
-  const checkIcon = ["check-circle", "circle"]
-  useEffect(() => {
-    setShopTasks(props.allShopTasks)
-  }, [props.allShopTasks])
-
-  useFocusEffect( //we need to update the products in the db when we leave the screen
-    React.useCallback(() => {
-      return () => {
-        updateProductsInDB()
-      };
-    }, [])
-  );
-  const handleAddBtnPress = () => {
-    // console.log(shopTasks)
-    setModalVisible(true);
-  };
-
-  const handleModalClose = () => {
-    setModalVisible(false);
-    props.refreshlPublicTask()
-  };
-
+function RenderShopTasks(props) {
+  const [newProductName, setNewProductName] = useState('');
   const handleAddingSubTask = (taskToAddProduct) => {
     if (newProductName === '') {
       Alert.alert('Please enter a product name')
@@ -90,6 +54,52 @@ export default function ShopTasks(props) {
         }
       )
   }
+
+  return (
+    <List.Item
+      key={props.index} style={styles.productItem}
+      left={() => <TextInput value={newProductName} style={styles.subtaskTxt} placeholder="Click here to add a product..." onChangeText={setNewProductName} />}
+      right={() =>
+        <TouchableOpacity onPress={() => handleAddingSubTask(props.task)}>
+          <Feather style={styles.iconPlus} name="plus" size={25} color="#548DFF" />
+        </TouchableOpacity>
+      }
+    />
+  )
+}
+
+export default function ShopTasks(props) {
+  const [modalVisible, setModalVisible] = useState(false)
+  const [userData, setUserData] = useState(useUserContext().userContext);
+  const [tasks, setTasks] = useState([])
+  const [shopTasks, setShopTasks] = useState(props.allShopTasks)
+  const [expanded, setExpanded] = useState(true);
+  const handlePress = () => setExpanded(!expanded);
+  const isFocused = useIsFocused()
+  const [productsForUpdateInDB, setProductsForUpdateInDB] = useState([])
+  const [isCheck, setIsCheck] = useState(false)
+  const checkIcon = ["check-circle", "circle"]
+  useEffect(() => {
+    setShopTasks(props.allShopTasks)
+  }, [props.allShopTasks])
+
+  useFocusEffect( //we need to update the products in the db when we leave the screen
+    useCallback(() => {
+      return () => {
+        updateProductsInDB()
+      };
+    }, [])
+  );
+
+  const handleAddBtnPress = () => {
+    // console.log(shopTasks)
+    setModalVisible(true);
+  };
+
+  const handleModalClose = () => {
+    setModalVisible(false);
+    props.refreshlPublicTask()
+  };
 
   const isProductChecked = (prod, actualTask) => {
     // update the product status to 'F' for now its only on the client side
@@ -156,6 +166,7 @@ export default function ShopTasks(props) {
       return task
     }))
   }
+
   const updateProductsInDB = () => {
     let updateProductsUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/UpdateProductsToList'
     fetch(updateProductsUrl, {
@@ -186,8 +197,6 @@ export default function ShopTasks(props) {
       )
   }
 
-
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ width: SCREEN_WIDTH * 0.92 }}>
@@ -200,19 +209,13 @@ export default function ShopTasks(props) {
                   style={{ backgroundColor: '#F2F2F2' }}
                   left={() => <Text style={styles.taskName}>{task.taskName}</Text>}
                 >
-                  <List.Item key={null} style={styles.productItem}
-                    left={() => <TextInput value={newProductName} style={styles.subtaskTxt} placeholder="Click here to add a product..." onChangeText={setNewProductName} />}
-                    right={() =>
-                      <TouchableOpacity onPress={() => handleAddingSubTask(task)}>
-                        <Feather style={styles.iconPlus} name="plus" size={25} color="#548DFF" />
-                      </TouchableOpacity>
-                    }
-                  />
+                  <RenderShopTasks task={task} index={index} refreshlPublicTask={props.refreshPublicTask} />
                   {task.prodList != null ? // if there are prodtList items in the task then show them,else there is no subtask
                     task.prodList.map((prod) => {
                       return (
                         <List.Item
-                          key={prod.productId} style={styles.productItem}
+                          key={prod.productId}
+                          style={styles.productItem}
                           title={prod.productName}
                           titleStyle={{
                             fontSize: 18,
@@ -324,5 +327,4 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
-
 });

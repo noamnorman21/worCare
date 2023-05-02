@@ -109,21 +109,9 @@ function Request(props) {
   const { userContext } = useUserContext();
   const [downloadProgress, setDownloadProgress] = useState(0);
 
-  // const toggle = () => {
-  //   const config = {
-  //     toValue: expanded ? 0 : 1,
-  //     duration: 2000,
-  //     useNativeDriver: true,
-  //   }
-  //   Animated.timing(animationController, config).start();
-  //   setExpanded(!expanded);
-  // };
-
-
   const toggle = () => {
     LayoutAnimation.easeInEaseOut(setExpanded(!expanded));
   };
-
 
   const openModal = (value) => {
     if (value == 1) {
@@ -197,7 +185,6 @@ function Request(props) {
       console.log(error)
       Alert.alert("Error", error)
     }
-
   }
 
   const saveFile = async (res, fileName, type) => {
@@ -240,14 +227,14 @@ function Request(props) {
     <SafeAreaView>
       <View>
         {expanded ?
-          <View style={newStyles.requestOpen}>
-            <View style={newStyles.requestItemHeaderOpen}>
-              <TouchableOpacity onPress={toggle} style={newStyles.request}>
-                <View style={newStyles.requestItemLeft}>
-                  <Text style={newStyles.requestItemText}>{dateString}</Text>
+          <View style={styles.requestOpen}>
+            <View style={styles.requestItemHeaderOpen}>
+              <TouchableOpacity onPress={toggle} style={styles.request}>
+                <View style={styles.requestItemLeft}>
+                  <Text style={styles.requestItemText}>{dateString}</Text>
                 </View>
-                <View style={newStyles.requestItemMiddle}>
-                  <Text style={newStyles.requestItemText}>{props.subject}</Text>
+                <View style={styles.requestItemMiddle}>
+                  <Text style={styles.requestItemText}>{props.subject}</Text>
                 </View>
               </TouchableOpacity>
               <Menu style={{ flexDirection: 'column', marginVertical: 0 }} onSelect={value => openModal(value)} >
@@ -257,10 +244,10 @@ function Request(props) {
                   </View>}
                 />
                 <MenuOptions customStyles={{
-                  optionsWrapper: newStyles.optionsWrapperOpened,
+                  optionsWrapper: styles.optionsWrapperOpened,
                 }}  >
-                  <MenuOption value={2} children={<View style={newStyles.options}><Feather name='eye' size={20} /><Text style={newStyles.optionsText}> View Document</Text></View>} />
-                  <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} style={newStyles.deleteTxt} value={4} children={<View style={userContext.userId == props.data.userId ? newStyles.options : newStyles.disabledoptions}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={newStyles.deleteTxt}> Delete Requset</Text></View>} />
+                  <MenuOption value={2} children={<View style={styles.options}><Feather name='eye' size={20} /><Text style={styles.optionsText}> View Document</Text></View>} />
+                  <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} style={styles.deleteTxt} value={4} children={<View style={userContext.userId == props.data.userId ? styles.options : styles.disabledoptions}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={styles.deleteTxt}> Delete Requset</Text></View>} />
                 </MenuOptions>
               </Menu>
               <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
@@ -275,28 +262,30 @@ function Request(props) {
                 </View>
               </Modal>
             </View>
-            <View style={newStyles.requestItemBody}>
-              <View style={newStyles.requestItemBodyLeft}>
-                <Text style={newStyles.requestItemText}>Date: </Text>
-                <Text style={newStyles.requestItemText}>Amount: </Text>
-                <Text style={[newStyles.requestItemText, props.requestComment == null || props.requestComment == '' && { display: 'none' }]}>Comment: </Text>
+            <View style={styles.requestItemBody}>
+              <View style={styles.requestItemBodyLeft}>
+                <Text style={styles.requestItemText}>Date: </Text>
+                <Text style={styles.requestItemText}>Amount: </Text>
+                <Text style={styles.requestItemText}>Status: </Text>
+                <Text style={[styles.requestItemText, props.requestComment == null || props.requestComment == '' && { display: 'none' }]}>Comment: </Text>
               </View>
-              <View style={newStyles.requestItemBodyRight}>
-                <Text style={newStyles.requestItemText}>{dateString}</Text>
-                <Text style={newStyles.requestItemText}>{props.data.amountToPay}</Text>
-                <Text style={[newStyles.requestItemText, props.data.requestComment == null || props.data.requestComment == '' && { display: 'none' }]}>{props.requestComment}</Text>
+              <View style={styles.requestItemBodyRight}>
+                <Text style={styles.requestItemText}>{dateString}</Text>
+                <Text style={styles.requestItemText}>{props.data.amountToPay}</Text>
+                <Text style={styles.requestItemText}>{displayStatus()}</Text>
+                <Text style={[styles.requestItemText, props.data.requestComment == null || props.data.requestComment == '' && { display: 'none' }]}>{props.requestComment}</Text>
               </View>
             </View>
           </View>
           :
-          <View style={newStyles.requestClosed}>
-            <View style={newStyles.requestItemHeader}>
-              <TouchableOpacity onPress={toggle} style={newStyles.request}>
-                <View style={newStyles.requestItemLeft}>
-                  <Text style={newStyles.requestItemText}>{dateString}</Text>
+          <View style={styles.requestClosed}>
+            <View style={styles.requestItemHeader}>
+              <TouchableOpacity onPress={toggle} style={styles.request}>
+                <View style={styles.requestItemLeft}>
+                  <Text style={styles.requestItemText}>{dateString}</Text>
                 </View>
-                <View style={newStyles.requestItemMiddle}>
-                  <Text style={newStyles.requestItemText}>{props.subject}</Text>
+                <View style={styles.requestItemMiddle}>
+                  <Text style={styles.requestItemText}>{props.subject}</Text>
                 </View>
               </TouchableOpacity>
               <Menu style={{ flexDirection: 'column', marginVertical: 0 }} onSelect={value => openModal(value)} >
@@ -306,11 +295,11 @@ function Request(props) {
                   </View>}
                 />
                 <MenuOptions customStyles={{
-                  optionsWrapper: newStyles.optionsWrapper,
+                  optionsWrapper: styles.optionsWrapper,
                 }}
                 >
-                  <MenuOption style={{ borderRadius: 16 }} value={2} children={<View style={newStyles.options}><Feather name='eye' size={20} /><Text style={newStyles.optionsText}> View Document</Text></View>} />
-                  <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} style={newStyles.deleteTxt} value={4} children={<View style={userContext.userId == props.data.userId ? newStyles.options : newStyles.disabledoptions}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={newStyles.deleteTxt}> Delete Requset</Text></View>} />
+                  <MenuOption style={{ borderRadius: 16 }} value={2} children={<View style={styles.options}><Feather name='eye' size={20} /><Text style={styles.optionsText}> View Document</Text></View>} />
+                  <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} style={styles.deleteTxt} value={4} children={<View style={userContext.userId == props.data.userId ? styles.options : styles.disabledoptions}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={styles.deleteTxt}> Delete Requset</Text></View>} />
                 </MenuOptions>
               </Menu>
               <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
@@ -332,7 +321,7 @@ function Request(props) {
   );
 }
 
-const newStyles = StyleSheet.create({
+const styles = StyleSheet.create({
   requestItemHeader: {
     justifyContent: 'space-between',
     width: Dimensions.get('screen').width * 0.9,
@@ -344,13 +333,6 @@ const newStyles = StyleSheet.create({
     backgroundColor: '#FFF',
     padding: 12,
     flexDirection: 'row',
-  },
-  requestItemBodyEdit: {
-    justifyContent: 'center',
-    alignItems: 'flex-end',
-    paddingHorizontal: 12,
-    paddingVertical: 5,
-    width: SCREEN_WIDTH * 0.9,
   },
   requestItemHeaderOpen: {
     // justifyContent: 'flex-start',
@@ -391,13 +373,6 @@ const newStyles = StyleSheet.create({
     justifyContent: 'space-between',
     flexDirection: 'row',
     flex: 1,
-  },
-  requestItemRight: {
-    justifyContent: 'center',
-    alignItems: 'flex-end',
-    width: 54,
-    height: 54,
-    borderRadius: 16,
   },
   requestItemMiddle: {
     justifyContent: 'center',
@@ -476,9 +451,6 @@ const newStyles = StyleSheet.create({
     flex: 3,
     alignItems: 'flex-start',
   },
-})
-
-const styles = StyleSheet.create({
   closeBtn: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
@@ -520,28 +492,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     flex: 1,
   },
-  documentCancelButton: {
-    fontSize: 16,
-    borderRadius: 16,
-    borderColor: '#7DA9FF',
-    borderWidth: 1,
-    fontFamily: 'Urbanist-Bold',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: SCREEN_WIDTH * 0.9,
-    height: SCREEN_HEIGHT * 0.06,
-    borderWidth: 1.5,
-    backgroundColor: '#F5F8FF',
-    borderColor: '#548DFF',
-  },
   documentButtonText: {
     color: '#fff',
-    fontSize: 16,
-    fontFamily: 'Urbanist-Bold',
-    alignItems: 'center',
-  },
-  documentCancelText: {
-    color: '#7DA9FF',
     fontSize: 16,
     fontFamily: 'Urbanist-Bold',
     alignItems: 'center',

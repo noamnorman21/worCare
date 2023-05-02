@@ -13,7 +13,6 @@ import React from 'react';
 const Tab = createMaterialTopTabNavigator();
 
 export default function Tasks() {
-
   const [userData, setUserData] = useState(useUserContext().userContext);
   const [userId, setUserId] = useState(useUserContext.userId);
   const [userType, setUserType] = useState(userData.userType);
@@ -21,13 +20,10 @@ export default function Tasks() {
   const [allPublicTasks, setAllPublicTasks] = useState([]);
   const [allMedicineTasks, setAllMedicineTasks] = useState([]);
   const [allShopTasks, setAllShopTasks] = useState([]);
+  
   useEffect(() => {
     getAllPublicTasks();
   }, []);
-
-
-
-
 
   const getAllPublicTasks = async () => {
     let getAllPublicTasksUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/GetAllTasks';
@@ -44,6 +40,7 @@ export default function Tasks() {
       console.log('err post=', error);
     }
   }
+
   //filter tasks by type, medicine or shop, other tasks will be in allTasks
   const filterTasks = (tasks) => {
     let filteredTasks = tasks.filter(task => task.type == false);
@@ -82,7 +79,7 @@ export default function Tasks() {
         children={() => <General allPrivateTasks={allPrivateTasks} />}
       />
       <Tab.Screen name="Shop" children={
-        () => <Shop allShopTasks={allShopTasks} refreshlPublicTask={getAllPublicTasks} />
+        () => <Shop allShopTasks={allShopTasks} refreshPublicTask={getAllPublicTasks} />
       } />
       <Tab.Screen name="Medicine" children={
         () => <Medicine allMedicineTasks={allMedicineTasks} />

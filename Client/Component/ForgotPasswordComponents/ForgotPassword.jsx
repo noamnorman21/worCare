@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width * 0.9,
         padding: 10,
         margin: 10,
-        alignItems: 'flex-left',
+        alignItems: 'flex-start',
         borderRadius: 16,
         borderWidth: 1.5,
         borderColor: '#E6EBF2',

@@ -1,5 +1,5 @@
 import { View, Text, SafeAreaView, StyleSheet, Dimensions, TextInput, TouchableOpacity, Alert } from 'react-native'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { OrLine, HaveAccount } from '../FooterLine'
 import DatePicker from 'react-native-datepicker';
 import { Dropdown } from 'react-native-element-dropdown';
@@ -35,6 +35,7 @@ export default function SignUpUserLVL5({ navigation, route }) {
 
     navigation.navigate('SignUpLimitations', { patientData: patientData, tblUser: route.params.tblUser })
   }
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
@@ -93,7 +94,7 @@ export default function SignUpUserLVL5({ navigation, route }) {
               },
               dateInput: {
                 marginLeft: 0,
-                alignItems: 'center', //change to center for android
+                alignItems: 'flex-start',
                 borderWidth: 0,
               },
               placeholderText: {
@@ -196,32 +197,32 @@ const styles = StyleSheet.create({
   },
   inputFull: {
     width: SCREEN_WIDTH * 0.925,
-    height: 50,
-    borderWidth: 1,
-    fontFamily: 'Urbanist',
+    height: 54,
+    fontFamily: 'Urbanist-Regular',
     fontSize: 16,
     color: '#808080',
-    borderColor: 'gray',
+    borderColor: '#E6EBF2',
+    borderWidth: 1.5,
     borderRadius: 16,
     paddingHorizontal: 16,
-    marginBottom: 20,
+    marginVertical: 10,
     justifyContent: 'center',
   },
   input: {
     width: SCREEN_WIDTH * 0.45,
-    height: 50,
-    borderWidth: 1,
-    borderColor: 'gray',
+    height: 54,
+    borderColor: '#E6EBF2',
+    borderWidth: 1.5,
     borderRadius: 16,
     paddingHorizontal: 16,
-    marginBottom: 20,
-    fontFamily: 'Urbanist',
+    marginVertical: 10,
+    fontFamily: 'Urbanist-Regular',
     fontSize: 16,
     color: '#808080',
   },
   button: {
     width: SCREEN_WIDTH * 0.925,
-    height: 50,
+    height: 54,
     backgroundColor: '#548DFF',
     alignItems: 'center',
     justifyContent: 'center',
@@ -234,16 +235,17 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     padding: 16,
-    height: 50,
-    borderColor: 'gray',
-    borderWidth: 1,
+    height: 54,
+    borderColor: '#E6EBF2',
+    borderWidth: 1.5,
     borderRadius: 16,
     width: SCREEN_WIDTH * 0.925,
+    marginTop: 20,
   },
   placeholderStyle: {
     fontSize: 16,
     width: SCREEN_WIDTH * 0.925,
-    fontFamily: 'Urbanist',
+    fontFamily: 'Urbanist-Regular',
     color: 'gray',
   },
   selectedTextStyle: {
@@ -254,7 +256,7 @@ const styles = StyleSheet.create({
     height: 40,
     width: SCREEN_WIDTH * 0.9,
     fontSize: 16,
-    fontFamily: 'Urbanist',
+    fontFamily: 'Urbanist-Regular',
     borderRadius: 16,
     color: 'gray',
   },

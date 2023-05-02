@@ -93,13 +93,13 @@ namespace WebApi.Controllers
             }
         }
         
-        [HttpDelete]
-        [Route("DeletePaycheck/{num}")] // DELETE: api/PayChecks/5
-        public IHttpActionResult DeletePaycheck(int num)
+        [HttpPost]
+        [Route("DeletePaycheck")] // Delete from body
+        public IHttpActionResult DeletePaycheck([FromBody] PayCheckDTO pay)
         {
             try
             {
-                var p = db.tblPaycheck.Where(x => x.payCheckNum == num).FirstOrDefault();
+                var p = db.tblPaycheck.Where(x => x.payCheckNum == pay.payCheckNum).FirstOrDefault();
                 if (p == null)
                     return NotFound();
                 else

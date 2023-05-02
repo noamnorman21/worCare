@@ -78,11 +78,11 @@ export default function AddNewContact(props) {
 
   const closeModal = () => {
     console.log("closeModal");
-    if (props.contacts.length==0){
-       props.closeModal();
+    if (props.contacts.length == 0) {
+      props.closeModal();
       props.goBack();
     }
-    else{
+    else {
       props.closeModal();
       props.cancel();
     }
@@ -97,73 +97,73 @@ export default function AddNewContact(props) {
               <Text style={styles.title}>Add New Contact</Text>
               <View style={styles.inputContainer}>
                 <View >
-                <TextInput style={styles.inputTxt}
-                mode='outlined'
-                label='Full Name'
-                value={Contact.contactName}
-                onChangeText={(value) => handleInputChange('contactName', value)}
-                placeholder="Type Something..."
-                contentStyle={{ fontFamily: 'Urbanist-Regular' }}
-                outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
-                activeOutlineColor="#548DFF"
-                outlineColor='#E6EBF2' />
-                <TextInput style={styles.inputTxt}
-                mode='outlined'
-                label='Mobile Number'
-                value={Contact.mobileNo}
-                keyboardType='decimal-pad'
-                onChangeText={(value) => handleInputChange('mobileNo', value)}
-                placeholder="Type Something..."
-                contentStyle={{ fontFamily: 'Urbanist-Regular' }}
-                outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
-                activeOutlineColor="#548DFF"
-                outlineColor='#E6EBF2'
-                inputMode="numeric" />
-                <TextInput style={styles.inputTxt}
-                mode='outlined'
-                label='Telephone Number'
-                keyboardType='decimal-pad'
-                value={Contact.phoneNo}
-                onChangeText={(value) => handleInputChange('phoneNo', value)}
-                placeholder="Type Something..."
-                contentStyle={{ fontFamily: 'Urbanist-Regular' }}
-                outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
-                activeOutlineColor="#548DFF"
-                outlineColor='#E6EBF2'
-                inputMode="numeric" />
-                 <TextInput style={styles.inputTxt}
-                mode='outlined'
-                label='Role (optional)'
-                value={Contact.role}
-                onChangeText={(value) => handleInputChange('role', value)}
-                placeholder="Type Something..."
-                contentStyle={{ fontFamily: 'Urbanist-Regular' }}
-                outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
-                activeOutlineColor="#548DFF"
-                outlineColor='#E6EBF2' />
-                <TextInput style={styles.inputTxt}
-                mode='outlined'
-                label='Email Address (optional)'
-                value={Contact.email}
-                onChangeText={(value) => handleInputChange('email', value)}
-                placeholder="Type Something..."
-                contentStyle={{ fontFamily: 'Urbanist-Regular' }}
-                outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
-                activeOutlineColor="#548DFF"
-                outlineColor='#E6EBF2' />
-                 <TextInput style={styles.inputTxt}
-                mode='outlined'
-                label='Comment (optional)'
-                value={Contact.comment}
-                onChangeText={(val) => handleInputChange('comment', val)}
-                placeholder="Type Something..."
-                multiline
-                numberOfLines={4}
-                maxLength={300}
-                contentStyle={{ height: 100, fontFamily: 'Urbanist-Regular' }}
-                outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
-                activeOutlineColor="#548DFF"
-                outlineColor='#E6EBF2' />
+                  <TextInput style={styles.inputTxt}
+                    mode='outlined'
+                    label='Full Name'
+                    value={Contact.contactName}
+                    onChangeText={(value) => handleInputChange('contactName', value)}
+                    placeholder="Type Something..."
+                    contentStyle={{ fontFamily: 'Urbanist-Regular' }}
+                    outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                    activeOutlineColor="#548DFF"
+                    outlineColor='#E6EBF2' />
+                  <TextInput style={styles.inputTxt}
+                    mode='outlined'
+                    label='Mobile Number'
+                    value={Contact.mobileNo}
+                    keyboardType='decimal-pad'
+                    onChangeText={(value) => handleInputChange('mobileNo', value)}
+                    placeholder="Type Something..."
+                    contentStyle={{ fontFamily: 'Urbanist-Regular' }}
+                    outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                    activeOutlineColor="#548DFF"
+                    outlineColor='#E6EBF2'
+                    inputMode="numeric" />
+                  <TextInput style={styles.inputTxt}
+                    mode='outlined'
+                    label='Telephone Number'
+                    keyboardType='decimal-pad'
+                    value={Contact.phoneNo}
+                    onChangeText={(value) => handleInputChange('phoneNo', value)}
+                    placeholder="Type Something..."
+                    contentStyle={{ fontFamily: 'Urbanist-Regular' }}
+                    outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                    activeOutlineColor="#548DFF"
+                    outlineColor='#E6EBF2'
+                    inputMode="numeric" />
+                  <TextInput style={styles.inputTxt}
+                    mode='outlined'
+                    label='Role (optional)'
+                    value={Contact.role}
+                    onChangeText={(value) => handleInputChange('role', value)}
+                    placeholder="Type Something..."
+                    contentStyle={{ fontFamily: 'Urbanist-Regular' }}
+                    outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                    activeOutlineColor="#548DFF"
+                    outlineColor='#E6EBF2' />
+                  <TextInput style={styles.inputTxt}
+                    mode='outlined'
+                    label='Email Address (optional)'
+                    value={Contact.email}
+                    onChangeText={(value) => handleInputChange('email', value)}
+                    placeholder="Type Something..."
+                    contentStyle={{ fontFamily: 'Urbanist-Regular' }}
+                    outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                    activeOutlineColor="#548DFF"
+                    outlineColor='#E6EBF2' />
+                  <TextInput style={styles.inputTxt}
+                    mode='outlined'
+                    label='Comment (optional)'
+                    value={Contact.comment}
+                    onChangeText={(val) => handleInputChange('comment', val)}
+                    placeholder="Type Something..."
+                    multiline
+                    numberOfLines={4}
+                    maxLength={300}
+                    contentStyle={{ height: 100, fontFamily: 'Urbanist-Regular' }}
+                    outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                    activeOutlineColor="#548DFF"
+                    outlineColor='#E6EBF2' />
                 </View>
               </View>
               <View style={styles.bottom}>

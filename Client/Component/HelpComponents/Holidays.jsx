@@ -1,13 +1,6 @@
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity, ScrollView } from 'react-native'
 import { useState, useEffect } from 'react'
-import * as Font from 'expo-font';
-Font.loadAsync({
-    'Urbanist': require('../../assets/fonts/Urbanist-Regular.ttf'),
-    'Urbanist-Bold': require('../../assets/fonts/Urbanist-Bold.ttf'),
-    'Urbanist-Light': require('../../assets/fonts/Urbanist-Light.ttf'),
-    'Urbanist-Medium': require('../../assets/fonts/Urbanist-Medium.ttf'),
-    'Urbanist-SemiBold': require('../../assets/fonts/Urbanist-SemiBold.ttf'),
-});
+
 const SCREEN_WIDTH = Dimensions.get('window').width;
 export default function Holidays(props) {
     const [selectedHolidays, setSelectedHolidays] = useState([]);
@@ -39,8 +32,8 @@ export default function Holidays(props) {
                     {props.holidaysType.map((item, index) => {
                         const selectedStyle = isItemSelected(item.id) ? styles.selectedItem : {};
                         return (
-                            <TouchableOpacity onPress={() => handleItemPress(item)}>
-                                <View style={[styles.itemBox, selectedStyle]} key={index}>
+                            <TouchableOpacity key={index} onPress={() => handleItemPress(item)}>
+                                <View style={[styles.itemBox, selectedStyle]} >
                                     <Text style={styles.item}>{item.label}</Text>
                                 </View>
                             </TouchableOpacity>

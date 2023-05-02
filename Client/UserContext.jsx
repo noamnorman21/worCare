@@ -40,6 +40,7 @@ export function useUserContext() {
 }
 
 export function UserProvider({ children }) {
+    const appEmail = 'worcare21@gmail.com';
     const [userContext, setUserContext] = useState(null)
     const [userNotifications, setUserNotifications] = useState(null)
     const [userType, setUserType] = useState(null)
@@ -93,7 +94,7 @@ export function UserProvider({ children }) {
             workerId: userData.workerId,//if user is a caregiver, this field will be same as userId
             involvedInId: userData.involvedInId,//if user is a not caregiver, this field will be same as userId
             patientId: userData.patientId,
-            
+
         }
 
         setUserContext(usertoSync);
@@ -182,7 +183,7 @@ export function UserProvider({ children }) {
         setUserPendingPayments(pendings);
     }
 
-    const value = { userContext, userContacts,userNotifications, logInContext, logOutContext, updateUserContext, updateUserContacts, updatePendings, updateUserProfile, updateuserNotifications }
+    const value = { userContext, userContacts, userNotifications, logInContext, logOutContext, updateUserContext, updateUserContacts, updatePendings, updateUserProfile, updateuserNotifications, appEmail }
     return (
         <UserContext.Provider value={value}>
             {children}
