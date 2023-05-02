@@ -340,7 +340,7 @@ const styles = StyleSheet.create({
     },
     btnText: {
         marginLeft: SCREEN_WIDTH * 0.03,
-        fontSize: 18,
+        fontSize: 16,
         fontFamily: 'Urbanist-Medium',
     },
     headerButton: {
