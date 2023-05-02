@@ -33,7 +33,7 @@ function RenderShopTasks(props) {
       })
     })
       .then(res => {
-        console.log('res=', res);
+        // console.log('res=', res);
         //if res status is ok or 200
         if (res.ok) {
           setNewProductName('')
@@ -177,11 +177,6 @@ export default function ShopTasks(props) {
       })
     })
       .then(res => {
-        console.log('res=', res);
-        //if res status is ok or 200
-        if (res.ok) {
-          console.log('products updated')
-        }
         return res.json()
       }
       )

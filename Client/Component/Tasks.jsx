@@ -2,7 +2,7 @@ import { View, Text, StyleSheet } from 'react-native'
 import { useEffect, useState } from 'react'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useIsFocused,useFocusEffect } from '@react-navigation/native';
+import { useIsFocused, useFocusEffect } from '@react-navigation/native';
 import Main from './TasksComponents/MainTasks';
 import General from './TasksComponents/GeneralTasks';
 import Shop from './TasksComponents/ShopTasks';
@@ -20,7 +20,7 @@ export default function Tasks() {
   const [allPublicTasks, setAllPublicTasks] = useState([]);
   const [allMedicineTasks, setAllMedicineTasks] = useState([]);
   const [allShopTasks, setAllShopTasks] = useState([]);
-  
+
   useEffect(() => {
     getAllPublicTasks();
   }, []);
@@ -73,17 +73,10 @@ export default function Tasks() {
       }}
     >
       <Tab.Screen name="Main" //send allPrivateTasks to MainTasks, if userType is caregiver        
-        children={() => <Main allPrivateTasks={allPrivateTasks} allTask={allPublicTasks} />}
-      />
-      <Tab.Screen name="General"
-        children={() => <General allPrivateTasks={allPrivateTasks} />}
-      />
-      <Tab.Screen name="Shop" children={
-        () => <Shop allShopTasks={allShopTasks} refreshPublicTask={getAllPublicTasks} />
-      } />
-      <Tab.Screen name="Medicine" children={
-        () => <Medicine allMedicineTasks={allMedicineTasks} />
-      } />
+        children={() => <Main allPrivateTasks={allPrivateTasks} allTask={allPublicTasks} />} />
+      <Tab.Screen name="General" children={() => <General allPrivateTasks={allPrivateTasks} allPublicTasks={allPublicTasks} allMedicineTasks={allMedicineTasks} />} />
+      <Tab.Screen name="Shop" children={() => <Shop allShopTasks={allShopTasks} refreshPublicTask={getAllPublicTasks} />} />
+      <Tab.Screen name="Medicine" children={() => <Medicine allMedicineTasks={allMedicineTasks} refreshPublicTask={getAllPublicTasks}/>} />
     </Tab.Navigator>
   );
 }

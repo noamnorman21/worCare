@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, LayoutAnimation, Modal, ScrollView, Image, Platform } from 'react-native';
+import { SafeAreaView, View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, LayoutAnimation, Modal, ScrollView, Image, Platform } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { MaterialCommunityIcons, AntDesign, Feather } from '@expo/vector-icons';
 import NewPayment from './NewPayment';
@@ -8,7 +8,6 @@ import { useUserContext } from '../../UserContext';
 import { AddBtn } from '../HelpComponents/AddNewTask';
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from "react-native-popup-menu";
 import * as FileSystem from 'expo-file-system';
-import { SafeAreaView } from 'react-navigation';
 import * as Sharing from 'expo-sharing';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;

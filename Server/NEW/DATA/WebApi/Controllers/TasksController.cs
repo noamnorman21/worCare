@@ -83,9 +83,9 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        
+
         // ----------------------- Public Tasks Section --------------------------
-        
+
         [HttpPost]
         [Route("GetAllTasks")] //Get all public tasks
         public IHttpActionResult GetAllTasks([FromBody] string patientId)
@@ -280,7 +280,7 @@ namespace WebApi.Controllers
                     int taskId = db.tblPatientTask.Max(x => x.taskId);
                     db.SaveChanges();
                     //we use here partial class to add the actual tasks to the db                                  
-                    if (!actualTask.InsertActualTask(task.frequency, task.timesInDayArr, taskId, task.taskFromDate, task.taskToDate,task.listId,isDrug, task.taskName))
+                    if (!actualTask.InsertActualTask(task.frequency, task.timesInDayArr, taskId, task.taskFromDate, task.taskToDate, task.listId, isDrug, task.taskName))
                         throw new Exception("error Insert Actual Tasks ");
                     return Ok("Actual Tasks added");
                 }
@@ -351,9 +351,9 @@ namespace WebApi.Controllers
                 }
                 else
                     productId = isExsitProduct.First().productId;
-                
+
                 //add the product to the list                
-                db.InsertProductList(productId, prodList.actualId,prodList.taskId, "P", prodList.productQuantity, prodList.commentForProduct);
+                db.InsertProductList(productId, prodList.actualId, prodList.taskId, "P", prodList.productQuantity, prodList.commentForProduct);
                 db.SaveChanges();
                 return Ok("Product added to list");
             }
@@ -366,7 +366,7 @@ namespace WebApi.Controllers
 
         [HttpPut]
         [Route("UpdateProductsToList")]
-        public IHttpActionResult UpdateProductsToList([FromBody]List <ProductListDTO> prodList)
+        public IHttpActionResult UpdateProductsToList([FromBody] List<ProductListDTO> prodList)
         {
             //Find the list of products that are already in the db and update the productQuantity and productStatus 
             try
@@ -379,7 +379,7 @@ namespace WebApi.Controllers
                         tblProductList.productQuantity = product.productQuantity;
                         tblProductList.productStatus = product.productStatus;
                         db.SaveChanges();
-                    }                 
+                    }
                 }
                 return Ok("Product updated");
             }
@@ -387,7 +387,6 @@ namespace WebApi.Controllers
             {
                 return BadRequest(ex.Message);
             }
-
         }
     }
 }

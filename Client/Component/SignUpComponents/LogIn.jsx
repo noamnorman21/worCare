@@ -222,7 +222,7 @@ export default function LogIn({ navigation }) {
                                     <Text style={styles.rememberMe}>Remember Me</Text>
                                 </TouchableOpacity>
                                 {/* forgot password button */}
-                                <TouchableOpacity onPress={NavigateToForgotPassword}>
+                                <TouchableOpacity style={{ flexDirection: 'row', marginLeft: SCREEN_WIDTH * 0.235 }} onPress={NavigateToForgotPassword}>
                                     <View style={styles.forgotPasswordContainer}>
                                         <Text style={styles.btnForgotPassword}>Forgot Password?</Text>
                                     </View>
@@ -336,11 +336,6 @@ const styles = StyleSheet.create({
     rememberMeIcon: {
         marginTop: SCREEN_HEIGHT * 0.01,
         marginBottom: SCREEN_WIDTH * 0.01,
-    },
-    forgotPasswordContainer: {
-        flexDirection: 'row',
-        alignSelf: 'flex-end',
-        marginLeft: SCREEN_WIDTH * 0.225,
     },
     rememberMeContainer: {
         width: SCREEN_WIDTH * 0.9,
