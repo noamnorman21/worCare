@@ -639,6 +639,9 @@ function NewTaskModal(props) {
 
    const addPrivateTask = () => {
       let taskUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/InsertPrivateTask';
+      if (taskTime != '' && taskTimeArr.length == 0) {
+         taskTimeArr.push(taskTime);
+      }
       let taskData = {
          taskName: taskName,
          taskFromDate: taskFromDate,
@@ -646,8 +649,8 @@ function NewTaskModal(props) {
          taskComment: taskComment,
          status: 'P',
          workerId: userId,
-         TimeInDay: taskTime,
-         period: taskFrequency
+         TimeInDay: taskTimeArr,
+         frequency: taskFrequency
       }
 
       console.log("taskData= ", taskData);

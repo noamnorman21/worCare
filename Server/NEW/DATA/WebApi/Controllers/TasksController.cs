@@ -23,7 +23,70 @@ namespace WebApi.Controllers
         {
             try
             {
+                TimeSpan[] timesInDayArray = new TimeSpan[0];
+                foreach (var item in taskDTO.timesInDayArr)
+                {
+                    //"15:16" this is how item will look when it will came from the client
+                    int hour = int.Parse(item.ToString().Substring(0, 2));
+                    int minutes = int.Parse(item.ToString().Substring(3, 2));
+                    TimeSpan time = new TimeSpan(hour, minutes, 0);
+                    TimeSpan[] tempArr = new TimeSpan[timesInDayArray.Length + 1];
+                    Array.Copy(timesInDayArray, tempArr, timesInDayArray.Length);
+                    tempArr[tempArr.Length - 1] = time;
+                    timesInDayArray = tempArr;
+                }
+                Array.Sort(timesInDayArray);
+
+
                 db.InsertPrivateTask(taskDTO.taskName, taskDTO.taskFromDate, taskDTO.taskToDate, taskDTO.frequency, taskDTO.taskComment, taskDTO.workerId);
+                //find the task id of the new task it will be the max
+                int taskId = db.tblPrivateTask.Max(t => t.taskId);
+                DateTime tempDate = taskDTO.taskFromDate;
+                if (taskDTO.frequency=="Once")
+                {
+                    if (timesInDayArray.Length > 1)
+                    {
+                        for (int i = 0; i < timesInDayArray.Length; i++)
+                        {
+                            db.InsertPrivateActualTask(taskId, taskDTO.taskToDate, timesInDayArray[i], "P");
+                        }
+                    }
+                    else
+                        db.InsertPrivateActualTask(taskId, taskDTO.taskToDate, timesInDayArray[0], "P");
+                }
+                else if (taskDTO.frequency == "Dayli")
+                {
+                    while (tempDate < taskDTO.taskToDate)
+                    {
+                        for (int i = 0; i < timesInDayArray.Length; i++)
+                        {
+                            db.InsertPrivateActualTask(taskId, tempDate, timesInDayArray[i], "P");
+                        }
+                        tempDate = tempDate.AddDays(1);
+                    }                  
+                }
+                else if (taskDTO.frequency == "Weekly")
+                {
+                    while (tempDate < taskDTO.taskToDate)
+                    {
+                        for (int i = 0; i < timesInDayArray.Length; i++)
+                        {
+                            db.InsertPrivateActualTask(taskId, tempDate, timesInDayArray[i], "P");
+                        }
+                        tempDate = tempDate.AddDays(7);
+                    }
+                }
+                else if (taskDTO.frequency == "Monthly")
+                {
+                    while (tempDate < taskDTO.taskToDate)
+                    {
+                        for (int i = 0; i < timesInDayArray.Length; i++)
+                        {
+                            db.InsertPrivateActualTask(taskId, tempDate, timesInDayArray[i], "P");
+                        }
+                        tempDate = tempDate.AddMonths(1);
+                    }
+                }     
                 db.SaveChanges();
                 return Ok(taskDTO);
             }
@@ -37,24 +100,35 @@ namespace WebApi.Controllers
         [Route("GetAllPrivateTasks")] //Insert new private task by foreign user
         public IHttpActionResult GetAllPrivateTasks([FromBody] ForeignUserDTO userDTO)
         {
-            List<PrivateTaskDTO> privateTasks = new List<PrivateTaskDTO>();
+            List<PrivateActualTaskDTO> tasks = new List<PrivateActualTaskDTO>();
             try
             {
-                var tasks = from t in db.tblPrivateTask
-                            where t.workerId == userDTO.Id
+                var tasksArr = from t in db.tblPrivateTask
+                            where t.workerId == userDTO.Id && t.taskToDate >= DateTime.Now
                             select t;
-                foreach (var item in tasks)
+                foreach (var item in tasksArr)
                 {
-                    PrivateTaskDTO taskDTO = new PrivateTaskDTO();
-                    taskDTO.taskName = item.taskName;
-                    taskDTO.taskFromDate = item.taskFromDate;
-                    taskDTO.taskToDate = item.taskToDate;
-                    taskDTO.taskComment = item.taskComment;
-                    taskDTO.workerId = item.workerId;
-                    taskDTO.frequency = item.frequency;
-                    privateTasks.Add(taskDTO);
+                    var task= from ta in db.tblPrivateActualTask
+                              where ta.taskId == item.taskId && ta.taskDate >= DateTime.Now && ta.taskStatus == "P"&& ta.taskDate <= SqlFunctions.DateAdd("d", 7, DateTime.Now)
+                              select ta;
+                    foreach (var item2 in task)
+                    {
+                        PrivateActualTaskDTO taskDTO = new PrivateActualTaskDTO();
+                        taskDTO.taskId = item2.taskId;
+                        taskDTO.actualId = item2.actualId;
+                        taskDTO.taskComment = item.taskComment;
+                        taskDTO.taskName = item.taskName;
+                        taskDTO.taskDate = item2.taskDate;
+                        taskDTO.TimeInDay = item2.TimeInDay;
+                        taskDTO.taskStatus = item2.taskStatus;
+                        tasks.Add(taskDTO);
+
+                    }
+                
+        
+                  
                 }
-                return Ok(privateTasks);
+                return Ok(tasks);
             }
             catch (Exception ex)
             {
