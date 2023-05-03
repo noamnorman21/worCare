@@ -42,6 +42,7 @@ export default function Pending() {
         body: JSON.stringify(user)
       });
       const data = await response.json();
+      console.log("Pending", data)
       let arr = data.map((item) => {
         return (
           <Request
@@ -53,6 +54,7 @@ export default function Pending() {
           />
         )
       })
+      console.log("Arr",arr.length)
       setPendings(arr)
     } catch (error) {
       console.log(error)
@@ -167,19 +169,19 @@ function Request(props) {
               body: JSON.stringify({ requestId: props.data.requestId, requestStatus: userTypeResult }),
               headers: { 'Content-Type': 'application/json', },
             }).then(res => {
-              if (res.ok) {
+             if (res.ok) {
                 console.log('res.ok', res.ok);
                 props.getPending()
                 return res.json()
               }
             })
-              .then(
-                (result) => {
-                  console.log("fetch POST= ", result);
-                },
-                (error) => {
-                  console.log("err post=", error);
-                });
+            .then(
+              (result) => {
+                console.log("fetch POST= ", result);
+              },
+              (error) => {
+                console.log("err post=", error);
+              });
           }
         },
       ]
@@ -197,7 +199,7 @@ function Request(props) {
       }, 3000);
     }
   }
-  
+
   const saveStatus = async (id) => {
     try {
       const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/UpdateStatus/', {
@@ -209,10 +211,7 @@ function Request(props) {
       });
       const data = await response.json();
       console.log(data)
-      setStatus("F")
-      setTimeout(() => {
-        props.getPending()
-      }, 3000);
+      props.getPending()
     } catch (error) {
       console.log(error)
     }
@@ -303,7 +302,8 @@ function Request(props) {
                   <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} value={1} children={<View style={styles.options}><MaterialCommunityIcons name='bell-ring-outline' size={20} /><Text style={styles.optionsText}> Send Notification</Text></View>} />
                   <MenuOption value={2} children={<View style={styles.options}><Feather name='eye' size={20} /><Text style={styles.optionsText}> View Document</Text></View>} />
                   <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} value={3} children={<View style={userContext.userId == props.data.userId ? styles.options : styles.disabledoptions}><Feather name='edit' size={20} /><Text style={styles.optionsText}> Edit Request</Text></View>} />
-                  <MenuOption style={styles.deleteTxt} value={4} children={<View style={styles.options}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={styles.deleteTxt}> Delete Request</Text></View>} />                </MenuOptions>
+                  <MenuOption style={[styles.deleteTxt]} value={4} children={<View style={userContext.userId == props.data.userId ? styles.options : styles.disabledoptions}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={styles.deleteTxt}> Delete Request</Text></View>} />
+                </MenuOptions>
               </Menu>
               <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
                 <View style={styles.documentview}>
@@ -367,7 +367,8 @@ function Request(props) {
                 <MenuOption value={1} children={<View style={styles.options}><MaterialCommunityIcons name='bell-ring-outline' size={20} /><Text style={styles.optionsText}> Send Notification</Text></View>} />
                 <MenuOption value={2} children={<View style={styles.options}><Feather name='eye' size={20} /><Text style={styles.optionsText}> View Document</Text></View>} />
                 <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} value={3} children={<View style={userContext.userId == props.data.userId ? styles.options : styles.disabledoptions}><Feather name='edit' size={20} /><Text style={styles.optionsText}> Edit Request</Text></View>} />
-                <MenuOption style={styles.deleteTxt} value={4} children={<View style={styles.options}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={styles.deleteTxt}> Delete Request</Text></View>} />              </MenuOptions>
+                <MenuOption value={4} children={<View style={styles.options}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={styles.deleteTxt}> Delete Request</Text></View>} />
+              </MenuOptions>
             </Menu>
             <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
               <View style={styles.documentview}>

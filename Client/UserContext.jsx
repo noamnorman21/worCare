@@ -225,8 +225,6 @@ export function UserProvider({ children }) {
         setUserContext(userContext);
     }
 
-
-
     function updatePendings(pendings) {
         setUserPendingPayments(pendings);
     }

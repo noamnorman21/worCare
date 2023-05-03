@@ -41,7 +41,7 @@ export default function NavigateSignUp() {
         setIsSigned(true);
         const storageUser2 = await AsyncStorage.getItem("userData");
         updateUserContext(JSON.parse(storageUser2))
-        let notifications = await AsyncStorage.getItem("notifications");
+        let notifications = await AsyncStorage.getItem("userNotifications");
         if (notifications !== null) {
           notifications = {
             emailNotifications: true,
@@ -91,7 +91,7 @@ export default function NavigateSignUp() {
 
         {/* שלבי המשך עבור הרשמת המטפל */}
         <Stack.Screen name="SignUpCaregiverLVL4" component={SignUpCaregiverLVL4} options={{ headerShown: true, headerTitle: 'Back' }} />
-        <Stack.Screen name="SignUpCaregiverLVL5" component={SignUpCaregiverLVL5} options={{ headerShown: true, headerTitle: 'Back' }}/>
+        <Stack.Screen name="SignUpCaregiverLVL5" component={SignUpCaregiverLVL5} options={{ headerShown: true, headerTitle: 'Back' }} />
 
         {/* שלבי המשך עבור הרשמת מעורב בטיפול */}
         <Stack.Screen name="SignUpUserLVL4" component={SignUpUserLVL4} options={{ headerShown: true, headerTitle: 'Back' }} />

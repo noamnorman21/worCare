@@ -183,13 +183,13 @@ function HomeScreen({ navigation, route }) {
             console.log("no changes");
             route.params.Exit();
         }
-        
+
     }, [saving]);
 
     useEffect(() => {
         const setNavigation = async () => navigation.setOptions({
             headerRight: () => (
-                <TouchableOpacity style={styles.headerButton} onPress={()=>setSaving(true)}>
+                <TouchableOpacity style={styles.headerButton} onPress={() => setSaving(true)}>
                     <Text style={styles.headerButtonText}>Done</Text>
                 </TouchableOpacity>
             ),
@@ -210,24 +210,25 @@ function HomeScreen({ navigation, route }) {
 
     return (
         <SafeAreaView style={styles.container}>
-            <TouchableOpacity onPress={() => pickImage()}>
-                <Image style={styles.image} source={{ uri: user.userUri }} />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => pickImage()}>
-                <Text style={styles.imageTxt}>Edit profile picture</Text>
-            </TouchableOpacity>
-
+            <View style={styles.imgContainer}>
+                <TouchableOpacity onPress={() => pickImage()}>
+                    <Image style={styles.image} source={{ uri: user.userUri }} />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => pickImage()}>
+                    <Text style={styles.imageTxt}>Edit profile picture</Text>
+                </TouchableOpacity>
+            </View>
             <View style={styles.fieldView} >
                 <Text style={styles.fieldHeader}>First Name</Text>
-                <TextInput style={styles.fields} value={user.FirstName} onChangeText={(value) => {setUser({ ...user, ["FirstName"]: value });setIsChanged(true)}} />
+                <TextInput style={styles.fields} value={user.FirstName} onChangeText={(value) => { setUser({ ...user, ["FirstName"]: value }); setIsChanged(true) }} />
             </View>
             <View style={styles.fieldView} >
                 <Text style={styles.fieldHeader}>Last Name</Text>
-                <TextInput style={styles.fields} value={user.LastName} onChangeText={(value) => {setUser({ ...user, ["LastName"]: value });setIsChanged(true)}} />
+                <TextInput style={styles.fields} value={user.LastName} onChangeText={(value) => { setUser({ ...user, ["LastName"]: value }); setIsChanged(true) }} />
             </View>
             <View style={styles.fieldView} >
                 <Text style={styles.fieldHeader}>Phone Number</Text>
-                <TextInput keyboardType='numeric' style={styles.fields} value={user.phoneNum} onChangeText={(value) => {setUser({ ...user, ["phoneNum"]: value });setIsChanged(true)}} />
+                <TextInput keyboardType='numeric' style={styles.fields} value={user.phoneNum} onChangeText={(value) => { setUser({ ...user, ["phoneNum"]: value }); setIsChanged(true) }} />
             </View>
             <View style={styles.fieldView} >
                 <Text style={styles.fieldHeader}>Gender</Text>
@@ -236,7 +237,7 @@ function HomeScreen({ navigation, route }) {
                     <Ionicons style={styles.arrowLogoStyle} name="chevron-forward" size={24} color="grey" />
                 </TouchableOpacity>
                 <Modal animationType="slide" visible={modalVisible} onRequestClose={() => setModalVisible(false)}>
-                    <GenderChange userId={user.userId} Gender={user.gender} cancel={() => setModalVisible(false)} Save={(Gender) => { setModalVisible(false); setUser({ ...user, ["gender"]: Gender });setIsChanged(true)}} />
+                    <GenderChange userId={user.userId} Gender={user.gender} cancel={() => setModalVisible(false)} Save={(Gender) => { setModalVisible(false); setUser({ ...user, ["gender"]: Gender }); setIsChanged(true) }} />
                 </Modal>
             </View>
             <View style={styles.btnContainer}>
@@ -265,7 +266,7 @@ export default function SettingScreen({ navigation }) {
                     headerTitleStyle: {
                         fontSize: 18,
                         color: 'black',
-                        marginLeft: SCREEN_WIDTH * 0.03,
+                        paddingLeft: 10,
                     },
                     headerShown: true,
                 }}>
@@ -282,6 +283,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#F5F5F5',
     },
+    imgContainer: {
+        alignItems: 'center',
+        marginVertical: SCREEN_HEIGHT * 0.04,
+    },
     imageTxt: {
         color: '#548DFF',
         fontFamily: 'Urbanist-SemiBold',
@@ -289,19 +294,11 @@ const styles = StyleSheet.create({
         marginVertical: 10,
     },
     logoStyle: {
-        marginLeft: SCREEN_WIDTH * 0.03,
-        marginRight: SCREEN_WIDTH * 0.06
+        paddingHorizontal: 10,
     },
     arrowLogoStyle: {
         position: 'absolute',
         right: SCREEN_WIDTH * 0.03,
-    },
-    title: {
-        fontSize: 25,
-        marginLeft: SCREEN_WIDTH * 0.03,
-        marginRight: SCREEN_WIDTH * 0.6,
-        marginTop: SCREEN_HEIGHT * 0.03,
-        fontFamily: 'Urbanist-Bold'
     },
     headerButton: {
         width: SCREEN_WIDTH * 0.1,
@@ -314,34 +311,22 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'flex-start',
     },
-    logo: {
-        width: SCREEN_WIDTH * 0.2,
-        height: SCREEN_HEIGHT * 0.1,
-        borderRadius: 100,
-        backgroundColor: 'transparent',
-        marginRight: SCREEN_WIDTH * 0.03,
-        marginTop: SCREEN_HEIGHT * 0.03,
-        marginBottom: SCREEN_HEIGHT * 0.0,
-    },
     image: {
         width: 100,
         height: 100,
         borderRadius: 100,
-        marginTop: 20,
     },
     btn: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'flex-start',
         width: SCREEN_WIDTH * 1,
-        height: SCREEN_HEIGHT * 0.08,
-        borderBottomWidth: 1,
-        borderBottomColor: 'lightgray',
+        marginVertical: 20,
     },
     btnText: {
-        marginLeft: SCREEN_WIDTH * 0.03,
+        paddingLeft: 10,
         fontSize: 16,
-        fontFamily: 'Urbanist-Medium',
+        fontFamily: 'Urbanist-SemiBold',
     },
     headerButton: {
         alignItems: 'center',
@@ -361,9 +346,9 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontFamily: 'Urbanist-SemiBold',
         color: '#000',
-        marginLeft: SCREEN_WIDTH * 0.03,
+        paddingLeft: 10,
         flex: 2,
-        marginTop: 12,
+        marginVertical: 15,
     },
     fieldView: {
         flexDirection: 'row',
@@ -374,7 +359,9 @@ const styles = StyleSheet.create({
         borderRadius: 16,
         borderBottomWidth: 1,
         borderColor: 'lightgrey',
-        padding: 10,
+        paddingLeft: 10,
+        marginVertical: 15,
+        paddingBottom: 3,
         fontSize: 16,
         color: '#000',
         fontFamily: 'Urbanist-Light',
