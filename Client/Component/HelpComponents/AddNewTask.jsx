@@ -638,6 +638,8 @@ function NewTaskModal(props) {
    }
 
    const addPrivateTask = () => {
+      console.log("addPrivateTask");
+
       let taskUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/InsertPrivateTask';
       if (taskTime != '' && taskTimeArr.length == 0) {
          taskTimeArr.push(taskTime);
@@ -648,12 +650,11 @@ function NewTaskModal(props) {
          taskToDate: taskToDate,
          taskComment: taskComment,
          status: 'P',
-         workerId: userId,
-         TimeInDay: taskTimeArr,
+         workerId: userData.workerId,
+         timesInDayArr: taskTimeArr,
          frequency: taskFrequency
       }
 
-      console.log("taskData= ", taskData);
       fetch(taskUrl, {
          method: 'POST',
          body: JSON.stringify(taskData),
@@ -678,6 +679,7 @@ function NewTaskModal(props) {
       if (userType == "Caregiver") {
          if (isPrivate) {
             addPrivateTask();
+            return;
          }
       }
       if (taskCategory == 'General') {
@@ -686,6 +688,7 @@ function NewTaskModal(props) {
       else {
          addShopTask();
       }
+
    }
    const addShopTask = () => {
       console.log("addShopTask");

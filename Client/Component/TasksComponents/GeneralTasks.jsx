@@ -11,6 +11,7 @@ export default function GeneralTasks(props) {
   const [modalVisible, setModalVisible] = useState(false)
   const [publicTasks, setPublicTasks] = useState(props.allPublicTasks)
   const [privateTasks, setPrivateTasks] = useState(props.allPrivateTasks)
+  const [allTasks, setAllTasks] = useState([])
   const checkIcon = ["check-circle", "circle"];
   const arrowIcon = ["chevron-down-outline", "chevron-up-outline"];
   const [header, setHeader] = useState(false)
@@ -19,12 +20,23 @@ export default function GeneralTasks(props) {
   useEffect(() => {
     setPublicTasks(props.allPublicTasks)
     setPrivateTasks(props.allPrivateTasks)
+    filterTasks(props.allPrivateTasks, props.allPublicTasks)
   }, [props.allPublicTasks, props.allPrivateTasks])
 
   const handleAddBtnPress = () => {
     setModalVisible(true);
+   //console.log(allTasks);
   };
+  const filterTasks = (privateTask, publicTasks) => {
+    //combine private and public tasks and sort by date
+    let allTasks = [...privateTask, ...publicTasks]
+    allTasks.sort((a, b) => {
+      return new Date(a.date) - new Date(b.date);
+    }
+    )
+    setAllTasks(allTasks)
 
+  }
   const handleModalClose = () => {
     setModalVisible(false);
     props.refreshPublicTask()
@@ -48,8 +60,12 @@ export default function GeneralTasks(props) {
         </View>
         <ScrollView>
           <View style={[styles.tasksView, header ? { display: 'none' } : {}]} >
-            {publicTasks.map((task, index) => {
-              return (<TaskCheckBox key={index} task={task} />)
+            {allTasks.map((task, index) => {
+              let isPrivate = false;  
+              if (task.patientId==null) {
+                isPrivate = true;
+              }
+              return (<TaskCheckBox key={index} task={task} isPrivate={isPrivate} />)
             })}
           </View>
         </ScrollView>
@@ -87,5 +103,6 @@ const styles = StyleSheet.create({
   tasksView: {
     width: SCREEN_WIDTH * 0.88,
     alignItems: 'flex-start',
+    marginBottom: 30,
   },
 });

@@ -54,7 +54,7 @@ namespace WebApi.Controllers
                     else
                         db.InsertPrivateActualTask(taskId, taskDTO.taskToDate, timesInDayArray[0], "P");
                 }
-                else if (taskDTO.frequency == "Dayli")
+                else if (taskDTO.frequency == "Daily")
                 {
                     while (tempDate < taskDTO.taskToDate)
                     {

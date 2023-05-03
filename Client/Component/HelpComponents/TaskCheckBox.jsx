@@ -38,7 +38,7 @@ export default function TaskCheckBox(props) {
     }
 
     // let isPrivate=props.task.isPrivate; //להוציא מההערה אחרי שנשלח 
-    const isPrivate = false;//רק לבדיקה עד שנשלח, כי אין עדיין פונקציה שמחזירה את הפרטים של המשימה
+    const isPrivate = props.isPrivate;//רק לבדיקה עד שנשלח, כי אין עדיין פונקציה שמחזירה את הפרטים של המשימה
     return (
         <View style={[styles.container, isPrivate ? { backgroundColor: '#FFF7EB' } : {}]}>
 

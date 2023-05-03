@@ -23,6 +23,7 @@ export default function Tasks() {
 
   useEffect(() => {
     getAllPublicTasks();
+    getAllPrivateTasks();
   }, []);
 
   const getAllPublicTasks = async () => {
@@ -40,6 +41,24 @@ export default function Tasks() {
       console.log('err post=', error);
     }
   }
+  const getAllPrivateTasks = async () => {
+    let getAllPrivateTasksUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/GetAllPrivateTasks';
+    let forginUser= {
+      Id:userData.workerId
+    }
+    try {
+      const response = await fetch(getAllPrivateTasksUrl, {
+        method: 'POST',
+        headers: new Headers({ 'Content-Type': 'application/json; charset=UTF-8', }),
+        body: JSON.stringify(forginUser),
+      });
+      const result = await response.json();
+      setAllPrivateTasks(result);
+    } catch (error) {
+      console.log('err post=', error);
+    }
+  }
+
 
   //filter tasks by type, medicine or shop, other tasks will be in allTasks
   const filterTasks = (tasks) => {
