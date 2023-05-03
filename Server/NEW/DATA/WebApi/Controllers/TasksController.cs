@@ -66,6 +66,8 @@ namespace WebApi.Controllers
         [Route("UpdatePrivateTasks")] //Update private task by foreign user
         public IHttpActionResult UpdatePrivateTasks([FromBody] PrivateTaskDTO taskDTO)
         {
+
+            
             try //Update the task and save the changes
             {
                 tblPrivateTask tblPrivate = db.tblPrivateTask.Where(x => x.taskName == taskDTO.taskName).FirstOrDefault();
@@ -167,10 +169,11 @@ namespace WebApi.Controllers
                         drugForPatientDTO.qtyInBox = drugForArr.First().qtyInBox;
                         drugForPatientDTO.dosage = drugForArr.First().dosage;
                         drugForPatientDTO.drugId = drugForArr.First().drugId;
-
+                        drugForPatientDTO.fromDate = drugForArr.First().fromDate;
+                        drugForPatientDTO.toDate = drugForArr.First().toDate;
 
                         var drugName = from t in db.tblDrug
-                                       where t.drugId == drugForArr.First().drugId
+                                       where t.drugId == drugForPatientDTO.drugId
                                        select t;
                         drugForPatientDTO.drugName = drugName.First().drugName;
                         drugForPatientDTO.drugType = drugName.First().Type;

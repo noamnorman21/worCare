@@ -47,7 +47,7 @@ export default function TaskCheckBox(props) {
             </TouchableOpacity >
 
             <Text style={styles.text}>
-                {[props.task.type == true ? 'Pill - ' + props.task.taskName : props.task.taskName]}
+                {[props.task.type == true ? props.task.drug.drugType + ' - ' + props.task.taskName : props.task.taskName]}
             </Text>
 
             <TouchableOpacity style={styles.iconArrow} onPress={() => (Alert.alert('Not Working For Now...\n סבלנות'))}>
