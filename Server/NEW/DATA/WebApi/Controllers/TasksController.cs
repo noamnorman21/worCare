@@ -156,7 +156,29 @@ namespace WebApi.Controllers
                             }
                             item.prodList = productListToSend; //add to the actual task the product list
                         }
-                    } 
+                    }
+
+                    if (item.type==true)// we will create drug for pation  
+                    {
+                        var drugForArr = from t in db.tblDrugForPatient //find all relavent DrugList for this task
+                                      where t.listId == item.listId 
+                                      select t;
+                        DrugForPatientDTO drugForPatientDTO = new DrugForPatientDTO();
+                        drugForPatientDTO.qtyInBox = drugForArr.First().qtyInBox;
+                        drugForPatientDTO.dosage = drugForArr.First().dosage;
+                        drugForPatientDTO.drugId = drugForArr.First().drugId;
+
+
+                        var drugName = from t in db.tblDrug
+                                       where t.drugId == drugForArr.First().drugId
+                                       select t;
+                        drugForPatientDTO.drugName = drugName.First().drugName;
+                        drugForPatientDTO.drugType = drugName.First().Type;
+                        drugForPatientDTO.drugUrl = drugName.First().drugUrl;
+                        drugForPatientDTO.minQuantity = drugForArr.First().minQuantity;
+                        drugForPatientDTO.dosage = drugForArr.First().dosage;
+                        item.drug = drugForPatientDTO;
+                    }
                 }
                 actualTasks.Sort((x, y) => DateTime.Compare(x.taskDate, y.taskDate));
                 return Ok(actualTasks);
@@ -223,6 +245,12 @@ namespace WebApi.Controllers
                         drugFor.patientId = list.patientId;
                         drugFor.dosage = list.dosage;
                         drugFor.drugId = list.drugId;
+                        //var drugName = from t in db.tblDrug
+                        //               where t.drugId == drugFor.drugId
+                        //               select t;
+                        //drugFor.drugName = drugName.First().drugName;
+                        //drugFor.drugType = drugName.First().Type;
+                        //drugFor.drugUrl = drugName.First().drugUrl;
                         drugFor.qtyInBox = list.qtyInBox;
                         drugFor.minQuantity = list.qtyInBox * 0.2;//defult will be 20% 
                         drugFor.patientId = list.patientId;

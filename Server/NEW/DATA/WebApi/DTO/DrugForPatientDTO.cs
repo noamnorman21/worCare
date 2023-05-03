@@ -14,8 +14,12 @@ namespace WebApi.DTO
         public Nullable<int> qtyInBox { get; set; }
         public Nullable<byte> minQuantity { get; set; }
         public int drugId { get; set; }
-        public string patientId { get; set; }        
+        public string patientId { get; set; }
         public TimeSpan[] timesInDayArray { get; set; } //array of TimeSpan              
+        
+        //will come from tbldrug
+        public string drugName { get; set; }
+        public string drugUrl { get; set; }
         public string drugType { get; set; }
     }
 }
