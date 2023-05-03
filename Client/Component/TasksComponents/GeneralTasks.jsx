@@ -20,22 +20,33 @@ export default function GeneralTasks(props) {
   useEffect(() => {
     setPublicTasks(props.allPublicTasks)
     setPrivateTasks(props.allPrivateTasks)
-    filterTasks(props.allPrivateTasks, props.allPublicTasks)
+    combineTasks(props.allPrivateTasks, props.allPublicTasks)
   }, [props.allPublicTasks, props.allPrivateTasks])
 
   const handleAddBtnPress = () => {
     setModalVisible(true);
-   //console.log(allTasks);
   };
-  const filterTasks = (privateTask, publicTasks) => {
-    //combine private and public tasks and sort by date
-    let allTasks = [...privateTask, ...publicTasks]
+  const combineTasks = (privateTask, publicTasks) => {
+    //combine private and public tasks and sort by date and time
+    let allTasks = privateTask.concat(publicTasks);
     allTasks.sort((a, b) => {
-      return new Date(a.date) - new Date(b.date);
-    }
-    )
+      if (a.taskDate > b.taskDate) {
+        return 1;
+      }
+      if (a.taskDate < b.taskDate) {
+        return -1;
+      }
+      if (a.taskDate == b.taskDate) {
+        if (a.TimeInDay > b.TimeInDay) {
+          return 1;
+        }
+        if (a.TimeInDay < b.TimeInDay) {
+          return -1;
+        }
+      }
+      return 0;
+    })
     setAllTasks(allTasks)
-
   }
   const handleModalClose = () => {
     setModalVisible(false);
@@ -47,6 +58,9 @@ export default function GeneralTasks(props) {
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
       setHeader(!header);
     }, 200);
+  }
+  const sendNavigtion = (task) => {
+    props.moveScreens(task)
   }
 
   return (
@@ -61,11 +75,11 @@ export default function GeneralTasks(props) {
         <ScrollView>
           <View style={[styles.tasksView, header ? { display: 'none' } : {}]} >
             {allTasks.map((task, index) => {
-              let isPrivate = false;  
-              if (task.patientId==null) {
+              let isPrivate = false;
+              if (task.patientId == null) {
                 isPrivate = true;
               }
-              return (<TaskCheckBox key={index} task={task} isPrivate={isPrivate} />)
+              return (<TaskCheckBox key={index} task={task} isPrivate={isPrivate} moveScreens={sendNavigtion} />)
             })}
           </View>
         </ScrollView>

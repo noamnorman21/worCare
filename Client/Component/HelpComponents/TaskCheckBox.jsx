@@ -20,21 +20,22 @@ export default function TaskCheckBox(props) {
     const openTaskList = () => {
         //צריך ליצור את ההמשך במסכים
         //if it a private task, open nevaigation to MainTasks
-        if (props.task.isPrivate) {
-            props.navigation.navigate('MainTasks', { task: props.task });
-        }
-        //if it a general task, open nevaigation to MainTasks
-        else if (props.task.type == 'General') {
-            props.navigation.navigate('MainTasks', { task: props.task });
-        }
-        //if it a shop task, open nevaigation to shop
-        else if (props.task.type == 'Shop') {
-            props.navigation.navigate('ShopTasks', { task: props.task });
-        }
-        //if it Medicine task, open nevaigation to Medicine
-        else if (props.task.type == 'Medicine') {
-            props.navigation.navigate('MedicineTasks', { task: props.task });
-        }
+        props.moveScreens(props.task);
+        // if (props.task.isPrivate) {
+        //     props.navigation.navigate('MainTasks', { task: props.task });
+        // }
+        // //if it a general task, open nevaigation to MainTasks
+        // else if (props.task.type == 'General') {
+        //     props.navigation.navigate('MainTasks', { task: props.task });
+        // }
+        // //if it a shop task, open nevaigation to shop
+        // else if (props.task.type == 'Shop') {
+        //     props.navigation.navigate('ShopTasks', { task: props.task });
+        // }
+        // //if it Medicine task, open nevaigation to Medicine
+        // else if (props.task.type == 'Medicine') {
+        //     props.navigation.navigate('MedicineTasks', { task: props.task });
+        // }
     }
 
     // let isPrivate=props.task.isPrivate; //להוציא מההערה אחרי שנשלח 
@@ -50,7 +51,7 @@ export default function TaskCheckBox(props) {
                 {[props.task.type == true ? props.task.drug.drugType + ' - ' + props.task.taskName : props.task.taskName]}
             </Text>
 
-            <TouchableOpacity style={styles.iconArrow} onPress={() => (Alert.alert('Not Working For Now...\n סבלנות'))}>
+            <TouchableOpacity style={styles.iconArrow} onPress={openTaskList}>
                 <View style={{ paddingHorizontal: 20 }}>
                     <Octicons name="chevron-right" size={24} color="#548DFF" />
                 </View>
