@@ -19,23 +19,8 @@ export default function TaskCheckBox(props) {
 
     const openTaskList = () => {
         //צריך ליצור את ההמשך במסכים
-        //if it a private task, open nevaigation to MainTasks
         props.moveScreens(props.task);
-        // if (props.task.isPrivate) {
-        //     props.navigation.navigate('MainTasks', { task: props.task });
-        // }
-        // //if it a general task, open nevaigation to MainTasks
-        // else if (props.task.type == 'General') {
-        //     props.navigation.navigate('MainTasks', { task: props.task });
-        // }
-        // //if it a shop task, open nevaigation to shop
-        // else if (props.task.type == 'Shop') {
-        //     props.navigation.navigate('ShopTasks', { task: props.task });
-        // }
-        // //if it Medicine task, open nevaigation to Medicine
-        // else if (props.task.type == 'Medicine') {
-        //     props.navigation.navigate('MedicineTasks', { task: props.task });
-        // }
+        
     }
 
     // let isPrivate=props.task.isPrivate; //להוציא מההערה אחרי שנשלח 

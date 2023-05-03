@@ -123,10 +123,7 @@ namespace WebApi.Controllers
                         taskDTO.taskStatus = item2.taskStatus;
                         tasks.Add(taskDTO);
 
-                    }
-                
-        
-                  
+                    }           
                 }
                 return Ok(tasks);
             }
@@ -160,7 +157,7 @@ namespace WebApi.Controllers
             }
         }
 
-        // ----------------------- Public Tasks Section --------------------------
+        // ----------------------- Public Tasks Section --------------------------//
 
         [HttpPost]
         [Route("GetAllTasks")] //Get all public tasks

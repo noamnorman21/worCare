@@ -69,6 +69,10 @@ export default function Tasks() {
   }
   const moveScreens = (task) => {
     alert(task.taskName);
+    //move to main screen
+    
+   
+
   }
 
   return (

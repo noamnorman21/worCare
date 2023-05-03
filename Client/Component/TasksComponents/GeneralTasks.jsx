@@ -60,6 +60,7 @@ export default function GeneralTasks(props) {
     }, 200);
   }
   const sendNavigtion = (task) => {
+
     props.moveScreens(task)
   }
 
