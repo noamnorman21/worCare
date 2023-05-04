@@ -73,7 +73,7 @@ export default function Tasks() {
     setAllMedicineTasks(filteredMedicineTasks);
   }
   const moveScreens = (task) => {
-    alert(task.taskName);
+    alert(task.taskId);
     //move to main screen
     
    
