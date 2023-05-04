@@ -27,6 +27,11 @@ export default function Tasks() {
   }, []);
 
   const getAllPublicTasks = async () => {
+    //do it only if userType is caregiver
+    if (userData.userType != "Caregiver") {
+      setAllPublicTasks([]);
+      return;
+    }
     let getAllPublicTasksUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/GetAllTasks';
     try {
       const response = await fetch(getAllPublicTasksUrl, {
