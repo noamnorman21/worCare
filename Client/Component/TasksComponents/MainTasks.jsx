@@ -38,8 +38,6 @@ export default function MainTasks(props) {
     setAllTasks(allTasks)
   }
   const handleAddBtnPress = () => {
-    console.log('add btn pressed')
-    console.log('allPrivateTasks=', allPrivateTasks);
     setModalVisible(true);
   };
 
