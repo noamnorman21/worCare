@@ -35,16 +35,13 @@ export default function TaskCheckBox(props) {
         let doneTask = props.task;
         doneTask.taskStatus = 'F';
         updateActualTask(doneTask, props.isPrivate);
-
         if (props.isPrivate) {
-            props.refreshPrivateTask();  
-               
+            props.refreshPrivateTask();            
         }
         else {
             props.refreshPublicTask();
         }
         setIsDone(false);
-
     }
 
 

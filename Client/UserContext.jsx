@@ -228,16 +228,9 @@ export function UserProvider({ children }) {
     function updatePendings(pendings) {
         setUserPendingPayments(pendings);
     }
-    //actuallTask, isPrivateTask
     function updateActualTask(task, isPrivateTask) {
         let updateActualTaskUrL = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/UpdateActualTask';
-        let UpdateActualPrivateTaskUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/UpdateActualPrivateTask';
-        
-
-        // console.log(task);
-        // console.log(isPrivateTask);
-        // return;
-
+        let UpdateActualPrivateTaskUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/UpdateActualPrivateTask';       
         if (isPrivateTask) {
             fetch(UpdateActualPrivateTaskUrl, {
                 method: 'PUT',
