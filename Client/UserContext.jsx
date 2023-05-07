@@ -1,6 +1,7 @@
 import React, { useState, useEffect, createContext, useContext, useRef } from 'react'
 import { Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
 //--ruppin api server--
 
 //login
@@ -41,6 +42,7 @@ export function useUserContext() {
 
 export function UserProvider({ children }) {
     const appEmail = 'worcare21@gmail.com';
+    const navigation = useNavigation();
     const [userContext, setUserContext] = useState(null)
     const [userNotifications, setUserNotifications] = useState(null)
     const [userType, setUserType] = useState(null)
@@ -94,7 +96,7 @@ export function UserProvider({ children }) {
             workerId: userData.workerId,//if user is a caregiver, this field will be same as userId
             involvedInId: userData.involvedInId,//if user is a not caregiver, this field will be same as userId
             patientId: userData.patientId,
-
+            
         }
 
         setUserContext(usertoSync);
@@ -169,16 +171,14 @@ export function UserProvider({ children }) {
 
     async function fetchUserContacts(temp) {
         console.log("FetchUserContacts")
-        let user = {}
+        let user={}
         if (temp != undefined) {
-            console.log("temp", temp);
             user = {
                 userId: temp.userId,
                 userType: temp.userType,
             }
         }
         else {
-            console.log("userContext", userContext);
             user = {
                 userId: userContext.userId,
                 userType: userContext.userType,
@@ -197,17 +197,6 @@ export function UserProvider({ children }) {
             setUserContacts(data);
             return data;
         }
-        // if (data.length > 0) {
-        //     let contacts = data.map((item) => {
-        //         return <ContactCard key={item.contactId} contact={item} fetchContacts={fetchContacts} />
-        //     })
-        //     setUserContacts(data);
-        // }
-        // else {
-        //     setContacts([])
-        //     setContactToRender([])
-        //     setaddModalVisible(true)
-        // }
     }
 
     function updateUserContacts() {
@@ -228,82 +217,102 @@ export function UserProvider({ children }) {
     function updatePendings(pendings) {
         setUserPendingPayments(pendings);
     }
-    //actuallTask, isPrivateTask
-    function updateActualTask(task, isPrivateTask) {
-        let updateActualTaskUrL = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/UpdateActualTask';
-        let UpdateActualPrivateTaskUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/UpdateActualPrivateTask';
-        
 
-        // console.log(task);
-        // console.log(isPrivateTask);
-        // return;
-
-        if (isPrivateTask) {
-            fetch(UpdateActualPrivateTaskUrl, {
-                method: 'PUT',
-                headers: new Headers({
-                    'Content-Type': 'application/json; charset=UTF-8',
-                    'Accept': 'application/json; charset=UTF-8',
-                }),
-                body: JSON.stringify(task)
+    function addNewContact(Contact) {
+        fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/NewContact', {
+            method: 'POST',
+            body: JSON.stringify(Contact),
+            headers: new Headers({
+                'Content-Type': 'application/json; charset=UTF-8',
             })
-                .then(res => {
-                    if (res.ok) {
-                        return res.json()
-                            .then(
-                                (result) => {
-                                    console.log("fetch UpdateActualPrivate= ", result);
-                                }
-                            )
-                    }
-                    else {
-                        console.log('err post=', res);
-
-                    }
-                }
-                )
-                .catch((error) => {
-                    console.log('Error:', error.message);
-                }
-                );
-
-        }
-        else {
-            fetch(updateActualTaskUrL, {
-                method: 'PUT',
-                headers: new Headers({
-                    'Content-Type': 'application/json; charset=UTF-8',
-                    'Accept': 'application/json; charset=UTF-8',
-                }),
-                body: JSON.stringify(task)
+        })
+            .then(res => {
+                return res.json()
             })
-                .then(res => {
-                    if (res.ok) {
-                        return res.json()
-                            .then(
-                                (result) => {
-                                    console.log("fetch updateActualTaskUrL= ", result);
-                                }
-                            )
-                    }
-                    else {
-                        console.log('err post=', res);
-
-                    }
-                }
-                )
-                .catch((error) => {
-                    console.log('Error:', error.message);
-                }
-                );
-        }
-
+            .then(
+                (result) => {
+                    console.log("fetch POST= ", result);
+                    Alert.alert("Contact added successfully");
+                    fetchUserContacts();
+                },
+                (error) => {
+                    console.log("err post=", error);
+                });
     }
 
+    async function saveContact(Contact) {
+        console.log("contact to save = ", Contact)
+        let urlContactUpdate = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/UpdateContact/';
+        fetch(urlContactUpdate, {
+            method: 'PUT',
+            body: JSON.stringify(Contact),
+            headers: new Headers({ 'Content-Type': 'application/json; charset=UTF-8' })
+        })
+            .then(res => {
+                if (res.status === 200) {
+                    console.log('contact updated');
+                    return res.json();
+                }
+                else {
+                    Alert.alert('Something went wrong', 'Please try again');
+                    console.log('cannot update contact');
+                }
+            })
+            .then(
+                (result) => {
+                    console.log("fetch POST= ", result);
+                    Alert.alert('Contact Saved', 'The contact was saved successfully');
+                    //   setSaving(false);
+                    //   setEdit(false);
+                    //   setIsChanged(false);
+                    fetchUserContacts();
+                },
+                (error) => {
+                    console.log("err post2=", error);
+                });
+    }
 
+    function deleteContact(Contact) {
+        Alert.alert(
+            'Delete Contact',
+            'Are you sure you want to delete this contact?',
+            [
+                { text: "Don't Delete", style: 'cancel', onPress: () => { } },
+                {
+                    text: 'Delete',
+                    style: 'destructive',
+                    // If the user confirmed, then we dispatch the action we blocked earlier
+                    // This will continue the action that had triggered the removal of the screen
+                    onPress: () => {
+                        fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/DeleteContact/', {
+                            method: 'DELETE',
+                            body: JSON.stringify(Contact),
+                            headers: new Headers({
+                                'Content-Type': 'application/json; charset=UTF-8',
+                            })
+                        })
+                            .then(res => {
+                                return res.json()
+                            })
+                            .then(
+                                (result) => {
+                                    console.log("fetch POST= ", result);
+                                    if (result === 1) {
+                                        Alert.alert('Contact Deleted', 'The contact was deleted successfully');
+                                    }
+                                    fetchUserContacts();
+                                    navigation.goBack();
+                                },
+                                (error) => {
+                                    console.log("err post=", error);
+                                });
+                    }
+                },
+            ]
+        );
+    }
 
-
-    const value = { userContext, userContacts, userNotifications, updateActualTask, updateRememberUserContext, logInContext, fetchUserContacts, logOutContext, updateUserContext, updateUserContacts, updatePendings, updateUserProfile, updateuserNotifications, appEmail }
+    const value = { userContext, userContacts,userNotifications,deleteContact,addNewContact,saveContact,updateRememberUserContext, logInContext,fetchUserContacts, logOutContext, updateUserContext, updateUserContacts, updatePendings, updateUserProfile, updateuserNotifications , appEmail}
     return (
         <UserContext.Provider value={value}>
             {children}

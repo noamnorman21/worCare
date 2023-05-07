@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Alert, Modal,ScrollView } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Modal,ScrollView } from 'react-native'
 import { useEffect, useState } from 'react'
 import React from 'react'
 import { Searchbar } from 'react-native-paper';
@@ -9,7 +9,7 @@ import { useIsFocused } from '@react-navigation/native';
 import EditContact from './ContactComponents/editContact'
 import ContactDetails from './ContactComponents/ContactDetails'
 import { useUserContext } from '../UserContext'
-import { MaterialCommunityIcons, Feather, Octicons, Ionicons } from '@expo/vector-icons';
+import { Octicons } from '@expo/vector-icons';
 import { AddBtn } from './HelpComponents/AddNewTask';
 
 
@@ -34,9 +34,8 @@ export default function Contacts() {
 
 function Main({ navigation }) {
   const [idArr, setidArr] = useState([])
-
   const [Contacts, setContacts] = useState([])
-  const [Search, setSearch] = useState([])
+  const [Search, setSearch] = useState('')
   const [ContactToRender, setContactToRender] = useState([])
   const [addModalVisible, setaddModalVisible] = useState(false);
   const { userContext, setuserContacts, updateuserContacts } = useUserContext()
@@ -45,6 +44,8 @@ function Main({ navigation }) {
   const isFocused = useIsFocused()
 
   const onChangeSearch = query => setSearch(query);
+
+  //moved function to UserContext
 //   const fetchContacts = async () => {
 //     const user = {
 //       userId: userContext.userId,
@@ -91,11 +92,11 @@ function Main({ navigation }) {
   }
 
   useEffect(() => {
-    console.log('useEffect')
+    //render contacts from userContext after fetching from server
     fetchContacts();
   }, [userContacts])
 
-
+//search function
   useEffect(() => {
     let temp = Contacts.filter((item) => {
       return item.contactName.includes(Search)
@@ -110,9 +111,7 @@ function Main({ navigation }) {
     if (isFocused) {
       fetchContacts();
     }
-  }, [isFocused])
-
-  
+  }, [])  
 
   return (
     <View style={styles.container}>
