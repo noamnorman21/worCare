@@ -134,22 +134,15 @@ namespace WebApi.Controllers
         }
 
         [HttpPut]
-        [Route("UpdatePrivateTasks")] //Update private task by foreign user
-        public IHttpActionResult UpdatePrivateTasks([FromBody] PrivateTaskDTO taskDTO)
+        [Route("UpdateActualPrivateTask")] //Update private task by foreign user
+        public IHttpActionResult UpdateActualPrivateTask([FromBody] PrivateActualTaskDTO taskDTO)
         {
-
-            
-            try //Update the task and save the changes
+            try
             {
-                tblPrivateTask tblPrivate = db.tblPrivateTask.Where(x => x.taskName == taskDTO.taskName).FirstOrDefault();
-                tblPrivate.taskName = taskDTO.taskName;
-                tblPrivate.taskFromDate = taskDTO.taskFromDate;
-                tblPrivate.taskToDate = taskDTO.taskToDate;
-                tblPrivate.taskComment = taskDTO.taskComment;
-                tblPrivate.workerId = taskDTO.workerId;
-                tblPrivate.frequency = taskDTO.frequency;
+                tblPrivateActualTask tblPrivateActualTask = db.tblPrivateActualTask.FirstOrDefault(t => t.actualId == taskDTO.actualId);
+                tblPrivateActualTask.taskStatus = taskDTO.taskStatus;
                 db.SaveChanges();
-                return Ok(taskDTO);
+                return Ok("Private Actual Task updated");
             }
             catch (Exception ex)
             {
@@ -483,6 +476,37 @@ namespace WebApi.Controllers
                     }
                 }
                 return Ok("Product updated");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut]
+        [Route("UpdateActualTask")]
+        public IHttpActionResult UpdateActualTask([FromBody] ActualTaskDTO actualTask)
+        {
+            try
+            {
+                tblActualTask tblActualTask = db.tblActualTask.Where(x => x.actualId == actualTask.actualId).FirstOrDefault();
+                if (tblActualTask != null)
+                {
+                    //update the actual task status
+                    tblActualTask.taskStatus = actualTask.taskStatus;
+                    db.SaveChanges();
+                }
+                if (actualTask.drug!=null)
+                {
+                    //if the actual task is a drug, update the drug quantity in table tblDrugForPatient
+                    tblDrugForPatient tblDrugForPatient = db.tblDrugForPatient.Where(x => x.drugId == actualTask.drug.drugId && x.listId == actualTask.listId).FirstOrDefault();
+                    if (tblDrugForPatient != null)
+                    {
+                        tblDrugForPatient.qtyInBox -= tblDrugForPatient.dosage;
+                        db.SaveChanges();
+                    }
+                }
+                return Ok("Actual Task updated");
             }
             catch (Exception ex)
             {

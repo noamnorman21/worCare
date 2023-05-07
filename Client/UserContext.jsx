@@ -94,7 +94,7 @@ export function UserProvider({ children }) {
             workerId: userData.workerId,//if user is a caregiver, this field will be same as userId
             involvedInId: userData.involvedInId,//if user is a not caregiver, this field will be same as userId
             patientId: userData.patientId,
-            
+
         }
 
         setUserContext(usertoSync);
@@ -169,7 +169,7 @@ export function UserProvider({ children }) {
 
     async function fetchUserContacts(temp) {
         console.log("FetchUserContacts")
-        let user={}
+        let user = {}
         if (temp != undefined) {
             console.log("temp", temp);
             user = {
@@ -228,8 +228,82 @@ export function UserProvider({ children }) {
     function updatePendings(pendings) {
         setUserPendingPayments(pendings);
     }
+    //actuallTask, isPrivateTask
+    function updateActualTask(task, isPrivateTask) {
+        let updateActualTaskUrL = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/UpdateActualTask';
+        let UpdateActualPrivateTaskUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/UpdateActualPrivateTask';
+        
 
-    const value = { userContext, userContacts,userNotifications,updateRememberUserContext, logInContext,fetchUserContacts, logOutContext, updateUserContext, updateUserContacts, updatePendings, updateUserProfile, updateuserNotifications , appEmail}
+        // console.log(task);
+        // console.log(isPrivateTask);
+        // return;
+
+        if (isPrivateTask) {
+            fetch(UpdateActualPrivateTaskUrl, {
+                method: 'PUT',
+                headers: new Headers({
+                    'Content-Type': 'application/json; charset=UTF-8',
+                    'Accept': 'application/json; charset=UTF-8',
+                }),
+                body: JSON.stringify(task)
+            })
+                .then(res => {
+                    if (res.ok) {
+                        return res.json()
+                            .then(
+                                (result) => {
+                                    console.log("fetch UpdateActualPrivate= ", result);
+                                }
+                            )
+                    }
+                    else {
+                        console.log('err post=', res);
+
+                    }
+                }
+                )
+                .catch((error) => {
+                    console.log('Error:', error.message);
+                }
+                );
+
+        }
+        else {
+            fetch(updateActualTaskUrL, {
+                method: 'PUT',
+                headers: new Headers({
+                    'Content-Type': 'application/json; charset=UTF-8',
+                    'Accept': 'application/json; charset=UTF-8',
+                }),
+                body: JSON.stringify(task)
+            })
+                .then(res => {
+                    if (res.ok) {
+                        return res.json()
+                            .then(
+                                (result) => {
+                                    console.log("fetch updateActualTaskUrL= ", result);
+                                }
+                            )
+                    }
+                    else {
+                        console.log('err post=', res);
+
+                    }
+                }
+                )
+                .catch((error) => {
+                    console.log('Error:', error.message);
+                }
+                );
+        }
+
+    }
+
+
+
+
+    const value = { userContext, userContacts, userNotifications, updateActualTask, updateRememberUserContext, logInContext, fetchUserContacts, logOutContext, updateUserContext, updateUserContacts, updatePendings, updateUserProfile, updateuserNotifications, appEmail }
     return (
         <UserContext.Provider value={value}>
             {children}

@@ -52,15 +52,21 @@ export default function GeneralTasks(props) {
     setModalVisible(false);
     props.refreshPublicTask()
   };
+  const refreshPublicTask = () => {
+    props.refreshPublicTask()
+  }
+  const refreshPrivateTask = () => {
+    props.refreshPrivateTask()
+  }
+
 
   const toggleHeader = () => {
-    setTimeout(() => {
+     setTimeout(() => {
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
       setHeader(!header);
     }, 200);
   }
   const sendNavigtion = (task) => {
-
     props.moveScreens(task)
   }
 
@@ -80,7 +86,7 @@ export default function GeneralTasks(props) {
               if (task.patientId == null) {
                 isPrivate = true;
               }
-              return (<TaskCheckBox key={index} task={task} isPrivate={isPrivate} moveScreens={sendNavigtion} />)
+              return (<TaskCheckBox key={index} task={task} isPrivate={isPrivate} moveScreens={sendNavigtion} refreshPublicTask={refreshPublicTask} refreshPrivateTask={refreshPrivateTask} />)
             })}
           </View>
         </ScrollView>

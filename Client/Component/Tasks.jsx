@@ -27,11 +27,6 @@ export default function Tasks() {
   }, []);
 
   const getAllPublicTasks = async () => {
-    //do it only if userType is caregiver
-    if (userData.userType != "Caregiver") {
-      setAllPublicTasks([]);
-      return;
-    }
     let getAllPublicTasksUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/GetAllTasks';
     try {
       const response = await fetch(getAllPublicTasksUrl, {
@@ -47,6 +42,10 @@ export default function Tasks() {
     }
   }
   const getAllPrivateTasks = async () => {
+        //do it only if userType is caregiver
+    if (userData.userType != "Caregiver") {
+      return;
+    }
     let getAllPrivateTasksUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/GetAllPrivateTasks';
     let forginUser= {
       Id:userData.workerId
@@ -76,7 +75,7 @@ export default function Tasks() {
     alert(task.taskId);
     //move to main screen
     
-   
+  
 
   }
 
@@ -105,7 +104,7 @@ export default function Tasks() {
     >
       <Tab.Screen name="Main" //send allPrivateTasks to MainTasks, if userType is caregiver        
         children={() => <Main allPrivateTasks={allPrivateTasks} allPublicTasks={allPublicTasks} refreshPublicTask={getAllPublicTasks} />} />
-      <Tab.Screen name="General"  children={() => <General allPrivateTasks={allPrivateTasks} allPublicTasks={allPublicTasks} moveScreens={moveScreens} refreshPublicTask={getAllPublicTasks}/> } />
+      <Tab.Screen name="General"  children={() => <General allPrivateTasks={allPrivateTasks} allPublicTasks={allPublicTasks} moveScreens={moveScreens} refreshPrivateTask={getAllPrivateTasks} refreshPublicTask={getAllPublicTasks}/> } />
       <Tab.Screen name="Shop" children={() => <Shop allShopTasks={allShopTasks} refreshPublicTask={getAllPublicTasks} />} />
       <Tab.Screen name="Medicine" children={() => <Medicine allMedicineTasks={allMedicineTasks} refreshPublicTask={getAllPublicTasks}/>} />
     </Tab.Navigator>

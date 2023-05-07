@@ -1,30 +1,54 @@
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Alert } from 'react-native'
 import { useState, useEffect } from 'react'
 import { Feather, Octicons } from '@expo/vector-icons';
+import { useUserContext } from '../../UserContext';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function TaskCheckBox(props) {
     const [isDone, setIsDone] = useState(false);
     const checkIcon = ["check-circle", "circle"]
+    const { updateActualTask } = useUserContext();
+
+    //if isDone is true for at least 3 seconds, start the function finshTaskFunction, if the user press on the check icon again, the timer will be canceled
     useEffect(() => {
-        //timer for 5 seconds, after 5 seconds the id of the task will be sent to the parent component
         if (isDone) {
-            setTimeout(() => {
-                setIsDone(false);
-                // props.onPress(props.task.id);לא קיים כרגע, להוסיף בהמשך בשביל לסמן משימה כבוצעה 
+            const timer = setTimeout(() => {
+                finshTaskFunction();
             }, 3000);
+            return () => clearTimeout(timer);
         }
     }, [isDone]);
+
+
 
     const openTaskList = () => {
         //צריך ליצור את ההמשך במסכים
         props.moveScreens(props.task);
-        
+
+    }
+    async function finshTaskFunction() {
+        if (!isDone) {
+            alert("Task is not done yet")
+            return;
+        }
+        let doneTask = props.task;
+        doneTask.taskStatus = 'F';
+        updateActualTask(doneTask, props.isPrivate);
+
+        if (props.isPrivate) {
+            props.refreshPrivateTask();  
+               
+        }
+        else {
+            props.refreshPublicTask();
+        }
+        setIsDone(false);
+
     }
 
-    // let isPrivate=props.task.isPrivate; //להוציא מההערה אחרי שנשלח 
-    const isPrivate = props.isPrivate;//רק לבדיקה עד שנשלח, כי אין עדיין פונקציה שמחזירה את הפרטים של המשימה
+
+    const isPrivate = props.isPrivate;
     return (
         <View style={[styles.container, isPrivate ? { backgroundColor: '#FFF7EB' } : {}]}>
 
