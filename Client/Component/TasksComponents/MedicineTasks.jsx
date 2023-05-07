@@ -11,6 +11,7 @@ export default function MedicineTasks(props) {
    const handleModalClose = () => {
       setModalVisible(false);
       props.refreshPublicTask()
+      props.refreshPrivateTask()
    };
 
    return (
