@@ -11,7 +11,7 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export default function ContactDetails({ route, navigation }) {
-  const { fetchUserContacts } = useUserContext()
+  const { deleteContact,saveContact } = useUserContext()
   const [isChanged, setIsChanged] = useState(false);
   const [Edit, setEdit] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -125,7 +125,7 @@ export default function ContactDetails({ route, navigation }) {
     return emailRegex.test(email)
   }
 
-  const validateInput = () => {
+  const validateInput = async () => {
     const { email, contactName, mobileNo, phoneNo } = Contact
     console.log(email)
     console.log(Contact)
@@ -146,80 +146,84 @@ export default function ContactDetails({ route, navigation }) {
       setSaving(false);
       return Alert.alert('Invalid Phone Number', 'Please enter a valid mobile or Telephone number')
     }
-    saveContact(Contact);
+    await saveContact(Contact);
+    setSaving(false);
+    setEdit(false);
+    setIsChanged(false);
   }
 
-  const saveContact = () => {
-    console.log("contact to save = ", Contact)
-    let urlContactUpdate = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/UpdateContact/';
-    fetch(urlContactUpdate, {
-      method: 'PUT',
-      body: JSON.stringify(Contact),
-      headers: new Headers({ 'Content-Type': 'application/json; charset=UTF-8' })
-    })
-      .then(res => {
-        if (res.status === 200) {
-          console.log('contact updated');
-          return res.json();
-        }
-        else {
-          Alert.alert('Something went wrong', 'Please try again');
-          console.log('cannot update contact');
-        }
-      })
-      .then(
-        (result) => {
-          console.log("fetch POST= ", result);
-          Alert.alert('Contact Saved', 'The contact was saved successfully');
-          setSaving(false);
-          setEdit(false);
-          setIsChanged(false);
-          fetchUserContacts();
-        },
-        (error) => {
-          console.log("err post2=", error);
-        });
-  }
+  // const saveContact = () => {
+  //   console.log("contact to save = ", Contact)
+  //   let urlContactUpdate = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/UpdateContact/';
+  //   fetch(urlContactUpdate, {
+  //     method: 'PUT',
+  //     body: JSON.stringify(Contact),
+  //     headers: new Headers({ 'Content-Type': 'application/json; charset=UTF-8' })
+  //   })
+  //     .then(res => {
+  //       if (res.status === 200) {
+  //         console.log('contact updated');
+  //         return res.json();
+  //       }
+  //       else {
+  //         Alert.alert('Something went wrong', 'Please try again');
+  //         console.log('cannot update contact');
+  //       }
+  //     })
+  //     .then(
+  //       (result) => {
+  //         console.log("fetch POST= ", result);
+  //         Alert.alert('Contact Saved', 'The contact was saved successfully');
+  //         setSaving(false);
+  //         setEdit(false);
+  //         setIsChanged(false);
+  //         fetchUserContacts();
+  //       },
+  //       (error) => {
+  //         console.log("err post2=", error);
+  //       });
+  // }
 
-  const deleteContact = () => {
-    Alert.alert(
-      'Delete Contact',
-      'Are you sure you want to delete this contact?',
-      [
-        { text: "Don't Delete", style: 'cancel', onPress: () => { } },
-        {
-          text: 'Delete',
-          style: 'destructive',
-          // If the user confirmed, then we dispatch the action we blocked earlier
-          // This will continue the action that had triggered the removal of the screen
-          onPress: () => {
-            fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/DeleteContact/', {
-              method: 'DELETE',
-              body: JSON.stringify(Contact),
-              headers: new Headers({
-                'Content-Type': 'application/json; charset=UTF-8',
-              })
-            })
-              .then(res => {
-                return res.json()
-              })
-              .then(
-                (result) => {
-                  console.log("fetch POST= ", result);
-                  if (result === 1) {
-                    Alert.alert('Contact Deleted', 'The contact was deleted successfully');
-                  }
-                  fetchUserContacts();
-                  navigation.goBack();
-                },
-                (error) => {
-                  console.log("err post=", error);
-                });
-          }
-        },
-      ]
-    );
-  }
+  
+  // const deleteContact = () => {
+  //   Alert.alert(
+  //     'Delete Contact',
+  //     'Are you sure you want to delete this contact?',
+  //     [
+  //       { text: "Don't Delete", style: 'cancel', onPress: () => { } },
+  //       {
+  //         text: 'Delete',
+  //         style: 'destructive',
+  //         // If the user confirmed, then we dispatch the action we blocked earlier
+  //         // This will continue the action that had triggered the removal of the screen
+  //         onPress: () => {
+  //           fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/DeleteContact/', {
+  //             method: 'DELETE',
+  //             body: JSON.stringify(Contact),
+  //             headers: new Headers({
+  //               'Content-Type': 'application/json; charset=UTF-8',
+  //             })
+  //           })
+  //             .then(res => {
+  //               return res.json()
+  //             })
+  //             .then(
+  //               (result) => {
+  //                 console.log("fetch POST= ", result);
+  //                 if (result === 1) {
+  //                   Alert.alert('Contact Deleted', 'The contact was deleted successfully');
+  //                 }
+  //                 fetchUserContacts();
+  //                 navigation.goBack();
+  //               },
+  //               (error) => {
+  //                 console.log("err post=", error);
+  //               });
+  //         }
+  //       },
+  //     ]
+  //   );
+  // }
 
   const optionsToCall = () => {
     if (!Contact.mobileNo && !Contact.phoneNo) {
@@ -289,8 +293,6 @@ export default function ContactDetails({ route, navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
           <ScrollView contentContainerStyle={styles.centeredView}>
             {!Edit && <Text style={styles.contactheader}>{Contact.contactName}</Text>}
             {!Edit && <View style={styles.ButtonView}>
@@ -371,8 +373,8 @@ export default function ContactDetails({ route, navigation }) {
                 editable={Edit ? true : false}
                 mode='outlined'
                 label='Comment'
-                value={Contact.comment}
-                onChangeText={(val) => handleInputChange('comment', val)}
+                value={Contact.contactComment}
+                onChangeText={(val) => handleInputChange('contactComment', val)}
                 placeholder="Type Something..."
                 multiline
                 numberOfLines={4}
@@ -381,14 +383,11 @@ export default function ContactDetails({ route, navigation }) {
                 outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
                 activeOutlineColor="#548DFF"
                 outlineColor='#E6EBF2' />
-
-              <TouchableOpacity style={styles.deleteBtn} onPress={deleteContact}>
+              <TouchableOpacity style={styles.deleteBtn} onPress={()=>deleteContact(Contact)}>
                 <Text style={styles.deleteBtnTxt}>Delete Contact</Text>
               </TouchableOpacity>
             </View>
           </ScrollView>
-        </TouchableWithoutFeedback>
-      </KeyboardAvoidingView>
     </SafeAreaView >
   )
 }
@@ -406,7 +405,6 @@ const styles = StyleSheet.create({
     right: 10,
   },
   centeredView: {
-    flex: 1,
     alignItems: 'center',
     position: 'relative',
   },

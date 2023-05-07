@@ -13,7 +13,7 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export default function NewPayment(props) {
-  const { userContext } = useUserContext();
+  const { userContext,GetUserPending } = useUserContext();
   const [payment, setPayment] = useState({
     amountToPay: '',
     requestSubject: '',
@@ -158,6 +158,7 @@ export default function NewPayment(props) {
       .then(
         (result) => {
           console.log("fetch POST= ", result);
+          GetUserPending()
           props.cancel();
         },
         (error) => {

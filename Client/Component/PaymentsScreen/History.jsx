@@ -14,7 +14,7 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export default function History({ navigation, route }) {
-  const { userContext } = useUserContext();// יש להחליף למשתנה של המשתמש הנוכחי
+  const { userContext,userHistoryPayments } = useUserContext();// יש להחליף למשתנה של המשתמש הנוכחי
   const [History, setHistory] = useState('')
   const [modal1Visible, setModal1Visible] = useState(false);
   const isFocused = useIsFocused()
@@ -35,29 +35,40 @@ export default function History({ navigation, route }) {
     );
   }
 
-  useEffect(() => {
-    if (isFocused) {
-      getHistory()
-    }
-  }, [isFocused])
+ useEffect(() => {
+    renderHistory()
+  }, [userHistoryPayments])
 
-  const getHistory = async () => {
+  // const renderHistory = async () => {
+  //   try {
+  //     const user = {
+  //       userId: userContext.userId,
+  //       userType: userContext.userType
+  //     }
+  //     const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/renderHistory/', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify(user)
+  //     });
+  //     const data = await response.json();
+  //     let arr = data.map((item) => {
+  //       return (
+  //         <Request key={item.requestId} renderHistory={renderHistory} data={item} id={item.requestId} Notofication={Notification} View={View} Edit={Edit} subject={item.requestSubject} amountToPay={item.amountToPay} date={item.requestDate} requestComment={item.requestComment} />
+  //       )
+  //     })
+  //     setHistory(arr)
+  //   } catch (error) {
+  //     console.log("error", error)
+  //   }
+  // }
+
+  const renderHistory = async () => {
     try {
-      const user = {
-        userId: userContext.userId,
-        userType: userContext.userType
-      }
-      const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/GetHistory/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(user)
-      });
-      const data = await response.json();
-      let arr = data.map((item) => {
+      let arr = userHistoryPayments.map((item) => {
         return (
-          <Request key={item.requestId} getHistory={getHistory} data={item} id={item.requestId} Notofication={Notification} View={View} Edit={Edit} subject={item.requestSubject} amountToPay={item.amountToPay} date={item.requestDate} requestComment={item.requestComment} />
+          <Request key={item.requestId} renderHistory={renderHistory} data={item} id={item.requestId} Notofication={Notification} View={View} Edit={Edit} subject={item.requestSubject} amountToPay={item.amountToPay} date={item.requestDate} requestComment={item.requestComment} />
         )
       })
       setHistory(arr)
@@ -65,6 +76,7 @@ export default function History({ navigation, route }) {
       console.log("error", error)
     }
   }
+
 
   const Notification = (id) => {
     Alert.alert(

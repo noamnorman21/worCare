@@ -8,7 +8,7 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export default function AddNewContact(props) {
-  const { userContext ,fetchUserContacts} = useUserContext()
+  const { userContext ,fetchUserContacts,addNewContact} = useUserContext()
   const [Contact, setContact] = useState({
     contactName: null,
     phoneNo: null,
@@ -45,8 +45,9 @@ export default function AddNewContact(props) {
     if (Contact.phoneNo && !validatePhone(Contact.phoneNo)) {
       return Alert.alert('Invalid Telephone number', 'Telephone number must contain only digits')
     }
-    sendToDB();
-  }
+    addNewContact(Contact)
+    props.closeModal();
+    }
 
   const sendToDB = () => {
     fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/NewContact', {

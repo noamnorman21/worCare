@@ -1,6 +1,7 @@
 import React, { useState, useEffect, createContext, useContext, useRef } from 'react'
 import { Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
 //--ruppin api server--
 
 //login
@@ -41,6 +42,7 @@ export function useUserContext() {
 
 export function UserProvider({ children }) {
     const appEmail = 'worcare21@gmail.com';
+    const navigation = useNavigation();
     const [userContext, setUserContext] = useState(null)
     const [userNotifications, setUserNotifications] = useState(null)
     const [userType, setUserType] = useState(null)
@@ -108,6 +110,8 @@ export function UserProvider({ children }) {
         }
         setUserNotifications(notifications)
         fetchUserContacts(usertoSync);
+        GetUserPending(usertoSync);
+        GetUserHistory(usertoSync);
     }
 
     function logOutContext() {
@@ -293,10 +297,194 @@ export function UserProvider({ children }) {
 
     }
 
+    function addNewContact(Contact) {
+        fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/NewContact', {
+            method: 'POST',
+            body: JSON.stringify(Contact),
+            headers: new Headers({
+                'Content-Type': 'application/json; charset=UTF-8',
+            })
+        })
+            .then(res => {
+                return res.json()
+            })
+            .then(
+                (result) => {
+                    console.log("fetch POST= ", result);
+                    Alert.alert("Contact added successfully");
+                    fetchUserContacts();
+                },
+                (error) => {
+                    console.log("err post=", error);
+                });
+    }
+
+    async function saveContact(Contact) {
+        console.log("contact to save = ", Contact)
+        let urlContactUpdate = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/UpdateContact/';
+        fetch(urlContactUpdate, {
+            method: 'PUT',
+            body: JSON.stringify(Contact),
+            headers: new Headers({ 'Content-Type': 'application/json; charset=UTF-8' })
+        })
+            .then(res => {
+                if (res.status === 200) {
+                    console.log('contact updated');
+                    return res.json();
+                }
+                else {
+                    Alert.alert('Something went wrong', 'Please try again');
+                    console.log('cannot update contact');
+                }
+            })
+            .then(
+                (result) => {
+                    console.log("fetch POST= ", result);
+                    Alert.alert('Contact Saved', 'The contact was saved successfully');
+                    //   setSaving(false);
+                    //   setEdit(false);
+                    //   setIsChanged(false);
+                    fetchUserContacts();
+                },
+                (error) => {
+                    console.log("err post2=", error);
+                });
+    }
+
+    function deleteContact(Contact) {
+        Alert.alert(
+            'Delete Contact',
+            'Are you sure you want to delete this contact?',
+            [
+                { text: "Don't Delete", style: 'cancel', onPress: () => { } },
+                {
+                    text: 'Delete',
+                    style: 'destructive',
+                    // If the user confirmed, then we dispatch the action we blocked earlier
+                    // This will continue the action that had triggered the removal of the screen
+                    onPress: () => {
+                        fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/DeleteContact/', {
+                            method: 'DELETE',
+                            body: JSON.stringify(Contact),
+                            headers: new Headers({
+                                'Content-Type': 'application/json; charset=UTF-8',
+                            })
+                        })
+                            .then(res => {
+                                return res.json()
+                            })
+                            .then(
+                                (result) => {
+                                    console.log("fetch POST= ", result);
+                                    if (result === 1) {
+                                        Alert.alert('Contact Deleted', 'The contact was deleted successfully');
+                                    }
+                                    fetchUserContacts();
+                                    navigation.goBack();
+                                },
+                                (error) => {
+                                    console.log("err post=", error);
+                                });
+                    }
+                },
+            ]
+        );
+    }
+
+    //Finance
+    async function GetUserPending(userData) {
+        try {
+            let user;
+            if (userData === undefined) {
+                user = {
+                    userId: userContext.userId,
+                    userType: userContext.userType
+                }
+            }
+            else {
+                user = {
+                    userId: userData.userId,
+                    userType: userData.userType
+                }
+            }
+            fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/GetPending/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Cache-Control': 'no-cache'
+                },
+                body: JSON.stringify(user)
+            }).then((response) => {
+                if (response.status === 200) {
+                    return response.json();
+                }
+                else {
+                    return null;
+                }
+            })
+                .then((responseJson) => {
+                    if (responseJson != null) {
+                        console.log("responseJson = ", responseJson);
+                        setUserPendingPayments(responseJson);
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                }
+                )
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async function GetUserHistory (userData) {
+        try {
+            let user;
+            if (userData === undefined) {
+                user = {
+                    userId: userContext.userId,
+                    userType: userContext.userType
+                }
+            }
+            else {
+                user = {
+                    userId: userData.userId,
+                    userType: userData.userType
+                }
+            }
+          fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/GetHistory/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(user)
+          }).then((response) => {
+            if (response.status === 200) {
+                return response.json();
+            }
+            else {
+                return null;
+            }
+            })
+            .then((responseJson) => {
+                if (responseJson != null) {
+                    console.log("History = ", responseJson);
+                    setUserHistoryPayments(responseJson);
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            }
+            )
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
 
 
-    const value = { userContext, userContacts, userNotifications, updateActualTask, updateRememberUserContext, logInContext, fetchUserContacts, logOutContext, updateUserContext, updateUserContacts, updatePendings, updateUserProfile, updateuserNotifications, appEmail }
+
+    const value = { userContext, userContacts, userNotifications,userPendingPayments,userHistoryPayments,GetUserHistory,GetUserPending,deleteContact,addNewContact,saveContact,updateActualTask, updateRememberUserContext, logInContext, fetchUserContacts, logOutContext, updateUserContext, updateUserContacts, updatePendings, updateUserProfile, updateuserNotifications, appEmail }
     return (
         <UserContext.Provider value={value}>
             {children}
