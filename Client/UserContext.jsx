@@ -175,14 +175,12 @@ export function UserProvider({ children }) {
         console.log("FetchUserContacts")
         let user = {}
         if (temp != undefined) {
-            console.log("temp", temp);
             user = {
                 userId: temp.userId,
                 userType: temp.userType,
             }
         }
         else {
-            console.log("userContext", userContext);
             user = {
                 userId: userContext.userId,
                 userType: userContext.userType,
@@ -201,17 +199,6 @@ export function UserProvider({ children }) {
             setUserContacts(data);
             return data;
         }
-        // if (data.length > 0) {
-        //     let contacts = data.map((item) => {
-        //         return <ContactCard key={item.contactId} contact={item} fetchContacts={fetchContacts} />
-        //     })
-        //     setUserContacts(data);
-        // }
-        // else {
-        //     setContacts([])
-        //     setContactToRender([])
-        //     setaddModalVisible(true)
-        // }
     }
 
     function updateUserContacts() {
@@ -393,6 +380,7 @@ export function UserProvider({ children }) {
 
     //Finance
     async function GetUserPending(userData) {
+        console.log("GetUserHistory")
         try {
             let user;
             if (userData === undefined) {
@@ -424,7 +412,6 @@ export function UserProvider({ children }) {
             })
                 .then((responseJson) => {
                     if (responseJson != null) {
-                        console.log("responseJson = ", responseJson);
                         setUserPendingPayments(responseJson);
                     }
                 })
@@ -438,6 +425,7 @@ export function UserProvider({ children }) {
     }
 
     async function GetUserHistory (userData) {
+        console.log("GetUserHistory")
         try {
             let user;
             if (userData === undefined) {
@@ -468,7 +456,6 @@ export function UserProvider({ children }) {
             })
             .then((responseJson) => {
                 if (responseJson != null) {
-                    console.log("History = ", responseJson);
                     setUserHistoryPayments(responseJson);
                 }
             })

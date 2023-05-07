@@ -24,7 +24,7 @@ import { useUserContext } from '../../UserContext';
 const Stack = createStackNavigator();
 
 export default function NavigateSignUp() {
-  const { updateUserContext, updateuserNotifications, fetchUserContacts } = useUserContext();
+  const { updateUserContext, updateuserNotifications, fetchUserContacts,GetUserPending,GetUserHistory } = useUserContext();
   const [isSigned, setIsSigned] = useState('bla');
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -56,6 +56,8 @@ export default function NavigateSignUp() {
         }
         updateuserNotifications(notifications)
         fetchUserContacts(JSON.parse(storageUser2));
+        GetUserPending(JSON.parse(storageUser2));
+        GetUserHistory(JSON.parse(storageUser2));
       }
     }
     catch (error) {
