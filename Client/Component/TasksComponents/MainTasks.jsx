@@ -50,6 +50,7 @@ export default function MainTasks(props) {
       return taskDate.getDate() == today.getDate() && taskDate.getMonth() == today.getMonth() && taskDate.getFullYear() == today.getFullYear()
     }
     )
+    setTodayTasks(todayTasks)
   }
 
   const handleAddBtnPress = () => {
@@ -80,11 +81,13 @@ export default function MainTasks(props) {
           </TouchableOpacity>
         </View>
         <ScrollView>
-          {
-            todayTasks.map((task, index) => {
-              return (<TaskView key={index} task={task} />)
-            })
-          }
+          <View>
+            {
+              allTasks.map((task, index) => {
+                return (<TaskView key={index} task={task} />)
+              })
+            }
+          </View>
         </ScrollView>
       </View>
 

@@ -12,6 +12,7 @@ export default function TaskView(props) {
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
   useEffect(() => {
+    console.log(props.task)
     checkDate()
   }, [])
 
@@ -68,8 +69,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: SCREEN_WIDTH * 0.9,
-    maxHeight: 150,
     flexDirection: 'column',
+    height: 150,
   },
   taskTitleTxt: {
     fontSize: 18,
