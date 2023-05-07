@@ -14,52 +14,67 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export default function Pending() {
-  const { userContext } = useUserContext()
+  const { userContext,userPendingPayments } = useUserContext()
   //  const {userPendingPayments} = useUserContext()
   const [modal1Visible, setModal1Visible] = useState(false);
   const [Pendings, setPendings] = useState()
   const isFocused = useIsFocused()
 
-  useEffect(() => {
-    if (isFocused && !modal1Visible) {
-      getPending()
-    }
-  }, [isFocused, modal1Visible])
+useEffect(() => {
+  renderPendings()
+}, [userPendingPayments])
 
-
-  const getPending = async () => {
-    try {
-      const user = {
-        userId: userContext.userId,
-        userType: userContext.userType
-      }
-      const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/GetPending/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Cache-Control': 'no-cache'
-        },
-        body: JSON.stringify(user)
-      });
-      const data = await response.json();
-      console.log("Pending", data)
-      let arr = data.map((item) => {
-        return (
-          <Request
-            key={item.requestId} getPending={getPending} data={item}
-            id={item.requestId} Notification={Notification}
-            View={View} subject={item.requestSubject}
-            amountToPay={item.amountToPay}
-            date={item.requestDate} requestComment={item.requestComment}
-          />
-        )
-      })
-      console.log("Arr",arr.length)
-      setPendings(arr)
-    } catch (error) {
-      console.log(error)
+  const renderPendings = async () => {
+    let arr = userPendingPayments.map((item) => {
+      return (
+        <Request
+          key={item.requestId} renderPendings={renderPendings} data={item}
+          id={item.requestId} Notification={Notification}
+          View={View} subject={item.requestSubject}
+          amountToPay={item.amountToPay}
+          date={item.requestDate} requestComment={item.requestComment}
+        />
+      )
     }
+    )
+    setPendings(arr)
   }
+
+// old renderPendings
+  // const renderPendings = async () => {
+  //   try {
+  //     const user = {
+  //       userId: userContext.userId,
+  //       userType: userContext.userType
+  //     }
+  //     const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/GetPending/', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Cache-Control': 'no-cache'
+  //       },
+  //       body: JSON.stringify(user)
+  //     });
+  //     const data = await response.json();
+  //     console.log("Pending", data)
+  //     let arr = data.map((item) => {
+  //       return (
+  //         <Request
+  //           key={item.requestId} renderPendings={renderPendings} data={item}
+  //           id={item.requestId} Notification={Notification}
+  //           View={View} subject={item.requestSubject}
+  //           amountToPay={item.amountToPay}
+  //           date={item.requestDate} requestComment={item.requestComment}
+  //         />
+  //       )
+  //     })
+  //     console.log("Arr",arr.length)
+  //     setPendings(arr)
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+  // }
+  
 
   const Notification = (id) => {
     Alert.alert(
@@ -82,7 +97,7 @@ export default function Pending() {
       <ScrollView contentContainerStyle={styles.pending}>
         {Pendings}
         <Modal animationType='slide' transparent={true} visible={modal1Visible}>
-          <NewPayment cancel={() => { setModal1Visible(false); getPending() }} />
+          <NewPayment cancel={() => { setModal1Visible(false); renderPendings() }} />
         </Modal>
       </ScrollView>
       {userContext.userType == "Caregiver" ? <View style={styles.addBtnView}><AddBtn onPress={() => setModal1Visible(true)} /></View> : null}
@@ -103,7 +118,7 @@ function Request(props) {
   const dateString = day + "/" + month + "/" + newYear;
   const [valueChanged, setValueChanged] = useState(false);
   const [status, setStatus] = useState(props.data.requestStatus);
-  const { userContext } = useUserContext();
+  const { userContext,GetUserPending, GetUserHistory } = useUserContext();
   const [DownloadProgress, setDownloadProgress] = useState();
 
   const toggle = () => {
@@ -171,7 +186,8 @@ function Request(props) {
             }).then(res => {
              if (res.ok) {
                 console.log('res.ok', res.ok);
-                props.getPending()
+                GetUserPending();
+                GetUserHistory();
                 return res.json()
               }
             })
@@ -211,7 +227,8 @@ function Request(props) {
       });
       const data = await response.json();
       console.log(data)
-      props.getPending()
+      GetUserPending();
+      GetUserHistory();
     } catch (error) {
       console.log(error)
     }
@@ -317,7 +334,7 @@ function Request(props) {
                 </View>
               </Modal>
               <Modal animationType='slide' transparent={true} visible={modal2Visible}>
-                <EditPaymentScreen cancel={() => { setModal2Visible(false); props.getPending() }} data={props.data} />
+                <EditPaymentScreen cancel={() => { setModal2Visible(false); props.renderPendings() }} data={props.data} />
               </Modal>
             </View>
             <View style={styles.requestItemBody}>
@@ -382,7 +399,7 @@ function Request(props) {
               </View>
             </Modal>
             <Modal animationType='slide' transparent={true} visible={modal2Visible}>
-              <EditPaymentScreen cancel={() => { setModal2Visible(false); props.getPending() }} data={props.data} />
+              <EditPaymentScreen cancel={() => { setModal2Visible(false); props.renderPendings() }} data={props.data} />
             </Modal>
           </View>
         }

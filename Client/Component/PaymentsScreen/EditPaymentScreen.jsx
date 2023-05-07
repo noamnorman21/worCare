@@ -9,6 +9,7 @@ import { FontAwesome, MaterialIcons } from '@expo/vector-icons'
 import * as ImagePicker from 'expo-image-picker';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from '../../config/firebase';
+import { useUserContext } from '../../UserContext';
 
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -29,6 +30,7 @@ export default function EditPaymentScreen(props) {
   })
   const [valueChanged, setValueChanged] = useState(false);
   const [PlatformType, setPlatformType] = useState(Platform.OS);
+  const {GetUserPending } = useUserContext();
 
   const openCamera = async () => {
     // Ask the user for the permission to access the camera
@@ -215,6 +217,7 @@ export default function EditPaymentScreen(props) {
       .then(
         (result) => {
           console.log("fetch POST= ", result);
+          GetUserPending()
           props.cancel();
         },
         (error) => {

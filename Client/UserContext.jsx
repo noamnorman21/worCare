@@ -110,6 +110,8 @@ export function UserProvider({ children }) {
         }
         setUserNotifications(notifications)
         fetchUserContacts(usertoSync);
+        GetUserPending(usertoSync);
+        GetUserHistory(usertoSync);
     }
 
     function logOutContext() {
@@ -169,6 +171,27 @@ export function UserProvider({ children }) {
         setUserContext(userContext)
     }
 
+
+
+    function updateUserContacts() {
+        fetchUserContacts();
+    }
+
+    function updateuserNotifications(notifications) {
+        console.log("updateUser", notifications)
+        setUserNotifications(notifications)
+        AsyncStorage.setItem('userNotifications', JSON.stringify(notifications));
+    }
+
+    async function updateRememberUserContext(userContext) {
+        console.log("updateRememberUser", userContext);
+        setUserContext(userContext);
+    }
+
+    function updatePendings(pendings) {
+        setUserPendingPayments(pendings);
+    }
+
     async function fetchUserContacts(temp) {
         console.log("FetchUserContacts")
         let user={}
@@ -194,28 +217,10 @@ export function UserProvider({ children }) {
         });
         const data = await response.json();
         if (data != null) {
+            console.log("data = ", data);
             setUserContacts(data);
             return data;
         }
-    }
-
-    function updateUserContacts() {
-        fetchUserContacts();
-    }
-
-    function updateuserNotifications(notifications) {
-        console.log("updateUser", notifications)
-        setUserNotifications(notifications)
-        AsyncStorage.setItem('userNotifications', JSON.stringify(notifications));
-    }
-
-    async function updateRememberUserContext(userContext) {
-        console.log("updateRememberUser", userContext);
-        setUserContext(userContext);
-    }
-
-    function updatePendings(pendings) {
-        setUserPendingPayments(pendings);
     }
 
     function addNewContact(Contact) {
@@ -312,7 +317,98 @@ export function UserProvider({ children }) {
         );
     }
 
-    const value = { userContext, userContacts,userNotifications,deleteContact,addNewContact,saveContact,updateRememberUserContext, logInContext,fetchUserContacts, logOutContext, updateUserContext, updateUserContacts, updatePendings, updateUserProfile, updateuserNotifications , appEmail}
+    //Finance
+    async function GetUserPending(userData) {
+        try {
+            let user;
+            if (userData === undefined) {
+                user = {
+                    userId: userContext.userId,
+                    userType: userContext.userType
+                }
+            }
+            else {
+                user = {
+                    userId: userData.userId,
+                    userType: userData.userType
+                }
+            }
+            fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/GetPending/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Cache-Control': 'no-cache'
+                },
+                body: JSON.stringify(user)
+            }).then((response) => {
+                if (response.status === 200) {
+                    return response.json();
+                }
+                else {
+                    return null;
+                }
+            })
+                .then((responseJson) => {
+                    if (responseJson != null) {
+                        console.log("responseJson = ", responseJson);
+                        setUserPendingPayments(responseJson);
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                }
+                )
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async function GetUserHistory (userData) {
+        try {
+            let user;
+            if (userData === undefined) {
+                user = {
+                    userId: userContext.userId,
+                    userType: userContext.userType
+                }
+            }
+            else {
+                user = {
+                    userId: userData.userId,
+                    userType: userData.userType
+                }
+            }
+          fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/GetHistory/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(user)
+          }).then((response) => {
+            if (response.status === 200) {
+                return response.json();
+            }
+            else {
+                return null;
+            }
+            })
+            .then((responseJson) => {
+                if (responseJson != null) {
+                    console.log("History = ", responseJson);
+                    setUserHistoryPayments(responseJson);
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            }
+            )
+        } catch (error) {
+            console.log(error)
+        }
+    }
+       
+
+    const value = { userContext, userContacts,userNotifications,userPendingPayments,userHistoryPayments,GetUserHistory,GetUserPending,deleteContact,addNewContact,saveContact,updateRememberUserContext, logInContext,fetchUserContacts, logOutContext, updateUserContext, updateUserContacts, updatePendings, updateUserProfile, updateuserNotifications , appEmail}
     return (
         <UserContext.Provider value={value}>
             {children}
