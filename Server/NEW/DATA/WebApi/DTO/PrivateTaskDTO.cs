@@ -16,6 +16,7 @@ namespace WebApi.DTO
         public int workerId { get; set; }
         public Nullable<System.TimeSpan> TimeInDay { get; set; }
         public string frequency { get; set; }
+        public TimeSpan[] timesInDayArr { get; set; }
         public virtual tblForeignUser tblForeignUser { get; set; }
     }
 }

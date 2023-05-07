@@ -24,7 +24,7 @@ import { useUserContext } from '../../UserContext';
 const Stack = createStackNavigator();
 
 export default function NavigateSignUp() {
-  const { updateUserContext, updateuserNotifications,fetchUserContacts } = useUserContext();
+  const { updateUserContext, updateuserNotifications, fetchUserContacts } = useUserContext();
   const [isSigned, setIsSigned] = useState('bla');
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -41,7 +41,7 @@ export default function NavigateSignUp() {
         setIsSigned(true);
         const storageUser2 = await AsyncStorage.getItem("userData");
         updateUserContext(JSON.parse(storageUser2))
-        let notifications = await AsyncStorage.getItem("notifications");
+        let notifications = await AsyncStorage.getItem("userNotifications");
         if (notifications !== null) {
           notifications = {
             emailNotifications: true,
@@ -78,27 +78,27 @@ export default function NavigateSignUp() {
 
         {/* שלבי שחזור סיסמה */}
         <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
-        <Stack.Screen name="ForgotPasswordLvl2" component={ForgotPasswordLvl2} options={{ headerShown: true, headerTitle: '' }} />
-        <Stack.Screen name="CreateNewPassword" component={CreateNewPassword} options={{ headerShown: true, headerTitle: '' }} />
+        <Stack.Screen name="ForgotPasswordLvl2" component={ForgotPasswordLvl2} options={{ headerShown: true, headerTitle: 'Back' }} />
+        <Stack.Screen name="CreateNewPassword" component={CreateNewPassword} options={{ headerShown: true, headerTitle: 'Back' }} />
 
         {/* מסך לקישור המטפל למשפחת המטופל*/}
         <Stack.Screen name="Welcome" component={Welcome} options={{ headerShown: false }} />
 
         {/* שלבים 1-3 בתהליך ההרשמה משותפים לשני סוגי המשתמשים */}
-        <Stack.Screen name="SignUp" component={SignUp} />
-        <Stack.Screen name="SignUpLvl2" component={SignUpLvl2} options={{ headerShown: true, headerTitle: '' }} />
-        <Stack.Screen name="SignUpLvl3" component={SignUpLvl3} options={{ headerShown: true, headerTitle: '' }} />
+        <Stack.Screen name="SignUp" component={SignUp} options={{ headerShown: true, headerTitle: 'Back' }} />
+        <Stack.Screen name="SignUpLvl2" component={SignUpLvl2} options={{ headerShown: true, headerTitle: 'Back' }} />
+        <Stack.Screen name="SignUpLvl3" component={SignUpLvl3} options={{ headerShown: true, headerTitle: 'Back' }} />
 
         {/* שלבי המשך עבור הרשמת המטפל */}
-        <Stack.Screen name="SignUpCaregiverLVL4" component={SignUpCaregiverLVL4} options={{ headerShown: true, headerTitle: '' }} />
-        <Stack.Screen name="SignUpCaregiverLVL5" component={SignUpCaregiverLVL5} options={{ headerShown: true, headerTitle: '' }} />
+        <Stack.Screen name="SignUpCaregiverLVL4" component={SignUpCaregiverLVL4} options={{ headerShown: true, headerTitle: 'Back' }} />
+        <Stack.Screen name="SignUpCaregiverLVL5" component={SignUpCaregiverLVL5} options={{ headerShown: true, headerTitle: 'Back' }} />
 
         {/* שלבי המשך עבור הרשמת מעורב בטיפול */}
-        <Stack.Screen name="SignUpUserLVL4" component={SignUpUserLVL4} options={{ headerShown: true, headerTitle: '' }} />
-        <Stack.Screen name="SignUpUserLVL5" component={SignUpUserLVL5} options={{ headerShown: true, headerTitle: '' }} />
-        <Stack.Screen name="SignUpHobbies" component={SignUpHobbies} options={{ headerShown: true, headerTitle: '' }} />
-        <Stack.Screen name="SignUpLimitations" component={SignUpLimitations} options={{ headerShown: true, headerTitle: '' }} />
-        <Stack.Screen name="SignUpFinish" component={SignUpFinish} options={{ headerShown: true, headerTitle: '' }} />
+        <Stack.Screen name="SignUpUserLVL4" component={SignUpUserLVL4} options={{ headerShown: true, headerTitle: 'Back' }} />
+        <Stack.Screen name="SignUpUserLVL5" component={SignUpUserLVL5} options={{ headerShown: true, headerTitle: 'Back' }} />
+        <Stack.Screen name="SignUpHobbies" component={SignUpHobbies} options={{ headerShown: true, headerTitle: 'Back' }} />
+        <Stack.Screen name="SignUpLimitations" component={SignUpLimitations} options={{ headerShown: true, headerTitle: 'Back' }} />
+        <Stack.Screen name="SignUpFinish" component={SignUpFinish} options={{ headerShown: true, headerTitle: 'Back' }} />
         {/* כניסה למערכת */}
       </>
 

@@ -1,15 +1,43 @@
-import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native'
-import { useState } from 'react'
+import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
+import { useState, useEffect } from 'react'
 import { AddBtn, NewTaskModal } from '../HelpComponents/AddNewTask'
 
 export default function MainTasks(props) {
   const [modalVisible, setModalVisible] = useState(false)
-  //get all tasks from route.params
-  const allPrivateTasks = props.allPrivateTasks;
+  const [publicTasks, setPublicTasks] = useState(props.allPublicTasks)
+  const [privateTasks, setPrivateTasks] = useState(props.allPrivateTasks)
+  const [allTasks, setAllTasks] = useState([])
 
+
+  useEffect(() => {
+    setPublicTasks(props.allPublicTasks)
+    setPrivateTasks(props.allPrivateTasks)
+    filterTasks(props.allPrivateTasks, props.allPublicTasks)
+  }, [props.allPublicTasks, props.allPrivateTasks])
+
+  const filterTasks = (privateTask, publicTasks) => {
+    //combine private and public tasks and sort by date and time
+    let allTasks = privateTask.concat(publicTasks);
+    allTasks.sort((a, b) => {
+      if (a.taskDate > b.taskDate) {
+        return 1;
+      }
+      if (a.taskDate < b.taskDate) {
+        return -1;
+      }
+      if (a.taskDate == b.taskDate) {
+        if (a.TimeInDay > b.TimeInDay) {
+          return 1;
+        }
+        if (a.TimeInDay < b.TimeInDay) {
+          return -1;
+        }
+      }
+      return 0;
+    })
+    setAllTasks(allTasks)
+  }
   const handleAddBtnPress = () => {
-    console.log('add btn pressed')
-    console.log('allPrivateTasks=', allPrivateTasks);
     setModalVisible(true);
   };
 
@@ -19,18 +47,18 @@ export default function MainTasks(props) {
   };
   return (
     <View style={styles.container}>
-      <Text>Main Tasks</Text>
-      {
-        //all private tasks, just for test now
-        allPrivateTasks.map((task, index) => {
-          return (
-            <Text key={index}>"test"{index}: {task.taskName},
-              {task.TimeInDay}, {task.taskDate}, {task.taskToDate}, {task.period}
-              ----------------------------------------------------------------
-            </Text>
-          )
-        })
-      }
+      <SafeAreaView style={{ flex: 1, width: '100%' }}>
+        <View style={{ flex: 1, width: '100%' }}>
+          <Text>Public Tasks</Text>
+          <View style={{ flex: 1, width: '100%' }}>
+            <ScrollView>
+              {/* כאן יופיעו המשימות של היום  */}
+            </ScrollView>
+          </View>
+        </View>
+      </SafeAreaView>
+
+
 
       <View style={styles.addBtnView}>
         <AddBtn onPress={handleAddBtnPress} />

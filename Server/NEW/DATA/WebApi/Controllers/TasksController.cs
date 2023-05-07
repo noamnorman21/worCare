@@ -23,7 +23,70 @@ namespace WebApi.Controllers
         {
             try
             {
+                TimeSpan[] timesInDayArray = new TimeSpan[0];
+                foreach (var item in taskDTO.timesInDayArr)
+                {
+                    //"15:16" this is how item will look when it will came from the client
+                    int hour = int.Parse(item.ToString().Substring(0, 2));
+                    int minutes = int.Parse(item.ToString().Substring(3, 2));
+                    TimeSpan time = new TimeSpan(hour, minutes, 0);
+                    TimeSpan[] tempArr = new TimeSpan[timesInDayArray.Length + 1];
+                    Array.Copy(timesInDayArray, tempArr, timesInDayArray.Length);
+                    tempArr[tempArr.Length - 1] = time;
+                    timesInDayArray = tempArr;
+                }
+                Array.Sort(timesInDayArray);
+
+
                 db.InsertPrivateTask(taskDTO.taskName, taskDTO.taskFromDate, taskDTO.taskToDate, taskDTO.frequency, taskDTO.taskComment, taskDTO.workerId);
+                //find the task id of the new task it will be the max
+                int taskId = db.tblPrivateTask.Max(t => t.taskId);
+                DateTime tempDate = taskDTO.taskFromDate;
+                if (taskDTO.frequency=="Once")
+                {
+                    if (timesInDayArray.Length > 1)
+                    {
+                        for (int i = 0; i < timesInDayArray.Length; i++)
+                        {
+                            db.InsertPrivateActualTask(taskId, taskDTO.taskToDate, timesInDayArray[i], "P");
+                        }
+                    }
+                    else
+                        db.InsertPrivateActualTask(taskId, taskDTO.taskToDate, timesInDayArray[0], "P");
+                }
+                else if (taskDTO.frequency == "Daily")
+                {
+                    while (tempDate < taskDTO.taskToDate)
+                    {
+                        for (int i = 0; i < timesInDayArray.Length; i++)
+                        {
+                            db.InsertPrivateActualTask(taskId, tempDate, timesInDayArray[i], "P");
+                        }
+                        tempDate = tempDate.AddDays(1);
+                    }                  
+                }
+                else if (taskDTO.frequency == "Weekly")
+                {
+                    while (tempDate < taskDTO.taskToDate)
+                    {
+                        for (int i = 0; i < timesInDayArray.Length; i++)
+                        {
+                            db.InsertPrivateActualTask(taskId, tempDate, timesInDayArray[i], "P");
+                        }
+                        tempDate = tempDate.AddDays(7);
+                    }
+                }
+                else if (taskDTO.frequency == "Monthly")
+                {
+                    while (tempDate < taskDTO.taskToDate)
+                    {
+                        for (int i = 0; i < timesInDayArray.Length; i++)
+                        {
+                            db.InsertPrivateActualTask(taskId, tempDate, timesInDayArray[i], "P");
+                        }
+                        tempDate = tempDate.AddMonths(1);
+                    }
+                }     
                 db.SaveChanges();
                 return Ok(taskDTO);
             }
@@ -37,24 +100,32 @@ namespace WebApi.Controllers
         [Route("GetAllPrivateTasks")] //Insert new private task by foreign user
         public IHttpActionResult GetAllPrivateTasks([FromBody] ForeignUserDTO userDTO)
         {
-            List<PrivateTaskDTO> privateTasks = new List<PrivateTaskDTO>();
+            List<PrivateActualTaskDTO> tasks = new List<PrivateActualTaskDTO>();
             try
             {
-                var tasks = from t in db.tblPrivateTask
-                            where t.workerId == userDTO.Id
+                var tasksArr = from t in db.tblPrivateTask
+                            where t.workerId == userDTO.Id && t.taskToDate >= DateTime.Now
                             select t;
-                foreach (var item in tasks)
+                foreach (var item in tasksArr)
                 {
-                    PrivateTaskDTO taskDTO = new PrivateTaskDTO();
-                    taskDTO.taskName = item.taskName;
-                    taskDTO.taskFromDate = item.taskFromDate;
-                    taskDTO.taskToDate = item.taskToDate;
-                    taskDTO.taskComment = item.taskComment;
-                    taskDTO.workerId = item.workerId;
-                    taskDTO.frequency = item.frequency;
-                    privateTasks.Add(taskDTO);
+                    var task= from ta in db.tblPrivateActualTask
+                              where ta.taskId == item.taskId && ta.taskDate >= DateTime.Now && ta.taskStatus == "P"&& ta.taskDate <= SqlFunctions.DateAdd("d", 7, DateTime.Now)
+                              select ta;
+                    foreach (var item2 in task)
+                    {
+                        PrivateActualTaskDTO taskDTO = new PrivateActualTaskDTO();
+                        taskDTO.taskId = item2.taskId;
+                        taskDTO.actualId = item2.actualId;
+                        taskDTO.taskComment = item.taskComment;
+                        taskDTO.taskName = item.taskName;
+                        taskDTO.taskDate = item2.taskDate;
+                        taskDTO.TimeInDay = item2.TimeInDay;
+                        taskDTO.taskStatus = item2.taskStatus;
+                        tasks.Add(taskDTO);
+
+                    }           
                 }
-                return Ok(privateTasks);
+                return Ok(tasks);
             }
             catch (Exception ex)
             {
@@ -63,20 +134,15 @@ namespace WebApi.Controllers
         }
 
         [HttpPut]
-        [Route("UpdatePrivateTasks")] //Update private task by foreign user
-        public IHttpActionResult UpdatePrivateTasks([FromBody] PrivateTaskDTO taskDTO)
+        [Route("UpdateActualPrivateTask")] //Update private task by foreign user
+        public IHttpActionResult UpdateActualPrivateTask([FromBody] PrivateActualTaskDTO taskDTO)
         {
-            try //Update the task and save the changes
+            try
             {
-                tblPrivateTask tblPrivate = db.tblPrivateTask.Where(x => x.taskName == taskDTO.taskName).FirstOrDefault();
-                tblPrivate.taskName = taskDTO.taskName;
-                tblPrivate.taskFromDate = taskDTO.taskFromDate;
-                tblPrivate.taskToDate = taskDTO.taskToDate;
-                tblPrivate.taskComment = taskDTO.taskComment;
-                tblPrivate.workerId = taskDTO.workerId;
-                tblPrivate.frequency = taskDTO.frequency;
+                tblPrivateActualTask tblPrivateActualTask = db.tblPrivateActualTask.FirstOrDefault(t => t.actualId == taskDTO.actualId);
+                tblPrivateActualTask.taskStatus = taskDTO.taskStatus;
                 db.SaveChanges();
-                return Ok(taskDTO);
+                return Ok("Private Actual Task updated");
             }
             catch (Exception ex)
             {
@@ -84,7 +150,7 @@ namespace WebApi.Controllers
             }
         }
 
-        // ----------------------- Public Tasks Section --------------------------
+        // ----------------------- Public Tasks Section --------------------------//
 
         [HttpPost]
         [Route("GetAllTasks")] //Get all public tasks
@@ -157,6 +223,29 @@ namespace WebApi.Controllers
                             item.prodList = productListToSend; //add to the actual task the product list
                         }
                     }
+
+                    if (item.type==true)// we will create drug for pation  
+                    {
+                        var drugForArr = from t in db.tblDrugForPatient //find all relavent DrugList for this task
+                                      where t.listId == item.listId 
+                                      select t;
+                        DrugForPatientDTO drugForPatientDTO = new DrugForPatientDTO();
+                        drugForPatientDTO.qtyInBox = drugForArr.First().qtyInBox;
+                        drugForPatientDTO.dosage = drugForArr.First().dosage;
+                        drugForPatientDTO.drugId = drugForArr.First().drugId;
+                        drugForPatientDTO.fromDate = drugForArr.First().fromDate;
+                        drugForPatientDTO.toDate = drugForArr.First().toDate;
+
+                        var drugName = from t in db.tblDrug
+                                       where t.drugId == drugForPatientDTO.drugId
+                                       select t;
+                        drugForPatientDTO.drugName = drugName.First().drugName;
+                        drugForPatientDTO.drugType = drugName.First().Type;
+                        drugForPatientDTO.drugUrl = drugName.First().drugUrl;
+                        drugForPatientDTO.minQuantity = drugForArr.First().minQuantity;
+                        drugForPatientDTO.dosage = drugForArr.First().dosage;
+                        item.drug = drugForPatientDTO;
+                    }
                 }
                 actualTasks.Sort((x, y) => DateTime.Compare(x.taskDate, y.taskDate));
                 return Ok(actualTasks);
@@ -223,6 +312,12 @@ namespace WebApi.Controllers
                         drugFor.patientId = list.patientId;
                         drugFor.dosage = list.dosage;
                         drugFor.drugId = list.drugId;
+                        //var drugName = from t in db.tblDrug
+                        //               where t.drugId == drugFor.drugId
+                        //               select t;
+                        //drugFor.drugName = drugName.First().drugName;
+                        //drugFor.drugType = drugName.First().Type;
+                        //drugFor.drugUrl = drugName.First().drugUrl;
                         drugFor.qtyInBox = list.qtyInBox;
                         drugFor.minQuantity = list.qtyInBox * 0.2;//defult will be 20% 
                         drugFor.patientId = list.patientId;
@@ -363,7 +458,6 @@ namespace WebApi.Controllers
             }
         }
 
-
         [HttpPut]
         [Route("UpdateProductsToList")]
         public IHttpActionResult UpdateProductsToList([FromBody] List<ProductListDTO> prodList)
@@ -382,6 +476,37 @@ namespace WebApi.Controllers
                     }
                 }
                 return Ok("Product updated");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut]
+        [Route("UpdateActualTask")]
+        public IHttpActionResult UpdateActualTask([FromBody] ActualTaskDTO actualTask)
+        {
+            try
+            {
+                tblActualTask tblActualTask = db.tblActualTask.Where(x => x.actualId == actualTask.actualId).FirstOrDefault();
+                if (tblActualTask != null)
+                {
+                    //update the actual task status
+                    tblActualTask.taskStatus = actualTask.taskStatus;
+                    db.SaveChanges();
+                }
+                if (actualTask.drug!=null)
+                {
+                    //if the actual task is a drug, update the drug quantity in table tblDrugForPatient
+                    tblDrugForPatient tblDrugForPatient = db.tblDrugForPatient.Where(x => x.drugId == actualTask.drug.drugId && x.listId == actualTask.listId).FirstOrDefault();
+                    if (tblDrugForPatient != null)
+                    {
+                        tblDrugForPatient.qtyInBox -= tblDrugForPatient.dosage;
+                        db.SaveChanges();
+                    }
+                }
+                return Ok("Actual Task updated");
             }
             catch (Exception ex)
             {

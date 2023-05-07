@@ -305,6 +305,7 @@
     <Compile Include="DTO\PatientTaskDTO.cs" />
     <Compile Include="DTO\PayCheckDTO.cs" />
     <Compile Include="DTO\PaymentsRequestDTO.cs" />
+    <Compile Include="DTO\PrivateActualTaskDTO.cs" />
     <Compile Include="DTO\PrivateTaskDTO.cs" />
     <Compile Include="DTO\ProductListDTO.cs" />
     <Compile Include="DTO\UserDTO.cs" />

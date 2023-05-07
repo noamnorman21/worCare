@@ -23,6 +23,7 @@ export default function Tasks() {
 
   useEffect(() => {
     getAllPublicTasks();
+    getAllPrivateTasks();
   }, []);
 
   const getAllPublicTasks = async () => {
@@ -40,6 +41,28 @@ export default function Tasks() {
       console.log('err post=', error);
     }
   }
+  const getAllPrivateTasks = async () => {
+        //do it only if userType is caregiver
+    if (userData.userType != "Caregiver") {
+      return;
+    }
+    let getAllPrivateTasksUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/GetAllPrivateTasks';
+    let forginUser= {
+      Id:userData.workerId
+    }
+    try {
+      const response = await fetch(getAllPrivateTasksUrl, {
+        method: 'POST',
+        headers: new Headers({ 'Content-Type': 'application/json; charset=UTF-8', }),
+        body: JSON.stringify(forginUser),
+      });
+      const result = await response.json();
+      setAllPrivateTasks(result);
+    } catch (error) {
+      console.log('err post=', error);
+    }
+  }
+
 
   //filter tasks by type, medicine or shop, other tasks will be in allTasks
   const filterTasks = (tasks) => {
@@ -47,6 +70,13 @@ export default function Tasks() {
     setAllShopTasks(filteredTasks);
     let filteredMedicineTasks = tasks.filter(task => task.type == true);
     setAllMedicineTasks(filteredMedicineTasks);
+  }
+  const moveScreens = (task) => {
+    alert(task.taskId);
+    //move to main screen
+    
+  
+
   }
 
   return (
@@ -73,8 +103,8 @@ export default function Tasks() {
       }}
     >
       <Tab.Screen name="Main" //send allPrivateTasks to MainTasks, if userType is caregiver        
-        children={() => <Main allPrivateTasks={allPrivateTasks} allTask={allPublicTasks} />} />
-      <Tab.Screen name="General" children={() => <General allPrivateTasks={allPrivateTasks} allPublicTasks={allPublicTasks} allMedicineTasks={allMedicineTasks} />} />
+        children={() => <Main allPrivateTasks={allPrivateTasks} allPublicTasks={allPublicTasks} refreshPublicTask={getAllPublicTasks} />} />
+      <Tab.Screen name="General"  children={() => <General allPrivateTasks={allPrivateTasks} allPublicTasks={allPublicTasks} moveScreens={moveScreens} refreshPrivateTask={getAllPrivateTasks} refreshPublicTask={getAllPublicTasks}/> } />
       <Tab.Screen name="Shop" children={() => <Shop allShopTasks={allShopTasks} refreshPublicTask={getAllPublicTasks} />} />
       <Tab.Screen name="Medicine" children={() => <Medicine allMedicineTasks={allMedicineTasks} refreshPublicTask={getAllPublicTasks}/>} />
     </Tab.Navigator>

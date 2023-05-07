@@ -11,8 +11,8 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export default function ContactDetails({ route, navigation }) {
+  const { fetchUserContacts } = useUserContext()
   const [isChanged, setIsChanged] = useState(false);
-const { fetchUserContacts } = useUserContext()
   const [Edit, setEdit] = useState(false);
   const [saving, setSaving] = useState(false);
   const [cancel, setCancel] = useState(false);
@@ -285,7 +285,7 @@ const { fetchUserContacts } = useUserContext()
     );
   }
 
-  
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -323,7 +323,7 @@ const { fetchUserContacts } = useUserContext()
                   outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
                   activeOutlineColor="#548DFF"
                   outlineColor='#E6EBF2' />
-               }
+              }
               <TextInput style={styles.inputTxt}
                 editable={Edit ? true : false}
                 mode='outlined'

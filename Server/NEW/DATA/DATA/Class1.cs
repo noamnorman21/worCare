@@ -79,7 +79,7 @@ namespace DATA
                 {
                     while (tempDate < taskToDate)
                     {
-                        tempDate = tempDate.AddDays(1);
+
                         for (int i = 0; i < timesInDayArr.Length; i++)
                         {
                             db.InsertActualTask(taskId, tempDate, timesInDayArr[i], "P");
@@ -90,13 +90,14 @@ namespace DATA
                                 db.InsertList(taskName, list.listId, actualId, task.taskId);
                             }
                         }
+                        tempDate = tempDate.AddDays(1);
                     }
                 }
                 else if (frequency == "Weekly")
                 {
                     while (tempDate.AddDays(7) < taskToDate)
                     {
-                        tempDate = tempDate.AddDays(7);
+                       
                         for (int i = 0; i < timesInDayArr.Length; i++)
                         {
                             db.InsertActualTask(taskId, tempDate, timesInDayArr[i], "P");
@@ -107,13 +108,14 @@ namespace DATA
                                 db.InsertList(taskName, list.listId, actualId, task.taskId);
                             }
                         }
+                        tempDate = tempDate.AddDays(7);
                     }
                 }
                 else   //else: task.frequency == "Monthly"
                 {
                     while (tempDate.AddMonths(1) < taskToDate)
                     {
-                        tempDate = tempDate.AddMonths(1);
+                     
                         for (int i = 0; i < timesInDayArr.Length; i++)
                         {
                             db.InsertActualTask(taskId, tempDate, timesInDayArr[i], "P");
@@ -123,6 +125,7 @@ namespace DATA
                                 db.InsertList(taskName, list.listId, task.actualId, task.taskId);
                             }
                         }
+                        tempDate = tempDate.AddMonths(1);
                     }
                 }
                 db.SaveChanges();
