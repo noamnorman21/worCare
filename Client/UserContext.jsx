@@ -33,6 +33,11 @@ let updateRequest = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/Updat
 let newRequest = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/NewRequest';
 let getPending = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/GetPending/';//+userId
 
+// tasks
+let updateActualTaskUrL = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/UpdateActualTask';
+let updateActualPrivateTaskUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/UpdateActualPrivateTask'; 
+
+
 const UserContext = createContext()
 const UserUpdateContext = createContext()
 
@@ -219,11 +224,9 @@ export function UserProvider({ children }) {
     function updatePendings(pendings) {
         setUserPendingPayments(pendings);
     }
-    function updateActualTask(task, isPrivateTask) {
-        let updateActualTaskUrL = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/UpdateActualTask';
-        let UpdateActualPrivateTaskUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/UpdateActualPrivateTask';       
+    function updateActualTask(task, isPrivateTask) {    
         if (isPrivateTask) {
-            fetch(UpdateActualPrivateTaskUrl, {
+            fetch(updateActualPrivateTaskUrl, {
                 method: 'PUT',
                 headers: new Headers({
                     'Content-Type': 'application/json; charset=UTF-8',

@@ -7,8 +7,9 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 export default function TaskView(props) {
   const colorBackIcon = ['#FFE7C2', '#D0DFFF'];
   const colorIcon = ['#FEA529', '#548DFF'];
-  const isPrivate = false; // To delete when we finish context
-  // const isPrivate = props.isPrivate;
+
+
+  const isPrivate = props.isPrivate;
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
   useEffect(() => {

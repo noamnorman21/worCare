@@ -11,7 +11,9 @@ export default function MainTasks(props) {
   const [privateTasks, setPrivateTasks] = useState(props.allPrivateTasks)
   const [allTasks, setAllTasks] = useState([])
   const [todayTasks, setTodayTasks] = useState([])
+  const [tommorowTasks, setTommorowTasks] = useState([])
   const [headerToday, setHeaderToday] = useState(false)
+  const [headerTommorow, setHeaderTommorow] = useState(false)
   const arrowIcon = ["chevron-down-outline", "chevron-up-outline"];
 
   useEffect(() => {
@@ -57,50 +59,51 @@ export default function MainTasks(props) {
     setModalVisible(true);
   };
 
-  const toggleHeader = () => {
+  const toggleHeaderTodayView = () => {
     setHeaderToday(!headerToday)
   }
-
+  const toggleHeaderTommorowView = () => {
+    setHeaderTommorow(!headerTommorow)
+  }
   const handleModalClose = () => {
     setModalVisible(false);
     props.refreshPublicTask()
     props.refreshPrivateTask()
   };
 
-  const temp = {
-    "TimeInDay": "20:00:00", "actualId": 1039, "drug": null, "frequency": "Daily", "listId": 1066, "patientId": "205920592", "prodList": null, "taskComment": "Pokerrrrrrr", "taskDate": "2023-05-07T00:00:00", "taskId": 1009, "taskName": "Poker ", "taskStatus": "P", "type": null, "userId": 0, "workerId": 10
-  }
-
   return (
     <View style={styles.container} >
       <View style={styles.todayView}>
         <View>
-          <TouchableOpacity style={styles.headerForTasks} onPress={toggleHeader}>
+          <TouchableOpacity style={styles.headerForTasks} onPress={toggleHeaderTodayView}>
             <Text style={styles.tasksTitle}>Today</Text>
             <Ionicons name={headerToday ? arrowIcon[0] : arrowIcon[1]} size={30} color="#548DFF" />
           </TouchableOpacity>
         </View>
-        <ScrollView>
-          <View>
+        <ScrollView alwaysBounceVertical={false}>
+          <View style={[styles.todayView, headerToday ? { display: 'none' } : {}]} >
             {
               allTasks.map((task, index) => {
-                return (<TaskView key={index} task={task} />)
+                let isPrivate = false;
+                if (task.patientId == null) {
+                  isPrivate = true;
+                }
+                return (<TaskView key={index} task={task} isPrivate={isPrivate} />)
               })
             }
           </View>
         </ScrollView>
       </View>
 
-      <View style={styles.todayView}>
+      <View style={[styles.TommorowView,headerToday&& {flex:12} ]}>
         <View>
-          <TouchableOpacity style={styles.headerForTasks} onPress={toggleHeader}>
+          <TouchableOpacity style={styles.headerForTasks} onPress={toggleHeaderTommorowView}>
             <Text style={styles.tasksTitle}>Tomorrow</Text>
-            <Ionicons name={headerToday ? arrowIcon[0] : arrowIcon[1]} size={30} color="#548DFF" />
+            <Ionicons name={headerTommorow ? arrowIcon[0] : arrowIcon[1]} size={30} color="#548DFF" />
           </TouchableOpacity>
         </View>
       </View>
 
-      {/* <TaskView allTasks={allTasks} /> */}
       <View style={styles.addBtnView} >
         <AddBtn onPress={handleAddBtnPress} />
       </View >
@@ -119,13 +122,17 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
   },
   todayView: {
+    flex: 1.6,
+    width: '100%'
+  },
+  TommorowView: {
     flex: 1,
     width: '100%'
   },
   addBtnView: {
     position: 'absolute',
-    bottom: 20,
-    right: 20,
+    bottom: 15,
+    right: -7,
   },
   headerForTasks: {
     flexDirection: 'row',
