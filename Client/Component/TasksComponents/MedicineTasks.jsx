@@ -1,6 +1,7 @@
 import { View, Text, SafeAreaView, StyleSheet } from 'react-native'
 import { useState } from 'react'
 import { AddBtn, AddNewMedicine } from '../HelpComponents/AddNewTask'
+import MedCard from '../HelpComponents/MedCard';
 
 export default function MedicineTasks(props) {
    const [modalVisible, setModalVisible] = useState(false)
@@ -17,7 +18,7 @@ export default function MedicineTasks(props) {
    return (
       <SafeAreaView style={styles.container}>
          <View>
-            <Text>Medicine Tasks</Text>
+          <MedCard/>
          </View>
          <View style={styles.addBtnView}>
             <AddBtn onPress={handleAddBtnPress} />

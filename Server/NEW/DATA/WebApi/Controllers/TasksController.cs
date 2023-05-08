@@ -162,11 +162,15 @@ namespace WebApi.Controllers
                                where t.patientId == patientId && t.taskToDate >= DateTime.Now
                                select t;
                 List<ActualTaskDTO> actualTasks = new List<ActualTaskDTO>();
+                TimeSpan dateTime = DateTime.Now.TimeOfDay; //will save in temp the current time to use in the query
                 foreach (var item in tasksArr)
                 {
+                   
+
                     var task = from t in db.tblActualTask
                                where t.taskId == item.taskId &&
-                               t.taskDate >= DateTime.Now &&
+                               t.taskDate >= DateTime.Today &&
+                               t.TimeInDay >= dateTime &&
                                t.taskDate <= SqlFunctions.DateAdd("d", 7, DateTime.Now) &&
                                t.taskStatus == "P"
                                select t;

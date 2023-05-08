@@ -22,37 +22,33 @@ export default function MainTasks(props) {
     filterTasks(props.allPrivateTasks, props.allPublicTasks)
   }, [props.allPublicTasks, props.allPrivateTasks])
 
-  const filterTasks = (privateTask, publicTasks) => {
-    //combine private and public tasks and sort by date and time
-    let allTasks = privateTask.concat(publicTasks);
+  const filterTasks = async (privateTask, publicTasks) => {
+    //combine private and public tasks for today task and sort by time
+    let allTasks = privateTask.concat(publicTasks)
     allTasks.sort((a, b) => {
-      if (a.taskDate > b.taskDate) {
-        return 1;
-      }
-      if (a.taskDate < b.taskDate) {
-        return -1;
-      }
-      if (a.taskDate == b.taskDate) {
-        if (a.TimeInDay > b.TimeInDay) {
-          return 1;
-        }
-        if (a.TimeInDay < b.TimeInDay) {
-          return -1;
-        }
-      }
-      return 0;
-    })
+      return a.TimeInDay > b.TimeInDay ? 1 : -1
+    }
+    )
     setAllTasks(allTasks)
-
-    // setTodayTasks(todayTasks)
-    // set all the tasks that are today
+    //filter today tasks
     let todayTasks = allTasks.filter(task => {
-      let today = new Date();
-      let taskDate = new Date(task.taskDate);
+      let today = new Date()
+      let taskDate = new Date(task.taskDate)
       return taskDate.getDate() == today.getDate() && taskDate.getMonth() == today.getMonth() && taskDate.getFullYear() == today.getFullYear()
     }
     )
     setTodayTasks(todayTasks)
+    //filter tommorow tasks
+    let tommorowTasks = allTasks.filter(task => {
+      let today = new Date()
+      let taskDate = new Date(task.taskDate)
+      return taskDate.getDate() == today.getDate() + 1 && taskDate.getMonth() == today.getMonth() && taskDate.getFullYear() == today.getFullYear()
+    }
+    )
+    setTommorowTasks(tommorowTasks)
+
+
+
   }
 
   const handleAddBtnPress = () => {
@@ -83,12 +79,12 @@ export default function MainTasks(props) {
         <ScrollView alwaysBounceVertical={false}>
           <View style={[styles.todayView, headerToday ? { display: 'none' } : {}]} >
             {
-              allTasks.map((task, index) => {
+              todayTasks.map((task, index) => {
                 let isPrivate = false;
                 if (task.patientId == null) {
                   isPrivate = true;
                 }
-                return (<TaskView key={index} task={task} isPrivate={isPrivate} />)
+                return (<TaskView today={true} key={index} task={task} isPrivate={isPrivate} />)
               })
             }
           </View>
@@ -102,6 +98,19 @@ export default function MainTasks(props) {
             <Ionicons name={headerTommorow ? arrowIcon[0] : arrowIcon[1]} size={30} color="#548DFF" />
           </TouchableOpacity>
         </View>
+        <ScrollView alwaysBounceVertical={false}>
+          <View style={[styles.todayView, headerTommorow ? { display: 'none' } : {}]} >
+            {
+              tommorowTasks.map((task, index) => {
+                let isPrivate = false;
+                if (task.patientId == null) {
+                  isPrivate = true;
+                }
+                return (<TaskView today={false} key={index} task={task} isPrivate={isPrivate} />)
+              })
+            }
+          </View>
+        </ScrollView>
       </View>
 
       <View style={styles.addBtnView} >
@@ -126,13 +135,13 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   TommorowView: {
-    flex: 1,
+    flex: 1.25,
     width: '100%'
   },
   addBtnView: {
     position: 'absolute',
     bottom: 15,
-    right: -7,
+    right: -8,
   },
   headerForTasks: {
     flexDirection: 'row',

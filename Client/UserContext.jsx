@@ -35,8 +35,9 @@ let getPending = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/GetPendi
 
 // tasks
 let updateActualTaskUrL = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/UpdateActualTask';
-let updateActualPrivateTaskUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/UpdateActualPrivateTask'; 
-
+let updateActualPrivateTaskUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/UpdateActualPrivateTask';
+let getAllPublicTasksUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/GetAllTasks';
+let getAllPrivateTasksUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/GetAllPrivateTasks';
 
 const UserContext = createContext()
 const UserUpdateContext = createContext()
@@ -68,6 +69,8 @@ export function UserProvider({ children }) {
     const [userUri, setUserUri] = useState(null)
     const [BirthDate, setBirthDate] = useState(null)
     const [userGender, setUserGender] = useState(null)
+    const [allPublicTasks, setAllPublicTasks] = useState(null)
+    const [allPrivateTasks, setAllPrivateTasks] = useState(null)
 
     function logInContext(userData) {
         setUserType(userData.userType);
@@ -117,6 +120,8 @@ export function UserProvider({ children }) {
         fetchUserContacts(usertoSync);
         GetUserPending(usertoSync);
         GetUserHistory(usertoSync);
+        getAllPrivateTasks(usertoSync);
+        getAllPublicTasks(usertoSync);
     }
 
     function logOutContext() {
@@ -224,7 +229,7 @@ export function UserProvider({ children }) {
     function updatePendings(pendings) {
         setUserPendingPayments(pendings);
     }
-    function updateActualTask(task, isPrivateTask) {    
+    function updateActualTask(task, isPrivateTask) {
         if (isPrivateTask) {
             fetch(updateActualPrivateTaskUrl, {
                 method: 'PUT',
@@ -240,6 +245,7 @@ export function UserProvider({ children }) {
                             .then(
                                 (result) => {
                                     console.log("fetch UpdateActualPrivate= ", result);
+                                    getAllPrivateTasks(userContext);
                                 }
                             )
                     }
@@ -270,6 +276,7 @@ export function UserProvider({ children }) {
                             .then(
                                 (result) => {
                                     console.log("fetch updateActualTaskUrL= ", result);
+                                    getAllPublicTasks(userContext);
                                 }
                             )
                     }
@@ -427,7 +434,7 @@ export function UserProvider({ children }) {
         }
     }
 
-    async function GetUserHistory (userData) {
+    async function GetUserHistory(userData) {
         console.log("GetUserHistory")
         try {
             let user;
@@ -443,38 +450,75 @@ export function UserProvider({ children }) {
                     userType: userData.userType
                 }
             }
-          fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/GetHistory/', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(user)
-          }).then((response) => {
-            if (response.status === 200) {
-                return response.json();
-            }
-            else {
-                return null;
-            }
-            })
-            .then((responseJson) => {
-                if (responseJson != null) {
-                    setUserHistoryPayments(responseJson);
+            fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/GetHistory/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(user)
+            }).then((response) => {
+                if (response.status === 200) {
+                    return response.json();
+                }
+                else {
+                    return null;
                 }
             })
-            .catch((error) => {
-                console.log(error);
-            }
-            )
+                .then((responseJson) => {
+                    if (responseJson != null) {
+                        setUserHistoryPayments(responseJson);
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                }
+                )
         } catch (error) {
             console.log(error)
         }
     }
 
+    async function getAllPublicTasks(userData) {   
+        console.log("getAllPublicTaskssssssssssssssssssssss")
+        console.log("userData.patientId = ", userData.patientId)
+        try {
+            const response = await fetch(getAllPublicTasksUrl, {
+                method: 'POST',
+                headers: new Headers({ 'Content-Type': 'application/json; charset=UTF-8', }),
+                body: JSON.stringify(userData.patientId),
+            });
+            const result = await response.json();
+            setAllPublicTasks(result);
+        } catch (error) {
+            console.log('err post=', error);
+        }
+    }
+    async function getAllPrivateTasks(userData) {
+        //do it only if userType is caregiver
+        if (userData.userType != "Caregiver") {
+            return;
+        }
+    
+        let forginUser = {
+            Id: userData.workerId
+        }
+        try {
+            const response = await fetch(getAllPrivateTasksUrl, {
+                method: 'POST',
+                headers: new Headers({ 'Content-Type': 'application/json; charset=UTF-8', }),
+                body: JSON.stringify(forginUser),
+            });
+            const result = await response.json();
+            setAllPrivateTasks(result);
+        } catch (error) {
+            console.log('err post=', error);
+        }
+    }
 
 
-
-    const value = { userContext, userContacts, userNotifications,userPendingPayments,userHistoryPayments,GetUserHistory,GetUserPending,deleteContact,addNewContact,saveContact,updateActualTask, updateRememberUserContext, logInContext, fetchUserContacts, logOutContext, updateUserContext, updateUserContacts, updatePendings, updateUserProfile, updateuserNotifications, appEmail }
+    const value = { userContext, userContacts, userNotifications, userPendingPayments, userHistoryPayments, GetUserHistory, GetUserPending,
+         deleteContact, addNewContact, saveContact, updateActualTask, updateRememberUserContext, logInContext, fetchUserContacts, logOutContext,
+          updateUserContext, updateUserContacts, updatePendings, updateUserProfile, updateuserNotifications, appEmail,getAllPrivateTasks,getAllPublicTasks,allPublicTasks,allPrivateTasks };
     return (
         <UserContext.Provider value={value}>
             {children}
