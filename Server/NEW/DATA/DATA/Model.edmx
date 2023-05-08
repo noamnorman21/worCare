@@ -101,6 +101,7 @@
           <Property Name="minQuantity" Type="tinyint" />
           <Property Name="drugId" Type="int" Nullable="false" />
           <Property Name="patientId" Type="char" MaxLength="9" />
+          <Property Name="lastTakenDate" Type="datetime" />
         </EntityType>
         <EntityType Name="tblForeignUser">
           <Key>
@@ -1056,6 +1057,7 @@
           <NavigationProperty Name="tblActualList" Relationship="Self.FK__tblDrugFo__listI__131DCD43" FromRole="tblDrugForPatient" ToRole="tblActualList" />
           <NavigationProperty Name="tblDrug" Relationship="Self.FK__tblDrugFo__drugI__1411F17C" FromRole="tblDrugForPatient" ToRole="tblDrug" />
           <NavigationProperty Name="tblPatient" Relationship="Self.FK__tblDrugFo__patie__150615B5" FromRole="tblDrugForPatient" ToRole="tblPatient" />
+          <Property Name="lastTakenDate" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="tblForeignUser">
           <Key>
@@ -2044,6 +2046,7 @@
           <EntitySetMapping Name="tblDrugForPatient">
             <EntityTypeMapping TypeName="igroup194_prodModel.tblDrugForPatient">
               <MappingFragment StoreEntitySet="tblDrugForPatient">
+                <ScalarProperty Name="lastTakenDate" ColumnName="lastTakenDate" />
                 <ScalarProperty Name="listId" ColumnName="listId" />
                 <ScalarProperty Name="fromDate" ColumnName="fromDate" />
                 <ScalarProperty Name="toDate" ColumnName="toDate" />

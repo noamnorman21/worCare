@@ -96,6 +96,7 @@
     <Property Name="minQuantity" Type="tinyint" />
     <Property Name="drugId" Type="int" Nullable="false" />
     <Property Name="patientId" Type="char" MaxLength="9" />
+    <Property Name="lastTakenDate" Type="datetime" />
   </EntityType>
   <EntityType Name="tblForeignUser">
     <Key>

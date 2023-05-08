@@ -101,15 +101,17 @@ namespace WebApi.Controllers
         public IHttpActionResult GetAllPrivateTasks([FromBody] ForeignUserDTO userDTO)
         {
             List<PrivateActualTaskDTO> tasks = new List<PrivateActualTaskDTO>();
+
             try
             {
+                TimeSpan dateTime = DateTime.Now.TimeOfDay;
                 var tasksArr = from t in db.tblPrivateTask
                             where t.workerId == userDTO.Id && t.taskToDate >= DateTime.Now
                             select t;
                 foreach (var item in tasksArr)
                 {
                     var task= from ta in db.tblPrivateActualTask
-                              where ta.taskId == item.taskId && ta.taskDate >= DateTime.Now && ta.taskStatus == "P"&& ta.taskDate <= SqlFunctions.DateAdd("d", 7, DateTime.Now)
+                              where ta.taskId == item.taskId && ta.taskDate >= DateTime.Today && ta.TimeInDay>=dateTime && ta.taskStatus == "P"&& ta.taskDate <= SqlFunctions.DateAdd("d", 7, DateTime.Now)
                               select ta;
                     foreach (var item2 in task)
                     {
@@ -239,6 +241,7 @@ namespace WebApi.Controllers
                         drugForPatientDTO.drugId = drugForArr.First().drugId;
                         drugForPatientDTO.fromDate = drugForArr.First().fromDate;
                         drugForPatientDTO.toDate = drugForArr.First().toDate;
+                        drugForPatientDTO.lastTakenDate = drugForArr.First().lastTakenDate;
 
                         var drugName = from t in db.tblDrug
                                        where t.drugId == drugForPatientDTO.drugId
@@ -507,6 +510,7 @@ namespace WebApi.Controllers
                     if (tblDrugForPatient != null)
                     {
                         tblDrugForPatient.qtyInBox -= tblDrugForPatient.dosage;
+                        tblDrugForPatient.lastTakenDate = DateTime.Now;
                         db.SaveChanges();
                     }
                 }
