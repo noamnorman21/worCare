@@ -5,38 +5,129 @@ import { Feather, Ionicons } from '@expo/vector-icons';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function MedCard(props) {
-  return (
-    <View style={style.container}>
-      <View style={style.timeRow}>
-        <Text style={style.timeTxt}>8:00</Text>
-        {/* <Text style={style.timeTxt}>{props.task.TimeInDay}</Text> */}
-      </View>
-      <View style={style.medDetailes}>
-      <Text style={style.timeTxt}>8:00</Text>
-      </View>
-    </View>
-  )
+    const [medType, setMedType] = useState('');
+    const [isDone, setIsDone] = useState(false);
+
+
+//להוציא מהערה ולשנות לאחר שיש נתונים מהדאטה בייס, -לשנות גם לאייקונים הנכונים (נועם)
+    // const iconsNamesArr = [
+    //     {
+    //         1: "pills",
+    //         2: "calendar",
+    //         3: "calendar",
+    //         4: "calendar",
+    //     }]
+
+    // useEffect(() => {
+
+    //     findType()
+    // }, [])
+
+    // const findType = () => {
+    //     if (props.task.drugType == "Syrup") {
+    //         setMedType("Syrup")
+    //     }
+    //     else if (props.task.drug.drugType == "Pills") {
+    //         setMedType("Pills")
+    //     }
+    //     else if (props.task.drugType == "Cream") {
+    //         setMedType("Cream")
+    //     }
+    //     else if (props.task.drugType == "Powder") {
+    //         setMedType("Powder")
+    //     }
+    // }
+
+
+
+    return (
+        <View style={styles.container}>
+            <View style={styles.timeRow}>
+                <Text style={styles.timeTxt}>8:00</Text>
+                {/* <Text style={style.timeTxt}>{props.task.TimeInDay}</Text> */}
+            </View>
+            <View style={styles.medDetailes}>
+                <View style={styles.iconContainer}>
+                    <View style={styles.icon} >
+                        <Ionicons name="calendar" size={24} color="black" />
+                        {/* <Ionicons name={medType}size={24} color="black" /> */}
+                    </View>
+
+                </View>
+                <View style={styles.medMainView}>
+                    <Text style={styles.MedNameTxt}>med name </Text>
+                    {/* <Text style={styles.MedNameTxt}>{props.task.taskName}</Text> */}
+
+                    <Text style={styles.timeTxt}>8:00</Text>
+                </View>
+                <View style={styles.iconCheckBox}>
+                    <Text style={styles.timeTxt}>8:00</Text>
+                </View>
+            </View>
+        </View>
+    )
 }
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
     container: {
         backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center',
-        height:85,
-        width:SCREEN_WIDTH*0.9,
-        flexDirection:'row',
+        height: 85,
+        width: SCREEN_WIDTH * 0.88,
+        flexDirection: 'cloumn',
     },
-    timeRow:{
-       flex:1,
-        alignItems:'center',
-        justifyContent:'center',
-        backgroundColor:"red"
+    icon: {
+        backgroundColor: '#EBF1FF',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: 48,
+        width: 48,
+        borderRadius: 54,
     },
-    medDetailes:{
-        flex:4,
-        alignItems:'center',
-        justifyContent:'center',
-        backgroundColor:"blue"
+    timeTxt: {
+        fontSize: 16,
+        fontFamily: 'Urbanist-Medium',
+
+    },
+    iconContainer: {
+        flex: 1,
+        height: '100%',
+
+    },
+    MedNameTxt: {
+        fontSize: 16,
+        fontFamily: 'Urbanist-SemiBold',
+    },
+    iconCheckBox: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: "yellow",
+        height: '100%',
+    },
+    medMainView: {
+        flex: 3,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: "green",
+        height: '100%',
+    },
+    timeRow: {
+        flex: 3,
+        alignItems: 'flex-start',
+
+        justifyContent: 'center',
+        //  backgroundColor:"red",
+        width: '100%',
+
+    },
+    medDetailes: {
+        flex: 6,
+        alignItems: 'center',
+        justifyContent: 'center',
+        //    backgroundColor: "blue",
+        width: '100%',
+        flexDirection: 'row',
     },
 
 })
