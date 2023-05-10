@@ -72,15 +72,11 @@ export default function MedCard(props) {
         let timeInDay = props.task.TimeInDay.split(":")
         setTimeInDay(timeInDay[0] + ":" + timeInDay[1])
 
-
     }
-
     const taggleIsDone = () => {
         setIsDone(!isDone)
   
     }
-
-
     return (
         <View style={styles.container}>
             <View style={styles.timeRow}>
