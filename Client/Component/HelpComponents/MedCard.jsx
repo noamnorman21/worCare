@@ -76,8 +76,8 @@ export default function MedCard(props) {
     }
 
     const taggleIsDone = () => {
-        //setIsDone(!isDone)
-        alert(props.task.drug.drugType)
+        setIsDone(!isDone)
+  
     }
 
 
