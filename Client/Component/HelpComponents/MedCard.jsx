@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Alert } from 'react-native'
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity,Alert,Image } from 'react-native'
 import { useState, useEffect } from 'react'
 import { MaterialCommunityIcons, AntDesign, Feather, Ionicons, Octicons } from '@expo/vector-icons';
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -39,22 +39,21 @@ export default function MedCard(props) {
     }
 
 
-    const findType = () => {
-        // לשנות את האייקון לפי מה שנועם תרצה וגם כמובן מה שירצה השם
-        if (props.task.drugType == "Syrup") {
-            setMedTypeIcon("pills")
-        }
-        else if (props.task.drug.drugType == "Pill") {
-            setMedTypeIcon("calendar")
-        }
-        else if (props.task.drugType == "Cream") {
-            setMedTypeIcon("calendar")
-        }
-        else if (props.task.drugType == "Powder") {
-            setMedTypeIcon("calendar")
-        }
-        else { //default 
-            setMedTypeIcon("calendar")
+    const findType = async () => {
+      
+
+        if (props.task.drug.drugType == "Syrup") {
+            setMedTypeIcon(require("../../assets/Syrup.png"))
+
+        } else if (props.task.drug.drugType == "Pill") {
+            setMedTypeIcon(require("../../assets/Pill.png"))
+        } else if (props.task.drug.drugType == "Cream") {
+            setMedTypeIcon(require("../../assets/Cream.png"))
+        } else if (props.task.drug.drugType == "Powder") {
+            setMedTypeIcon(require("../../assets/Powder.png"))
+        } else { //default 
+            setMedTypeIcon(require("../../assets/Syrup.png"))
+           
         }
     }
     const sparateTimeStemp = async () => {
@@ -77,7 +76,8 @@ export default function MedCard(props) {
     }
 
     const taggleIsDone = () => {
-        setIsDone(!isDone)
+        //setIsDone(!isDone)
+        alert(props.task.drug.drugType)
     }
 
 
@@ -89,13 +89,13 @@ export default function MedCard(props) {
             <View style={styles.medDetailes}>
                 <View style={styles.iconContainer}>
                     <View style={styles.icon} >
-                        <Ionicons name={medTypeIcon} size={24} color="black" />
+                        <Image source={medTypeIcon} style={{ width: 20, height: 20 }} />
                     </View>
                 </View>
                 <View style={styles.medMainView}>
                     {/* <Text style={styles.MedNameTxt}>med name </Text> */}
                     <Text style={styles.MedNameTxt}>{props.task.taskName}</Text>
-                    <Text style={styles.lastTimeTakenTxt}>last taken  {lastTakenTime}  {lastTakenDate}</Text>
+                    <Text style={styles.lastTimeTakenTxt}>last taken {<Text style={{fontFamily:'Urbanist-Bold',}}>{lastTakenTime}</Text>}  {lastTakenDate}</Text>
                 </View>
                 <View style={styles.iconCheckBox}>
                     <TouchableOpacity onPress={taggleIsDone}>
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
         marginVertical: 10,
     },
     icon: {
-        backgroundColor: '#EBF1FF',
+        backgroundColor: '#D0DFFF',
         alignItems: 'center',
         justifyContent: 'center',
         height: 48,

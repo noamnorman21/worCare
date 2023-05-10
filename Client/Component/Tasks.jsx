@@ -42,7 +42,15 @@ export default function Tasks() {
       let taskDate = new Date(task.taskDate)
       return taskDate.getDate() == today.getDate() && taskDate.getMonth() == today.getMonth() && taskDate.getFullYear() == today.getFullYear()
     })
+    //sort by time from erliest to latest
+    filteredMedicineTasks.sort((a, b) => {
+      let aTime = new Date(a.taskDate);
+      let bTime = new Date(b.taskDate);
+      return aTime - bTime;
+    })
     
+
+
     setAllMedicineTasks(filteredMedicineTasks);
   }
   const moveScreens = (task) => {
