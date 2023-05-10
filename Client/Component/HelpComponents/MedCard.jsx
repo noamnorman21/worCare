@@ -1,43 +1,60 @@
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Alert } from 'react-native'
 import { useState, useEffect } from 'react'
-import { Feather, Ionicons } from '@expo/vector-icons';
-
+import { MaterialCommunityIcons, AntDesign, Feather, Ionicons, Octicons } from '@expo/vector-icons';
 const SCREEN_WIDTH = Dimensions.get('window').width;
+import { useUserContext } from '../../UserContext';
 
 export default function MedCard(props) {
-    const [medType, setMedType] = useState('');
+
+    const { updateActualTask } = useUserContext();
+    const [medTypeIcon, setMedTypeIcon] = useState('');
     const [isDone, setIsDone] = useState(false);
     const [lastTakenDate, setLastTakenDate] = useState('');
     const [lastTakenTime, setLastTakenTime] = useState('');
     const [timeInDay, setTimeInDay] = useState('');
 
-    //להוציא מהערה ולשנות לאחר שיש נתונים מהדאטה בייס, -לשנות גם לאייקונים הנכונים (נועם)
-
-    const iconsNamesArr = [
-        {
-            1: "pills",
-            2: "calendar",
-            3: "calendar",
-            4: "calendar",
-        }]
     useEffect(() => {
-
-        // findType()
+        findType()
         sparateTimeStemp()
     }, [])
 
-    const findType = () => {
-        if (props.task.drugType == "Syrup") {
-            setMedType("Syrup")
+    useEffect(() => {
+        if (isDone) {
+            const timer = setTimeout(() => {
+                finshTaskFunction();
+            }, 2000);
+            return () => clearTimeout(timer);
         }
-        else if (props.task.drug.drugType == "Pills") {
-            setMedType("Pills")
+    }, [isDone]);
+
+    async function finshTaskFunction() {
+        if (!isDone) {
+            alert("Task is not done yet")
+            return;
+        }
+        let doneTask = props.task;
+        doneTask.taskStatus = 'F';
+        updateActualTask(doneTask, false);
+        setIsDone(false);
+    }
+
+
+    const findType = () => {
+        // לשנות את האייקון לפי מה שנועם תרצה וגם כמובן מה שירצה השם
+        if (props.task.drugType == "Syrup") {
+            setMedTypeIcon("pills")
+        }
+        else if (props.task.drug.drugType == "Pill") {
+            setMedTypeIcon("calendar")
         }
         else if (props.task.drugType == "Cream") {
-            setMedType("Cream")
+            setMedTypeIcon("calendar")
         }
         else if (props.task.drugType == "Powder") {
-            setMedType("Powder")
+            setMedTypeIcon("calendar")
+        }
+        else { //default 
+            setMedTypeIcon("calendar")
         }
     }
     const sparateTimeStemp = async () => {
@@ -59,6 +76,9 @@ export default function MedCard(props) {
 
     }
 
+    const taggleIsDone = () => {
+        setIsDone(!isDone)
+    }
 
 
     return (
@@ -69,19 +89,30 @@ export default function MedCard(props) {
             <View style={styles.medDetailes}>
                 <View style={styles.iconContainer}>
                     <View style={styles.icon} >
-                        <Ionicons name="calendar" size={24} color="black" />
-                        {/* <Ionicons name={medType}size={24} color="black" /> */}
+                        <Ionicons name={medTypeIcon} size={24} color="black" />
                     </View>
-
                 </View>
                 <View style={styles.medMainView}>
                     {/* <Text style={styles.MedNameTxt}>med name </Text> */}
                     <Text style={styles.MedNameTxt}>{props.task.taskName}</Text>
-
                     <Text style={styles.lastTimeTakenTxt}>last taken  {lastTakenTime}  {lastTakenDate}</Text>
                 </View>
                 <View style={styles.iconCheckBox}>
-                    <Text style={styles.timeTxt}>צק בוקס</Text>
+                    <TouchableOpacity onPress={taggleIsDone}>
+                        {
+                            isDone ?
+                                <Feather name="check-circle" size={25} color="#548DFF" />
+                                :
+                                <Feather name="circle" size={25} color="#548DFF" />
+                        }
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.iconArrow} >
+                        <View style={{ paddingHorizontal: 20 }}>
+                            <Octicons name="chevron-right" size={24} color="#333333" />
+                        </View>
+                    </TouchableOpacity>
+
                 </View>
             </View>
             <View style={styles.line}>
@@ -125,7 +156,8 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: "yellow",
+        //backgroundColor: "yellow",
+        flexDirection: 'row',
         height: '100%',
     },
     medMainView: {
@@ -139,6 +171,9 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
         justifyContent: 'center',
         width: '100%',
+    },
+    iconArrow: {
+        marginLeft: 15,
     },
     medDetailes: {
         flex: 6,

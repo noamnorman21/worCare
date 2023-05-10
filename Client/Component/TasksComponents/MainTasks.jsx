@@ -13,7 +13,7 @@ export default function MainTasks(props) {
   const [todayTasks, setTodayTasks] = useState([])
   const [tommorowTasks, setTommorowTasks] = useState([])
   const [headerToday, setHeaderToday] = useState(false)
-  const [headerTommorow, setHeaderTommorow] = useState(false)
+  const [headerTommorow, setHeaderTommorow] = useState(true)
   const arrowIcon = ["chevron-down-outline", "chevron-up-outline"];
 
   useEffect(() => {
@@ -38,17 +38,14 @@ export default function MainTasks(props) {
     }
     )
     setTodayTasks(todayTasks)
-    //filter tommorow tasks
-    let tommorowTasks = allTasks.filter(task => {
+    //filter all task that not today and not done
+    let tommorowTasks = allTasks.filter(task => {   
       let today = new Date()
       let taskDate = new Date(task.taskDate)
-      return taskDate.getDate() == today.getDate() + 1 && taskDate.getMonth() == today.getMonth() && taskDate.getFullYear() == today.getFullYear()
+      return taskDate.getDate() != today.getDate() || taskDate.getMonth() != today.getMonth() || taskDate.getFullYear() != today.getFullYear()
     }
     )
     setTommorowTasks(tommorowTasks)
-
-
-
   }
 
   const handleAddBtnPress = () => {
@@ -91,10 +88,10 @@ export default function MainTasks(props) {
         </ScrollView>
       </View>
 
-      <View style={[styles.TommorowView,headerToday&& {flex:12} ]}>
+      <View style={[styles.TommorowView,headerToday&& {flex:33} ]}>
         <View>
           <TouchableOpacity style={styles.headerForTasks} onPress={toggleHeaderTommorowView}>
-            <Text style={styles.tasksTitle}>Tomorrow</Text>
+            <Text style={styles.tasksTitle}>Next To do</Text>
             <Ionicons name={headerTommorow ? arrowIcon[0] : arrowIcon[1]} size={30} color="#548DFF" />
           </TouchableOpacity>
         </View>
@@ -131,8 +128,9 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
   },
   todayView: {
-    flex: 1.6,
-    width: '100%'
+    flex: 3.6,
+    width: '100%',
+    marginBottom: 20,
   },
   TommorowView: {
     flex: 1.25,

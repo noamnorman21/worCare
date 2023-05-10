@@ -19,15 +19,14 @@ export default function TaskView(props) {
 
   const checkDate = async () => {
 
-    if (props.today) {
-      setDate('Today')
-      return
-    }
     // "TimeInDay": "20:00:00" -- Remove the seconds
     let hour = props.task.TimeInDay.slice(0, 2);
     let minutes = props.task.TimeInDay.slice(3, 5);
     setTime(hour + ':' + minutes);
-
+    if (props.today) {
+      setDate('Today')
+      return
+    }
     //"taskDate": "2023-05-09T00:00:00"      
     let year = props.task.taskDate.slice(0, 4);
     let month = props.task.taskDate.slice(5, 7);
