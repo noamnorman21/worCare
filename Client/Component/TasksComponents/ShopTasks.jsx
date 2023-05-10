@@ -96,6 +96,7 @@ export default function ShopTasks(props) {
   const handleModalClose = () => {
     setModalVisible(false);
     props.refreshPublicTask()
+    props.refreshPrivateTask()
   };
 
   const isProductChecked = (prod, actualTask) => {

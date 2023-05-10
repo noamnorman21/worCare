@@ -15,7 +15,7 @@ export default function TaskCheckBox(props) {
         if (isDone) {
             const timer = setTimeout(() => {
                 finshTaskFunction();
-            }, 3000);
+            }, 2000);
             return () => clearTimeout(timer);
         }
     }, [isDone]);
@@ -35,16 +35,7 @@ export default function TaskCheckBox(props) {
         let doneTask = props.task;
         doneTask.taskStatus = 'F';
         updateActualTask(doneTask, props.isPrivate);
-
-        if (props.isPrivate) {
-            props.refreshPrivateTask();  
-               
-        }
-        else {
-            props.refreshPublicTask();
-        }
         setIsDone(false);
-
     }
 
 

@@ -22,6 +22,7 @@ namespace DATA
         public Nullable<byte> minQuantity { get; set; }
         public int drugId { get; set; }
         public string patientId { get; set; }
+        public Nullable<System.DateTime> lastTakenDate { get; set; }
     
         public virtual tblActualList tblActualList { get; set; }
         public virtual tblDrug tblDrug { get; set; }

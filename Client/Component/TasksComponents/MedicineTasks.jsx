@@ -1,22 +1,31 @@
-import { View, Text, SafeAreaView, StyleSheet } from 'react-native'
+import { View, Text, SafeAreaView, StyleSheet, Dimensions, ScrollView } from 'react-native'
 import { useState } from 'react'
 import { AddBtn, AddNewMedicine } from '../HelpComponents/AddNewTask'
+import MedCard from '../HelpComponents/MedCard';
 
 export default function MedicineTasks(props) {
    const [modalVisible, setModalVisible] = useState(false)
-   const handleAddBtnPress = () => {   
+   const handleAddBtnPress = () => {
       setModalVisible(true);
    };
 
    const handleModalClose = () => {
       setModalVisible(false);
       props.refreshPublicTask()
+      props.refreshPrivateTask()
    };
 
    return (
       <SafeAreaView style={styles.container}>
          <View>
-            <Text>Medicine Tasks</Text>
+            <ScrollView alwaysBounceVertical={false}>
+               {
+                  props.allMedicineTasks.map((medicine, index) => {
+                     return (<MedCard key={index} task={medicine} />)
+                  }
+                  )
+               }
+            </ScrollView>
          </View>
          <View style={styles.addBtnView}>
             <AddBtn onPress={handleAddBtnPress} />

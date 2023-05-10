@@ -94,6 +94,7 @@
     <EntitySetMapping Name="tblDrugForPatient">
       <EntityTypeMapping TypeName="igroup194_prodModel.tblDrugForPatient">
         <MappingFragment StoreEntitySet="tblDrugForPatient">
+          <ScalarProperty Name="lastTakenDate" ColumnName="lastTakenDate" />
           <ScalarProperty Name="listId" ColumnName="listId" />
           <ScalarProperty Name="fromDate" ColumnName="fromDate" />
           <ScalarProperty Name="toDate" ColumnName="toDate" />

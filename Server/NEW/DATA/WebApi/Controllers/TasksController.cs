@@ -101,15 +101,17 @@ namespace WebApi.Controllers
         public IHttpActionResult GetAllPrivateTasks([FromBody] ForeignUserDTO userDTO)
         {
             List<PrivateActualTaskDTO> tasks = new List<PrivateActualTaskDTO>();
+
             try
             {
+                TimeSpan dateTime = DateTime.Now.TimeOfDay;
                 var tasksArr = from t in db.tblPrivateTask
                             where t.workerId == userDTO.Id && t.taskToDate >= DateTime.Now
                             select t;
                 foreach (var item in tasksArr)
                 {
                     var task= from ta in db.tblPrivateActualTask
-                              where ta.taskId == item.taskId && ta.taskDate >= DateTime.Now && ta.taskStatus == "P"&& ta.taskDate <= SqlFunctions.DateAdd("d", 7, DateTime.Now)
+                              where ta.taskId == item.taskId && ta.taskDate >= DateTime.Today && ta.TimeInDay>=dateTime && ta.taskStatus == "P"&& ta.taskDate <= SqlFunctions.DateAdd("d", 7, DateTime.Now)
                               select ta;
                     foreach (var item2 in task)
                     {
@@ -162,11 +164,15 @@ namespace WebApi.Controllers
                                where t.patientId == patientId && t.taskToDate >= DateTime.Now
                                select t;
                 List<ActualTaskDTO> actualTasks = new List<ActualTaskDTO>();
+                TimeSpan dateTime = DateTime.Now.TimeOfDay; //will save in temp the current time to use in the query
                 foreach (var item in tasksArr)
                 {
+                   
+
                     var task = from t in db.tblActualTask
                                where t.taskId == item.taskId &&
-                               t.taskDate >= DateTime.Now &&
+                               t.taskDate >= DateTime.Today &&
+                               t.TimeInDay >= dateTime &&
                                t.taskDate <= SqlFunctions.DateAdd("d", 7, DateTime.Now) &&
                                t.taskStatus == "P"
                                select t;
@@ -235,6 +241,7 @@ namespace WebApi.Controllers
                         drugForPatientDTO.drugId = drugForArr.First().drugId;
                         drugForPatientDTO.fromDate = drugForArr.First().fromDate;
                         drugForPatientDTO.toDate = drugForArr.First().toDate;
+                        drugForPatientDTO.lastTakenDate = drugForArr.First().lastTakenDate;
 
                         var drugName = from t in db.tblDrug
                                        where t.drugId == drugForPatientDTO.drugId
@@ -503,6 +510,7 @@ namespace WebApi.Controllers
                     if (tblDrugForPatient != null)
                     {
                         tblDrugForPatient.qtyInBox -= tblDrugForPatient.dosage;
+                        tblDrugForPatient.lastTakenDate = DateTime.Now;
                         db.SaveChanges();
                     }
                 }

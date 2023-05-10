@@ -51,6 +51,7 @@ export default function GeneralTasks(props) {
   const handleModalClose = () => {
     setModalVisible(false);
     props.refreshPublicTask()
+    props.refreshPrivateTask()
   };
   const refreshPublicTask = () => {
     props.refreshPublicTask()
@@ -61,7 +62,7 @@ export default function GeneralTasks(props) {
 
 
   const toggleHeader = () => {
-     setTimeout(() => {
+    setTimeout(() => {
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
       setHeader(!header);
     }, 200);
@@ -69,6 +70,7 @@ export default function GeneralTasks(props) {
   const sendNavigtion = (task) => {
     props.moveScreens(task)
   }
+
 
   return (
     <SafeAreaView style={styles.container}>

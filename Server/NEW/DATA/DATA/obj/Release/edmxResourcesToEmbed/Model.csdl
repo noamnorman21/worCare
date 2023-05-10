@@ -112,6 +112,7 @@
     <NavigationProperty Name="tblActualList" Relationship="Self.FK__tblDrugFo__listI__131DCD43" FromRole="tblDrugForPatient" ToRole="tblActualList" />
     <NavigationProperty Name="tblDrug" Relationship="Self.FK__tblDrugFo__drugI__1411F17C" FromRole="tblDrugForPatient" ToRole="tblDrug" />
     <NavigationProperty Name="tblPatient" Relationship="Self.FK__tblDrugFo__patie__150615B5" FromRole="tblDrugForPatient" ToRole="tblPatient" />
+    <Property Name="lastTakenDate" Type="DateTime" Precision="3" />
   </EntityType>
   <EntityType Name="tblForeignUser">
     <Key>

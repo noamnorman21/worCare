@@ -33,6 +33,12 @@ let updateRequest = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/Updat
 let newRequest = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/NewRequest';
 let getPending = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/GetPending/';//+userId
 
+// tasks
+let updateActualTaskUrL = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/UpdateActualTask';
+let updateActualPrivateTaskUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/UpdateActualPrivateTask';
+let getAllPublicTasksUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/GetAllTasks';
+let getAllPrivateTasksUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/GetAllPrivateTasks';
+
 const UserContext = createContext()
 const UserUpdateContext = createContext()
 
@@ -63,6 +69,8 @@ export function UserProvider({ children }) {
     const [userUri, setUserUri] = useState(null)
     const [BirthDate, setBirthDate] = useState(null)
     const [userGender, setUserGender] = useState(null)
+    const [allPublicTasks, setAllPublicTasks] = useState(null)
+    const [allPrivateTasks, setAllPrivateTasks] = useState(null)
 
     function logInContext(userData) {
         setUserType(userData.userType);
@@ -96,7 +104,7 @@ export function UserProvider({ children }) {
             workerId: userData.workerId,//if user is a caregiver, this field will be same as userId
             involvedInId: userData.involvedInId,//if user is a not caregiver, this field will be same as userId
             patientId: userData.patientId,
-            
+
         }
 
         setUserContext(usertoSync);
@@ -112,6 +120,8 @@ export function UserProvider({ children }) {
         fetchUserContacts(usertoSync);
         GetUserPending(usertoSync);
         GetUserHistory(usertoSync);
+        getAllPrivateTasks(usertoSync);
+        getAllPublicTasks(usertoSync);
     }
 
     function logOutContext() {
@@ -171,30 +181,9 @@ export function UserProvider({ children }) {
         setUserContext(userContext)
     }
 
-
-
-    function updateUserContacts() {
-        fetchUserContacts();
-    }
-
-    function updateuserNotifications(notifications) {
-        console.log("updateUser", notifications)
-        setUserNotifications(notifications)
-        AsyncStorage.setItem('userNotifications', JSON.stringify(notifications));
-    }
-
-    async function updateRememberUserContext(userContext) {
-        console.log("updateRememberUser", userContext);
-        setUserContext(userContext);
-    }
-
-    function updatePendings(pendings) {
-        setUserPendingPayments(pendings);
-    }
-
     async function fetchUserContacts(temp) {
         console.log("FetchUserContacts")
-        let user={}
+        let user = {}
         if (temp != undefined) {
             user = {
                 userId: temp.userId,
@@ -217,10 +206,92 @@ export function UserProvider({ children }) {
         });
         const data = await response.json();
         if (data != null) {
-            console.log("data = ", data);
             setUserContacts(data);
             return data;
         }
+    }
+
+    function updateUserContacts() {
+        fetchUserContacts();
+    }
+
+    function updateuserNotifications(notifications) {
+        console.log("updateUser", notifications)
+        setUserNotifications(notifications)
+        AsyncStorage.setItem('userNotifications', JSON.stringify(notifications));
+    }
+
+    async function updateRememberUserContext(userContext) {
+        console.log("updateRememberUser", userContext);
+        setUserContext(userContext);
+    }
+
+    function updatePendings(pendings) {
+        setUserPendingPayments(pendings);
+    }
+    function updateActualTask(task, isPrivateTask) {
+        if (isPrivateTask) {
+            fetch(updateActualPrivateTaskUrl, {
+                method: 'PUT',
+                headers: new Headers({
+                    'Content-Type': 'application/json; charset=UTF-8',
+                    'Accept': 'application/json; charset=UTF-8',
+                }),
+                body: JSON.stringify(task)
+            })
+                .then(res => {
+                    if (res.ok) {
+                        return res.json()
+                            .then(
+                                (result) => {
+                                    console.log("fetch UpdateActualPrivate= ", result);
+                                    getAllPrivateTasks(userContext);
+                                }
+                            )
+                    }
+                    else {
+                        console.log('err post=', res);
+
+                    }
+                }
+                )
+                .catch((error) => {
+                    console.log('Error:', error.message);
+                }
+                );
+
+        }
+        else {
+            fetch(updateActualTaskUrL, {
+                method: 'PUT',
+                headers: new Headers({
+                    'Content-Type': 'application/json; charset=UTF-8',
+                    'Accept': 'application/json; charset=UTF-8',
+                }),
+                body: JSON.stringify(task)
+            })
+                .then(res => {
+                    if (res.ok) {
+                        return res.json()
+                            .then(
+                                (result) => {
+                                    console.log("fetch updateActualTaskUrL= ", result);
+                                    getAllPublicTasks(userContext);
+                                }
+                            )
+                    }
+                    else {
+                        console.log('err post=', res);
+
+                    }
+                }
+                )
+                .catch((error) => {
+                    console.log('Error:', error.message);
+                }
+                );
+        }
+
     }
 
     function addNewContact(Contact) {
@@ -319,6 +390,7 @@ export function UserProvider({ children }) {
 
     //Finance
     async function GetUserPending(userData) {
+        console.log("GetUserHistory")
         try {
             let user;
             if (userData === undefined) {
@@ -350,7 +422,6 @@ export function UserProvider({ children }) {
             })
                 .then((responseJson) => {
                     if (responseJson != null) {
-                        console.log("responseJson = ", responseJson);
                         setUserPendingPayments(responseJson);
                     }
                 })
@@ -363,7 +434,8 @@ export function UserProvider({ children }) {
         }
     }
 
-    async function GetUserHistory (userData) {
+    async function GetUserHistory(userData) {
+        console.log("GetUserHistory")
         try {
             let user;
             if (userData === undefined) {
@@ -378,37 +450,75 @@ export function UserProvider({ children }) {
                     userType: userData.userType
                 }
             }
-          fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/GetHistory/', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(user)
-          }).then((response) => {
-            if (response.status === 200) {
-                return response.json();
-            }
-            else {
-                return null;
-            }
-            })
-            .then((responseJson) => {
-                if (responseJson != null) {
-                    console.log("History = ", responseJson);
-                    setUserHistoryPayments(responseJson);
+            fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/GetHistory/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(user)
+            }).then((response) => {
+                if (response.status === 200) {
+                    return response.json();
+                }
+                else {
+                    return null;
                 }
             })
-            .catch((error) => {
-                console.log(error);
-            }
-            )
+                .then((responseJson) => {
+                    if (responseJson != null) {
+                        setUserHistoryPayments(responseJson);
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                }
+                )
         } catch (error) {
             console.log(error)
         }
     }
-       
 
-    const value = { userContext, userContacts,userNotifications,userPendingPayments,userHistoryPayments,GetUserHistory,GetUserPending,deleteContact,addNewContact,saveContact,updateRememberUserContext, logInContext,fetchUserContacts, logOutContext, updateUserContext, updateUserContacts, updatePendings, updateUserProfile, updateuserNotifications , appEmail}
+    async function getAllPublicTasks(userData) {   
+        console.log("getAllPublicTaskssssssssssssssssssssss")
+        console.log("userData.patientId = ", userData.patientId)
+        try {
+            const response = await fetch(getAllPublicTasksUrl, {
+                method: 'POST',
+                headers: new Headers({ 'Content-Type': 'application/json; charset=UTF-8', }),
+                body: JSON.stringify(userData.patientId),
+            });
+            const result = await response.json();
+            setAllPublicTasks(result);
+        } catch (error) {
+            console.log('err post=', error);
+        }
+    }
+    async function getAllPrivateTasks(userData) {
+        //do it only if userType is caregiver
+        if (userData.userType != "Caregiver") {
+            return;
+        }
+    
+        let forginUser = {
+            Id: userData.workerId
+        }
+        try {
+            const response = await fetch(getAllPrivateTasksUrl, {
+                method: 'POST',
+                headers: new Headers({ 'Content-Type': 'application/json; charset=UTF-8', }),
+                body: JSON.stringify(forginUser),
+            });
+            const result = await response.json();
+            setAllPrivateTasks(result);
+        } catch (error) {
+            console.log('err post=', error);
+        }
+    }
+
+
+    const value = { userContext, userContacts, userNotifications, userPendingPayments, userHistoryPayments, GetUserHistory, GetUserPending,
+         deleteContact, addNewContact, saveContact, updateActualTask, updateRememberUserContext, logInContext, fetchUserContacts, logOutContext,
+          updateUserContext, updateUserContacts, updatePendings, updateUserProfile, updateuserNotifications, appEmail,getAllPrivateTasks,getAllPublicTasks,allPublicTasks,allPrivateTasks };
     return (
         <UserContext.Provider value={value}>
             {children}

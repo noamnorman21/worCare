@@ -111,7 +111,7 @@ namespace DATA
                         tempDate = tempDate.AddDays(7);
                     }
                 }
-                else   //else: task.frequency == "Monthly"
+                else     //else: task.frequency == "Monthly"
                 {
                     while (tempDate.AddMonths(1) < taskToDate)
                     {
@@ -128,6 +128,8 @@ namespace DATA
                         tempDate = tempDate.AddMonths(1);
                     }
                 }
+                
+                
                 db.SaveChanges();
                 return true;
             }
