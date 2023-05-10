@@ -28,7 +28,7 @@ export default function GeneralTasks(props) {
   };
   const combineTasks = (privateTask, publicTasks) => {
     //combine private and public tasks and sort by date and time
-    let allTasks = privateTask.concat(publicTasks);
+    let allTasks = privateTask!==null? privateTask.concat(publicTasks):publicTasks;
     allTasks.sort((a, b) => {
       if (a.taskDate > b.taskDate) {
         return 1;

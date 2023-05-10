@@ -13,17 +13,17 @@ import React from 'react';
 const Tab = createMaterialTopTabNavigator();
 
 export default function Tasks() {
-  const [userData, setUserData] = useState(useUserContext().userContext);
-  const [userId, setUserId] = useState(useUserContext.userId);
+  const {userContext} = useUserContext();
+  const [userId, setUserId] = useState(userContext.userId);
   const {getAllPublicTasks,getAllPrivateTasks,allPublicTasks,allPrivateTasks } = useUserContext();
-  const [userType, setUserType] = useState(userData.userType);
+  const [userType, setUserType] = useState(userContext.userType);
   const [allMedicineTasks, setAllMedicineTasks] = useState([]);
   const [allShopTasks, setAllShopTasks] = useState([]);
  
 
   useEffect(() => {
-    getAllPublicTasks();
-    getAllPrivateTasks();
+    getAllPublicTasks(userContext);
+    getAllPrivateTasks(userContext);
   }, []);
 
 

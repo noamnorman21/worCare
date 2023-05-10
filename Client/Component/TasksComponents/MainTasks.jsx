@@ -24,7 +24,7 @@ export default function MainTasks(props) {
 
   const filterTasks = async (privateTask, publicTasks) => {
     //combine private and public tasks for today task and sort by time
-    let allTasks = privateTask.concat(publicTasks)
+    let allTasks = privateTask? privateTask.concat(publicTasks):publicTasks;
     allTasks.sort((a, b) => {
       return a.TimeInDay > b.TimeInDay ? 1 : -1
     }

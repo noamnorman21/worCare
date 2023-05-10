@@ -2,6 +2,8 @@ import React, { useState, useEffect, createContext, useContext, useRef } from 'r
 import { Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import { auth,db } from './config/firebase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 //--ruppin api server--
 
 //login
@@ -515,8 +517,30 @@ export function UserProvider({ children }) {
         }
     }
 
+    async function logInFireBase(email, password){
+        signInWithEmailAndPassword(auth, email, password)
+                          .then((userCredential) => {
+                            console.log('user logged in');
+                            console.log(userCredential.user.email);
+                            // getChatConvo(userCredential.user.email)
+                          })
+                          .catch((error) => {
+                            const errorCode = error.code;
+                            const errorMessage = error.message;
+                            alert(errorMessage);
+                          });
+    }
 
-    const value = { userContext, userContacts, userNotifications, userPendingPayments, userHistoryPayments, GetUserHistory, GetUserPending,
+    async function logOutFireBase(){
+        signOut(auth).then(() => {
+            console.log('user logged out');
+            }).catch((error) => {
+            console.log(error);
+            });
+    }
+
+
+    const value = { userContext, userContacts, userNotifications, userPendingPayments, userHistoryPayments,logInFireBase, GetUserHistory, GetUserPending,
          deleteContact, addNewContact, saveContact, updateActualTask, updateRememberUserContext, logInContext, fetchUserContacts, logOutContext,
           updateUserContext, updateUserContacts, updatePendings, updateUserProfile, updateuserNotifications, appEmail,getAllPrivateTasks,getAllPublicTasks,allPublicTasks,allPrivateTasks };
     return (

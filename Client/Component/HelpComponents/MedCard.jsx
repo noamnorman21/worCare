@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         height: 85,
         width: SCREEN_WIDTH * 0.88,
-        flexDirection: 'cloumn',
+        flexDirection: 'column',
         marginVertical: 10,
     },
     icon: {

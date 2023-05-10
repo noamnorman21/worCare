@@ -7,6 +7,8 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { OrLine, NeedAccount } from './FooterLine'
 import * as Linking from 'expo-linking';
 import { useUserContext } from '../../UserContext';
+import { auth } from '../../config/firebase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -17,7 +19,7 @@ export default function LogIn({ navigation }) {
     const [userType, setUserType] = useState('User');
     const [isChecked, setChecked] = useState(false);
     const [showPassword, setShowPassword] = useState(false);//for password visibility
-    const { logInContext } = useUserContext();
+    const { logInContext,logInFireBase } = useUserContext();
 
     // function to check from where the app was opened from a invintation link or not  
     const getInitialUrl = async () => {
@@ -137,6 +139,7 @@ export default function LogIn({ navigation }) {
                     const jsonValue = JSON.stringify(userContext)
                     AsyncStorage.setItem('userData', jsonValue);
                     logInContext(userContext);
+                    logInFireBase(email,password);
                     navigation.navigate('CustomHeader', { screen: "AppBarDown" });//navigate to home screen, we will add a necessary call to get user data from the server                                         
                 }
             }
