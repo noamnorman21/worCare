@@ -36,6 +36,13 @@ export default function Tasks() {
     let filteredTasks = tasks.filter(task => task.type == false);
     setAllShopTasks(filteredTasks);
     let filteredMedicineTasks = tasks.filter(task => task.type == true);
+    //save only today tasks
+    filteredMedicineTasks = filteredMedicineTasks.filter(task => {
+      let today = new Date()
+      let taskDate = new Date(task.taskDate)
+      return taskDate.getDate() == today.getDate() && taskDate.getMonth() == today.getMonth() && taskDate.getFullYear() == today.getFullYear()
+    })
+    
     setAllMedicineTasks(filteredMedicineTasks);
   }
   const moveScreens = (task) => {
