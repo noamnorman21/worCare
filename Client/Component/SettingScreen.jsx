@@ -183,7 +183,6 @@ function HomeScreen({ navigation, route }) {
             console.log("no changes");
             route.params.Exit();
         }
-
     }, [saving]);
 
     useEffect(() => {

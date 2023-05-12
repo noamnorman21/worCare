@@ -6,14 +6,12 @@ import { useUserContext } from '../../UserContext';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function MedCard(props) {
-
     const { updateActualTask } = useUserContext();
     const [medTypeIcon, setMedTypeIcon] = useState('');
     const [isDone, setIsDone] = useState(false);
     const [lastTakenDate, setLastTakenDate] = useState('');
     const [lastTakenTime, setLastTakenTime] = useState('');
     const [timeInDay, setTimeInDay] = useState('');
-    const [modalMedicineVisible, setModalMedicineVisible] = useState(false);
     const backGroundColorIcon = ["#D0DFFF", "rgba(255, 60, 60, 0.25)"];
     const iconColors = ["#548DFF", "#FF3C32"]
     const [runlow, setRunlow] = useState(false);
@@ -88,7 +86,7 @@ export default function MedCard(props) {
     }
 
     const navigateToMed = () => {
-        props.navigateToMed(props.task)
+        props.navigateToMed(props.task, runlow, medTypeIcon, timeInDay)
     }
 
     return (
@@ -96,7 +94,7 @@ export default function MedCard(props) {
             <View style={styles.timeRow}>
                 <Text style={styles.timeTxt}>{timeInDay}</Text>
             </View>
-            <View style={styles.medDetailes}>
+            <View style={styles.medDetails}>
                 <View style={styles.iconContainer} >
                     <View style={[styles.icon, { backgroundColor: runlow ? backGroundColorIcon[1] : backGroundColorIcon[0] }]} >
                         <Image source={medTypeIcon} style={{ width: 20, height: 20 }} />
@@ -136,7 +134,6 @@ export default function MedCard(props) {
                         </View>
                     </TouchableOpacity>
                 </View>
-
             </View>
             <View style={styles.line}>
             </View>
@@ -193,7 +190,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         width: '100%',
     },
-    medDetailes: {
+    medDetails: {
         flex: 6,
         alignItems: 'center',
         justifyContent: 'center',
