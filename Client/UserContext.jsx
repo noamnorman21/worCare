@@ -144,6 +144,7 @@ export function UserProvider({ children }) {
             involvedInId: userData.involvedInId,//if user is a not caregiver, this field will be same as userId
             patientId: userData.patientId,
         }
+        
         fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Settings/UpdateUserProfile', {
             method: 'PUT',
             headers: new Headers({
@@ -498,7 +499,8 @@ export function UserProvider({ children }) {
     async function getAllPrivateTasks(userData) {
         //do it only if userType is caregiver
         if (userData.userType != "Caregiver") {
-            return;
+            console.log("getAllPrivateTasks - not caregiver");
+            return setAllPrivateTasks([]);
         }
     
         let forginUser = {
@@ -518,10 +520,12 @@ export function UserProvider({ children }) {
     }
 
     async function logInFireBase(email, password){
+        console.log('logInFireBase')
+        console.log(email)
+        console.log(password)
         signInWithEmailAndPassword(auth, email, password)
                           .then((userCredential) => {
                             console.log('user logged in');
-                            console.log(userCredential.user.email);
                             // getChatConvo(userCredential.user.email)
                           })
                           .catch((error) => {

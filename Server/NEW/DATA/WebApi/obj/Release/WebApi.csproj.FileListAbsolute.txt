@@ -583,3 +583,7 @@ C:\Users\noam1\OneDrive\Desktop\worCare_New\worCare\Server\NEW\DATA\WebApi\obj\R
 C:\Users\noam1\OneDrive\Desktop\worCare_New\worCare\Server\NEW\DATA\WebApi\obj\Release\WebApi.csproj.CopyComplete
 C:\Users\noam1\OneDrive\Desktop\worCare_New\worCare\Server\NEW\DATA\WebApi\obj\Release\WebApi.dll
 C:\Users\noam1\OneDrive\Desktop\worCare_New\worCare\Server\NEW\DATA\WebApi\obj\Release\WebApi.pdb
+C:\Users\oryan\Desktop\app dev\worCare\Server\NEW\DATA\WebApi\bin\HtmlAgilityPack.dll
+C:\Users\oryan\Desktop\app dev\worCare\Server\NEW\DATA\WebApi\bin\HtmlAgilityPack.pdb
+C:\Users\oryan\Desktop\app dev\worCare\Server\NEW\DATA\WebApi\bin\HtmlAgilityPack.xml
+C:\Users\oryan\Desktop\app dev\worCare\Server\NEW\DATA\WebApi\obj\Release\WebApi.csproj.CopyComplete

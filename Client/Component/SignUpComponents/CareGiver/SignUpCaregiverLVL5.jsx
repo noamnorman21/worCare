@@ -2,6 +2,9 @@ import { View, Text, SafeAreaView, StyleSheet, Dimensions, ScrollView, Touchable
 import * as Linking from 'expo-linking';
 import { useState, useEffect } from 'react'
 import Holidays from '../../HelpComponents/Holidays';
+import { auth, db } from '../../../config/firebase'
+import { collection, addDoc } from "firebase/firestore";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 export default function SignUpCaregiverLVL5({ navigation, route }) {
@@ -16,12 +19,13 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
     getInitialUrl();
   }, []);
   const getInitialUrl = async () => {
-    setLinkTo( await Linking.getInitialURL());
+    setLinkTo(await Linking.getInitialURL());
     console.log("link:", linkTo);
   }
 
 
   const createUserInDB = () => {
+    console.log("new user:", newUser);
     newUser.Calendars = selectedHolidays; //selectedHolidays is the array of the selected holidays,use them in data base with stored procedure "InsertCalendarForUser"    
     fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/InsertUser', { //send the user data to the DB
       method: 'POST',
@@ -32,6 +36,32 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
     })
       .then((response) => response.json())
       .then((json) => {
+        let userToUpdate = {
+          id: newUser.Email,
+          name: newUser.FirstName + " " + newUser.LastName, //the name of the user is the first name and the last name
+          avatar: newUser.userUri
+        }
+        console.log(newUser);
+        createUserWithEmailAndPassword(auth, newUser.Email, newUser.Password).then((userCredential) => {
+          console.log("user created");
+          updateProfile(userCredential, {
+            displayName: newUser.FirstName + ' ' + newUser.LastName,
+            photoURL: newUser.userUri
+          }).then(() => {
+            console.log("user updated");
+            let userToUpdate = {
+              id: newUser.Email,
+              name: newUser.FirstName + " " + newUser.LastName, //the name of the user is the first name and the last name
+              avatar: newUser.userUri
+            }
+            addDoc(collection(db, "AllUsers"), { id: userToUpdate.id, name: userToUpdate.name, avatar: userToUpdate.avatar });
+          }).catch((error) => {
+            console.log(error);
+          });
+          console.log("user created");
+        }).catch((error) => {
+          console.log(error);
+        });
         //save the id of the new user that we got from the DB 
         newForeignUserData.Id = json; //save the id of the new user that we got from the DB
         console.log(newForeignUserData.Id);

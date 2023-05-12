@@ -21,6 +21,9 @@ export default function TaskView(props) {
 
     if (props.today) {
       setDate('Today')
+      let hour = props.task.TimeInDay.slice(0, 2);
+      let minutes = props.task.TimeInDay.slice(3, 5);
+      setTime(hour + ':' + minutes);
       return
     }
     // "TimeInDay": "20:00:00" -- Remove the seconds

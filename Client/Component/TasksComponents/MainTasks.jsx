@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, ScrollView, Dimensions } from 'react-native'
+import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, ScrollView, Dimensions, LayoutAnimation } from 'react-native'
 import { useState, useEffect } from 'react'
 import { AddBtn, NewTaskModal } from '../HelpComponents/AddNewTask'
 import { Ionicons } from '@expo/vector-icons';
@@ -56,10 +56,11 @@ export default function MainTasks(props) {
   };
 
   const toggleHeaderTodayView = () => {
-    setHeaderToday(!headerToday)
+    LayoutAnimation.easeInEaseOut(setHeaderToday(!headerToday));
+    // setHeaderToday(!headerToday)
   }
   const toggleHeaderTommorowView = () => {
-    setHeaderTommorow(!headerTommorow)
+    LayoutAnimation.easeInEaseOut(setHeaderTommorow(!headerTommorow));
   }
   const handleModalClose = () => {
     setModalVisible(false);

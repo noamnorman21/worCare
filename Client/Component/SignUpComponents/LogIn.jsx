@@ -96,6 +96,7 @@ export default function LogIn({ navigation }) {
     }
     //function to login user
     const LoginUser = (userData) => {
+        console.log(userData);
         let userForLoginUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUserForLogin';
         fetch(userForLoginUrl, {
             method: 'POST',
