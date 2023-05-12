@@ -15,11 +15,12 @@ const Tab = createMaterialTopTabNavigator();
 export default function Tasks() {
   const [userData, setUserData] = useState(useUserContext().userContext);
   const [userId, setUserId] = useState(useUserContext.userId);
-  const {getAllPublicTasks,getAllPrivateTasks,allPublicTasks,allPrivateTasks } = useUserContext();
+  const { getAllPublicTasks, getAllPrivateTasks, allPublicTasks, allPrivateTasks } = useUserContext();
   const [userType, setUserType] = useState(userData.userType);
   const [allMedicineTasks, setAllMedicineTasks] = useState([]);
   const [allShopTasks, setAllShopTasks] = useState([]);
- 
+  const[showHeader,setShowHeader]=useState("flex");
+
 
   useEffect(() => {
     getAllPublicTasks();
@@ -48,7 +49,7 @@ export default function Tasks() {
       let bTime = new Date(b.taskDate);
       return aTime - bTime;
     })
-    
+
 
 
     setAllMedicineTasks(filteredMedicineTasks);
@@ -62,15 +63,19 @@ export default function Tasks() {
   const refreshPrivateTask = () => {
     getAllPrivateTasks(userData);
   }
+  const changeHeader=(header)=>{
+    setShowHeader(header);
+  }
 
   return (
-    <Tab.Navigator
+    <Tab.Navigator      
       initialRouteName="Main"
       screenOptions={{
-        tabBarStyle: { backgroundColor: 'transparent', width: 'auto' },
+        tabBarStyle: { backgroundColor: 'transparent', width: 'auto',display: showHeader, },
         tabBarPressColor: '#548DFF',
         tabBarPressOpacity: 0.5,
         tabBarLabelStyle: {
+          
           marginTop: 15,
           height: 25,
           fontSize: 15, // <-- change this size to 18 when we have the font family 'Urbanist'
@@ -84,12 +89,15 @@ export default function Tasks() {
           height: 3,
           borderRadius: 50,
         },
-      }}
+      
+      }} 
     >
       <Tab.Screen name="Main" children={() => <Main allPrivateTasks={allPrivateTasks} allPublicTasks={allPublicTasks} refreshPublicTask={refreshPublicTask} refreshPrivateTask={refreshPrivateTask} />} />
       <Tab.Screen name="General" children={() => <General allPrivateTasks={allPrivateTasks} allPublicTasks={allPublicTasks} moveScreens={moveScreens} refreshPrivateTask={refreshPrivateTask} refreshPublicTask={refreshPublicTask} />} />
       <Tab.Screen name="Shop" children={() => <Shop allShopTasks={allShopTasks} refreshPublicTask={refreshPublicTask} refreshPrivateTask={refreshPrivateTask} />} />
-      <Tab.Screen name="Medicine" children={() => <Medicine allMedicineTasks={allMedicineTasks} refreshPublicTask={refreshPublicTask} refreshPrivateTask={refreshPrivateTask} />} />
+      <Tab.Screen
+
+        name="Medicine" children={() => <Medicine changeHeader={changeHeader} allMedicineTasks={allMedicineTasks} refreshPublicTask={refreshPublicTask} refreshPrivateTask={refreshPrivateTask} />} />
     </Tab.Navigator>
   );
 }

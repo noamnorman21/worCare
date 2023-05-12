@@ -39,31 +39,6 @@ export default function History({ navigation, route }) {
     renderHistory()
   }, [userHistoryPayments])
 
-  // const renderHistory = async () => {
-  //   try {
-  //     const user = {
-  //       userId: userContext.userId,
-  //       userType: userContext.userType
-  //     }
-  //     const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/renderHistory/', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify(user)
-  //     });
-  //     const data = await response.json();
-  //     let arr = data.map((item) => {
-  //       return (
-  //         <Request key={item.requestId} renderHistory={renderHistory} data={item} id={item.requestId} Notofication={Notification} View={View} Edit={Edit} subject={item.requestSubject} amountToPay={item.amountToPay} date={item.requestDate} requestComment={item.requestComment} />
-  //       )
-  //     })
-  //     setHistory(arr)
-  //   } catch (error) {
-  //     console.log("error", error)
-  //   }
-  // }
-
   const renderHistory = async () => {
     try {
       let arr = userHistoryPayments.map((item) => {

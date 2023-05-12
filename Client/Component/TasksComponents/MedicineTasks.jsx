@@ -1,29 +1,45 @@
-import { View, Text, SafeAreaView, StyleSheet, Dimensions, ScrollView } from 'react-native'
-import { useState } from 'react'
-import { AddBtn, AddNewMedicine } from '../HelpComponents/AddNewTask'
+import { View, Text, SafeAreaView, StyleSheet, Dimensions, ScrollView } from 'react-native';
+import { useState } from 'react';
+import { AddBtn, AddNewMedicine } from '../HelpComponents/AddNewTask';
 import MedCard from '../HelpComponents/MedCard';
-
 import { createStackNavigator } from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
+import { useIsFocused } from '@react-navigation/native';
+import { useEffect } from 'react';
 const Stack = createStackNavigator();
 
-export default function MedicineTasks(props) {
-   return (
-      <Stack.Navigator>
-         <Stack.Screen options={{ headerShown: false }} name="MedTask" children={() => <MedTask allMedicineTasks={props.allMedicineTasks} refreshPublicTask={props.refreshPublicTask} refreshPrivateTask={props.refreshPrivateTask} />} />
-         {/* <Stack.Screen name="MedDetail" component={MedDetail} /> */}
-      </Stack.Navigator>
-   );
-}
-
 function MedDetail({ navigation, route }) {
+   const isFocused = useIsFocused();
+
+   useIsFocused(() => {
+      console.log("isFocused")
+   })
+
+   useEffect(() => {
+      if (isFocused) {
+         route.params.changeHeader("none")
+       
+      }
+      else {
+         route.params.changeHeader("flex")
+      }
+
+   }, [isFocused])
+
+
+
+
    return (
       <View>
-         <Text>Medicine Detail</Text>
+         <Text>{
+            route.params.med.drug.drugName}
+         </Text>
+
       </View>
    )
 }
 
-function MedTask(props) {
+function MedTask({ navigation, route }) {
    const [modalVisible, setModalVisible] = useState(false)
    const handleAddBtnPress = () => {
       setModalVisible(true);
@@ -31,12 +47,12 @@ function MedTask(props) {
 
    const handleModalClose = () => {
       setModalVisible(false);
-      props.refreshPublicTask()
-      props.refreshPrivateTask()
+      route.params.refreshPublicTask()
+      route.params.refreshPrivateTask()
    };
 
    const navigateToMed = (med) => {
-      // props.navigation.navigate('Medicine', { med: med })
+      navigation.navigate("MedDetail", { med: med })
    }
 
    return (
@@ -44,7 +60,7 @@ function MedTask(props) {
          <View>
             <ScrollView alwaysBounceVertical={false}>
                {
-                  props.allMedicineTasks.map((medicine, index) => {
+                  route.params.allMedicineTasks.map((medicine, index) => {
                      return (<MedCard key={index} task={medicine} navigateToMed={navigateToMed} />)
                   })
                }
@@ -56,6 +72,25 @@ function MedTask(props) {
          <AddNewMedicine isVisible={modalVisible} onClose={handleModalClose} />
       </SafeAreaView>
    )
+}
+
+export default function MedicineTasks(props) {
+
+   const changeHeader = (header) => {
+      props.changeHeader(header) 
+   }
+
+   return (
+      <NavigationContainer independent={true}>
+         <Stack.Navigator>
+            <Stack.Screen
+               options={{ headerShown: false }}
+               initialParams={{ refreshPublicTask: props.refreshPublicTask, refreshPrivateTask: props.refreshPrivateTask, allMedicineTasks: props.allMedicineTasks }}
+               name="MedTask" component={MedTask} />
+            <Stack.Screen initialParams={{changeHeader:changeHeader}} options={{ headerShown: true }} name="MedDetail" component={MedDetail} />
+         </Stack.Navigator>
+      </NavigationContainer>
+   );
 }
 
 const styles = StyleSheet.create({
