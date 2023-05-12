@@ -39,43 +39,7 @@ export default function Pending() {
     )
     setPendings(arr)
   }
-
-  // old renderPendings
-  // const renderPendings = async () => {
-  //   try {
-  //     const user = {
-  //       userId: userContext.userId,
-  //       userType: userContext.userType
-  //     }
-  //     const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/GetPending/', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         'Cache-Control': 'no-cache'
-  //       },
-  //       body: JSON.stringify(user)
-  //     });
-  //     const data = await response.json();
-  //     console.log("Pending", data)
-  //     let arr = data.map((item) => {
-  //       return (
-  //         <Request
-  //           key={item.requestId} renderPendings={renderPendings} data={item}
-  //           id={item.requestId} Notification={Notification}
-  //           View={View} subject={item.requestSubject}
-  //           amountToPay={item.amountToPay}
-  //           date={item.requestDate} requestComment={item.requestComment}
-  //         />
-  //       )
-  //     })
-  //     console.log("Arr",arr.length)
-  //     setPendings(arr)
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // }
-
-
+  
   const Notification = (id) => {
     Alert.alert(
       "Notification",

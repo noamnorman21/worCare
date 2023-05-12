@@ -5,6 +5,7 @@ import MedCard from '../HelpComponents/MedCard';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer, useIsFocused } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
+import { Menu, MenuOptions, MenuOption, MenuTrigger } from "react-native-popup-menu";
 
 const Stack = createStackNavigator();
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -37,10 +38,17 @@ function MedDetail({ navigation, route }) {
                <Text style={styles.headerTxt}>Med List</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.rightHeaderContainer} onPress={() => navigation.goBack()} >
-               <Feather name="more-horizontal" size={32} color="black" />
-            </TouchableOpacity>
-
+            <View style={styles.rightHeaderContainer}>
+               <Menu style={{ flexDirection: 'column', marginVertical: 0 }} onSelect={value => openModal(value)} >
+                  <MenuTrigger children={<View><Feather name="more-horizontal" size={32} color="#000" /></View>} />
+                  <MenuOptions customStyles={{ optionsWrapper: styles.optionsWrapperOpened }}  >
+                     <MenuOption value={1} children={<View style={styles.options}><Feather name='eye' size={20} /><Text style={styles.optionsText}> Show Leaflet</Text></View>} />
+                     <MenuOption value={2} children={<View style={styles.options}><MaterialCommunityIcons name='bell-ring-outline' size={20} /><Text style={styles.optionsText}>Add Instruction</Text></View>} />
+                     <MenuOption value={3} children={<View ><Feather name='edit' size={20} /><Text style={styles.optionsText}>Pause this med</Text></View>} />
+                     <MenuOption value={4} children={<View ><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={styles.deleteTxt}> Delete this med</Text></View>} />
+                  </MenuOptions>
+               </Menu>
+            </View>
          </View>
 
          <View style={styles.medDetailContainer}>

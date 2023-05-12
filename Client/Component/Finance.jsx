@@ -8,7 +8,7 @@ import History from './PaymentsScreen/History';
 import Paychecks from './PaychecksComponents/Paychecks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
-import { MenuProvider, } from "react-native-popup-menu";
+import { MenuProvider } from "react-native-popup-menu";
 const Stack = createStackNavigator();
 
 export default function Finance() {
