@@ -65,6 +65,7 @@ export default function TaskView(props) {
     </View>
   )
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

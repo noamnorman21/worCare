@@ -2,14 +2,12 @@ import { Alert, View, Text, StyleSheet, SafeAreaView, Modal, TouchableOpacity, D
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { useState, useEffect } from 'react'
 import { MaterialCommunityIcons, MaterialIcons, Octicons, Ionicons } from '@expo/vector-icons';
-//import DateTimePicker from '@react-native-community/datetimepicker';
-
 import { useUserContext } from '../../UserContext';
 import DatePicker from 'react-native-datepicker';
 import { Dropdown } from 'react-native-element-dropdown';
 import DateRangePicker from "rn-select-date-range";
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from "moment";
+// import { TextInput } from 'react-native-paper';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -287,9 +285,11 @@ function AddNewMedicine(props) {
                                     <Ionicons name="md-caret-up-outline" size={17} color="#808080" />
                                  </TouchableOpacity>
                                  <TextInput
+                                    // mode="outlined"
+                                    // label={numberPerDay == 0 ? 'Number per day' : ''}
                                     style={[styles.inputNumber, numberPerDay && { textAlign: 'center' }]}
-                                    placeholder="Number per day"
                                     placeholderTextColor="#9E9E9E"
+                                    placeholder="Number per day"
                                     keyboardType='numeric'
                                     returnKeyType='done'
                                     value={numberPerDay == 0 ? '' : numberPerDay.toString()}

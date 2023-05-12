@@ -3,7 +3,27 @@ import { useState } from 'react'
 import { AddBtn, AddNewMedicine } from '../HelpComponents/AddNewTask'
 import MedCard from '../HelpComponents/MedCard';
 
+import { createStackNavigator } from '@react-navigation/stack';
+const Stack = createStackNavigator();
+
 export default function MedicineTasks(props) {
+   return (
+      <Stack.Navigator>
+         <Stack.Screen options={{ headerShown: false }} name="MedTask" children={() => <MedTask allMedicineTasks={props.allMedicineTasks} refreshPublicTask={props.refreshPublicTask} refreshPrivateTask={props.refreshPrivateTask} />} />
+         {/* <Stack.Screen name="MedDetail" component={MedDetail} /> */}
+      </Stack.Navigator>
+   );
+}
+
+function MedDetail({ navigation, route }) {
+   return (
+      <View>
+         <Text>Medicine Detail</Text>
+      </View>
+   )
+}
+
+function MedTask(props) {
    const [modalVisible, setModalVisible] = useState(false)
    const handleAddBtnPress = () => {
       setModalVisible(true);
@@ -15,15 +35,18 @@ export default function MedicineTasks(props) {
       props.refreshPrivateTask()
    };
 
+   const navigateToMed = (med) => {
+      // props.navigation.navigate('Medicine', { med: med })
+   }
+
    return (
       <SafeAreaView style={styles.container}>
          <View>
             <ScrollView alwaysBounceVertical={false}>
                {
                   props.allMedicineTasks.map((medicine, index) => {
-                     return (<MedCard key={index} task={medicine} />)
-                  }
-                  )
+                     return (<MedCard key={index} task={medicine} navigateToMed={navigateToMed} />)
+                  })
                }
             </ScrollView>
          </View>

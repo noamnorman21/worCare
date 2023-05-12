@@ -39,7 +39,7 @@ export default function MainTasks(props) {
     )
     setTodayTasks(todayTasks)
     //filter all task that not today and not done
-    let tommorowTasks = allTasks.filter(task => {   
+    let tommorowTasks = allTasks.filter(task => {
       let today = new Date()
       let taskDate = new Date(task.taskDate)
       return taskDate.getDate() != today.getDate() || taskDate.getMonth() != today.getMonth() || taskDate.getFullYear() != today.getFullYear()
@@ -88,10 +88,10 @@ export default function MainTasks(props) {
         </ScrollView>
       </View>
 
-      <View style={[styles.TommorowView,headerToday&& {flex:33} ]}>
+      <View style={[styles.TommorowView, headerToday && { flex: 33 }]}>
         <View>
           <TouchableOpacity style={styles.headerForTasks} onPress={toggleHeaderTommorowView}>
-            <Text style={styles.tasksTitle}>Next To do</Text>
+            <Text style={styles.tasksTitle}>Upcoming</Text>
             <Ionicons name={headerTommorow ? arrowIcon[0] : arrowIcon[1]} size={30} color="#548DFF" />
           </TouchableOpacity>
         </View>

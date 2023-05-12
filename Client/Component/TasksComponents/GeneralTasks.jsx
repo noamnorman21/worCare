@@ -15,6 +15,7 @@ export default function GeneralTasks(props) {
   const checkIcon = ["check-circle", "circle"];
   const arrowIcon = ["chevron-down-outline", "chevron-up-outline"];
   const [header, setHeader] = useState(false)
+  const [headerCompleted, setHeaderCompleted] = useState(false)
   const isFocused = useIsFocused();
 
   useEffect(() => {
@@ -25,7 +26,8 @@ export default function GeneralTasks(props) {
 
   const handleAddBtnPress = () => {
     setModalVisible(true);
-  };
+  }
+
   const combineTasks = (privateTask, publicTasks) => {
     //combine private and public tasks and sort by date and time
     let allTasks = privateTask.concat(publicTasks);
@@ -48,18 +50,27 @@ export default function GeneralTasks(props) {
     })
     setAllTasks(allTasks)
   }
+
   const handleModalClose = () => {
     setModalVisible(false);
     props.refreshPublicTask()
     props.refreshPrivateTask()
-  };
+  }
+
   const refreshPublicTask = () => {
     props.refreshPublicTask()
   }
+
   const refreshPrivateTask = () => {
     props.refreshPrivateTask()
   }
 
+  const toggleHeaderCompleted = () => {
+    setTimeout(() => {
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+      setHeaderCompleted(!headerCompleted);
+    }, 200);
+  }
 
   const toggleHeader = () => {
     setTimeout(() => {
@@ -67,10 +78,10 @@ export default function GeneralTasks(props) {
       setHeader(!header);
     }, 200);
   }
+
   const sendNavigtion = (task) => {
     props.moveScreens(task)
   }
-
 
   return (
     <SafeAreaView style={styles.container}>
@@ -93,6 +104,16 @@ export default function GeneralTasks(props) {
           </View>
         </ScrollView>
       </View>
+
+      <View style={{ width: SCREEN_WIDTH * 0.92, marginVertical: 20 }}>
+        <View>
+          <TouchableOpacity style={styles.headerForTasks} onPress={toggleHeaderCompleted}>
+            <Text style={styles.tasksTitle}>Completed</Text>
+            <Ionicons name={headerCompleted ? arrowIcon[0] : arrowIcon[1]} size={30} color="#548DFF" />
+          </TouchableOpacity>
+        </View>
+      </View>
+
       <View style={styles.addBtnView}>
         <AddBtn onPress={handleAddBtnPress} />
       </View>

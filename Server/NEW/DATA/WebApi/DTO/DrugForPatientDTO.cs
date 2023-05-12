@@ -22,5 +22,6 @@ namespace WebApi.DTO
         public string drugName { get; set; }
         public string drugUrl { get; set; }
         public string drugType { get; set; }
+        public string taskComment { get; set; }
     }
 }
