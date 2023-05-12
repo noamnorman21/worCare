@@ -74,6 +74,9 @@ export function UserProvider({ children }) {
     const [allPublicTasks, setAllPublicTasks] = useState(null)
     const [allPrivateTasks, setAllPrivateTasks] = useState(null)
 
+    // new
+    const [pairedEmail, setPairedEmail] = useState(null)
+
     function logInContext(userData) {
         setUserType(userData.userType);
         setUserLanguage(userData.Language);
@@ -124,6 +127,38 @@ export function UserProvider({ children }) {
         GetUserHistory(usertoSync);
         getAllPrivateTasks(usertoSync);
         getAllPublicTasks(usertoSync);
+        if (userData.userType == "User") {
+            getPairedEmail(userData.workerId);
+        }
+        else {
+            getPairedEmail(userData.involvedInId);
+        }
+    }
+
+    function getPairedEmail (id){
+        console.log('getPairedEmail')
+        fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUser/' + id, {
+            method: 'GET',
+            headers: new Headers({
+                'Content-Type': 'application/json; charset=UTF-8',
+            })
+        })
+            .then(res => {
+                if (!res.ok)
+                    return Promise.reject(res.statusText);
+                return res.json()
+            })
+            .then(
+                (result) => {
+                    console.log("GetPairedEmail= ", result);
+                    let temp= result.split(":")
+                    temp= temp[1];
+                    console.log("temp= ", temp);
+                    setPairedEmail(temp)
+                },
+                (error) => {
+                    console.log("err post=", error);
+                });
     }
 
     function logOutContext() {

@@ -1,9 +1,12 @@
 import React, { useState } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, Modal, ScrollView, Dimensions, Image } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, Modal, ScrollView, Dimensions, Image, Alert } from 'react-native'
 import { Ionicons } from '@expo/vector-icons';
 import { TextInput } from 'react-native-paper';
-import { addDoc, collection } from 'firebase/firestore';
+import { addDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { auth, db } from '../../config/firebase';
+import * as ImagePicker from 'expo-image-picker';
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { storage } from '../../config/firebase';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const ScreenHeight = Dimensions.get('window').height;
@@ -14,27 +17,76 @@ export default function AddNewGroupChat(props) {
   const [addNewModalGroup, setAddNewModalGroup] = useState(false)
   const [groupName, setGroupName] = useState("")
   const [selectedUsers, setSelectedUsers] = useState([])
-  const [groupList, setGroupList] = useState([])
-  const [groupListForSearch, setGroupListForSearch] = useState([])
-  const [searchText, setSearchText] = useState("")
-  const [searchResult, setSearchResult] = useState([])
-  const [searchResultForSearch, setSearchResultForSearch] = useState([])
-  const [searchResultModal, setSearchResultModal] = useState(false)
-  const [searchResultModalForSearch, setSearchResultModalForSearch] = useState(false)
-  const [searchResultModalForAdd, setSearchResultModalForAdd] = useState(false)
-  const [searchResultModalForAddForSearch, setSearchResultModalForAddForSearch] = useState(false)
-  const [searchResultModalForAddForSearchForAdd, setSearchResultModalForAddForSearchForAdd] = useState(false)
-  const [searchResultModalForAddForSearchForAddForSearch, setSearchResultModalForAddForSearchForAddForSearch] = useState(false)
-  const [searchResultModalForAddForSearchForAddForSearchForAdd, setSearchResultModalForAddForSearchForAddForSearchForAdd] = useState(false)
+  const [groupPic, setGroupPic]= useState(null)
 
-  const addNewGroup = () => {
+  const checkIfGroupExist = async () => {
+    console.log("check if group exist")
+    console.log(props.groupNames)
+    let group= props.groupNames.filter((group) => group.Name === groupName)
+    console.log(group.length)
+    if(group.length>0){
+      console.log("true")
+      return true
+    }
+    return false
+  }
+
+ const validate = (image) => {
+  
+  if(checkIfGroupExist()==true){
+    console.log("group already exist", checkIfGroupExist())
+    return Alert.alert("Group already exist")
+  }
+  if (groupName === "") {
+    return Alert.alert("Please enter group name")
+  }
+  if (groupPic === null) {
+    return Alert.alert("Please add group picture")
+  }
+  sendToFirebase(image)
+
+ }
+
+  const sendToFirebase = async (image) => {
+    // if the user didn't upload an image, we will use the default image
+    const filename = image.substring(image.lastIndexOf('/') + 1);
+    const storageRef = ref(storage, "groupPics/" + filename);
+    const blob = await fetch(image).then(response => response.blob());
+    try {
+        const uploadTask = uploadBytesResumable(storageRef, blob);
+        uploadTask.on('state_changed',
+            snapshot => {
+                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                console.log(`Upload is ${progress}% complete`);
+            },
+            error => {
+                console.error(error);
+                Alert.alert('Upload Error', 'Sorry, there was an error uploading your image. Please try again later.');
+            },
+            () => {
+                getDownloadURL(storageRef).then(downloadURL => {
+                    console.log('File available at', downloadURL); 
+                    console.log("send to next db")
+                    addNewGroup(downloadURL);                   
+                });
+            }
+        );
+    } catch (error) {
+        console.error(error);
+        Alert.alert('Upload Error', 'Sorry, there was an error uploading your image. Please try again later.');
+        sendDataToNextDB();
+    }
+}
+
+  
+  const addNewGroup = (image) => {
     console.log("add new group")
     let name = groupName;
-    addDoc(collection(db, auth.currentUser.email), { Name: name });
-    addDoc(collection(db, "allPublicGroups"), { Name: name });
+    addDoc(collection(db, auth.currentUser.email), { Name: name, image: image });
+    addDoc(collection(db, "allPublicGroups"), { Name: name, image: image });
     selectedUsers.forEach((user) => {
       console.log(user)
-      addDoc(collection(db, user), { Name: name });
+      addDoc(collection(db, user), { Name: name, image: image });
     });
    props.closeModal()
    props.navigate(name)
@@ -54,13 +106,50 @@ export default function AddNewGroupChat(props) {
     }
   };
 
+  // pick image from gallery
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    });
+    if (!result.canceled) {
+      setGroupPic(result.assets[0].uri);
+    }
+  };
+
+  // take image from camera
+  const takeImage = async () => {
+    let result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    });
+    if (!result.canceled) {
+      setGroupPic(result.uri);
+    }
+  };
+
+  // pick image from gallery of take image from camera
+  const pickImageHandler = () => {
+    Alert.alert(
+      'Choose Image',
+      'Pick an image from camera or gallery',
+      [
+        { text: 'Camera', onPress: takeImage },
+        { text: 'Gallery', onPress: pickImage },
+      ],
+      { cancelable: true }
+    );
+  };
+
+
 
 
   return (
     <>
       <View style={styles.modal}>
         <Text style={styles.modalText}>Add new group</Text>
-        <TextInput style={styles.inputTxt}
+<TouchableOpacity onPress={()=> pickImageHandler()}>
+  <Image source={groupPic? {uri:groupPic}: require('../../images/Avatar.png')} style={styles.ImagePicker} />
+  </TouchableOpacity>
+          <TextInput style={styles.inputTxt}
           mode='outlined'
           label='Group Name'
           value={groupName}
@@ -88,7 +177,7 @@ export default function AddNewGroupChat(props) {
             })}
         </ScrollView>
         <View  style={styles.bottom}>
-          <TouchableOpacity style={styles.savebutton} onPress={() => addNewGroup()}>
+          <TouchableOpacity style={styles.savebutton} onPress={() => validate(groupPic)}>
             <Text style={styles.savebuttonText}>Create</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.cancelbutton} onPress={() => { props.closeModal(); console.log("pressed close") }}>
@@ -231,4 +320,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     width: SCREEN_WIDTH * 0.95,
   },
+  ImagePicker: { width: 100, height: 100, borderRadius: 50 },
+ 
 })

@@ -156,6 +156,7 @@ function MainRoom ({navigation}) {
   const [addNewModal, setAddNewModal] = useState(false)
   const [newName, setNewName] = useState('')
   const [addNewModalGroup, setAddNewModalGroup] = useState(false)
+  const [publicGroupNames, setPublicGroupNames] = useState([])
 
   useLayoutEffect(() => {
     // get all conversations from collection
@@ -166,6 +167,7 @@ function MainRoom ({navigation}) {
         key: doc.data().Name,
         Name: doc.data().Name,
         User: doc.data().User,
+        image: doc.data().image,
       }))
     ))
 
@@ -179,10 +181,18 @@ function MainRoom ({navigation}) {
         avatar: doc.data().avatar,
       }))
     ))
-
+    //get public groups
+// const tempGroupNames= query(collection(db, "allPublicGroups"));
+//     const getPublic = (collection(db, "allPublicGroups"), onSnapshot(tempGroupNames, (snapshot) => setPublicGroupNames(
+//       snapshot.docs.map(doc => ({
+//         Name: doc.data().Name,
+//       }))
+//     )));
+    
     return () => {
       getNames();
       getUsers();
+      // getPublic();
     }
   }, [navigation]);
 
@@ -195,7 +205,7 @@ function MainRoom ({navigation}) {
         <View key={name.Name}>
         <TouchableOpacity style={styles.conCard} key={name.Name} onPress={() => navigation.navigate('ChatRoom', {name: name.Name, user: name.User})}> 
         <View style={styles.conLeft}>
-        <Image source={{ uri: userContext.userUri }} style={{ width: 65, height: 65, borderRadius:54 }} />
+        <Image source={{ uri: name.image? name.image: userContext.userUri }} style={{ width: 65, height: 65, borderRadius:54 }} />
         </View>
         <View style={styles.conMiddle}>
         <Text style={styles.conName}>{name.User? name.User:name.Name}</Text>
@@ -234,6 +244,10 @@ function MainRoom ({navigation}) {
     renderUsers();
   }, [users]);
 
+  // useEffect(() => {
+  //   console.log('publicGroupNames', publicGroupNames)
+  // }, [publicGroupNames]);
+
 
  
 
@@ -242,8 +256,8 @@ function MainRoom ({navigation}) {
     const contact= user
     console.log('contact', contact)
     console.log('auth', auth.currentUser)
-    addDoc(collection(db, auth.currentUser.email), { Name: auth.currentUser.email+"+"+contact.id, User: contact.name});
-    addDoc(collection(db, contact.id), { Name: auth.currentUser.email+"+"+contact.id, User: auth.currentUser.displayName? auth.currentUser.displayName:auth.currentUser.email});
+    addDoc(collection(db, auth.currentUser.email), { Name: auth.currentUser.email+"+"+contact.id, User: contact.name, image: contact.avatar});
+    addDoc(collection(db, contact.id), { Name: auth.currentUser.email+"+"+contact.id, User: auth.currentUser.displayName? auth.currentUser.displayName:auth.currentUser.email, image: auth.currentUser.photoURL});
     navigation.navigate('ChatRoom', {name: auth.currentUser.email+"+"+contact+"ma", user: contact.name})  
     setAddNewModal(false)   
   }
@@ -260,18 +274,18 @@ function MainRoom ({navigation}) {
       <Modal visible={addNewModal} animationType='slide'>
         <View style={styles.modal}>
           <Text style={styles.modalText}>Add new chat</Text>
-          <TouchableOpacity style={styles.modalButton} onPress={()=>{setAddNewModal(false);setAddNewModalGroup(true)}}>
+          {/* <TouchableOpacity style={styles.modalButton} onPress={()=>{setAddNewModal(false);setAddNewModalGroup(true)}}>
             <Text style={styles.modalButtonText}>Group</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           {usersToDisplay}
           <TouchableOpacity style={styles.modalButton} onPress={()=>{setAddNewModal(false);console.log("pressed close")}}>
             <Text style={styles.modalButtonText}>Cancel</Text>
           </TouchableOpacity>
           </View>
       </Modal>
-      <Modal visible={addNewModalGroup} animationType='slide'>
-        <AddNewGroupChat users={users} closeModal={()=>setAddNewModalGroup(false)} navigate={(name)=>{ navigation.navigate('ChatRoom', { name: name })}} />
-      </Modal>
+      {/* <Modal visible={addNewModalGroup} animationType='slide'>
+        <AddNewGroupChat groupNames={publicGroupNames} users={users} closeModal={()=>setAddNewModalGroup(false)} navigate={(name)=>{ navigation.navigate('ChatRoom', { name: name })}} />
+      </Modal> */}
 
     </View>
   )
