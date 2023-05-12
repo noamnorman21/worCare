@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity,Alert,Image } from 'react-native'
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Alert, Image } from 'react-native'
 import { useState, useEffect } from 'react'
 import { MaterialCommunityIcons, AntDesign, Feather, Ionicons, Octicons } from '@expo/vector-icons';
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -12,6 +12,7 @@ export default function MedCard(props) {
     const [lastTakenDate, setLastTakenDate] = useState('');
     const [lastTakenTime, setLastTakenTime] = useState('');
     const [timeInDay, setTimeInDay] = useState('');
+    const [modalMedicineVisible, setModalMedicineVisible] = useState(false);
 
     useEffect(() => {
         findType()
@@ -40,7 +41,7 @@ export default function MedCard(props) {
 
 
     const findType = async () => {
-      
+
 
         if (props.task.drug.drugType == "Syrup") {
             setMedTypeIcon(require("../../assets/Syrup.png"))
@@ -53,7 +54,7 @@ export default function MedCard(props) {
             setMedTypeIcon(require("../../assets/Powder.png"))
         } else { //default 
             setMedTypeIcon(require("../../assets/Syrup.png"))
-           
+
         }
     }
     const sparateTimeStemp = async () => {
@@ -75,8 +76,10 @@ export default function MedCard(props) {
     }
     const taggleIsDone = () => {
         setIsDone(!isDone)
-  
+
     }
+
+
     return (
         <View style={styles.container}>
             <View style={styles.timeRow}>
@@ -88,10 +91,15 @@ export default function MedCard(props) {
                         <Image source={medTypeIcon} style={{ width: 20, height: 20 }} />
                     </View>
                 </View>
+
                 <View style={styles.medMainView}>
                     {/* <Text style={styles.MedNameTxt}>med name </Text> */}
+                    <View style={styles.runningLowView}>
+                    <Feather name="alert-triangle" size={15.5} color="red" />
+                        <Text style={styles.runningLowTxt}>Running Low</Text>
+                    </View>
                     <Text style={styles.MedNameTxt}>{props.task.taskName}</Text>
-                    <Text style={styles.lastTimeTakenTxt}>last taken {<Text style={{fontFamily:'Urbanist-Bold',}}>{lastTakenTime}</Text>}  {lastTakenDate}</Text>
+                    <Text style={styles.lastTimeTakenTxt}>last taken {<Text style={{ fontFamily: 'Urbanist-Bold', }}>{lastTakenTime}</Text>}  {lastTakenDate}</Text>
                 </View>
                 <View style={styles.iconCheckBox}>
                     <TouchableOpacity onPress={taggleIsDone}>
@@ -103,7 +111,7 @@ export default function MedCard(props) {
                         }
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.iconArrow} >
+                    <TouchableOpacity style={styles.iconArrow} onPress={() => setModalMedicineVisible(true)} >
                         <View style={{ paddingHorizontal: 20 }}>
                             <Octicons name="chevron-right" size={24} color="#333333" />
                         </View>
@@ -122,7 +130,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         height: 85,
-        width: SCREEN_WIDTH * 0.88,
+        width: SCREEN_WIDTH * 0.9,
         flexDirection: 'cloumn',
         marginVertical: 10,
     },
@@ -149,7 +157,7 @@ const styles = StyleSheet.create({
         fontFamily: 'Urbanist-SemiBold',
     },
     iconCheckBox: {
-        flex: 1,
+        flex: 0.8,
         alignItems: 'center',
         justifyContent: 'center',
         //backgroundColor: "yellow",
@@ -169,7 +177,7 @@ const styles = StyleSheet.create({
         width: '100%',
     },
     iconArrow: {
-        marginLeft: 15,
+        marginLeft: 4,
     },
     medDetailes: {
         flex: 6,
@@ -189,6 +197,21 @@ const styles = StyleSheet.create({
         backgroundColor: '#808080',
         opacity: 0.5,
         marginTop: 10,
-    }
+    },
+    runningLowView: {
+        backgroundColor: '#FF3C3C',
+
+        flexDirection: 'row',
+        borderRadius: 5,
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: 19,
+        width: 94,
+        marginTop: 5,
+        opacity: 0.25,
+        marginLeft: SCREEN_WIDTH * 0.25,
+    },
+
+
 
 })
