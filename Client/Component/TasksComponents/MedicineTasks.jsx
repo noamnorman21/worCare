@@ -18,8 +18,8 @@ function MedDetail({ navigation, route }) {
    const task = route.params.task;
    const backGroundColorIcon = ["#D0DFFF", "rgba(255, 60, 60, 0.25)"];
    const iconColors = ["#548DFF", "#FF3C32"]
-
    const isFocused = useIsFocused();
+
    useEffect(() => {
       if (isFocused) {
          route.params.changeHeader("none")
@@ -28,6 +28,21 @@ function MedDetail({ navigation, route }) {
          route.params.changeHeader("flex")
       }
    }, [isFocused])
+
+   const openModal = (value) => {
+      if (value == 1) {
+         console.log("show leaflet")
+      }
+      else if (value == 2) {
+         console.log("add instruction")
+      }
+      if (value == 3) {
+         console.log("pause this med")
+      }
+      if (value == 4) {
+         console.log("delete this med")
+      }
+   }
 
    return (
       <View style={styles.container}>
