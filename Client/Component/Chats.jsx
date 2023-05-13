@@ -2,14 +2,16 @@ import { View, Text, StyleSheet, Dimensions,Image, Alert,Modal,TouchableOpacity,
 import { useCallback, useState, useLayoutEffect } from 'react'
 import { useIsFocused } from '@react-navigation/native';
 import { auth, db } from '../config/firebase';
-import { signOut } from 'firebase/auth';
+import { signOut, updateProfile } from 'firebase/auth';
 import { GiftedChat } from 'react-native-gifted-chat';
-import { collection, addDoc, getDocs, query, orderBy, onSnapshot, listCollection, where } from 'firebase/firestore';
+import { collection, addDoc, getDocs, query, orderBy, onSnapshot, listCollection, where, limit } from 'firebase/firestore';
 import { useEffect } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { useUserContext } from '../UserContext';
 import { Feather } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 import AddNewGroupChat from '../Component/HelpComponents/AddNewGroupChat';
+import { get } from 'firebase/database';
 
 
 const ScreenHeight = Dimensions.get("window").height;
@@ -108,24 +110,23 @@ function ChatRoom ({route,navigation})  {
   const [messages, setMessages] = useState([]);
 
   useLayoutEffect(() => {
-    console.log("name",route.params.name)
-    const q = query(collection(db, route.params.name), orderBy('createdAt', 'desc'));    
-    const unsubscribe = onSnapshot(q, (snapshot) => setMessages(
+    const tempMessages= query(collection(db, route.params.name), orderBy('createdAt', 'desc'));
+    getDocs(tempMessages).then((querySnapshot) => {
+    onSnapshot(tempMessages, (snapshot) => {setMessages(
       snapshot.docs.map(doc => ({
         _id: doc.data()._id,
         createdAt: doc.data().createdAt.toDate(),
         text: doc.data().text,
         user: doc.data().user,
       }))
-    ));
-    navigation.setOptions({
-      headerTitle: route.params.user? route.params.user : route.params.name,
-    })
-    return () => {
-      unsubscribe();
-    };
-
+    )});
+  });
+  navigation.setOptions({
+    headerTitle: route.params.user?route.params.user:route.params.name,
+  })
+  
   }, [navigation]);
+
 
   const onSend = useCallback((messages = []) => {
     const { _id, createdAt, text, user } = messages[0]
@@ -142,15 +143,16 @@ function ChatRoom ({route,navigation})  {
         name: auth?.currentUser?.displayName,
         avatar: auth?.currentUser?.photoURL
       }}
+      isLoadingEarlier={true}
+      showUserAvatar={true}
     />
   );
 }
 
 
 function MainRoom ({navigation}) {
-  const [names, setNames] = useState([])
   const [namesToDisplay, setNamesToDisplay] = useState([])
-  const { userContext, userConvo } = useUserContext();
+  const { userContext, userChats } = useUserContext();
   const [users, setUsers] = useState([])
   const [usersToDisplay, setUsersToDisplay] = useState([])
   const [addNewModal, setAddNewModal] = useState(false)
@@ -159,18 +161,21 @@ function MainRoom ({navigation}) {
   const [publicGroupNames, setPublicGroupNames] = useState([])
 
   useLayoutEffect(() => {
+    
     // get all conversations from collection
-    const tempNames= query(collection(db, auth.currentUser.email));
-    // add listener to names collection
-    const getNames = onSnapshot(tempNames, (snapshot) => setNames(
-      snapshot.docs.map(doc => ({
-        key: doc.data().Name,
-        Name: doc.data().Name,
-        User: doc.data().User,
-        image: doc.data().image,
-      }))
-    ))
+    // const tempNames= query(collection(db, auth.currentUser.email));
+    // // add listener to names collection
+    // const getNames = onSnapshot(tempNames, (snapshot) => setNames(
+    //   snapshot.docs.map(doc => ({
+    //     key: doc.data().Name,
+    //     Name: doc.data().Name,
+    //     User: doc.data().User,
+    //     image: doc.data().image,
+    //   }))
+    // ))
 
+    
+    
     // get all users from collection except current user
     const tempUsers= query(collection(db, "AllUsers"), where("id","!=",auth.currentUser.email));
     // add listener to users collection
@@ -190,44 +195,29 @@ function MainRoom ({navigation}) {
 //     )));
     
     return () => {
-      getNames();
+      // getNames();
       getUsers();
       // getPublic();
     }
   }, [navigation]);
+  
 
 
   useEffect(() => {
+    //relevant- from user context
     const renderNames = () => {
-      console.log('namesssss', names)
-      setNamesToDisplay(names.map((name) => (
-        // <Text key={name.Name}>{name.Name} aaa</Text>
-        <View key={name.Name}>
-        <TouchableOpacity style={styles.conCard} key={name.Name} onPress={() => navigation.navigate('ChatRoom', {name: name.Name, user: name.User})}> 
-        <View style={styles.conLeft}>
-        <Image source={{ uri: name.image? name.image: userContext.userUri }} style={{ width: 65, height: 65, borderRadius:54 }} />
-        </View>
-        <View style={styles.conMiddle}>
-        <Text style={styles.conName}>{name.User? name.User:name.Name}</Text>
-        <Text style={styles.conLastMessage}>last message</Text>
-        </View>
-        <View style={styles.conRight}>
-        <Text style={styles.conBadgeText}>1</Text>
-        <Text style={styles.conTime}>time</Text>
-        </View>     
-        </TouchableOpacity>
-        <View style={styles.lineContainer}>
-        <View style={styles.line} />
-      </View>  
-      </View>
-      )))}
+      setNamesToDisplay(userChats.map((name,index) => (
+        <ConvoCard key={index} name={name} />
+        )))
+    }  
+    
+    
     renderNames();
-  }, [names]);
+  }, [userChats]);
 
   useEffect(() => {
     const renderUsers = () => {
       const res= users.map((user) => (
-        console.log('user1111', user),
           <View key={user.name} >
           <TouchableOpacity style={styles.userCard} onPress={() => addNewPrivateChat(user)}>
           <Image source={{ uri: user.avatar }} style={{ width: 65, height: 65, borderRadius:54 }} />
@@ -248,19 +238,41 @@ function MainRoom ({navigation}) {
   //   console.log('publicGroupNames', publicGroupNames)
   // }, [publicGroupNames]);
 
+  const addNewPrivateChat = async (user) => {
+    // check if convo already exists in firestore 
+    // if yes, navigate to chat room
+    // if no, add new convo to firestore and navigate to chat room
+    const q= query(collection(db, auth.currentUser.email), where("Name", "==", auth.currentUser.displayName+"+"+user.name));
+    const querySnapshot = await getDocs(q);
 
- 
-
-  const addNewPrivateChat = (user) => {
+    if (querySnapshot.docs.length > 0) {
+      console.log("convo exists")
+      setAddNewModal(false)
+      navigation.navigate('ChatRoom', {name: auth.currentUser.displayName+"+"+user.name, user: user.name})
+    } else {
     console.log("add new private chat")
     const contact= user
-    console.log('contact', contact)
-    console.log('auth', auth.currentUser)
-    addDoc(collection(db, auth.currentUser.email), { Name: auth.currentUser.email+"+"+contact.id, User: contact.name, image: contact.avatar});
-    addDoc(collection(db, contact.id), { Name: auth.currentUser.email+"+"+contact.id, User: auth.currentUser.displayName? auth.currentUser.displayName:auth.currentUser.email, image: auth.currentUser.photoURL});
-    navigation.navigate('ChatRoom', {name: auth.currentUser.email+"+"+contact+"ma", user: contact.name})  
+    addDoc(collection(db, auth.currentUser.email), { Name: auth.currentUser.displayName+"+"+contact.name, User: contact.name, image: contact.avatar});
+    checkifConvoExistsforContact(contact)
+    navigation.navigate('ChatRoom', {name: auth.currentUser.displayName+"+"+contact.name, user: contact.name})  
     setAddNewModal(false)   
   }
+}
+
+  const checkifConvoExistsforContact = (contact) => {
+    console.log(contact)
+    const q= query(collection(db, contact.id), where("Name","==",auth.currentUser.displayName+"+"+contact.name));
+    getDocs(q).then((querySnapshot) => {
+      if (querySnapshot.size > 0) {
+        return console.log("convo existsssssss")
+      } else {
+        console.log("add new private chat")
+        addDoc(collection(db, contact.id), { Name: auth.currentUser.displayName+"+"+contact.name, User: auth.currentUser.displayName, image: auth.currentUser.photoURL});
+      }
+    }
+    )
+  }
+  
 
   return (
     <View style={styles.container}>
@@ -290,6 +302,75 @@ function MainRoom ({navigation}) {
     </View>
   )
 }
+
+
+const ConvoCard= (props) =>{
+  const navigation = useNavigation();
+  const [messages, setMessages] = useState([]);
+  const [lastMessage, setLastMessage] = useState('')
+  const [lastMessageTime, setLastMessageTime] = useState('')
+  const [lastMessageDate, setLastMessageDate] = useState('')
+  const [lastMessageUser, setLastMessageUser] = useState('')
+  const [lastMessageUserImage, setLastMessageUserImage] = useState('')
+  const [lastMessageUserEmail, setLastMessageUserEmail] = useState('')
+
+ 
+useEffect(() => {
+      const tempMessages= query(collection(db, props.name.Name), orderBy('createdAt', 'desc'));
+      const querySnapshot = getDocs(tempMessages).then((querySnapshot) => {
+      onSnapshot(tempMessages, (snapshot) => {setMessages(
+        snapshot.docs.map(doc => ({
+          _id: doc.data()._id,
+          createdAt: doc.data().createdAt.toDate(),
+          text: doc.data().text,
+          user: doc.data().user,
+        }))
+      )});
+    });
+    
+}, [navigation]);
+
+useEffect(() => {
+  if(messages.length>0){
+    setLastMessage(messages[0].text)
+    let string = messages[0].createdAt.toString()
+    const res= string.split(' ')
+    const date= res[1]+' '+res[2]+' '+res[3]
+    setLastMessageTime(res[4].split(':').slice(0,2).join(':'))
+    setLastMessageDate(date)
+    setLastMessageUser(messages[0].user.name)
+    setLastMessageUserImage(messages[0].user.avatar)
+    setLastMessageUserEmail(messages[0].user.email)
+  }
+
+}, [messages]);
+
+  
+  return (
+    <>
+    <View key={props.name.Name}>
+      <TouchableOpacity style={styles.conCard} key={props.name.Name} onPress={() => navigation.navigate('ChatRoom', { name: props.name.Name, user: props.name.User })}>
+        <View style={styles.conLeft}>
+          <Image source={{ uri: props.name.image }} style={{ width: 65, height: 65, borderRadius: 54 }} />
+        </View>
+        <View style={styles.conMiddle}>
+          <Text style={styles.conName}>{props.name.User ? props.name.User : props.name.Name}</Text>
+          <Text style={styles.conLastMessage}>{lastMessage}</Text>
+        </View>
+        <View style={styles.conRight}>
+          <Text style={styles.conBadgeText}>1</Text>
+          <Text style={styles.conDate}>{lastMessageDate}</Text>
+          <Text style={styles.conTime}>{lastMessageTime}</Text>
+        </View>
+      </TouchableOpacity>
+      <View style={styles.lineContainer}>
+        <View style={styles.line} />
+      </View>
+    </View>
+    </>
+  )
+}
+  
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -318,10 +399,18 @@ const styles = StyleSheet.create({
     flex: 9,
   },
   conRight: {
-    flex: 2,
+    flex: 3,
     flexDirection: 'column',
     justifyContent: 'center',
     width: ScreenWidth * 0.2,
+  },
+  conTime: {
+    fontSize: 12,
+    fontFamily:'Urbanist-Regular',
+  },
+  conDate:{
+    fontSize: 12,
+    fontFamily:'Urbanist-Regular',
   },
   lineContainer: {
     flexDirection: 'row',

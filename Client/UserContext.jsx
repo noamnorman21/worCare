@@ -3,7 +3,10 @@ import { Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { auth,db } from './config/firebase';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getDatabase, ref, set, onValue, get } from "firebase/database";
+import {collection, query, onSnapshot} from 'firebase/firestore';
 //--ruppin api server--
 
 //login
@@ -76,6 +79,7 @@ export function UserProvider({ children }) {
 
     // new
     const [pairedEmail, setPairedEmail] = useState(null)
+    const [userChats, setUserChats] = useState(null)
 
     function logInContext(userData) {
         setUserType(userData.userType);
@@ -96,6 +100,7 @@ export function UserProvider({ children }) {
         setUserUri(userData.userUri);
         setBirthDate(userData.BirthDate);
         setUserGender(userData.Gender)
+        
 
         let usertoSync = {
             userId: userData.userId,
@@ -161,8 +166,11 @@ export function UserProvider({ children }) {
                 });
     }
 
+     
+
     function logOutContext() {
         setUserContext(null)
+        signOut(auth)
     }
 
     function updateUserProfile(userData) {
@@ -526,6 +534,7 @@ export function UserProvider({ children }) {
                 body: JSON.stringify(userData.patientId),
             });
             const result = await response.json();
+            console.log("result = ", result)
             setAllPublicTasks(result);
         } catch (error) {
             console.log('err post=', error);
@@ -561,6 +570,7 @@ export function UserProvider({ children }) {
         signInWithEmailAndPassword(auth, email, password)
                           .then((userCredential) => {
                             console.log('user logged in');
+                            getUserChats();
                             // getChatConvo(userCredential.user.email)
                           })
                           .catch((error) => {
@@ -578,8 +588,28 @@ export function UserProvider({ children }) {
             });
     }
 
+    //chat
+    function getUserChats(){
+        console.log("Email is this", auth.currentUser.email);
+        console.log('getUserChats')
+        const tempNames= query(collection(db, auth.currentUser.email));
+        // add listener to names collection
+        const getNames = onSnapshot(tempNames, (snapshot) => setUserChats(
+          snapshot.docs.map(doc => ({
+            key: doc.data().Name,
+            Name: doc.data().Name,
+            User: doc.data().User,
+            image: doc.data().image,
+          }))
+        ));
+        return () => {
+            getNames();
+    }
+    }
 
-    const value = { userContext, userContacts, userNotifications, userPendingPayments, userHistoryPayments,logInFireBase, GetUserHistory, GetUserPending,
+
+
+    const value = { userContext, userContacts, userNotifications, userPendingPayments, userHistoryPayments,userChats,getUserChats,logInFireBase, GetUserHistory, GetUserPending,
          deleteContact, addNewContact, saveContact, updateActualTask, updateRememberUserContext, logInContext, fetchUserContacts, logOutContext,
           updateUserContext, updateUserContacts, updatePendings, updateUserProfile, updateuserNotifications, appEmail,getAllPrivateTasks,getAllPublicTasks,allPublicTasks,allPrivateTasks };
     return (
