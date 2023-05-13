@@ -24,7 +24,7 @@ import { useUserContext } from '../../UserContext';
 const Stack = createStackNavigator();
 
 export default function NavigateSignUp() {
-  const { updateUserContext, updateuserNotifications, fetchUserContacts, GetUserPending, GetUserHistory, getAllPublicTasks, getAllPrivateTasks } = useUserContext();
+  const { updateUserContext, updateuserNotifications, fetchUserContacts,GetUserPending,GetUserHistory,logInFireBase } = useUserContext();
   const [isSigned, setIsSigned] = useState('bla');
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -58,8 +58,9 @@ export default function NavigateSignUp() {
         fetchUserContacts(JSON.parse(storageUser2));
         GetUserPending(JSON.parse(storageUser2));
         GetUserHistory(JSON.parse(storageUser2));
-        getAllPublicTasks(JSON.parse(storageUser2));
-        getAllPrivateTasks(JSON.parse(storageUser2));
+        let fireBaseUser= JSON.parse(storageUser)
+        console.log(fireBaseUser)
+        logInFireBase(fireBaseUser.Email,fireBaseUser.Password)
       }
     }
     catch (error) {

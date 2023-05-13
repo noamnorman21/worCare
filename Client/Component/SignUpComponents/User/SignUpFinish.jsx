@@ -5,6 +5,10 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 import * as SMS from 'expo-sms';
 import * as Linking from 'expo-linking';
+import { auth, db } from '../../../config/firebase';
+import { collection, addDoc, getDocs, query, orderBy, onSnapshot, listCollection } from 'firebase/firestore';
+import {createUserWithEmailAndPassword, updateProfile} from 'firebase/auth';
+
 
 export default function SignUpFinish({ navigation, route }) {
     const tblPatient = route.params.tblPatient;
@@ -102,6 +106,35 @@ export default function SignUpFinish({ navigation, route }) {
         })
             .then((response) => response.json())
             .then((json) => {
+                createUserWithEmailAndPassword(auth, route.params.tblUser.Email, route.params.tblUser.Password)
+                    .then((json) => {
+                        createUserWithEmailAndPassword(auth, route.params.tblUser.Email, route.params.tblUser.Password).then((userCredential) => {
+                            updateProfile(userCredential, {
+                                displayName: route.params.tblUser.FirstName + ' ' + route.params.tblUser.LastName,
+                                photoURL: route.params.tblUser.userUri
+                            }).then(() => {
+                                console.log("user updated");
+                                let userToUpdate = {
+                                    id: newUser.Email,
+                                    name: newUser.FirstName+" "+newUser.LastName, //the name of the user is the first name and the last name
+                                    avatar: newUser.userUri
+                                }
+                                addDoc(collection(db, "AllUsers"), {id: userToUpdate.id, name: userToUpdate.name, avatar: userToUpdate.avatar });
+                            }).catch((error) => {
+                                console.log(error);
+                            });
+                            console.log("user created");
+                        }).catch((error) => {
+                            console.log(error);
+                        });
+                        //save the id of the new user that we got from the DB 
+                        tblPatient.userId = json; //save the id of the new user that we got from the DB
+                        createNewPatient() //create the foreign user in the DB
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                    }
+                    );
                 //save the id of the new user that we got from the DB 
                 tblPatient.userId = json; //save the id of the new user that we got from the DB
                 createNewPatient() //create the foreign user in the DB

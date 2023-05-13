@@ -2,6 +2,8 @@ import React, { useState, useEffect, createContext, useContext, useRef } from 'r
 import { Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import { auth,db } from './config/firebase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 //--ruppin api server--
 
 //login
@@ -72,6 +74,9 @@ export function UserProvider({ children }) {
     const [allPublicTasks, setAllPublicTasks] = useState(null)
     const [allPrivateTasks, setAllPrivateTasks] = useState(null)
 
+    // new
+    const [pairedEmail, setPairedEmail] = useState(null)
+
     function logInContext(userData) {
         setUserType(userData.userType);
         setUserLanguage(userData.Language);
@@ -122,6 +127,38 @@ export function UserProvider({ children }) {
         GetUserHistory(usertoSync);
         getAllPrivateTasks(usertoSync);
         getAllPublicTasks(usertoSync);
+        if (userData.userType == "User") {
+            getPairedEmail(userData.workerId);
+        }
+        else {
+            getPairedEmail(userData.involvedInId);
+        }
+    }
+
+    function getPairedEmail (id){
+        console.log('getPairedEmail')
+        fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUser/' + id, {
+            method: 'GET',
+            headers: new Headers({
+                'Content-Type': 'application/json; charset=UTF-8',
+            })
+        })
+            .then(res => {
+                if (!res.ok)
+                    return Promise.reject(res.statusText);
+                return res.json()
+            })
+            .then(
+                (result) => {
+                    console.log("GetPairedEmail= ", result);
+                    let temp= result.split(":")
+                    temp= temp[1];
+                    console.log("temp= ", temp);
+                    setPairedEmail(temp)
+                },
+                (error) => {
+                    console.log("err post=", error);
+                });
     }
 
     function logOutContext() {
@@ -142,6 +179,7 @@ export function UserProvider({ children }) {
             involvedInId: userData.involvedInId,//if user is a not caregiver, this field will be same as userId
             patientId: userData.patientId,
         }
+        
         fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Settings/UpdateUserProfile', {
             method: 'PUT',
             headers: new Headers({
@@ -496,7 +534,8 @@ export function UserProvider({ children }) {
     async function getAllPrivateTasks(userData) {
         //do it only if userType is caregiver
         if (userData.userType != "Caregiver") {
-            return;
+            console.log("getAllPrivateTasks - not caregiver");
+            return setAllPrivateTasks([]);
         }
     
         let forginUser = {
@@ -515,8 +554,32 @@ export function UserProvider({ children }) {
         }
     }
 
+    async function logInFireBase(email, password){
+        console.log('logInFireBase')
+        console.log(email)
+        console.log(password)
+        signInWithEmailAndPassword(auth, email, password)
+                          .then((userCredential) => {
+                            console.log('user logged in');
+                            // getChatConvo(userCredential.user.email)
+                          })
+                          .catch((error) => {
+                            const errorCode = error.code;
+                            const errorMessage = error.message;
+                            alert(errorMessage);
+                          });
+    }
 
-    const value = { userContext, userContacts, userNotifications, userPendingPayments, userHistoryPayments, GetUserHistory, GetUserPending,
+    async function logOutFireBase(){
+        signOut(auth).then(() => {
+            console.log('user logged out');
+            }).catch((error) => {
+            console.log(error);
+            });
+    }
+
+
+    const value = { userContext, userContacts, userNotifications, userPendingPayments, userHistoryPayments,logInFireBase, GetUserHistory, GetUserPending,
          deleteContact, addNewContact, saveContact, updateActualTask, updateRememberUserContext, logInContext, fetchUserContacts, logOutContext,
           updateUserContext, updateUserContacts, updatePendings, updateUserProfile, updateuserNotifications, appEmail,getAllPrivateTasks,getAllPublicTasks,allPublicTasks,allPrivateTasks };
     return (
