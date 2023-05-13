@@ -1,11 +1,12 @@
-import { View, Text, SafeAreaView, StyleSheet, Dimensions, ScrollView, TouchableOpacity, Image } from 'react-native';
+import { View, Text, SafeAreaView, StyleSheet, Dimensions, ScrollView, TouchableOpacity, Image, Alert } from 'react-native';
 import { useState, useEffect } from 'react';
 import { AddBtn, AddNewMedicine } from '../HelpComponents/AddNewTask';
 import MedCard from '../HelpComponents/MedCard';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer, useIsFocused } from '@react-navigation/native';
-import { Feather,MaterialCommunityIcons } from '@expo/vector-icons';
+import { Feather, AntDesign } from '@expo/vector-icons';
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from "react-native-popup-menu";
+import { Dialog, Overlay } from '@rneui/themed';
 
 const Stack = createStackNavigator();
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -19,7 +20,10 @@ function MedDetail({ navigation, route }) {
    const backGroundColorIcon = ["#D0DFFF", "rgba(255, 60, 60, 0.25)"];
    const iconColors = ["#548DFF", "#FF3C32"]
    const isFocused = useIsFocused();
-
+   const [commentModalVisible, setCommentModalVisible] = useState(false);
+   const [visible, setVisible] = useState(false);
+   const [isPause, setIsPause] = useState(false);
+   const [visiblePause, setVisiblePause] = useState(false);
    useEffect(() => {
       if (isFocused) {
          route.params.changeHeader("none")
@@ -37,11 +41,43 @@ function MedDetail({ navigation, route }) {
          console.log("add instruction")
       }
       if (value == 3) {
-         console.log("pause this med")
+         toggleOverlayPause()
       }
       if (value == 4) {
-         console.log("delete this med")
+         toggleOverlay()
       }
+   }
+
+   const toggleOverlayPause = () => {
+      setVisiblePause(!visiblePause);
+   };
+
+   const toggleOverlay = () => {
+      setVisible(!visible);
+   };
+
+   const deleteMed = () => {
+      console.log("Delete Medicine")
+      toggleOverlay()
+   }
+
+   const pauseMed = () => {
+      setIsPause(!isPause)
+      if (isPause) {
+         console.log("Resume Medicine")
+      }
+      else {
+         console.log("Pause Medicine")
+      }
+      toggleOverlayPause()
+   }
+
+   const logRefill = () => {
+      console.log("Log Refill")
+   }
+
+   const takeExtra = () => {
+      console.log("Take Extra")
    }
 
    return (
@@ -58,9 +94,9 @@ function MedDetail({ navigation, route }) {
                   <MenuTrigger children={<View><Feather name="more-horizontal" size={32} color="#000" /></View>} />
                   <MenuOptions customStyles={{ optionsWrapper: styles.optionsWrapperOpened }}  >
                      <MenuOption value={1} children={<View style={styles.options}><Feather name='eye' size={20} /><Text style={styles.optionsText}> Show Leaflet</Text></View>} />
-                     <MenuOption value={2} children={<View style={styles.options}><MaterialCommunityIcons name='bell-ring-outline' size={20} /><Text style={styles.optionsText}>Add Instruction</Text></View>} />
-                     <MenuOption value={3} children={<View ><Feather name='edit' size={20} /><Text style={styles.optionsText}>Pause this med</Text></View>} />
-                     <MenuOption value={4} children={<View ><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={styles.deleteTxt}> Delete this med</Text></View>} />
+                     <MenuOption value={2} children={<View style={styles.options}><Feather name='plus-circle' size={20} /><Text style={styles.optionsText}>Add Instruction</Text></View>} />
+                     <MenuOption value={3} children={<View style={styles.options}><Feather name={isPause ? 'play-circle' : 'pause-circle'} size={20} /><Text style={styles.optionsText}>{isPause ? 'Resume this med' : 'Pause this med'}</Text></View>} />
+                     <MenuOption value={4} children={<View style={styles.options}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={[styles.optionsText, { color: '#FF3C3C' }]}>Delete this med</Text></View>} />
                   </MenuOptions>
                </Menu>
             </View>
@@ -106,14 +142,50 @@ function MedDetail({ navigation, route }) {
          </View>
 
          <View style={styles.bottomContainer}>
-            <TouchableOpacity style={styles.bottomBtn} onPress={() => navigation.navigate("EditMed", { task: task })}>
+            <TouchableOpacity style={styles.bottomBtn} onPress={logRefill}>
                <Text style={styles.bottomBtnTxt}>Log A Refill</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.bottomBtn} onPress={() => navigation.navigate("DeleteMed", { task: task })}>
+            <TouchableOpacity style={styles.bottomBtn} onPress={takeExtra}>
                <Text style={styles.bottomBtnTxt}>Take Extra Dose</Text>
             </TouchableOpacity>
          </View>
+
+         <Overlay isVisible={visible} onBackdropPress={toggleOverlay} overlayStyle={{ width: 300, height: 250, borderRadius: 20 }}>
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+               <View style={{ flex: 0.85, justifyContent: 'center', alignItems: 'center' }}>
+                  <Feather name='alert-triangle' size={30} color='#FF3C3C' />
+                  <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 20, marginVertical: 10, textAlign: 'center' }}>Are you sure you want to delete this med ?</Text>
+                  <Text style={{ fontFamily: 'Urbanist-Medium', fontSize: 15, textAlign: 'center', marginVertical: 10 }}>*Tip: You can pause this med instead</Text>
+               </View>
+               <View style={{ flexDirection: 'row', marginVertical: 10 }}>
+                  <TouchableOpacity style={{ backgroundColor: '#FF3C3C', width: 120, height: 40, borderRadius: 10, justifyContent: 'center', alignItems: 'center', marginRight: 20 }} onPress={toggleOverlay}>
+                     <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 16, color: '#fff' }}>Cancel</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={{ backgroundColor: '#fff', width: 120, height: 40, borderRadius: 10, justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderColor: '#FF3C3C' }} onPress={deleteMed}>
+                     <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 16, color: '#FF3C3C' }}>Delete Med</Text>
+                  </TouchableOpacity>
+               </View>
+            </View>
+         </Overlay>
+
+         <Overlay isVisible={visiblePause} onBackdropPress={toggleOverlayPause} overlayStyle={{ width: 300, height: 250, borderRadius: 20 }}>
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+               <View style={{ flex: 0.85, justifyContent: 'center', alignItems: 'center' }}>
+                  <Feather name='alert-triangle' size={30} color='#FF3C3C' />
+                  <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 20, marginVertical: 10, textAlign: 'center' }}>Pause</Text>
+                  <Text style={{ fontFamily: 'Urbanist-Medium', fontSize: 18, marginVertical: 10, textAlign: 'center' }}>Are you sure you want to pause this medicine ?</Text>
+               </View>
+               <View style={{ flexDirection: 'row', marginVertical: 10 }}>
+                  <TouchableOpacity style={{ backgroundColor: '#FF3C3C', width: 120, height: 40, borderRadius: 10, justifyContent: 'center', alignItems: 'center', marginRight: 20 }} onPress={toggleOverlayPause}>
+                     <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 16, color: '#fff' }}>Cancel</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={{ backgroundColor: '#fff', width: 120, height: 40, borderRadius: 10, justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderColor: '#FF3C3C' }} onPress={pauseMed}>
+                     <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 16, color: '#FF3C3C' }}>Pause</Text>
+                  </TouchableOpacity>
+               </View>
+            </View>
+         </Overlay>
 
       </View >
    )
@@ -325,5 +397,32 @@ const styles = StyleSheet.create({
       position: 'absolute',
       bottom: 30,
       right: 20,
-   }
+   },
+   options: {
+      flexDirection: 'row',
+      borderBottomColor: '#80808080',
+      borderBottomWidth: 0.2,
+      padding: 7,
+      fontFamily: 'Urbanist-Medium',
+   },
+   optionsWrapperOpened: {
+      position: 'absolute',
+      bottom: -100,
+      backgroundColor: '#fff',
+      borderRadius: 10,
+      left: SCREEN_WIDTH * 0.07,
+      elevation: 100,
+      shadowColor: '#000',
+      shadowOffset: {
+         width: 0,
+         height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+   },
+   optionsText: {
+      fontFamily: 'Urbanist-Medium',
+      marginLeft: 10,
+      fontSize: 16,
+   },
 })

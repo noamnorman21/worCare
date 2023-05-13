@@ -39,7 +39,7 @@ export default function Pending() {
     )
     setPendings(arr)
   }
-  
+
   const Notification = (id) => {
     Alert.alert(
       "Notification",
