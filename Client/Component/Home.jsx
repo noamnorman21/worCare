@@ -142,5 +142,11 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     marginRight: 20,
   },
+  button: {
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: '#333',
+    color: '#fff',
+  },
 
 });
