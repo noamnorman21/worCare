@@ -129,9 +129,9 @@ export default function MedCard(props) {
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.iconArrow} onPress={navigateToMed} >
-                        <View>
+                       
                             <Octicons name="chevron-right" size={24} color={runlow ? iconColors[1] : iconColors[0]} />
-                        </View>
+              
                     </TouchableOpacity>
                 </View>
             </View>
@@ -178,6 +178,13 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         flexDirection: 'row',
         height: '100%',
+
+    },
+    iconArrow: {
+        width: 39,
+        alignItems: 'center',
+        height: '90%',
+        justifyContent: 'flex-end',
     },
     medMainView: {
         flex: 3,

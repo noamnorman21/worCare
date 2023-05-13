@@ -4,7 +4,7 @@ import { AddBtn, AddNewMedicine } from '../HelpComponents/AddNewTask';
 import MedCard from '../HelpComponents/MedCard';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer, useIsFocused } from '@react-navigation/native';
-import { Feather } from '@expo/vector-icons';
+import { Feather,MaterialCommunityIcons } from '@expo/vector-icons';
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from "react-native-popup-menu";
 
 const Stack = createStackNavigator();
@@ -100,9 +100,9 @@ function MedDetail({ navigation, route }) {
                runlow && // need to change for if there is instruction
                <Text style={styles.detailsTxt}>Instruction : </Text>
             }
-            <View>
+            {/* <View>
                <Image source={medTypeIcon} style={{ width: 100, height: 100, marginTop: 20, alignItems: 'center', justifyContent: 'center' }} />
-            </View>
+            </View> */}
          </View>
 
          <View style={styles.bottomContainer}>
