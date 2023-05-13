@@ -600,6 +600,8 @@ export function UserProvider({ children }) {
             Name: doc.data().Name,
             User: doc.data().User,
             image: doc.data().image,
+            unread: doc.data().unread,
+            unreadCount: doc.data().unreadCount, 
           }))
         ));
         return () => {
