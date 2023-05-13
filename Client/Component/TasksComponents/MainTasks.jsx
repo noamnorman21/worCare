@@ -90,7 +90,7 @@ export default function MainTasks(props) {
         </ScrollView>
       </View>
 
-      <View style={[styles.TommorowView, headerToday && { flex: 33 }]}>
+      <View style={[styles.TommorowView, headerToday ? { flex: 33 }:{}]}>
         <View>
           <TouchableOpacity style={styles.headerForTasks} onPress={toggleHeaderTommorowView}>
             <Text style={styles.tasksTitle}>Upcoming</Text>

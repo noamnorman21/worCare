@@ -55,8 +55,13 @@ export default function SignUpCaregiverLVL4({ navigation, route }) {
       const newForeignUserData = {
         CountryName_En: valueCountry,
         LanguageName_En: valueLanguage,
-        DateOfBirth: new Date("1990-01-01"),
-        VisaExpirationDate: new Date("2025-01-01"),
+        // DateOfBirth: new Date("1990-01-01"),
+        // VisaExpirationDate: new Date("2025-01-01"),  
+        ///לבדוק!!!!
+        dateOfBirth: new Date(date),
+        visaExpirationDate: new Date(visaExpiration),   
+        // DateOfBirth: date,
+        // VisaExpirationDate: visaExpiration,
       };
       navigation.navigate("SignUpCaregiverLVL5", { newForeignUserData: newForeignUserData, newUser: newUser, holidaysType: holidaysType, patientId: route.params.patientId });
     }

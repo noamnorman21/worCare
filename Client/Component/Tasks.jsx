@@ -21,8 +21,8 @@ export default function Tasks() {
   const [showHeader, setShowHeader] = useState("flex");
 
   useEffect(() => {
-    getAllPublicTasks();
-    getAllPrivateTasks();
+    getAllPublicTasks(userData);
+    getAllPrivateTasks(userData);
   }, []);
 
   //filter tasks by type, medicine or shop, other tasks will be in allTasks
