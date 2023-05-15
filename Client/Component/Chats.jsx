@@ -28,7 +28,6 @@ export default function Chats({ navigation }) {
 
 function ChatRoom ({route,navigation})  {
   const [messages, setMessages] = useState([]);
-
   useLayoutEffect(() => {
     const tempMessages= query(collection(db, route.params.name), orderBy('createdAt', 'desc'));
     getDocs(tempMessages).then((querySnapshot) => {
@@ -42,14 +41,13 @@ function ChatRoom ({route,navigation})  {
     )});
   });
   navigation.setOptions({
-    headerTitle: route.params.user?route.params.user:route.params.name,
+    headerTitle: route.params.UserName?route.params.UserName:route.params.name,
   })
   
   }, [navigation]);
 
   useEffect(() => {
     const setDocAsRead = async () => {
-      console.log(route.params.name);
       const docRef= query(collection(db, auth.currentUser.email), where("Name", "==", route.params.name));
       const res = await getDocs(docRef);
       res.forEach((doc) => {
@@ -61,18 +59,26 @@ function ChatRoom ({route,navigation})  {
 
 
   const onSend = useCallback((messages = []) => {
-    console.log(route.params.userEmails)
+    console.log(route.params.userEmail);
     const { _id, createdAt, text, user } = messages[0]
     addDoc(collection(db, route.params.name), { _id, createdAt, text, user });
-    const docRef= query(collection(db, route.params.userEmails), where("Name", "==", route.params.name));
+    const docRef= query(collection(db, auth.currentUser.email), where("Name", "==", route.params.name));
     const res = getDocs(docRef);
     res.then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
-        updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount+1 });
+        updateDoc(doc.ref, { lastMessage: text, lastMessageTime: createdAt });
       });
-    });
-    
-  }, []);
+    }); 
+    if (route.params.userEmail) {
+    const docRef= query(collection(db, route.params.userEmail), where("Name", "==", route.params.name));
+    const res = getDocs(docRef);
+    res.then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount+1, lastMessage: text, lastMessageTime: createdAt });
+      });
+    }); 
+  }
+}, []);
 
   return (
     <GiftedChat
@@ -148,12 +154,13 @@ function MainRoom ({navigation}) {
     //relevant- from user context
     const renderNames = () => {
       setchatsToDisplay(userChats.map((name,index) => (
-        <ConvoCard key={index} name={name} />
+        <ConvoCard key={index} name={name} userEmails={name.userEmails} />
         )))
     }  
     
     
     renderNames();
+    console.log('userChats', userChats)
   }, [userChats]);
 
   useEffect(() => {
@@ -189,16 +196,16 @@ function MainRoom ({navigation}) {
     if (querySnapshot.docs.length > 0) {
       console.log("convo exists")
       setAddNewModal(false)
-      navigation.navigate('ChatRoom', {name: auth.currentUser.displayName+"+"+user.name, user: user.name, userEmails: user.id})
+      navigation.navigate('ChatRoom', {name: auth.currentUser.displayName+"+"+user.name, UserName: user.name})
       // const editRef= collection(db, auth.currentUser.email, where("Name", "==", auth.currentUser.displayName+"+"+user.name));
       // const doc= await getDocs(editRef);
       // await updateDoc(editRef, { unread: false, unreadCount: 0 });
     } else {
     console.log("add new private chat")
     const contact= user
-    addDoc(collection(db, auth.currentUser.email), { Name: auth.currentUser.displayName+"+"+contact.name, User: contact.name, image: contact.avatar, unread: false, unreadCount: 0});
+    addDoc(collection(db, auth.currentUser.email), { Name: auth.currentUser.displayName+"+"+contact.name, UserName: contact.name,userEmail:contact.id, image: contact.avatar, unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date()});
     checkifConvoExistsforContact(contact)
-    navigation.navigate('ChatRoom', {name: auth.currentUser.displayName+"+"+contact.name, user: contact.name, userEmails: contact.id})  
+    navigation.navigate('ChatRoom', {name: auth.currentUser.displayName+"+"+contact.name, UserName: contact.name, userEmail: contact.id})  
     setAddNewModal(false)   
   }
 }
@@ -211,7 +218,7 @@ function MainRoom ({navigation}) {
         console.log("convo existsssssss")
       } else {
         console.log("add new private chat")
-        addDoc(collection(db, contact.id), { Name: auth.currentUser.displayName+"+"+contact.name, User: auth.currentUser.displayName, image: auth.currentUser.photoURL, unread: true, unreadCount: 1});
+        addDoc(collection(db, contact.id), { Name: auth.currentUser.displayName+"+"+contact.name, UserName: auth.currentUser.displayName, image: auth.currentUser.photoURL,userEmail:auth.currentUser.email, unread: true, unreadCount: 0, lastMessage: "", lastMessageTime: new Date()});
       }
     }
     )
@@ -259,39 +266,45 @@ const ConvoCard= (props) =>{
   const [lastMessageUserEmail, setLastMessageUserEmail] = useState('')
 
  
-useEffect(() => {
-      const tempMessages= query(collection(db, props.name.Name), orderBy('createdAt', 'desc'));
-      const querySnapshot = getDocs(tempMessages).then((querySnapshot) => {
-      onSnapshot(tempMessages, (snapshot) => {setMessages(
-        snapshot.docs.map(doc => ({
-          _id: doc.data()._id,
-          createdAt: doc.data().createdAt.toDate(),
-          text: doc.data().text,
-          user: doc.data().user,
-        }))
-      )});
-    });
-    
-}, [navigation]);
+// useEffect(() => {
+//       const tempMessages= query(collection(db, props.name.Name), orderBy('createdAt', 'desc'), limit(1));
+//       const querySnapshot = getDocs(tempMessages).then((querySnapshot) => {
+//       onSnapshot(tempMessages, (snapshot) => {setMessages(
+//         snapshot.docs.map(doc => ({
+//           _id: doc.data()._id,
+//           createdAt: doc.data().createdAt.toDate(),
+//           text: doc.data().text,
+//           user: doc.data().user,
+//         }))
+//       )});
+//     });
+// }, [navigation]);
+
+// useEffect(() => {
+//   if(messages.length>0){
+//     setLastMessage(messages[0].text)
+//     let string = messages[0].createdAt.toString()
+//     const res= string.split(' ')
+//     const date= res[1]+' '+res[2]+' '+res[3]
+//     setLastMessageTime(res[4].split(':').slice(0,2).join(':'))
+//     setLastMessageDate(date)
+//     setLastMessageUser(messages[0].user.name)
+//     setLastMessageUserImage(messages[0].user.avatar)
+//     setLastMessageUserEmail(messages[0].user.email)
+//   }
+
+// }, [messages]);
 
 useEffect(() => {
-  if(messages.length>0){
-    setLastMessage(messages[0].text)
-    let string = messages[0].createdAt.toString()
-    const res= string.split(' ')
-    const date= res[1]+' '+res[2]+' '+res[3]
-    setLastMessageTime(res[4].split(':').slice(0,2).join(':'))
-    setLastMessageDate(date)
-    setLastMessageUser(messages[0].user.name)
-    setLastMessageUserImage(messages[0].user.avatar)
-    setLastMessageUserEmail(messages[0].user.email)
-  }
-
-}, [messages]);
+  console.log("props lastsmessege",props.name.lastMessageTime)
+  const temp= props.name.lastMessageTime.toString().split(' ')
+  const date= temp[1]+' '+temp[2]+' '+temp[3]
+  setLastMessageTime(temp[4].split(':').slice(0,2).join(':'))
+  setLastMessageDate(date)
+}, [props.name]);
 
 const navigateToChatRoom = async (user) => {  
-  navigation.navigate('ChatRoom', {name: props.name.Name, user: user.User})
-   console.log(props.name)
+  navigation.navigate('ChatRoom', {name: user.Name, UserName: user.UserName, userEmail:user.userEmail})
    const docRef= query(collection(db, auth.currentUser.email), where("Name", "==", props.name.Name));
    const res= await getDocs(docRef);
    res.forEach((doc) => {   
@@ -307,6 +320,7 @@ const navigateToChatRoom = async (user) => {
 
   
   return (
+  
     <>
     <View key={props.name.Name}>
       <TouchableOpacity style={styles.conCard} key={props.name.Name} onPress={() => navigateToChatRoom(props.name)}>
@@ -314,11 +328,11 @@ const navigateToChatRoom = async (user) => {
           <Image source={{ uri: props.name.image }} style={{ width: 65, height: 65, borderRadius: 54 }} />
         </View>
         <View style={styles.conMiddle}>
-          <Text style={styles.conName}>{props.name.User ? props.name.User : props.name.Name}</Text>
-          <Text style={styles.conLastMessage}>{lastMessage}</Text>
+          <Text style={styles.conName}>{props.name.UserName ? props.name.UserName : props.name.Name}</Text>
+          <Text style={styles.conLastMessage}>{props.name.lastMessage}</Text>
         </View>
         <View style={styles.conRight}>
-          <Text style={styles.conBadgeText}>1</Text>
+          <Text style={props.name.unreadCount>0&& styles.unread}>{props.name.unreadCount}</Text>
           <Text style={styles.conDate}>{lastMessageDate}</Text>
           <Text style={styles.conTime}>{lastMessageTime}</Text>
         </View>
@@ -441,5 +455,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
+  },
+  unread: {
+    fontSize: 16,
+    fontFamily: 'Urbanist-Bold',
+    color: '#000',
+    borederRadius: 10,
+    backgroundColor: 'red',
+    marginBottom: 5,
   },
 })

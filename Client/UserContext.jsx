@@ -7,6 +7,7 @@ import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getDatabase, ref, set, onValue, get } from "firebase/database";
 import {collection, query, onSnapshot} from 'firebase/firestore';
+import { list } from 'firebase/storage';
 //--ruppin api server--
 
 //login
@@ -76,6 +77,7 @@ export function UserProvider({ children }) {
     const [userGender, setUserGender] = useState(null)
     const [allPublicTasks, setAllPublicTasks] = useState(null)
     const [allPrivateTasks, setAllPrivateTasks] = useState(null)
+    let userChatRef = null;
 
     // new
     const [pairedEmail, setPairedEmail] = useState(null)
@@ -170,7 +172,7 @@ export function UserProvider({ children }) {
 
     function logOutContext() {
         setUserContext(null)
-        signOut(auth)
+        logOutFireBase()
     }
 
     function updateUserProfile(userData) {
@@ -534,7 +536,6 @@ export function UserProvider({ children }) {
                 body: JSON.stringify(userData.patientId),
             });
             const result = await response.json();
-            console.log("result = ", result)
             setAllPublicTasks(result);
         } catch (error) {
             console.log('err post=', error);
@@ -581,6 +582,13 @@ export function UserProvider({ children }) {
     }
 
     async function logOutFireBase(){
+        console.log(userChatRef)
+        await userChatRef().then((unsub) => {
+            unsub();
+            console.log('unsubscribed from userChatRef');
+        });
+        //cancel listener
+        console.log('logOutFireBase')
         signOut(auth).then(() => {
             console.log('user logged out');
             }).catch((error) => {
@@ -588,8 +596,9 @@ export function UserProvider({ children }) {
             });
     }
 
+
     //chat
-    function getUserChats(){
+    async function getUserChats(){
         console.log("Email is this", auth.currentUser.email);
         console.log('getUserChats')
         const tempNames= query(collection(db, auth.currentUser.email));
@@ -598,14 +607,18 @@ export function UserProvider({ children }) {
           snapshot.docs.map(doc => ({
             key: doc.data().Name,
             Name: doc.data().Name,
-            User: doc.data().User,
+            UserName: doc.data().UserName,
+            userEmail: doc.data().userEmail,
             image: doc.data().image,
             unread: doc.data().unread,
             unreadCount: doc.data().unreadCount, 
+            lastMessage: doc.data().lastMessage,
+            lastMessageTime: doc.data().lastMessageTime.toDate(),
           }))
         ));
         return () => {
             getNames();
+            userChatRef=getNames;
     }
     }
 
