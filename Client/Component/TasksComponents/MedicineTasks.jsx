@@ -1,7 +1,9 @@
 import { View, Text, SafeAreaView, StyleSheet, Dimensions, ScrollView, TouchableOpacity, Image, Alert } from 'react-native';
 import { useState, useEffect } from 'react';
+
 import { AddBtn, AddNewMedicine } from '../HelpComponents/AddNewTask';
 import MedCard from '../HelpComponents/MedCard';
+import { useUserContext } from '../../UserContext';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer, useIsFocused } from '@react-navigation/native';
 import { Feather, AntDesign } from '@expo/vector-icons';
@@ -24,6 +26,11 @@ function MedDetail({ navigation, route }) {
    const [visible, setVisible] = useState(false);
    const [isPause, setIsPause] = useState(false);
    const [visiblePause, setVisiblePause] = useState(false);
+
+   const [newDosege, setNewDosege] = useState(0);
+   const { UpdateDrugForPatientDTO } = useUserContext();
+   const { refreshPublicTask } = route.params;
+
    useEffect(() => {
       if (isFocused) {
          route.params.changeHeader("none")
@@ -77,8 +84,56 @@ function MedDetail({ navigation, route }) {
    }
 
    const takeExtra = () => {
-      console.log("Take Extra")
-   }
+
+      Alert.prompt(
+         "Take Extra",
+         "What is the new dosage?",
+         [
+            {
+               text: "Cancel",
+               style: "destructive",
+            },
+            {
+               text: "OK",
+               onPress: (input) => {
+                  // check if input is a number
+                  const newDosage = parseFloat(input);
+                  if (isNaN(newDosage)) {
+                     Alert.alert("Invalid input", "Please enter a number");
+                  }
+                  else if (newDosage <= 0) {
+                     Alert.alert("Invalid input", "Please enter a positive number");
+                  }
+                  else if (newDosage > task.drug.dosage * 3 & newDosage > 9) {
+                     Alert.alert("Invalid input", "Please enter a number for the new dosage");
+                  }
+
+                  else {
+                     setNewDosege(newDosage);
+                     let newDrugForPatient =
+                     {
+                        dosage: newDosage,
+                        drugId: task.drug.drugId,
+                        listId: task.listId,
+                        patientId: task.patientId,
+                     }
+                     console.log(newDrugForPatient)
+                     UpdateDrugForPatientDTO(newDrugForPatient)
+                     
+                     refreshPublicTask()
+
+                  }
+               },
+               style: "ok",
+            },
+         ],
+
+         "plain-text",
+         "",
+         "numeric"
+      );
+   };
+
 
    return (
       <View style={styles.container}>
@@ -129,7 +184,7 @@ function MedDetail({ navigation, route }) {
          <View style={styles.middleContainer}>
             <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 16, marginBottom: 7 }}>Schedule</Text>
             <Text style={styles.detailsTxt}>Frequency : {task.frequency}</Text>
-            <Text style={styles.detailsTxt}>Quantity : {task.drug.dosage}</Text>
+            <Text style={styles.detailsTxt}>Quantity : {newDosege>0 ? newDosege :task.drug.dosage}</Text>
             <Text style={styles.detailsTxt}>Time : {timeInDay}</Text>
             <Text style={styles.detailsTxt}>End Date : {task.drug.toDate}</Text>
             {
@@ -230,6 +285,10 @@ export default function MedicineTasks(props) {
    const changeHeader = (header) => {
       props.changeHeader(header)
    }
+   const refreshPublicTask = () => {
+     // console.log('refreshPublicTask')
+       props.refreshPublicTask()
+   }
 
    return (
       <NavigationContainer independent={true}>
@@ -239,7 +298,7 @@ export default function MedicineTasks(props) {
                initialParams={{ refreshPublicTask: props.refreshPublicTask, refreshPrivateTask: props.refreshPrivateTask, allMedicineTasks: props.allMedicineTasks }}
                name="MedTask" component={MedTask} />
             <Stack.Screen
-               initialParams={{ changeHeader: changeHeader }}
+               initialParams={{ changeHeader: changeHeader, refreshPublicTask: refreshPublicTask }}
                options={{ headerShown: false }}
                name="MedDetail" component={MedDetail} />
          </Stack.Navigator>

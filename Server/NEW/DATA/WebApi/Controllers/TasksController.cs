@@ -531,15 +531,31 @@ namespace WebApi.Controllers
                 tblDrugForPatient tblDrugForPatient = db.tblDrugForPatient.Where(x => x.drugId == drug.drugId && x.listId == drug.listId).FirstOrDefault();
                 if (tblDrugForPatient != null)
                 {
-                    tblDrugForPatient.qtyInBox = drug.qtyInBox;
-                    tblDrugForPatient.dosage = drug.dosage;
-                    tblDrugForPatient.lastTakenDate = drug.lastTakenDate;
+                    if (drug.qtyInBox!=null)
+                    {
+                        tblDrugForPatient.qtyInBox = drug.qtyInBox;
+                    }
+                    if (drug.dosage != 0&& drug.dosage!= tblDrugForPatient.dosage)
+                    {
+                        tblDrugForPatient.dosage = drug.dosage;
+                    }
+                    if (drug.lastTakenDate != null)
+                    {
+                        tblDrugForPatient.lastTakenDate = drug.lastTakenDate;
+                    }
+
                     db.SaveChanges();
                     tblPatientTask patientTask = db.tblPatientTask.Where(x => x.listId == drug.listId).FirstOrDefault();
                     if (patientTask != null)
                     {
-                        patientTask.taskToDate = drug.lastTakenDate;
-                        patientTask.taskComment = drug.taskComment;
+                        if (drug.lastTakenDate != null)
+                        {
+                            patientTask.taskToDate = drug.lastTakenDate;
+                        }
+                        if (patientTask.taskComment != "" && drug.taskComment != null)
+                        {
+                            patientTask.taskComment = drug.taskComment;
+                        }
                         db.SaveChanges();
                     }
                 }

@@ -53,6 +53,7 @@ export default function Tasks() {
   }
   const refreshPublicTask = () => {
     getAllPublicTasks(userData);
+    filterTasks(allPublicTasks);
   }
   const refreshPrivateTask = () => {
     getAllPrivateTasks(userData);

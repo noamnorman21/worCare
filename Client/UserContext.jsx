@@ -2,7 +2,7 @@ import React, { useState, useEffect, createContext, useContext, useRef } from 'r
 import { Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
-import { auth,db } from './config/firebase';
+import { auth, db } from './config/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 //--ruppin api server--
 
@@ -40,6 +40,7 @@ let updateActualTaskUrL = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/Upd
 let updateActualPrivateTaskUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/UpdateActualPrivateTask';
 let getAllPublicTasksUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/GetAllTasks';
 let getAllPrivateTasksUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/GetAllPrivateTasks';
+let updateDrugForPatientDTOUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/UpdateDrugForPatientDTO';
 
 const UserContext = createContext()
 const UserUpdateContext = createContext()
@@ -135,7 +136,7 @@ export function UserProvider({ children }) {
         }
     }
 
-    function getPairedEmail (id){
+    function getPairedEmail(id) {
         console.log('getPairedEmail')
         fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUser/' + id, {
             method: 'GET',
@@ -151,8 +152,8 @@ export function UserProvider({ children }) {
             .then(
                 (result) => {
                     console.log("GetPairedEmail= ", result);
-                    let temp= result.split(":")
-                    temp= temp[1];
+                    let temp = result.split(":")
+                    temp = temp[1];
                     console.log("temp= ", temp);
                     setPairedEmail(temp)
                 },
@@ -179,7 +180,7 @@ export function UserProvider({ children }) {
             involvedInId: userData.involvedInId,//if user is a not caregiver, this field will be same as userId
             patientId: userData.patientId,
         }
-        
+
         fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Settings/UpdateUserProfile', {
             method: 'PUT',
             headers: new Headers({
@@ -266,70 +267,6 @@ export function UserProvider({ children }) {
 
     function updatePendings(pendings) {
         setUserPendingPayments(pendings);
-    }
-    function updateActualTask(task, isPrivateTask) {
-        if (isPrivateTask) {
-            fetch(updateActualPrivateTaskUrl, {
-                method: 'PUT',
-                headers: new Headers({
-                    'Content-Type': 'application/json; charset=UTF-8',
-                    'Accept': 'application/json; charset=UTF-8',
-                }),
-                body: JSON.stringify(task)
-            })
-                .then(res => {
-                    if (res.ok) {
-                        return res.json()
-                            .then(
-                                (result) => {
-                                    console.log("fetch UpdateActualPrivate= ", result);
-                                    getAllPrivateTasks(userContext);
-                                }
-                            )
-                    }
-                    else {
-                        console.log('err post=', res);
-
-                    }
-                }
-                )
-                .catch((error) => {
-                    console.log('Error:', error.message);
-                }
-                );
-
-        }
-        else {
-            fetch(updateActualTaskUrL, {
-                method: 'PUT',
-                headers: new Headers({
-                    'Content-Type': 'application/json; charset=UTF-8',
-                    'Accept': 'application/json; charset=UTF-8',
-                }),
-                body: JSON.stringify(task)
-            })
-                .then(res => {
-                    if (res.ok) {
-                        return res.json()
-                            .then(
-                                (result) => {
-                                    console.log("fetch updateActualTaskUrL= ", result);
-                                    getAllPublicTasks(userContext);
-                                }
-                            )
-                    }
-                    else {
-                        console.log('err post=', res);
-
-                    }
-                }
-                )
-                .catch((error) => {
-                    console.log('Error:', error.message);
-                }
-                );
-        }
-
     }
 
     function addNewContact(Contact) {
@@ -515,8 +452,8 @@ export function UserProvider({ children }) {
             console.log(error)
         }
     }
-
-    async function getAllPublicTasks(userData) {   
+    //tasks
+    async function getAllPublicTasks(userData) {
         console.log("getAllPublicTaskssssssssssssssssssssss")
         console.log("userData.patientId = ", userData.patientId)
         try {
@@ -537,7 +474,7 @@ export function UserProvider({ children }) {
             console.log("getAllPrivateTasks - not caregiver");
             return setAllPrivateTasks([]);
         }
-    
+
         let forginUser = {
             Id: userData.workerId
         }
@@ -553,35 +490,135 @@ export function UserProvider({ children }) {
             console.log('err post=', error);
         }
     }
+    function updateActualTask(task, isPrivateTask) {
+        if (isPrivateTask) {
+            fetch(updateActualPrivateTaskUrl, {
+                method: 'PUT',
+                headers: new Headers({
+                    'Content-Type': 'application/json; charset=UTF-8',
+                    'Accept': 'application/json; charset=UTF-8',
+                }),
+                body: JSON.stringify(task)
+            })
+                .then(res => {
+                    if (res.ok) {
+                        return res.json()
+                            .then(
+                                (result) => {
+                                    console.log("fetch UpdateActualPrivate= ", result);
+                                    getAllPrivateTasks(userContext);
+                                }
+                            )
+                    }
+                    else {
+                        console.log('err post=', res);
 
-    async function logInFireBase(email, password){
+                    }
+                }
+                )
+                .catch((error) => {
+                    console.log('Error:', error.message);
+                }
+                );
+
+        }
+        else {
+            fetch(updateActualTaskUrL, {
+                method: 'PUT',
+                headers: new Headers({
+                    'Content-Type': 'application/json; charset=UTF-8',
+                    'Accept': 'application/json; charset=UTF-8',
+                }),
+                body: JSON.stringify(task)
+            })
+                .then(res => {
+                    if (res.ok) {
+                        return res.json()
+                            .then(
+                                (result) => {
+                                    console.log("fetch updateActualTaskUrL= ", result);
+                                    getAllPublicTasks(userContext);
+                                }
+                            )
+                    }
+                    else {
+                        console.log('err post=', res);
+
+                    }
+                }
+                )
+                .catch((error) => {
+                    console.log('Error:', error.message);
+                }
+                );
+        }
+
+    }
+
+    function UpdateDrugForPatientDTO(drugForPatient){
+        fetch(updateDrugForPatientDTOUrl, {
+            method: 'PUT',
+            headers: new Headers({
+                'Content-Type': 'application/json; charset=UTF-8',
+                'Accept': 'application/json; charset=UTF-8',
+            }),
+            body: JSON.stringify(drugForPatient)
+        })
+            .then(res => {
+                if (res.ok) {
+                    return res.json()
+                        .then(
+                            (result) => {
+                                console.log("fetch UpdateDrugForPatientDTO= ", result);
+                                getAllPublicTasks(userContext);
+                            }
+                        )
+                }
+                else {
+                    console.log('err post=', res);
+
+                }
+            }
+            )
+            .catch((error) => {
+                console.log('Error:', error.message);
+            }
+            );
+    }
+
+
+    //firebase
+    async function logInFireBase(email, password) {
         console.log('logInFireBase')
         console.log(email)
         console.log(password)
         signInWithEmailAndPassword(auth, email, password)
-                          .then((userCredential) => {
-                            console.log('user logged in');
-                            // getChatConvo(userCredential.user.email)
-                          })
-                          .catch((error) => {
-                            const errorCode = error.code;
-                            const errorMessage = error.message;
-                            alert(errorMessage);
-                          });
-    }
-
-    async function logOutFireBase(){
-        signOut(auth).then(() => {
-            console.log('user logged out');
-            }).catch((error) => {
-            console.log(error);
+            .then((userCredential) => {
+                console.log('user logged in');
+                // getChatConvo(userCredential.user.email)
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                alert(errorMessage);
             });
     }
 
+    async function logOutFireBase() {
+        signOut(auth).then(() => {
+            console.log('user logged out');
+        }).catch((error) => {
+            console.log(error);
+        });
+    }
 
-    const value = { userContext, userContacts, userNotifications, userPendingPayments, userHistoryPayments,logInFireBase, GetUserHistory, GetUserPending,
-         deleteContact, addNewContact, saveContact, updateActualTask, updateRememberUserContext, logInContext, fetchUserContacts, logOutContext,
-          updateUserContext, updateUserContacts, updatePendings, updateUserProfile, updateuserNotifications, appEmail,getAllPrivateTasks,getAllPublicTasks,allPublicTasks,allPrivateTasks };
+
+
+    const value = {
+        userContext, userContacts, userNotifications, userPendingPayments, userHistoryPayments, logInFireBase, GetUserHistory, GetUserPending,
+        deleteContact, addNewContact, saveContact, updateActualTask, updateRememberUserContext, logInContext, fetchUserContacts, logOutContext,
+        updateUserContext, updateUserContacts, updatePendings, updateUserProfile, updateuserNotifications, appEmail, getAllPrivateTasks, getAllPublicTasks, allPublicTasks, allPrivateTasks,UpdateDrugForPatientDTO
+    };
     return (
         <UserContext.Provider value={value}>
             {children}
