@@ -289,7 +289,7 @@ function AddNewMedicine(props) {
                                     // label={numberPerDay == 0 ? 'Number per day' : ''}
                                     style={[styles.inputNumber, numberPerDay && { textAlign: 'center' }]}
                                     placeholderTextColor="#9E9E9E"
-                                    placeholder="Number per day"
+                                    placeholder="Number of intakes"
                                     keyboardType='numeric'
                                     returnKeyType='done'
                                     value={numberPerDay == 0 ? '' : numberPerDay.toString()}

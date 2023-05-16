@@ -531,11 +531,11 @@ namespace WebApi.Controllers
                 tblDrugForPatient tblDrugForPatient = db.tblDrugForPatient.Where(x => x.drugId == drug.drugId && x.listId == drug.listId).FirstOrDefault();
                 if (tblDrugForPatient != null)
                 {
-                    if (drug.qtyInBox!=null)
+                    if (drug.qtyInBox != null)
                     {
-                        tblDrugForPatient.qtyInBox = drug.qtyInBox;
+                        tblDrugForPatient.qtyInBox = drug.qtyInBox - 1;
                     }
-                    if (drug.dosage != 0&& drug.dosage!= tblDrugForPatient.dosage)
+                    if (drug.dosage != 0 && drug.dosage != tblDrugForPatient.dosage)
                     {
                         tblDrugForPatient.dosage = drug.dosage;
                     }
@@ -543,7 +543,6 @@ namespace WebApi.Controllers
                     {
                         tblDrugForPatient.lastTakenDate = drug.lastTakenDate;
                     }
-
                     db.SaveChanges();
                     tblPatientTask patientTask = db.tblPatientTask.Where(x => x.listId == drug.listId).FirstOrDefault();
                     if (patientTask != null)
@@ -565,8 +564,6 @@ namespace WebApi.Controllers
             {
                 return BadRequest(ex.Message);
             }
-        }
-
-
+        }      
     }
 }

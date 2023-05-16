@@ -3,248 +3,312 @@ import { useState, useEffect } from 'react';
 
 import { AddBtn, AddNewMedicine } from '../HelpComponents/AddNewTask';
 import MedCard from '../HelpComponents/MedCard';
+import MedDetail from '../HelpComponents/MedDetail';
 import { useUserContext } from '../../UserContext';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer, useIsFocused } from '@react-navigation/native';
 import { Feather, AntDesign } from '@expo/vector-icons';
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from "react-native-popup-menu";
-import { Dialog, Overlay } from '@rneui/themed';
+import { value, CheckBox, Overlay } from '@rneui/themed';
 
 const Stack = createStackNavigator();
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
-function MedDetail({ navigation, route }) {
-   const timeInDay = route.params.timeInDay;
-   const medTypeIcon = route.params.medTypeIcon;
-   const runlow = route.params.runlow;
-   const task = route.params.task;
-   const backGroundColorIcon = ["#D0DFFF", "rgba(255, 60, 60, 0.25)"];
-   const iconColors = ["#548DFF", "#FF3C32"]
-   const isFocused = useIsFocused();
-   const [commentModalVisible, setCommentModalVisible] = useState(false);
-   const [visible, setVisible] = useState(false);
-   const [isPause, setIsPause] = useState(false);
-   const [visiblePause, setVisiblePause] = useState(false);
+// function MedDetail({ navigation, route }) {
+//    const timeInDay = route.params.timeInDay;
+//    const medTypeIcon = route.params.medTypeIcon;
+//    const runlow = route.params.runlow;
+//    const task = route.params.task;
+//    const backGroundColorIcon = ["#D0DFFF", "rgba(255, 60, 60, 0.25)"];
+//    const iconColors = ["#548DFF", "#FF3C32"]
+//    const isFocused = useIsFocused();
 
-   const [newDosege, setNewDosege] = useState(0);
-   const { UpdateDrugForPatientDTO } = useUserContext();
-   const { refreshPublicTask } = route.params;
+//    const [commentModalVisible, setCommentModalVisible] = useState(false);
+//    const [visible, setVisible] = useState(false);
+//    const [isPause, setIsPause] = useState(false);
+//    const [visiblePause, setVisiblePause] = useState(false);
+//    const [visibleTakeExtraValue, setVisibleTakeExtraValue] = useState(false);
+//    const [visibleTakeExtra, setVisibleTakeExtra] = useState(false);
+//    const [visibleLogRefill, setVisibleLogRefill] = useState(false);
 
-   useEffect(() => {
-      if (isFocused) {
-         route.params.changeHeader("none")
-      }
-      else {
-         route.params.changeHeader("flex")
-      }
-   }, [isFocused])
+//    const [sameChecked, setSameChecked] = useState(false);
+//    const [differentChecked, setDifferentChecked] = useState(false);
+//    const [takeExtraValue, setTakeExtraValue] = useState(0);
 
-   const openModal = (value) => {
-      if (value == 1) {
-         console.log("show leaflet")
-      }
-      else if (value == 2) {
-         console.log("add instruction")
-      }
-      if (value == 3) {
-         toggleOverlayPause()
-      }
-      if (value == 4) {
-         toggleOverlay()
-      }
-   }
+//    const [newDosege, setNewDosege] = useState(0);
+//    const { UpdateDrugForPatientDTO } = useUserContext();
+//    const { refreshPublicTask } = route.params;
 
-   const toggleOverlayPause = () => {
-      setVisiblePause(!visiblePause);
-   };
+//    useEffect(() => {
+//       if (isFocused) {
+//          route.params.changeHeader("none")
+//       }
+//       else {
+//          route.params.changeHeader("flex")
+//       }
+//    }, [isFocused])
 
-   const toggleOverlay = () => {
-      setVisible(!visible);
-   };
+//    const openModal = (value) => {
+//       if (value == 1) {
+//          console.log("show leaflet")
+//       }
+//       else if (value == 2) {
+//          console.log("add instruction")
+//       }
+//       if (value == 3) {
+//          toggleOverlayPause()
+//       }
+//       if (value == 4) {
+//          toggleOverlay()
+//       }
+//    }
 
-   const deleteMed = () => {
-      console.log("Delete Medicine")
-      toggleOverlay()
-   }
+//    const toggleOverlayPause = () => {
+//       setVisiblePause(!visiblePause);
+//    };
 
-   const pauseMed = () => {
-      setIsPause(!isPause)
-      if (isPause) {
-         console.log("Resume Medicine")
-      }
-      else {
-         console.log("Pause Medicine")
-      }
-      toggleOverlayPause()
-   }
+//    const toggleOverlay = () => {
+//       setVisible(!visible);
+//    };
 
-   const logRefill = () => {
-      console.log("Log Refill")
-   }
+//    const deleteMed = () => {
+//       console.log("Delete Medicine")
+//       toggleOverlay()
+//    }
 
-   const takeExtra = () => {
+//    const pauseMed = () => {
+//       setIsPause(!isPause)
+//       if (isPause) {
+//          console.log("Resume Medicine")
+//       }
+//       else {
+//          console.log("Pause Medicine")
+//       }
+//       toggleOverlayPause()
+//    }
 
-      Alert.prompt(
-         "Take Extra",
-         "What is the new dosage?",
-         [
-            {
-               text: "Cancel",
-               style: "destructive",
-            },
-            {
-               text: "OK",
-               onPress: (input) => {
-                  // check if input is a number
-                  const newDosage = parseFloat(input);
-                  if (isNaN(newDosage)) {
-                     Alert.alert("Invalid input", "Please enter a number");
-                  }
-                  else if (newDosage <= 0) {
-                     Alert.alert("Invalid input", "Please enter a positive number");
-                  }
-                  else if (newDosage > task.drug.dosage * 3 & newDosage > 9) {
-                     Alert.alert("Invalid input", "Please enter a number for the new dosage");
-                  }
+//    const logRefill = () => {
+//       console.log("Log Refill")
+//    }
 
-                  else {
-                     setNewDosege(newDosage);
-                     let newDrugForPatient =
-                     {
-                        dosage: newDosage,
-                        drugId: task.drug.drugId,
-                        listId: task.listId,
-                        patientId: task.patientId,
-                     }
-                     console.log(newDrugForPatient)
-                     UpdateDrugForPatientDTO(newDrugForPatient)
-                     
-                     refreshPublicTask()
+//    const takeExtra = () => {
+//       Alert.prompt(
+//          "Take Extra Pill",
+//          "Is it the same dosage?",
+//          [
+//             {
+//                text: "Cancel",
+//                style: "destructive",
+//             },
+//             {
+//                text: "OK",
+//                onPress: (input) => {
+//                   // check if input is a number
+//                   const newDosage = parseFloat(input);
+//                   if (isNaN(newDosage)) {
+//                      Alert.alert("Invalid input", "Please enter a number");
+//                   }
+//                   else if (newDosage <= 0) {
+//                      Alert.alert("Invalid input", "Please enter a positive number");
+//                   }
+//                   else if (newDosage > task.drug.dosage * 3 & newDosage > 9) {
+//                      Alert.alert("Invalid input", "Please enter a number for the new dosage");
+//                   }
+//                   else {
+//                      setNewDosege(newDosage);
+//                      let newDrugForPatient =
+//                      {
+//                         dosage: newDosage,
+//                         drugId: task.drug.drugId,
+//                         listId: task.listId,
+//                         patientId: task.patientId,
+//                      }
+//                      console.log(newDrugForPatient)
+//                      UpdateDrugForPatientDTO(newDrugForPatient)
+//                      refreshPublicTask()
+//                   }
+//                },
+//                style: "ok",
+//             },
+//          ],
+//          "plain-text",
+//          "",
+//          "numeric"
+//       );
+//    };
 
-                  }
-               },
-               style: "ok",
-            },
-         ],
+//    return (
+//       <View style={styles.container}>
+//          <View style={styles.headerContainer}>
 
-         "plain-text",
-         "",
-         "numeric"
-      );
-   };
+//             <TouchableOpacity style={styles.leftHeaderContainer} onPress={() => navigation.goBack()} >
+//                <Feather name="chevron-left" size={32} color="black" />
+//                <Text style={styles.headerTxt}>Med List</Text>
+//             </TouchableOpacity>
 
+//             <View style={styles.rightHeaderContainer}>
+//                <Menu style={{ flexDirection: 'column', marginVertical: 0 }} onSelect={value => openModal(value)} >
+//                   <MenuTrigger children={<View><Feather name="more-horizontal" size={32} color="#000" /></View>} />
+//                   <MenuOptions customStyles={{ optionsWrapper: styles.optionsWrapperOpened }}  >
+//                      <MenuOption value={1} children={<View style={styles.options}><Feather name='eye' size={20} /><Text style={styles.optionsText}>Show Leaflet</Text></View>} />
+//                      <MenuOption value={2} children={<View style={styles.options}><Feather name='plus-circle' size={20} /><Text style={styles.optionsText}>Edit this Med</Text></View>} />
+//                      <MenuOption value={3} children={<View style={styles.options}><Feather name={isPause ? 'play-circle' : 'pause-circle'} size={20} /><Text style={styles.optionsText}>{isPause ? 'Resume this med' : 'Pause this med'}</Text></View>} />
+//                      <MenuOption value={4} children={<View style={styles.options}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={[styles.optionsText, { color: '#FF3C3C' }]}>Delete this med</Text></View>} />
+//                   </MenuOptions>
+//                </Menu>
+//             </View>
+//          </View>
 
-   return (
-      <View style={styles.container}>
-         <View style={styles.headerContainer}>
+//          <View style={styles.medDetailContainer}>
+//             <View style={styles.iconContainer} >
+//                <View style={[styles.icon, { backgroundColor: runlow ? backGroundColorIcon[1] : backGroundColorIcon[0] }]} >
+//                   <Image source={medTypeIcon} style={{ width: 25, height: 25 }} />
+//                </View>
+//             </View>
 
-            <TouchableOpacity style={styles.leftHeaderContainer} onPress={() => navigation.goBack()} >
-               <Feather name="chevron-left" size={32} color="black" />
-               <Text style={styles.headerTxt}>Med List</Text>
-            </TouchableOpacity>
+//             <View style={styles.medMainView}>
+//                <View style={styles.firstRowContainer}>
+//                   <View style={styles.medName}>
+//                      <Text style={styles.MedNameTxt}>{task.taskName}</Text>
+//                   </View>
+//                </View>
+//             </View>
+//             {
+//                runlow &&
+//                <View style={styles.runningLowView}>
+//                   <Feather name="alert-triangle" size={18} color="#FF3C3C" />
+//                   <Text style={styles.runningLowTxt}>Running Low</Text>
+//                </View>
+//             }
+//          </View>
+//          <View style={styles.line}></View>
 
-            <View style={styles.rightHeaderContainer}>
-               <Menu style={{ flexDirection: 'column', marginVertical: 0 }} onSelect={value => openModal(value)} >
-                  <MenuTrigger children={<View><Feather name="more-horizontal" size={32} color="#000" /></View>} />
-                  <MenuOptions customStyles={{ optionsWrapper: styles.optionsWrapperOpened }}  >
-                     <MenuOption value={1} children={<View style={styles.options}><Feather name='eye' size={20} /><Text style={styles.optionsText}> Show Leaflet</Text></View>} />
-                     <MenuOption value={2} children={<View style={styles.options}><Feather name='plus-circle' size={20} /><Text style={styles.optionsText}>Add Instruction</Text></View>} />
-                     <MenuOption value={3} children={<View style={styles.options}><Feather name={isPause ? 'play-circle' : 'pause-circle'} size={20} /><Text style={styles.optionsText}>{isPause ? 'Resume this med' : 'Pause this med'}</Text></View>} />
-                     <MenuOption value={4} children={<View style={styles.options}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={[styles.optionsText, { color: '#FF3C3C' }]}>Delete this med</Text></View>} />
-                  </MenuOptions>
-               </Menu>
-            </View>
-         </View>
+//          <View style={styles.middleContainer}>
+//             <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 16, marginBottom: 7 }}>Schedule</Text>
+//             <Text style={styles.detailsTxt}>Frequency : {task.frequency}</Text>
+//             <Text style={styles.detailsTxt}>Quantity : {newDosege > 0 ? newDosege : task.drug.dosage}</Text>
+//             <Text style={styles.detailsTxt}>Time : {timeInDay}</Text>
+//             <Text style={styles.detailsTxt}>End Date : {task.drug.toDate}</Text>
+//             {
+//                runlow && // need to change for if there is instruction
+//                <Text style={styles.detailsTxt}>Instruction : </Text>
+//             }
+//             {/* <View>
+//                <Image source={medTypeIcon} style={{ width: 100, height: 100, marginTop: 20, alignItems: 'center', justifyContent: 'center' }} />
+//             </View> */}
+//          </View>
 
-         <View style={styles.medDetailContainer}>
-            <View style={styles.iconContainer} >
-               <View style={[styles.icon, { backgroundColor: runlow ? backGroundColorIcon[1] : backGroundColorIcon[0] }]} >
-                  <Image source={medTypeIcon} style={{ width: 25, height: 25 }} />
-               </View>
-            </View>
+//          <View style={styles.bottomContainer}>
+//             <TouchableOpacity style={styles.bottomBtn} onPress={logRefill}>
+//                <Text style={styles.bottomBtnTxt}>Log A Refill</Text>
+//             </TouchableOpacity>
 
-            <View style={styles.medMainView}>
-               <View style={styles.firstRowContainer}>
-                  <View style={styles.medName}>
-                     <Text style={styles.MedNameTxt}>{task.taskName}</Text>
-                  </View>
-               </View>
-            </View>
-            {
-               runlow &&
-               <View style={styles.runningLowView}>
-                  <Feather name="alert-triangle" size={18} color="#FF3C3C" />
-                  <Text style={styles.runningLowTxt}>Running Low</Text>
-               </View>
-            }
-         </View>
-         <View style={styles.line}></View>
+//             <TouchableOpacity style={styles.bottomBtn} onPress={takeExtra}>
+//                <Text style={styles.bottomBtnTxt}>Take Extra Dose</Text>
+//             </TouchableOpacity>
+//          </View>
 
-         <View style={styles.middleContainer}>
-            <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 16, marginBottom: 7 }}>Schedule</Text>
-            <Text style={styles.detailsTxt}>Frequency : {task.frequency}</Text>
-            <Text style={styles.detailsTxt}>Quantity : {newDosege>0 ? newDosege :task.drug.dosage}</Text>
-            <Text style={styles.detailsTxt}>Time : {timeInDay}</Text>
-            <Text style={styles.detailsTxt}>End Date : {task.drug.toDate}</Text>
-            {
-               runlow && // need to change for if there is instruction
-               <Text style={styles.detailsTxt}>Instruction : </Text>
-            }
-            {/* <View>
-               <Image source={medTypeIcon} style={{ width: 100, height: 100, marginTop: 20, alignItems: 'center', justifyContent: 'center' }} />
-            </View> */}
-         </View>
+//          {/* Delete med */}
+//          <Overlay isVisible={visible} onBackdropPress={toggleOverlay} overlayStyle={{ width: 300, height: 250, borderRadius: 20 }}>
+//             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+//                <View style={{ flex: 0.85, justifyContent: 'center', alignItems: 'center' }}>
+//                   <Feather name='alert-triangle' size={30} color='#FF3C3C' />
+//                   <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 20, marginVertical: 10, textAlign: 'center' }}>Are you sure you want to delete this med ?</Text>
+//                   <Text style={{ fontFamily: 'Urbanist-Medium', fontSize: 15, textAlign: 'center', marginVertical: 10 }}>*Tip: You can pause this med instead</Text>
+//                </View>
+//                <View style={{ flexDirection: 'row', marginVertical: 10 }}>
+//                   <TouchableOpacity style={{ backgroundColor: '#FF3C3C', width: 120, height: 40, borderRadius: 10, justifyContent: 'center', alignItems: 'center', marginRight: 20 }} onPress={toggleOverlay}>
+//                      <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 16, color: '#fff' }}>Cancel</Text>
+//                   </TouchableOpacity>
+//                   <TouchableOpacity style={{ backgroundColor: '#fff', width: 120, height: 40, borderRadius: 10, justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderColor: '#FF3C3C' }} onPress={deleteMed}>
+//                      <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 16, color: '#FF3C3C' }}>Delete Med</Text>
+//                   </TouchableOpacity>
+//                </View>
+//             </View>
+//          </Overlay>
+//          {/* Pause Med */}
+//          <Overlay isVisible={visiblePause} onBackdropPress={toggleOverlayPause} overlayStyle={{ width: 300, height: 250, borderRadius: 20 }}>
+//             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+//                <View style={{ flex: 0.85, justifyContent: 'center', alignItems: 'center' }}>
+//                   <Feather name='alert-triangle' size={30} color='#FF3C3C' />
+//                   <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 20, marginVertical: 10, textAlign: 'center' }}>Pause</Text>
+//                   <Text style={{ fontFamily: 'Urbanist-Medium', fontSize: 18, marginVertical: 10, textAlign: 'center' }}>Are you sure you want to pause this medicine ?</Text>
+//                </View>
+//                <View style={{ flexDirection: 'row', marginVertical: 10 }}>
+//                   <TouchableOpacity style={{ backgroundColor: '#FF3C3C', width: 120, height: 40, borderRadius: 10, justifyContent: 'center', alignItems: 'center', marginRight: 20 }} onPress={toggleOverlayPause}>
+//                      <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 16, color: '#fff' }}>Cancel</Text>
+//                   </TouchableOpacity>
+//                   <TouchableOpacity style={{ backgroundColor: '#fff', width: 120, height: 40, borderRadius: 10, justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderColor: '#FF3C3C' }} onPress={pauseMed}>
+//                      <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 16, color: '#FF3C3C' }}>Pause</Text>
+//                   </TouchableOpacity>
+//                </View>
+//             </View>
+//          </Overlay>
+//          {/* Take Extra Med */}
+//          <Overlay isVisible={visibleTakeExtra} onBackdropPress={toggleOverlayTakeExtra} overlayStyle={{ width: 300, height: 250, borderRadius: 20 }}>
+//             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+//                <View style={{ flex: 0.85, justifyContent: 'center', alignItems: 'center' }}>
+//                   <Feather name='alert-triangle' size={30} color='#FF3C3C' />
+//                   <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 20, marginVertical: 10, textAlign: 'center' }}>Take Extra</Text>
+//                   <Text style={{ fontFamily: 'Urbanist-Medium', fontSize: 18, marginVertical: 10, textAlign: 'center' }}>Does it the same number of dosage?</Text>
+//                </View>
+//                <View>
+//                   <CheckBox
+//                      checked={sameChecked}
+//                      checkedColor="#7DA9FF"
+//                      checkedIcon="dot-circle-o"
+//                      containerStyle={{ width: "75%" }}
+//                      fontFamily='"Urbanist-Regular"'
+//                      onIconPress={() => setSameChecked(!sameChecked)}
+//                      onPress={() => console.log("onPress()")}
+//                      size={25}
+//                      textStyle={{}}
+//                      title="Same dosage"
+//                      titleProps={{}}
+//                      uncheckedColor="#7DA9FF"
+//                      uncheckedIcon="circle-o"
+//                   />
+//                   <CheckBox
+//                      checked={differentChecked}
+//                      checkedColor="#7DA9FF"
+//                      checkedIcon="dot-circle-o"
+//                      containerStyle={{ width: "75%" }}
+//                      fontFamily='"Urbanist-Regular"'
+//                      onIconPress={() => setDifferentChecked(!differentChecked)}
+//                      onPress={() => setVisibleTakeExtraValue(!visibleTakeExtraValue)}
+//                      size={25}
+//                      textStyle={{}}
+//                      title="Different dosage"
+//                      titleProps={{}}
+//                      uncheckedColor="#7DA9FF"
+//                      uncheckedIcon="circle-o"
+//                   />
+//                   <TextInput
+//                      style={{ width: 200, height: 40, borderColor: '#7DA9FF', borderWidth: 1, borderRadius: 10, marginVertical: 10, textAlign: 'center', fontFamily: 'Urbanist-Regular' }}
+//                      onChangeText={text => setTakeExtraValue(text)}
+//                      value={takeExtraValue}
+//                      placeholder='Enter the number of dosage'
+//                      keyboardType='numeric'
+//                      editable={visibleTakeExtraValue}
+//                   />
 
-         <View style={styles.bottomContainer}>
-            <TouchableOpacity style={styles.bottomBtn} onPress={logRefill}>
-               <Text style={styles.bottomBtnTxt}>Log A Refill</Text>
-            </TouchableOpacity>
+//                </View>
+//                <View style={{ flexDirection: 'row', marginVertical: 10 }}>
+//                   <TouchableOpacity style={{ backgroundColor: '#FF3C3C', width: 120, height: 40, borderRadius: 10, justifyContent: 'center', alignItems: 'center', marginRight: 20 }} onPress={toggleOverlayTakeExtra}>
+//                      <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 16, color: '#fff' }}>Cancel</Text>
+//                   </TouchableOpacity>
+//                   <TouchableOpacity style={{ backgroundColor: '#fff', width: 120, height: 40, borderRadius: 10, justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderColor: '#FF3C3C' }} onPress={takeExtraMed}>
+//                      <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 16, color: '#FF3C3C' }}>Take Extra</Text>
+//                   </TouchableOpacity>
+//                </View>
+//             </View>
+//          </Overlay>
+//          {/* Refill Med */}
 
-            <TouchableOpacity style={styles.bottomBtn} onPress={takeExtra}>
-               <Text style={styles.bottomBtnTxt}>Take Extra Dose</Text>
-            </TouchableOpacity>
-         </View>
-
-         <Overlay isVisible={visible} onBackdropPress={toggleOverlay} overlayStyle={{ width: 300, height: 250, borderRadius: 20 }}>
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-               <View style={{ flex: 0.85, justifyContent: 'center', alignItems: 'center' }}>
-                  <Feather name='alert-triangle' size={30} color='#FF3C3C' />
-                  <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 20, marginVertical: 10, textAlign: 'center' }}>Are you sure you want to delete this med ?</Text>
-                  <Text style={{ fontFamily: 'Urbanist-Medium', fontSize: 15, textAlign: 'center', marginVertical: 10 }}>*Tip: You can pause this med instead</Text>
-               </View>
-               <View style={{ flexDirection: 'row', marginVertical: 10 }}>
-                  <TouchableOpacity style={{ backgroundColor: '#FF3C3C', width: 120, height: 40, borderRadius: 10, justifyContent: 'center', alignItems: 'center', marginRight: 20 }} onPress={toggleOverlay}>
-                     <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 16, color: '#fff' }}>Cancel</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={{ backgroundColor: '#fff', width: 120, height: 40, borderRadius: 10, justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderColor: '#FF3C3C' }} onPress={deleteMed}>
-                     <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 16, color: '#FF3C3C' }}>Delete Med</Text>
-                  </TouchableOpacity>
-               </View>
-            </View>
-         </Overlay>
-
-         <Overlay isVisible={visiblePause} onBackdropPress={toggleOverlayPause} overlayStyle={{ width: 300, height: 250, borderRadius: 20 }}>
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-               <View style={{ flex: 0.85, justifyContent: 'center', alignItems: 'center' }}>
-                  <Feather name='alert-triangle' size={30} color='#FF3C3C' />
-                  <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 20, marginVertical: 10, textAlign: 'center' }}>Pause</Text>
-                  <Text style={{ fontFamily: 'Urbanist-Medium', fontSize: 18, marginVertical: 10, textAlign: 'center' }}>Are you sure you want to pause this medicine ?</Text>
-               </View>
-               <View style={{ flexDirection: 'row', marginVertical: 10 }}>
-                  <TouchableOpacity style={{ backgroundColor: '#FF3C3C', width: 120, height: 40, borderRadius: 10, justifyContent: 'center', alignItems: 'center', marginRight: 20 }} onPress={toggleOverlayPause}>
-                     <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 16, color: '#fff' }}>Cancel</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={{ backgroundColor: '#fff', width: 120, height: 40, borderRadius: 10, justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderColor: '#FF3C3C' }} onPress={pauseMed}>
-                     <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 16, color: '#FF3C3C' }}>Pause</Text>
-                  </TouchableOpacity>
-               </View>
-            </View>
-         </Overlay>
-
-      </View >
-   )
-}
+//       </View >
+//    )
+// }
 
 function MedTask({ navigation, route }) {
    const [modalVisible, setModalVisible] = useState(false)
@@ -286,8 +350,8 @@ export default function MedicineTasks(props) {
       props.changeHeader(header)
    }
    const refreshPublicTask = () => {
-     // console.log('refreshPublicTask')
-       props.refreshPublicTask()
+      // console.log('refreshPublicTask')
+      props.refreshPublicTask()
    }
 
    return (
