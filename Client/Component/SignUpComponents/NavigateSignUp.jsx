@@ -24,7 +24,7 @@ import { useUserContext } from '../../UserContext';
 const Stack = createStackNavigator();
 
 export default function NavigateSignUp() {
-  const { updateUserContext,getUserChats, updateuserNotifications, fetchUserContacts,GetUserPending,GetUserHistory,logInFireBase } = useUserContext();
+  const { updateUserContext, updateuserNotifications, fetchUserContacts,GetUserPending,GetUserHistory,logInFireBase } = useUserContext();
   const [isSigned, setIsSigned] = useState('bla');
   const [isLoaded, setIsLoaded] = useState(false);
 

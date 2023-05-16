@@ -11,6 +11,7 @@ import { useUserContext } from '../UserContext';
 import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import AddNewGroupChat from '../Component/HelpComponents/AddNewGroupChat';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 const ScreenHeight = Dimensions.get("window").height;
 const ScreenWidth = Dimensions.get("window").width;
@@ -99,68 +100,75 @@ function ChatRoom ({route,navigation})  {
 
 function MainRoom ({navigation}) {
   const [chatsToDisplay, setchatsToDisplay] = useState([])
-  const { userContext, userChats } = useUserContext();
+  const { userContext } = useUserContext();
   const [users, setUsers] = useState([])
+  const [userChats, setUserChats] = useState([])
   const [usersToDisplay, setUsersToDisplay] = useState([])
   const [addNewModal, setAddNewModal] = useState(false)
   const [newName, setNewName] = useState('')
   const [addNewModalGroup, setAddNewModalGroup] = useState(false)
   const [publicGroupNames, setPublicGroupNames] = useState([])
 
-  useLayoutEffect(() => {
-    
-    // get all conversations from collection
-    // const tempNames= query(collection(db, auth.currentUser.email));
-    // // add listener to names collection
-    // const getNames = onSnapshot(tempNames, (snapshot) => setNames(
-    //   snapshot.docs.map(doc => ({
-    //     key: doc.data().Name,
-    //     Name: doc.data().Name,
-    //     User: doc.data().User,
-    //     image: doc.data().image,
-    //   }))
-    // ))
+  useEffect(() => {
+    if (userContext) {
+           console.log("Email is this", auth.currentUser.email);
+        console.log('getUserChats')
+        const tempNames= query(collection(db, auth.currentUser.email));
 
-    
-    
-    // get all users from collection except current user
-    const tempUsers= query(collection(db, "AllUsers"), where("id","!=",auth.currentUser.email));
-    // add listener to users collection
-    const getUsers = onSnapshot(tempUsers, (snapshot) => setUsers(
-      snapshot.docs.map(doc => ({
-        id: doc.data().id,
-        name: doc.data().name,
-        avatar: doc.data().avatar,
-      }))
-    ))
-    //get public groups
-// const tempGroupNames= query(collection(db, "allPublicGroups"));
-//     const getPublic = (collection(db, "allPublicGroups"), onSnapshot(tempGroupNames, (snapshot) => setPublicGroupNames(
-//       snapshot.docs.map(doc => ({
-//         Name: doc.data().Name,
-//       }))
-//     )));
-    
-    return () => {
-      // getNames();
-      getUsers();
-      // getPublic();
+        // add listener to names collection
+        const getNames = onSnapshot(tempNames, (snapshot) => setUserChats(
+          snapshot.docs.map(doc => ({
+            key: doc.data().Name,
+            Name: doc.data().Name,
+            UserName: doc.data().UserName,
+            userEmail: doc.data().userEmail,
+            image: doc.data().image,
+            unread: doc.data().unread,
+            unreadCount: doc.data().unreadCount, 
+            lastMessage: doc.data().lastMessage,
+            lastMessageTime: doc.data().lastMessageTime.toDate(),
+          }))
+        ));
+        const tempUsers= query(collection(db, "AllUsers"), where("id","!=",auth.currentUser.email));
+        // add listener to users collection
+        const getUsers = onSnapshot(tempUsers, (snapshot) => setUsers(
+          snapshot.docs.map(doc => ({
+            id: doc.data().id,
+            name: doc.data().name,
+            avatar: doc.data().avatar,
+          }))
+        ))
+        return () => {
+            getNames();
+            getUsers();
     }
-  }, [navigation]);
+    }
+    else{
+      console.log("no user context")
+      setUserChats([])
+    }
+    
+
+}, [])
   
 
 
   useEffect(() => {
     //relevant- from user context
+    if(userChats){
     const renderNames = () => {
       setchatsToDisplay(userChats.map((name,index) => (
         <ConvoCard key={index} name={name} userEmails={name.userEmails} />
         )))
     }  
-    
+
     
     renderNames();
     console.log('userChats', userChats)
+  }
+  else{
+    setchatsToDisplay()
+  }
   }, [userChats]);
 
   useEffect(() => {

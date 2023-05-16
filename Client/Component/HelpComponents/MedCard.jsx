@@ -1,50 +1,74 @@
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Alert } from 'react-native'
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Alert, Image } from 'react-native'
 import { useState, useEffect } from 'react'
-import { Feather, Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, AntDesign, Feather, Ionicons, Octicons } from '@expo/vector-icons';
+import { useUserContext } from '../../UserContext';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function MedCard(props) {
-    const [medType, setMedType] = useState('');
+    const { updateActualTask } = useUserContext();
+    const [medTypeIcon, setMedTypeIcon] = useState('');
     const [isDone, setIsDone] = useState(false);
     const [lastTakenDate, setLastTakenDate] = useState('');
     const [lastTakenTime, setLastTakenTime] = useState('');
     const [timeInDay, setTimeInDay] = useState('');
+    const backGroundColorIcon = ["#D0DFFF", "rgba(255, 60, 60, 0.25)"];
+    const iconColors = ["#548DFF", "#FF3C32"]
+    const [runlow, setRunlow] = useState(false);
 
-    //להוציא מהערה ולשנות לאחר שיש נתונים מהדאטה בייס, -לשנות גם לאייקונים הנכונים (נועם)
-
-    const iconsNamesArr = [
-        {
-            1: "pills",
-            2: "calendar",
-            3: "calendar",
-            4: "calendar",
-        }]
     useEffect(() => {
-
-        // findType()
+        findType()
         sparateTimeStemp()
+        findRunningLow()
     }, [])
 
-    const findType = () => {
-        if (props.task.drugType == "Syrup") {
-            setMedType("Syrup")
+    useEffect(() => {
+        if (isDone) {
+            const timer = setTimeout(() => {
+                finshTaskFunction();
+            }, 2000);
+            return () => clearTimeout(timer);
         }
-        else if (props.task.drug.drugType == "Pills") {
-            setMedType("Pills")
+    }, [isDone]);
+
+    async function finshTaskFunction() {
+        if (!isDone) {
+            Alert.alert("Task is not done yet")
+            return;
         }
-        else if (props.task.drugType == "Cream") {
-            setMedType("Cream")
+        let doneTask = props.task;
+        doneTask.taskStatus = 'F';
+        updateActualTask(doneTask, false);
+        setIsDone(false);
+    }
+
+    const findRunningLow = async () => {
+        if (props.task.drug.minQuantity >= props.task.drug.qtyInBox) {
+            setRunlow(true);
         }
-        else if (props.task.drugType == "Powder") {
-            setMedType("Powder")
+        else {
+            setRunlow(false);
         }
     }
+
+    const findType = async () => {
+        if (props.task.drug.drugType == "Syrup") {
+            setMedTypeIcon(require("../../assets/Syrup.png"))
+        } else if (props.task.drug.drugType == "Pill") {
+            setMedTypeIcon(require("../../assets/Pill.png"))
+        } else if (props.task.drug.drugType == "Cream") {
+            setMedTypeIcon(require("../../assets/Cream.png"))
+        } else if (props.task.drug.drugType == "Powder") {
+            setMedTypeIcon(require("../../assets/Powder.png"))
+        } else { //default 
+            setMedTypeIcon(require("../../assets/Syrup.png"))
+        }
+    }
+
     const sparateTimeStemp = async () => {
         if (props.task.drug.lastTakenDate == null) {
             setLastTakenDate('never taken yet')
             setLastTakenTime("")
-
         }
         else {
             let time = props.task.drug.lastTakenDate.split("T")
@@ -55,33 +79,60 @@ export default function MedCard(props) {
         }
         let timeInDay = props.task.TimeInDay.split(":")
         setTimeInDay(timeInDay[0] + ":" + timeInDay[1])
-
-
     }
 
+    const taggleIsDone = () => {
+        setIsDone(!isDone)
+    }
 
+    const navigateToMed = () => {
+        props.navigateToMed(props.task, runlow, medTypeIcon, timeInDay)
+    }
 
     return (
         <View style={styles.container}>
             <View style={styles.timeRow}>
                 <Text style={styles.timeTxt}>{timeInDay}</Text>
             </View>
-            <View style={styles.medDetailes}>
-                <View style={styles.iconContainer}>
-                    <View style={styles.icon} >
-                        <Ionicons name="calendar" size={24} color="black" />
-                        {/* <Ionicons name={medType}size={24} color="black" /> */}
+            <View style={styles.medDetails}>
+                <View style={styles.iconContainer} >
+                    <View style={[styles.icon, { backgroundColor: runlow ? backGroundColorIcon[1] : backGroundColorIcon[0] }]} >
+                        <Image source={medTypeIcon} style={{ width: 20, height: 20 }} />
+                    </View>
+                </View>
+
+                <View style={styles.medMainView}>
+                    <View style={styles.firstRowContainer}>
+                        <View style={styles.medName}>
+                            <Text style={styles.MedNameTxt}>{props.task.taskName}</Text>
+                        </View>
+                        {
+                            runlow &&
+                            <View style={styles.runningLowView}>
+                                <Feather name="alert-triangle" size={15.5} color="#FF3C3C" />
+                                <Text style={styles.runningLowTxt}>Running Low</Text>
+                            </View>
+                        }
                     </View>
 
+                    <Text style={styles.lastTimeTakenTxt}>last taken {<Text style={{ fontFamily: 'Urbanist-Bold', }}>{lastTakenTime}</Text>}  {lastTakenDate}</Text>
                 </View>
-                <View style={styles.medMainView}>
-                    {/* <Text style={styles.MedNameTxt}>med name </Text> */}
-                    <Text style={styles.MedNameTxt}>{props.task.taskName}</Text>
 
-                    <Text style={styles.lastTimeTakenTxt}>last taken  {lastTakenTime}  {lastTakenDate}</Text>
-                </View>
-                <View style={styles.iconCheckBox}>
-                    <Text style={styles.timeTxt}>צק בוקס</Text>
+                <View style={styles.iconCheckBoxContainer}>
+                    <TouchableOpacity onPress={taggleIsDone}>
+                        {
+                            isDone ?
+                                <Feather name="check-circle" size={25} color={runlow ? backGroundColorIcon[1] : iconColors[0]} />
+                                :
+                                <Feather name="circle" size={25} color={runlow ? backGroundColorIcon[1] : iconColors[0]} />
+                        }
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.iconArrow} onPress={navigateToMed} >
+                       
+                            <Octicons name="chevron-right" size={24} color={runlow ? iconColors[1] : iconColors[0]} />
+              
+                    </TouchableOpacity>
                 </View>
             </View>
             <View style={styles.line}>
@@ -91,16 +142,18 @@ export default function MedCard(props) {
 }
 const styles = StyleSheet.create({
     container: {
-
         alignItems: 'center',
         justifyContent: 'center',
         height: 85,
-        width: SCREEN_WIDTH * 0.88,
-        flexDirection: 'column',
+        width: SCREEN_WIDTH * 0.9,
+        flexDirection: 'column', //change to column from cloumn
         marginVertical: 10,
     },
+    firstRowContainer: {
+        flexDirection: 'row',
+    },
     icon: {
-        backgroundColor: '#EBF1FF',
+        backgroundColor: '#D0DFFF',
         alignItems: 'center',
         justifyContent: 'center',
         height: 48,
@@ -110,27 +163,31 @@ const styles = StyleSheet.create({
     timeTxt: {
         fontSize: 16,
         fontFamily: 'Urbanist-Medium',
-
     },
     iconContainer: {
-        flex: 1,
+        flex: 0.75,
+        height: '100%',
+    },
+    MedNameTxt: {
+        fontSize: 13,
+        fontFamily: 'Urbanist-SemiBold',
+    },
+    iconCheckBoxContainer: {
+        flex: 0.6,
+        alignItems: 'flex-end',
+        justifyContent: 'space-between',
+        flexDirection: 'row',
         height: '100%',
 
     },
-    MedNameTxt: {
-        fontSize: 16,
-        fontFamily: 'Urbanist-SemiBold',
-    },
-    iconCheckBox: {
-        flex: 1,
+    iconArrow: {
+        width: 39,
         alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: "yellow",
-        height: '100%',
+        height: '90%',
+        justifyContent: 'flex-end',
     },
     medMainView: {
         flex: 3,
-        // alignItems: 'center',
         justifyContent: 'center',
         height: '100%',
     },
@@ -140,7 +197,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         width: '100%',
     },
-    medDetailes: {
+    medDetails: {
         flex: 6,
         alignItems: 'center',
         justifyContent: 'center',
@@ -149,6 +206,7 @@ const styles = StyleSheet.create({
     },
     lastTimeTakenTxt: {
         fontSize: 12,
+        marginTop: 5,
         fontFamily: 'Urbanist-Regular',
         color: '#626262',
     },
@@ -158,6 +216,24 @@ const styles = StyleSheet.create({
         backgroundColor: '#808080',
         opacity: 0.5,
         marginTop: 10,
+    },
+    runningLowView: {
+        backgroundColor: 'rgba(255, 60, 60, 0.25)',
+        flexDirection: 'row',
+        borderRadius: 5,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginLeft: 5,
+        height: 22,
+        flex: 1,
+    },
+    medName: {
+        flex: 1.15,
+    },
+    runningLowTxt: {
+        fontSize: 12,
+        fontFamily: 'Urbanist-SemiBold',
+        color: '#FF3C3C',
+        marginLeft: 5,
     }
-
 })

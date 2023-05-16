@@ -95,7 +95,7 @@ export default function LogIn({ navigation }) {
         }
     }
     //function to login user
-    const LoginUser = (userData) => {
+    const LoginUser = async (userData) => {
         console.log(userData);
         let userForLoginUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUserForLogin';
         fetch(userForLoginUrl, {
@@ -113,7 +113,7 @@ export default function LogIn({ navigation }) {
                     return null;
                 }
             })
-            .then((json) => {
+            .then(async (json) => {
                 if (json === null) {
                     Alert.alert('Login Failed');
                 }
@@ -138,8 +138,10 @@ export default function LogIn({ navigation }) {
                         patientId: json.patientId,
                     }
                     const jsonValue = JSON.stringify(userContext)
-                    AsyncStorage.setItem('userData', jsonValue);
-                    logInContext(userContext);
+                    AsyncStorage.setItem('userData', jsonValue)
+                    await logInContext(userContext).then(() => {
+                        console.log('user saved in context');
+                    })
                     logInFireBase(email,password);
                     navigation.navigate('CustomHeader', { screen: "AppBarDown" });//navigate to home screen, we will add a necessary call to get user data from the server                                         
                 }

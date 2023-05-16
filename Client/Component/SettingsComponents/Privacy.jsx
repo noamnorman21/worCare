@@ -11,7 +11,7 @@ import { Switch } from 'react-native-paper';
 
 export default function Privacy({ navigation, route }) {
   const [Email, setEmail] = useState(null);
-  const { userContext, updateUserContext, userNotifications, updateuserNotifications, logOutContext } = useUserContext();
+  const { userContext, updateUserContext, userNotifications, updateuserNotifications } = useUserContext();
   const [showPassword, setShowPassword] = useState(false);
   const [showPassword2, setShowPassword2] = useState(false);
   const [password1, setPassword1] = useState('');
@@ -571,7 +571,6 @@ export default function Privacy({ navigation, route }) {
                 text: 'OK',
                 onPress: () => {
                   route.params.logout();
-                  logOutContext()                  
                 }
               },
             ]);

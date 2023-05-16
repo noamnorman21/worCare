@@ -8,12 +8,9 @@ import History from './PaymentsScreen/History';
 import Paychecks from './PaychecksComponents/Paychecks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
-import { MenuProvider, } from "react-native-popup-menu";
+import { MenuProvider } from "react-native-popup-menu";
 const Stack = createStackNavigator();
 
-// Big Image and 2 Buttons that will navigate to 2 different screens
-// First Button will navigate to Payment screen - [Pending, History] 
-// Second Button will navigate to Paycheck screen - [History]
 export default function Finance() {
   return (
     <MenuProvider customStyles={{
@@ -22,24 +19,24 @@ export default function Finance() {
         elevation: 100,
       },
     }}>
-        <Stack.Navigator initialRouteName='choice'>
-          <Stack.Screen name='choice' component={Choice} options={() => ({
-            headerShown: false,
-          })} />
-          <Stack.Screen name='Payments' component={Payments} options={() => ({
-            headerShown: false,
-            presentation: 'stack',
-            cardOverlayEnabled: true,
-            style: {
-              flex: 1,
-            }
-          })} />
-          <Stack.Screen name='Paychecks' component={Paychecks} options={() => ({
-            headerShown: false,
-            presentation: 'stack',
-            cardOverlayEnabled: true,
-          })} />
-        </Stack.Navigator>
+      <Stack.Navigator initialRouteName='choice'>
+        <Stack.Screen name='choice' component={Choice} options={() => ({
+          headerShown: false,
+        })} />
+        <Stack.Screen name='Payments' component={Payments} options={() => ({
+          headerShown: false,
+          presentation: 'stack',
+          cardOverlayEnabled: true,
+          style: {
+            flex: 1,
+          }
+        })} />
+        <Stack.Screen name='Paychecks' component={Paychecks} options={() => ({
+          headerShown: false,
+          presentation: 'stack',
+          cardOverlayEnabled: true,
+        })} />
+      </Stack.Navigator>
     </MenuProvider>
   );
 }
@@ -107,18 +104,13 @@ function Payments({ route }) {
       }}
     >
       <Tab.Screen name="Pending" component={Pending} initialParams={{ userId: route.params.userId }} />
-      {/*במעבר למסך תשלומים ממתינים תבוצע םעולת גט אשר תשלוף את כלל בקשות התשלום אשר שמורות במסד הנתונים.
-    אשר סטטוס הבקשה שלהם אינו סומן כשולם*/}
       <Tab.Screen name="History" component={History} initialParams={{ userId: route.params.userId }} />
-      { /*במעבר למסך היסטוריית התשלומים תבוצע םעולת גט אשר תשלוף את כלל בקשות התשלום אשר שמורות במסד הנתונים.
-    אשר סטטוס הבקשה שלהם סומן כשולם*/}
     </Tab.Navigator>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    // backgroundColor: '#FEFEFE',
     alignItems: 'center',
     justifyContent: 'center',
     height: Dimensions.get('screen').height * 1,

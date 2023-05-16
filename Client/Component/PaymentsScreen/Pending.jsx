@@ -14,15 +14,15 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export default function Pending() {
-  const { userContext,userPendingPayments } = useUserContext()
+  const { userContext, userPendingPayments } = useUserContext()
   //  const {userPendingPayments} = useUserContext()
   const [modal1Visible, setModal1Visible] = useState(false);
   const [Pendings, setPendings] = useState()
   const isFocused = useIsFocused()
 
-useEffect(() => {
-  renderPendings()
-}, [userPendingPayments])
+  useEffect(() => {
+    renderPendings()
+  }, [userPendingPayments])
 
   const renderPendings = async () => {
     let arr = userPendingPayments.map((item) => {
@@ -39,42 +39,6 @@ useEffect(() => {
     )
     setPendings(arr)
   }
-
-// old renderPendings
-  // const renderPendings = async () => {
-  //   try {
-  //     const user = {
-  //       userId: userContext.userId,
-  //       userType: userContext.userType
-  //     }
-  //     const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/GetPending/', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         'Cache-Control': 'no-cache'
-  //       },
-  //       body: JSON.stringify(user)
-  //     });
-  //     const data = await response.json();
-  //     console.log("Pending", data)
-  //     let arr = data.map((item) => {
-  //       return (
-  //         <Request
-  //           key={item.requestId} renderPendings={renderPendings} data={item}
-  //           id={item.requestId} Notification={Notification}
-  //           View={View} subject={item.requestSubject}
-  //           amountToPay={item.amountToPay}
-  //           date={item.requestDate} requestComment={item.requestComment}
-  //         />
-  //       )
-  //     })
-  //     console.log("Arr",arr.length)
-  //     setPendings(arr)
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // }
-  
 
   const Notification = (id) => {
     Alert.alert(
@@ -118,7 +82,7 @@ function Request(props) {
   const dateString = day + "/" + month + "/" + newYear;
   const [valueChanged, setValueChanged] = useState(false);
   const [status, setStatus] = useState(props.data.requestStatus);
-  const { userContext,GetUserPending, GetUserHistory } = useUserContext();
+  const { userContext, GetUserPending, GetUserHistory } = useUserContext();
   const [DownloadProgress, setDownloadProgress] = useState();
 
   const toggle = () => {
@@ -184,20 +148,20 @@ function Request(props) {
               body: JSON.stringify({ requestId: props.data.requestId, requestStatus: userTypeResult }),
               headers: { 'Content-Type': 'application/json', },
             }).then(res => {
-             if (res.ok) {
+              if (res.ok) {
                 console.log('res.ok', res.ok);
                 GetUserPending();
                 GetUserHistory();
                 return res.json()
               }
             })
-            .then(
-              (result) => {
-                console.log("fetch POST= ", result);
-              },
-              (error) => {
-                console.log("err post=", error);
-              });
+              .then(
+                (result) => {
+                  console.log("fetch POST= ", result);
+                },
+                (error) => {
+                  console.log("err post=", error);
+                });
           }
         },
       ]
@@ -313,9 +277,7 @@ function Request(props) {
                     <MaterialCommunityIcons name="dots-horizontal" size={28} color="gray" />
                   </View>}
                 />
-                <MenuOptions customStyles={{
-                  optionsWrapper: styles.optionsWrapperOpened,
-                }}  >
+                <MenuOptions customStyles={{ optionsWrapper: styles.optionsWrapperOpened }}  >
                   <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} value={1} children={<View style={styles.options}><MaterialCommunityIcons name='bell-ring-outline' size={20} /><Text style={styles.optionsText}> Send Notification</Text></View>} />
                   <MenuOption value={2} children={<View style={styles.options}><Feather name='eye' size={20} /><Text style={styles.optionsText}> View Document</Text></View>} />
                   <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} value={3} children={<View style={userContext.userId == props.data.userId ? styles.options : styles.disabledoptions}><Feather name='edit' size={20} /><Text style={styles.optionsText}> Edit Request</Text></View>} />

@@ -32,7 +32,7 @@ export default function ImagePickerExample(props) {
         mediaTypes: ImagePicker.MediaTypeOptions.All,
         allowsEditing: true,
         aspect: [4, 3],
-        quality: 0.1,
+        quality: 0.06,
       }
     );
     // Explore the result

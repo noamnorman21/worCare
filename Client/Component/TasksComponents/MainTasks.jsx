@@ -1,30 +1,30 @@
-import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, ScrollView, Dimensions, LayoutAnimation } from 'react-native'
+import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, ScrollView, Dimensions,LayoutAnimation } from 'react-native'
 import { useState, useEffect } from 'react'
 import { AddBtn, NewTaskModal } from '../HelpComponents/AddNewTask'
 import { Ionicons } from '@expo/vector-icons';
 import TaskView from '../HelpComponents/TaskView';
+import { useUserContext } from '../../UserContext';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 export default function MainTasks(props) {
   const [modalVisible, setModalVisible] = useState(false)
-  const [publicTasks, setPublicTasks] = useState(props.allPublicTasks)
-  const [privateTasks, setPrivateTasks] = useState(props.allPrivateTasks)
+  const [publicTasks, setPublicTasks] = useState([])
+  const [privateTasks, setPrivateTasks] = useState([])
   const [allTasks, setAllTasks] = useState([])
   const [todayTasks, setTodayTasks] = useState([])
   const [tommorowTasks, setTommorowTasks] = useState([])
   const [headerToday, setHeaderToday] = useState(false)
-  const [headerTommorow, setHeaderTommorow] = useState(false)
+  const [headerTommorow, setHeaderTommorow] = useState(true)
   const arrowIcon = ["chevron-down-outline", "chevron-up-outline"];
+  const { getAllPublicTasks, getAllPrivateTasks, allPublicTasks, allPrivateTasks } = useUserContext();
 
   useEffect(() => {
-    setPublicTasks(props.allPublicTasks)
-    setPrivateTasks(props.allPrivateTasks)
-    filterTasks(props.allPrivateTasks, props.allPublicTasks)
-  }, [props.allPublicTasks, props.allPrivateTasks])
+    filterTasks(allPrivateTasks, allPublicTasks)
+  }, [allPublicTasks, allPrivateTasks])
 
   const filterTasks = async (privateTask, publicTasks) => {
     //combine private and public tasks for today task and sort by time
-    let allTasks = privateTask? privateTask.concat(publicTasks):publicTasks;
+    let allTasks = privateTask.concat(publicTasks)
     allTasks.sort((a, b) => {
       return a.TimeInDay > b.TimeInDay ? 1 : -1
     }
@@ -38,22 +38,20 @@ export default function MainTasks(props) {
     }
     )
     setTodayTasks(todayTasks)
-    //filter tommorow tasks
+    //filter all task that not today and not done
     let tommorowTasks = allTasks.filter(task => {
       let today = new Date()
       let taskDate = new Date(task.taskDate)
-      return taskDate.getDate() == today.getDate() + 1 && taskDate.getMonth() == today.getMonth() && taskDate.getFullYear() == today.getFullYear()
+      return taskDate.getDate() != today.getDate() || taskDate.getMonth() != today.getMonth() || taskDate.getFullYear() != today.getFullYear()
     }
     )
     setTommorowTasks(tommorowTasks)
-
-
-
   }
 
   const handleAddBtnPress = () => {
     setModalVisible(true);
   };
+
 
   const toggleHeaderTodayView = () => {
     LayoutAnimation.easeInEaseOut(setHeaderToday(!headerToday));
@@ -63,9 +61,8 @@ export default function MainTasks(props) {
     LayoutAnimation.easeInEaseOut(setHeaderTommorow(!headerTommorow));
   }
   const handleModalClose = () => {
-    setModalVisible(false);
-    props.refreshPublicTask()
-    props.refreshPrivateTask()
+    getAllPrivateTasks();
+    getAllPublicTasks();
   };
 
   return (
@@ -92,10 +89,10 @@ export default function MainTasks(props) {
         </ScrollView>
       </View>
 
-      <View style={[styles.TommorowView,headerToday&& {flex:12} ]}>
+      <View style={[styles.TommorowView, headerToday ? { flex: 33 }:{}]}>
         <View>
           <TouchableOpacity style={styles.headerForTasks} onPress={toggleHeaderTommorowView}>
-            <Text style={styles.tasksTitle}>Tomorrow</Text>
+            <Text style={styles.tasksTitle}>Upcoming</Text>
             <Ionicons name={headerTommorow ? arrowIcon[0] : arrowIcon[1]} size={30} color="#548DFF" />
           </TouchableOpacity>
         </View>
@@ -132,8 +129,9 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
   },
   todayView: {
-    flex: 1.6,
-    width: '100%'
+    flex: 3.6,
+    width: '100%',
+    marginBottom: 20,
   },
   TommorowView: {
     flex: 1.25,

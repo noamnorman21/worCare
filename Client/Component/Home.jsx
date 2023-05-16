@@ -1,129 +1,103 @@
-import { View, Text, StyleSheet, TouchableOpacity, Alert, SafeAreaView, Modal, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, SafeAreaView, Modal, Dimensions,ScrollView,LayoutAnimation } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AddBtn, NewTaskModal } from './HelpComponents/AddNewTask'
+import { Ionicons } from '@expo/vector-icons';
 
+import TaskView from './HelpComponents/TaskView';
+import { useUserContext } from '../UserContext';
+
+const SCREEN_WIDTH = Dimensions.get('window').width;
 export default function Home({ navigation }) {
-  const [userData, setUserData] = useState(''); // [1]
   const [modalVisible, setModalVisible] = useState(false);
+  const [headerToday, setHeaderToday] = useState(false);
+  const [userData, setUserData] = useState(useUserContext().userContext);
+  const [userId, setUserId] = useState(useUserContext.userId);
+  const { getAllPublicTasks, getAllPrivateTasks, allPublicTasks, allPrivateTasks } = useUserContext();
+  const [userType, setUserType] = useState(userData.userType);
+  const [allTasks, setAllTasks] = useState([])
+  const [todayTasks, setTodayTasks] = useState([])
 
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        const jsonValue = await AsyncStorage.getItem('userData')
-        if (jsonValue != null) {
-          const json = JSON.parse(jsonValue);
-          setUserData(json);
-        }
-      }
-      catch (e) {
-        console.log(e);
-      }
-    };
-    getData();
-  }, []);
+
+
+  useEffect(() => {    
+    filterTasks(allPrivateTasks, allPublicTasks)
+  },[allPrivateTasks,allPublicTasks] )
+
+  const arrowIcon = ["chevron-down-outline", "chevron-up-outline"];
+  // useEffect(() => {
+  //   const getData = async () => {
+  //     try {
+  //       const jsonValue = await AsyncStorage.getItem('userData')
+  //       if (jsonValue != null) {
+  //         const json = JSON.parse(jsonValue);
+  //         setUserData(json);
+  //       }
+  //     }
+  //     catch (e) {
+  //       console.log(e);
+  //     }
+  //   };
+  //   getData(allPublicTasks);
+  // }, []);
+  const filterTasks = async (privateTask, publicTasks) => {
+    //combine private and public tasks for today task and sort by time
+    let allTasks = privateTask.concat(publicTasks)
+    allTasks.sort((a, b) => {
+      return a.TimeInDay > b.TimeInDay ? 1 : -1
+    }
+    )
+    setAllTasks(allTasks)
+    //filter today tasks
+    let todayTasks = allTasks.filter(task => {
+      let today = new Date()
+      let taskDate = new Date(task.taskDate)
+      return taskDate.getDate() == today.getDate() && taskDate.getMonth() == today.getMonth() && taskDate.getFullYear() == today.getFullYear()
+    }
+    )
+    setTodayTasks(todayTasks)
+  }
+
   const handleAddBtnPress = () => {
-    setModalVisible(true);
+    setModalVisible(true);  
   };
   const handleModalClose = () => {
     setModalVisible(false);
   };
+  const toggleHeaderTodayView = () => {
+    LayoutAnimation.easeInEaseOut(setHeaderToday(!headerToday));
+  }
 
-  const [grid, setGrid] = useState([['', '', ''], ['', '', ''], ['', '', '']]);
-  const [player, setPlayer] = useState('X');
-  const onPress = (row, col) => {
-    if (grid[row][col] !== '') {
-      return;
-    }
-
-    const newGrid = [...grid];
-    newGrid[row][col] = player;
-    setGrid(newGrid);
-
-    if (isGameOver()) {
-      Alert.alert('Game Over', `Player ${player} has won!`, [
-        {
-          text: 'Restart',
-          onPress: () => setGrid([['', '', ''], ['', '', ''], ['', '', '']]),
-        },
-      ]);
-      return;
-    }
-    setPlayer(player === 'X' ? 'O' : 'X');
-  };
-  const isGameOver = () => {
-    // check rows
-    for (let row = 0; row < 3; row++) {
-      if (grid[row][0] !== '' && grid[row][0] === grid[row][1] && grid[row][1] === grid[row][2]) {
-        return true;
-      }
-    }
-
-    // check columns
-    for (let col = 0; col < 3; col++) {
-      if (grid[0][col] !== '' && grid[0][col] === grid[1][col] && grid[1][col] === grid[2][col]) {
-        return true;
-      }
-    }
-
-    // check diagonals
-    if (grid[0][0] !== '' && grid[0][0] === grid[1][1] && grid[1][1] === grid[2][2]) {
-      return true;
-    }
-    if (grid[0][2] !== '' && grid[0][2] === grid[1][1] && grid[1][1] === grid[2][0]) {
-      return true;
-    }
-    return false;
-  };
-  const renderCell = (row, col) => {
-    return (
-      <TouchableOpacity style={styles.cell} onPress={() => onPress(row, col)}>
-        <Text style={styles.text}>{grid[row][col]}</Text>
-      </TouchableOpacity>
-    );
-  };
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={{ fontSize: 21, textAlign: 'center', marginBottom: 10, color: 'red' }}> ברוכים הבאים למשחק של נועםםםםם</Text>
-      <Text style={{ fontSize: 21, textAlign: 'center', marginBottom: 10, color: 'red' }}> {userData.userType}</Text>
-      <View style={styles.row}>
-        {renderCell(0, 0)}
-        {renderCell(0, 1)}
-        {renderCell(0, 2)}
-      </View>
-      <View style={styles.row}>
-        {renderCell(1, 0)}
-        {renderCell(1, 1)}
-        {renderCell(1, 2)}
-      </View>
-      <View style={styles.row}>
-        {renderCell(2, 0)}
-        {renderCell(2, 1)}
-        {renderCell(2, 2)}
+      <View style={styles.calendarContainer}>
+      </View >
+      <View style={styles.tasksViewContainer}>
+        <View>
+          <TouchableOpacity style={styles.headerForTasks} onPress={toggleHeaderTodayView}>
+            <Text style={styles.tasksTitle}>Today</Text>
+            <Ionicons name={headerToday ? arrowIcon[0] : arrowIcon[1]} size={30} color="#548DFF" />
+          </TouchableOpacity>
+        </View>
+        <ScrollView alwaysBounceVertical={false}>
+          <View style={[styles.todayView, headerToday ? { display: 'none' } : {}]} >
+            {
+              todayTasks.map((task, index) => {
+                let isPrivate = false;
+                if (task.patientId == null) {
+                  isPrivate = true;
+                }
+                return (<TaskView today={true} key={index} task={task} isPrivate={isPrivate} />)
+              })
+            }
+          </View>
+        </ScrollView>
       </View>
       <View style={styles.addBtnView}>
         <AddBtn onPress={handleAddBtnPress} />
       </View>
       <NewTaskModal isVisible={modalVisible} onClose={handleModalClose} />
-      <View>
-        <TouchableOpacity
-          onPress={() => {
-            AsyncStorage.removeItem("user");
-            AsyncStorage.removeItem("userData");
-            Alert.alert('Log Out', 'You have been logged out', [
-              {
-                text: 'OK',
-                onPress: () => {
-                  navigation.navigate('LogIn')
-                }
-              },
-            ]);
-          }}
-        >
-          <Text>Log Out</Text>
-        </TouchableOpacity>
-      </View>
     </SafeAreaView>
   );
 }
@@ -140,18 +114,32 @@ const styles = StyleSheet.create({
     bottom: 20,
     right: 20,
   },
-  row: {
+  calendarContainer: {
+    flex: 8,
+    width: '100%',
+    backgroundColor: '#EEF4FF',
+  },
+  tasksViewContainer: {
+    flex: 24,
+    width: SCREEN_WIDTH ,
+  },
+  headerForTasks: {
     flexDirection: 'row',
-  },
-  cell: {
-    width: 100,
-    height: 100,
-    borderWidth: 1,
+    justifyContent: 'space-between',
     alignItems: 'center',
-    justifyContent: 'center',
+    marginBottom: 20,
+    marginLeft: 15,
+    marginRight: 15,
   },
-  text: {
-    fontSize: 48,
+  tasksTitle: {
+    fontSize: 24,
+    fontFamily: 'Urbanist-Bold',
+    color: '#000',
+  },
+  todayView: {
+    width: '100%',
+    marginBottom: 20,
+    marginRight: 20,
   },
   button: {
     marginTop: 20,
@@ -159,7 +147,5 @@ const styles = StyleSheet.create({
     backgroundColor: '#333',
     color: '#fff',
   },
-  buttonText: {
-    color: '#fff',
-  },
+
 });
