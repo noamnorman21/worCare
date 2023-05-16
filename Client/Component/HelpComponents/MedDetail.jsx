@@ -31,7 +31,8 @@ export default function MedDetail({ navigation, route }) {
    const [takeExtraValue, setTakeExtraValue] = useState(0);
 
    const [newDosege, setNewDosege] = useState(0);
-   const { UpdateDrugForPatientDTO } = useUserContext();
+   const { UpdateDrugForPatientDTO, getAllPublicTask, } = useUserContext();
+   const [userData, setUserData] = useState(useUserContext().userContext);
    const { refreshPublicTask } = route.params;
 
    useEffect(() => {
@@ -91,66 +92,27 @@ export default function MedDetail({ navigation, route }) {
    }
 
    const takeExtraMed = () => {
-      //    Alert.prompt(
-      //       "Take Extra Pill",
-      //       "Is it the same dosage?",
-      //       [
-      //          {
-      //             text: "Cancel",
-      //             style: "destructive",
-      //          },
-      //          {
-      //             text: "OK",
-      //             onPress: (input) => {
-      //                // check if input is a number
-      //                const newDosage = parseFloat(input);
-      //                if (isNaN(newDosage)) {
-      //                   Alert.alert("Invalid input", "Please enter a number");
-      //                }
-      //                else if (newDosage <= 0) {
-      //                   Alert.alert("Invalid input", "Please enter a positive number");
-      //                }
-      //                else if (newDosage > task.drug.dosage * 3 & newDosage > 9) {
-      //                   Alert.alert("Invalid input", "Please enter a number for the new dosage");
-      //                }
-      //                else {
-      //                   setNewDosege(newDosage);
-      //                   let newDrugForPatient =
-      //                   {
-      //                      dosage: newDosage,
-      //                      drugId: task.drug.drugId,
-      //                      listId: task.listId,
-      //                      patientId: task.patientId,
-      //                   }
-      //                   console.log(newDrugForPatient)
-      //                   UpdateDrugForPatientDTO(newDrugForPatient)
-      //                   refreshPublicTask()
-      //                }
-      //             },
-      //             style: "ok",
-      //          },
-      //       ],
-      //       "plain-text",
-      //       "",
-      //       "numeric"
-      //    );
-      // }
-      if (isNaN(takeExtraValue) || takeExtraValue <= 0 || takeExtraValue > 5) {
+      if (differentDosage) {
+         setTakeExtraValue(task.drug.dosage)
+         console.log(takeExtraValue, "takeExtraValue")
+      }
+      else if (isNaN(takeExtraValue) || takeExtraValue <= 0 || takeExtraValue > 5) {
          Alert.alert("Invalid input", "Please enter a number for the new dosage");
       }
-      else {
-         let newDrugForPatient = {
-            qtyInBox: takeExtraValue == 0 ? task.drug.qtyInBox - task.drug.dosage : task.drug.qtyInBox - takeExtraValue,
-            drugId: task.drug.drugId,
-            listId: task.listId,
-            patientId: task.patientId,
-         }
-         console.log(takeExtraValue)
-         console.log(newDrugForPatient)
-         setTakeExtraValue(0)
-         // UpdateDrugForPatientDTO(newDrugForPatient)
-         // refreshPublicTask()
+      let newDrugForPatient = {
+         qtyInBox: task.drug.qtyInBox - takeExtraValue,
+         drugId: task.drug.drugId,
+         listId: task.listId,
+         patientId: task.patientId,
+         //lastTakenDate will be now time in Israel
+         lastTakenDate: new Date().toISOString().slice(0, 19).replace('T', ' '),
+
       }
+      UpdateDrugForPatientDTO(newDrugForPatient)
+      setVisibleTakeExtra(false)
+      // getAllPublicTask(userData)
+
+      //  refreshPublicTask()
    };
 
    return (
@@ -202,7 +164,7 @@ export default function MedDetail({ navigation, route }) {
          <View style={styles.middleContainer}>
             <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 16, marginBottom: 7 }}>Schedule</Text>
             <Text style={styles.detailsTxt}>Frequency : {task.frequency}</Text>
-            <Text style={styles.detailsTxt}>Quantity : {newDosege > 0 ? newDosege : task.drug.dosage}</Text>
+            <Text style={styles.detailsTxt}>Quantity : {task.drug.dosage}</Text>
             <Text style={styles.detailsTxt}>Time : {timeInDay}</Text>
             <Text style={styles.detailsTxt}>End Date : {task.drug.toDate}</Text>
             {

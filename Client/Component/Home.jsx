@@ -20,11 +20,10 @@ export default function Home({ navigation }) {
 
 
 
-  useEffect(() => {
-    getAllPublicTasks(userData);
-    getAllPrivateTasks(userData);
+  useEffect(() => {    
     filterTasks(allPrivateTasks, allPublicTasks)
-  },[] )
+  },[allPrivateTasks,allPublicTasks] )
+
   const arrowIcon = ["chevron-down-outline", "chevron-up-outline"];
   // useEffect(() => {
   //   const getData = async () => {

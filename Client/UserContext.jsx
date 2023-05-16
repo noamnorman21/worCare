@@ -3,7 +3,7 @@ import { Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { auth, db } from './config/firebase';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
 //--ruppin api server--
 
 //login
@@ -72,13 +72,14 @@ export function UserProvider({ children }) {
     const [userUri, setUserUri] = useState(null)
     const [BirthDate, setBirthDate] = useState(null)
     const [userGender, setUserGender] = useState(null)
-    const [allPublicTasks, setAllPublicTasks] = useState(null)
-    const [allPrivateTasks, setAllPrivateTasks] = useState(null)
+    const [allPublicTasks, setAllPublicTasks] = useState([])
+    const [allPrivateTasks, setAllPrivateTasks] = useState([])
 
     // new
     const [pairedEmail, setPairedEmail] = useState(null)
+    const [userChats, setUserChats] = useState(null)
 
-    function logInContext(userData) {
+    async function logInContext(userData) {
         setUserType(userData.userType);
         setUserLanguage(userData.Language);
         setUserCountry(userData.Country);
@@ -126,8 +127,8 @@ export function UserProvider({ children }) {
         fetchUserContacts(usertoSync);
         GetUserPending(usertoSync);
         GetUserHistory(usertoSync);
-        getAllPrivateTasks(usertoSync);
-        getAllPublicTasks(usertoSync);
+        await getAllPrivateTasks(usertoSync);
+        await getAllPublicTasks(usertoSync);
         if (userData.userType == "User") {
             getPairedEmail(userData.workerId);
         }
@@ -163,7 +164,9 @@ export function UserProvider({ children }) {
     }
 
     function logOutContext() {
+        console.log("logOutContext")
         setUserContext(null)
+        logOutFireBase()
     }
 
     function updateUserProfile(userData) {
@@ -615,7 +618,7 @@ export function UserProvider({ children }) {
 
 
     const value = {
-        userContext, userContacts, userNotifications, userPendingPayments, userHistoryPayments, logInFireBase, GetUserHistory, GetUserPending,
+        userContext, userContacts, userNotifications, userPendingPayments, userHistoryPayments,userChats, setUserChats, logInFireBase, GetUserHistory, GetUserPending,
         deleteContact, addNewContact, saveContact, updateActualTask, updateRememberUserContext, logInContext, fetchUserContacts, logOutContext,
         updateUserContext, updateUserContacts, updatePendings, updateUserProfile, updateuserNotifications, appEmail, getAllPrivateTasks, getAllPublicTasks, allPublicTasks, allPrivateTasks,UpdateDrugForPatientDTO
     };

@@ -533,7 +533,7 @@ namespace WebApi.Controllers
                 {
                     if (drug.qtyInBox != null)
                     {
-                        tblDrugForPatient.qtyInBox = drug.qtyInBox - 1;
+                        tblDrugForPatient.qtyInBox = drug.qtyInBox;
                     }
                     if (drug.dosage != 0 && drug.dosage != tblDrugForPatient.dosage)
                     {
@@ -541,15 +541,15 @@ namespace WebApi.Controllers
                     }
                     if (drug.lastTakenDate != null)
                     {
-                        tblDrugForPatient.lastTakenDate = drug.lastTakenDate;
+                        tblDrugForPatient.lastTakenDate = DateTime.Now;
                     }
                     db.SaveChanges();
                     tblPatientTask patientTask = db.tblPatientTask.Where(x => x.listId == drug.listId).FirstOrDefault();
                     if (patientTask != null)
                     {
-                        if (drug.lastTakenDate != null)
+                        if (drug.toDate != null)
                         {
-                            patientTask.taskToDate = drug.lastTakenDate;
+                            patientTask.taskToDate = drug.toDate;
                         }
                         if (patientTask.taskComment != "" && drug.taskComment != null)
                         {
