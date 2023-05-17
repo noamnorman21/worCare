@@ -32,7 +32,7 @@ export default function MedDetail({ navigation, route }) {
    const [differentRefill, setDifferentRefill] = useState(true);
    const [refillValue, setRefillValue] = useState(0);
 
-   const { UpdateDrugForPatientDTO, getAllPublicTask, } = useUserContext();
+   const { UpdateDrugForPatientDTO, getAllPublicTask } = useUserContext();
    const [userData, setUserData] = useState(useUserContext().userContext);
    const { refreshPublicTask } = route.params;
 
@@ -77,6 +77,18 @@ export default function MedDetail({ navigation, route }) {
 
    const deleteMed = () => {
       console.log("Delete Medicine")
+      let newDrugForPatient = {
+
+         drugId: task.drug.drugId,
+         listId: task.listId,
+         patientId: task.patientId,
+         //lastTakenDate will be now time in Israel
+         toDate: new Date().toISOString().slice(0, 19).replace('T', ' '),
+
+      }
+      
+      UpdateDrugForPatientDTO(newDrugForPatient)
+     // getAllPublicTask(userData)
       toggleOverlay()
    }
 
@@ -111,21 +123,27 @@ export default function MedDetail({ navigation, route }) {
       }
       UpdateDrugForPatientDTO(newDrugForPatient)
       setVisibleTakeExtra(false)
-      // getAllPublicTask(userData)
+     // getAllPublicTask(userData)
 
       //  refreshPublicTask()
    };
    const logRefill = () => {
+      let addNum=0
      
       if (differentRefill) {
-         setRefillValue(task.drug.minQuantity*5)
-     
+        // setRefillValue(task.drug.minQuantity*5)
+         addNum=task.drug.minQuantity*5
       }
-      else if (isNaN(refillValue) || refillValue <= 0 || refillValue > 5) {
+      else if (isNaN(refillValue) || refillValue <= 0 ) {
          Alert.alert("Invalid input", "Please enter a number for the new dosage");
       }
+      else{
+         addNum=refillValue
+         addNum=parseInt(addNum)
+      }
       let newDrugForPatient = {
-         qtyInBox: task.drug.qtyInBox + refillValue,
+      
+         qtyInBox: task.drug.qtyInBox + addNum,
          drugId: task.drug.drugId,
          listId: task.listId,
          patientId: task.patientId,
@@ -315,7 +333,7 @@ export default function MedDetail({ navigation, route }) {
                            <>
                               <TextInput
                                  style={{ width: SCREEN_WIDTH * 0.2, borderBottomColor: '#7DA9FF', borderBottomWidth: 1.5, textAlign: 'center', fontFamily: 'Urbanist-Regular', marginLeft: 20 }}
-                                 onChangeText={text => refillValue(text)}
+                                 onChangeText={text => setRefillValue(text)}
                                  value={refillValue}
                                  placeholder='type here...'
                                  keyboardType='numeric'

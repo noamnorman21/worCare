@@ -20,15 +20,13 @@ export default function Tasks() {
   const [allShopTasks, setAllShopTasks] = useState([]);
   const [showHeader, setShowHeader] = useState("flex");
 
-  useEffect(() => {
-    getAllPublicTasks(userData);
-    getAllPrivateTasks(userData);
-  }, []);
+
 
   //filter tasks by type, medicine or shop, other tasks will be in allTasks
   useEffect(() => {
+    console.log("allpublic",allPublicTasks);
     filterTasks(allPublicTasks);
-  }, [allPublicTasks]);
+  }, [allPublicTasks,allPrivateTasks]);
 
   const filterTasks = (tasks) => {
     let filteredTasks = tasks.filter(task => task.type == false);
@@ -46,6 +44,7 @@ export default function Tasks() {
       let bTime = new Date(b.taskDate);
       return aTime - bTime;
     })
+    console.log("filtered",filteredMedicineTasks);
     setAllMedicineTasks(filteredMedicineTasks);
   }
   const moveScreens = (task) => {

@@ -457,7 +457,7 @@ export function UserProvider({ children }) {
     }
     //tasks
     async function getAllPublicTasks(userData) {
-        console.log("getAllPublicTaskssssssssssssssssssssss")
+        console.log("getAllPublicTaskssssssssss")
         console.log("userData.patientId = ", userData.patientId)
         try {
             const response = await fetch(getAllPublicTasksUrl, {

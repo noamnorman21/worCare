@@ -312,14 +312,14 @@ const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 function MedTask({ navigation, route }) {
    const [modalVisible, setModalVisible] = useState(false)
+   const {getAllPublicTasks, userContext} = useUserContext()
    const handleAddBtnPress = () => {
       setModalVisible(true);
    };
 
    const handleModalClose = () => {
       setModalVisible(false);
-      route.params.refreshPublicTask()
-      route.params.refreshPrivateTask()
+      getAllPublicTasks(userContext)
    };
 
    const navigateToMed = (task, runlow, medTypeIcon, timeInDay) => {

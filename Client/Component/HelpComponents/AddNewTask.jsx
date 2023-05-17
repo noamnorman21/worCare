@@ -24,6 +24,7 @@ function AddBtn(props) {
 
 function AddNewMedicine(props) {
    //const {useUserContext} = useUserContext();
+   const {getAllPublicTasks, userContext} = useUserContext()
    const [userData, setUserData] = useState(useUserContext().userContext);
    const [userId, setUserId] = useState(useUserContext.userId);
    const [numberPerDay, setNumberPerDay] = useState(0)
@@ -111,6 +112,7 @@ function AddNewMedicine(props) {
          .then(res => {
             if (res.ok) {
                return res.json()
+               getAllPublicTasks(userContext)
             }
             else {
                console.log("not found")
