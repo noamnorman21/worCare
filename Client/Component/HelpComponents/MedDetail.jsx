@@ -286,7 +286,7 @@ export default function MedDetail({ navigation, route }) {
                   </View>
                </View>
                <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: SCREEN_WIDTH * 0.70, marginVertical: 10 }}>
-                  <TouchableOpacity style={styles.cancelBtn} onPress={toggleOverlayRefill}>
+                  <TouchableOpacity style={styles.cancelBtn} onPress={toggleOverlayTakeExtra}>
                      <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 16, color: '#fff' }}>Cancel</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={styles.okBtn} onPress={takeExtraMed}>

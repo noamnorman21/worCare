@@ -172,10 +172,10 @@ namespace WebApi.Controllers
                     var task = from t in db.tblActualTask
                                where t.taskId == item.taskId &&
                                t.taskDate >= DateTime.Today &&
-                               t.TimeInDay >= dateTime &&
                                t.taskDate <= SqlFunctions.DateAdd("d", 7, DateTime.Now) &&
                                t.taskStatus == "P"
                                select t;
+
                     foreach (var item2 in task)
                     {
                         ActualTaskDTO actualTask = new ActualTaskDTO();
