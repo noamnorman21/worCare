@@ -24,13 +24,14 @@ export default function MedDetail({ navigation, route }) {
    const [visiblePause, setVisiblePause] = useState(false);
    const [visibleTakeExtraValue, setVisibleTakeExtraValue] = useState(false);
    const [visibleTakeExtra, setVisibleTakeExtra] = useState(false);
-   const [visibleLogRefill, setVisibleLogRefill] = useState(false);
-
    const [sameChecked, setSameChecked] = useState(false);
    const [differentDosage, setDifferentDosage] = useState(false);
    const [takeExtraValue, setTakeExtraValue] = useState(0);
-
    const [newDosege, setNewDosege] = useState(0);
+   const [visibleLogRefill, setVisibleLogRefill] = useState(false);
+   const [differentRefill, setDifferentRefill] = useState(false);
+   const [refillValue, setRefillValue] = useState(0);
+
    const { UpdateDrugForPatientDTO, getAllPublicTask, } = useUserContext();
    const [userData, setUserData] = useState(useUserContext().userContext);
    const { refreshPublicTask } = route.params;
@@ -70,6 +71,9 @@ export default function MedDetail({ navigation, route }) {
    const toggleOverlayTakeExtra = () => {
       setVisibleTakeExtra(!visibleTakeExtra);
    };
+   const toggleOverlayRefill = () => {
+      setVisibleLogRefill(!visibleLogRefill);
+   };
 
    const deleteMed = () => {
       console.log("Delete Medicine")
@@ -87,9 +91,6 @@ export default function MedDetail({ navigation, route }) {
       toggleOverlayPause()
    }
 
-   const logRefill = () => {
-      console.log("Log Refill")
-   }
 
    const takeExtraMed = () => {
       if (differentDosage) {
@@ -105,6 +106,30 @@ export default function MedDetail({ navigation, route }) {
          listId: task.listId,
          patientId: task.patientId,
          //lastTakenDate will be now time in Israel
+         lastTakenDate: new Date().toISOString().slice(0, 19).replace('T', ' '),
+
+      }
+      UpdateDrugForPatientDTO(newDrugForPatient)
+      setVisibleTakeExtra(false)
+      // getAllPublicTask(userData)
+
+      //  refreshPublicTask()
+   };
+   const logRefill = () => {
+      console.log("Log Refill")
+      return;
+      if (differentDosage) {
+         setTakeExtraValue(task.drug.dosage)
+         console.log(takeExtraValue, "takeExtraValue")
+      }
+      else if (isNaN(takeExtraValue) || takeExtraValue <= 0 || takeExtraValue > 5) {
+         Alert.alert("Invalid input", "Please enter a number for the new dosage");
+      }
+      let newDrugForPatient = {
+         qtyInBox: task.drug.qtyInBox - takeExtraValue,
+         drugId: task.drug.drugId,
+         listId: task.listId,
+         patientId: task.patientId,
          lastTakenDate: new Date().toISOString().slice(0, 19).replace('T', ' '),
 
       }
@@ -177,7 +202,7 @@ export default function MedDetail({ navigation, route }) {
          </View>
 
          <View style={styles.bottomContainer}>
-            <TouchableOpacity style={styles.bottomBtn} onPress={logRefill}>
+            <TouchableOpacity style={styles.bottomBtn} onPress={toggleOverlayRefill}>
                <Text style={styles.bottomBtnTxt}>Log A Refill</Text>
             </TouchableOpacity>
 
@@ -261,7 +286,7 @@ export default function MedDetail({ navigation, route }) {
                   </View>
                </View>
                <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: SCREEN_WIDTH * 0.70, marginVertical: 10 }}>
-                  <TouchableOpacity style={styles.cancelBtn} onPress={toggleOverlayTakeExtra}>
+                  <TouchableOpacity style={styles.cancelBtn} onPress={toggleOverlayRefill}>
                      <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 16, color: '#fff' }}>Cancel</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={styles.okBtn} onPress={takeExtraMed}>
@@ -272,7 +297,51 @@ export default function MedDetail({ navigation, route }) {
          </Overlay>
 
          {/* Refill Med */}
-
+         <Overlay isVisible={visibleLogRefill} onBackdropPress={toggleOverlayRefill} overlayStyle={{ width: 300, height: 300, borderRadius: 20 }}>
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+               <View style={{ flex: 0.7, justifyContent: 'center', alignItems: 'center' }}>
+                  <FontAwesome5 name="hand-holding-medical" size={30} color="black" />
+                  {/* <Ionicons name="medical-outline" size={30} color="black" /> */}
+                  <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 20, marginVertical: 10, textAlign: 'center' }}>Log a refill</Text>
+               </View>
+               <View>
+                  <View>
+                     <View style={styles.sameDosContainer}>
+                        <TouchableOpacity style={styles.dosBtn} onPress={() => setDifferentRefill(true)}>
+                           <Feather name={!differentRefill ? radioIcon[0] : radioIcon[1]} size={25} color='#7DA9FF' style={{ marginRight: 10 }} />
+                           <Text style={styles.extraTxt}>Same qty?</Text>
+                        </TouchableOpacity>
+                     </View>
+                     <View style={styles.diffDosContainer}>
+                        <TouchableOpacity style={styles.dosBtn} onPress={() => setDifferentRefill(false)}>
+                           <Feather name={differentRefill ? radioIcon[0] : radioIcon[1]} size={25} color='#7DA9FF' />
+                           <Text style={[styles.extraTxt, { marginHorizontal: 10 }]}>Different qty</Text>
+                        </TouchableOpacity>
+                        {!differentRefill && (
+                           <>
+                              <TextInput
+                                 style={{ width: SCREEN_WIDTH * 0.2, borderBottomColor: '#7DA9FF', borderBottomWidth: 1.5, textAlign: 'center', fontFamily: 'Urbanist-Regular', marginLeft: 20 }}
+                                 onChangeText={text => refillValue(text)}
+                                 value={refillValue}
+                                 placeholder='type here...'
+                                 keyboardType='numeric'
+                                 returnKeyType='done'
+                              />
+                           </>
+                        )}
+                     </View>
+                  </View>
+               </View>
+               <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: SCREEN_WIDTH * 0.70, marginVertical: 10 }}>
+                  <TouchableOpacity style={styles.cancelBtn} onPress={toggleOverlayTakeExtra}>
+                     <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 16, color: '#fff' }}>Cancel</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.okBtn} onPress={logRefill}>
+                     <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 16, color: '#7DA9FF' }}>Okay</Text>
+                  </TouchableOpacity>
+               </View>
+            </View>
+         </Overlay>
       </View >
    )
 }
