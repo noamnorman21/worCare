@@ -32,7 +32,7 @@ export default function MedDetail({ navigation, route }) {
    const [differentRefill, setDifferentRefill] = useState(true);
    const [refillValue, setRefillValue] = useState(0);
 
-   const { UpdateDrugForPatientDTO, getAllPublicTask } = useUserContext();
+   const { UpdateDrugForPatientDTO, getAllPublicTasks } = useUserContext();
    const [userData, setUserData] = useState(useUserContext().userContext);
    const { refreshPublicTask } = route.params;
 
@@ -88,7 +88,7 @@ export default function MedDetail({ navigation, route }) {
       }
       
       UpdateDrugForPatientDTO(newDrugForPatient)
-     // getAllPublicTask(userData)
+      getAllPublicTasks(userData)
       toggleOverlay()
    }
 
