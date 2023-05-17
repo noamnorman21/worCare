@@ -25,11 +25,11 @@ export default function MedDetail({ navigation, route }) {
    const [visibleTakeExtraValue, setVisibleTakeExtraValue] = useState(false);
    const [visibleTakeExtra, setVisibleTakeExtra] = useState(false);
    const [sameChecked, setSameChecked] = useState(false);
-   const [differentDosage, setDifferentDosage] = useState(false);
+   const [differentDosage, setDifferentDosage] = useState(true);
    const [takeExtraValue, setTakeExtraValue] = useState(0);
    const [newDosege, setNewDosege] = useState(0);
    const [visibleLogRefill, setVisibleLogRefill] = useState(false);
-   const [differentRefill, setDifferentRefill] = useState(false);
+   const [differentRefill, setDifferentRefill] = useState(true);
    const [refillValue, setRefillValue] = useState(0);
 
    const { UpdateDrugForPatientDTO, getAllPublicTask, } = useUserContext();
@@ -116,28 +116,22 @@ export default function MedDetail({ navigation, route }) {
       //  refreshPublicTask()
    };
    const logRefill = () => {
-      console.log("Log Refill")
-      return;
-      if (differentDosage) {
-         setTakeExtraValue(task.drug.dosage)
-         console.log(takeExtraValue, "takeExtraValue")
+     
+      if (differentRefill) {
+         setRefillValue(task.drug.minQuantity*5)
+     
       }
-      else if (isNaN(takeExtraValue) || takeExtraValue <= 0 || takeExtraValue > 5) {
+      else if (isNaN(refillValue) || refillValue <= 0 || refillValue > 5) {
          Alert.alert("Invalid input", "Please enter a number for the new dosage");
       }
       let newDrugForPatient = {
-         qtyInBox: task.drug.qtyInBox - takeExtraValue,
+         qtyInBox: task.drug.qtyInBox + refillValue,
          drugId: task.drug.drugId,
          listId: task.listId,
          patientId: task.patientId,
-         lastTakenDate: new Date().toISOString().slice(0, 19).replace('T', ' '),
-
       }
       UpdateDrugForPatientDTO(newDrugForPatient)
-      setVisibleTakeExtra(false)
-      // getAllPublicTask(userData)
-
-      //  refreshPublicTask()
+      setVisibleLogRefill(false)
    };
 
    return (
@@ -333,7 +327,7 @@ export default function MedDetail({ navigation, route }) {
                   </View>
                </View>
                <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: SCREEN_WIDTH * 0.70, marginVertical: 10 }}>
-                  <TouchableOpacity style={styles.cancelBtn} onPress={toggleOverlayTakeExtra}>
+                  <TouchableOpacity style={styles.cancelBtn} onPress={toggleOverlayRefill}>
                      <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 16, color: '#fff' }}>Cancel</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={styles.okBtn} onPress={logRefill}>

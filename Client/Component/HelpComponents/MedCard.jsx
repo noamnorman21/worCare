@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         height: 85,
         width: SCREEN_WIDTH * 0.9,
-        flexDirection: 'cloumn',
+        flexDirection: 'column',
         marginVertical: 10,
     },
     firstRowContainer: {
