@@ -74,6 +74,8 @@ export function UserProvider({ children }) {
     const [userGender, setUserGender] = useState(null)
     const [allPublicTasks, setAllPublicTasks] = useState([])
     const [allPrivateTasks, setAllPrivateTasks] = useState([])
+    const [allMedicineTasks, setAllMedicineTasks] = useState([]);
+    const [allShopTasks, setAllShopTasks] = useState([]);
 
     // new
     const [pairedEmail, setPairedEmail] = useState(null)
@@ -467,14 +469,35 @@ export function UserProvider({ children }) {
             });
             const result = await response.json();
             setAllPublicTasks(result);
+            filterTasks(result);
         } catch (error) {
             console.log('err post=', error);
         }
     }
+
+
+    async function filterTasks (tasks)  {
+        let filteredTasks = tasks.filter(task => task.type == false);
+        setAllShopTasks(filteredTasks);
+        let filteredMedicineTasks = tasks.filter(task => task.type == true);
+        //save only today tasks
+        filteredMedicineTasks = filteredMedicineTasks.filter(task => {
+          let today = new Date()
+          let taskDate = new Date(task.taskDate)
+          return taskDate.getDate() == today.getDate() && taskDate.getMonth() == today.getMonth() && taskDate.getFullYear() == today.getFullYear()
+        })
+        //sort by time from erliest to latest
+        filteredMedicineTasks.sort((a, b) => {
+          let aTime = new Date(a.taskDate);
+          let bTime = new Date(b.taskDate);
+          return aTime - bTime;
+        })
+        console.log("filtered",filteredMedicineTasks);
+        setAllMedicineTasks(filteredMedicineTasks);
+      }
     async function getAllPrivateTasks(userData) {
         //do it only if userType is caregiver
         if (userData.userType != "Caregiver") {
-            console.log("getAllPrivateTasks - not caregiver");
             return setAllPrivateTasks([]);
         }
 
@@ -508,7 +531,6 @@ export function UserProvider({ children }) {
                         return res.json()
                             .then(
                                 (result) => {
-                                    console.log("fetch UpdateActualPrivate= ", result);
                                     getAllPrivateTasks(userContext);
                                 }
                             )
@@ -609,7 +631,6 @@ export function UserProvider({ children }) {
 
     async function logOutFireBase() {
         signOut(auth).then(() => {
-            console.log('user logged out');
         }).catch((error) => {
             console.log(error);
         });
@@ -618,7 +639,7 @@ export function UserProvider({ children }) {
 
 
     const value = {
-        userContext, userContacts, userNotifications, userPendingPayments, userHistoryPayments,userChats, setUserChats, logInFireBase, GetUserHistory, GetUserPending,
+        userContext,allShopTasks,allMedicineTasks, userContacts, userNotifications, userPendingPayments, userHistoryPayments,userChats, setUserChats, logInFireBase, GetUserHistory, GetUserPending,
         deleteContact, addNewContact, saveContact, updateActualTask, updateRememberUserContext, logInContext, fetchUserContacts, logOutContext,
         updateUserContext, updateUserContacts, updatePendings, updateUserProfile, updateuserNotifications, appEmail, getAllPrivateTasks, getAllPublicTasks, allPublicTasks, allPrivateTasks,UpdateDrugForPatientDTO
     };

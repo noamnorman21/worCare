@@ -19,7 +19,8 @@ const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 function MedTask({ navigation, route }) {
    const [modalVisible, setModalVisible] = useState(false)
-   const {getAllPublicTasks, userContext} = useUserContext()
+   const { getAllPublicTasks, userContext, allMedicineTasks } = useUserContext()
+   const [userData, setUserData] = useState(useUserContext().userContext);
    const [medToDisplay, setMedToDisplay] = useState([])
    const handleAddBtnPress = () => {
       setModalVisible(true);
@@ -27,24 +28,25 @@ function MedTask({ navigation, route }) {
 
    const handleModalClose = () => {
       setModalVisible(false);
-      getAllPublicTasks(userContext)
+      getAllPublicTasks(userData);
    };
 
    const navigateToMed = (task, runlow, medTypeIcon, timeInDay) => {
       navigation.navigate("MedDetail", { task: task, runlow: runlow, medTypeIcon: medTypeIcon, timeInDay: timeInDay })
    }
 
+
    const getMedsToDisplay = () => {
       let meds = []
-      meds= route.params.allMedicineTasks.map((medicine, index) => {
+      meds = allMedicineTasks.map((medicine, index) => {
          return (<MedCard key={index} task={medicine} navigateToMed={navigateToMed} />)
       })
       setMedToDisplay(meds)
    }
-   
+
    useEffect(() => {
       getMedsToDisplay()
-   }, [route.params.allMedicineTasks])
+   }, [allMedicineTasks])
 
 
    return (
@@ -52,10 +54,10 @@ function MedTask({ navigation, route }) {
          <View>
             <ScrollView alwaysBounceVertical={false}>
                {
-                  // route.params.allMedicineTasks.map((medicine, index) => {
-                  //    return (<MedCard key={index} task={medicine} navigateToMed={navigateToMed} />)
-                  // })
-                  medToDisplay
+                  allMedicineTasks.map((medicine, index) => {
+                     return (<MedCard key={index} task={medicine} navigateToMed={navigateToMed} />)
+                  })
+
                }
             </ScrollView>
          </View>
@@ -81,7 +83,7 @@ export default function MedicineTasks(props) {
          <Stack.Navigator>
             <Stack.Screen
                options={{ headerShown: false }}
-               initialParams={{ refreshPublicTask: props.refreshPublicTask, refreshPrivateTask: props.refreshPrivateTask, allMedicineTasks: props.allMedicineTasks }}
+               initialParams={{ refreshPublicTask: refreshPublicTask, refreshPrivateTask: props.refreshPrivateTask, allMedicineTasks: props.allMedicineTasks }}
                name="MedTask" component={MedTask} />
             <Stack.Screen
                initialParams={{ changeHeader: changeHeader, refreshPublicTask: refreshPublicTask }}

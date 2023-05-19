@@ -6,7 +6,8 @@ import { useUserContext } from '../../UserContext';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function MedCard(props) {
-    const { updateActualTask } = useUserContext();
+    const { getAllPublicTasks, userContext, updateActualTask } = useUserContext()
+    const [userData, setUserData] = useState(useUserContext().userContext);
     const [medTypeIcon, setMedTypeIcon] = useState('');
     const [isDone, setIsDone] = useState(false);
     const [lastTakenDate, setLastTakenDate] = useState('');
@@ -39,6 +40,7 @@ export default function MedCard(props) {
         let doneTask = props.task;
         doneTask.taskStatus = 'F';
         updateActualTask(doneTask, false);
+        getAllPublicTasks(userData);
         setIsDone(false);
     }
 
