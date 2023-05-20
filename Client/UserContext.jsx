@@ -113,7 +113,6 @@ export function UserProvider({ children }) {
             workerId: userData.workerId,//if user is a caregiver, this field will be same as userId
             involvedInId: userData.involvedInId,//if user is a not caregiver, this field will be same as userId
             patientId: userData.patientId,
-
         }
 
         setUserContext(usertoSync);
@@ -154,10 +153,8 @@ export function UserProvider({ children }) {
             })
             .then(
                 (result) => {
-                    console.log("GetPairedEmail= ", result);
                     let temp = result.split(":")
                     temp = temp[1];
-                    console.log("temp= ", temp);
                     setPairedEmail(temp)
                 },
                 (error) => {
@@ -191,7 +188,6 @@ export function UserProvider({ children }) {
             headers: new Headers({
                 'Content-Type': 'application/json; charset=UTF-8',
                 'Accept': 'application/json; charset=UTF-8',
-
             }),
             body: JSON.stringify(userToUpdate)
         })
@@ -200,7 +196,6 @@ export function UserProvider({ children }) {
                     return res.json()
                         .then(
                             (result) => {
-                                console.log("fetch POST= ", result);
                                 Alert.alert('User Updated', 'Your User has been Updated successfully');
                                 updateUserContext(userToUpdate)
                                 const jsonValue = JSON.stringify(userToUpdate)
@@ -457,10 +452,10 @@ export function UserProvider({ children }) {
             console.log(error)
         }
     }
-    //tasks
+
+    // Tasks
     async function getAllPublicTasks(userData) {
-        console.log("getAllPublicTaskssssssssss")
-        console.log("userData.patientId = ", userData.patientId)
+        console.log("getAllPublicTasks")
         try {
             const response = await fetch(getAllPublicTasksUrl, {
                 method: 'POST',
@@ -475,32 +470,30 @@ export function UserProvider({ children }) {
         }
     }
 
-
-    async function filterTasks (tasks)  {
+    async function filterTasks(tasks) {
         let filteredTasks = tasks.filter(task => task.type == false);
         setAllShopTasks(filteredTasks);
         let filteredMedicineTasks = tasks.filter(task => task.type == true);
         //save only today tasks
         filteredMedicineTasks = filteredMedicineTasks.filter(task => {
-          let today = new Date()
-          let taskDate = new Date(task.taskDate)
-          return taskDate.getDate() == today.getDate() && taskDate.getMonth() == today.getMonth() && taskDate.getFullYear() == today.getFullYear()
+            let today = new Date()
+            let taskDate = new Date(task.taskDate)
+            return taskDate.getDate() == today.getDate() && taskDate.getMonth() == today.getMonth() && taskDate.getFullYear() == today.getFullYear()
         })
         //sort by time from erliest to latest
         filteredMedicineTasks.sort((a, b) => {
-          let aTime = new Date(a.taskDate);
-          let bTime = new Date(b.taskDate);
-          return aTime - bTime;
+            let aTime = new Date(a.taskDate);
+            let bTime = new Date(b.taskDate);
+            return aTime - bTime;
         })
-        console.log("filtered",filteredMedicineTasks);
         setAllMedicineTasks(filteredMedicineTasks);
-      }
+    }
+
     async function getAllPrivateTasks(userData) {
         //do it only if userType is caregiver
         if (userData.userType != "Caregiver") {
             return setAllPrivateTasks([]);
         }
-
         let forginUser = {
             Id: userData.workerId
         }
@@ -516,6 +509,7 @@ export function UserProvider({ children }) {
             console.log('err post=', error);
         }
     }
+
     function updateActualTask(task, isPrivateTask) {
         if (isPrivateTask) {
             fetch(updateActualPrivateTaskUrl, {
@@ -580,7 +574,7 @@ export function UserProvider({ children }) {
 
     }
 
-    function UpdateDrugForPatientDTO(drugForPatient){
+    function UpdateDrugForPatientDTO(drugForPatient) {
         fetch(updateDrugForPatientDTOUrl, {
             method: 'PUT',
             headers: new Headers({
@@ -611,7 +605,6 @@ export function UserProvider({ children }) {
             );
     }
 
-
     //firebase
     async function logInFireBase(email, password) {
         console.log('logInFireBase')
@@ -636,13 +629,12 @@ export function UserProvider({ children }) {
         });
     }
 
-
-
     const value = {
-        userContext,allShopTasks,allMedicineTasks, userContacts, userNotifications, userPendingPayments, userHistoryPayments,userChats, setUserChats, logInFireBase, GetUserHistory, GetUserPending,
+        userContext, allShopTasks, allMedicineTasks, userContacts, userNotifications, userPendingPayments, userHistoryPayments, userChats, setUserChats, logInFireBase, GetUserHistory, GetUserPending,
         deleteContact, addNewContact, saveContact, updateActualTask, updateRememberUserContext, logInContext, fetchUserContacts, logOutContext,
-        updateUserContext, updateUserContacts, updatePendings, updateUserProfile, updateuserNotifications, appEmail, getAllPrivateTasks, getAllPublicTasks, allPublicTasks, allPrivateTasks,UpdateDrugForPatientDTO
+        updateUserContext, updateUserContacts, updatePendings, updateUserProfile, updateuserNotifications, appEmail, getAllPrivateTasks, getAllPublicTasks, allPublicTasks, allPrivateTasks, UpdateDrugForPatientDTO
     };
+    
     return (
         <UserContext.Provider value={value}>
             {children}

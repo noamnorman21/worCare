@@ -86,7 +86,7 @@ export default function MedDetail({ navigation, route }) {
          toDate: new Date().toISOString().slice(0, 19).replace('T', ' '),
 
       }
-      
+
       UpdateDrugForPatientDTO(newDrugForPatient)
       getAllPublicTasks(userData)
       toggleOverlay()
@@ -119,30 +119,26 @@ export default function MedDetail({ navigation, route }) {
          patientId: task.patientId,
          //lastTakenDate will be now time in Israel
          lastTakenDate: new Date().toISOString().slice(0, 19).replace('T', ' '),
-
       }
       UpdateDrugForPatientDTO(newDrugForPatient)
       setVisibleTakeExtra(false)
-     // getAllPublicTask(userData)
-
-      //  refreshPublicTask()
+      // getAllPublicTask(userData)
+      // refreshPublicTask()
    };
    const logRefill = () => {
-      let addNum=0
-     
+      let addNum = 0
       if (differentRefill) {
-        // setRefillValue(task.drug.minQuantity*5)
-         addNum=task.drug.minQuantity*5
+         // setRefillValue(task.drug.minQuantity*5)
+         addNum = task.drug.minQuantity * 5
       }
-      else if (isNaN(refillValue) || refillValue <= 0 ) {
+      else if (isNaN(refillValue) || refillValue <= 0) {
          Alert.alert("Invalid input", "Please enter a number for the new dosage");
       }
-      else{
-         addNum=refillValue
-         addNum=parseInt(addNum)
+      else {
+         addNum = refillValue
+         addNum = parseInt(addNum)
       }
       let newDrugForPatient = {
-      
          qtyInBox: task.drug.qtyInBox + addNum,
          drugId: task.drug.drugId,
          listId: task.listId,

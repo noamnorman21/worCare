@@ -7,21 +7,18 @@ import MedDetail from '../HelpComponents/MedDetail';
 import { useUserContext } from '../../UserContext';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer, useIsFocused } from '@react-navigation/native';
-import { Feather, AntDesign } from '@expo/vector-icons';
-import { Menu, MenuOptions, MenuOption, MenuTrigger } from "react-native-popup-menu";
-import { value, CheckBox, Overlay } from '@rneui/themed';
 
 const Stack = createStackNavigator();
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
-
-
 function MedTask({ navigation, route }) {
    const [modalVisible, setModalVisible] = useState(false)
    const { getAllPublicTasks, userContext, allMedicineTasks } = useUserContext()
    const [userData, setUserData] = useState(useUserContext().userContext);
-   const [medToDisplay, setMedToDisplay] = useState([])
+
+   useEffect(() => { }, [allMedicineTasks])
+
    const handleAddBtnPress = () => {
       setModalVisible(true);
    };
@@ -35,20 +32,6 @@ function MedTask({ navigation, route }) {
       navigation.navigate("MedDetail", { task: task, runlow: runlow, medTypeIcon: medTypeIcon, timeInDay: timeInDay })
    }
 
-
-   const getMedsToDisplay = () => {
-      let meds = []
-      meds = allMedicineTasks.map((medicine, index) => {
-         return (<MedCard key={index} task={medicine} navigateToMed={navigateToMed} />)
-      })
-      setMedToDisplay(meds)
-   }
-
-   useEffect(() => {
-      getMedsToDisplay()
-   }, [allMedicineTasks])
-
-
    return (
       <SafeAreaView style={styles.container}>
          <View>
@@ -57,7 +40,6 @@ function MedTask({ navigation, route }) {
                   allMedicineTasks.map((medicine, index) => {
                      return (<MedCard key={index} task={medicine} navigateToMed={navigateToMed} />)
                   })
-
                }
             </ScrollView>
          </View>
@@ -74,7 +56,6 @@ export default function MedicineTasks(props) {
       props.changeHeader(header)
    }
    const refreshPublicTask = () => {
-      // console.log('refreshPublicTask')
       props.refreshPublicTask()
    }
 

@@ -125,8 +125,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    width: SCREEN_WIDTH * 0.92,
-    paddingLeft: SCREEN_WIDTH * 0.02,
     paddingVertical: 20,
   },
   todayView: {
@@ -148,7 +146,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 20,
-    marginLeft: 10,
+    marginLeft: 15,
+    marginRight: SCREEN_WIDTH * 0.035,
   },
   tasksTitle: {
     fontSize: 24,

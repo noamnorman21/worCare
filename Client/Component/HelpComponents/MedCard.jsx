@@ -131,14 +131,11 @@ export default function MedCard(props) {
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.iconArrow} onPress={navigateToMed} >
-                       
-                            <Octicons name="chevron-right" size={24} color={runlow ? iconColors[1] : iconColors[0]} />
-              
+                        <Octicons name="chevron-right" size={24} color={runlow ? iconColors[1] : iconColors[0]} />
                     </TouchableOpacity>
                 </View>
             </View>
-            <View style={styles.line}>
-            </View>
+            <View style={styles.line} />
         </View>
     )
 }
