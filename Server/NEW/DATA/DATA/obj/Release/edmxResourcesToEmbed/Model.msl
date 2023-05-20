@@ -43,9 +43,9 @@
     <EntitySetMapping Name="tblCalendarsType">
       <EntityTypeMapping TypeName="igroup194_prodModel.tblCalendarsType">
         <MappingFragment StoreEntitySet="tblCalendarsType">
+          <ScalarProperty Name="calendarCode" ColumnName="calendarCode" />
           <ScalarProperty Name="calendarNum" ColumnName="calendarNum" />
           <ScalarProperty Name="calendarName" ColumnName="calendarName" />
-          <ScalarProperty Name="calendarUrl" ColumnName="calendarUrl" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

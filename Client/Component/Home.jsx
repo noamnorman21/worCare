@@ -79,6 +79,7 @@ export default function Home({ navigation }) {
 
   const handleAddBtnPress = () => {
     setModalVisible(true);
+   // console.log(userData.calendarCode)
   };
 
   const handleModalClose = () => {

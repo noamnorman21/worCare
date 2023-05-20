@@ -42,8 +42,8 @@
       <PropertyRef Name="calendarNum" />
     </Key>
     <Property Name="calendarNum" Type="int" Nullable="false" />
-    <Property Name="calendarName" Type="varchar" MaxLength="25" />
-    <Property Name="calendarUrl" Type="varchar(max)" />
+    <Property Name="calendarCode" Type="varchar" MaxLength="25" />
+    <Property Name="calendarName" Type="varchar(max)" />
   </EntityType>
   <EntityType Name="tblCaresForPatient">
     <Key>

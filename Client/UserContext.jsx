@@ -113,6 +113,7 @@ export function UserProvider({ children }) {
             workerId: userData.workerId,//if user is a caregiver, this field will be same as userId
             involvedInId: userData.involvedInId,//if user is a not caregiver, this field will be same as userId
             patientId: userData.patientId,
+            calendarCode: userData.calendarCode,
         }
 
         setUserContext(usertoSync);
