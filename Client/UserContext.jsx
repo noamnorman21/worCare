@@ -57,7 +57,6 @@ export function UserProvider({ children }) {
     const [userType, setUserType] = useState(null)
     const [userLanguage, setUserLanguage] = useState(null)
     const [userCountry, setUserCountry] = useState(null)
-    const [userCalendar, setUserCalendar] = useState(null)
     const [userHobbies, setUserHobbies] = useState(null)
     const [userLimitations, setUserLimitations] = useState(null)
     const [userCaresFor, setUserCaresFor] = useState(null)
@@ -76,7 +75,8 @@ export function UserProvider({ children }) {
     const [allPrivateTasks, setAllPrivateTasks] = useState([])
     const [allMedicineTasks, setAllMedicineTasks] = useState([]);
     const [allShopTasks, setAllShopTasks] = useState([]);
-
+    const [userCalendar, setUserCalendar] = useState(null)
+    const [calendarCode, setCalendarCode] = useState(null)
     // new
     const [pairedEmail, setPairedEmail] = useState(null)
     const [userChats, setUserChats] = useState(null)
@@ -100,7 +100,7 @@ export function UserProvider({ children }) {
         setUserUri(userData.userUri);
         setBirthDate(userData.BirthDate);
         setUserGender(userData.Gender)
-
+        setCalendarCode(userData.calendarCode);
         let usertoSync = {
             userId: userData.userId,
             userType: userData.userType,
