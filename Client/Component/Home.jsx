@@ -7,6 +7,8 @@ import { AddBtn, NewTaskModal } from './HelpComponents/AddNewTask'
 import { Ionicons } from '@expo/vector-icons';
 import { Agenda, CalendarProvider } from 'react-native-calendars';
 import moment from 'moment';
+// useIsFocused
+import { useIsFocused } from '@react-navigation/native';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function Home({ navigation }) {
@@ -22,15 +24,18 @@ export default function Home({ navigation }) {
   const arrowIcon = ["chevron-down-outline", "chevron-up-outline"];
   const [holidays, setHolidays] = useState([]);
   const agendaItems = {};
+  const isFocused = useIsFocused();
 
   useEffect(() => {
-    filterTasks(allPrivateTasks, allPublicTasks)
-    fetchHolidays();
-  }, [allPrivateTasks, allPublicTasks])
+    if (isFocused) {
+      filterTasks(allPrivateTasks, allPublicTasks)
+      fetchHolidays();
+    }
+  }, [allPrivateTasks, allPublicTasks, isFocused])
 
   const fetchHolidays = async () => {
-    const country = ['IL', 'US']; // Replace with your country code
-
+    // const country = ['IL', 'US']; // Replace with your country code
+    const country = userData.calendarCode;
     country.forEach((c) => {
       getHolidays(c);
     });
@@ -79,7 +84,7 @@ export default function Home({ navigation }) {
 
   const handleAddBtnPress = () => {
     // setModalVisible(true);
-    console.log(userData.calendarCode)
+    console.log(userData)
   };
 
   const handleModalClose = () => {
@@ -152,7 +157,7 @@ const styles = StyleSheet.create({
   addBtnView: {
     position: 'absolute',
     bottom: 20,
-    right: 20,
+    right: 10,
   },
   calendarContainer: {
     flex: 15,

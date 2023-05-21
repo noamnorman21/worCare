@@ -32,7 +32,6 @@ export default function SignUpUserLVL5({ navigation, route }) {
       DateOfBirth: date,
       LanguageName_En: valueLanguage
     }
-
     navigation.navigate('SignUpLimitations', { patientData: patientData, tblUser: route.params.tblUser })
   }
 
@@ -101,7 +100,7 @@ export default function SignUpUserLVL5({ navigation, route }) {
                 color: 'gray',
                 fontFamily: 'Urbanist',
                 fontSize: 16,
-                textAlign: 'left',
+                // textAlign: 'left',
               }
             }}
             onDateChange={(date) => { setDate(date) }}
@@ -133,18 +132,18 @@ export default function SignUpUserLVL5({ navigation, route }) {
         />
       </View>
 
-      <View style={styles.btnContainer}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={handleInputAndContinue}
-        >
+      <TouchableOpacity
+        style={styles.btnContainer}
+        onPress={handleInputAndContinue}
+      >
+        <View style={styles.button}>
           <Text style={styles.buttonText}>Continue</Text>
-        </TouchableOpacity>
-      </View>
+        </View>
+      </TouchableOpacity>
 
       <OrLine />
       <HaveAccount />
-    </SafeAreaView>
+    </SafeAreaView >
   )
 };
 

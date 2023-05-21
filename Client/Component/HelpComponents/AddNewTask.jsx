@@ -14,7 +14,7 @@ const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 function AddBtn(props) {
    return (
-      <TouchableOpacity onPress={props.onPress}>
+      <TouchableOpacity style={styles.addBtnContainer} onPress={props.onPress}>
          <View style={styles.addBtn}>
             <Octicons name="plus" size={26} color="#fff" />
          </View>
@@ -43,7 +43,7 @@ function AddNewMedicine(props) {
    const [selectedDrugName, setSelectedDrugName] = useState(''); //we will use this to get the selected drug from the user
    const [editMode, setEditMode] = useState(true);
    const timePickers = [];
-   const {getAllPublicTasks,userContext}= useUserContext()
+   const { getAllPublicTasks, userContext } = useUserContext()
 
    const [modalTimesVisible, setModalTimesVisible] = useState(false);
    const medFrequencies = [
@@ -1253,6 +1253,7 @@ const styles = StyleSheet.create({
       width: 54,
       justifyContent: 'center',
       alignItems: 'center',
+
    },
    inputView: {
       width: SCREEN_WIDTH * 0.95,
@@ -1390,4 +1391,11 @@ const styles = StyleSheet.create({
       marginVertical: 5,
       paddingLeft: 5,
    },
+   addBtnContainer: {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 0 },
+      shadowOpacity: 0.5,
+      shadowRadius: 5,
+      elevation: 5,
+   }
 })

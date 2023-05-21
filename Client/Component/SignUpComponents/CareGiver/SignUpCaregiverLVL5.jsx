@@ -14,15 +14,14 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
   const holidaysType = route.params.holidaysType;
   const [linkTo, setLinkTo] = useState("");
 
-
   useEffect(() => {
     getInitialUrl();
   }, []);
+
   const getInitialUrl = async () => {
     setLinkTo(await Linking.getInitialURL());
     console.log("link:", linkTo);
   }
-
 
   const createUserInDB = () => {
     console.log("new user:", newUser);

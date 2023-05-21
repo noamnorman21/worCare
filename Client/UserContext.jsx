@@ -6,36 +6,36 @@ import { auth, db } from './config/firebase';
 import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
 //--ruppin api server--
 
-//login
+// Log In
 let userForLoginUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUserForLogin';
 
-//signUp
+// Sign Up
 let insertUser = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/InsertUser';
 let getAllLanguages = 'https://proj.ruppin.ac.il/cgroup94/test1/api/LanguageCountry/GetAllLanguages';
 let getAllCountries = 'https://proj.ruppin.ac.il/cgroup94/test1/api/LanguageCountry/GetAllCountries';
 let getAllCalendars = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Calendars/GetAllCalendars';
 
-//signUpPatient
+// Sign Up Patient
 let insertPatient = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/InsertPatient';
 let insertPatientHobbiesAndLimitations = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/InsertPatientHobbiesAndLimitations';
 
-//signUpCargiver
+// Sign Up Cargiver
 let insertForeignUser = 'https://proj.ruppin.ac.il/cgroup94/test1/api/ForeignUser/InsertForeignUser';
 let insertCaresForPatient = 'https://proj.ruppin.ac.il/cgroup94/test1/api/ForeignUser/InsertCaresForPatient';
 
-//Contacts
+// Contacts
 let newContact = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/NewContact';
 let updateContact = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/UpdateContact/';//+Contact.contactId
 let deleteContact = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/DeleteContact';
 
-//Payments
+// Payments
 let getHistory = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/GetHistory/';//+userId
 let deletePayment = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/DeletePayment/';//+Payment.requestId
 let updateRequest = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/UpdateRequest';
 let newRequest = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/NewRequest';
 let getPending = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/GetPending/';//+userId
 
-// tasks
+// Tasks
 let updateActualTaskUrL = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/UpdateActualTask';
 let updateActualPrivateTaskUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/UpdateActualPrivateTask';
 let getAllPublicTasksUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/GetAllTasks';
@@ -100,7 +100,7 @@ export function UserProvider({ children }) {
         setUserUri(userData.userUri);
         setBirthDate(userData.BirthDate);
         setUserGender(userData.Gender)
-        setCalendarCode(userData.calendarCode);
+        //setCalendarCode(userData.calendarCode);
         let usertoSync = {
             userId: userData.userId,
             userType: userData.userType,
@@ -294,8 +294,7 @@ export function UserProvider({ children }) {
 
     async function saveContact(Contact) {
         console.log("contact to save = ", Contact)
-        let urlContactUpdate = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/UpdateContact/';
-        fetch(urlContactUpdate, {
+        fetch(updateContact, {
             method: 'PUT',
             body: JSON.stringify(Contact),
             headers: new Headers({ 'Content-Type': 'application/json; charset=UTF-8' })
@@ -336,7 +335,7 @@ export function UserProvider({ children }) {
                     // If the user confirmed, then we dispatch the action we blocked earlier
                     // This will continue the action that had triggered the removal of the screen
                     onPress: () => {
-                        fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/DeleteContact/', {
+                        fetch(deleteContact, {
                             method: 'DELETE',
                             body: JSON.stringify(Contact),
                             headers: new Headers({
@@ -381,7 +380,7 @@ export function UserProvider({ children }) {
                     userType: userData.userType
                 }
             }
-            fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/GetPending/', {
+            fetch(getPending, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -426,7 +425,7 @@ export function UserProvider({ children }) {
                     userType: userData.userType
                 }
             }
-            fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/GetHistory/', {
+            fetch(getHistory, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -631,11 +630,14 @@ export function UserProvider({ children }) {
     }
 
     const value = {
-        userContext, allShopTasks, allMedicineTasks, userContacts, userNotifications, userPendingPayments, userHistoryPayments, userChats, setUserChats, logInFireBase, GetUserHistory, GetUserPending,
-        deleteContact, addNewContact, saveContact, updateActualTask, updateRememberUserContext, logInContext, fetchUserContacts, logOutContext,
-        updateUserContext, updateUserContacts, updatePendings, updateUserProfile, updateuserNotifications, appEmail, getAllPrivateTasks, getAllPublicTasks, allPublicTasks, allPrivateTasks, UpdateDrugForPatientDTO
+        userContext, allShopTasks, allMedicineTasks, userContacts, userNotifications, userPendingPayments,
+        userHistoryPayments, userChats, setUserChats, logInFireBase, GetUserHistory, GetUserPending,
+        deleteContact, addNewContact, saveContact, updateActualTask, updateRememberUserContext, logInContext,
+        fetchUserContacts, logOutContext, updateUserContext, updateUserContacts, updatePendings,
+        updateUserProfile, updateuserNotifications, appEmail, getAllPrivateTasks, getAllPublicTasks,
+        allPublicTasks, allPrivateTasks, UpdateDrugForPatientDTO
     };
-    
+
     return (
         <UserContext.Provider value={value}>
             {children}
