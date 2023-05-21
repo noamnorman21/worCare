@@ -4,66 +4,56 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import TaskView from './HelpComponents/TaskView';
 import { useUserContext } from '../UserContext';
 import { AddBtn, NewTaskModal } from './HelpComponents/AddNewTask'
-import { Ionicons } from '@expo/vector-icons';
+import { Fontisto, Ionicons } from '@expo/vector-icons';
 import { Agenda, CalendarProvider } from 'react-native-calendars';
 import moment from 'moment';
-// useIsFocused
 import { useIsFocused } from '@react-navigation/native';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function Home({ navigation }) {
-  const apiKey = 'fdf856faf8cb830c2424ab225e9f9d121050e2b3'; // Replace with your Calendarific API key
   const [modalVisible, setModalVisible] = useState(false);
   const [headerToday, setHeaderToday] = useState(false);
   const [userData, setUserData] = useState(useUserContext().userContext);
   const [userId, setUserId] = useState(useUserContext.userId);
-  const { getAllPublicTasks, getAllPrivateTasks, allPublicTasks, allPrivateTasks } = useUserContext();
+  const { getAllPublicTasks, getAllPrivateTasks, allPublicTasks, allPrivateTasks, holidays } = useUserContext();
   const [userType, setUserType] = useState(userData.userType);
   const [allTasks, setAllTasks] = useState([])
-  const [todayTasks, setTodayTasks] = useState([])
-  const arrowIcon = ["chevron-down-outline", "chevron-up-outline"];
-  const [holidays, setHolidays] = useState([]);
   const agendaItems = {};
   const isFocused = useIsFocused();
 
   useEffect(() => {
     if (isFocused) {
       filterTasks(allPrivateTasks, allPublicTasks)
-      fetchHolidays();
     }
   }, [allPrivateTasks, allPublicTasks, isFocused])
-
-  const fetchHolidays = async () => {
-    // const country = ['IL', 'US']; // Replace with your country code
-    const country = userData.calendarCode;
-    country.forEach((c) => {
-      getHolidays(c);
-    });
-  };
-
-  const getHolidays = async (country) => {
-    const year = moment().year(); // Get the current year
-    const url = `https://calendarific.com/api/v2/holidays?api_key=${apiKey}&country=${country}&year=${year}`;
-    try {
-      const response = await fetch(url);
-      const data = await response.json();
-      const holidays = data.response.holidays.map((holiday) => ({
-        date: holiday.date.iso,
-        name: holiday.name,
-        type: holiday.type,
-      }));
-      setHolidays((prev) => [...prev, ...holidays]);
-    } catch (error) {
-      console.error('Error fetching holidays:', error);
-    }
-  };
 
   holidays.forEach((holiday) => {
     const date = moment(holiday.date).format('YYYY-MM-DD');
     if (!agendaItems[date]) {
       agendaItems[date] = [];
     }
-    agendaItems[date].push({ name: holiday.name });
+    agendaItems[date].push({ name: holiday.name, desc: holiday.desc });
+  });
+
+  allTasks.forEach((task) => {
+    let today = false;
+    // check if task is today
+    let taskDate = new Date(task.taskDate)
+    let todayDate = new Date()
+    if (taskDate.getDate() == todayDate.getDate() && taskDate.getMonth() == todayDate.getMonth() && taskDate.getFullYear() == todayDate.getFullYear()) {
+      today = true
+    }
+    // check if task is private
+    let isPrivate = false;
+    if (task.patientId == null) {
+      isPrivate = true;
+    }
+
+    const date = moment(task.taskDate).format('YYYY-MM-DD');
+    if (!agendaItems[date]) {
+      agendaItems[date] = [];
+    }
+    agendaItems[date].push({ task: task, isPrivate: isPrivate, today: today, key: task.actualId });
   });
 
   const filterTasks = async (privateTask, publicTasks) => {
@@ -84,66 +74,92 @@ export default function Home({ navigation }) {
 
   const handleAddBtnPress = () => {
     // setModalVisible(true);
-    console.log(userData)
   };
 
   const handleModalClose = () => {
     setModalVisible(false);
   };
 
-  const toggleHeaderTodayView = () => {
-    LayoutAnimation.easeInEaseOut(setHeaderToday(!headerToday));
-  }
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.calendarContainer}>
-        <CalendarProvider>
+        <CalendarProvider
+          theme={{
+            todayButtonTextColor: '#548DFF',
+            todayButtonPosition: 'right',
+            calendarBackground: '#000',
+            textSectionTitleColor: '#fff',
+            selectedDayBackgroundColor: '#548DFF',
+            selectedDayTextColor: '#fff',
+            todayTextColor: '#548DFF',
+            dayTextColor: '#fff',
+            textDisabledColor: '#fff',
+            dotColor: '#548DFF',
+            selectedDotColor: '#fff',
+            arrowColor: '#548DFF',
+          }}
+        >
+
           <Agenda
+            theme={{
+              agendaKnobColor: '#548DFF',
+            }}
+            futureScrollRange={12}
+            pastScrollRange={12}
+            showOnlySelectedDayItems={true}
+            refreshing={false}
+            showClosingKnob={true}
             renderEmptyData={() => (
-              <ScrollView>
-                <Text style={{ textAlign: 'center', marginTop: 20 }}>
-                  There are no holidays today...
+              <View>
+                <Text style={{ fontSize: 15, textAlign: 'center', marginTop: 20, fontFamily: 'Urbanist-Medium' }}>
+                  There are no holidays Or Tasks today...
                 </Text>
-              </ScrollView>
+              </View>
             )}
             items={agendaItems}
-            renderItem={(item, isFirst) => (
-              <TouchableOpacity style={styles.item}>
-                <Text style={styles.itemText}>
-                  {item.name}
-                </Text>
-              </TouchableOpacity>
-            )}
+            renderItem={(item, firstItemInDay) => {
+              {
+                if (item.key == null) {
+                  return (
+                    <View style={styles.item}>
+                      <View style={styles.itemTitle}>
+                        <View style={styles.iconContainer}>
+                          <View style={styles.icon}>
+                            <Fontisto name="holiday-village" size={24} color="#32D081" />
+                          </View>
+                        </View>
+                        <Text style={styles.itemTitleTxt}>
+                          {item.name}
+                        </Text>
+                      </View>
+                      <View style={styles.taskDetails}>
+                      </View>
+                      <View style={styles.taskComment}>
+                        <Text style={styles.itemText}>
+                          {item.desc}
+                        </Text>
+                      </View>
+                      <View style={styles.line} />
+                    </View>
+                  )
+                }
+                else {
+                  return (
+                    <TaskView today={item.today} key={item.key} task={item.task} isPrivate={item.isPrivate} hideDate={true} />
+                  )
+                }
+              }
+            }}
+            renderDay={(day, item) => { return <View />; }}
+            rowHasChanged={(r1, r2) => { return r1.text !== r2.text }}
           />
         </CalendarProvider>
       </View >
-      <View style={styles.tasksViewContainer}>
-        <View>
-          <TouchableOpacity style={styles.headerForTasks} onPress={toggleHeaderTodayView}>
-            <Text style={styles.tasksTitle}>Today</Text>
-            <Ionicons name={headerToday ? arrowIcon[0] : arrowIcon[1]} size={30} color="#548DFF" />
-          </TouchableOpacity>
-        </View>
-        <ScrollView alwaysBounceVertical={false}>
-          <View style={[styles.todayView, headerToday ? { display: 'none' } : {}]} >
-            {
-              todayTasks.map((task, index) => {
-                let isPrivate = false;
-                if (task.patientId == null) {
-                  isPrivate = true;
-                }
-                return (<TaskView today={true} key={index} task={task} isPrivate={isPrivate} />)
-              })
-            }
-          </View>
-        </ScrollView>
-      </View>
       <View style={styles.addBtnView}>
         <AddBtn onPress={handleAddBtnPress} />
       </View>
       <NewTaskModal isVisible={modalVisible} onClose={handleModalClose} />
-    </SafeAreaView>
+    </SafeAreaView >
   );
 }
 
@@ -160,30 +176,14 @@ const styles = StyleSheet.create({
     right: 10,
   },
   calendarContainer: {
-    flex: 15,
-    width: '100%',
-    backgroundColor: '#EEF4FF',
-  },
-  tasksViewContainer: {
-    flex: 24,
+    flex: 1,
     width: SCREEN_WIDTH,
-  },
-  headerForTasks: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginVertical: 10,
-    marginHorizontal: 15,
   },
   tasksTitle: {
     fontSize: 24,
     fontFamily: 'Urbanist-Bold',
     color: '#000',
-  },
-  todayView: {
-    width: '100%',
-    marginBottom: 20,
-    marginRight: 20,
+
   },
   button: {
     marginTop: 20,
@@ -192,15 +192,60 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   item: {
-    backgroundColor: 'white',
     flex: 1,
-    borderRadius: 5,
-    padding: 10,
-    marginRight: 10,
-    marginTop: 17,
+    width: SCREEN_WIDTH * 0.9,
+    flexDirection: 'column',
+    height: 'auto',
+    minHeight: 75,
+    marginVertical: 7,
+  },
+  iconContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    height: '100%',
+    flexDirection: 'row',
+    marginLeft: 30,
+  },
+  icon: {
+    borderRadius: 54,
+    height: 54,
+    width: 54,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#CCEFAB',
+  },
+  itemTitle: {
+    flex: 3,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    width: 'auto',
+  },
+  itemTitleTxt: {
+    fontSize: 18,
+    fontFamily: 'Urbanist-SemiBold',
+    marginBottom: 5,
+    color: '#000',
   },
   itemText: {
-    color: '#888',
     fontSize: 16,
-  }
+    fontFamily: 'Urbanist-Regular',
+    color: '#000',
+    marginVertical: 7,
+  },
+  taskComment: {
+    flex: 1.5,
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    width: SCREEN_WIDTH * 0.9,
+    paddingLeft: 30,
+  },
+  line: {
+    height: 0.5,
+    backgroundColor: '#808080',
+    opacity: 0.5,
+    marginTop: 7,
+    marginHorizontal: 30,
+  },
 });

@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { auth, db } from './config/firebase';
 import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import moment from 'moment';
 //--ruppin api server--
 
 // Log In
@@ -56,7 +57,6 @@ export function UserProvider({ children }) {
     const [userNotifications, setUserNotifications] = useState(null)
     const [userType, setUserType] = useState(null)
     const [userLanguage, setUserLanguage] = useState(null)
-    const [userCountry, setUserCountry] = useState(null)
     const [userHobbies, setUserHobbies] = useState(null)
     const [userLimitations, setUserLimitations] = useState(null)
     const [userCaresFor, setUserCaresFor] = useState(null)
@@ -80,11 +80,12 @@ export function UserProvider({ children }) {
     // new
     const [pairedEmail, setPairedEmail] = useState(null)
     const [userChats, setUserChats] = useState(null)
+    const [CountryName_En, setCountryName_En] = useState(null)
+    const [holidays, setHolidays] = useState([]);
 
     async function logInContext(userData) {
         setUserType(userData.userType);
         setUserLanguage(userData.Language);
-        setUserCountry(userData.Country);
         setUserCalendar(userData.Calendar);
         setUserHobbies(userData.Hobbies);
         setUserLimitations(userData.Limitations);
@@ -100,7 +101,7 @@ export function UserProvider({ children }) {
         setUserUri(userData.userUri);
         setBirthDate(userData.BirthDate);
         setUserGender(userData.Gender)
-        //setCalendarCode(userData.calendarCode);
+        setCalendarCode(userData.calendarCode);
         let usertoSync = {
             userId: userData.userId,
             userType: userData.userType,
@@ -114,6 +115,7 @@ export function UserProvider({ children }) {
             involvedInId: userData.involvedInId,//if user is a not caregiver, this field will be same as userId
             patientId: userData.patientId,
             calendarCode: userData.calendarCode,
+            CountryName_En: userData.CountryName_En,
         }
 
         setUserContext(usertoSync);
@@ -131,6 +133,7 @@ export function UserProvider({ children }) {
         GetUserHistory(usertoSync);
         await getAllPrivateTasks(usertoSync);
         await getAllPublicTasks(usertoSync);
+        await getHolidaysForUser(usertoSync.calendarCode);
         if (userData.userType == "User") {
             getPairedEmail(userData.workerId);
         }
@@ -138,6 +141,40 @@ export function UserProvider({ children }) {
             getPairedEmail(userData.involvedInId);
         }
     }
+
+    async function getHolidaysForUser(calendarCode) {
+        setHolidays([]);
+        try {
+            for (const country of calendarCode) {
+                await getHolidays(country);
+            }
+        } catch (error) {
+            console.error('Error fetching holidays:', error);
+        }
+    }
+
+    async function getHolidays(country) {
+        const apiKey = '1269df65cf0081dab91555b4d1bd5171de6dc403'
+        const year = moment().year();
+        const url = `https://calendarific.com/api/v2/holidays?api_key=${apiKey}&country=${country}&year=${year}`;
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            if (data.response && data.response.holidays) {                
+                const holidays = data.response.holidays.map((holiday) => ({                    
+                    date: holiday.date.iso,
+                    name: holiday.name,
+                    desc: holiday.description,
+                }));
+                setHolidays((prev) => [...prev, ...holidays]);
+            } else {
+                throw new Error('Invalid API response');
+            }
+        } catch (error) {
+            console.error('Error fetching holidays:', error);
+        }
+    }
+
 
     function getPairedEmail(id) {
         console.log('getPairedEmail')
@@ -635,7 +672,7 @@ export function UserProvider({ children }) {
         deleteContact, addNewContact, saveContact, updateActualTask, updateRememberUserContext, logInContext,
         fetchUserContacts, logOutContext, updateUserContext, updateUserContacts, updatePendings,
         updateUserProfile, updateuserNotifications, appEmail, getAllPrivateTasks, getAllPublicTasks,
-        allPublicTasks, allPrivateTasks, UpdateDrugForPatientDTO
+        allPublicTasks, allPrivateTasks, UpdateDrugForPatientDTO, holidays
     };
 
     return (

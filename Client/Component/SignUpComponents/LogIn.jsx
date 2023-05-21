@@ -159,6 +159,7 @@ export default function LogIn({ navigation }) {
             }
             );
     }
+
     //function to check email format
     const validateEmail = (email) => {
         var re = /\S+@\S+\.\S+/;

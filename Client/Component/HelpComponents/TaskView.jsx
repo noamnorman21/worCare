@@ -45,9 +45,15 @@ export default function TaskView(props) {
           <Text style={styles.taskTitleTxt}>
             {props.task.taskName}
           </Text>
-          <Text style={styles.taskSmallTxt}>
-            {date}{"  |  "}{time}
-          </Text>
+          {props.task.hideDate ?
+            <Text style={styles.taskSmallTxt}>
+              {date}{"  |  "}{time}
+            </Text>
+            :
+            <Text style={styles.taskSmallTxt}>
+              {time}
+            </Text>
+          }
         </View>
       </View>
       <View style={styles.taskComment}>
