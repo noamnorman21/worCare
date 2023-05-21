@@ -20,15 +20,10 @@ export default function Tasks() {
   const [allShopTasks, setAllShopTasks] = useState([]);
   const [showHeader, setShowHeader] = useState("flex");
 
-  useEffect(() => {
-    getAllPublicTasks(userData);
-    getAllPrivateTasks(userData);
-  }, []);
-
   //filter tasks by type, medicine or shop, other tasks will be in allTasks
   useEffect(() => {
     filterTasks(allPublicTasks);
-  }, [allPublicTasks]);
+  }, [allPublicTasks, allPrivateTasks]);
 
   const filterTasks = (tasks) => {
     let filteredTasks = tasks.filter(task => task.type == false);
@@ -94,7 +89,7 @@ export default function Tasks() {
         <Tab.Screen name="Main" children={() => <Main allPrivateTasks={allPrivateTasks} allPublicTasks={allPublicTasks} refreshPublicTask={refreshPublicTask} refreshPrivateTask={refreshPrivateTask} />} />
         <Tab.Screen name="General" children={() => <General allPrivateTasks={allPrivateTasks} allPublicTasks={allPublicTasks} moveScreens={moveScreens} refreshPrivateTask={refreshPrivateTask} refreshPublicTask={refreshPublicTask} />} />
         <Tab.Screen name="Shop" children={() => <Shop allShopTasks={allShopTasks} refreshPublicTask={refreshPublicTask} refreshPrivateTask={refreshPrivateTask} />} />
-        <Tab.Screen name="Medicine" children={() => <Medicine changeHeader={changeHeader} allMedicineTasks={allMedicineTasks} />} />
+        <Tab.Screen name="Medicine" children={() => <Medicine changeHeader={changeHeader} allMedicineTasks={allMedicineTasks} refreshPublicTask={refreshPublicTask} refreshPrivateTask={refreshPrivateTask} />} />
       </Tab.Navigator>
     </MenuProvider>
   );

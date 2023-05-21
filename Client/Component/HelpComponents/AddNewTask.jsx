@@ -43,6 +43,7 @@ function AddNewMedicine(props) {
    const [selectedDrugName, setSelectedDrugName] = useState(''); //we will use this to get the selected drug from the user
    const [editMode, setEditMode] = useState(true);
    const timePickers = [];
+   const {getAllPublicTasks,userContext}= useUserContext()
 
    const [modalTimesVisible, setModalTimesVisible] = useState(false);
    const medFrequencies = [
@@ -110,6 +111,7 @@ function AddNewMedicine(props) {
       })
          .then(res => {
             if (res.ok) {
+               getAllPublicTasks(userContext)
                return res.json()
             }
             else {
@@ -289,7 +291,7 @@ function AddNewMedicine(props) {
                                     // label={numberPerDay == 0 ? 'Number per day' : ''}
                                     style={[styles.inputNumber, numberPerDay && { textAlign: 'center' }]}
                                     placeholderTextColor="#9E9E9E"
-                                    placeholder="Number per day"
+                                    placeholder="Number of intakes"
                                     keyboardType='numeric'
                                     returnKeyType='done'
                                     value={numberPerDay == 0 ? '' : numberPerDay.toString()}

@@ -73,9 +73,24 @@ namespace WebApi.Controllers
                 newUser.gender = user.First().gender;
                 newUser.FirstName = user.First().FirstName;
                 newUser.LastName = user.First().LastName;
+                var userCalendar = from c in db.tblCalendarForUser
+                                   where c.userId == newUser.userId
+                                   select c;
+
+                newUser.calendarCode = new string[userCalendar.Count()];
+                int i = 0;
+                foreach (var item in userCalendar)
+                {
+                    var countryCode = from c in db.tblCalendarsType
+                                      where c.calendarNum == item.calendarNum
+                                      select c;
+                    newUser.calendarCode[i++] = countryCode.First().calendarCode;
+                }
+
                 var userRole = from r in db.tblForeignUser
                                where r.Id == newUser.userId
                                select r.Id;
+                
                 if (userRole.Count() > 0)
                 {
                     newUser.userType = "Caregiver";

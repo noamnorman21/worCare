@@ -172,10 +172,10 @@ namespace WebApi.Controllers
                     var task = from t in db.tblActualTask
                                where t.taskId == item.taskId &&
                                t.taskDate >= DateTime.Today &&
-                               t.TimeInDay >= dateTime &&
                                t.taskDate <= SqlFunctions.DateAdd("d", 7, DateTime.Now) &&
                                t.taskStatus == "P"
                                select t;
+
                     foreach (var item2 in task)
                     {
                         ActualTaskDTO actualTask = new ActualTaskDTO();
@@ -531,26 +531,25 @@ namespace WebApi.Controllers
                 tblDrugForPatient tblDrugForPatient = db.tblDrugForPatient.Where(x => x.drugId == drug.drugId && x.listId == drug.listId).FirstOrDefault();
                 if (tblDrugForPatient != null)
                 {
-                    if (drug.qtyInBox!=null)
+                    if (drug.qtyInBox != null)
                     {
                         tblDrugForPatient.qtyInBox = drug.qtyInBox;
                     }
-                    if (drug.dosage != 0&& drug.dosage!= tblDrugForPatient.dosage)
+                    if (drug.dosage != 0 && drug.dosage != tblDrugForPatient.dosage)
                     {
                         tblDrugForPatient.dosage = drug.dosage;
                     }
                     if (drug.lastTakenDate != null)
                     {
-                        tblDrugForPatient.lastTakenDate = drug.lastTakenDate;
+                        tblDrugForPatient.lastTakenDate = DateTime.Now;
                     }
-
                     db.SaveChanges();
                     tblPatientTask patientTask = db.tblPatientTask.Where(x => x.listId == drug.listId).FirstOrDefault();
                     if (patientTask != null)
                     {
-                        if (drug.lastTakenDate != null)
+                        if (drug.toDate != null)
                         {
-                            patientTask.taskToDate = drug.lastTakenDate;
+                            patientTask.taskToDate = drug.toDate;
                         }
                         if (patientTask.taskComment != "" && drug.taskComment != null)
                         {
@@ -566,7 +565,5 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-
     }
 }

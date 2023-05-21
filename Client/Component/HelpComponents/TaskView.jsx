@@ -8,7 +8,6 @@ export default function TaskView(props) {
   const colorBackIcon = ['#FFE7C2', '#D0DFFF'];
   const colorIcon = ['#FEA529', '#548DFF'];
 
-
   const isPrivate = props.isPrivate;
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
@@ -18,7 +17,6 @@ export default function TaskView(props) {
   }, [])
 
   const checkDate = async () => {
-
     // "TimeInDay": "20:00:00" -- Remove the seconds
     let hour = props.task.TimeInDay.slice(0, 2);
     let minutes = props.task.TimeInDay.slice(3, 5);
@@ -47,20 +45,16 @@ export default function TaskView(props) {
           <Text style={styles.taskTitleTxt}>
             {props.task.taskName}
           </Text>
-          {
-
-          }
           <Text style={styles.taskSmallTxt}>
             {date}{"  |  "}{time}
           </Text>
         </View>
       </View>
-
       <View style={styles.taskComment}>
         <Text style={styles.txtTaskComment}>
           {props.task.taskComment}
-          {/* You have an oppointment with Dr. Alan watson at the clinic ShakShuka on December 24.2024. 10:00 Am. Dont forget to activate your reminder. */}
         </Text>
+        <View style={styles.line} />
       </View>
     </View>
   )
@@ -71,7 +65,9 @@ const styles = StyleSheet.create({
     flex: 1,
     width: SCREEN_WIDTH * 0.9,
     flexDirection: 'column',
-    height: 150,
+    height: 'auto',
+    minHeight: 75,
+    marginVertical: 7,
   },
   taskTitleTxt: {
     fontSize: 18,
@@ -87,6 +83,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'Urbanist-Regular',
     color: '#000',
+    marginTop: 7,
   },
   taskComment: {
     flex: 1.5,
@@ -94,7 +91,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     width: SCREEN_WIDTH * 0.9,
     paddingLeft: 30,
-    flexDirection: 'row',
+    // flexDirection: 'row',
   },
   taskTitle: {
     flex: 1,
@@ -117,5 +114,12 @@ const styles = StyleSheet.create({
   taskDetails: {
     flex: 5,
     height: '100%',
+  },
+  line: {
+    width: SCREEN_WIDTH * 0.85,
+    height: 0.5,
+    backgroundColor: '#808080',
+    opacity: 0.5,
+    marginTop: 7,
   },
 })

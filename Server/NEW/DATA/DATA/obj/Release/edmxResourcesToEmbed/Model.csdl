@@ -49,9 +49,9 @@
       <PropertyRef Name="calendarNum" />
     </Key>
     <Property Name="calendarNum" Type="Int32" Nullable="false" />
-    <Property Name="calendarName" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
-    <Property Name="calendarUrl" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="calendarName" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
     <NavigationProperty Name="tblCalendarForUser" Relationship="Self.FK__tblCalend__calen__07AC1A97" FromRole="tblCalendarsType" ToRole="tblCalendarForUser" />
+    <Property Name="calendarCode" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
   </EntityType>
   <EntityType Name="tblCaresForPatient">
     <Key>

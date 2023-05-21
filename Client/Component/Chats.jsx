@@ -3,15 +3,17 @@ import { useCallback, useState, useLayoutEffect } from 'react'
 import { useIsFocused } from '@react-navigation/native';
 import { auth, db } from '../config/firebase';
 import { signOut, updateProfile } from 'firebase/auth';
-import { GiftedChat } from 'react-native-gifted-chat';
+import { GiftedChat, Send } from 'react-native-gifted-chat';
 import { collection, addDoc, getDocs,getDoc, query, orderBy, onSnapshot, updateDoc, where, limit, doc, increment } from 'firebase/firestore';
 import { useEffect } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { useUserContext } from '../UserContext';
-import { Feather } from '@expo/vector-icons';
+import { Feather, Entypo, EvilIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import AddNewGroupChat from '../Component/HelpComponents/AddNewGroupChat';
 import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
+import moment from 'moment';
+import Camera from '../assets/Camera.png'
 
 const ScreenHeight = Dimensions.get("window").height;
 const ScreenWidth = Dimensions.get("window").width;
@@ -93,6 +95,24 @@ function ChatRoom ({route,navigation})  {
       }}
       isLoadingEarlier={true}
       showUserAvatar={true}
+      
+      renderSend={(props) => {
+        return (
+          <>
+          <TouchableOpacity onPress={props.onPress}>
+            <EvilIcons name="camera" size={50} />
+          </TouchableOpacity>
+          <TouchableOpacity style={{paddingBottom:5, paddingRight:5}}onPress={props.onPress}>
+            <Entypo name='attachment' size={30}/>
+          </TouchableOpacity>
+          <TouchableOpacity style={{paddingBottom:5, paddingRight:5}}onPress={props.onPress}>
+            <Feather name='send' size={30}/>
+          </TouchableOpacity>
+          </>
+          
+        );
+      }
+      }
     />
   );
 }
@@ -149,7 +169,7 @@ function MainRoom ({navigation}) {
     }
     
 
-}, [])
+}, [auth.currentUser.email])
   
 
 
@@ -268,10 +288,14 @@ const ConvoCard= (props) =>{
   const [messages, setMessages] = useState([]);
   const [lastMessage, setLastMessage] = useState('')
   const [lastMessageTime, setLastMessageTime] = useState('')
+  const [lastMessageText, setLastMessageText] = useState('')
   const [lastMessageDate, setLastMessageDate] = useState('')
   const [lastMessageUser, setLastMessageUser] = useState('')
   const [lastMessageUserImage, setLastMessageUserImage] = useState('')
   const [lastMessageUserEmail, setLastMessageUserEmail] = useState('')
+  const today= moment().format('MMM DD YYYY')
+
+
 
  
 // useEffect(() => {
@@ -304,11 +328,16 @@ const ConvoCard= (props) =>{
 // }, [messages]);
 
 useEffect(() => {
-  console.log("props lastsmessege",props.name.lastMessageTime)
   const temp= props.name.lastMessageTime.toString().split(' ')
   const date= temp[1]+' '+temp[2]+' '+temp[3]
   setLastMessageTime(temp[4].split(':').slice(0,2).join(':'))
   setLastMessageDate(date)
+  if (props.name.lastMessage.length>30){
+    setLastMessageText(props.name.lastMessage.slice(0,35)+'...')
+  }
+  else{
+    setLastMessageText(props.name.lastMessage)
+  }
 }, [props.name]);
 
 const navigateToChatRoom = async (user) => {  
@@ -337,12 +366,12 @@ const navigateToChatRoom = async (user) => {
         </View>
         <View style={styles.conMiddle}>
           <Text style={styles.conName}>{props.name.UserName ? props.name.UserName : props.name.Name}</Text>
-          <Text style={styles.conLastMessage}>{props.name.lastMessage}</Text>
+          <Text style={styles.conLastMessage}>{lastMessageText}</Text>
         </View>
         <View style={styles.conRight}>
-          <Text style={props.name.unreadCount>0&& styles.unread}>{props.name.unreadCount}</Text>
-          <Text style={styles.conDate}>{lastMessageDate}</Text>
-          <Text style={styles.conTime}>{lastMessageTime}</Text>
+        {props.name.unreadCount>0 && <Text style={styles.unread}>{props.name.unreadCount}</Text>}
+          {lastMessageDate < today && <Text style={styles.conDate}>{lastMessageDate}</Text>}
+          {lastMessageDate === today && <Text style={styles.conTime}>{lastMessageTime}</Text>}
         </View>
       </TouchableOpacity>
       <View style={styles.lineContainer}>
@@ -381,18 +410,21 @@ const styles = StyleSheet.create({
     flex: 9,
   },
   conRight: {
-    flex: 3,
+    flex: 4,
     flexDirection: 'column',
-    justifyContent: 'center',
-    width: ScreenWidth * 0.2,
-  },
+    alignItems: 'flex-end',
+    alignContent: 'flex-end',
+    justifyContent:'flex-end'
+    },
   conTime: {
     fontSize: 12,
     fontFamily:'Urbanist-Regular',
+    color:"#808080"
   },
   conDate:{
     fontSize: 12,
     fontFamily:'Urbanist-Regular',
+    color:"#808080"
   },
   lineContainer: {
     flexDirection: 'row',
@@ -465,11 +497,29 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   unread: {
-    fontSize: 16,
+    fontSize: 10,
     fontFamily: 'Urbanist-Bold',
-    color: '#000',
-    borederRadius: 10,
-    backgroundColor: 'red',
+    borderRadius:10,
+    borderColor: '#000',
+    width: 20,
+    height: 20,
+    padding: 3,
+    alignItems: 'center',
+    textAlign: 'center',
+    backgroundColor: '#548DFF',
+    color: '#fff',
     marginBottom: 5,
+  },
+  conLastMessage: {
+    fontSize: 16,
+    fontFamily: 'Urbanist-Regular',
+    color: '#808080',
+  },
+  sendButton: {
+    borderRadius: 25,
+    backgroundColor: '#000',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginHorizontal: 5,
   },
 })

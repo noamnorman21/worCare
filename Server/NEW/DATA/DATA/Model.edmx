@@ -47,8 +47,8 @@
             <PropertyRef Name="calendarNum" />
           </Key>
           <Property Name="calendarNum" Type="int" Nullable="false" />
-          <Property Name="calendarName" Type="varchar" MaxLength="25" />
-          <Property Name="calendarUrl" Type="varchar(max)" />
+          <Property Name="calendarCode" Type="varchar" MaxLength="25" />
+          <Property Name="calendarName" Type="varchar(max)" />
         </EntityType>
         <EntityType Name="tblCaresForPatient">
           <Key>
@@ -994,9 +994,9 @@
             <PropertyRef Name="calendarNum" />
           </Key>
           <Property Name="calendarNum" Type="Int32" Nullable="false" />
-          <Property Name="calendarName" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
-          <Property Name="calendarUrl" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="calendarName" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="tblCalendarForUser" Relationship="Self.FK__tblCalend__calen__07AC1A97" FromRole="tblCalendarsType" ToRole="tblCalendarForUser" />
+          <Property Name="calendarCode" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="tblCaresForPatient">
           <Key>
@@ -1995,9 +1995,9 @@
           <EntitySetMapping Name="tblCalendarsType">
             <EntityTypeMapping TypeName="igroup194_prodModel.tblCalendarsType">
               <MappingFragment StoreEntitySet="tblCalendarsType">
+                <ScalarProperty Name="calendarCode" ColumnName="calendarCode" />
                 <ScalarProperty Name="calendarNum" ColumnName="calendarNum" />
                 <ScalarProperty Name="calendarName" ColumnName="calendarName" />
-                <ScalarProperty Name="calendarUrl" ColumnName="calendarUrl" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

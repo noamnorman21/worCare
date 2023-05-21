@@ -1,14 +1,16 @@
-import { View, Text, StyleSheet, TouchableOpacity, Alert, SafeAreaView, Modal, Dimensions,ScrollView,LayoutAnimation } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, SafeAreaView, Modal, Dimensions, ScrollView, LayoutAnimation } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { AddBtn, NewTaskModal } from './HelpComponents/AddNewTask'
-import { Ionicons } from '@expo/vector-icons';
-
 import TaskView from './HelpComponents/TaskView';
 import { useUserContext } from '../UserContext';
-
+import { AddBtn, NewTaskModal } from './HelpComponents/AddNewTask'
+import { Ionicons } from '@expo/vector-icons';
+import { Agenda, CalendarProvider } from 'react-native-calendars';
+import moment from 'moment';
 const SCREEN_WIDTH = Dimensions.get('window').width;
+
 export default function Home({ navigation }) {
+  const apiKey = 'fdf856faf8cb830c2424ab225e9f9d121050e2b3'; // Replace with your Calendarific API key
   const [modalVisible, setModalVisible] = useState(false);
   const [headerToday, setHeaderToday] = useState(false);
   const [userData, setUserData] = useState(useUserContext().userContext);
@@ -17,61 +19,99 @@ export default function Home({ navigation }) {
   const [userType, setUserType] = useState(userData.userType);
   const [allTasks, setAllTasks] = useState([])
   const [todayTasks, setTodayTasks] = useState([])
-
-
-
-  useEffect(() => {    
-    filterTasks(allPrivateTasks, allPublicTasks)
-  },[allPrivateTasks,allPublicTasks] )
-
   const arrowIcon = ["chevron-down-outline", "chevron-up-outline"];
-  // useEffect(() => {
-  //   const getData = async () => {
-  //     try {
-  //       const jsonValue = await AsyncStorage.getItem('userData')
-  //       if (jsonValue != null) {
-  //         const json = JSON.parse(jsonValue);
-  //         setUserData(json);
-  //       }
-  //     }
-  //     catch (e) {
-  //       console.log(e);
-  //     }
-  //   };
-  //   getData(allPublicTasks);
-  // }, []);
+  const [holidays, setHolidays] = useState([]);
+  const agendaItems = {};
+
+  useEffect(() => {
+    filterTasks(allPrivateTasks, allPublicTasks)
+    fetchHolidays();
+  }, [allPrivateTasks, allPublicTasks])
+
+  const fetchHolidays = async () => {
+    const country = ['IL', 'US']; // Replace with your country code
+
+    country.forEach((c) => {
+      getHolidays(c);
+    });
+  };
+
+  const getHolidays = async (country) => {
+    const year = moment().year(); // Get the current year
+    const url = `https://calendarific.com/api/v2/holidays?api_key=${apiKey}&country=${country}&year=${year}`;
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      const holidays = data.response.holidays.map((holiday) => ({
+        date: holiday.date.iso,
+        name: holiday.name,
+        type: holiday.type,
+      }));
+      setHolidays((prev) => [...prev, ...holidays]);
+    } catch (error) {
+      console.error('Error fetching holidays:', error);
+    }
+  };
+
+  holidays.forEach((holiday) => {
+    const date = moment(holiday.date).format('YYYY-MM-DD');
+    if (!agendaItems[date]) {
+      agendaItems[date] = [];
+    }
+    agendaItems[date].push({ name: holiday.name });
+  });
+
   const filterTasks = async (privateTask, publicTasks) => {
     //combine private and public tasks for today task and sort by time
     let allTasks = privateTask.concat(publicTasks)
     allTasks.sort((a, b) => {
       return a.TimeInDay > b.TimeInDay ? 1 : -1
-    }
-    )
+    })
     setAllTasks(allTasks)
     //filter today tasks
     let todayTasks = allTasks.filter(task => {
       let today = new Date()
       let taskDate = new Date(task.taskDate)
       return taskDate.getDate() == today.getDate() && taskDate.getMonth() == today.getMonth() && taskDate.getFullYear() == today.getFullYear()
-    }
-    )
+    })
     setTodayTasks(todayTasks)
   }
 
   const handleAddBtnPress = () => {
-    setModalVisible(true);  
+    // setModalVisible(true);
+    console.log(userData.calendarCode)
   };
+
   const handleModalClose = () => {
     setModalVisible(false);
   };
+
   const toggleHeaderTodayView = () => {
     LayoutAnimation.easeInEaseOut(setHeaderToday(!headerToday));
   }
 
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.calendarContainer}>
+        <CalendarProvider>
+          <Agenda
+            renderEmptyData={() => (
+              <ScrollView>
+                <Text style={{ textAlign: 'center', marginTop: 20 }}>
+                  There are no holidays today...
+                </Text>
+              </ScrollView>
+            )}
+            items={agendaItems}
+            renderItem={(item, isFirst) => (
+              <TouchableOpacity style={styles.item}>
+                <Text style={styles.itemText}>
+                  {item.name}
+                </Text>
+              </TouchableOpacity>
+            )}
+          />
+        </CalendarProvider>
       </View >
       <View style={styles.tasksViewContainer}>
         <View>
@@ -115,21 +155,20 @@ const styles = StyleSheet.create({
     right: 20,
   },
   calendarContainer: {
-    flex: 8,
+    flex: 15,
     width: '100%',
     backgroundColor: '#EEF4FF',
   },
   tasksViewContainer: {
     flex: 24,
-    width: SCREEN_WIDTH ,
+    width: SCREEN_WIDTH,
   },
   headerForTasks: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
-    marginLeft: 15,
-    marginRight: 15,
+    marginVertical: 10,
+    marginHorizontal: 15,
   },
   tasksTitle: {
     fontSize: 24,
@@ -147,5 +186,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#333',
     color: '#fff',
   },
-
+  item: {
+    backgroundColor: 'white',
+    flex: 1,
+    borderRadius: 5,
+    padding: 10,
+    marginRight: 10,
+    marginTop: 17,
+  },
+  itemText: {
+    color: '#888',
+    fontSize: 16,
+  }
 });

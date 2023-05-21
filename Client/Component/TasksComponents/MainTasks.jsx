@@ -3,24 +3,24 @@ import { useState, useEffect } from 'react'
 import { AddBtn, NewTaskModal } from '../HelpComponents/AddNewTask'
 import { Ionicons } from '@expo/vector-icons';
 import TaskView from '../HelpComponents/TaskView';
-import { useUserContext } from '../../UserContext';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 export default function MainTasks(props) {
   const [modalVisible, setModalVisible] = useState(false)
-  const [publicTasks, setPublicTasks] = useState([])
-  const [privateTasks, setPrivateTasks] = useState([])
+  const [publicTasks, setPublicTasks] = useState(props.allPublicTasks)
+  const [privateTasks, setPrivateTasks] = useState(props.allPrivateTasks)
   const [allTasks, setAllTasks] = useState([])
   const [todayTasks, setTodayTasks] = useState([])
   const [tommorowTasks, setTommorowTasks] = useState([])
   const [headerToday, setHeaderToday] = useState(false)
   const [headerTommorow, setHeaderTommorow] = useState(true)
   const arrowIcon = ["chevron-down-outline", "chevron-up-outline"];
-  const { getAllPublicTasks, getAllPrivateTasks, allPublicTasks, allPrivateTasks } = useUserContext();
 
   useEffect(() => {
-    filterTasks(allPrivateTasks, allPublicTasks)
-  }, [allPublicTasks, allPrivateTasks])
+    setPublicTasks(props.allPublicTasks)
+    setPrivateTasks(props.allPrivateTasks)
+    filterTasks(props.allPrivateTasks, props.allPublicTasks)
+  }, [props.allPublicTasks, props.allPrivateTasks])
 
   const filterTasks = async (privateTask, publicTasks) => {
     //combine private and public tasks for today task and sort by time
@@ -61,8 +61,9 @@ export default function MainTasks(props) {
     LayoutAnimation.easeInEaseOut(setHeaderTommorow(!headerTommorow));
   }
   const handleModalClose = () => {
-    getAllPrivateTasks();
-    getAllPublicTasks();
+    setModalVisible(false);
+    props.refreshPublicTask()
+    props.refreshPrivateTask()
   };
 
   return (
@@ -124,8 +125,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    width: SCREEN_WIDTH * 0.92,
-    paddingLeft: SCREEN_WIDTH * 0.02,
     paddingVertical: 20,
   },
   todayView: {
@@ -147,7 +146,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 20,
-    marginLeft: 10,
+    marginLeft: 15,
+    marginRight: SCREEN_WIDTH * 0.035,
   },
   tasksTitle: {
     fontSize: 24,

@@ -6,7 +6,8 @@ import { useUserContext } from '../../UserContext';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function MedCard(props) {
-    const { updateActualTask } = useUserContext();
+    const { getAllPublicTasks, userContext, updateActualTask } = useUserContext()
+    const [userData, setUserData] = useState(useUserContext().userContext);
     const [medTypeIcon, setMedTypeIcon] = useState('');
     const [isDone, setIsDone] = useState(false);
     const [lastTakenDate, setLastTakenDate] = useState('');
@@ -39,6 +40,7 @@ export default function MedCard(props) {
         let doneTask = props.task;
         doneTask.taskStatus = 'F';
         updateActualTask(doneTask, false);
+        getAllPublicTasks(userData);
         setIsDone(false);
     }
 
@@ -129,14 +131,11 @@ export default function MedCard(props) {
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.iconArrow} onPress={navigateToMed} >
-                       
-                            <Octicons name="chevron-right" size={24} color={runlow ? iconColors[1] : iconColors[0]} />
-              
+                        <Octicons name="chevron-right" size={24} color={runlow ? iconColors[1] : iconColors[0]} />
                     </TouchableOpacity>
                 </View>
             </View>
-            <View style={styles.line}>
-            </View>
+            <View style={styles.line} />
         </View>
     )
 }
@@ -146,7 +145,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         height: 85,
         width: SCREEN_WIDTH * 0.9,
-        flexDirection: 'column', //change to column from cloumn
+        flexDirection: 'column',
         marginVertical: 10,
     },
     firstRowContainer: {
