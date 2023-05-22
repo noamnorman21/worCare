@@ -7,7 +7,7 @@ import * as SMS from 'expo-sms';
 import * as Linking from 'expo-linking';
 import { auth, db } from '../../../config/firebase';
 import { collection, addDoc, getDocs, query, orderBy, onSnapshot, listCollection } from 'firebase/firestore';
-import {createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateProfile} from 'firebase/auth';
+import {createUserWithEmailAndPassword, updateProfile, signInWithEmailAndPassword, signOut} from 'firebase/auth';
 
 
 export default function SignUpFinish({ navigation, route }) {

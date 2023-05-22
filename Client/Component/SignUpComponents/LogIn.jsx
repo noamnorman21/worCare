@@ -19,7 +19,7 @@ export default function LogIn({ navigation }) {
     const [userType, setUserType] = useState('User');
     const [isChecked, setChecked] = useState(false);
     const [showPassword, setShowPassword] = useState(false);//for password visibility
-    const { logInContext,logInFireBase } = useUserContext();
+    const { logInContext, logInFireBase } = useUserContext();
 
     // function to check from where the app was opened from a invintation link or not  
     const getInitialUrl = async () => {
@@ -42,6 +42,7 @@ export default function LogIn({ navigation }) {
             }
         }
     }
+
     //login function
     const logInBtn = () => {
         // check email is empty or not
@@ -71,6 +72,7 @@ export default function LogIn({ navigation }) {
         //call api to login user
         LoginUser(userData);
     }
+
     //function to save user email and password in async storage
     const _storeData = async () => {
         try {
@@ -85,6 +87,7 @@ export default function LogIn({ navigation }) {
             console.log(error);
         }
     }
+
     //function to toggle remember me checkbox
     const toggeleRememberMe = () => {
         if (isChecked) {
@@ -94,6 +97,7 @@ export default function LogIn({ navigation }) {
             setChecked(true);
         }
     }
+
     //function to login user
     const LoginUser = async (userData) => {
         console.log(userData);
@@ -136,13 +140,15 @@ export default function LogIn({ navigation }) {
                         workerId: json.workerId,//if user is a caregiver, this field will be same as userId
                         involvedInId: json.involvedInId,//if user is a not caregiver, this field will be same as userId
                         patientId: json.patientId,
+                        calendarCode: json.calendarCode
                     }
+                    console.log(userContext);
                     const jsonValue = JSON.stringify(userContext)
                     AsyncStorage.setItem('userData', jsonValue)
                     await logInContext(userContext).then(() => {
                         console.log('user saved in context');
                     })
-                    logInFireBase(email,password);
+                    await logInFireBase(email, password);
                     navigation.navigate('CustomHeader', { screen: "AppBarDown" });//navigate to home screen, we will add a necessary call to get user data from the server                                         
                 }
             }
@@ -153,6 +159,7 @@ export default function LogIn({ navigation }) {
             }
             );
     }
+
     //function to check email format
     const validateEmail = (email) => {
         var re = /\S+@\S+\.\S+/;

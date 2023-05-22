@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import Holidays from '../../HelpComponents/Holidays';
 import { auth, db } from '../../../config/firebase'
 import { collection, addDoc } from "firebase/firestore";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import {createUserWithEmailAndPassword, updateProfile, signInWithEmailAndPassword, signOut} from 'firebase/auth';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 export default function SignUpCaregiverLVL5({ navigation, route }) {
@@ -14,15 +14,14 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
   const holidaysType = route.params.holidaysType;
   const [linkTo, setLinkTo] = useState("");
 
-
   useEffect(() => {
     getInitialUrl();
   }, []);
+
   const getInitialUrl = async () => {
     setLinkTo(await Linking.getInitialURL());
     console.log("link:", linkTo);
   }
-
 
   const createUserInDB = () => {
     console.log("new user:", newUser);
@@ -42,19 +41,21 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
           avatar: newUser.userUri
         }
         console.log(newUser);
-        createUserWithEmailAndPassword(auth, newUser.Email, newUser.Password).then((userCredential) => {
-          console.log("user created");
+        createUserWithEmailAndPassword(auth, newUser.Email, newUser.Password).then(() => {
+          signInWithEmailAndPassword(auth, newUser.Email, newUser.Password).then(() => {
           updateProfile(userCredential, {
             displayName: newUser.FirstName + ' ' + newUser.LastName,
             photoURL: newUser.userUri
           }).then(() => {
-            console.log("user updated");
+           signOut(auth).then(() => {
             let userToUpdate = {
               id: newUser.Email,
               name: newUser.FirstName + " " + newUser.LastName, //the name of the user is the first name and the last name
               avatar: newUser.userUri
             }
             addDoc(collection(db, "AllUsers"), { id: userToUpdate.id, name: userToUpdate.name, avatar: userToUpdate.avatar });
+           })
+          })
           }).catch((error) => {
             console.log(error);
           });

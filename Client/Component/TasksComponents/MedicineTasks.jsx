@@ -223,8 +223,8 @@ const styles = StyleSheet.create({
    },
    addBtnView: {
       position: 'absolute',
-      bottom: 30,
-      right: 20,
+      bottom: 20,
+      right: 10,
    },
    options: {
       flexDirection: 'row',

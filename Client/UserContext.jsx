@@ -4,38 +4,39 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { auth, db } from './config/firebase';
 import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import moment from 'moment';
 //--ruppin api server--
 
-//login
+// Log In
 let userForLoginUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUserForLogin';
 
-//signUp
+// Sign Up
 let insertUser = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/InsertUser';
 let getAllLanguages = 'https://proj.ruppin.ac.il/cgroup94/test1/api/LanguageCountry/GetAllLanguages';
 let getAllCountries = 'https://proj.ruppin.ac.il/cgroup94/test1/api/LanguageCountry/GetAllCountries';
 let getAllCalendars = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Calendars/GetAllCalendars';
 
-//signUpPatient
+// Sign Up Patient
 let insertPatient = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/InsertPatient';
 let insertPatientHobbiesAndLimitations = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/InsertPatientHobbiesAndLimitations';
 
-//signUpCargiver
+// Sign Up Cargiver
 let insertForeignUser = 'https://proj.ruppin.ac.il/cgroup94/test1/api/ForeignUser/InsertForeignUser';
 let insertCaresForPatient = 'https://proj.ruppin.ac.il/cgroup94/test1/api/ForeignUser/InsertCaresForPatient';
 
-//Contacts
+// Contacts
 let newContact = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/NewContact';
 let updateContact = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/UpdateContact/';//+Contact.contactId
 let deleteContact = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/DeleteContact';
 
-//Payments
+// Payments
 let getHistory = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/GetHistory/';//+userId
 let deletePayment = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/DeletePayment/';//+Payment.requestId
 let updateRequest = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/UpdateRequest';
 let newRequest = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/NewRequest';
 let getPending = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/GetPending/';//+userId
 
-// tasks
+// Tasks
 let updateActualTaskUrL = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/UpdateActualTask';
 let updateActualPrivateTaskUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/UpdateActualPrivateTask';
 let getAllPublicTasksUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/GetAllTasks';
@@ -56,7 +57,6 @@ export function UserProvider({ children }) {
     const [userNotifications, setUserNotifications] = useState(null)
     const [userType, setUserType] = useState(null)
     const [userLanguage, setUserLanguage] = useState(null)
-    const [userCountry, setUserCountry] = useState(null)
     const [userHobbies, setUserHobbies] = useState(null)
     const [userLimitations, setUserLimitations] = useState(null)
     const [userCaresFor, setUserCaresFor] = useState(null)
@@ -80,11 +80,12 @@ export function UserProvider({ children }) {
     // new
     const [pairedEmail, setPairedEmail] = useState(null)
     const [userChats, setUserChats] = useState(null)
+    const [CountryName_En, setCountryName_En] = useState(null)
+    const [holidays, setHolidays] = useState([]);
 
     async function logInContext(userData) {
         setUserType(userData.userType);
         setUserLanguage(userData.Language);
-        setUserCountry(userData.Country);
         setUserCalendar(userData.Calendar);
         setUserHobbies(userData.Hobbies);
         setUserLimitations(userData.Limitations);
@@ -114,6 +115,7 @@ export function UserProvider({ children }) {
             involvedInId: userData.involvedInId,//if user is a not caregiver, this field will be same as userId
             patientId: userData.patientId,
             calendarCode: userData.calendarCode,
+            CountryName_En: userData.CountryName_En,
         }
 
         setUserContext(usertoSync);
@@ -131,6 +133,7 @@ export function UserProvider({ children }) {
         GetUserHistory(usertoSync);
         await getAllPrivateTasks(usertoSync);
         await getAllPublicTasks(usertoSync);
+        await getHolidaysForUser(usertoSync.calendarCode);
         if (userData.userType == "User") {
             getPairedEmail(userData.workerId);
         }
@@ -138,6 +141,40 @@ export function UserProvider({ children }) {
             getPairedEmail(userData.involvedInId);
         }
     }
+
+    async function getHolidaysForUser(calendarCode) {
+        setHolidays([]);
+        try {
+            for (const country of calendarCode) {
+                await getHolidays(country);
+            }
+        } catch (error) {
+            console.error('Error fetching holidays:', error);
+        }
+    }
+
+    async function getHolidays(country) {
+        const apiKey = '1269df65cf0081dab91555b4d1bd5171de6dc403'
+        const year = moment().year();
+        const url = `https://calendarific.com/api/v2/holidays?api_key=${apiKey}&country=${country}&year=${year}`;
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            if (data.response && data.response.holidays) {                
+                const holidays = data.response.holidays.map((holiday) => ({                    
+                    date: holiday.date.iso,
+                    name: holiday.name,
+                    desc: holiday.description,
+                }));
+                setHolidays((prev) => [...prev, ...holidays]);
+            } else {
+                throw new Error('Invalid API response');
+            }
+        } catch (error) {
+            console.error('Error fetching holidays:', error);
+        }
+    }
+
 
     function getPairedEmail(id) {
         console.log('getPairedEmail')
@@ -294,8 +331,7 @@ export function UserProvider({ children }) {
 
     async function saveContact(Contact) {
         console.log("contact to save = ", Contact)
-        let urlContactUpdate = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/UpdateContact/';
-        fetch(urlContactUpdate, {
+        fetch(updateContact, {
             method: 'PUT',
             body: JSON.stringify(Contact),
             headers: new Headers({ 'Content-Type': 'application/json; charset=UTF-8' })
@@ -336,7 +372,7 @@ export function UserProvider({ children }) {
                     // If the user confirmed, then we dispatch the action we blocked earlier
                     // This will continue the action that had triggered the removal of the screen
                     onPress: () => {
-                        fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/DeleteContact/', {
+                        fetch(deleteContact, {
                             method: 'DELETE',
                             body: JSON.stringify(Contact),
                             headers: new Headers({
@@ -381,7 +417,7 @@ export function UserProvider({ children }) {
                     userType: userData.userType
                 }
             }
-            fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/GetPending/', {
+            fetch(getPending, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -426,7 +462,7 @@ export function UserProvider({ children }) {
                     userType: userData.userType
                 }
             }
-            fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/GetHistory/', {
+            fetch(getHistory, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -631,11 +667,14 @@ export function UserProvider({ children }) {
     }
 
     const value = {
-        userContext, allShopTasks, allMedicineTasks, userContacts, userNotifications, userPendingPayments, userHistoryPayments, userChats, setUserChats, logInFireBase, GetUserHistory, GetUserPending,
-        deleteContact, addNewContact, saveContact, updateActualTask, updateRememberUserContext, logInContext, fetchUserContacts, logOutContext,
-        updateUserContext, updateUserContacts, updatePendings, updateUserProfile, updateuserNotifications, appEmail, getAllPrivateTasks, getAllPublicTasks, allPublicTasks, allPrivateTasks, UpdateDrugForPatientDTO
+        userContext, allShopTasks, allMedicineTasks, userContacts, userNotifications, userPendingPayments,
+        userHistoryPayments, userChats, setUserChats, logInFireBase, GetUserHistory, GetUserPending,
+        deleteContact, addNewContact, saveContact, updateActualTask, updateRememberUserContext, logInContext,
+        fetchUserContacts, logOutContext, updateUserContext, updateUserContacts, updatePendings,
+        updateUserProfile, updateuserNotifications, appEmail, getAllPrivateTasks, getAllPublicTasks,
+        allPublicTasks, allPrivateTasks, UpdateDrugForPatientDTO, holidays
     };
-    
+
     return (
         <UserContext.Provider value={value}>
             {children}

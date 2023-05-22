@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, ScrollView, Dimensions,LayoutAnimation } from 'react-native'
+import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, ScrollView, Dimensions, LayoutAnimation } from 'react-native'
 import { useState, useEffect } from 'react'
 import { AddBtn, NewTaskModal } from '../HelpComponents/AddNewTask'
 import { Ionicons } from '@expo/vector-icons';
@@ -90,7 +90,7 @@ export default function MainTasks(props) {
         </ScrollView>
       </View>
 
-      <View style={[styles.TommorowView, headerToday ? { flex: 33 }:{}]}>
+      <View style={[styles.TommorowView, headerToday ? { flex: 33 } : {}]}>
         <View>
           <TouchableOpacity style={styles.headerForTasks} onPress={toggleHeaderTommorowView}>
             <Text style={styles.tasksTitle}>Upcoming</Text>
@@ -138,8 +138,8 @@ const styles = StyleSheet.create({
   },
   addBtnView: {
     position: 'absolute',
-    bottom: 15,
-    right: -8,
+    bottom: 20,
+    right: 10,
   },
   headerForTasks: {
     flexDirection: 'row',

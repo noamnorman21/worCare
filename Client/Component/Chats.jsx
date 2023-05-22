@@ -1,6 +1,5 @@
 import { View, Text, StyleSheet, Dimensions,Image, Alert,Modal,TouchableOpacity,ScrollView } from 'react-native'
 import { useCallback, useState, useLayoutEffect } from 'react'
-import { useIsFocused } from '@react-navigation/native';
 import { auth, db } from '../config/firebase';
 import { signOut, updateProfile } from 'firebase/auth';
 import { GiftedChat, Send } from 'react-native-gifted-chat';
@@ -12,8 +11,8 @@ import { Feather, Entypo, EvilIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import AddNewGroupChat from '../Component/HelpComponents/AddNewGroupChat';
 import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
+import { useFocusEffect } from '@react-navigation/native';
 import moment from 'moment';
-import Camera from '../assets/Camera.png'
 
 const ScreenHeight = Dimensions.get("window").height;
 const ScreenWidth = Dimensions.get("window").width;
@@ -60,6 +59,22 @@ function ChatRoom ({route,navigation})  {
     setDocAsRead();
   }, []);
 
+  useFocusEffect( //update convo in db that user has read the messages when leaving page
+  useCallback(() => {
+    const setDocAsRead = async () => {
+      console.log("set doc as read")
+      const docRef= query(collection(db, auth.currentUser.email), where("Name", "==", route.params.name));
+      const res = await getDocs(docRef);
+      res.forEach((doc) => {
+        updateDoc(doc.ref, { unread: false, unreadCount: 0 });
+      });
+    }
+    return () => {
+      setDocAsRead();
+    }
+  }, [])
+);
+
 
   const onSend = useCallback((messages = []) => {
     console.log(route.params.userEmail);
@@ -96,23 +111,23 @@ function ChatRoom ({route,navigation})  {
       isLoadingEarlier={true}
       showUserAvatar={true}
       
-      renderSend={(props) => {
-        return (
-          <>
-          <TouchableOpacity onPress={props.onPress}>
-            <EvilIcons name="camera" size={50} />
-          </TouchableOpacity>
-          <TouchableOpacity style={{paddingBottom:5, paddingRight:5}}onPress={props.onPress}>
-            <Entypo name='attachment' size={30}/>
-          </TouchableOpacity>
-          <TouchableOpacity style={{paddingBottom:5, paddingRight:5}}onPress={props.onPress}>
-            <Feather name='send' size={30}/>
-          </TouchableOpacity>
-          </>
+      // renderSend={(props) => {
+      //   return (
+      //     <>
+      //     <TouchableOpacity onPress={props.onPress}>
+      //       <EvilIcons name="camera" size={50} />
+      //     </TouchableOpacity>
+      //     <TouchableOpacity style={{paddingBottom:5, paddingRight:5}}onPress={props.onPress}>
+      //       <Entypo name='attachment' size={30}/>
+      //     </TouchableOpacity>
+      //     <TouchableOpacity style={{paddingBottom:5, paddingRight:5}}onPress={props.onPress}>
+      //       <Feather name='send' size={30}/>
+      //     </TouchableOpacity>
+      //     </>
           
-        );
-      }
-      }
+      //   );
+      // }
+      // }
     />
   );
 }
@@ -362,7 +377,7 @@ const navigateToChatRoom = async (user) => {
     <View key={props.name.Name}>
       <TouchableOpacity style={styles.conCard} key={props.name.Name} onPress={() => navigateToChatRoom(props.name)}>
         <View style={styles.conLeft}>
-          <Image source={{ uri: props.name.image }} style={{ width: 65, height: 65, borderRadius: 54 }} />
+          <Image source={{ uri: props.name.image }} style={styles.convoImage} />
         </View>
         <View style={styles.conMiddle}>
           <Text style={styles.conName}>{props.name.UserName ? props.name.UserName : props.name.Name}</Text>
@@ -414,7 +429,8 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'flex-end',
     alignContent: 'flex-end',
-    justifyContent:'flex-end'
+    justifyContent:'flex-end',
+    height: ScreenHeight * 0.1,
     },
   conTime: {
     fontSize: 12,
@@ -522,4 +538,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginHorizontal: 5,
   },
+  convoImage: {
+    width: 55,
+    height: 55,
+    borderRadius: 54
+  }
 })

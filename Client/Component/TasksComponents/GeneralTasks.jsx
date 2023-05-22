@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
   addBtnView: {
     position: 'absolute',
     bottom: 20,
-    right: 20,
+    right: 10,
   },
   tasksView: {
     width: SCREEN_WIDTH * 0.88,

@@ -298,7 +298,7 @@ const styles = StyleSheet.create({
   addBtnView: {
     position: 'absolute',
     bottom: 20,
-    right: 20,
+    right: 10,
   },
   productItem: {
     flexDirection: 'row',

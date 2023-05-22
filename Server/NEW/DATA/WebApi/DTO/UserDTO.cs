@@ -16,10 +16,11 @@ namespace WebApi.DTO
         public string phoneNum { get; set; }
         public string userUri { get; set; }
         public int[] Calendars { get; set; }
-        public string [] calendarCode { get; set; }
+        public List<string> calendarCode { get; set; }
         public string userType { get; set; }
         public string patientId { get; set; }
         public int workerId { get; set; }
         public int involvedInId { get; set; }
+        public string CountryName_En { get; set; }
     }
 }

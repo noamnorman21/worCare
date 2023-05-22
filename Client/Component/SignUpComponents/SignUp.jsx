@@ -4,7 +4,8 @@ import React, { useState, useEffect } from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import ImagePickerExample from '../HelpComponents/ImagePickerExample'
 import { OrLine, HaveAccount } from './FooterLine'
-
+const SCREEN_WIDTH = Dimensions.get('window').width;
+const SCREEN_HEIGHT = Dimensions.get('window').height;
 // Sign up Screen - level 1 - first + last name, email, phone number, password, image 
 // On submit, user is taken to SignUpLvl2 Screen - address, city, state, zip code, country
 export default function CreateUser({ navigation, route }) {
@@ -247,7 +248,7 @@ export default function CreateUser({ navigation, route }) {
 const styles = StyleSheet.create({
   passwordButton: {
     position: 'absolute',
-    right: Dimensions.get('window').width * 0.1,
+    right: SCREEN_WIDTH * 0.1,
     padding: 5,
     borderRadius: 5,
     marginLeft: 5,
@@ -260,7 +261,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   inputContainer: {
-    width: Dimensions.get('window').width * 1,
+    width: SCREEN_WIDTH * 1,
     height: Dimensions.get('window').height * 1,
     alignItems: 'center',
     flex: 4.5,
@@ -282,7 +283,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   input: {
-    width: Dimensions.get('window').width * 0.85,
+    width: SCREEN_WIDTH * 0.92,
     padding: 10,
     marginVertical: 10,
     alignItems: 'center',
@@ -293,7 +294,7 @@ const styles = StyleSheet.create({
     height: 54,
   },
   button: {
-    width: Dimensions.get('window').width * 0.85,
+    width: SCREEN_WIDTH * 0.92,
     backgroundColor: '#548DFF',
     alignItems: 'center',
     justifyContent: 'center',
@@ -314,11 +315,11 @@ const styles = StyleSheet.create({
   },
   firstNameInput: {
     marginRight: 10,
-    width: Dimensions.get('window').width * 0.4,
+    width: SCREEN_WIDTH * 0.425,
   },
   lastNameInput: {
     marginLeft: 10,
-    width: Dimensions.get('window').width * 0.4,
+    width: SCREEN_WIDTH * 0.425,
   },
   title: {
     fontSize: 24,

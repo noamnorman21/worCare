@@ -77,20 +77,18 @@ namespace WebApi.Controllers
                                    where c.userId == newUser.userId
                                    select c;
 
-                newUser.calendarCode = new string[userCalendar.Count()];
-                int i = 0;
+                newUser.calendarCode = new List<string>();
                 foreach (var item in userCalendar)
                 {
                     var countryCode = from c in db.tblCalendarsType
                                       where c.calendarNum == item.calendarNum
                                       select c;
-                    newUser.calendarCode[i++] = countryCode.First().calendarCode;
+                    newUser.calendarCode.Add(countryCode.First().calendarCode);
                 }
 
                 var userRole = from r in db.tblForeignUser
                                where r.Id == newUser.userId
                                select r.Id;
-                
                 if (userRole.Count() > 0)
                 {
                     newUser.userType = "Caregiver";
@@ -101,6 +99,20 @@ namespace WebApi.Controllers
                                             where id.patientId == newUser.patientId
                                             select id.userId).FirstOrDefault();
                     newUser.workerId = newUser.userId;
+                    var calendarInvolved = from c in db.tblCalendarForUser
+                                           where c.userId == newUser.involvedInId
+                                           select c;
+                    foreach (var item in calendarInvolved)
+                    {
+                        var countryCode = from c in db.tblCalendarsType
+                                          where c.calendarNum == item.calendarNum
+                                          select c;
+                        if (!newUser.calendarCode.Contains(countryCode.First().calendarCode))
+                            newUser.calendarCode.Add(countryCode.First().calendarCode);
+                    }
+                    newUser.CountryName_En = (from c in db.tblForeignUser
+                                              where c.Id == newUser.userId
+                                              select c.CountryName_En).FirstOrDefault();
                 }
                 else
                 {
@@ -112,7 +124,19 @@ namespace WebApi.Controllers
                     newUser.workerId = (from id in db.tblCaresForPatient
                                         where id.patientId == newUser.patientId
                                         select id.workerId).FirstOrDefault();
+                    var calendarCare = from c in db.tblCalendarForUser
+                                       where c.userId == newUser.workerId
+                                       select c;
+                    foreach (var item in calendarCare)
+                    {
+                        var countryCode = from c in db.tblCalendarsType
+                                          where c.calendarNum == item.calendarNum
+                                          select c;
+                        if (!newUser.calendarCode.Contains(countryCode.First().calendarCode))
+                            newUser.calendarCode.Add(countryCode.First().calendarCode);
+                    }
                 }
+
                 return Ok(newUser);
             }
             catch (Exception ex)
