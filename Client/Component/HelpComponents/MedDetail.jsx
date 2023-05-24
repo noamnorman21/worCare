@@ -2,20 +2,16 @@ import { View, Text, Dimensions, TouchableOpacity, Image, Alert, StyleSheet, Tex
 import { useState, useEffect } from 'react';
 import { useUserContext } from '../../UserContext';
 import { useIsFocused } from '@react-navigation/native';
-import { Feather, Ionicons, FontAwesome5 } from '@expo/vector-icons';
+import { Feather, FontAwesome5, Ionicons } from '@expo/vector-icons';
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from "react-native-popup-menu";
-import { value, CheckBox, Overlay } from '@rneui/themed';
-
+import { Overlay } from '@rneui/themed';
 const SCREEN_WIDTH = Dimensions.get('window').width;
-const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export default function MedDetail({ navigation, route }) {
-   const timeInDay = route.params.timeInDay;
    const medTypeIcon = route.params.medTypeIcon;
    const runlow = route.params.runlow;
    const task = route.params.task;
    const backGroundColorIcon = ["#D0DFFF", "rgba(255, 60, 60, 0.25)"];
-   const iconColors = ["#548DFF", "#FF3C32"]
    const isFocused = useIsFocused();
    const radioIcon = ["circle", "check-circle"]
    const [commentModalVisible, setCommentModalVisible] = useState(false);
@@ -35,6 +31,8 @@ export default function MedDetail({ navigation, route }) {
    const { UpdateDrugForPatientDTO, getAllPublicTasks } = useUserContext();
    const [userData, setUserData] = useState(useUserContext().userContext);
    const { refreshPublicTask } = route.params;
+   const timeInDay = route.params.timeInDay;
+   const dateString = task.drug.toDate.split('T')[0];
 
    useEffect(() => {
       if (isFocused) {
@@ -172,7 +170,7 @@ export default function MedDetail({ navigation, route }) {
 
          <View style={styles.medDetailContainer}>
             <View style={styles.iconContainer} >
-               <View style={[styles.icon, { backgroundColor: runlow ? backGroundColorIcon[1] : backGroundColorIcon[0] }]} >
+               <View style={[styles.icon, { backgroundColor: backGroundColorIcon[0] }]} >
                   <Image source={medTypeIcon} style={{ width: 25, height: 25 }} />
                </View>
             </View>
@@ -199,11 +197,11 @@ export default function MedDetail({ navigation, route }) {
             <Text style={styles.detailsTxt}>Frequency : {task.frequency}</Text>
             <Text style={styles.detailsTxt}>Quantity : {task.drug.dosage}</Text>
             <Text style={styles.detailsTxt}>Time : {timeInDay}</Text>
-            <Text style={styles.detailsTxt}>End Date : {task.drug.toDate}</Text>
-            {
+            <Text style={styles.detailsTxt}>End Date : {dateString}</Text>
+            {/* {
                runlow && // need to change for if there is instruction
                <Text style={styles.detailsTxt}>Instruction : </Text>
-            }
+            } */}
             {/* <View>
                <Image source={medTypeIcon} style={{ width: 100, height: 100, marginTop: 20, alignItems: 'center', justifyContent: 'center' }} />
             </View> */}
@@ -261,8 +259,7 @@ export default function MedDetail({ navigation, route }) {
          <Overlay isVisible={visibleTakeExtra} onBackdropPress={toggleOverlayTakeExtra} overlayStyle={{ width: 300, height: 300, borderRadius: 20 }}>
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                <View style={{ flex: 0.7, justifyContent: 'center', alignItems: 'center' }}>
-                  <FontAwesome5 name="hand-holding-medical" size={30} color="black" />
-                  {/* <Ionicons name="medical-outline" size={30} color="black" /> */}
+                  <Ionicons name="medical-outline" size={30} color="black" />
                   <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 20, marginVertical: 10, textAlign: 'center' }}>Take Extra Dose</Text>
                </View>
                <View>
@@ -309,7 +306,6 @@ export default function MedDetail({ navigation, route }) {
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                <View style={{ flex: 0.7, justifyContent: 'center', alignItems: 'center' }}>
                   <FontAwesome5 name="hand-holding-medical" size={30} color="black" />
-                  {/* <Ionicons name="medical-outline" size={30} color="black" /> */}
                   <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 20, marginVertical: 10, textAlign: 'center' }}>Log a refill</Text>
                </View>
                <View>
@@ -371,7 +367,7 @@ const styles = StyleSheet.create({
       marginVertical: 5,
    },
    iconContainer: {
-      flex: 0.75,
+      flex: 1,
       height: '100%',
       alignItems: 'center',
       justifyContent: 'center',
@@ -428,14 +424,13 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       marginHorizontal: 5,
       height: 25,
-      flex: 1.25,
+      flex: 1.7,
    },
    firstRowContainer: {
       flexDirection: 'row',
       flex: 1,
       alignItems: 'center',
       justifyContent: 'flex-start',
-      // width: '100%',
    },
    runningLowTxt: {
       fontSize: 14,
@@ -444,7 +439,7 @@ const styles = StyleSheet.create({
       marginLeft: 5,
    },
    line: {
-      width: '91%',
+      width: '94%',
       height: 1.5,
       backgroundColor: '#808080',
       opacity: 0.5,
