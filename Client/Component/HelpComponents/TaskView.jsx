@@ -12,7 +12,6 @@ export default function TaskView(props) {
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
   useEffect(() => {
-    console.log(props.task)
     checkDate()
   }, [])
 
@@ -45,13 +44,13 @@ export default function TaskView(props) {
           <Text style={styles.taskTitleTxt}>
             {props.task.taskName}
           </Text>
-          {props.task.hideDate ?
+          {props.hideDate ?
             <Text style={styles.taskSmallTxt}>
-              {date}{"  |  "}{time}
+              {time}
             </Text>
             :
             <Text style={styles.taskSmallTxt}>
-              {time}
+              {date}{"  |  "}{time}
             </Text>
           }
         </View>

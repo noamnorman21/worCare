@@ -14,7 +14,7 @@ const Tab = createMaterialTopTabNavigator();
 export default function Tasks() {
   const [userData, setUserData] = useState(useUserContext().userContext);
   const [userId, setUserId] = useState(useUserContext.userId);
-  const { getAllPublicTasks, getAllPrivateTasks, allPublicTasks, allPrivateTasks } = useUserContext();
+  const { getAllPublicTasks, getAllPrivateTasks, allPublicTasks, allPrivateTasks,GetAllDrugs } = useUserContext();
   const [userType, setUserType] = useState(userData.userType);
   const [allMedicineTasks, setAllMedicineTasks] = useState([]);
   const [allShopTasks, setAllShopTasks] = useState([]);
@@ -23,6 +23,7 @@ export default function Tasks() {
   //filter tasks by type, medicine or shop, other tasks will be in allTasks
   useEffect(() => {
     filterTasks(allPublicTasks);
+    GetAllDrugs();
   }, [allPublicTasks, allPrivateTasks]);
 
   const filterTasks = (tasks) => {

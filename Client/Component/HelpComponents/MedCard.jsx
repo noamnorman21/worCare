@@ -98,7 +98,7 @@ export default function MedCard(props) {
             </View>
             <View style={styles.medDetails}>
                 <View style={styles.iconContainer} >
-                    <View style={[styles.icon, { backgroundColor: runlow ? backGroundColorIcon[1] : backGroundColorIcon[0] }]} >
+                    <View style={[styles.icon, { backgroundColor: "#D0DFFF" }]} >
                         <Image source={medTypeIcon} style={{ width: 20, height: 20 }} />
                     </View>
                 </View>
@@ -124,14 +124,14 @@ export default function MedCard(props) {
                     <TouchableOpacity onPress={taggleIsDone}>
                         {
                             isDone ?
-                                <Feather name="check-circle" size={25} color={runlow ? backGroundColorIcon[1] : iconColors[0]} />
+                                <Feather name="check-circle" size={25} color={iconColors[0]} />
                                 :
-                                <Feather name="circle" size={25} color={runlow ? backGroundColorIcon[1] : iconColors[0]} />
+                                <Feather name="circle" size={25} color={iconColors[0]} />
                         }
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.iconArrow} onPress={navigateToMed} >
-                        <Octicons name="chevron-right" size={24} color={runlow ? iconColors[1] : iconColors[0]} />
+                        <Octicons name="chevron-right" size={24} color={iconColors[0]} />
                     </TouchableOpacity>
                 </View>
             </View>
@@ -177,7 +177,6 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         flexDirection: 'row',
         height: '100%',
-
     },
     iconArrow: {
         width: 39,

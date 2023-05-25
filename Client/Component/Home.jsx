@@ -1,79 +1,72 @@
-import { View, Text, StyleSheet, TouchableOpacity, Alert, SafeAreaView, Modal, Dimensions, ScrollView, LayoutAnimation } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { View, Text, StyleSheet, SafeAreaView, Dimensions, FlatList } from 'react-native';
+import React, { useEffect, useState, useMemo } from 'react';
 import TaskView from './HelpComponents/TaskView';
 import { useUserContext } from '../UserContext';
-import { AddBtn, NewTaskModal } from './HelpComponents/AddNewTask'
-import { Fontisto, Ionicons } from '@expo/vector-icons';
+import { AddBtn, NewTaskModal } from './HelpComponents/AddNewTask';
+import { Fontisto } from '@expo/vector-icons';
 import { Agenda, CalendarProvider } from 'react-native-calendars';
 import moment from 'moment';
 import { useIsFocused } from '@react-navigation/native';
+
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
-export default function Home({ navigation }) {
+export default function Home() {
   const [modalVisible, setModalVisible] = useState(false);
-  const [headerToday, setHeaderToday] = useState(false);
-  const [userData, setUserData] = useState(useUserContext().userContext);
-  const [userId, setUserId] = useState(useUserContext.userId);
-  const { getAllPublicTasks, getAllPrivateTasks, allPublicTasks, allPrivateTasks, holidays } = useUserContext();
-  const [userType, setUserType] = useState(userData.userType);
-  const [allTasks, setAllTasks] = useState([])
-  const agendaItems = {};
+  const { allPublicTasks, allPrivateTasks, holidays, } = useUserContext();
   const isFocused = useIsFocused();
+  useEffect(() => {
+  }, [allPrivateTasks, allPublicTasks, holidays]);
+  
+  const allTasks = useMemo(() => {
+    return filterTasks(allPrivateTasks, allPublicTasks);
+  }, [allPrivateTasks, allPublicTasks]);
+
+  const agendaItems = useMemo(() => {
+    const items = {};
+    holidays.forEach((holiday) => {
+      const date = moment(holiday.date).format('YYYY-MM-DD');
+      if (!items[date]) {
+        items[date] = [];
+      }
+      items[date].push({ name: holiday.name, desc: holiday.desc });
+    });
+
+    allTasks.forEach((task) => {
+      let today = false;
+      const taskDate = moment(task.taskDate).format('YYYY-MM-DD');
+      const todayDate = moment().format('YYYY-MM-DD');
+      if (taskDate === todayDate) {
+        today = true;
+      }
+      let isPrivate = false;
+      if (task.patientId == null) {
+        isPrivate = true;
+      }
+      if (!items[taskDate]) {
+        items[taskDate] = [];
+      }
+      items[taskDate].push({ task, isPrivate, today, key: task.actualId });
+    });
+
+    return items;
+  }, [allTasks, holidays]);
 
   useEffect(() => {
     if (isFocused) {
-      filterTasks(allPrivateTasks, allPublicTasks)
+      filterTasks(allPrivateTasks, allPublicTasks);
     }
-  }, [allPrivateTasks, allPublicTasks, isFocused])
+  }, [allPrivateTasks, allPublicTasks, isFocused]);
 
-  holidays.forEach((holiday) => {
-    const date = moment(holiday.date).format('YYYY-MM-DD');
-    if (!agendaItems[date]) {
-      agendaItems[date] = [];
-    }
-    agendaItems[date].push({ name: holiday.name, desc: holiday.desc });
-  });
-
-  allTasks.forEach((task) => {
-    let today = false;
-    // check if task is today
-    let taskDate = new Date(task.taskDate)
-    let todayDate = new Date()
-    if (taskDate.getDate() == todayDate.getDate() && taskDate.getMonth() == todayDate.getMonth() && taskDate.getFullYear() == todayDate.getFullYear()) {
-      today = true
-    }
-    // check if task is private
-    let isPrivate = false;
-    if (task.patientId == null) {
-      isPrivate = true;
-    }
-
-    const date = moment(task.taskDate).format('YYYY-MM-DD');
-    if (!agendaItems[date]) {
-      agendaItems[date] = [];
-    }
-    agendaItems[date].push({ task: task, isPrivate: isPrivate, today: today, key: task.actualId });
-  });
-
-  const filterTasks = async (privateTask, publicTasks) => {
-    //combine private and public tasks for today task and sort by time
-    let allTasks = privateTask.concat(publicTasks)
+  function filterTasks(privateTask, publicTasks) {
+    const allTasks = privateTask.concat(publicTasks);
     allTasks.sort((a, b) => {
-      return a.TimeInDay > b.TimeInDay ? 1 : -1
-    })
-    setAllTasks(allTasks)
-    //filter today tasks
-    let todayTasks = allTasks.filter(task => {
-      let today = new Date()
-      let taskDate = new Date(task.taskDate)
-      return taskDate.getDate() == today.getDate() && taskDate.getMonth() == today.getMonth() && taskDate.getFullYear() == today.getFullYear()
-    })
-    // setTodayTasks(todayTasks)
+      return a.TimeInDay > b.TimeInDay ? 1 : -1;
+    });
+    return allTasks;
   }
 
   const handleAddBtnPress = () => {
-    // setModalVisible(true);
+    setModalVisible(true);
   };
 
   const handleModalClose = () => {
@@ -83,27 +76,8 @@ export default function Home({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.calendarContainer}>
-        <CalendarProvider
-          theme={{
-            todayButtonTextColor: '#548DFF',
-            todayButtonPosition: 'right',
-            calendarBackground: '#000',
-            textSectionTitleColor: '#fff',
-            selectedDayBackgroundColor: '#548DFF',
-            selectedDayTextColor: '#fff',
-            todayTextColor: '#548DFF',
-            dayTextColor: '#fff',
-            textDisabledColor: '#fff',
-            dotColor: '#548DFF',
-            selectedDotColor: '#fff',
-            arrowColor: '#548DFF',
-          }}
-        >
-
-          <Agenda
-            theme={{
-              agendaKnobColor: '#548DFF',
-            }}
+        <CalendarProvider>
+          <Agenda      
             futureScrollRange={12}
             pastScrollRange={12}
             showOnlySelectedDayItems={true}
@@ -111,13 +85,13 @@ export default function Home({ navigation }) {
             showClosingKnob={true}
             renderEmptyData={() => (
               <View>
-                <Text style={{ fontSize: 15, textAlign: 'center', marginTop: 20, fontFamily: 'Urbanist-Medium' }}>
-                  There are no holidays Or Tasks today...
+                <Text style={styles.emptyDataText}>
+                  There are no holidays or tasks today...
                 </Text>
               </View>
             )}
             items={agendaItems}
-            renderItem={(item, firstItemInDay) => {
+            renderItem={(item) => {
               {
                 if (item.key == null) {
                   return (
@@ -150,8 +124,9 @@ export default function Home({ navigation }) {
                 }
               }
             }}
+
             renderDay={(day, item) => { return <View />; }}
-            rowHasChanged={(r1, r2) => { return r1.text !== r2.text }}
+            rowHasChanged={(r1, r2) => { return r1.text !== r2.text; }}
           />
         </CalendarProvider>
       </View >
@@ -179,17 +154,11 @@ const styles = StyleSheet.create({
     flex: 1,
     width: SCREEN_WIDTH,
   },
-  tasksTitle: {
-    fontSize: 24,
-    fontFamily: 'Urbanist-Bold',
-    color: '#000',
-
-  },
-  button: {
+  emptyDataText: {
+    fontSize: 15,
+    textAlign: 'center',
     marginTop: 20,
-    padding: 10,
-    backgroundColor: '#333',
-    color: '#fff',
+    fontFamily: 'Urbanist-Medium',
   },
   item: {
     flex: 1,
@@ -200,12 +169,12 @@ const styles = StyleSheet.create({
     marginVertical: 7,
   },
   iconContainer: {
-    flex: 1,
     alignItems: 'center',
     justifyContent: 'flex-start',
     height: '100%',
     flexDirection: 'row',
-    marginLeft: 30,
+    marginLeft: 23,
+    marginRight: 23,
   },
   icon: {
     borderRadius: 54,
@@ -226,6 +195,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: 'Urbanist-SemiBold',
     marginBottom: 5,
+    textAlign: 'left',
     color: '#000',
   },
   itemText: {

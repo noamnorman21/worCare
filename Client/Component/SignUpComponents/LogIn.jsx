@@ -148,7 +148,7 @@ export default function LogIn({ navigation }) {
                     await logInContext(userContext).then(() => {
                         console.log('user saved in context');
                     })
-                    await logInFireBase(email, password);
+                    logInFireBase(email, password);
                     navigation.navigate('CustomHeader', { screen: "AppBarDown" });//navigate to home screen, we will add a necessary call to get user data from the server                                         
                 }
             }
