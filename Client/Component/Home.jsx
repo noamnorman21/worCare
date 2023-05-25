@@ -14,9 +14,9 @@ export default function Home() {
   const [modalVisible, setModalVisible] = useState(false);
   const { allPublicTasks, allPrivateTasks, holidays, } = useUserContext();
   const isFocused = useIsFocused();
-
+  useEffect(() => {
+  }, [allPrivateTasks, allPublicTasks, holidays]);
   
-
   const allTasks = useMemo(() => {
     return filterTasks(allPrivateTasks, allPublicTasks);
   }, [allPrivateTasks, allPublicTasks]);
