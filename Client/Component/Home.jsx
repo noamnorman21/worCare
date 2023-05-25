@@ -12,8 +12,10 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function Home() {
   const [modalVisible, setModalVisible] = useState(false);
-  const { allPublicTasks, allPrivateTasks, holidays } = useUserContext();
+  const { allPublicTasks, allPrivateTasks, holidays, } = useUserContext();
   const isFocused = useIsFocused();
+
+  
 
   const allTasks = useMemo(() => {
     return filterTasks(allPrivateTasks, allPublicTasks);
@@ -36,8 +38,10 @@ export default function Home() {
       if (taskDate === todayDate) {
         today = true;
       }
-      const isPrivate = task.patientId === null;
-
+      let isPrivate = false;
+      if (task.patientId == null) {
+        isPrivate = true;
+      }
       if (!items[taskDate]) {
         items[taskDate] = [];
       }
@@ -73,7 +77,7 @@ export default function Home() {
     <SafeAreaView style={styles.container}>
       <View style={styles.calendarContainer}>
         <CalendarProvider>
-          <Agenda
+          <Agenda      
             futureScrollRange={12}
             pastScrollRange={12}
             showOnlySelectedDayItems={true}
@@ -165,12 +169,12 @@ const styles = StyleSheet.create({
     marginVertical: 7,
   },
   iconContainer: {
-    flex: 1,
     alignItems: 'center',
     justifyContent: 'flex-start',
     height: '100%',
     flexDirection: 'row',
-    marginLeft: 30,
+    marginLeft: 23,
+    marginRight: 23,
   },
   icon: {
     borderRadius: 54,
@@ -191,6 +195,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: 'Urbanist-SemiBold',
     marginBottom: 5,
+    textAlign: 'left',
     color: '#000',
   },
   itemText: {

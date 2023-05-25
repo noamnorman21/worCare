@@ -42,6 +42,8 @@ let updateActualPrivateTaskUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/T
 let getAllPublicTasksUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/GetAllTasks';
 let getAllPrivateTasksUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/GetAllPrivateTasks';
 let updateDrugForPatientDTOUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/UpdateDrugForPatientDTO';
+let allDrugsUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Drug/GetAllDrugs';
+let InsertPrivateTaskUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/InsertPrivateTask';
 
 const UserContext = createContext()
 const UserUpdateContext = createContext()
@@ -77,6 +79,7 @@ export function UserProvider({ children }) {
     const [allShopTasks, setAllShopTasks] = useState([]);
     const [userCalendar, setUserCalendar] = useState(null)
     const [calendarCode, setCalendarCode] = useState(null)
+    const [allDrugs, setAllDrugs] = useState([]);
     // new
     const [pairedEmail, setPairedEmail] = useState(null)
     const [userChats, setUserChats] = useState(null)
@@ -490,6 +493,34 @@ export function UserProvider({ children }) {
         }
     }
 
+    async function GetAllDrugs() {
+        console.log("GetAllDrugs")
+        fetch(allDrugsUrl, {
+            method: 'GET',
+            headers: {
+               'Content-Type': 'application/json; charset=UTF-8',
+            },
+         })
+            .then(res => {
+               if (res.ok) {
+                  return res.json()
+               }
+               else {
+                  console.log("not found")
+               }
+            })
+            .then(data => {
+               if (data != null) {
+                  //exmaple of data object: {drugId:1, drugName:"פרסקוטיקס", drugUrl:"https://www.drugs.com/images/pills/augmentin.jpg", modifyDate:"2021-05-05T00:00:00",Type:"pills"} 
+                  setAllDrugs(data);
+               }
+            })
+            .catch((error) => {
+               console.log("err=", error);
+            });
+
+    }
+
     // Tasks
     async function getAllPublicTasks(userData) {
         console.log("getAllPublicTasks")
@@ -642,6 +673,27 @@ export function UserProvider({ children }) {
             );
     }
 
+    function addPrivateTaskContext  (taskData)  {
+        console.log("addPrivateTask");
+        fetch(InsertPrivateTaskUrl, {
+           method: 'POST',
+           body: JSON.stringify(taskData),
+           headers: new Headers({
+              'Content-Type': 'application/json; charset=UTF-8',
+           })
+        })
+           .then(res => { return res.json() })
+           .then(
+              (result) => {
+                 console.log("fetch POST= ", result);
+              }
+           )
+           .catch((error) => {
+              console.log('Error=', error);
+           }
+           );
+     }
+
     //firebase
     async function logInFireBase(email, password) {
         console.log('logInFireBase')
@@ -672,7 +724,7 @@ export function UserProvider({ children }) {
         deleteContact, addNewContact, saveContact, updateActualTask, updateRememberUserContext, logInContext,
         fetchUserContacts, logOutContext, updateUserContext, updateUserContacts, updatePendings,
         updateUserProfile, updateuserNotifications, appEmail, getAllPrivateTasks, getAllPublicTasks,
-        allPublicTasks, allPrivateTasks, UpdateDrugForPatientDTO, holidays
+        allPublicTasks, allPrivateTasks, UpdateDrugForPatientDTO, holidays,GetAllDrugs,allDrugs,addPrivateTaskContext
     };
 
     return (

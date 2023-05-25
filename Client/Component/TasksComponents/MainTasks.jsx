@@ -45,6 +45,12 @@ export default function MainTasks(props) {
       return taskDate.getDate() != today.getDate() || taskDate.getMonth() != today.getMonth() || taskDate.getFullYear() != today.getFullYear()
     }
     )
+    //sort by date and than by time
+    tommorowTasks.sort((a, b) => {
+      return a.taskDate > b.taskDate ? 1 : -1
+    }
+    )
+    
     setTommorowTasks(tommorowTasks)
   }
 
@@ -83,7 +89,7 @@ export default function MainTasks(props) {
                 if (task.patientId == null) {
                   isPrivate = true;
                 }
-                return (<TaskView today={true} key={index} task={task} isPrivate={isPrivate} />)
+                return (<TaskView today={true} key={index} task={task} isPrivate={isPrivate}  hideDate={true} />)
               })
             }
           </View>
@@ -105,7 +111,7 @@ export default function MainTasks(props) {
                 if (task.patientId == null) {
                   isPrivate = true;
                 }
-                return (<TaskView today={false} key={index} task={task} isPrivate={isPrivate} />)
+                return (<TaskView today={false} key={index} task={task} isPrivate={isPrivate} hideDate={false} />)
               })
             }
           </View>

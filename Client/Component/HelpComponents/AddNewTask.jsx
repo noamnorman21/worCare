@@ -7,7 +7,6 @@ import DatePicker from 'react-native-datepicker';
 import { Dropdown } from 'react-native-element-dropdown';
 import DateRangePicker from "rn-select-date-range";
 import moment from "moment";
-// import { TextInput } from 'react-native-paper';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -39,11 +38,10 @@ function AddNewMedicine(props) {
    const [medDosageUnit, setMedDosageUnit] = useState('')
    const [selectedRange, setRange] = useState({});
    const [modalVisibleDate, setModalVisibleDate] = useState(false);
-   const [allDrugs, setAllDrugs] = useState([]); //we will use this to get all the drugs from the server
    const [selectedDrugName, setSelectedDrugName] = useState(''); //we will use this to get the selected drug from the user
    const [editMode, setEditMode] = useState(true);
    const timePickers = [];
-   const { getAllPublicTasks, userContext } = useUserContext()
+   const { getAllPublicTasks, userContext,allDrugs } = useUserContext()
 
    const [modalTimesVisible, setModalTimesVisible] = useState(false);
    const medFrequencies = [
@@ -52,33 +50,6 @@ function AddNewMedicine(props) {
       { id: 3, name: 'Weekly' },
       { id: 4, name: 'Monthly' },
    ]
-
-   useEffect(() => {
-      let allDrugsUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Drug/GetAllDrugs';
-      fetch(allDrugsUrl, {
-         method: 'GET',
-         headers: {
-            'Content-Type': 'application/json; charset=UTF-8',
-         },
-      })
-         .then(res => {
-            if (res.ok) {
-               return res.json()
-            }
-            else {
-               console.log("not found")
-            }
-         })
-         .then(data => {
-            if (data != null) {
-               //exmaple of data object: {drugId:1, drugName:"פרסקוטיקס", drugUrl:"https://www.drugs.com/images/pills/augmentin.jpg", modifyDate:"2021-05-05T00:00:00",Type:"pills"} 
-               setAllDrugs(data);
-            }
-         })
-         .catch((error) => {
-            console.log("err=", error);
-         });
-   }, []);
 
    const addMed = () => {
       if (medTime != '' && medTimeArr.length == 0) {
@@ -522,6 +493,9 @@ function NewTaskModal(props) {
    const [userData, setUserData] = useState(useUserContext().userContext);
    const [userId, setUserId] = useState(useUserContext.userId);
    const [userType, setUserType] = useState(userData.userType);
+
+   const {addPrivateTaskContext, getAllPrivateTasks, getAllPublicTasks } = useUserContext();
+
    const [taskName, setTaskName] = useState('')
    const [taskComment, setTaskComment] = useState('')
    const [taskFromDate, setTaskFromDate] = useState('')
@@ -640,9 +614,12 @@ function NewTaskModal(props) {
    }
 
    const addPrivateTask = () => {
-      console.log("addPrivateTask");
+      //check if all the fields are filled
+      if (taskName == '' || taskFromDate == '' || taskToDate == ''  || taskTime == ''|| taskFrequency == '') {
+         Alert.alert('Please Fill all the fields');
+         return;
+      }
 
-      let taskUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/InsertPrivateTask';
       if (taskTime != '' && taskTimeArr.length == 0) {
          taskTimeArr.push(taskTime);
       }
@@ -656,25 +633,8 @@ function NewTaskModal(props) {
          timesInDayArr: taskTimeArr,
          frequency: taskFrequency
       }
-
-      fetch(taskUrl, {
-         method: 'POST',
-         body: JSON.stringify(taskData),
-         headers: new Headers({
-            'Content-Type': 'application/json; charset=UTF-8',
-         })
-      })
-         .then(res => { return res.json() })
-         .then(
-            (result) => {
-               console.log("fetch POST= ", result);
-               clearInputs();
-            }
-         )
-         .catch((error) => {
-            console.log('Error=', error);
-         }
-         );
+      addPrivateTaskContext(taskData)
+      clearInputs();
    }
    const addTask = () => {
       //if it caregiver than check if the task is private or public
@@ -711,8 +671,8 @@ function NewTaskModal(props) {
          frequency: taskFrequency,
       }
       console.log("newTaskForDb= ", newTaskForDb);
-      let addTaskUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/InsertActualList';
-      fetch(addTaskUrl, {
+      let InsertActualList = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/InsertActualList';
+      fetch(InsertActualList, {
          method: 'POST',
          body: JSON.stringify(newTaskForDb),
          headers: {
@@ -799,6 +759,8 @@ function NewTaskModal(props) {
       setTaskTimeArr([])
       setNumberPerDay(0)
       setIsPrivate(false)
+      getAllPrivateTasks(userData)
+      getAllPublicTasks(userData)
       props.onClose()
    }
 
