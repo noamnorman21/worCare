@@ -41,7 +41,7 @@ function AddNewMedicine(props) {
    const [selectedDrugName, setSelectedDrugName] = useState(''); //we will use this to get the selected drug from the user
    const [editMode, setEditMode] = useState(true);
    const timePickers = [];
-   const { getAllPublicTasks, userContext,allDrugs } = useUserContext()
+   const { getAllPublicTasks, userContext, allDrugs } = useUserContext()
 
    const [modalTimesVisible, setModalTimesVisible] = useState(false);
    const medFrequencies = [
@@ -494,7 +494,7 @@ function NewTaskModal(props) {
    const [userId, setUserId] = useState(useUserContext.userId);
    const [userType, setUserType] = useState(userData.userType);
 
-   const {addPrivateTaskContext, getAllPrivateTasks, getAllPublicTasks } = useUserContext();
+   const { addPrivateTaskContext, getAllPrivateTasks, getAllPublicTasks } = useUserContext();
 
    const [taskName, setTaskName] = useState('')
    const [taskComment, setTaskComment] = useState('')
@@ -615,7 +615,11 @@ function NewTaskModal(props) {
 
    const addPrivateTask = () => {
       //check if all the fields are filled
-      if (taskName == '' || taskFromDate == '' || taskToDate == ''  || taskTime == ''|| taskFrequency == '') {
+      if (taskFrequency == 'Once') {
+         taskToDate = taskFromDate;
+      }
+
+      if (taskName == '' || taskFromDate == '' || taskToDate == '' || taskTime == '' || taskFrequency == '') {
          Alert.alert('Please Fill all the fields');
          return;
       }
@@ -650,8 +654,8 @@ function NewTaskModal(props) {
       else {
          addShopTask();
       }
-
    }
+
    const addShopTask = () => {
       console.log("addShopTask");
       if (taskTime != '' && taskTimeArr.length == 0) {
@@ -812,6 +816,7 @@ function NewTaskModal(props) {
                                  data={taskCategorys}
                                  labelField="name"
                                  valueField="name"
+                                 itemTextStyle={styles.itemStyle}
                                  placeholder="Category"
                                  placeholderStyle={styles.placeholderStyle}
                                  style={[styles.input, taskCategory && { borderColor: '#000' }]}
@@ -819,7 +824,7 @@ function NewTaskModal(props) {
                                  maxHeight={300}
                                  value={taskCategory}
                                  onChange={item => { setTaskCategory(item.name) }}
-                              /> : //if is private= true than display like the user already choose the category of General
+                              /> :
                               <TextInput
                                  style={[styles.input, { borderColor: '#000' }]}
                                  placeholder='Category'
@@ -828,20 +833,66 @@ function NewTaskModal(props) {
                                  editable={false}
                               />
                            }
+                           <Dropdown
+                              data={taskFrequencies}
+                              labelField="name"
+                              valueField="name"
+                              itemTextStyle={styles.itemStyle}
+                              placeholder="Frequency"
+                              placeholderStyle={styles.placeholderStyle}
+                              style={[styles.input, taskFrequency && { borderColor: '#000', fontFamily: 'Urbanist-Medium' }]}
+                              maxHeight={200}
+                              value={taskFrequency}
+                              containerStyle={styles.containerStyle}
+                              onChange={item => { setTaskFrequency(item.name) }}
+                           />
 
-                           <TouchableOpacity onPress={() => { setModalVisibleDate(true); }}>
-                              {taskFromDate && taskToDate ?
-                                 <View style={[styles.input, { borderColor: '#000' }]}>
-                                    <Text style={[styles.regularTxt, { color: '#000', fontFamily: 'Urbanist-SemiBold' }]}>
-                                       {changeDateFormat(taskFromDate)} - {changeDateFormat(taskToDate)}
-                                    </Text>
-                                 </View>
-                                 :
-                                 <View style={styles.input}>
-                                    <Text style={[styles.regularTxt, { color: '#9E9E9E' }]}>Start Date - End Date</Text>
-                                 </View>
-                              }
-                           </TouchableOpacity>
+                           {/* If taskFrequency == 'Once' Show date picker - now date range */}
+                           {taskFrequency == 'Once' ?
+                              <DatePicker
+                                 useNativeDriver={'true'}
+                                 iconComponent={<MaterialCommunityIcons style={[styles.addIcon, { right: 0 }]} name="calendar-outline" size={24} color="#808080" />}
+                                 style={[styles.input, taskFromDate && { borderColor: '#000' }]}
+                                 date={taskFromDate}
+                                 mode="date"
+                                 placeholder="dd/mm/yyyy"
+                                 format="YYYY-MM-DD"
+                                 minDate={new Date()}
+                                 confirmBtnText="Confirm"
+                                 cancelBtnText="Cancel"
+                                 customStyles={{
+                                    dateInput: {
+                                       marginLeft: 0,
+                                       alignItems: 'flex-start', //change to center for android
+                                       borderWidth: 0,
+                                    },
+                                    placeholderText: {
+                                       color: "#9E9E9E",
+                                       fontFamily: 'Urbanist-Light',
+                                       fontSize: 16,
+                                       textAlign: 'left',
+                                    },
+                                    dateText:
+                                       [styles.inputNumber, taskFromDate && { fontFamily: 'Urbanist-Medium' }]
+
+                                 }}
+                                 onDateChange={(date) => setTaskFromDate(date)}
+                              />
+                              :
+                              <TouchableOpacity onPress={() => { setModalVisibleDate(true); }}>
+                                 {taskFromDate && taskToDate ?
+                                    <View style={[styles.input, { borderColor: '#000' }]}>
+                                       <Text style={[styles.regularTxt, { color: '#000', fontFamily: 'Urbanist-SemiBold' }]}>
+                                          {changeDateFormat(taskFromDate)} - {changeDateFormat(taskToDate)}
+                                       </Text>
+                                    </View>
+                                    :
+                                    <View style={styles.input}>
+                                       <Text style={[styles.regularTxt, { color: '#9E9E9E' }]}>Start Date - End Date</Text>
+                                    </View>
+                                 }
+                              </TouchableOpacity>
+                           }
 
                            <Modal visible={modalVisibleDate} transparent={true} style={styles.modalDate} animationType='slide' onRequestClose={() => setModalVisibleDate(false)}>
                               <View style={styles.modalDateView}>
@@ -961,7 +1012,6 @@ function NewTaskModal(props) {
                                     </View>
                                  }
                               </View>
-
                               :
                               <DatePicker
                                  style={[styles.input, taskTime != '' && { borderColor: '#000' }]}
@@ -991,24 +1041,7 @@ function NewTaskModal(props) {
                                  }}
                                  onDateChange={(date) => { setTaskTime(date) }}
                               />
-
                            }
-                           {/* {taskCategory == 'General' ?
-
-                              : null} */}
-
-                           <Dropdown
-                              data={taskFrequencies}
-                              labelField="name"
-                              valueField="name"
-                              placeholder="Frequency"
-                              placeholderStyle={styles.placeholderStyle}
-                              style={[styles.input, taskFrequency && { borderColor: '#000' }]}
-                              maxHeight={200}
-                              value={taskFrequency}
-                              containerStyle={styles.containerStyle}
-                              onChange={item => { setTaskFrequency(item.name) }}
-                           />
                            {/* Modal Box For TIMES ARRAY */}
                            <View>
                               <Modal visible={modalTimesVisible} transparent={true} style={styles.modalDate} animationType='slide' onRequestClose={() => setModalTimesVisible(false)}>

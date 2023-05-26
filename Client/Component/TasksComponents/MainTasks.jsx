@@ -50,7 +50,6 @@ export default function MainTasks(props) {
       return a.taskDate > b.taskDate ? 1 : -1
     }
     )
-    
     setTommorowTasks(tommorowTasks)
   }
 
@@ -58,10 +57,8 @@ export default function MainTasks(props) {
     setModalVisible(true);
   };
 
-
   const toggleHeaderTodayView = () => {
     LayoutAnimation.easeInEaseOut(setHeaderToday(!headerToday));
-    // setHeaderToday(!headerToday)
   }
   const toggleHeaderTommorowView = () => {
     LayoutAnimation.easeInEaseOut(setHeaderTommorow(!headerTommorow));
@@ -89,7 +86,7 @@ export default function MainTasks(props) {
                 if (task.patientId == null) {
                   isPrivate = true;
                 }
-                return (<TaskView today={true} key={index} task={task} isPrivate={isPrivate}  hideDate={true} />)
+                return (<TaskView today={true} key={index} task={task} isPrivate={isPrivate} hideDate={true} />)
               })
             }
           </View>

@@ -1,9 +1,8 @@
-import { View, TouchableOpacity, Image, Dimensions, StyleSheet, Alert } from 'react-native'
+import { View, TouchableOpacity, Image, Dimensions, StyleSheet, Modal } from 'react-native'
 import { Octicons, Ionicons, AntDesign, Feather } from '@expo/vector-icons';
-import { useEffect, useState } from 'react'
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useState } from 'react';
 
 import SettingScreen from './SettingScreen';
 import Contacts from './Contacts';
@@ -18,7 +17,13 @@ import Rights from './Rights';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
+
 function CustomHeader() {
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const toggleModal = () => {
+        setIsModalVisible(!isModalVisible);
+    };
+
     return (
         <Stack.Navigator>
             <Stack.Screen
@@ -29,15 +34,29 @@ function CustomHeader() {
                     headerTitleAlign: 'center',
                     headerLeft: () => (
                         <View style={styles.headerLeft}>
-                            <TouchableOpacity
-                                //on press send the function hideHeader and showHeader to the child component
-                                onPress={() => { navigation.navigate('SettingScreen') }}
-                            >
-                                <Image
-                                    source={require('../images/icons/Profile.png')}
-                                    style={{ width: 32, height: 28 }}
-                                />
+                            <TouchableOpacity onPress={toggleModal} >
+                                <Feather name="menu" size={28} color="black" />
                             </TouchableOpacity>
+                            <View>
+                                <Modal
+                                    visible={isModalVisible}
+                                    animationType="fade"
+                                    transparent={true}
+                                    onRequestClose={toggleModal}
+                                >
+                                    <View style={styles.modalContainer}>
+                                        <TouchableOpacity style={styles.closeButton} onPress={toggleModal}>
+                                            <Feather name="x" size={24} color="black" />
+                                        </TouchableOpacity>
+                                        {/* Add your sidebar menu content here */}
+                                        {/* Example content */}
+                                        <View style={styles.menuItem}>
+                                            <Feather name="home" size={24} color="black" />
+                                            {/* Add more menu items */}
+                                        </View>
+                                    </View>
+                                </Modal>
+                            </View>
                         </View>
                     ),
                     headerRight: () => (
@@ -73,7 +92,7 @@ function CustomHeader() {
                     unmountOnBlur: true,
                 })}
             />
-            <Stack.Screen name='SettingScreen'
+            < Stack.Screen name='SettingScreen'
                 component={SettingScreen}
                 options={() => ({
                     headerTitle: 'Settings',
@@ -82,14 +101,14 @@ function CustomHeader() {
                     headerShown: false,
                 })}
             />
-            <Stack.Screen name='PushNotifications' component={PushNotifications}
+            < Stack.Screen name='PushNotifications' component={PushNotifications}
                 options={() => ({
                     headerTitle: 'Notifications',
                     presentation: 'stack',
                     cardOverlayEnabled: true,
                 })} />
-            <Stack.Screen name='Contacts' component={Contacts} options={{ unmountOnBlur: true, headerShown: false }} />
-        </Stack.Navigator>
+            < Stack.Screen name='Contacts' component={Contacts} options={{ unmountOnBlur: true, headerShown: false }} />
+        </Stack.Navigator >
     );
 }
 
@@ -119,31 +138,37 @@ function AppBarDown() {
             initialRouteName="Home"
         >
             <Tab.Screen name="Home" component={Home} options={{ tabBarLabel: 'Home' }} />
-            {/*בעת ניווט למסך הבית - תבוצע פעולת גט שתמשוך את הפרטים- לוח שנה למשתמש- סוג לוח שנה,
-                משימה אישית/משימה למטופל- מספר משימה, שם משימה, תאריך התחלה, תאריך סוף, הערות, סטטוס */}
             <Tab.Screen name="Finance" component={Finance} options={{ tabBarLabel: 'Finance', unmountOnBlur: true }} />
-            {/*בעת ניווט למסך תשלומים - למסך הראשי אין צורך בביצוע פעולות, לאחר בחירת המסך הרצוי(תשלומים/משכורות) יבוצעו פעולות גט)
-                מסך תשלומים- שני תתי מסכים- פירוט יבוצע בקומפוננטת הניווט במסכים היעודיים
-                */}
             <Tab.Screen name="Chats" component={Chats} options={{ tabBarLabel: 'Chats' }} />
-            {/*בהתאים למימוש הצ'אט ושמירת הסטוריית השיחות - תתבצע פעולת גט אשר תשלוף את היסטוריית השיחות. 
-            לכל שיחה ישלף שם המשתמש השני/הקבוצה, סטטוס השיחה (האם יש הודעה חדשה אשר לא נקראה) ותוצג ההודעה האחרונה אשר נשלחה.*/}
             <Tab.Screen name="Tasks" component={Tasks} options={{ tabBarLabel: 'Tasks', unmountOnBlur: true }} />
-            {/*בעת ניווט למסך תשלומים - תבוצע פעולת גט שתמשוך את הפרטים- ,
-                 משימה אישית/משימה למטופל- מספר משימה, שם משימה, תאריך התחלה, תאריך סוף, הערות, סטטוס(לפי מספר משתמש),
-                  שדות הייחודיים לטבלת משימה למטופל אשר יימשכו- מספר מטופל,מספר רשימה*/}
             <Tab.Screen name="Rights" component={Rights} options={{ tabBarLabel: 'Rights' }} />
-            {/**לא נדרשת פעולה הקשורה במסדר הנתונים על מנת לטעון את המסך הנדרש */}
         </Tab.Navigator>
     )
 }
 
 const styles = StyleSheet.create({
-    container:{ flex: 1, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' },
-    tabBar:{ backgroundColor: '#fff', paddingTop: 10 },
-    headerLeft:{ marginTop: 10, marginLeft: Dimensions.get('screen').width * 0.075, flex: 1, justifyContent: 'space-between', alignContent: 'space-between' },
-    headerRight:{ marginTop: 10, marginLeft: Dimensions.get('screen').width * 0.075, flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignContent: 'space-between' },
-    headerLogo:{ width: 50, height: 50, bottom: Dimensions.get('screen').height * 0.01, left: Dimensions.get('screen').width * 0.005 }
+    container: { flex: 1, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' },
+    tabBar: { backgroundColor: '#fff', paddingTop: 10 },
+    headerLeft: { marginTop: 10, marginLeft: Dimensions.get('screen').width * 0.075, flex: 1, justifyContent: 'space-between', alignContent: 'space-between' },
+    headerRight: { marginTop: 10, marginLeft: Dimensions.get('screen').width * 0.075, flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignContent: 'space-between' },
+    headerLogo: { width: 50, height: 50, bottom: Dimensions.get('screen').height * 0.01, left: Dimensions.get('screen').width * 0.005 },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
+        paddingTop: 50,
+        paddingLeft: 20,
+        backgroundColor: '#fff',
+        width: Dimensions.get('screen').width * 0.75,
+    },
+    closeButton: {
+        marginBottom: 20,
+    },
+    menuItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 10,
+    },
 });
 
 export { AppBarDown, CustomHeader }

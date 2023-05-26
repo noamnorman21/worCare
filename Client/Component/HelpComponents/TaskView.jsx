@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Alert } from 'react-native'
 import { useState, useEffect } from 'react'
-import { Feather, Ionicons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
@@ -32,6 +32,12 @@ export default function TaskView(props) {
     setDate(day + '/' + month + '/' + year);
   }
 
+  const handlePress = () => {
+    // Handle the button press with the key prop
+    console.log('Component key:', props.key);
+    // Perform navigation or any other logic based on the key
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.taskTitle}>
@@ -41,9 +47,11 @@ export default function TaskView(props) {
           </View>
         </View>
         <View style={styles.taskDetails}>
-          <Text style={styles.taskTitleTxt}>
-            {props.task.taskName}
-          </Text>
+          <TouchableOpacity>
+            <Text style={styles.taskTitleTxt}>
+              {props.task.taskName}
+            </Text>
+          </TouchableOpacity>
           {props.hideDate ?
             <Text style={styles.taskSmallTxt}>
               {time}

@@ -9,14 +9,16 @@ export default function TaskCheckBox(props) {
     const [isDone, setIsDone] = useState(false);
     const checkIcon = ["check-circle", "circle"]
     const { updateActualTask } = useUserContext();
-
-    //if isDone is true for at least 3 seconds, start the function finshTaskFunction, if the user press on the check icon again, the timer will be canceled
+    const [taskName, setTaskName] = useState(props.task.taskName);
     useEffect(() => {
         if (isDone) {
             const timer = setTimeout(() => {
                 finshTaskFunction();
             }, 2000);
             return () => clearTimeout(timer);
+        }
+        if (taskName.length > 18) {
+            setTaskName(taskName.substring(0, 16) + '...');
         }
     }, [isDone]);
 
@@ -25,11 +27,11 @@ export default function TaskCheckBox(props) {
     const openTaskList = () => {
         //צריך ליצור את ההמשך במסכים
         props.moveScreens(props.task);
-
     }
+
     async function finshTaskFunction() {
         if (!isDone) {
-            alert("Task is not done yet")
+            Alert.alert("Task is not done yet")
             return;
         }
         let doneTask = props.task;
@@ -37,7 +39,6 @@ export default function TaskCheckBox(props) {
         updateActualTask(doneTask, props.isPrivate);
         setIsDone(false);
     }
-
 
     const isPrivate = props.isPrivate;
     return (
@@ -48,7 +49,7 @@ export default function TaskCheckBox(props) {
             </TouchableOpacity >
 
             <Text style={styles.text}>
-                {[props.task.type == true ? props.task.drug.drugType + ' - ' + props.task.taskName : props.task.taskName]}
+                {[props.task.type == true ? props.task.drug.drugType + ' - ' + taskName : taskName]}
             </Text>
 
             <TouchableOpacity style={styles.iconArrow} onPress={openTaskList}>
