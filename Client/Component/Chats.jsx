@@ -1,18 +1,21 @@
 import { View, Text, StyleSheet, Dimensions, Image, Alert, Modal, TouchableOpacity, ScrollView, Platform } from 'react-native'
 import { useCallback, useState, useLayoutEffect } from 'react'
 import { auth, db } from '../config/firebase';
-import { signOut, updateProfile } from 'firebase/auth';
-import { GiftedChat, Send, Bubble } from 'react-native-gifted-chat';
+import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 import { collection, addDoc, getDocs, getDoc, query, orderBy, onSnapshot, updateDoc, where, limit, doc, increment } from 'firebase/firestore';
 import { useEffect } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { useUserContext } from '../UserContext';
 import { Feather, Entypo, EvilIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import AddNewGroupChat from '../Component/HelpComponents/AddNewGroupChat';
-import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
+import AddNewGroupChat from './ChatComponents/AddNewGroupChat';
 import { useFocusEffect } from '@react-navigation/native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import {InputToolbar, Actions} from 'react-native-gifted-chat';
+import * as ImagePicker from 'expo-image-picker';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { storage } from '../config/firebase';
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+
 
 import moment from 'moment';
 
@@ -46,6 +49,7 @@ function ChatRoom({ route, navigation }) {
             createdAt: doc.data().createdAt.toDate(),
             text: doc.data().text,
             user: doc.data().user,
+            image: doc.data().image
           }))
         )
       });
@@ -83,8 +87,114 @@ function ChatRoom({ route, navigation }) {
     }, [])
   );
 
+  const openCamera = async () => {
+    // Ask the user for the permission to access the camera
+    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+    if (permissionResult.granted === false) {
+      Alert.alert("You've refused to allow this appp to access your camera!");
+      return;
+    }
+
+    let result = await ImagePicker.launchCameraAsync(
+      {
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        quality: 0.1,
+      }
+    );
+    // Explore the result
+    console.log(result);
+    if (!result.canceled) {
+      sendToFirebase(result.assets[0].uri);     
+    }
+  }
+
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      quality: 0.1,
+    });
+    // Explore the result
+    console.log(result);
+    if (!result.canceled) {
+      console.log("result.uri", result.assets[0].uri)
+      sendToFirebase(result.assets[0].uri);     
+    }
+  };
+
+  const sendToFirebase = async (image) => {
+    // if the user didn't upload an image, we will use the default image
+    const filename = image.substring(image.lastIndexOf('/') + 1);
+    const storageRef = ref(storage, "chatImages/" + filename);
+    const blob = await fetch(image).then(response => response.blob());
+    try {
+      const uploadTask = uploadBytesResumable(storageRef, blob);
+      uploadTask.on('state_changed',
+        snapshot => {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log(`Upload is ${progress}% complete`);
+        },
+        error => {
+          console.error(error);
+          Alert.alert('Upload Error', 'Sorry, there was an error uploading your image. Please try again later.');
+        },
+        () => {
+          getDownloadURL(storageRef).then(downloadURL => {
+            console.log('File available at', downloadURL);
+            onSendImage(downloadURL);
+          });
+        }
+      );
+    }
+    catch (error) {
+      console.error(error);
+      Alert.alert('Upload Error', 'Sorry, there was an error uploading your image. Please try again later.');
+    }
+  };
+
+  const onSendImage = async (downloadUrl) => {
+    //add new message to db
+    const newMessage = {
+      _id: Math.random().toString(36).substring(7),
+      createdAt: new Date(),
+      user: {
+        _id: auth.currentUser.email,
+        name: auth.currentUser.displayName,
+        avatar: auth.currentUser.photoURL
+      },
+      image: downloadUrl,
+      text: "blasdsad"
+    }
+    console.log(newMessage);
+    setMessages(previousMessages => GiftedChat.append(previousMessages, [newMessage]));
+    const { _id, createdAt, text, user, image } = newMessage
+    addDoc(collection(db, route.params.name), { _id, createdAt, text, user, image });
+    console.log("new message added to db")
+
+    //update last message and last message time in db
+    const docRef = query(collection(db, auth.currentUser.email), where("Name", "==", route.params.name));
+    const res = getDocs(docRef);
+    res.then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        updateDoc(doc.ref, { lastMessage: text, lastMessageTime: createdAt });
+      });
+    });
+    if (route.params.userEmail) {
+      const docRef = query(collection(db, route.params.userEmail), where("Name", "==", route.params.name));
+      const res = getDocs(docRef);
+      res.then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: text, lastMessageTime: createdAt });
+        });
+      });
+    }
+  }
+
+
   const onSend = useCallback((messages = []) => {
-    console.log(route.params.userEmail);
+    console.log(messages[0]);
     const { _id, createdAt, text, user } = messages[0]
     addDoc(collection(db, route.params.name), { _id, createdAt, text, user });
     const docRef = query(collection(db, auth.currentUser.email), where("Name", "==", route.params.name));
@@ -107,9 +217,9 @@ function ChatRoom({ route, navigation }) {
 
   return (
     <GiftedChat
-    wrapInSafeArea={false}
-    bottomOffset={Platform.OS === 'ios' ? 50 : 0}
-    messages={messages}
+      wrapInSafeArea={false}
+      bottomOffset={Platform.OS === 'ios' ? 50 : 0}
+      messages={messages}
       showAvatarForEveryMessage={true}
       onSend={messages => onSend(messages)}
       user={{
@@ -142,14 +252,57 @@ function ChatRoom({ route, navigation }) {
             }} />
         )
       }}
-onPressAvatar={(user) => {
-  console.log(user);
-  navigation.navigate('ChatProfile', { user: user });
+      onPressAvatar={(user) => {
+        console.log(user);
+        navigation.navigate('ChatProfile', { user: user });
+      }
+      }
+      renderActions={(props) => {
+        return (
+          <Actions {...props}
+            containerStyle={{
+              width: 44,
+              height: 44,
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginLeft: 4,
+              marginRight: 4,
+              marginBottom: 0,
+            }}
+            icon={() => (
+              <Ionicons name="camera" size={28} color="#000" />
+            )}
+            options={{
+              'Take Photo': () => {
+                openCamera();
+              },
+              'Choose From Gallery': () => {
+                pickImage();
+              },
+              Cancel: () => { },
+            }}
+            optionTintColor="#222B45"
+          />
+        )
+      }
+      }
+      renderInputToolbar={(props) => {
+        return (
+          <InputToolbar {...props}
+            containerStyle={{
+            }}
+            primaryStyle={{ alignItems: 'center' }}    
+                   
+          />
+        )
+      }
+      }
+      
+
+/>
+  )
 }
-}
-    />
-  );
-}
+
 
 function MainRoom({ navigation }) {
   const [chatsToDisplay, setchatsToDisplay] = useState([])
@@ -164,10 +317,7 @@ function MainRoom({ navigation }) {
 
   useEffect(() => {
     if (userContext) {
-      console.log("Email is this", auth.currentUser.email);
-      console.log('getUserChats')
       const tempNames = query(collection(db, auth.currentUser.email));
-
       // add listener to names collection
       const getNames = onSnapshot(tempNames, (snapshot) => setUserChats(
         snapshot.docs.map(doc => ({
@@ -214,10 +364,7 @@ function MainRoom({ navigation }) {
           <ConvoCard key={index} name={name} userEmails={name.userEmails} />
         )))
       }
-
-
       renderNames();
-      console.log('userChats', userChats)
     }
     else {
       setchatsToDisplay()
@@ -520,6 +667,5 @@ const styles = StyleSheet.create({
     width: 55,
     height: 55,
     borderRadius: 54
-  },
- 
+  }, 
 })

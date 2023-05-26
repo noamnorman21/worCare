@@ -10,29 +10,25 @@ const ScreenHeight = Dimensions.get('window').height;
 
 
 export default function ChatProfile({ route, navigation }) {
-  const { userContext } = useUserContext();
-  const [user, setUser] = useState(null);
-  const [userChats, setUserChats] = useState([]);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [modalVisible2, setModalVisible2] = useState(false);
-  const [modalVisible3, setModalVisible3] = useState(false);
 
   const addNewPrivateChat = async (user) => {
     // check if convo already exists in firestore 
     // if yes, navigate to chat room
     // if no, add new convo to firestore and navigate to chat room
-    const q = query(collection(db, auth.currentUser.email), where("Name", "==", auth.currentUser.displayName + "+" + user.name || user.name + "+" + auth.currentUser.displayName));
-    const querySnapshot = await getDocs(q);
-    if (querySnapshot.docs.length > 0) {
+    const q1 = query(collection(db, auth.currentUser.email), where("Name", "==", auth.currentUser.displayName + "+" + user.name));
+    const q2 = query(collection(db, auth.currentUser.email), where("Name", "==", user.name + "+" + auth.currentUser.displayName));
+    const querySnapshot = await getDocs(q1);
+    const querySnapshot2 = await getDocs(q2);
+    if (querySnapshot.docs.length > 0 || querySnapshot2.docs.length > 0) {
       checkifConvoExistsforContact(user)
       console.log("convo exists")
-      navigation.navigate('ChatRoom', { name: auth.currentUser.displayName + "+" + user.name, UserName: user.name || user.name + "+" + auth.currentUser.displayName })
+      navigation.navigate('ChatRoom', { name: auth.currentUser.displayName + "+" + user.name, UserName: user.name })
       // const editRef= collection(db, auth.currentUser.email, where("Name", "==", auth.currentUser.displayName+"+"+user.name));
       // const doc= await getDocs(editRef);
       // await updateDoc(editRef, { unread: false, unreadCount: 0 });
     } else {
       console.log("add new private chat")
-      let contact=user
+      let contact = user
       console.log("Userrrrr", contact)
       addDoc(collection(db, auth.currentUser.email), { Name: auth.currentUser.displayName + "+" + contact.name, UserName: contact.name, userEmail: contact._id, image: contact.avatar, unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date() });
       checkifConvoExistsforContact(user)
@@ -40,19 +36,19 @@ export default function ChatProfile({ route, navigation }) {
     }
   }
 
-  const checkifConvoExistsforContact = (contact) => {
+  const checkifConvoExistsforContact = async (contact) => {
     console.log(contact)
-    const q = query(collection(db, contact._id), where("Name", "==", auth.currentUser.displayName + "+" + contact.name || user.name + "+" + auth.currentUser.displayName));
-    getDocs(q).then((querySnapshot) => {
-      if (querySnapshot.size > 0) {
-        console.log("convo existsssssss")
-      } else {
-        console.log("add new private chat")
-        addDoc(collection(db, contact.id), { Name: auth.currentUser.displayName + "+" + contact.name, UserName: auth.currentUser.displayName, image: auth.currentUser.photoURL, userEmail: auth.currentUser.email, unread: true, unreadCount: 0, lastMessage: "", lastMessageTime: new Date() });
-      }
+    const q1 = query(collection(db, contact._id), where("Name", "==", auth.currentUser.displayName + "+" + contact.name));
+    const q2 = query(collection(db, contact._id), where("Name", "==", contact.name + "+" + auth.currentUser.displayName));
+    const query1 = await getDocs(q1);
+    const query2 = await getDocs(q2);
+    if (query1.docs.length > 0 || query2.docs.length > 0) {
+      console.log("convo existsssssss")
+    } else {
+      console.log("add new private chat")
+      addDoc(collection(db, contact.id), { Name: auth.currentUser.displayName + "+" + contact.name, UserName: auth.currentUser.displayName, image: auth.currentUser.photoURL, userEmail: auth.currentUser.email, unread: true, unreadCount: 0, lastMessage: "", lastMessageTime: new Date() });
     }
-    )
-  }
+  }  
 
   return (
     <View style={styles.container}>
