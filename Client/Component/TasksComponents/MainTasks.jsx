@@ -34,10 +34,6 @@ export default function MainTasks(props) {
   useEffect(() => {
     if (isFocused && route.params) {
       const { task } = route.params;
-      //first check if the task is today task
-
-        console.log('today task');
-
         let index = todayTasks.findIndex(t => t.actualId === task.actualId);
         console.log(index);
         if (index == -1) {//that means the task is in tommorow task
@@ -48,7 +44,6 @@ export default function MainTasks(props) {
           setTimeout(() => {
             scrollToIndex(tommorowScrollViewRef, index);
           }, 500);
-
         }
         else {
           setHeaderTommorow(true);
@@ -57,8 +52,6 @@ export default function MainTasks(props) {
             scrollToIndex(todayScrollViewRef, index);
           }, 500);
         }
-
-
     }
   }, [isFocused, route.params]);
 
