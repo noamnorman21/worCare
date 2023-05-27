@@ -1,6 +1,7 @@
-import { StyleSheet, Alert } from 'react-native'
-import { useEffect, useState } from 'react'
+import { StyleSheet, Alert } from 'react-native';
+import { useEffect, useState } from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+
 import { useUserContext } from '../UserContext';
 import { MenuProvider } from "react-native-popup-menu";
 
@@ -12,9 +13,10 @@ import Medicine from './TasksComponents/MedicineTasks';
 const Tab = createMaterialTopTabNavigator();
 
 export default function Tasks() {
+
   const [userData, setUserData] = useState(useUserContext().userContext);
   const [userId, setUserId] = useState(useUserContext.userId);
-  const { getAllPublicTasks, getAllPrivateTasks, allPublicTasks, allPrivateTasks,GetAllDrugs } = useUserContext();
+  const { getAllPublicTasks, getAllPrivateTasks, allPublicTasks, allPrivateTasks, GetAllDrugs } = useUserContext();
   const [userType, setUserType] = useState(userData.userType);
   const [allMedicineTasks, setAllMedicineTasks] = useState([]);
   const [allShopTasks, setAllShopTasks] = useState([]);
@@ -36,7 +38,7 @@ export default function Tasks() {
       let taskDate = new Date(task.taskDate)
       return taskDate.getDate() == today.getDate() && taskDate.getMonth() == today.getMonth() && taskDate.getFullYear() == today.getFullYear()
     })
-    //sort by time from erliest to latest
+    //sort by time from earliest to latest
     filteredMedicineTasks.sort((a, b) => {
       let aTime = new Date(a.taskDate);
       let bTime = new Date(b.taskDate);
@@ -44,16 +46,17 @@ export default function Tasks() {
     })
     setAllMedicineTasks(filteredMedicineTasks);
   }
-  const moveScreens = (task) => {
-    Alert.alert(task.taskId);
-  }
+
+
   const refreshPublicTask = () => {
     getAllPublicTasks(userData);
     filterTasks(allPublicTasks);
   }
+
   const refreshPrivateTask = () => {
     getAllPrivateTasks(userData);
   }
+
   const changeHeader = (header) => {
     setShowHeader(header);
   }
@@ -74,7 +77,7 @@ export default function Tasks() {
           tabBarLabelStyle: {
             marginTop: 15,
             height: 25,
-            fontSize: 15, // <-- change this size to 18
+            fontSize: 15,
             color: '#9E9E9E',
             fontFamily: 'Urbanist-SemiBold',
             alignItems: 'center',
@@ -88,7 +91,7 @@ export default function Tasks() {
         }}
       >
         <Tab.Screen name="Main" children={() => <Main allPrivateTasks={allPrivateTasks} allPublicTasks={allPublicTasks} refreshPublicTask={refreshPublicTask} refreshPrivateTask={refreshPrivateTask} />} />
-        <Tab.Screen name="General" children={() => <General allPrivateTasks={allPrivateTasks} allPublicTasks={allPublicTasks} moveScreens={moveScreens} refreshPrivateTask={refreshPrivateTask} refreshPublicTask={refreshPublicTask} />} />
+        <Tab.Screen name="General" children={() => <General allPrivateTasks={allPrivateTasks} allPublicTasks={allPublicTasks}  refreshPrivateTask={refreshPrivateTask} refreshPublicTask={refreshPublicTask} />} />
         <Tab.Screen name="Shop" children={() => <Shop allShopTasks={allShopTasks} refreshPublicTask={refreshPublicTask} refreshPrivateTask={refreshPrivateTask} />} />
         <Tab.Screen name="Medicine" children={() => <Medicine changeHeader={changeHeader} allMedicineTasks={allMedicineTasks} refreshPublicTask={refreshPublicTask} refreshPrivateTask={refreshPrivateTask} />} />
       </Tab.Navigator>
@@ -103,4 +106,4 @@ const styles = StyleSheet.create({
     backgroundColor: 'none',
     fontFamily: 'Urbanist-Regular',
   }
-})
+});

@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions, Layou
 import { Ionicons } from '@expo/vector-icons';
 import TaskView from '../HelpComponents/TaskView';
 import { AddBtn, NewTaskModal } from '../HelpComponents/AddNewTask';
+import { useRoute, useIsFocused } from '@react-navigation/native';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
@@ -18,19 +19,48 @@ export default function MainTasks(props) {
   const arrowIcon = ["chevron-down-outline", "chevron-up-outline"];
   const todayScrollViewRef = useRef(null);
   const tommorowScrollViewRef = useRef(null);
+  const [taskFocus, setTaskFocus] = useState('');
+
+  const route = useRoute();
+  const isFocused = useIsFocused();
+
 
   useEffect(() => {
     setPublicTasks(props.allPublicTasks);
     setPrivateTasks(props.allPrivateTasks);
     filterTasks(props.allPrivateTasks, props.allPublicTasks);
-  }, [props.allPublicTasks, props.allPrivateTasks]);
+  }, [props.allPublicTasks, props.allPrivateTasks, isFocused]);
 
-  //דוגמא לאיך לגלול, למחוק אחרי המימוש
-  // useEffect(() => {
-  //   if (props.scrollToIndex == undefined) {
-  //     scrollToIndex(tommorowScrollViewRef, 6);
-  //   }
-  // }, [props.scrollToIndex]);
+  useEffect(() => {
+    if (isFocused && route.params) {
+      const { task } = route.params;
+      //first check if the task is today task
+
+        console.log('today task');
+
+        let index = todayTasks.findIndex(t => t.actualId === task.actualId);
+        console.log(index);
+        if (index == -1) {//that means the task is in tommorow task
+          setHeaderTommorow(false);
+          setHeaderToday(true);
+          index = tommorowTasks.findIndex(t => t.actualId === task.actualId);
+          console.log(index);
+          setTimeout(() => {
+            scrollToIndex(tommorowScrollViewRef, index);
+          }, 500);
+
+        }
+        else {
+          setHeaderTommorow(true);
+          setHeaderToday(false);
+          setTimeout(() => {
+            scrollToIndex(todayScrollViewRef, index);
+          }, 500);
+        }
+
+
+    }
+  }, [isFocused, route.params]);
 
   const filterTasks = (privateTask, publicTasks) => {
     //combine private and public tasks for today task and sort by time
@@ -64,14 +94,8 @@ export default function MainTasks(props) {
   };
 
   const handleAddBtnPress = () => {
-  // setModalVisible(true);
-  //בינתיים לעכשיו בשביל לנסות 
-  setHeaderTommorow(false);
-  setHeaderToday(true);
-  //awit for the animation to finish and then scroll to 5th index
-  setTimeout(() => {
-    scrollToIndex(tommorowScrollViewRef, 4);
-  }, 100);
+    setModalVisible(true);
+
   };
 
   const toggleHeaderTodayView = () => {
@@ -113,7 +137,7 @@ export default function MainTasks(props) {
                 today={true}
                 key={index}
                 task={task}
-                isPrivate={task.patientId === null}
+                isPrivate={task.patientId == null ? true : false}
                 hideDate={true}
                 onLayout={() => scrollToIndex(todayScrollViewRef, index)}
               />
@@ -136,7 +160,7 @@ export default function MainTasks(props) {
                 today={false}
                 key={index}
                 task={task}
-                isPrivate={task.patientId === null}
+                isPrivate={task.patientId == null ? true : false}
                 hideDate={false}
                 onLayout={() => scrollToIndex(tommorowScrollViewRef, index)}
               />

@@ -22,10 +22,7 @@ export default function TaskCheckBox(props) {
         }
     }, [isDone]);
 
-
-
     const openTaskList = () => {
-        //צריך ליצור את ההמשך במסכים
         props.moveScreens(props.task);
     }
 
