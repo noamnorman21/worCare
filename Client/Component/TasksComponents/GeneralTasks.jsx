@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, ScrollView, Dimensions, LayoutAnimation } from 'react-native'
+import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, ScrollView, Dimensions, LayoutAnimation, Alert } from 'react-native'
 import { useState, useEffect } from 'react'
 import { useIsFocused } from '@react-navigation/native';
 import { AddBtn, NewTaskModal } from '../HelpComponents/AddNewTask'
@@ -80,7 +80,11 @@ export default function GeneralTasks(props) {
   }
 
   const sendNavigtion = (task) => {
-    props.moveScreens(task)
+   Alert.alert(
+    task.taskName)
+    //here will will check if the task is med,genral or shop, then we will send the user to the right screen
+
+
   }
 
   return (
