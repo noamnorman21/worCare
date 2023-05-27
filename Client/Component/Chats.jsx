@@ -15,6 +15,7 @@ import * as ImagePicker from 'expo-image-picker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { storage } from '../config/firebase';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { TextInput } from 'react-native-paper';
 
 
 import moment from 'moment';
@@ -23,7 +24,10 @@ const ScreenHeight = Dimensions.get("window").height;
 const ScreenWidth = Dimensions.get("window").width;
 
 import ChatProfile from './ChatComponents/ChatProfile';
-import { TextInput } from 'react-native-paper';
+import ChatRoom from './ChatComponents/ChatRoom';
+
+
+
 
 
 const stack = createStackNavigator();
@@ -38,351 +42,351 @@ export default function Chats({ navigation }) {
 }
 
 
-function ChatRoom({ route, navigation }) {
-  const [messages, setMessages] = useState([]);
-  const [picPreviewModal, setPicPreviewModal] = useState(false);
-  const [selectedPic, setSelectedPic] = useState(null);
-  const [imageDescription, setImageDescription] = useState('')
+// function ChatRoom({ route, navigation }) {
+//   const [messages, setMessages] = useState([]);
+//   const [picPreviewModal, setPicPreviewModal] = useState(false);
+//   const [selectedPic, setSelectedPic] = useState(null);
+//   const [imageDescription, setImageDescription] = useState('')
 
-  useLayoutEffect(() => {
-    const tempMessages = query(collection(db, route.params.name), orderBy('createdAt', 'desc'));
-    getDocs(tempMessages).then((querySnapshot) => {
-      onSnapshot(tempMessages, (snapshot) => {
-        setMessages(
-          snapshot.docs.map(doc => ({
-            _id: doc.data()._id,
-            createdAt: doc.data().createdAt.toDate(),
-            text: doc.data().text,
-            user: doc.data().user,
-            image: doc.data().image
-          }))
-        )
-      });
-    });
-    navigation.setOptions({
-      headerTitle: route.params.UserName ? route.params.UserName : route.params.name,
-    })
+//   useLayoutEffect(() => {
+//     const tempMessages = query(collection(db, route.params.name), orderBy('createdAt', 'desc'));
+//     getDocs(tempMessages).then((querySnapshot) => {
+//       onSnapshot(tempMessages, (snapshot) => {
+//         setMessages(
+//           snapshot.docs.map(doc => ({
+//             _id: doc.data()._id,
+//             createdAt: doc.data().createdAt.toDate(),
+//             text: doc.data().text,
+//             user: doc.data().user,
+//             image: doc.data().image
+//           }))
+//         )
+//       });
+//     });
+//     navigation.setOptions({
+//       headerTitle: route.params.UserName ? route.params.UserName : route.params.name,
+//     })
 
-  }, [navigation]);
+//   }, [navigation]);
 
-  useEffect(() => {
-    const setDocAsRead = async () => {
-      const docRef = query(collection(db, auth.currentUser.email), where("Name", "==", route.params.name));
-      const res = await getDocs(docRef);
-      res.forEach((doc) => {
-        updateDoc(doc.ref, { unread: false, unreadCount: 0 });
-      });
-    }
-    setDocAsRead();
-  }, []);
+//   useEffect(() => {
+//     const setDocAsRead = async () => {
+//       const docRef = query(collection(db, auth.currentUser.email), where("Name", "==", route.params.name));
+//       const res = await getDocs(docRef);
+//       res.forEach((doc) => {
+//         updateDoc(doc.ref, { unread: false, unreadCount: 0 });
+//       });
+//     }
+//     setDocAsRead();
+//   }, []);
 
-  useFocusEffect( //update convo in db that user has read the messages when leaving page
-    useCallback(() => {
-      const setDocAsRead = async () => {
-        console.log("set doc as read")
-        const docRef = query(collection(db, auth.currentUser.email), where("Name", "==", route.params.name));
-        const res = await getDocs(docRef);
-        res.forEach((doc) => {
-          updateDoc(doc.ref, { unread: false, unreadCount: 0 });
-        });
-      }
-      return () => {
-        setDocAsRead();
-      }
-    }, [])
-  );
+//   useFocusEffect( //update convo in db that user has read the messages when leaving page
+//     useCallback(() => {
+//       const setDocAsRead = async () => {
+//         console.log("set doc as read")
+//         const docRef = query(collection(db, auth.currentUser.email), where("Name", "==", route.params.name));
+//         const res = await getDocs(docRef);
+//         res.forEach((doc) => {
+//           updateDoc(doc.ref, { unread: false, unreadCount: 0 });
+//         });
+//       }
+//       return () => {
+//         setDocAsRead();
+//       }
+//     }, [])
+//   );
 
-  const openCamera = async () => {
-    // Ask the user for the permission to access the camera
-    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
-    if (permissionResult.granted === false) {
-      Alert.alert("You've refused to allow this appp to access your camera!");
-      return;
-    }
+//   const openCamera = async () => {
+//     // Ask the user for the permission to access the camera
+//     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+//     if (permissionResult.granted === false) {
+//       Alert.alert("You've refused to allow this appp to access your camera!");
+//       return;
+//     }
 
-    let result = await ImagePicker.launchCameraAsync(
-      {
-        mediaTypes: ImagePicker.MediaTypeOptions.All,
-        allowsEditing: true,
-        quality: 0.1,
-      }
-    );
-    // Explore the result
-    if (!result.canceled) {
-      setPicPreviewModal(true); 
-      console.log("result.uri", result.assets[0].uri)
-      setSelectedPic(result.assets[0].uri);
-    }
-  }
+//     let result = await ImagePicker.launchCameraAsync(
+//       {
+//         mediaTypes: ImagePicker.MediaTypeOptions.All,
+//         allowsEditing: true,
+//         quality: 0.1,
+//       }
+//     );
+//     // Explore the result
+//     if (!result.canceled) {
+//       setPicPreviewModal(true); 
+//       console.log("result.uri", result.assets[0].uri)
+//       setSelectedPic(result.assets[0].uri);
+//     }
+//   }
 
-  const pickImage = async () => {
-    // No permissions request is necessary for launching the image library
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      quality: 0.1,
-    });
-    // Explore the result
-    if (!result.canceled) {
-      setPicPreviewModal(true); 
-      console.log("result.uri", result.assets[0].uri)
-      setSelectedPic(result.assets[0].uri);
+//   const pickImage = async () => {
+//     // No permissions request is necessary for launching the image library
+//     let result = await ImagePicker.launchImageLibraryAsync({
+//       mediaTypes: ImagePicker.MediaTypeOptions.All,
+//       allowsEditing: true,
+//       quality: 0.1,
+//     });
+//     // Explore the result
+//     if (!result.canceled) {
+//       setPicPreviewModal(true); 
+//       console.log("result.uri", result.assets[0].uri)
+//       setSelectedPic(result.assets[0].uri);
            
-      // sendToFirebase(result.assets[0].uri);     
-    }
-  };
+//       // sendToFirebase(result.assets[0].uri);     
+//     }
+//   };
 
-  const sendToFirebase = async (image) => {
-    // if the user didn't upload an image, we will use the default image
-    const filename = image.substring(image.lastIndexOf('/') + 1);
-    const storageRef = ref(storage, "chatImages/" + filename);
-    const blob = await fetch(image).then(response => response.blob());
-    try {
-      const uploadTask = uploadBytesResumable(storageRef, blob);
-      uploadTask.on('state_changed',
-        snapshot => {
-          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log(`Upload is ${progress}% complete`);
-        },
-        error => {
-          console.error(error);
-          Alert.alert('Upload Error', 'Sorry, there was an error uploading your image. Please try again later.');
-        },
-        () => {
-          getDownloadURL(storageRef).then(downloadURL => {
-            console.log('File available at', downloadURL);
-            onSendImage(downloadURL);
-          });
-        }
-      );
-    }
-    catch (error) {
-      console.error(error);
-      Alert.alert('Upload Error', 'Sorry, there was an error uploading your image. Please try again later.');
-    }
-  };
+//   const sendToFirebase = async (image) => {
+//     // if the user didn't upload an image, we will use the default image
+//     const filename = image.substring(image.lastIndexOf('/') + 1);
+//     const storageRef = ref(storage, "chatImages/" + filename);
+//     const blob = await fetch(image).then(response => response.blob());
+//     try {
+//       const uploadTask = uploadBytesResumable(storageRef, blob);
+//       uploadTask.on('state_changed',
+//         snapshot => {
+//           const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+//           console.log(`Upload is ${progress}% complete`);
+//         },
+//         error => {
+//           console.error(error);
+//           Alert.alert('Upload Error', 'Sorry, there was an error uploading your image. Please try again later.');
+//         },
+//         () => {
+//           getDownloadURL(storageRef).then(downloadURL => {
+//             console.log('File available at', downloadURL);
+//             onSendImage(downloadURL);
+//           });
+//         }
+//       );
+//     }
+//     catch (error) {
+//       console.error(error);
+//       Alert.alert('Upload Error', 'Sorry, there was an error uploading your image. Please try again later.');
+//     }
+//   };
 
-  const onSendImage = async (downloadUrl) => {
-    //add new message to db
-    const newMessage = {
-      _id: Math.random().toString(36).substring(7),
-      createdAt: new Date(),
-      user: {
-        _id: auth.currentUser.email,
-        name: auth.currentUser.displayName,
-        avatar: auth.currentUser.photoURL
-      },
-      image: downloadUrl,
-      text: imageDescription
-    }
-    setMessages(previousMessages => GiftedChat.append(previousMessages, [newMessage]));
-    const { _id, createdAt, text, user, image } = newMessage
-    addDoc(collection(db, route.params.name), { _id, createdAt, text, user, image });
-    console.log("new message added to db")
-    setPicPreviewModal(false);
-    setImageDescription('');
-    //update last message and last message time in db
-    const docRef = query(collection(db, auth.currentUser.email), where("Name", "==", route.params.name));
-    const res = getDocs(docRef);
-    res.then((querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-        updateDoc(doc.ref, { lastMessage: text||"image", lastMessageTime: createdAt });
-      });
-    });
-    if (route.params.userEmail) {
-      const docRef = query(collection(db, route.params.userEmail), where("Name", "==", route.params.name));
-      const res = getDocs(docRef);
-      res.then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-          updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: text, lastMessageTime: createdAt });
-        });
-      });
-    }
-  }
+//   const onSendImage = async (downloadUrl) => {
+//     //add new message to db
+//     const newMessage = {
+//       _id: Math.random().toString(36).substring(7),
+//       createdAt: new Date(),
+//       user: {
+//         _id: auth.currentUser.email,
+//         name: auth.currentUser.displayName,
+//         avatar: auth.currentUser.photoURL
+//       },
+//       image: downloadUrl,
+//       text: imageDescription
+//     }
+//     setMessages(previousMessages => GiftedChat.append(previousMessages, [newMessage]));
+//     const { _id, createdAt, text, user, image } = newMessage
+//     addDoc(collection(db, route.params.name), { _id, createdAt, text, user, image });
+//     console.log("new message added to db")
+//     setPicPreviewModal(false);
+//     setImageDescription('');
+//     //update last message and last message time in db
+//     const docRef = query(collection(db, auth.currentUser.email), where("Name", "==", route.params.name));
+//     const res = getDocs(docRef);
+//     res.then((querySnapshot) => {
+//       querySnapshot.forEach((doc) => {
+//         updateDoc(doc.ref, { lastMessage: text||"image", lastMessageTime: createdAt });
+//       });
+//     });
+//     if (route.params.userEmail) {
+//       const docRef = query(collection(db, route.params.userEmail), where("Name", "==", route.params.name));
+//       const res = getDocs(docRef);
+//       res.then((querySnapshot) => {
+//         querySnapshot.forEach((doc) => {
+//           updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: text||"image", lastMessageTime: createdAt });
+//         });
+//       });
+//     }
+//   }
 
 
-  const onSend = useCallback((messages = []) => {
-    const { _id, createdAt, text, user } = messages[0]
-    addDoc(collection(db, route.params.name), { _id, createdAt, text, user });
-    const docRef = query(collection(db, auth.currentUser.email), where("Name", "==", route.params.name));
-    const res = getDocs(docRef);
-    res.then((querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-        updateDoc(doc.ref, { lastMessage: text, lastMessageTime: createdAt });
-      });
-    });
-    if (route.params.userEmail) {
-      const docRef = query(collection(db, route.params.userEmail), where("Name", "==", route.params.name));
-      const res = getDocs(docRef);
-      res.then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-          updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: text, lastMessageTime: createdAt });
-        });
-      });
-    }
-  }, []);
+//   const onSend = useCallback((messages = []) => {
+//     const { _id, createdAt, text, user } = messages[0]
+//     addDoc(collection(db, route.params.name), { _id, createdAt, text, user });
+//     const docRef = query(collection(db, auth.currentUser.email), where("Name", "==", route.params.name));
+//     const res = getDocs(docRef);
+//     res.then((querySnapshot) => {
+//       querySnapshot.forEach((doc) => {
+//         updateDoc(doc.ref, { lastMessage: text, lastMessageTime: createdAt });
+//       });
+//     });
+//     if (route.params.userEmail) {
+//       const docRef = query(collection(db, route.params.userEmail), where("Name", "==", route.params.name));
+//       const res = getDocs(docRef);
+//       res.then((querySnapshot) => {
+//         querySnapshot.forEach((doc) => {
+//           updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: text, lastMessageTime: createdAt });
+//         });
+//       });
+//     }
+//   }, []);
 
-  return (
-    <>
-    <GiftedChat
-      wrapInSafeArea={false}
-      //bottomOffset={Platform.OS === 'ios' ? 50 : 0} this in case canceling tab bar wont work
-      messages={messages}
-      showAvatarForEveryMessage={true}
-      onSend={messages => onSend(messages)}
-      user={{
-        _id: auth?.currentUser?.email,
-        name: auth?.currentUser?.displayName,
-        avatar: auth?.currentUser?.photoURL
-      }}
-      isLoadingEarlier={true}
-      showUserAvatar={true}
-      renderBubble={(props) => {
-        return (
-          <Bubble {...props}
-            wrapperStyle={{
-              left: {
-                backgroundColor: "#D9D9D980",
-                borderColor: "#808080",
-                borderWidth: 1,
-                borderRadius: 15,
-              },
-              right: {
-                backgroundColor: "#7DA9FF",
-                borderColor: "#548DFF",
-                borderWidth: 1,
-                borderRadius: 15,
-              }
-            }}
-            textStyle={{
-              left: { fontFamily: "Urbanist-Regular" },
-              right: { fontFamily: "Urbanist-Regular", color: "#fff" }
-            }}
-             />
-        )
-      }}
-      onPressAvatar={(user) => {
-        if(user._id !== auth.currentUser.email){
-        navigation.navigate('ChatProfile', { user: user });
-        }
-        else{
-          console.log("user is me")
-        }
-      }
-      }
-      renderActions={(props) => {
-        return (
-          <Actions {...props}
-            containerStyle={{
-              width: 44,
-              height: 44,
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginLeft: 4,
-              marginRight: 4,
-              marginBottom: 0,
-            }}
-            icon={() => (
-              <Ionicons name="camera" size={28} color="#000" />
-            )}
-            options={{
-              'Take Photo': () => {
-                openCamera();
-              },
-              'Choose From Gallery': () => {
-                pickImage();
-              },
-              Cancel: () => { },
-            }}
-            optionTintColor="#222B45"
-          />
-        )
-      }
-      }
-      renderInputToolbar={(props) => {
-        return (
-          <InputToolbar {...props}
-            containerStyle={{
-            }}
-            primaryStyle={{ alignItems: 'center' }}    
+//   return (
+//     <>
+//     <GiftedChat
+//       wrapInSafeArea={false}
+//       //bottomOffset={Platform.OS === 'ios' ? 50 : 0} this in case canceling tab bar wont work
+//       messages={messages}
+//       showAvatarForEveryMessage={true}
+//       onSend={messages => onSend(messages)}
+//       user={{
+//         _id: auth?.currentUser?.email,
+//         name: auth?.currentUser?.displayName,
+//         avatar: auth?.currentUser?.photoURL
+//       }}
+//       isLoadingEarlier={true}
+//       showUserAvatar={true}
+//       renderBubble={(props) => {
+//         return (
+//           <Bubble {...props}
+//             wrapperStyle={{
+//               left: {
+//                 backgroundColor: "#D9D9D980",
+//                 borderColor: "#808080",
+//                 borderWidth: 1,
+//                 borderRadius: 15,
+//               },
+//               right: {
+//                 backgroundColor: "#7DA9FF",
+//                 borderColor: "#548DFF",
+//                 borderWidth: 1,
+//                 borderRadius: 15,
+//               }
+//             }}
+//             textStyle={{
+//               left: { fontFamily: "Urbanist-Regular" },
+//               right: { fontFamily: "Urbanist-Regular", color: "#fff" }
+//             }}
+//              />
+//         )
+//       }}
+//       onPressAvatar={(user) => {
+//         if(user._id !== auth.currentUser.email){
+//         navigation.navigate('ChatProfile', { user: user });
+//         }
+//         else{
+//           console.log("user is me")
+//         }
+//       }
+//       }
+//       renderActions={(props) => {
+//         return (
+//           <Actions {...props}
+//             containerStyle={{
+//               width: 44,
+//               height: 44,
+//               alignItems: 'center',
+//               justifyContent: 'center',
+//               marginLeft: 4,
+//               marginRight: 4,
+//               marginBottom: 0,
+//             }}
+//             icon={() => (
+//               <Ionicons name="camera" size={28} color="#000" />
+//             )}
+//             options={{
+//               'Take Photo': () => {
+//                 openCamera();
+//               },
+//               'Choose From Gallery': () => {
+//                 pickImage();
+//               },
+//               Cancel: () => { },
+//             }}
+//             optionTintColor="#222B45"
+//           />
+//         )
+//       }
+//       }
+//       renderInputToolbar={(props) => {
+//         return (
+//           <InputToolbar {...props}
+//             containerStyle={{
+//             }}
+//             primaryStyle={{ alignItems: 'center' }}    
                    
-          />
-        )
-      }
-      }
-      renderTime={(props) => {  
-        return (
-          <Time {...props}
-            timeTextStyle={{
-              left: { fontFamily: "Urbanist-Regular", color: "#000" },
-              right: { fontFamily: "Urbanist-Regular", color: "#fff" },
-              position:'absolute',
-            }}
-            timeFormat='HH:mm'
+//           />
+//         )
+//       }
+//       }
+//       renderTime={(props) => {  
+//         return (
+//           <Time {...props}
+//             timeTextStyle={{
+//               left: { fontFamily: "Urbanist-Regular", color: "#000" },
+//               right: { fontFamily: "Urbanist-Regular", color: "#fff" },
+//               position:'absolute',
+//             }}
+//             timeFormat='HH:mm'
            
-          />
-        )
-        // return (
-        //   <View>
-        //     {props.currentMessage.createdAt && <Text style={{ fontSize: 12, fontFamily: 'Urbanist-Regular', color: "#000", paddingRight:7, paddingLeft:7,paddingBottom:2}}>{moment(props.currentMessage.createdAt).format('HH:MM')}</Text>}
-        //   </View>
-        // )
-      }
-      }
-      imageStyle={{ width: 200, height: 200, borderRadius: 10 }}     
+//           />
+//         )
+//         // return (
+//         //   <View>
+//         //     {props.currentMessage.createdAt && <Text style={{ fontSize: 12, fontFamily: 'Urbanist-Regular', color: "#000", paddingRight:7, paddingLeft:7,paddingBottom:2}}>{moment(props.currentMessage.createdAt).format('HH:MM')}</Text>}
+//         //   </View>
+//         // )
+//       }
+//       }
+//       imageStyle={{ width: 200, height: 200, borderRadius: 10 }}     
      
 
-      renderMessageImage={(props) => {
-        return (
-          <MessageImage
-            {...props}
-            imageProps={{ resizeMode: 'contain' }}
-            lightboxProps={{
-              underlayColor: 'transparent',
-              backgroundColor:'#fff',
-              swipeToDismiss: true,
-              springConfig: { tension: 30, friction: 7 },
-              
-              renderContent: () => (
-                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                  <Image
-                    source={{ uri: props.currentMessage.image }}
-                    style={{ width: ScreenWidth*0.95, height: ScreenHeight*0.85, resizeMode: 'contain', }}
-                  />
-                  <Text style={{color:'red'}} >{props.currentMessage.text}</Text>
-                </View>
-              ),
-            }}
-          />
-        );
-      }}
+//       renderMessageImage={(props) => {
+//         return (
+//           <MessageImage
+//             {...props}
+//             imageProps={{ resizeMode: 'contain' }}
+//             lightboxProps={{
+//               underlayColor: 'transparent',
+//               backgroundColor:'#fff',
+//               swipeToDismiss: true,
+//               springConfig: { tension: 30, friction: 7 },
+
+//               renderContent: () => (
+//                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+//                   <Image
+//                     source={{ uri: props.currentMessage.image }}
+//                     style={{ width: ScreenWidth*0.95, height: ScreenHeight*0.85, resizeMode: 'contain', }}
+//                   />
+//                   <Text style={{color:'red'}} >{props.currentMessage.text}</Text>
+//                 </View>
+//               ),
+//             }}
+//           />
+//         );
+//       }}
 
 
 
       
 
-/>
-      <Modal visible={picPreviewModal} animationType='slide' onRequestClose={() => setPicPreviewModal(false)} >
-        <View style={styles.imagePreview}>
-          <View>
-          <Image source={{ uri: selectedPic }} style={styles.image} />
-          </View>
-          <View style={styles.inputAndSend}>
-            <TextInput style={{ width:ScreenWidth*0.8, backgroundColor: '#fff', borderRadius: 10, padding: 10, fontFamily: 'Urbanist-Regular', fontSize: 16, marginVertical: 10 }}
-                mode='outlined'
-                onChangeText={(text) => setImageDescription(text)} 
-                placeholder="Add a caption...(optional)"
-                outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
-                contentStyle={{ fontFamily: 'Urbanist-Medium' }}
-                activeOutlineColor="#548DFF"
-                outlineColor='#E6EBF2' />
-            <Ionicons name='send' size={30} color='#fff'  onPress={() => { setPicPreviewModal(false); sendToFirebase(selectedPic) }}/>
-          </View>
-        </View>
-      </Modal>
-</>
-  )
-}
+// />
+//       <Modal visible={picPreviewModal} animationType='slide' onRequestClose={() => setPicPreviewModal(false)} >
+//         <View style={styles.imagePreview}>
+//           <View>
+//           <Image source={{ uri: selectedPic }} style={styles.image} />
+//           </View>
+//           <View style={styles.inputAndSend}>
+//             <TextInput style={{ width:ScreenWidth*0.8, backgroundColor: '#fff', borderRadius: 10, padding: 10, fontFamily: 'Urbanist-Regular', fontSize: 16, marginVertical: 10 }}
+//                 mode='outlined'
+//                 onChangeText={(text) => setImageDescription(text)} 
+//                 placeholder="Add a caption...(optional)"
+//                 outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+//                 contentStyle={{ fontFamily: 'Urbanist-Medium' }}
+//                 activeOutlineColor="#548DFF"
+//                 outlineColor='#E6EBF2' />
+//             <Ionicons name='send' size={30} color='#fff'  onPress={() => { setPicPreviewModal(false); sendToFirebase(selectedPic) }}/>
+//           </View>
+//         </View>
+//       </Modal>
+// </>
+//   )
+// }
 
 
 function MainRoom({ navigation }) {
