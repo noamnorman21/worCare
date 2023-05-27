@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, Dimensions, Image, Alert, Modal, TouchableOpacity, ScrollView, Platform } from 'react-native'
 import { useCallback, useState, useLayoutEffect } from 'react'
 import { auth, db } from '../config/firebase';
-import { GiftedChat, Bubble } from 'react-native-gifted-chat';
+import { GiftedChat, Bubble, Time, MessageImage } from 'react-native-gifted-chat';
 import { collection, addDoc, getDocs, getDoc, query, orderBy, onSnapshot, updateDoc, where, limit, doc, increment } from 'firebase/firestore';
 import { useEffect } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -23,6 +23,7 @@ const ScreenHeight = Dimensions.get("window").height;
 const ScreenWidth = Dimensions.get("window").width;
 
 import ChatProfile from './ChatComponents/ChatProfile';
+import { TextInput } from 'react-native-paper';
 
 
 const stack = createStackNavigator();
@@ -39,6 +40,10 @@ export default function Chats({ navigation }) {
 
 function ChatRoom({ route, navigation }) {
   const [messages, setMessages] = useState([]);
+  const [picPreviewModal, setPicPreviewModal] = useState(false);
+  const [selectedPic, setSelectedPic] = useState(null);
+  const [imageDescription, setImageDescription] = useState('')
+
   useLayoutEffect(() => {
     const tempMessages = query(collection(db, route.params.name), orderBy('createdAt', 'desc'));
     getDocs(tempMessages).then((querySnapshot) => {
@@ -103,9 +108,10 @@ function ChatRoom({ route, navigation }) {
       }
     );
     // Explore the result
-    console.log(result);
     if (!result.canceled) {
-      sendToFirebase(result.assets[0].uri);     
+      setPicPreviewModal(true); 
+      console.log("result.uri", result.assets[0].uri)
+      setSelectedPic(result.assets[0].uri);
     }
   }
 
@@ -117,10 +123,12 @@ function ChatRoom({ route, navigation }) {
       quality: 0.1,
     });
     // Explore the result
-    console.log(result);
     if (!result.canceled) {
+      setPicPreviewModal(true); 
       console.log("result.uri", result.assets[0].uri)
-      sendToFirebase(result.assets[0].uri);     
+      setSelectedPic(result.assets[0].uri);
+           
+      // sendToFirebase(result.assets[0].uri);     
     }
   };
 
@@ -165,20 +173,20 @@ function ChatRoom({ route, navigation }) {
         avatar: auth.currentUser.photoURL
       },
       image: downloadUrl,
-      text: "blasdsad"
+      text: imageDescription
     }
-    console.log(newMessage);
     setMessages(previousMessages => GiftedChat.append(previousMessages, [newMessage]));
     const { _id, createdAt, text, user, image } = newMessage
     addDoc(collection(db, route.params.name), { _id, createdAt, text, user, image });
     console.log("new message added to db")
-
+    setPicPreviewModal(false);
+    setImageDescription('');
     //update last message and last message time in db
     const docRef = query(collection(db, auth.currentUser.email), where("Name", "==", route.params.name));
     const res = getDocs(docRef);
     res.then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
-        updateDoc(doc.ref, { lastMessage: text, lastMessageTime: createdAt });
+        updateDoc(doc.ref, { lastMessage: text||"image", lastMessageTime: createdAt });
       });
     });
     if (route.params.userEmail) {
@@ -194,7 +202,6 @@ function ChatRoom({ route, navigation }) {
 
 
   const onSend = useCallback((messages = []) => {
-    console.log(messages[0]);
     const { _id, createdAt, text, user } = messages[0]
     addDoc(collection(db, route.params.name), { _id, createdAt, text, user });
     const docRef = query(collection(db, auth.currentUser.email), where("Name", "==", route.params.name));
@@ -216,9 +223,10 @@ function ChatRoom({ route, navigation }) {
   }, []);
 
   return (
+    <>
     <GiftedChat
       wrapInSafeArea={false}
-      bottomOffset={Platform.OS === 'ios' ? 50 : 0}
+      //bottomOffset={Platform.OS === 'ios' ? 50 : 0} this in case canceling tab bar wont work
       messages={messages}
       showAvatarForEveryMessage={true}
       onSend={messages => onSend(messages)}
@@ -249,12 +257,17 @@ function ChatRoom({ route, navigation }) {
             textStyle={{
               left: { fontFamily: "Urbanist-Regular" },
               right: { fontFamily: "Urbanist-Regular", color: "#fff" }
-            }} />
+            }}
+             />
         )
       }}
       onPressAvatar={(user) => {
-        console.log(user);
+        if(user._id !== auth.currentUser.email){
         navigation.navigate('ChatProfile', { user: user });
+        }
+        else{
+          console.log("user is me")
+        }
       }
       }
       renderActions={(props) => {
@@ -297,9 +310,77 @@ function ChatRoom({ route, navigation }) {
         )
       }
       }
+      renderTime={(props) => {  
+        return (
+          <Time {...props}
+            timeTextStyle={{
+              left: { fontFamily: "Urbanist-Regular", color: "#000" },
+              right: { fontFamily: "Urbanist-Regular", color: "#fff" },
+              position:'absolute',
+            }}
+            timeFormat='HH:mm'
+           
+          />
+        )
+        // return (
+        //   <View>
+        //     {props.currentMessage.createdAt && <Text style={{ fontSize: 12, fontFamily: 'Urbanist-Regular', color: "#000", paddingRight:7, paddingLeft:7,paddingBottom:2}}>{moment(props.currentMessage.createdAt).format('HH:MM')}</Text>}
+        //   </View>
+        // )
+      }
+      }
+      imageStyle={{ width: 200, height: 200, borderRadius: 10 }}     
+     
+
+      renderMessageImage={(props) => {
+        return (
+          <MessageImage
+            {...props}
+            imageProps={{ resizeMode: 'contain' }}
+            lightboxProps={{
+              underlayColor: 'transparent',
+              backgroundColor:'#fff',
+              swipeToDismiss: true,
+              springConfig: { tension: 30, friction: 7 },
+              
+              renderContent: () => (
+                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                  <Image
+                    source={{ uri: props.currentMessage.image }}
+                    style={{ width: ScreenWidth*0.95, height: ScreenHeight*0.85, resizeMode: 'contain', }}
+                  />
+                  <Text style={{color:'red'}} >{props.currentMessage.text}</Text>
+                </View>
+              ),
+            }}
+          />
+        );
+      }}
+
+
+
       
 
 />
+      <Modal visible={picPreviewModal} animationType='slide' onRequestClose={() => setPicPreviewModal(false)} >
+        <View style={styles.imagePreview}>
+          <View>
+          <Image source={{ uri: selectedPic }} style={styles.image} />
+          </View>
+          <View style={styles.inputAndSend}>
+            <TextInput style={{ width:ScreenWidth*0.8, backgroundColor: '#fff', borderRadius: 10, padding: 10, fontFamily: 'Urbanist-Regular', fontSize: 16, marginVertical: 10 }}
+                mode='outlined'
+                onChangeText={(text) => setImageDescription(text)} 
+                placeholder="Add a caption...(optional)"
+                outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                contentStyle={{ fontFamily: 'Urbanist-Medium' }}
+                activeOutlineColor="#548DFF"
+                outlineColor='#E6EBF2' />
+            <Ionicons name='send' size={30} color='#fff'  onPress={() => { setPicPreviewModal(false); sendToFirebase(selectedPic) }}/>
+          </View>
+        </View>
+      </Modal>
+</>
   )
 }
 
@@ -506,7 +587,7 @@ const ConvoCard = (props) => {
             {props.name.unreadCount > 0 && <View style={styles.unread}>
               <Text style={styles.unreadTxt}>{props.name.unreadCount}</Text>
             </View>}
-            {lastMessageDate === yasterday && <Text style={styles.conDate}>yesterday</Text>}
+            {lastMessageDate === yasterday && <Text style={styles.conDate}>yasterday</Text>}
             {lastMessageDate < yasterday && <Text style={styles.conDate}>{lastMessageDate}</Text>}
             {lastMessageDate === today && <Text style={styles.conTime}>{lastMessageTime}</Text>}
           </View>
@@ -649,7 +730,6 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontFamily: 'Urbanist-Bold',
     color: '#fff',
-
   },
   conLastMessage: {
     fontSize: 16,
@@ -667,5 +747,28 @@ const styles = StyleSheet.create({
     width: 55,
     height: 55,
     borderRadius: 54
-  }, 
+  },
+  //for image preview modal 
+  imagePreview: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#000'
+  },
+  image: {
+    width: ScreenWidth*0.9,
+    height: ScreenHeight*0.6,
+    borderRadius: 10 ,
+    resizeMode:'cover'
+  },
+  inputAndSend: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    width: ScreenWidth,
+    padding: 10,
+  }
 })

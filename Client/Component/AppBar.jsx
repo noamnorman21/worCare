@@ -3,6 +3,7 @@ import { Octicons, Ionicons, AntDesign, Feather } from '@expo/vector-icons';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useState } from 'react';
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 
 import SettingScreen from './SettingScreen';
 import Contacts from './Contacts';
@@ -139,7 +140,15 @@ function AppBarDown() {
         >
             <Tab.Screen name="Home" component={Home} options={{ tabBarLabel: 'Home' }} />
             <Tab.Screen name="Finance" component={Finance} options={{ tabBarLabel: 'Finance', unmountOnBlur: true }} />
-            <Tab.Screen name="Chats" component={Chats} options={{ tabBarLabel: 'Chats' }} />
+            <Tab.Screen name="Chats" component={Chats} options={({ route }) => ({
+            tabBarStyle: ((route) => {
+              const routeName = getFocusedRouteNameFromRoute(route) ?? ""
+              if (routeName === 'ChatRoom') {
+                return { display: "none" }
+              }
+              return
+            })(route),
+          })} />
             <Tab.Screen name="Tasks" component={Tasks} options={{ tabBarLabel: 'Tasks', unmountOnBlur: true }} />
             <Tab.Screen name="Rights" component={Rights} options={{ tabBarLabel: 'Rights' }} />
         </Tab.Navigator>

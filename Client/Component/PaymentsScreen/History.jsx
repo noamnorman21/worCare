@@ -195,7 +195,7 @@ function Request(props) {
                   <Text style={styles.requestItemText}>{dateString}</Text>
                 </View>
                 <View style={styles.requestItemMiddle}>
-                  <Text style={styles.requestItemText}>{props.subject}</Text>
+                  <Text style={styles.requestItemText}><Text style={styles.requestItemText}>{props.subject.length>17? props.subject.slice(0, 15)+"...":props.subject}</Text></Text>
                 </View>
               </TouchableOpacity>
               <Menu style={{ flexDirection: 'column', marginVertical: 0 }} onSelect={value => openModal(value)} >
@@ -246,7 +246,7 @@ function Request(props) {
                   <Text style={styles.requestItemText}>{dateString}</Text>
                 </View>
                 <View style={styles.requestItemMiddle}>
-                  <Text style={styles.requestItemText}>{props.subject}</Text>
+                  <Text style={styles.requestItemText}><Text style={styles.requestItemText}>{props.subject.length>17? props.subject.slice(0, 15)+"...":props.subject}</Text></Text>
                 </View>
               </TouchableOpacity>
               <Menu style={{ flexDirection: 'column', marginVertical: 0 }} onSelect={value => openModal(value)} >
@@ -338,7 +338,7 @@ const styles = StyleSheet.create({
   requestItemMiddle: {
     justifyContent: 'center',
     alignItems: 'flex-start',
-    flex: 2,
+    flex: 3,
   },
   requestItemLeft: {
     justifyContent: 'center',
