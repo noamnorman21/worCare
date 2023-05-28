@@ -13,48 +13,38 @@ import Medicine from './TasksComponents/MedicineTasks';
 const Tab = createMaterialTopTabNavigator();
 
 export default function Tasks() {
-
-  const [userData, setUserData] = useState(useUserContext().userContext);
-  const [userId, setUserId] = useState(useUserContext.userId);
-  const { getAllPublicTasks, getAllPrivateTasks, allPublicTasks, allPrivateTasks, GetAllDrugs } = useUserContext();
-  const [userType, setUserType] = useState(userData.userType);
+  const { userContext, userId, getAllPublicTasks, getAllPrivateTasks, allPublicTasks, allPrivateTasks, GetAllDrugs } = useUserContext();
+  const [userType, setUserType] = useState(userContext.userType);
   const [allMedicineTasks, setAllMedicineTasks] = useState([]);
   const [allShopTasks, setAllShopTasks] = useState([]);
   const [showHeader, setShowHeader] = useState("flex");
 
-  //filter tasks by type, medicine or shop, other tasks will be in allTasks
   useEffect(() => {
     filterTasks(allPublicTasks);
     GetAllDrugs();
   }, [allPublicTasks, allPrivateTasks]);
 
   const filterTasks = (tasks) => {
-    let filteredTasks = tasks.filter(task => task.type == false);
+    const filteredTasks = tasks.filter(task => task.type === false);
     setAllShopTasks(filteredTasks);
-    let filteredMedicineTasks = tasks.filter(task => task.type == true);
-    //save only today tasks
-    filteredMedicineTasks = filteredMedicineTasks.filter(task => {
-      let today = new Date()
-      let taskDate = new Date(task.taskDate)
-      return taskDate.getDate() == today.getDate() && taskDate.getMonth() == today.getMonth() && taskDate.getFullYear() == today.getFullYear()
-    })
-    //sort by time from earliest to latest
-    filteredMedicineTasks.sort((a, b) => {
-      let aTime = new Date(a.taskDate);
-      let bTime = new Date(b.taskDate);
-      return aTime - bTime;
-    })
+    const filteredMedicineTasks = tasks.filter(task => task.type === true && isTodayTask(task));
+    filteredMedicineTasks.sort((a, b) => new Date(a.taskDate) - new Date(b.taskDate));
     setAllMedicineTasks(filteredMedicineTasks);
   }
 
+  const isTodayTask = (task) => {
+    const today = new Date();
+    const taskDate = new Date(task.taskDate);
+    return taskDate.getDate() === today.getDate() && taskDate.getMonth() === today.getMonth() && taskDate.getFullYear() === today.getFullYear();
+  }
 
   const refreshPublicTask = () => {
-    getAllPublicTasks(userData);
+    getAllPublicTasks(userContext);
     filterTasks(allPublicTasks);
   }
 
   const refreshPrivateTask = () => {
-    getAllPrivateTasks(userData);
+    getAllPrivateTasks(userContext);
   }
 
   const changeHeader = (header) => {
