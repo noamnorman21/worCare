@@ -85,25 +85,20 @@ export default function GeneralTasks(props) {
     //if it is shop task go to shop screen
     if (task.type == false) {
       navigation.navigate('Shop', { task: task });
-
     }
     // if it is not shop task check if medical task and go to medical screen(just today tasks)
     else if (task.type == true) {
-      //check if today task
       let today = new Date();
       let taskDate = new Date(task.taskDate);
-      console.log(today.getDate(), taskDate.getDate())
       if (today.getDate() == taskDate.getDate()) {
         navigation.navigate('Medicine', { task: task });
       }
       else navigation.navigate('Main', { task: task });
-      
     }
     //all other tasks go to main screen
     else {
       navigation.navigate('Main', { task: task });
     }
-
   }
 
   return (

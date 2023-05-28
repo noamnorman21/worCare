@@ -80,10 +80,12 @@ export default function ShopTasks(props) {
 
   const route = useRoute();
   const isFocused = useIsFocused();
+  const { task } = route.params||{};
 
   useEffect(() => {
     setShopTasks(props.allShopTasks)
   }, [props.allShopTasks])
+
 
   useFocusEffect( //we need to update the products in the db when we leave the screen
     useCallback(() => {
@@ -99,18 +101,17 @@ export default function ShopTasks(props) {
   );
   
   useEffect(() => {
-    if (isFocused && route.params) {
-      const { task } = route.params;
+    if (isFocused && task ) {
+      //const { task } = route.params;
       //find the task in the array of tasks
       let taskToUpdate = shopTasks.find(t => t.taskId == task.taskId && t.actualId == task.actualId)
       //open the List.Accordion on this task
       taskToUpdate.isExpanded = true
       //update the task in the array of tasks
-      setShopTasks(shopTasks.map(t => t.taskId == task.taskId && t.actualId == task.actualId ? taskToUpdate : t))
-      
-      console.log('task', taskToUpdate)  
+      setShopTasks(shopTasks.map(t => t.taskId == task.taskId && t.actualId == task.actualId ? taskToUpdate : t)) 
     }
   }, [isFocused, route.params]);   
+  
   const handleAddBtnPress = () => {
     // console.log(shopTasks)
     setModalVisible(true);

@@ -36,12 +36,10 @@ export default function MainTasks(props) {
     if (isFocused && route.params) {
       const { task } = route.params;
       let index = todayTasks.findIndex(t => t.actualId === task.actualId);
-      console.log(index);
       if (index == -1) {//that means the task is in tommorow task
         setHeaderTommorow(false);
         setHeaderToday(true);
         index = tommorowTasks.findIndex(t => t.actualId === task.actualId);
-        console.log(index);
         setTimeout(() => {
           scrollToIndex(tommorowScrollViewRef, index);
         }, 500);
@@ -122,7 +120,7 @@ export default function MainTasks(props) {
 
   const scrollToIndex = (scrollViewRef, index) => {
     if (scrollViewRef && scrollViewRef.current) {
-      const yOffset = index * 100; // Adjust this value as per your requirement
+      const yOffset = index * 140; // Adjust this value as per your requirement
       scrollViewRef.current.scrollTo({ y: yOffset, animated: true });
     }
   };

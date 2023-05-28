@@ -39,22 +39,21 @@ export default function TaskCheckBox(props) {
 
     const isPrivate = props.isPrivate;
     return (
-        <View style={[styles.container, isPrivate ? { backgroundColor: '#FFF7EB' } : {}]}>
-
-            <TouchableOpacity onPress={() => setIsDone(!isDone)}>
-                <Feather name={isDone ? checkIcon[0] : checkIcon[1]} size={27} color={!isPrivate ? '#548DFF' : '#FEA529'} />
-            </TouchableOpacity >
-
-            <Text style={styles.text}>
-                {[props.task.type == true ? props.task.drug.drugType + ' - ' + taskName : taskName]}
-            </Text>
-
-            <TouchableOpacity style={styles.iconArrow} onPress={openTaskList}>
-                <View style={{ paddingHorizontal: 20 }}>
-                    <Octicons name="chevron-right" size={24} color="#548DFF" />
-                </View>
-            </TouchableOpacity>
-        </View >
+        <TouchableOpacity onPress={openTaskList}>
+            <View style={[styles.container, isPrivate ? { backgroundColor: '#FFF7EB' } : {}]}>
+                <TouchableOpacity onPress={() => setIsDone(!isDone)}>
+                    <Feather name={isDone ? checkIcon[0] : checkIcon[1]} size={27} color={!isPrivate ? '#548DFF' : '#FEA529'} />
+                </TouchableOpacity >
+                <Text style={styles.text}>
+                    {[props.task.type == true ? props.task.drug.drugType + ' - ' + taskName : taskName]}
+                </Text>
+                <TouchableOpacity style={styles.iconArrow} onPress={openTaskList}>
+                    <View style={{ paddingHorizontal: 20 }}>
+                        <Octicons name="chevron-right" size={24} color="#548DFF" />
+                    </View>
+                </TouchableOpacity>
+            </View >
+        </TouchableOpacity>
     )
 }
 const styles = StyleSheet.create({
