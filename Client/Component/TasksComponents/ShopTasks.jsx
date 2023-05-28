@@ -225,7 +225,7 @@ export default function ShopTasks(props) {
     <SafeAreaView style={styles.container}>
       <View style={{ width: SCREEN_WIDTH * 0.92 }}>
         <List.Section>
-          <ScrollView>
+          <ScrollView alwaysBounceVertical={false}>
             {shopTasks.map((task, index) => {
               return (
                 <List.Accordion

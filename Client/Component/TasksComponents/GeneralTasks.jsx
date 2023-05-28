@@ -96,6 +96,8 @@ export default function GeneralTasks(props) {
       if (today.getDate() == taskDate.getDate()) {
         navigation.navigate('Medicine', { task: task });
       }
+      else navigation.navigate('Main', { task: task });
+      
     }
     //all other tasks go to main screen
     else {
