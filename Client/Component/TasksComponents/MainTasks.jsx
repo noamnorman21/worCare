@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions, LayoutAnimation } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import TaskView from '../HelpComponents/TaskView';
 import { AddBtn, NewTaskModal } from '../HelpComponents/AddNewTask';
-import { useRoute, useIsFocused } from '@react-navigation/native';
+import { useRoute, useIsFocused, useFocusEffect } from '@react-navigation/native';
+
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
@@ -19,7 +20,7 @@ export default function MainTasks(props) {
   const arrowIcon = ["chevron-down-outline", "chevron-up-outline"];
   const todayScrollViewRef = useRef(null);
   const tommorowScrollViewRef = useRef(null);
-  const [taskFocus, setTaskFocus] = useState('');
+
 
   const route = useRoute();
   const isFocused = useIsFocused();
@@ -34,26 +35,38 @@ export default function MainTasks(props) {
   useEffect(() => {
     if (isFocused && route.params) {
       const { task } = route.params;
-        let index = todayTasks.findIndex(t => t.actualId === task.actualId);
+      let index = todayTasks.findIndex(t => t.actualId === task.actualId);
+      console.log(index);
+      if (index == -1) {//that means the task is in tommorow task
+        setHeaderTommorow(false);
+        setHeaderToday(true);
+        index = tommorowTasks.findIndex(t => t.actualId === task.actualId);
         console.log(index);
-        if (index == -1) {//that means the task is in tommorow task
-          setHeaderTommorow(false);
-          setHeaderToday(true);
-          index = tommorowTasks.findIndex(t => t.actualId === task.actualId);
-          console.log(index);
-          setTimeout(() => {
-            scrollToIndex(tommorowScrollViewRef, index);
-          }, 500);
-        }
-        else {
-          setHeaderTommorow(true);
-          setHeaderToday(false);
-          setTimeout(() => {
-            scrollToIndex(todayScrollViewRef, index);
-          }, 500);
-        }
+        setTimeout(() => {
+          scrollToIndex(tommorowScrollViewRef, index);
+        }, 500);
+      }
+      else {
+        setHeaderTommorow(true);
+        setHeaderToday(false);
+        setTimeout(() => {
+          scrollToIndex(todayScrollViewRef, index);
+        }, 500);
+      }
     }
   }, [isFocused, route.params]);
+
+  useFocusEffect( //we need to update the products in the db when we leave the screen
+    useCallback(() => {
+      return () => {
+        //scroll to top when leaving the screen
+        setHeaderTommorow(true);
+        setHeaderToday(false);
+        todayScrollViewRef.current.scrollTo({ y: 0, animated: true });
+        ///צריך לתקן, אחרי שעוברים למסך אחר ואז חוזים לכאן, עדיין מבצע גלילה
+      };
+    }, [])
+  );
 
   const filterTasks = (privateTask, publicTasks) => {
     //combine private and public tasks for today task and sort by time

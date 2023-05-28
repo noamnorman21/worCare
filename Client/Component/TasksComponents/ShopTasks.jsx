@@ -1,12 +1,15 @@
 import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Dimensions, ScrollView, TextInput, Alert } from 'react-native'
 import { useState, useEffect, useCallback } from 'react'
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useRoute,useIsFocused } from '@react-navigation/native';
 import { List } from 'react-native-paper';
 import { Feather, Ionicons } from '@expo/vector-icons';
 import { AddBtn, NewTaskModal } from '../HelpComponents/AddNewTask'
 import { useUserContext } from '../../UserContext'
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
+
+
+
 
 function RenderShopTasks(props) {
   const [newProductName, setNewProductName] = useState('');
@@ -72,10 +75,12 @@ export default function ShopTasks(props) {
   const [userData, setUserData] = useState(useUserContext().userContext);
   const [tasks, setTasks] = useState([])
   const [shopTasks, setShopTasks] = useState(props.allShopTasks)
-  const [expanded, setExpanded] = useState(true);
-  const handlePress = () => setExpanded(!expanded);
   const [productsForUpdateInDB, setProductsForUpdateInDB] = useState([])
   const checkIcon = ["check-circle", "circle"]
+
+  const route = useRoute();
+  const isFocused = useIsFocused();
+
   useEffect(() => {
     setShopTasks(props.allShopTasks)
   }, [props.allShopTasks])
@@ -87,7 +92,16 @@ export default function ShopTasks(props) {
       };
     }, [])
   );
-
+  
+  useEffect(() => {
+    if (isFocused && route.params) {
+      const { task } = route.params;
+      //find the task in the array of tasks
+      let taskToUpdate = shopTasks.find(t => t.taskId == task.taskId && t.actualId == task.actualId)
+      //open the List.Accordion on this task
+      console.log('task', taskToUpdate)  
+    }
+  }, [isFocused, route.params]);   
   const handleAddBtnPress = () => {
     // console.log(shopTasks)
     setModalVisible(true);
