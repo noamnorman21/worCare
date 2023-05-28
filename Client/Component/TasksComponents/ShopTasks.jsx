@@ -89,6 +89,11 @@ export default function ShopTasks(props) {
     useCallback(() => {
       return () => {
         updateProductsInDB()
+        //update expanded to false on all tasks
+        setShopTasks(shopTasks.map(t => {
+          t.isExpanded = false
+          return t
+        }))
       };
     }, [])
   );
@@ -99,6 +104,10 @@ export default function ShopTasks(props) {
       //find the task in the array of tasks
       let taskToUpdate = shopTasks.find(t => t.taskId == task.taskId && t.actualId == task.actualId)
       //open the List.Accordion on this task
+      taskToUpdate.isExpanded = true
+      //update the task in the array of tasks
+      setShopTasks(shopTasks.map(t => t.taskId == task.taskId && t.actualId == task.actualId ? taskToUpdate : t))
+      
       console.log('task', taskToUpdate)  
     }
   }, [isFocused, route.params]);   
@@ -203,6 +212,14 @@ export default function ShopTasks(props) {
         }
       )
   }
+  const handleExpandedSubTask = (taskToChangeOpen) => {
+    setShopTasks(shopTasks.map((task) => {
+      if (task.taskId === taskToChangeOpen.taskId && task.actualId === taskToChangeOpen.actualId) {
+        task.isExpanded = !task.isExpanded
+      }
+      return task
+    }))
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -214,6 +231,8 @@ export default function ShopTasks(props) {
                 <List.Accordion
                   key={task.actualId}
                   style={{ backgroundColor: '#F2F2F2' }}
+                  onPress={() => {handleExpandedSubTask(task) }}
+                  expanded={task.isExpanded}
                   left={() => <Text style={styles.taskName}>{task.taskName}</Text>}
                 >
                   <RenderShopTasks task={task} index={index} refreshlPublicTask={props.refreshPublicTask} />
