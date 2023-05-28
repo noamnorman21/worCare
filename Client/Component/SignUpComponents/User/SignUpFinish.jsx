@@ -107,29 +107,29 @@ export default function SignUpFinish({ navigation, route }) {
             .then((response) => response.json())
             .then((json) => {
                 createUserWithEmailAndPassword(auth, route.params.tblUser.Email, route.params.tblUser.Password)
-                    .then((json) => {
-                        createUserWithEmailAndPassword(auth, route.params.tblUser.Email, route.params.tblUser.Password).then((userCredential) => {
-                            updateProfile(userCredential, {
+                    .then(() => {
+                       signInWithEmailAndPassword(auth,route.params.tblUser.Email, route.params.tblUser.Password).then((userCredential) => {
+                            updateProfile(auth.currentUser, {
                                 displayName: route.params.tblUser.FirstName + ' ' + route.params.tblUser.LastName,
                                 photoURL: route.params.tblUser.userUri
                             }).then(() => {
                                 console.log("user updated");
                                 let userToUpdate = {
-                                    id: newUser.Email,
-                                    name: newUser.FirstName+" "+newUser.LastName, //the name of the user is the first name and the last name
-                                    avatar: newUser.userUri
+                                    id: auth.currentUser.email,
+                                    name: auth.currentUser.displayName, //the name of the user is the first name and the last name
+                                    avatar: auth.currentUser.photoURL
                                 }
                                 addDoc(collection(db, "AllUsers"), {id: userToUpdate.id, name: userToUpdate.name, avatar: userToUpdate.avatar });
-                            }).catch((error) => {
+                            }).then(() => {
+                                signOut(auth)
+                            })
+                            .catch((error) => {
                                 console.log(error);
                             });
                             console.log("user created");
                         }).catch((error) => {
                             console.log(error);
                         });
-                        //save the id of the new user that we got from the DB 
-                        tblPatient.userId = json; //save the id of the new user that we got from the DB
-                        createNewPatient() //create the foreign user in the DB
                     })
                     .catch((error) => {
                         console.error(error);

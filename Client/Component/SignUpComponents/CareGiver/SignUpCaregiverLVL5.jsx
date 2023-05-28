@@ -41,19 +41,21 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
           avatar: newUser.userUri
         }
         console.log(newUser);
-        createUserWithEmailAndPassword(auth, newUser.Email, newUser.Password).then((userCredential) => {
-          console.log("user created");
+        createUserWithEmailAndPassword(auth, newUser.Email, newUser.Password).then(() => {
+          signInWithEmailAndPassword(auth, newUser.Email, newUser.Password).then(() => {
           updateProfile(userCredential, {
             displayName: newUser.FirstName + ' ' + newUser.LastName,
             photoURL: newUser.userUri
           }).then(() => {
-            console.log("user updated");
+           signOut(auth).then(() => {
             let userToUpdate = {
               id: newUser.Email,
               name: newUser.FirstName + " " + newUser.LastName, //the name of the user is the first name and the last name
               avatar: newUser.userUri
             }
             addDoc(collection(db, "AllUsers"), { id: userToUpdate.id, name: userToUpdate.name, avatar: userToUpdate.avatar });
+           })
+          })
           }).catch((error) => {
             console.log(error);
           });

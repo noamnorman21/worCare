@@ -415,6 +415,7 @@ function MainRoom({ navigation }) {
           unreadCount: doc.data().unreadCount,
           lastMessage: doc.data().lastMessage,
           lastMessageTime: doc.data().lastMessageTime.toDate(),
+          type: doc.data().type
         }))
       ));
       const tempUsers = query(collection(db, "AllUsers"), where("id", "!=", auth.currentUser.email));
@@ -442,6 +443,7 @@ function MainRoom({ navigation }) {
 
 
   useEffect(() => {
+
     //relevant- from user context
     if (userChats) {
       const renderNames = () => {
@@ -496,7 +498,7 @@ function MainRoom({ navigation }) {
     } else {
       console.log("add new private chat")
       const contact = user
-      addDoc(collection(db, auth.currentUser.email), { Name: auth.currentUser.displayName + "+" + contact.name, UserName: contact.name, userEmail: contact.id, image: contact.avatar, unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date() });
+      addDoc(collection(db, auth.currentUser.email), { Name: auth.currentUser.displayName + "+" + contact.name, UserName: contact.name, userEmail: contact.id, image: contact.avatar, unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date(), type:"private" });
       checkifConvoExistsforContact(contact)
       navigation.navigate('ChatRoom', { name: auth.currentUser.displayName + "+" + contact.name, UserName: contact.name, userEmail: contact.id })
       setAddNewModal(false)
@@ -511,7 +513,7 @@ function MainRoom({ navigation }) {
         console.log("convo existsssssss")
       } else {
         console.log("add new private chat")
-        addDoc(collection(db, contact.id), { Name: auth.currentUser.displayName + "+" + contact.name, UserName: auth.currentUser.displayName, image: auth.currentUser.photoURL, userEmail: auth.currentUser.email, unread: true, unreadCount: 0, lastMessage: "", lastMessageTime: new Date() });
+        addDoc(collection(db, contact.id), { Name: auth.currentUser.displayName + "+" + contact.name, UserName: auth.currentUser.displayName, image: auth.currentUser.photoURL, userEmail: auth.currentUser.email, unread: true, unreadCount: 0, lastMessage: "", lastMessageTime: new Date(), type:"private" });
       }
     }
     )
@@ -569,7 +571,7 @@ const ConvoCard = (props) => {
   }, [props.name]);
 
   const navigateToChatRoom = async (user) => {
-    navigation.navigate('ChatRoom', { name: user.Name, UserName: user.UserName, userEmail: user.userEmail })
+    navigation.navigate('ChatRoom', { name: user.Name, UserName: user.UserName, userEmail: user.userEmail, type:props.name.type })
     const docRef = query(collection(db, auth.currentUser.email), where("Name", "==", props.name.Name));
     const res = await getDocs(docRef);
     res.forEach((doc) => {

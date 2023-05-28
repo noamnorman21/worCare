@@ -10,6 +10,7 @@ import { db, auth, storage } from '../../config/firebase';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { TextInput } from 'react-native-paper';
 import moment from 'moment';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 const ScreenHeight = Dimensions.get("window").height;
 const ScreenWidth = Dimensions.get("window").width;
@@ -20,6 +21,7 @@ export default function ChatRoom({ route, navigation }) {
   const [picPreviewModal, setPicPreviewModal] = useState(false);
   const [selectedPic, setSelectedPic] = useState(null);
   const [imageDescription, setImageDescription] = useState('')
+  const [GroupMembers, setGroupMembers] = useState(); //for group chat
 
   useLayoutEffect(() => {
     const tempMessages = query(collection(db, route.params.name), orderBy('createdAt', 'desc'));
@@ -36,22 +38,36 @@ export default function ChatRoom({ route, navigation }) {
         )
       });
     });
+
+    if (route.params.type === "group") {
+      const groupusers = query(collection(db, "GroupMembers"), where("Name", "==", route.params.name));
+      getDocs(groupusers).then((querySnapshot) => {
+       setGroupMembers(querySnapshot.docs.map(doc => doc.data().UserEmail))
+      });
+    }
     navigation.setOptions({
       headerTitle: route.params.UserName ? route.params.UserName : route.params.name,
     })
 
   }, [navigation]);
 
+  // useEffect(async () => {
+  //   console.log("type", route.params.type)
+  //   const getUsers = async () => {
+  //     if (route.params.type === "group") {
+  //       const groupusers = query(collection(db, "GroupMembers"), where("Name", "==", route.params.name));
+  //       let users = await getDocs(groupusers);
+  //       if (users.docs.length > 0) {
+  //         console.log("users", users.docs[0].data().UserEmail)
+  //       }
+  //     }
+  //   }
+  // }, []);
+
   useEffect(() => {
-    const setDocAsRead = async () => {
-      const docRef = query(collection(db, auth.currentUser.email), where("Name", "==", route.params.name));
-      const res = await getDocs(docRef);
-      res.forEach((doc) => {
-        updateDoc(doc.ref, { unread: false, unreadCount: 0 });
-      });
-    }
-    setDocAsRead();
-  }, []);
+    console.log("type", route.params.type)
+    console.log("Group Members",GroupMembers)
+  }, [GroupMembers]);
 
   useFocusEffect( //update convo in db that user has read the messages when leaving page
     useCallback(() => {
@@ -80,7 +96,6 @@ export default function ChatRoom({ route, navigation }) {
     let result = await ImagePicker.launchCameraAsync(
       {
         mediaTypes: ImagePicker.MediaTypeOptions.All,
-        allowsEditing: true,
         quality: 0.1,
       }
     );
@@ -96,7 +111,6 @@ export default function ChatRoom({ route, navigation }) {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
       quality: 0.1,
     });
     // Explore the result
@@ -166,7 +180,24 @@ export default function ChatRoom({ route, navigation }) {
         updateDoc(doc.ref, { lastMessage: text||"image", lastMessageTime: createdAt });
       });
     });
-    if (route.params.userEmail) {
+    if (GroupMembers){
+GroupMembers.forEach(arr => {
+  arr.forEach(user => {
+    return console.log("user", user)
+    // if (user !== auth.currentUser.email) {
+    //   const docRef = query(collection(db, user), where("Name", "==", route.params.name));
+    //   const res = getDocs(docRef);
+    //   res.then((querySnapshot) => {
+    //     querySnapshot.forEach((doc) => {
+    //       updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: text||"image", lastMessageTime: createdAt });
+    //     });
+    //   });
+    // }
+  }
+  )  
+});
+    }
+    else if (route.params.userEmail) {
       const docRef = query(collection(db, route.params.userEmail), where("Name", "==", route.params.name));
       const res = getDocs(docRef);
       res.then((querySnapshot) => {
@@ -178,7 +209,10 @@ export default function ChatRoom({ route, navigation }) {
   }
 
 
-  const onSend = useCallback((messages = []) => {
+
+
+
+  const onSend = useCallback((messages = [], GroupMembers) => {
     const { _id, createdAt, text, user } = messages[0]
     addDoc(collection(db, route.params.name), { _id, createdAt, text, user });
     const docRef = query(collection(db, auth.currentUser.email), where("Name", "==", route.params.name));
@@ -188,7 +222,26 @@ export default function ChatRoom({ route, navigation }) {
         updateDoc(doc.ref, { lastMessage: text, lastMessageTime: createdAt });
       });
     });
-    if (route.params.userEmail) {
+    if (GroupMembers) {
+      GroupMembers.forEach(arr => {
+        arr.forEach(user => {
+          console.log("user", user)
+          if (user !== auth.currentUser.email) {
+            const docRef = query(collection(db, user), where("Name", "==", route.params.name));
+            const res = getDocs(docRef);
+            console.log("res", res)
+            res.then((querySnapshot) => {
+              querySnapshot.forEach((doc) => {
+                updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: text, lastMessageTime: createdAt });
+                console.log("updated")
+              });
+            });
+          }
+        }
+        )
+      });
+    }
+    else if (route.params.userEmail) {
       const docRef = query(collection(db, route.params.userEmail), where("Name", "==", route.params.name));
       const res = getDocs(docRef);
       res.then((querySnapshot) => {
@@ -206,7 +259,7 @@ export default function ChatRoom({ route, navigation }) {
       //bottomOffset={Platform.OS === 'ios' ? 50 : 0} this in case canceling tab bar wont work
       messages={messages}
       showAvatarForEveryMessage={true}
-      onSend={messages => onSend(messages)}
+      onSend={messages => onSend(messages,GroupMembers)}
       user={{
         _id: auth?.currentUser?.email,
         name: auth?.currentUser?.displayName,
@@ -214,92 +267,52 @@ export default function ChatRoom({ route, navigation }) {
       }}
       isLoadingEarlier={true}
       showUserAvatar={true}
-      renderBubble={(props) => {
-        return (
-          <Bubble {...props}
-            wrapperStyle={{
-              left: {
-                backgroundColor: "#D9D9D980",
-                borderColor: "#808080",
-                borderWidth: 1,
-                borderRadius: 15,
-              },
-              right: {
-                backgroundColor: "#7DA9FF",
-                borderColor: "#548DFF",
-                borderWidth: 1,
-                borderRadius: 15,
+        renderBubble={(props) => {
+          return (
+            <Bubble {...props}
+              wrapperStyle={{
+                left: {
+                  backgroundColor: "#D9D9D980",
+                  borderColor: "#808080",
+                  borderWidth: 1,
+                  borderRadius: 15,
+                },
+                right: {
+                  backgroundColor: "#7DA9FF",
+                  borderColor: "#548DFF",
+                  borderWidth: 1,
+                  borderRadius: 15,
+                }
+              }}
+              textStyle={{
+                left: { fontFamily: "Urbanist-Regular" },
+                right: { fontFamily: "Urbanist-Regular", color: "#fff" }
+              }}
+              renderTime={(props) => {
+                if (props.currentMessage.image && !props.currentMessage.text) {
+                  return (
+                    <View style={{ position: 'absolute', bottom: 5, paddingRight: 10, paddingLeft: 10 }}>
+                      <Text style={{ fontSize: 12, fontFamily: "Urbanist-Regular", color: '#fff' }}>{moment(props.currentMessage.createdAt).format('HH:MM')}</Text>
+                    </View>
+                  )
+                }
+                else {
+                  return (
+                    <Time {...props}
+                      timeTextStyle={{
+                        left: { fontFamily: "Urbanist-Regular", color: "#000", fontSize: 12 },
+                        right: { fontFamily: "Urbanist-Regular", color: "#fff", fontSize: 12 },
+                      }}
+                      timeFormat='HH:mm'
+                    />
+                  )
+                }
               }
-            }}
-            textStyle={{
-              left: { fontFamily: "Urbanist-Regular" },
-              right: { fontFamily: "Urbanist-Regular", color: "#fff" }
-            }}
-            timeTextStyle={{
-              left: { fontFamily: "Urbanist-Regular", color: "#fff",fontSize:12 },
-              right: { fontFamily: "Urbanist-Regular", color: "#fff",fontSize:12 }
-            }}
-            // renderTime={(props) => {
-            //   if (props.currentMessage.image && !props.currentMessage.text) {
-            //     return (
-            //       <View>
-            //         {props.currentMessage.createdAt && <Text style={{ fontSize: 12, fontFamily: 'Urbanist-Regular', color: "#fff",position:'absolute', bottom:5,paddingLeft:7,paddingRight:7}}>{moment(props.currentMessage.createdAt).format('HH:MM')}</Text>}
-            //       </View>
-            //     )
-            //   }
-            //   else if(props.currentMessage.text && !props.currentMessage.image) {
-            //     return (
-            //       <Time {...props}
-            //       timeTextStyle={{
-            //         right: { fontFamily: "Urbanist-Regular", color: "#fff"},
-            //       }}
-            //         timeFormat='HH:mm'
-            //       />
-            //     )
-            //   }
-            //   else if(props.currentMessage.text && props.currentMessage.image) {
-            //     return (
-            //       <View>
-            //         {props.currentMessage.createdAt && <Text style={{ fontSize: 12, fontFamily: 'Urbanist-Regular', color: "#fff",position:'absolute', bottom:5,paddingLeft:7,paddingRight:7}}>{moment(props.currentMessage.createdAt).format('HH:MM')}</Text>}
-            //       </View>
-            //     )
-            //   }
+              }
 
-
-            //   // return (
-            //   //   <View>
-            //   //     {props.currentMessage.createdAt && <Text style={{ fontSize: 12, fontFamily: 'Urbanist-Regular', color: "#000", paddingRight:7, paddingLeft:7,paddingBottom:2}}>{moment(props.currentMessage.createdAt).format('HH:MM')}</Text>}
-            //   //   </View>
-            //   // )
-            // }
-            // }
-          
-            renderTime={(props) => {
-              console.log("props.currentMessage", props.currentMessage)
-              if (props.currentMessage.image && !props.currentMessage.text) {
-                return (
-                  <View style={{position:'absolute',bottom:5, paddingRight:10, paddingLeft:10}}>
-                    <Text style={{fontSize:12, fontFamily:"Urbanist-Regular", color:'#fff'}}>{moment(props.currentMessage.createdAt).format('HH:MM')}</Text>
-                    </View>                                       
-                )
-            }
-            else  {
-              return (
-                <Time {...props}  
-                timeTextStyle={{
-                  left: { fontFamily: "Urbanist-Regular", color: "#000",fontSize:12},
-                  right: { fontFamily: "Urbanist-Regular", color: "#fff",fontSize:12},
-                }}             
-                  timeFormat='HH:mm'
-                />
-              )
-            }
-           
-          }
-            }
-          />
-        )
-      }}
+            />
+          )
+        }}
       onPressAvatar={(user) => {
         if(user._id !== auth.currentUser.email){
         navigation.navigate('ChatProfile', { user: user });
@@ -322,7 +335,7 @@ export default function ChatRoom({ route, navigation }) {
               marginBottom: 0,
             }}
             icon={() => (
-              <Ionicons name="camera" size={28} color="#000" />
+              <Ionicons name="camera" size={28} color="#548DFF"/>
             )}
             options={{
               'Take Photo': () => {
@@ -343,30 +356,12 @@ export default function ChatRoom({ route, navigation }) {
           <InputToolbar {...props}
             containerStyle={{
             }}
-            primaryStyle={{ alignItems: 'center' }}    
-                   
+            primaryStyle={{ alignItems: 'center', justifyContent:'center' }}  //for the text input
           />
         )
       }
       }
-      // renderTime={(props) => {  
-      //   return (
-      //     <Time {...props}
-      //       timeTextStyle={{
-      //         left: { fontFamily: "Urbanist-Regular", color: "#000" },
-      //         right: { fontFamily: "Urbanist-Regular", color: "#fff" },
-      //         position:'absolute',
-      //       }}
-      //       timeFormat='HH:mm'           
-      //     />
-      //   )
-      //   // return (
-      //   //   <View>
-      //   //     {props.currentMessage.createdAt && <Text style={{ fontSize: 12, fontFamily: 'Urbanist-Regular', color: "#000", paddingRight:7, paddingLeft:7,paddingBottom:2}}>{moment(props.currentMessage.createdAt).format('HH:MM')}</Text>}
-      //   //   </View>
-      //   // )
-      // }
-      // }
+
       imageStyle={{ width: 200, height: 200, borderRadius: 10 }}     
       renderMessageImage={(props) => {
         return (
@@ -379,7 +374,7 @@ export default function ChatRoom({ route, navigation }) {
               swipeToDismiss: true,
               springConfig: { tension: 30, friction: 7 },
               renderHeader: (close) => (
-                <View style={{ width: ScreenWidth, height: 50, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 10 }}>
+                <View style={styles.lightboxHeader}>
                   <TouchableOpacity onPress={close}>
                     <Ionicons name='close' size={30} color='000' />
                   </TouchableOpacity>
@@ -413,7 +408,7 @@ export default function ChatRoom({ route, navigation }) {
           <Image source={{ uri: selectedPic }} style={styles.image} />
           </View>
           <View style={styles.inputAndSend}>
-            <TextInput style={{ width:ScreenWidth*0.8, backgroundColor: '#fff', borderRadius: 10, padding: 10, fontFamily: 'Urbanist-Regular', fontSize: 16, marginVertical: 10 }}
+            <TextInput style={styles.modalInput}
                 mode='outlined'
                 onChangeText={(text) => setImageDescription(text)} 
                 placeholder="Add a caption...(optional)"
@@ -585,10 +580,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#000'
   },
   image: {
-    width: ScreenWidth*0.9,
-    height: ScreenHeight*0.6,
+    width: ScreenWidth*1,
+    height: ScreenHeight*1,
     borderRadius: 10 ,
-    resizeMode:'cover'
+    resizeMode:'contain'
   },
   inputAndSend: {
     flexDirection: 'row',
@@ -599,5 +594,22 @@ const styles = StyleSheet.create({
     left: 0,
     width: ScreenWidth,
     padding: 10,
-  }
+  },
+  lightboxHeader: {
+    width: ScreenWidth, 
+    height: 50, 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    justifyContent: 'space-between', 
+    paddingHorizontal: 10 
+},
+modalInput: {
+   width:ScreenWidth*0.8, 
+   backgroundColor: '#fff', 
+   borderRadius: 10, 
+   padding: 10, 
+   fontFamily: 'Urbanist-Regular', 
+   fontSize: 16, 
+   marginVertical: 10 
+},
 })
