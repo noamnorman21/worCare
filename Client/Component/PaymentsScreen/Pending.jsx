@@ -181,6 +181,7 @@ function Request(props) {
   }
 
   const saveStatus = async (id) => {
+    if (status == "F") {
     try {
       const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/UpdateStatus/', {
         method: 'PUT',
@@ -197,6 +198,7 @@ function Request(props) {
       console.log(error)
     }
   }
+}
 
   const callback = downloadProgress => {
     const progress = downloadProgress.totalBytesWritten / downloadProgress.totalBytesExpectedToWrite;
@@ -268,7 +270,7 @@ function Request(props) {
                   <Text style={styles.requestItemText}>{dateString}</Text>
                 </View>
                 <View style={styles.requestItemMiddle}>
-                  <Text style={styles.requestItemText}>{props.subject}</Text>
+                  <Text style={styles.requestItemText}>{props.subject.length>17? props.subject.slice(0, 12)+"...":props.subject}</Text>
                 </View>
               </TouchableOpacity>
               <Menu style={{ flexDirection: 'column', marginVertical: 0 }} onSelect={value => openModal(value)} >
@@ -301,11 +303,13 @@ function Request(props) {
             </View>
             <View style={styles.requestItemBody}>
               <View style={styles.requestItemBodyLeft}>
+              <Text style={styles.requestItemText}>Subject: </Text>
                 <Text style={styles.requestItemText}>Date: </Text>
                 <Text style={styles.requestItemText}>Amount: </Text>
                 <Text style={[styles.requestItemText, props.requestComment == null || props.requestComment == '' && { display: 'none' }]}>Comment: </Text>
               </View>
               <View style={styles.requestItemBodyRight}>
+                <Text style={styles.requestItemText}>{props.subject}</Text>
                 <Text style={styles.requestItemText}>{dateString}</Text>
                 <Text style={styles.requestItemText}>{props.amountToPay}</Text>
                 <Text style={[styles.requestItemText, props.requestComment == null || props.requestComment == '' && { display: 'none' }]}>{props.requestComment}</Text>
@@ -326,7 +330,7 @@ function Request(props) {
             </TouchableOpacity>
             <TouchableOpacity onPress={toggle} style={styles.requestItemMiddle}>
               <View>
-                <Text style={[styles.requestItemText, status == 'F' ? { textDecorationLine: 'line-through' } : {}]}>{dateString} - {props.subject}</Text>
+                <Text style={[styles.requestItemText, status == 'F' ? { textDecorationLine: 'line-through' } : {}]}>{dateString} - {props.subject.length>15? props.subject.slice(0, 12)+"...":props.subject}</Text>
               </View>
             </TouchableOpacity>
             <Menu style={{ flexDirection: 'column', marginVertical: 0, position: 'relative' }} onSelect={value => openModal(value)} >
@@ -421,7 +425,7 @@ const styles = StyleSheet.create({
   requestItemMiddle: {
     justifyContent: 'center',
     alignItems: 'flex-start',
-    flex: 2,
+    flex: 3.5,
   },
   requestItemLeft: {
     justifyContent: 'center',

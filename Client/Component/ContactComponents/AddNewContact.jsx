@@ -8,7 +8,7 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export default function AddNewContact(props) {
-  const { userContext ,fetchUserContacts,addNewContact} = useUserContext()
+  const { userContext, fetchUserContacts, addNewContact } = useUserContext()
   const [Contact, setContact] = useState({
     contactName: null,
     phoneNo: null,
@@ -47,7 +47,7 @@ export default function AddNewContact(props) {
     }
     addNewContact(Contact)
     props.closeModal();
-    }
+  }
 
   const sendToDB = () => {
     fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/NewContact', {
@@ -256,3 +256,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
+
+

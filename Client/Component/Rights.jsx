@@ -1,27 +1,21 @@
-import { View, Text, StyleSheet, TouchableOpacity, Alert, SafeAreaView, Modal, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, SafeAreaView, Modal, Dimensions, TextInput } from 'react-native';
+import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AddBtn, NewTaskModal } from './HelpComponents/AddNewTask'
+// import { TextInput } from 'react-native-paper';
+const SCREEN_WIDTH = Dimensions.get('window').width;
+const SCREEN_HEIGHT = Dimensions.get('window').height;
+import { useUserContext } from '../UserContext';
+import { useIsFocused } from '@react-navigation/native';
+import { LinearGradient } from 'expo-linear-gradient';
+import DropDownPicker from 'react-native-dropdown-picker';
 
+// This is the Rights page - the page that the user can ask qustions about his rights and get answers from the admin
 export default function Rights({ navigation }) {
-  const [userData, setUserData] = useState(''); // [1]
+  const { userContext } = useUserContext();
+  const isFocused = useIsFocused();
   const [modalVisible, setModalVisible] = useState(false);
 
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        const jsonValue = await AsyncStorage.getItem('userData')
-        if (jsonValue != null) {
-          const json = JSON.parse(jsonValue);
-          setUserData(json);
-        }
-      }
-      catch (e) {
-        console.log(e);
-      }
-    };
-    getData();
-  }, []);
   const handleAddBtnPress = () => {
     setModalVisible(true);
   };
@@ -29,75 +23,86 @@ export default function Rights({ navigation }) {
     setModalVisible(false);
   };
 
-  const [grid, setGrid] = useState([['', '', ''], ['', '', ''], ['', '', '']]);
-  const [player, setPlayer] = useState('X');
-  const onPress = (row, col) => {
-    if (grid[row][col] !== '') {
-      return;
-    }
-
-    const newGrid = [...grid];
-    newGrid[row][col] = player;
-    setGrid(newGrid);
-
-    if (isGameOver()) {
-      Alert.alert('Game Over', `Player ${player} has won!`, [
-        {
-          text: 'Restart',
-          onPress: () => setGrid([['', '', ''], ['', '', ''], ['', '', '']]),
-        },
-      ]);
-      return;
-    }
-    setPlayer(player === 'X' ? 'O' : 'X');
-  };
-  const isGameOver = () => {
-  };
-  const renderCell = (row, col) => {
-  };
-
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={{ fontSize: 21, textAlign: 'center', marginBottom: 10, color: 'red' }}> ברוכים הבאים למשחק של נועםםםםם</Text>
-      <Text style={{ fontSize: 21, textAlign: 'center', marginBottom: 10, color: 'red' }}> {userData.userType}</Text>
-      <View style={styles.row}>
-        {renderCell(0, 0)}
-        {renderCell(0, 1)}
-        {renderCell(0, 2)}
-      </View>
-      <View style={styles.row}>
-        {renderCell(1, 0)}
-        {renderCell(1, 1)}
-        {renderCell(1, 2)}
-      </View>
-      <View style={styles.row}>
-        {renderCell(2, 0)}
-        {renderCell(2, 1)}
-        {renderCell(2, 2)}
-      </View>
-      <View style={styles.addBtnView}>
+      <LinearGradient
+        // Background Linear Gradient
+        colors={['#E6EBF2', '#548DFF']}
+        style={styles.background}
+      />
+      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
+          <View style={{ flex: 1 }}>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.headerTxt}>Rights</Text>
+            </View>
+
+            <View style={{ flex: 2 }}>
+              <View>
+                <Text style={styles.smHeader}>Categories</Text>
+                <DropDownPicker
+                  items={[
+                    { label: 'General', value: 'General' },
+                    { label: 'Work', value: 'Work' },
+                    { label: 'Family', value: 'Family' },
+                    { label: 'Health', value: 'Health' },
+                    { label: 'Other', value: 'Other' },
+                  ]}
+                  placeholder={'Select a category'}
+                  placeholderStyle={{ fontFamily: 'Urbanist-Light', fontSize: 16, color: '#000' }}
+                  defaultValue={'General'}
+                  containerStyle={{ height: 40, width: SCREEN_WIDTH * 0.85, marginVertical: 10 }}
+                  style={{ backgroundColor: '#fff', borderRadius: 16, borderWidth: 1.5, borderColor: '#E6EBF2', height: 54 }}
+                  itemStyle={{
+                    justifyContent: 'flex-start'
+                  }}
+                  // dropDownStyle={{ backgroundColor: '#fafafa' }}
+                  onChangeItem={item => console.log(item.label, item.value)}
+                />
+
+                <Text style={styles.smHeader}>Question</Text>
+                {/* <TextInput
+                  mode='outlined'
+                  contentStyle={{ fontFamily: 'Urbanist-SemiBold', fontSize: 16, height: 'auto', maxHeight: 100 }}
+                  outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                  activeOutlineColor="#548DFF"
+                  outlineColor='#E6EBF2'
+                  label="What do you want to ask?"
+                  style={styles.inputTxt}
+                  multiline
+                  numberOfLines={4}
+                  maxLength={300}
+                  returnKeyType='done' // Customize the return key type
+                /> */}
+                <TextInput
+                  style={styles.inputTxt}
+                  placeholder="What do you want to ask?"
+                  // multiline
+                  // numberOfLines={4}
+                  // maxLength={300}
+                  placeholderTextColor={'#000'}
+                  returnKeyType='done' // Customize the return key type
+                />
+
+              </View>
+              <View style={{ display: 'none' }}>
+                <Text>Answer</Text>
+              </View>
+
+              <View style={styles.btnAskContainer}>
+                <TouchableOpacity style={styles.btnAsk}>
+                  <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 16, color: '#fff' }}>Ask Now</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+      {/* <View style={styles.addBtnView}>
         <AddBtn onPress={handleAddBtnPress} />
       </View>
-      <NewTaskModal isVisible={modalVisible} onClose={handleModalClose} />
-      <View>
-        <TouchableOpacity
-          onPress={() => {
-            AsyncStorage.removeItem("user");
-            AsyncStorage.removeItem("userData");
-            Alert.alert('Log Out', 'You have been logged out', [
-              {
-                text: 'OK',
-                onPress: () => {
-                  navigation.navigate('LogIn')
-                }
-              },
-            ]);
-          }}
-        >
-          <Text>Log Out</Text>
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
+      <NewTaskModal isVisible={modalVisible} onClose={handleModalClose} /> */}
+    </SafeAreaView >
   );
 }
 
@@ -105,7 +110,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
     backgroundColor: '#fff',
   },
   addBtnView: {
@@ -113,26 +117,57 @@ const styles = StyleSheet.create({
     bottom: 20,
     right: 20,
   },
-  row: {
-    flexDirection: 'row',
+  inputTxt: {
+    fontFamily: 'Urbanist-Light',
+    fontSize: 16,
+    color: '#000',
+    backgroundColor: '#fff',
+    marginVertical: 10,
+    width: SCREEN_WIDTH * 0.85,
+    height: 54,
+    maxHeight: 100,
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: '#E6EBF2',
+    padding: 10,
+    // textAlignVertical: 'top',
   },
-  cell: {
-    width: 100,
-    height: 100,
-    borderWidth: 1,
+  smHeader: {
+    fontSize: 18,
+    fontFamily: 'Urbanist-SemiBold',
+    // marginVertical: 10,
+    marginTop: 20,
+  },
+  headerTxt: {
+    fontSize: 24,
+    textAlign: 'center',
+    marginTop: SCREEN_HEIGHT * 0.125,
+    fontFamily: 'Urbanist-Bold',
+    color: '#fff1e6',
+  },
+  background: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    height: SCREEN_HEIGHT * 0.25,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+  },
+  btnAsk: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 20,
+    borderColor: '#548DFF',
+    backgroundColor: '#548DFF',
+    borderRadius: 16,
+    borderWidth: 1.5,
+    width: SCREEN_WIDTH * 0.85,
+    height: 54,
+
+  },
+  btnAskContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  text: {
-    fontSize: 48,
-  },
-  button: {
-    marginTop: 20,
-    padding: 10,
-    backgroundColor: '#333',
-    color: '#fff',
-  },
-  buttonText: {
-    color: '#fff',
   },
 });

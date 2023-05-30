@@ -20,11 +20,8 @@ export default function MainTasks(props) {
   const arrowIcon = ["chevron-down-outline", "chevron-up-outline"];
   const todayScrollViewRef = useRef(null);
   const tommorowScrollViewRef = useRef(null);
-
-
   const route = useRoute();
   const isFocused = useIsFocused();
-
 
   useEffect(() => {
     setPublicTasks(props.allPublicTasks);
@@ -54,17 +51,28 @@ export default function MainTasks(props) {
     }
   }, [isFocused, route.params]);
 
-  useFocusEffect( //we need to update the products in the db when we leave the screen
+  const [isFirstFocus, setIsFirstFocus] = useState(true);
+
+  useEffect(() => {
+    setIsFirstFocus(true);
+  }, []);
+
+  useFocusEffect(
     useCallback(() => {
-      return () => {
-        //scroll to top when leaving the screen
-        setHeaderTommorow(true);
-        setHeaderToday(false);
-        todayScrollViewRef.current.scrollTo({ y: 0, animated: true });
-        ///צריך לתקן, אחרי שעוברים למסך אחר ואז חוזים לכאן, עדיין מבצע גלילה
-      };
-    }, [])
+      if (isFirstFocus) {
+        setIsFirstFocus(false);
+      } else {
+        todayScrollViewRef.current.scrollTo({ y: 0, animated: false });
+      }
+    }, [isFirstFocus])
   );
+
+  const scrollToIndex = (scrollViewRef, index) => {
+    if (scrollViewRef && scrollViewRef.current) {
+      const yOffset = index * 140; // Adjust this value as per your requirement
+      scrollViewRef.current.scrollTo({ y: yOffset, animated: true });
+    }
+  };
 
   const filterTasks = (privateTask, publicTasks) => {
     //combine private and public tasks for today task and sort by time
@@ -99,7 +107,6 @@ export default function MainTasks(props) {
 
   const handleAddBtnPress = () => {
     setModalVisible(true);
-
   };
 
   const toggleHeaderTodayView = () => {
@@ -116,13 +123,6 @@ export default function MainTasks(props) {
     setModalVisible(false);
     props.refreshPublicTask();
     props.refreshPrivateTask();
-  };
-
-  const scrollToIndex = (scrollViewRef, index) => {
-    if (scrollViewRef && scrollViewRef.current) {
-      const yOffset = index * 140; // Adjust this value as per your requirement
-      scrollViewRef.current.scrollTo({ y: yOffset, animated: true });
-    }
   };
 
   return (

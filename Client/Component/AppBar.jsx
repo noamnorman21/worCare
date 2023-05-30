@@ -1,8 +1,11 @@
-import { View, TouchableOpacity, Image, Dimensions, StyleSheet, Modal } from 'react-native'
+import { View, TouchableOpacity, Image, Dimensions, StyleSheet, Modal, Text } from 'react-native'
 import { Octicons, Ionicons, AntDesign, Feather } from '@expo/vector-icons';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useState } from 'react';
+import { useUserContext } from '../UserContext';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Overlay } from '@rneui/themed';
 
 import SettingScreen from './SettingScreen';
 import Contacts from './Contacts';
@@ -16,14 +19,21 @@ import Rights from './Rights';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
-
+const SCREEN_HEIGHT = Dimensions.get('window').height;
+const SCREEN_WIDTH = Dimensions.get('screen').width;
 
 function CustomHeader() {
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const { userContext } = useUserContext(); // Move the userContext destructuring here
+
     const toggleModal = () => {
         setIsModalVisible(!isModalVisible);
     };
 
+    if (!userContext) {
+        return null; // Add a null check to handle the case when userContext is not available
+    }
+    const { userUri, FirstName } = userContext; // Destructure the userUri property
     return (
         <Stack.Navigator>
             <Stack.Screen
@@ -37,26 +47,83 @@ function CustomHeader() {
                             <TouchableOpacity onPress={toggleModal} >
                                 <Feather name="menu" size={28} color="black" />
                             </TouchableOpacity>
-                            <View>
-                                <Modal
-                                    visible={isModalVisible}
+                            <View style={styles.modalContainer}>
+                                <Overlay
+                                    ModalComponent={Modal}
+                                    isVisible={isModalVisible}
                                     animationType="fade"
                                     transparent={true}
-                                    onRequestClose={toggleModal}
+                                    onBackdropPress={toggleModal}
+                                // overlayStyle={styles.modalContainer}
                                 >
-                                    <View style={styles.modalContainer}>
-                                        <TouchableOpacity style={styles.closeButton} onPress={toggleModal}>
+                                    <View >
+                                        <View style={styles.imgContainer}>
+                                            <LinearGradient
+                                                // Background Linear Gradient
+                                                colors={['#F5F8FF', '#7DA9FF', '#548DFF']}
+                                                style={styles.background}
+                                            />
+
+                                            <Image style={styles.image} source={{ uri: userUri }} />
+                                            <Text style={styles.name}>Hello, {FirstName}</Text>
+                                        </View>
+
+                                        {/* <TouchableOpacity style={styles.closeButton} onPress={toggleModal}>
                                             <Feather name="x" size={24} color="black" />
-                                        </TouchableOpacity>
-                                        {/* Add your sidebar menu content here */}
-                                        {/* Example content */}
+                                        </TouchableOpacity>*/}
+
+                                        {/* Patient Profile */}
                                         <View style={styles.menuItem}>
-                                            <Feather name="home" size={24} color="black" />
-                                            {/* Add more menu items */}
+                                            <Feather name="user" size={30} color="#fff1e6" />
+                                            <TouchableOpacity onPress={() => { navigation.navigate('Profile') }} >
+                                                <Text style={styles.menuItemText}>Patient Profile</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                        <View style={styles.line}></View>
+
+                                        <View style={styles.menuItem}>
+                                            <Feather name="settings" size={30} color="#fff1e6" />
+                                            <TouchableOpacity onPress={() => { navigation.navigate('SettingScreen') }}>
+                                                <Text style={styles.menuItemText}>Settings</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                        <View style={styles.line}></View>
+
+                                        <View style={styles.menuItem}>
+                                            <Feather name="bell" size={30} color="#fff1e6" />
+                                            <TouchableOpacity onPress={() => { navigation.navigate('PushNotifications') }}>
+                                                <Text style={styles.menuItemText}>Notifications</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                        <View style={styles.line}></View>
+
+                                        <View style={styles.menuItem}>
+                                            <AntDesign name="contacts" size={30} color="#fff1e6" />
+                                            <TouchableOpacity onPress={() => { navigation.navigate('Contacts') }}>
+                                                <Text style={styles.menuItemText}>Contacts</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                        <View style={styles.line}></View>
+
+                                        {/* Add Another User */}
+                                        <View style={styles.menuItem}>
+                                            <Feather name="user-plus" size={30} color="#fff1e6" />
+                                            <TouchableOpacity onPress={() => { navigation.navigate('AddUser') }}>
+                                                <Text style={styles.menuItemText}>Add User</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                        <View style={styles.line}></View>
+
+                                        <View style={styles.menuItem}>
+                                            <Feather name="log-out" size={30} color="#fff1e6" />
+                                            <TouchableOpacity onPress={() => { navigation.navigate('Login') }}>
+                                                <Text style={styles.menuItemText}>Log out</Text>
+                                            </TouchableOpacity>
                                         </View>
                                     </View>
-                                </Modal>
+                                </Overlay>
                             </View>
+
                         </View>
                     ),
                     headerRight: () => (
@@ -153,13 +220,13 @@ const styles = StyleSheet.create({
     headerRight: { marginTop: 10, marginLeft: Dimensions.get('screen').width * 0.075, flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignContent: 'space-between' },
     headerLogo: { width: 50, height: 50, bottom: Dimensions.get('screen').height * 0.01, left: Dimensions.get('screen').width * 0.005 },
     modalContainer: {
-        flex: 1,
-        justifyContent: 'flex-start',
-        alignItems: 'flex-start',
-        paddingTop: 50,
-        paddingLeft: 20,
-        backgroundColor: '#fff',
-        width: Dimensions.get('screen').width * 0.75,
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: SCREEN_WIDTH * 0.75, // Adjust the width as desired
+        height: SCREEN_HEIGHT,
+        paddingVertical: 20,
+        zIndex: 9999,
     },
     closeButton: {
         marginBottom: 20,
@@ -167,7 +234,44 @@ const styles = StyleSheet.create({
     menuItem: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 10,
+        marginVertical: 15,
+        paddingLeft: 20,
+    },
+    menuItemText: {
+        fontFamily: 'Urbanist-Medium',
+        fontSize: 18,
+        marginHorizontal: 20,
+        color: '#fff1e6',
+    },
+    image: {
+        width: 75,
+        height: 75,
+        borderRadius: 50,
+    },
+    imgContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginVertical: SCREEN_HEIGHT * 0.05,
+    },
+    name: {
+        fontSize: 20,
+        color: '#fff1e6',
+        marginVertical: 10,
+        fontFamily: 'Urbanist-SemiBold',
+    },
+    background: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        height: SCREEN_HEIGHT * 2,
+        borderBottomLeftRadius: 30,
+        borderBottomRightRadius: 30,
+    },
+    line: {
+        height: 1,
+        width: '100%',
+        backgroundColor: '#fff1e6',
+        marginVertical: 10,
     },
 });
 

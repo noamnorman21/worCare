@@ -163,8 +163,8 @@ export function UserProvider({ children }) {
         try {
             const response = await fetch(url);
             const data = await response.json();
-            if (data.response && data.response.holidays) {                
-                const holidays = data.response.holidays.map((holiday) => ({                    
+            if (data.response && data.response.holidays) {
+                const holidays = data.response.holidays.map((holiday) => ({
                     date: holiday.date.iso,
                     name: holiday.name,
                     desc: holiday.description,
@@ -498,25 +498,25 @@ export function UserProvider({ children }) {
         fetch(allDrugsUrl, {
             method: 'GET',
             headers: {
-               'Content-Type': 'application/json; charset=UTF-8',
+                'Content-Type': 'application/json; charset=UTF-8',
             },
-         })
+        })
             .then(res => {
-               if (res.ok) {
-                  return res.json()
-               }
-               else {
-                  console.log("not found")
-               }
+                if (res.ok) {
+                    return res.json()
+                }
+                else {
+                    console.log("not found")
+                }
             })
             .then(data => {
-               if (data != null) {
-                  //exmaple of data object: {drugId:1, drugName:"פרסקוטיקס", drugUrl:"https://www.drugs.com/images/pills/augmentin.jpg", modifyDate:"2021-05-05T00:00:00",Type:"pills"} 
-                  setAllDrugs(data);
-               }
+                if (data != null) {
+                    //exmaple of data object: {drugId:1, drugName:"פרסקוטיקס", drugUrl:"https://www.drugs.com/images/pills/augmentin.jpg", modifyDate:"2021-05-05T00:00:00",Type:"pills"} 
+                    setAllDrugs(data);
+                }
             })
             .catch((error) => {
-               console.log("err=", error);
+                console.log("err=", error);
             });
 
     }
@@ -673,26 +673,26 @@ export function UserProvider({ children }) {
             );
     }
 
-    function addPrivateTaskContext  (taskData)  {
+    function addPrivateTaskContext(taskData) {
         console.log("addPrivateTask");
         fetch(InsertPrivateTaskUrl, {
-           method: 'POST',
-           body: JSON.stringify(taskData),
-           headers: new Headers({
-              'Content-Type': 'application/json; charset=UTF-8',
-           })
+            method: 'POST',
+            body: JSON.stringify(taskData),
+            headers: new Headers({
+                'Content-Type': 'application/json; charset=UTF-8',
+            })
         })
-           .then(res => { return res.json() })
-           .then(
-              (result) => {
-                 console.log("fetch POST= ", result);
-              }
-           )
-           .catch((error) => {
-              console.log('Error=', error);
-           }
-           );
-     }
+            .then(res => { return res.json() })
+            .then(
+                (result) => {
+                    console.log("fetch POST= ", result);
+                }
+            )
+            .catch((error) => {
+                console.log('Error=', error);
+            }
+            );
+    }
 
     //firebase
     async function logInFireBase(email, password) {
@@ -724,7 +724,7 @@ export function UserProvider({ children }) {
         deleteContact, addNewContact, saveContact, updateActualTask, updateRememberUserContext, logInContext,
         fetchUserContacts, logOutContext, updateUserContext, updateUserContacts, updatePendings,
         updateUserProfile, updateuserNotifications, appEmail, getAllPrivateTasks, getAllPublicTasks,
-        allPublicTasks, allPrivateTasks, UpdateDrugForPatientDTO, holidays,GetAllDrugs,allDrugs,addPrivateTaskContext
+        allPublicTasks, allPrivateTasks, UpdateDrugForPatientDTO, holidays, GetAllDrugs, allDrugs, addPrivateTaskContext
     };
 
     return (
