@@ -1,11 +1,11 @@
-import { View, TouchableOpacity, Image, Dimensions, StyleSheet, Modal, Text } from 'react-native'
+import React, { useState } from 'react';
+import { View, TouchableOpacity, Image, Dimensions, StyleSheet, Modal, Text } from 'react-native';
 import { Octicons, Ionicons, AntDesign, Feather } from '@expo/vector-icons';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { useState } from 'react';
-import { useUserContext } from '../UserContext';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Overlay } from '@rneui/themed';
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
+import { useUserContext } from '../UserContext';
 
 import SettingScreen from './SettingScreen';
 import Contacts from './Contacts';
@@ -19,134 +19,122 @@ import Rights from './Rights';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
+
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const SCREEN_WIDTH = Dimensions.get('screen').width;
 
 function CustomHeader() {
     const [isModalVisible, setIsModalVisible] = useState(false);
-    const { userContext } = useUserContext(); // Move the userContext destructuring here
+    const { userContext } = useUserContext();
 
     const toggleModal = () => {
         setIsModalVisible(!isModalVisible);
     };
 
     if (!userContext) {
-        return null; // Add a null check to handle the case when userContext is not available
+        return null;
     }
-    const { userUri, FirstName } = userContext; // Destructure the userUri property
+
+    const { userUri, FirstName } = userContext;
+
     return (
         <Stack.Navigator>
             <Stack.Screen
-                name='AppBarDown'
+                name="AppBarDown"
                 component={AppBarDown}
                 options={({ navigation }) => ({
                     title: ' ',
                     headerTitleAlign: 'center',
                     headerLeft: () => (
                         <View style={styles.headerLeft}>
-                            <TouchableOpacity onPress={toggleModal} >
+                            <TouchableOpacity onPress={toggleModal}>
                                 <Feather name="menu" size={28} color="black" />
                             </TouchableOpacity>
-                            <View style={styles.modalContainer}>
-                                <Overlay
-                                    ModalComponent={Modal}
-                                    isVisible={isModalVisible}
-                                    animationType="fade"
-                                    transparent={true}
-                                    onBackdropPress={toggleModal}
-                                // overlayStyle={styles.modalContainer}
-                                >
-                                    <View >
-                                        <View style={styles.imgContainer}>
-                                            <LinearGradient
-                                                // Background Linear Gradient
-                                                colors={['#F5F8FF', '#7DA9FF', '#548DFF']}
-                                                style={styles.background}
-                                            />
-
-                                            <Image style={styles.image} source={{ uri: userUri }} />
-                                            <Text style={styles.name}>Hello, {FirstName}</Text>
-                                        </View>
-
-                                        {/* <TouchableOpacity style={styles.closeButton} onPress={toggleModal}>
-                                            <Feather name="x" size={24} color="black" />
-                                        </TouchableOpacity>*/}
-
-                                        {/* Patient Profile */}
-                                        <View style={styles.menuItem}>
-                                            <Feather name="user" size={30} color="#fff1e6" />
-                                            <TouchableOpacity onPress={() => { navigation.navigate('Profile') }} >
-                                                <Text style={styles.menuItemText}>Patient Profile</Text>
-                                            </TouchableOpacity>
-                                        </View>
-                                        <View style={styles.line}></View>
-
-                                        <View style={styles.menuItem}>
-                                            <Feather name="settings" size={30} color="#fff1e6" />
-                                            <TouchableOpacity onPress={() => { navigation.navigate('SettingScreen') }}>
-                                                <Text style={styles.menuItemText}>Settings</Text>
-                                            </TouchableOpacity>
-                                        </View>
-                                        <View style={styles.line}></View>
-
-                                        <View style={styles.menuItem}>
-                                            <Feather name="bell" size={30} color="#fff1e6" />
-                                            <TouchableOpacity onPress={() => { navigation.navigate('PushNotifications') }}>
-                                                <Text style={styles.menuItemText}>Notifications</Text>
-                                            </TouchableOpacity>
-                                        </View>
-                                        <View style={styles.line}></View>
-
-                                        <View style={styles.menuItem}>
-                                            <AntDesign name="contacts" size={30} color="#fff1e6" />
-                                            <TouchableOpacity onPress={() => { navigation.navigate('Contacts') }}>
-                                                <Text style={styles.menuItemText}>Contacts</Text>
-                                            </TouchableOpacity>
-                                        </View>
-                                        <View style={styles.line}></View>
-
-                                        {/* Add Another User */}
-                                        <View style={styles.menuItem}>
-                                            <Feather name="user-plus" size={30} color="#fff1e6" />
-                                            <TouchableOpacity onPress={() => { navigation.navigate('AddUser') }}>
-                                                <Text style={styles.menuItemText}>Add User</Text>
-                                            </TouchableOpacity>
-                                        </View>
-                                        <View style={styles.line}></View>
-
-                                        <View style={styles.menuItem}>
-                                            <Feather name="log-out" size={30} color="#fff1e6" />
-                                            <TouchableOpacity onPress={() => { navigation.navigate('Login') }}>
-                                                <Text style={styles.menuItemText}>Log out</Text>
-                                            </TouchableOpacity>
-                                        </View>
+                            <Modal
+                                visible={isModalVisible}
+                                animationType="fade"
+                                transparent={true}
+                                onRequestClose={toggleModal}
+                            >
+                                <View style={styles.modalContainer}>
+                                    <View style={styles.imgContainer}>
+                                        <LinearGradient
+                                            colors={['#F5F8FF', '#7DA9FF', '#548DFF']}
+                                            style={styles.background}
+                                        />
+                                        <Image style={styles.image} source={{ uri: userUri }} />
+                                        <Text style={styles.name}>Hello, {FirstName}</Text>
                                     </View>
-                                </Overlay>
-                            </View>
 
+                                    <View style={styles.closeButtonContainer}>
+                                        <TouchableOpacity onPress={toggleModal}>
+                                            <Feather name="x" size={32} color="white" />
+                                        </TouchableOpacity>
+                                    </View>
+
+                                    <View style={styles.menuItem}>
+                                        <Feather name="user" size={30} color="#fff1e6" />
+                                        <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+                                            <Text style={styles.menuItemText}>Patient Profile</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View style={styles.line} />
+
+                                    <View style={styles.menuItem}>
+                                        <Feather name="settings" size={30} color="#fff1e6" />
+                                        <TouchableOpacity onPress={() => navigation.navigate('SettingScreen')}>
+                                            <Text style={styles.menuItemText}>Settings</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View style={styles.line} />
+
+                                    <View style={styles.menuItem}>
+                                        <Feather name="bell" size={30} color="#fff1e6" />
+                                        <TouchableOpacity onPress={() => navigation.navigate('PushNotifications')}>
+                                            <Text style={styles.menuItemText}>Notifications</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View style={styles.line} />
+
+                                    <View style={styles.menuItem}>
+                                        <AntDesign name="contacts" size={30} color="#fff1e6" />
+                                        <TouchableOpacity onPress={() => navigation.navigate('Contacts')}>
+                                            <Text style={styles.menuItemText}>Contacts</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View style={styles.line} />
+
+                                    <View style={styles.menuItem}>
+                                        <Feather name="user-plus" size={30} color="#fff1e6" />
+                                        <TouchableOpacity onPress={() => navigation.navigate('AddUser')}>
+                                            <Text style={styles.menuItemText}>Add User</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View style={styles.line} />
+
+                                    <View style={styles.menuItem}>
+                                        <Feather name="log-out" size={30} color="#fff1e6" />
+                                        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+                                            <Text style={styles.menuItemText}>Log out</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            </Modal>
                         </View>
                     ),
                     headerRight: () => (
                         <View style={styles.headerRight}>
                             <TouchableOpacity
                                 style={{ right: Dimensions.get('screen').width * 0.06 }}
-                                onPress={() => { navigation.navigate('PushNotifications') }}
+                                onPress={() => navigation.navigate('PushNotifications')}
                             >
-                                <Feather
-                                    name="bell"
-                                    size={28}
-                                    color={'#000000'}
-                                />
+                                <Feather name="bell" size={28} color="#000000" />
                             </TouchableOpacity>
                             <TouchableOpacity
                                 style={{ right: Dimensions.get('screen').width * 0.04 }}
-                                onPress={() => { navigation.navigate('Contacts') }}
+                                onPress={() => navigation.navigate('Contacts')}
                             >
-                                <AntDesign
-                                    name="contacts"
-                                    size={28}
-                                    color={'#000000'}
-                                />
+                                <AntDesign name="contacts" size={28} color="#000000" />
                             </TouchableOpacity>
                         </View>
                     ),
@@ -159,7 +147,8 @@ function CustomHeader() {
                     unmountOnBlur: true,
                 })}
             />
-            < Stack.Screen name='SettingScreen'
+            <Stack.Screen
+                name="SettingScreen"
                 component={SettingScreen}
                 options={() => ({
                     headerTitle: 'Settings',
@@ -168,14 +157,21 @@ function CustomHeader() {
                     headerShown: false,
                 })}
             />
-            < Stack.Screen name='PushNotifications' component={PushNotifications}
+            <Stack.Screen
+                name="PushNotifications"
+                component={PushNotifications}
                 options={() => ({
                     headerTitle: 'Notifications',
                     presentation: 'stack',
                     cardOverlayEnabled: true,
-                })} />
-            < Stack.Screen name='Contacts' component={Contacts} options={{ unmountOnBlur: true, headerShown: false }} />
-        </Stack.Navigator >
+                })}
+            />
+            <Stack.Screen
+                name="Contacts"
+                component={Contacts}
+                options={{ unmountOnBlur: true, headerShown: false }}
+            />
+        </Stack.Navigator>
     );
 }
 
@@ -188,29 +184,40 @@ function AppBarDown() {
                 style: styles.tabBar,
                 tabBarIcon: ({ color, size }) => {
                     if (route.name === 'Home') {
-                        return <Octicons name={'home'} size={size} color={color} />
+                        return <Octicons name="home" size={size} color={color} />;
                     } else if (route.name === 'Finance') {
-                        return <Octicons name={'credit-card'} size={size} color={color} />
+                        return <Octicons name="credit-card" size={size} color={color} />;
                     } else if (route.name === 'Chats') {
-                        return <Ionicons name="chatbubble-ellipses-outline" size={size} color={color} />
+                        return <Ionicons name="chatbubble-ellipses-outline" size={size} color={color} />;
                     } else if (route.name === 'Tasks') {
-                        return <Octicons name="checklist" size={size} color={color} />
+                        return <Octicons name="checklist" size={size} color={color} />;
                     } else if (route.name === 'Rights') {
-                        return <Octicons name="question" size={size} color={color} />
+                        return <Octicons name="question" size={size} color={color} />;
                     }
                 },
-                headerShown: false
-            })
-            }
+                headerShown: false,
+            })}
             initialRouteName="Home"
         >
             <Tab.Screen name="Home" component={Home} options={{ tabBarLabel: 'Home' }} />
             <Tab.Screen name="Finance" component={Finance} options={{ tabBarLabel: 'Finance', unmountOnBlur: true }} />
-            <Tab.Screen name="Chats" component={Chats} options={{ tabBarLabel: 'Chats' }} />
+            <Tab.Screen
+                name="Chats"
+                component={Chats}
+                options={({ route }) => ({
+                    tabBarStyle: ((route) => {
+                        const routeName = getFocusedRouteNameFromRoute(route) ?? '';
+                        if (routeName === 'ChatRoom') {
+                            return { display: 'none' };
+                        }
+                        return;
+                    })(route),
+                })}
+            />
             <Tab.Screen name="Tasks" component={Tasks} options={{ tabBarLabel: 'Tasks', unmountOnBlur: true }} />
             <Tab.Screen name="Rights" component={Rights} options={{ tabBarLabel: 'Rights' }} />
         </Tab.Navigator>
-    )
+    );
 }
 
 const styles = StyleSheet.create({
@@ -220,16 +227,15 @@ const styles = StyleSheet.create({
     headerRight: { marginTop: 10, marginLeft: Dimensions.get('screen').width * 0.075, flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignContent: 'space-between' },
     headerLogo: { width: 50, height: 50, bottom: Dimensions.get('screen').height * 0.01, left: Dimensions.get('screen').width * 0.005 },
     modalContainer: {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        width: SCREEN_WIDTH * 0.75, // Adjust the width as desired
+        width: SCREEN_WIDTH * 0.75,
         height: SCREEN_HEIGHT,
-        paddingVertical: 20,
-        zIndex: 9999,
+        paddingVertical: 25,
     },
-    closeButton: {
-        marginBottom: 20,
+    closeButtonContainer: {
+        position: 'absolute',
+        marginVertical: 10,
+        left: 20,
+        top: 40,
     },
     menuItem: {
         flexDirection: 'row',
@@ -261,8 +267,7 @@ const styles = StyleSheet.create({
     },
     background: {
         position: 'absolute',
-        left: 0,
-        right: 0,
+        width: SCREEN_WIDTH * 0.75,
         height: SCREEN_HEIGHT * 2,
         borderBottomLeftRadius: 30,
         borderBottomRightRadius: 30,
@@ -275,4 +280,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export { AppBarDown, CustomHeader }
+export { AppBarDown, CustomHeader };
