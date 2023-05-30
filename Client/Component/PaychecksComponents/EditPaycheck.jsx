@@ -3,7 +3,7 @@ import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } fr
 import { useState } from "react";
 import * as ImagePicker from 'expo-image-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { AntDesign, Octicons ,FontAwesome, MaterialIcons} from '@expo/vector-icons';
+import { AntDesign, Octicons, FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from '../../config/firebase';
 import DatePicker from 'react-native-datepicker';

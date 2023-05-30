@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback, useEffect, useLayoutEffect } from 'react';
 import { View, Text, StyleSheet, Dimensions, Image, Alert, Modal, TouchableOpacity, ScrollView, Platform } from 'react-native'
 import { GiftedChat, Bubble, Actions, InputToolbar, Time, MessageImage } from 'react-native-gifted-chat';
@@ -14,7 +13,6 @@ import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 const ScreenHeight = Dimensions.get("window").height;
 const ScreenWidth = Dimensions.get("window").width;
-
 
 export default function ChatRoom({ route, navigation }) {
   const [messages, setMessages] = useState([]);
@@ -430,11 +428,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#fff'
   },
-  conName: {
-    fontSize: 20,
-    fontFamily: 'Urbanist-SemiBold',
-    marginBottom: 5,
-  },
+
   conCard: {
     width: ScreenWidth * 0.9,
     height: ScreenHeight * 0.1,

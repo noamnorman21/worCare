@@ -1,79 +1,132 @@
-import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, ScrollView, Dimensions, LayoutAnimation } from 'react-native'
-import { useState, useEffect } from 'react'
-import { AddBtn, NewTaskModal } from '../HelpComponents/AddNewTask'
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions, LayoutAnimation } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import TaskView from '../HelpComponents/TaskView';
+import { AddBtn, NewTaskModal } from '../HelpComponents/AddNewTask';
+import { useRoute, useIsFocused, useFocusEffect } from '@react-navigation/native';
+
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
+
 export default function MainTasks(props) {
-  const [modalVisible, setModalVisible] = useState(false)
-  const [publicTasks, setPublicTasks] = useState(props.allPublicTasks)
-  const [privateTasks, setPrivateTasks] = useState(props.allPrivateTasks)
-  const [allTasks, setAllTasks] = useState([])
-  const [todayTasks, setTodayTasks] = useState([])
-  const [tommorowTasks, setTommorowTasks] = useState([])
-  const [headerToday, setHeaderToday] = useState(false)
-  const [headerTommorow, setHeaderTommorow] = useState(true)
+  const [modalVisible, setModalVisible] = useState(false);
+  const [publicTasks, setPublicTasks] = useState(props.allPublicTasks);
+  const [privateTasks, setPrivateTasks] = useState(props.allPrivateTasks);
+  const [allTasks, setAllTasks] = useState([]);
+  const [todayTasks, setTodayTasks] = useState([]);
+  const [tommorowTasks, setTommorowTasks] = useState([]);
+  const [headerToday, setHeaderToday] = useState(false);
+  const [headerTommorow, setHeaderTommorow] = useState(true);
   const arrowIcon = ["chevron-down-outline", "chevron-up-outline"];
+  const todayScrollViewRef = useRef(null);
+  const tommorowScrollViewRef = useRef(null);
+  const route = useRoute();
+  const isFocused = useIsFocused();
 
   useEffect(() => {
-    setPublicTasks(props.allPublicTasks)
-    setPrivateTasks(props.allPrivateTasks)
-    filterTasks(props.allPrivateTasks, props.allPublicTasks)
-  }, [props.allPublicTasks, props.allPrivateTasks])
+    setPublicTasks(props.allPublicTasks);
+    setPrivateTasks(props.allPrivateTasks);
+    filterTasks(props.allPrivateTasks, props.allPublicTasks);
+  }, [props.allPublicTasks, props.allPrivateTasks, isFocused]);
 
-  const filterTasks = async (privateTask, publicTasks) => {
-    //combine private and public tasks for today task and sort by time
-    let allTasks = privateTask.concat(publicTasks)
-    allTasks.sort((a, b) => {
-      return a.TimeInDay > b.TimeInDay ? 1 : -1
+  useEffect(() => {
+    if (isFocused && route.params) {
+      const { task } = route.params;
+      let index = todayTasks.findIndex(t => t.actualId === task.actualId);
+      if (index == -1) {//that means the task is in tommorow task
+        setHeaderTommorow(false);
+        setHeaderToday(true);
+        index = tommorowTasks.findIndex(t => t.actualId === task.actualId);
+        setTimeout(() => {
+          scrollToIndex(tommorowScrollViewRef, index);
+        }, 500);
+      }
+      else {
+        setHeaderTommorow(true);
+        setHeaderToday(false);
+        setTimeout(() => {
+          scrollToIndex(todayScrollViewRef, index);
+        }, 500);
+      }
     }
-    )
-    setAllTasks(allTasks)
+  }, [isFocused, route.params]);
+
+  const [isFirstFocus, setIsFirstFocus] = useState(true);
+
+  useEffect(() => {
+    setIsFirstFocus(true);
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (isFirstFocus) {
+        setIsFirstFocus(false);
+      } else {
+        todayScrollViewRef.current.scrollTo({ y: 0, animated: false });
+      }
+    }, [isFirstFocus])
+  );
+
+  const scrollToIndex = (scrollViewRef, index) => {
+    if (scrollViewRef && scrollViewRef.current) {
+      const yOffset = index * 140; // Adjust this value as per your requirement
+      scrollViewRef.current.scrollTo({ y: yOffset, animated: true });
+    }
+  };
+
+  const filterTasks = (privateTask, publicTasks) => {
+    //combine private and public tasks for today task and sort by time
+    let allTasks = privateTask.concat(publicTasks);
+    allTasks.sort((a, b) => (a.TimeInDay > b.TimeInDay ? 1 : -1));
+    setAllTasks(allTasks);
     //filter today tasks
     let todayTasks = allTasks.filter(task => {
-      let today = new Date()
-      let taskDate = new Date(task.taskDate)
-      return taskDate.getDate() == today.getDate() && taskDate.getMonth() == today.getMonth() && taskDate.getFullYear() == today.getFullYear()
-    }
-    )
-    setTodayTasks(todayTasks)
-    //filter all task that not today and not done
+      let today = new Date();
+      let taskDate = new Date(task.taskDate);
+      return (
+        taskDate.getDate() === today.getDate() &&
+        taskDate.getMonth() === today.getMonth() &&
+        taskDate.getFullYear() === today.getFullYear()
+      );
+    });
+    setTodayTasks(todayTasks);
+    //filter all task that are not today and not done
     let tommorowTasks = allTasks.filter(task => {
-      let today = new Date()
-      let taskDate = new Date(task.taskDate)
-      return taskDate.getDate() != today.getDate() || taskDate.getMonth() != today.getMonth() || taskDate.getFullYear() != today.getFullYear()
-    }
-    )
-    //sort by date and than by time
-    tommorowTasks.sort((a, b) => {
-      return a.taskDate > b.taskDate ? 1 : -1
-    }
-    )
-    
-    setTommorowTasks(tommorowTasks)
-  }
+      let today = new Date();
+      let taskDate = new Date(task.taskDate);
+      return (
+        taskDate.getDate() !== today.getDate() ||
+        taskDate.getMonth() !== today.getMonth() ||
+        taskDate.getFullYear() !== today.getFullYear()
+      );
+    });
+    //sort by date and then by time
+    tommorowTasks.sort((a, b) => (a.taskDate > b.taskDate ? 1 : -1));
+    setTommorowTasks(tommorowTasks);
+  };
 
   const handleAddBtnPress = () => {
     setModalVisible(true);
   };
 
-
   const toggleHeaderTodayView = () => {
-    LayoutAnimation.easeInEaseOut(setHeaderToday(!headerToday));
-    // setHeaderToday(!headerToday)
-  }
+    LayoutAnimation.easeInEaseOut();
+    setHeaderToday(!headerToday);
+  };
+
   const toggleHeaderTommorowView = () => {
-    LayoutAnimation.easeInEaseOut(setHeaderTommorow(!headerTommorow));
-  }
+    LayoutAnimation.easeInEaseOut();
+    setHeaderTommorow(!headerTommorow);
+  };
+
   const handleModalClose = () => {
     setModalVisible(false);
-    props.refreshPublicTask()
-    props.refreshPrivateTask()
+    props.refreshPublicTask();
+    props.refreshPrivateTask();
   };
 
   return (
-    <View style={styles.container} >
+    <View style={styles.container}>
       <View style={styles.todayView}>
         <View>
           <TouchableOpacity style={styles.headerForTasks} onPress={toggleHeaderTodayView}>
@@ -81,17 +134,18 @@ export default function MainTasks(props) {
             <Ionicons name={headerToday ? arrowIcon[0] : arrowIcon[1]} size={30} color="#548DFF" />
           </TouchableOpacity>
         </View>
-        <ScrollView alwaysBounceVertical={false}>
-          <View style={[styles.todayView, headerToday ? { display: 'none' } : {}]} >
-            {
-              todayTasks.map((task, index) => {
-                let isPrivate = false;
-                if (task.patientId == null) {
-                  isPrivate = true;
-                }
-                return (<TaskView today={true} key={index} task={task} isPrivate={isPrivate}  hideDate={true} />)
-              })
-            }
+        <ScrollView alwaysBounceVertical={false} ref={todayScrollViewRef}>
+          <View style={[styles.taskList, headerToday ? { display: 'none' } : {}]}>
+            {todayTasks.map((task, index) => (
+              <TaskView
+                today={true}
+                key={index}
+                task={task}
+                isPrivate={task.patientId == null ? true : false}
+                hideDate={true}
+                onLayout={() => scrollToIndex(todayScrollViewRef, index)}
+              />
+            ))}
           </View>
         </ScrollView>
       </View>
@@ -103,27 +157,28 @@ export default function MainTasks(props) {
             <Ionicons name={headerTommorow ? arrowIcon[0] : arrowIcon[1]} size={30} color="#548DFF" />
           </TouchableOpacity>
         </View>
-        <ScrollView alwaysBounceVertical={false}>
-          <View style={[styles.todayView, headerTommorow ? { display: 'none' } : {}]} >
-            {
-              tommorowTasks.map((task, index) => {
-                let isPrivate = false;
-                if (task.patientId == null) {
-                  isPrivate = true;
-                }
-                return (<TaskView today={false} key={index} task={task} isPrivate={isPrivate} hideDate={false} />)
-              })
-            }
+        <ScrollView alwaysBounceVertical={false} ref={tommorowScrollViewRef}>
+          <View style={[styles.taskList, headerTommorow ? { display: 'none' } : {}]}>
+            {tommorowTasks.map((task, index) => (
+              <TaskView
+                today={false}
+                key={index}
+                task={task}
+                isPrivate={task.patientId == null ? true : false}
+                hideDate={false}
+                onLayout={() => scrollToIndex(tommorowScrollViewRef, index)}
+              />
+            ))}
           </View>
         </ScrollView>
       </View>
 
-      <View style={styles.addBtnView} >
+      <View style={styles.addBtnView}>
         <AddBtn onPress={handleAddBtnPress} />
-      </View >
+      </View>
       <NewTaskModal isVisible={modalVisible} onClose={handleModalClose} />
-    </View >
-  )
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -140,7 +195,7 @@ const styles = StyleSheet.create({
   },
   TommorowView: {
     flex: 1.25,
-    width: '100%'
+    width: '100%',
   },
   addBtnView: {
     position: 'absolute',
@@ -159,5 +214,8 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontFamily: 'Urbanist-Bold',
     color: '#000',
+  },
+  taskList: {
+    marginTop: 10,
   },
 });

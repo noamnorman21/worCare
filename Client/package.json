@@ -19,6 +19,7 @@
     "@react-native-community/masked-view": "^0.1.11",
     "@react-native-picker/picker": "^2.4.8",
     "@react-navigation/bottom-tabs": "^6.5.3",
+    "@react-navigation/drawer": "^6.6.2",
     "@react-navigation/material-top-tabs": "^6.5.2",
     "@react-navigation/native": "^6.1.2",
     "@react-navigation/native-stack": "^6.9.8",
@@ -74,7 +75,8 @@
     "react-native-vector-icons": "^9.2.0",
     "react-navigation": "^4.4.4",
     "rn-country-picker": "^1.0.1",
-    "rn-select-date-range": "^5.0.0"
+    "rn-select-date-range": "^5.0.0",
+    "expo-linear-gradient": "~12.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"

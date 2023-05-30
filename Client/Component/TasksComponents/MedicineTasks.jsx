@@ -58,13 +58,14 @@ export default function MedicineTasks(props) {
    const refreshPublicTask = () => {
       props.refreshPublicTask()
    }
+   const { getAllPublicTasks, userContext, allMedicineTasks } = useUserContext();
 
    return (
       <NavigationContainer independent={true}>
          <Stack.Navigator>
             <Stack.Screen
                options={{ headerShown: false }}
-               initialParams={{ refreshPublicTask: refreshPublicTask, refreshPrivateTask: props.refreshPrivateTask, allMedicineTasks: props.allMedicineTasks }}
+               initialParams={{ refreshPublicTask: refreshPublicTask, refreshPrivateTask: props.refreshPrivateTask, allMedicineTasks: allMedicineTasks, userData: userContext }}
                name="MedTask" component={MedTask} />
             <Stack.Screen
                initialParams={{ changeHeader: changeHeader, refreshPublicTask: refreshPublicTask }}

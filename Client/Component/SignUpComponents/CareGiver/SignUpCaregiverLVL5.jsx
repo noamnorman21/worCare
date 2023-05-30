@@ -214,7 +214,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     alignItems: 'center',
     justifyContent: 'center',
-    // marginTop: 20,
   },
   button: {
     width: SCREEN_WIDTH * 0.9,

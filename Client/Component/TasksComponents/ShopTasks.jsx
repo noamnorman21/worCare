@@ -1,12 +1,15 @@
 import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Dimensions, ScrollView, TextInput, Alert } from 'react-native'
 import { useState, useEffect, useCallback } from 'react'
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useRoute,useIsFocused } from '@react-navigation/native';
 import { List } from 'react-native-paper';
 import { Feather, Ionicons } from '@expo/vector-icons';
 import { AddBtn, NewTaskModal } from '../HelpComponents/AddNewTask'
 import { useUserContext } from '../../UserContext'
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
+
+
+
 
 function RenderShopTasks(props) {
   const [newProductName, setNewProductName] = useState('');
@@ -72,22 +75,43 @@ export default function ShopTasks(props) {
   const [userData, setUserData] = useState(useUserContext().userContext);
   const [tasks, setTasks] = useState([])
   const [shopTasks, setShopTasks] = useState(props.allShopTasks)
-  const [expanded, setExpanded] = useState(true);
-  const handlePress = () => setExpanded(!expanded);
   const [productsForUpdateInDB, setProductsForUpdateInDB] = useState([])
   const checkIcon = ["check-circle", "circle"]
+
+  const route = useRoute();
+  const isFocused = useIsFocused();
+  const { task } = route.params||{};
+
   useEffect(() => {
     setShopTasks(props.allShopTasks)
   }, [props.allShopTasks])
+
 
   useFocusEffect( //we need to update the products in the db when we leave the screen
     useCallback(() => {
       return () => {
         updateProductsInDB()
+        //update expanded to false on all tasks
+        setShopTasks(shopTasks.map(t => {
+          t.isExpanded = false
+          return t
+        }))
       };
     }, [])
   );
-
+  
+  useEffect(() => {
+    if (isFocused && task ) {
+      //const { task } = route.params;
+      //find the task in the array of tasks
+      let taskToUpdate = shopTasks.find(t => t.taskId == task.taskId && t.actualId == task.actualId)
+      //open the List.Accordion on this task
+      taskToUpdate.isExpanded = true
+      //update the task in the array of tasks
+      setShopTasks(shopTasks.map(t => t.taskId == task.taskId && t.actualId == task.actualId ? taskToUpdate : t)) 
+    }
+  }, [isFocused, route.params]);   
+  
   const handleAddBtnPress = () => {
     // console.log(shopTasks)
     setModalVisible(true);
@@ -189,17 +213,27 @@ export default function ShopTasks(props) {
         }
       )
   }
+  const handleExpandedSubTask = (taskToChangeOpen) => {
+    setShopTasks(shopTasks.map((task) => {
+      if (task.taskId === taskToChangeOpen.taskId && task.actualId === taskToChangeOpen.actualId) {
+        task.isExpanded = !task.isExpanded
+      }
+      return task
+    }))
+  }
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ width: SCREEN_WIDTH * 0.92 }}>
         <List.Section>
-          <ScrollView>
+          <ScrollView alwaysBounceVertical={false}>
             {shopTasks.map((task, index) => {
               return (
                 <List.Accordion
                   key={task.actualId}
                   style={{ backgroundColor: '#F2F2F2' }}
+                  onPress={() => {handleExpandedSubTask(task) }}
+                  expanded={task.isExpanded}
                   left={() => <Text style={styles.taskName}>{task.taskName}</Text>}
                 >
                   <RenderShopTasks task={task} index={index} refreshlPublicTask={props.refreshPublicTask} />

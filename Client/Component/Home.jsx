@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, SafeAreaView, Dimensions, FlatList } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, Dimensions } from 'react-native';
 import React, { useEffect, useState, useMemo } from 'react';
 import TaskView from './HelpComponents/TaskView';
 import { useUserContext } from '../UserContext';
@@ -16,7 +16,7 @@ export default function Home() {
   const isFocused = useIsFocused();
   useEffect(() => {
   }, [allPrivateTasks, allPublicTasks, holidays]);
-  
+
   const allTasks = useMemo(() => {
     return filterTasks(allPrivateTasks, allPublicTasks);
   }, [allPrivateTasks, allPublicTasks]);
@@ -77,7 +77,7 @@ export default function Home() {
     <SafeAreaView style={styles.container}>
       <View style={styles.calendarContainer}>
         <CalendarProvider>
-          <Agenda      
+          <Agenda
             futureScrollRange={12}
             pastScrollRange={12}
             showOnlySelectedDayItems={true}

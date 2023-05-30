@@ -110,10 +110,7 @@ function Request(props) {
     if (value == 3) {
       setModal2Visible(true)
     }
-
   }
-
-
 
   const callback = downloadProgress => {
     const progress = downloadProgress.totalBytesWritten / downloadProgress.totalBytesExpectedToWrite;

@@ -1,13 +1,15 @@
-import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, ScrollView, Dimensions, LayoutAnimation } from 'react-native'
+import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, ScrollView, Dimensions, LayoutAnimation, Alert } from 'react-native'
 import { useState, useEffect } from 'react'
 import { useIsFocused } from '@react-navigation/native';
 import { AddBtn, NewTaskModal } from '../HelpComponents/AddNewTask'
 import TaskCheckBox from '../HelpComponents/TaskCheckBox';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native'; // Import useNavigation from @react-navigation/native
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function GeneralTasks(props) {
+  const navigation = useNavigation(); // Access the navigation object
   const [modalVisible, setModalVisible] = useState(false)
   const [publicTasks, setPublicTasks] = useState(props.allPublicTasks)
   const [privateTasks, setPrivateTasks] = useState(props.allPrivateTasks)
@@ -80,7 +82,23 @@ export default function GeneralTasks(props) {
   }
 
   const sendNavigtion = (task) => {
-    props.moveScreens(task)
+    //if it is shop task go to shop screen
+    if (task.type == false) {
+      navigation.navigate('Shop', { task: task });
+    }
+    // if it is not shop task check if medical task and go to medical screen(just today tasks)
+    else if (task.type == true) {
+      let today = new Date();
+      let taskDate = new Date(task.taskDate);
+      if (today.getDate() == taskDate.getDate()) {
+        navigation.navigate('Medicine', { task: task });
+      }
+      else navigation.navigate('Main', { task: task });
+    }
+    //all other tasks go to main screen
+    else {
+      navigation.navigate('Main', { task: task });
+    }
   }
 
   return (
@@ -105,14 +123,14 @@ export default function GeneralTasks(props) {
         </ScrollView>
       </View>
 
-      <View style={{ width: SCREEN_WIDTH * 0.92, marginVertical: 20 }}>
+      {/* <View style={{ width: SCREEN_WIDTH * 0.92, marginVertical: 20 }}>
         <View>
           <TouchableOpacity style={styles.headerForTasks} onPress={toggleHeaderCompleted}>
             <Text style={styles.tasksTitle}>Completed</Text>
             <Ionicons name={headerCompleted ? arrowIcon[0] : arrowIcon[1]} size={30} color="#548DFF" />
           </TouchableOpacity>
         </View>
-      </View>
+      </View> */}
 
       <View style={styles.addBtnView}>
         <AddBtn onPress={handleAddBtnPress} />
