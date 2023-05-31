@@ -179,21 +179,21 @@ export default function ChatRoom({ route, navigation }) {
       });
     });
     if (GroupMembers){
-GroupMembers.forEach(arr => {
-  arr.forEach(user => {
-    return console.log("user", user)
-    // if (user !== auth.currentUser.email) {
-    //   const docRef = query(collection(db, user), where("Name", "==", route.params.name));
-    //   const res = getDocs(docRef);
-    //   res.then((querySnapshot) => {
-    //     querySnapshot.forEach((doc) => {
-    //       updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: text||"image", lastMessageTime: createdAt });
-    //     });
-    //   });
-    // }
-  }
-  )  
-});
+      GroupMembers.forEach(arr => {
+        arr.forEach(user => {
+          return console.log("user", user)
+          if (user !== auth.currentUser.email) {
+            const docRef = query(collection(db, user), where("Name", "==", route.params.name));
+            const res = getDocs(docRef);
+            res.then((querySnapshot) => {
+              querySnapshot.forEach((doc) => {
+                updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: text||"image", lastMessageTime: createdAt });
+              });
+            });
+          }
+        }
+        )
+      });
     }
     else if (route.params.userEmail) {
       const docRef = query(collection(db, route.params.userEmail), where("Name", "==", route.params.name));

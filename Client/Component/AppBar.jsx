@@ -71,53 +71,58 @@ function CustomHeader() {
                                             <Feather name="x" size={32} color="white" />
                                         </TouchableOpacity>
                                     </View>
+                                    <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
 
-                                    <View style={styles.menuItem}>
-                                        <Feather name="user" size={30} color="#fff1e6" />
-                                        <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+                                        <View style={styles.menuItem}>
+                                            <Feather name="user" size={30} color="#fff1e6" />
+
                                             <Text style={styles.menuItemText}>Patient Profile</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                    <View style={styles.line} />
 
-                                    <View style={styles.menuItem}>
-                                        <Feather name="settings" size={30} color="#fff1e6" />
-                                        <TouchableOpacity onPress={() => navigation.navigate('SettingScreen')}>
+                                        </View>
+                                    </TouchableOpacity>
+                                    <View style={styles.line} />
+                                    <TouchableOpacity onPress={() => navigation.navigate('SettingScreen')}>
+                                        <View style={styles.menuItem}>
+                                            <Feather name="settings" size={30} color="#fff1e6" />
+
                                             <Text style={styles.menuItemText}>Settings</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                    <View style={styles.line} />
+                                        </View>
+                                    </TouchableOpacity>
 
-                                    <View style={styles.menuItem}>
-                                        <Feather name="bell" size={30} color="#fff1e6" />
-                                        <TouchableOpacity onPress={() => navigation.navigate('PushNotifications')}>
+                                    <View style={styles.line} />
+                                    <TouchableOpacity onPress={() => navigation.navigate('PushNotifications')}>
+
+                                        <View style={styles.menuItem}>
+                                            <Feather name="bell" size={30} color="#fff1e6" />
                                             <Text style={styles.menuItemText}>Notifications</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                    <View style={styles.line} />
+                                        </View>
+                                    </TouchableOpacity>
 
-                                    <View style={styles.menuItem}>
-                                        <AntDesign name="contacts" size={30} color="#fff1e6" />
-                                        <TouchableOpacity onPress={() => navigation.navigate('Contacts')}>
+                                    <View style={styles.line} />
+                                    <TouchableOpacity onPress={() => navigation.navigate('Contacts')}>
+
+                                        <View style={styles.menuItem}>
+                                            <AntDesign name="contacts" size={30} color="#fff1e6" />
                                             <Text style={styles.menuItemText}>Contacts</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                    <View style={styles.line} />
+                                        </View>
+                                    </TouchableOpacity>
 
-                                    <View style={styles.menuItem}>
-                                        <Feather name="user-plus" size={30} color="#fff1e6" />
-                                        <TouchableOpacity onPress={() => navigation.navigate('AddUser')}>
+                                    <View style={styles.line} />
+                                    <TouchableOpacity onPress={() => navigation.navigate('AddUser')}>
+
+                                        <View style={styles.menuItem}>
+                                            <Feather name="user-plus" size={30} color="#fff1e6" />
                                             <Text style={styles.menuItemText}>Add User</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                    <View style={styles.line} />
+                                        </View>
+                                    </TouchableOpacity>
 
-                                    <View style={styles.menuItem}>
-                                        <Feather name="log-out" size={30} color="#fff1e6" />
-                                        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+                                    <View style={styles.line} />
+                                    <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+                                        <View style={styles.menuItem}>
+                                            <Feather name="log-out" size={30} color="#fff1e6" />
                                             <Text style={styles.menuItemText}>Log out</Text>
-                                        </TouchableOpacity>
-                                    </View>
+                                        </View>
+                                    </TouchableOpacity>
                                 </View>
                             </Modal>
                         </View>
