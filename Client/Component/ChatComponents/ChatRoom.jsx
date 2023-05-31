@@ -26,8 +26,7 @@ export default function ChatRoom({ route, navigation }) {
 
   useLayoutEffect(() => {
     const tempMessages = query(collection(db, route.params.name), orderBy('createdAt', 'desc'));
-    getDocs(tempMessages).then((querySnapshot) => {
-      onSnapshot(tempMessages, (snapshot) => {
+    const unsubscribe= onSnapshot(tempMessages, (snapshot) => {
         setMessages(
           snapshot.docs.map(doc => ({
             _id: doc.data()._id,
@@ -38,21 +37,23 @@ export default function ChatRoom({ route, navigation }) {
           }))
         )
       });
-    });
     if (route.params.type === "group") {
       const groupusers = query(collection(db, "GroupMembers"), where("Name", "==", route.params.name));
       getDocs(groupusers).then((querySnapshot) => {
        setGroupMembers(querySnapshot.docs.map(doc => doc.data().UserEmail))
       });
     }
-    navigation.setOptions({
-      headerTitle: route.params.UserName ? route.params.UserName : route.params.name,
-    })
+    // navigation.setOptions({
+    //   headerTitle: route.params.UserName ? route.params.UserName : route.params.name,
+    // })
+
+    return () => {console.log("unsub");unsubscribe()};
 
   }, [navigation]);
 
   useEffect(() => {
     console.log("Group Members",GroupMembers)
+
   }, [GroupMembers]);
 
   useFocusEffect( //update convo in db that user has read the messages when leaving page
@@ -70,6 +71,12 @@ export default function ChatRoom({ route, navigation }) {
       }
     }, [])
   );
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerTitle: route.params.UserName ? route.params.UserName : route.params.name,
+    })
+  }, [navigation]);
 
   const openCamera = async () => {
     // Ask the user for the permission to access the camera
@@ -249,7 +256,7 @@ export default function ChatRoom({ route, navigation }) {
             console.log("res", res)
             res.then((querySnapshot) => {
               querySnapshot.forEach((doc) => {
-                updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: text, lastMessageTime: createdAt });
+                updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: text||"image", lastMessageTime: createdAt });
                 console.log("updated")
               });
             });

@@ -74,6 +74,7 @@ function MainRoom({ navigation }) {
         }))
       ))
       return () => {
+        console.log("unsubscribing")
         getNames();
         getUsers();
       }
