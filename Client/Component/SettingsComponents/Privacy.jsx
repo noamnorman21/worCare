@@ -8,6 +8,9 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 import { Ionicons } from '@expo/vector-icons';
 import { Switch } from 'react-native-paper';
+import { updateEmail } from 'firebase/auth';
+import { auth, db } from '../../config/firebase';
+
 
 export default function Privacy({ navigation, route }) {
   const [Email, setEmail] = useState(null);
@@ -170,8 +173,9 @@ export default function Privacy({ navigation, route }) {
         if (res.ok) {
           return res.json()
             .then(
-              (result) => {
+              async (result) => {
                 console.log("fetch POST= ", result);
+                await updateEmail(auth.currentUser, Email);
                 updateUserContext(userToUpdate);
                 const jsonValue = JSON.stringify(userToUpdate)
                 AsyncStorage.setItem('userData', jsonValue);

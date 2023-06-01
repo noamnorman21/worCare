@@ -3,7 +3,7 @@ import { Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { auth, db } from './config/firebase';
-import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { signInWithEmailAndPassword, signOut, updateProfile } from 'firebase/auth';
 import moment from 'moment';
 //--ruppin api server--
 
@@ -241,6 +241,10 @@ export function UserProvider({ children }) {
                                 updateUserContext(userToUpdate)
                                 const jsonValue = JSON.stringify(userToUpdate)
                                 AsyncStorage.setItem('userData', jsonValue);
+                                updateProfile(auth.currentUser,{
+                                    displayName: userToUpdate.FirstName + " " + userToUpdate.LastName,
+                                    photoURL: userToUpdate.userUri,
+                                })
                             }
                         )
                 }

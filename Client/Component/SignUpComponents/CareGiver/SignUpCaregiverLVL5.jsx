@@ -3,7 +3,7 @@ import * as Linking from 'expo-linking';
 import { useState, useEffect } from 'react'
 import Holidays from '../../HelpComponents/Holidays';
 import { auth, db } from '../../../config/firebase'
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, query } from "firebase/firestore";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -46,14 +46,30 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
           updateProfile(userCredential, {
             displayName: newUser.FirstName + ' ' + newUser.LastName,
             photoURL: newUser.userUri
-          }).then(() => {
-           signOut(auth).then(() => {
+          }).then(async() => {
+           signOut(auth).then(async () => {
             let userToUpdate = {
-              id: newUser.Email,
-              name: newUser.FirstName + " " + newUser.LastName, //the name of the user is the first name and the last name
-              avatar: newUser.userUri
-            }
-            addDoc(collection(db, "AllUsers"), { id: userToUpdate.id, name: userToUpdate.name, avatar: userToUpdate.avatar });
+               id: newUser.Email,
+               name: newUser.FirstName + " " + newUser.LastName, //the name of the user is the first name and the last name
+               avatar: newUser.userUri
+             }
+             //add the new user to the collection of all users
+             addDoc(collection(db, "AllUsers"), { id: userToUpdate.id, name: userToUpdate.name, avatar: userToUpdate.avatar });
+             //add the new user to the group of his country
+             const q = query(collection(db, "GroupMembers"), where("Name", "==", newForeignUserData.CountryName_En));
+             const querySnapshot = await getDocs(q);
+             //if the group of the country doesn't exist, create it
+             if (querySnapshot.empty) {
+               addDoc(collection(db, "GroupMembers", newForeignUserData.CountryName_En), { Name: newForeignUserData.CountryName_En, UserEmail: [newUser.Email] });
+               addDoc(collection(db, newUser.Email), { Name: newForeignUserData.CountryName_En, UserName: "", userEmail: "", image: newUser.userUri, unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date(), type: "group" });
+             } else {
+               querySnapshot.forEach((doc) => {
+                 console.log(doc.id, " => ", doc.data());
+                 let users = doc.data().UserEmail;
+                 users.push(newUser.Email);
+                 updateDoc(doc.ref, { UserEmail: users });
+               })
+             }
            })
           })
           }).catch((error) => {
