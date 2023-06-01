@@ -29,8 +29,19 @@ function MedTask({ navigation, route }) {
    };
 
    const navigateToMed = (task, runlow, medTypeIcon, timeInDay) => {
-      navigation.navigate("MedDetail", { task: task, runlow: runlow, medTypeIcon: medTypeIcon, timeInDay: timeInDay })
-   }
+      navigation.navigate("MedDetail", {
+         task: task,
+         runlow: runlow,
+         medTypeIcon: medTypeIcon,
+         timeInDay: timeInDay
+      });
+   };
+
+   useEffect(() => {
+      navigation.setOptions({
+         refreshPublicTask: () => getAllPublicTasks(userData)
+      });
+   }, []);
 
    return (
       <SafeAreaView style={styles.container}>
