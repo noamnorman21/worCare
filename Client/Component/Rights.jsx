@@ -41,6 +41,7 @@ export default function Rights({ navigation }) {
               <View>
                 <Text style={styles.smHeader}>Categories</Text>
                 <DropDownPicker
+                  onPress={() => { console.log('pressed') }}
                   items={[
                     { label: 'General', value: 'General' },
                     { label: 'Work', value: 'Work' },
