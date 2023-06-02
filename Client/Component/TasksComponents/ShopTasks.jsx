@@ -1,15 +1,12 @@
 import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Dimensions, ScrollView, TextInput, Alert } from 'react-native'
 import { useState, useEffect, useCallback } from 'react'
-import { useFocusEffect, useRoute,useIsFocused } from '@react-navigation/native';
+import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { useFocusEffect, useRoute, useIsFocused } from '@react-navigation/native';
 import { List } from 'react-native-paper';
 import { Feather, Ionicons } from '@expo/vector-icons';
 import { AddBtn, NewTaskModal } from '../HelpComponents/AddNewTask'
 import { useUserContext } from '../../UserContext'
 const SCREEN_WIDTH = Dimensions.get('window').width;
-const SCREEN_HEIGHT = Dimensions.get('window').height;
-
-
-
 
 function RenderShopTasks(props) {
   const [newProductName, setNewProductName] = useState('');
@@ -80,7 +77,7 @@ export default function ShopTasks(props) {
 
   const route = useRoute();
   const isFocused = useIsFocused();
-  const { task } = route.params||{};
+  const { task } = route.params || {};
 
   useEffect(() => {
     setShopTasks(props.allShopTasks)
@@ -99,19 +96,19 @@ export default function ShopTasks(props) {
       };
     }, [])
   );
-  
+
   useEffect(() => {
-    if (isFocused && task ) {
+    if (isFocused && task) {
       //const { task } = route.params;
       //find the task in the array of tasks
       let taskToUpdate = shopTasks.find(t => t.taskId == task.taskId && t.actualId == task.actualId)
       //open the List.Accordion on this task
       taskToUpdate.isExpanded = true
       //update the task in the array of tasks
-      setShopTasks(shopTasks.map(t => t.taskId == task.taskId && t.actualId == task.actualId ? taskToUpdate : t)) 
+      setShopTasks(shopTasks.map(t => t.taskId == task.taskId && t.actualId == task.actualId ? taskToUpdate : t))
     }
-  }, [isFocused, route.params]);   
-  
+  }, [isFocused, route.params]);
+
   const handleAddBtnPress = () => {
     // console.log(shopTasks)
     setModalVisible(true);
@@ -232,7 +229,7 @@ export default function ShopTasks(props) {
                 <List.Accordion
                   key={task.actualId}
                   style={{ backgroundColor: '#F2F2F2' }}
-                  onPress={() => {handleExpandedSubTask(task) }}
+                  onPress={() => { handleExpandedSubTask(task) }}
                   expanded={task.isExpanded}
                   left={() => <Text style={styles.taskName}>{task.taskName}</Text>}
                 >
