@@ -334,6 +334,7 @@ export default function ContactDetails({ route, navigation }) {
                 onChangeText={(val) => handleInputChange('mobileNo', val)}
                 placeholder="Type Something..."
                 outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                contentStyle={{ fontFamily: 'Urbanist-Regular' }}
                 activeOutlineColor="#548DFF"
                 outlineColor='#E6EBF2' />
               <TextInput style={styles.inputTxt}

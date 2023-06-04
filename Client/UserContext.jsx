@@ -143,7 +143,10 @@ export function UserProvider({ children }) {
         else {
             getPairedEmail(userData.involvedInId);
         }
+
+        
     }
+
 
     async function getHolidaysForUser(calendarCode) {
         setHolidays([]);
@@ -203,12 +206,14 @@ export function UserProvider({ children }) {
                 });
     }
 
+    //update in main
     function logOutContext() {
         console.log("logOutContext")
         setUserContext(null)
         logOutFireBase()
     }
 
+    //update in main
     function updateUserProfile(userData) {
         const userToUpdate = {
             userId: userData.userId,
@@ -717,7 +722,7 @@ export function UserProvider({ children }) {
 
     async function logOutFireBase() {
         signOut(auth).then(() => {
-            console.log('user logged out');
+            console.log('user logged outtttt');
         }).catch((error) => {
             console.log(error);
         });

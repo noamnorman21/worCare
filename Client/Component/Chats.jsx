@@ -4,7 +4,7 @@ import { auth, db } from '../config/firebase';
 import { GiftedChat, Bubble, Time, MessageImage } from 'react-native-gifted-chat';
 import { collection, addDoc, getDocs, getDoc, query, orderBy, onSnapshot, updateDoc, where, limit, doc, increment } from 'firebase/firestore';
 import { useEffect } from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator,TransitionPresets } from '@react-navigation/stack';
 import { useUserContext } from '../UserContext';
 import { Feather, Entypo, EvilIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
@@ -27,10 +27,14 @@ import ChatRoom from './ChatComponents/ChatRoom';
 const Stack = createStackNavigator();
 export default function Chats({ navigation }) {
   return (
-    <Stack.Navigator initialRouteName='MainRoom' >
+    <Stack.Navigator initialRouteName='MainRoom' screenOptions={{
+      //this is the animation for the navigation
+      ...TransitionPresets.SlideFromRightIOS,
+      headerBlurEffect: 'light',
+    }} >
       <Stack.Screen name="ChatRoom" component={ChatRoom} />
       <Stack.Screen name="MainRoom" component={MainRoom} options={{ headerShown: false }} />
-      <Stack.Screen name="ChatProfile" component={ChatProfile} options={{ headerShown: false }} />
+      <Stack.Screen name="ChatProfile" component={ChatProfile} options={{headerTitleAlign:'center'}} animationType="slide" />
     </Stack.Navigator>
   )
 }
@@ -194,8 +198,10 @@ const ConvoCard = (props) => {
 
   useEffect(() => {
     const temp = props.name.lastMessageTime.toString().split(' ')
-    const date = temp[1] + ' ' + temp[2] + ' ' + temp[3]
-    setLastMessageTime(temp[4].split(':').slice(0, 2).join(':'))
+    let date = temp[1] + ' ' + temp[2] + ' ' + temp[3]
+    date=new moment(date).format('MMM DD YYYY')
+    const time= temp[4].split(':').slice(0, 2).join(':')
+    setLastMessageTime(time)
     setLastMessageDate(date)
     if (props.name.lastMessage.length > 30) {
       setLastMessageText(props.name.lastMessage.slice(0, 35) + '...')
@@ -216,7 +222,7 @@ const ConvoCard = (props) => {
   return (
     <>
       <View key={props.name.Name} >
-        <TouchableOpacity style={styles.conCard} key={props.name.Name} onPress={() => navigateToChatRoom(props.name)}>
+        <TouchableOpacity style={styles.conCard} key={props.name.Name} onPress={() => navigateToChatRoom(props.name)} onLongPress={()=> {console.log("Long pressed")}}>
           <View style={styles.conLeft}>
             <Image source={{ uri: props.name.image }} style={styles.convoImage} />
           </View>
@@ -228,9 +234,10 @@ const ConvoCard = (props) => {
             {props.name.unreadCount > 0 && <View style={styles.unread}>
               <Text style={styles.unreadTxt}>{props.name.unreadCount}</Text>
             </View>}
-            {lastMessageDate === yasterday && <Text style={styles.conDate}>yasterday</Text>}
-            {lastMessageDate < yasterday && <Text style={styles.conDate}>{lastMessageDate}</Text>}
             {lastMessageDate === today && <Text style={styles.conTime}>{lastMessageTime}</Text>}
+            {lastMessageDate === yasterday && <Text style={styles.conDate}>yasterday</Text>}
+            {lastMessageDate !== today && lastMessageDate !== yasterday && <Text style={styles.conDate}>{lastMessageDate}</Text>}
+
           </View>
         </TouchableOpacity>
         <View style={styles.lineContainer}>

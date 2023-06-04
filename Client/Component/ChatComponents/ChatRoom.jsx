@@ -1,7 +1,7 @@
 
 import React, { useState, useCallback, useEffect, useLayoutEffect } from 'react';
 import { View, Text, StyleSheet, Dimensions, Image, Alert, Modal, TouchableOpacity, ScrollView, Platform } from 'react-native'
-import { GiftedChat, Bubble, Actions, InputToolbar, Time, MessageImage } from 'react-native-gifted-chat';
+import { GiftedChat, Bubble, Actions, InputToolbar, Time, MessageImage, LoadEarlier } from 'react-native-gifted-chat';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import { collection, query, where, getDocs, addDoc, updateDoc, orderBy, onSnapshot } from "firebase/firestore";
@@ -451,9 +451,6 @@ export default function ChatRoom({ route, navigation }) {
                     <TouchableOpacity onPress={close}>
                       <Ionicons name='close' size={30} color='000' />
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => { }}>
-                      <Ionicons name='download' size={30} color='#fff' />
-                    </TouchableOpacity>
                   </View>
                 ),
                 renderContent: () => (
@@ -469,6 +466,33 @@ export default function ChatRoom({ route, navigation }) {
             />
           );
         }}
+        // loadEarlier={true}
+        // renderLoadEarlier={(props) => {
+        //   return (
+        //     <LoadEarlier {...props}
+        //       wrapperStyle={{
+        //         alignItems: 'center',
+        //         justifyContent: 'center',
+        //         height: 44,
+        //         width: ScreenWidth,
+        //       }}
+        //       textStyle={{
+        //         fontFamily: "Urbanist-Regular",
+        //         fontSize: 14,
+        //         color: "#000",
+        //       }}
+        //       label="Load Earlier Messages"
+        //       activityIndicatorColor="#548DFF"
+        //       activityIndicatorStyle={{
+        //         marginTop: 5,
+        //         marginBottom: 5,
+
+        //       }}
+        //       text="Load Earlier Messages"
+        //       />
+        //   )
+        // }
+        // }
       />
       <Modal visible={picPreviewModal} animationType='slide' onRequestClose={() => setPicPreviewModal(false)} >
         <View style={styles.imagePreview}>
