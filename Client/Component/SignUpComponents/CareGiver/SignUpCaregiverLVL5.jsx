@@ -63,17 +63,18 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
                       console.log("user added to all users"); 
                       const q = query(collection(db, "GroupMembers"), where("Name", "==", newForeignUserData.CountryName_En));
                       const querySnapshot = await getDocs(q);
+                      // check if the group already exists, if not add it to the db
                       if (querySnapshot.empty) {
                         console.log("No matching documents.");
                         console.log(newForeignUserData.CountryName_En);
-                        await addDoc(collection(db, auth.currentUser.email), { Name: newForeignUserData.CountryName_En, UserName: "", userEmail: "", image: newUser.userUri, unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date(), type: "group" }).then(() => {
-                          console.log("group added to user");
-                        }).catch((error) => {
-                          console.error(error);
-                        }
-                        );
+                        addDoc(collection(db, "GroupMembers"), { Name: newForeignUserData.CountryName_En ,userEmail:[newUser.Email] });
                       }
-                      addDoc(collection(db, "GroupMembers"), { Name: newForeignUserData.CountryName_En ,userEmail:[newUser.Email] });
+                      await addDoc(collection(db, auth.currentUser.email), { Name: newForeignUserData.CountryName_En, UserName: "", userEmail: "", image: newUser.userUri, unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date(), type: "group" }).then(() => {
+                        console.log("group added to user");
+                      }).catch((error) => {
+                        console.error(error);
+                      }
+                      );
                     }).catch((error) => {
                       console.error(error);
                     }
