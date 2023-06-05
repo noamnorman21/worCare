@@ -5,6 +5,10 @@ import Holidays from '../../HelpComponents/Holidays';
 import { auth, db } from '../../../config/firebase'
 import { collection, addDoc, query } from "firebase/firestore";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { useUserContext } from '../../../UserContext';
+import { signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { where, getDocs,updateDoc } from "firebase/firestore";
+
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 export default function SignUpCaregiverLVL5({ navigation, route }) {
@@ -13,6 +17,7 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
   const newUser = route.params.newUser;
   const holidaysType = route.params.holidaysType;
   const [linkTo, setLinkTo] = useState("");
+  const { getPairedEmail,pairedEmail } = useUserContext();
 
   useEffect(() => {
     getInitialUrl();
@@ -41,44 +46,56 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
           avatar: newUser.userUri
         }
         console.log(newUser);
-        createUserWithEmailAndPassword(auth, newUser.Email, newUser.Password).then(() => {
-          signInWithEmailAndPassword(auth, newUser.Email, newUser.Password).then(() => {
-          updateProfile(userCredential, {
-            displayName: newUser.FirstName + ' ' + newUser.LastName,
-            photoURL: newUser.userUri
-          }).then(async() => {
-           signOut(auth).then(async () => {
-            let userToUpdate = {
-               id: newUser.Email,
-               name: newUser.FirstName + " " + newUser.LastName, //the name of the user is the first name and the last name
-               avatar: newUser.userUri
-             }
-             //add the new user to the collection of all users
-             addDoc(collection(db, "AllUsers"), { id: userToUpdate.id, name: userToUpdate.name, avatar: userToUpdate.avatar });
-             //add the new user to the group of his country
-             const q = query(collection(db, "GroupMembers"), where("Name", "==", newForeignUserData.CountryName_En));
-             const querySnapshot = await getDocs(q);
-             //if the group of the country doesn't exist, create it
-             if (querySnapshot.empty) {
-               addDoc(collection(db, "GroupMembers", newForeignUserData.CountryName_En), { Name: newForeignUserData.CountryName_En, UserEmail: [newUser.Email] });
-               addDoc(collection(db, newUser.Email), { Name: newForeignUserData.CountryName_En, UserName: "", userEmail: "", image: newUser.userUri, unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date(), type: "group" });
-             } else {
-               querySnapshot.forEach((doc) => {
-                 console.log(doc.id, " => ", doc.data());
-                 let users = doc.data().UserEmail;
-                 users.push(newUser.Email);
-                 updateDoc(doc.ref, { UserEmail: users });
-               })
-             }
-           })
-          })
-          }).catch((error) => {
-            console.log(error);
-          });
-          console.log("user created");
-        }).catch((error) => {
-          console.log(error);
-        });
+        createUserWithEmailAndPassword(auth, newUser.Email, newUser.Password)
+        .then(() => {
+           signInWithEmailAndPassword(auth,newUser.Email, newUser.Password).then((userCredential) => {
+                updateProfile(auth.currentUser, {
+                    displayName: newUser.FirstName + ' ' + newUser.LastName,
+                    photoURL: newUser.userUri
+                }).then(async () => {
+                    console.log("user updated");
+                    let userToUpdate = {
+                        id: auth.currentUser.email,
+                        name: auth.currentUser.displayName, //the name of the user is the first name and the last name
+                        avatar: auth.currentUser.photoURL
+                    }
+                    await addDoc(collection(db, "AllUsers"), {id: userToUpdate.id, name: userToUpdate.name, avatar: userToUpdate.avatar }).then(async () => {
+                      console.log("user added to all users"); 
+                      const q = query(collection(db, "GroupMembers"), where("Name", "==", newForeignUserData.CountryName_En));
+                      const querySnapshot = await getDocs(q);
+                      if (querySnapshot.empty) {
+                        console.log("No matching documents.");
+                        console.log(newForeignUserData.CountryName_En);
+                        await addDoc(collection(db, auth.currentUser.email), { Name: newForeignUserData.CountryName_En, UserName: "", userEmail: "", image: newUser.userUri, unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date(), type: "group" }).then(() => {
+                          console.log("group added to user");
+                        }).catch((error) => {
+                          console.error(error);
+                        }
+                        );
+                      }
+                      addDoc(collection(db, "GroupMembers"), { Name: newForeignUserData.CountryName_En ,userEmail:[newUser.Email] });
+                    }).catch((error) => {
+                      console.error(error);
+                    }
+                    );      
+                }).then(() => {
+                    signOut(auth).then(() => {
+                        console.log("user signed out");
+                    }).catch((error) => {
+                    });
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+                console.log("user created");
+            }).catch((error) => {
+                console.log(error);
+            });
+        })
+        .catch((error) => {
+            console.error(error);
+        }
+        );
         //save the id of the new user that we got from the DB 
         newForeignUserData.Id = json; //save the id of the new user that we got from the DB
         console.log(newForeignUserData.Id);
@@ -124,11 +141,25 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
       body: JSON.stringify(caresForPatient),
     })
       .then((response) => response.json())
-      .then((json) => {
+      .then(async (json) => {
         console.log(json);
 
+        //add the new user and paired user to each other's chat
+        // getPairedEmail(newUser.Id);
+      //   const q= query(collection(db, "AllUsers"), where("id", "==", pairedEmail.toLowerCase()));
+      //   const querySnapshot = await getDocs(q);
+      //   paierdUser=querySnapshot[0].data();
+      //  console.log(paierdUser);
+      //   let userToUpdate = {
+      //     id: newUser.Email,
+      //     name: newUser.FirstName + " " + newUser.LastName, //the name of the user is the first name and the last name
+      //     avatar: newUser.userUri
+      //   }
+      //   addDoc(collection(db, pairedEmail), { Name: newUser.FirstName + "+" + paierdUser.name, UserName: userToUpdate.name, userEmail: userToUpdate.id, image: userToUpdate.avatar, unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date(), type: "private" });
+      //   addDoc(collection(db, newUser.Email.toLowerCase()), { Name: auth.currentUser.displayName + "+" + paierdUser.name, UserName:paierdUser.name, userEmail: pairedEmail, image: paierdUser.avatar, unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date(), type: "private" });
         Alert.alert("Great Job !", "You can login now", [
           {
+          
             text: "OK",
             onPress: () => {
               navigation.navigate('LogIn');

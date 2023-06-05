@@ -38,9 +38,10 @@ export default function ChatRoom({ route, navigation }) {
       )
     });
     if (route.params.type === "group") {
+      console.log("group chat")
       const groupusers = query(collection(db, "GroupMembers"), where("Name", "==", route.params.name));
       getDocs(groupusers).then((querySnapshot) => {
-        setGroupMembers(querySnapshot.docs.map(doc => doc.data().UserEmail))
+        setGroupMembers(querySnapshot.docs.map(doc => doc.data().userEmail))
       });
     }
     // navigation.setOptions({
@@ -66,6 +67,7 @@ export default function ChatRoom({ route, navigation }) {
       }
     }, [])
   );
+
 
   useEffect(() => {
     navigation.setOptions({
@@ -183,7 +185,7 @@ export default function ChatRoom({ route, navigation }) {
     if (GroupMembers) {
       GroupMembers.forEach(arr => {
         arr.forEach(user => {
-          console.log("user", user)
+          console.log("usera", user)
           if (user !== auth.currentUser.email) {
             const docRef = query(collection(db, user), where("Name", "==", route.params.name));
             const res = getDocs(docRef);
@@ -241,7 +243,7 @@ export default function ChatRoom({ route, navigation }) {
     if (GroupMembers) {
       GroupMembers.forEach(arr => {
         arr.forEach(user => {
-          console.log("user", user)
+          console.log("useraa", user)
           if (user !== auth.currentUser.email) {
             const docRef = query(collection(db, user), where("Name", "==", route.params.name));
             const res = getDocs(docRef);
