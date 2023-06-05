@@ -231,16 +231,17 @@ export default function ChatRoom({ route, navigation }) {
     addDoc(collection(db, route.params.name), { _id, createdAt, text, user, image });
     console.log("new message added to db")
     setPicPreviewModal(false);
-    setImageDescription('');
     //update last message and last message time in db
     const docRef = query(collection(db, auth.currentUser.email), where("Name", "==", route.params.name));
     const res = getDocs(docRef);
     res.then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
         updateDoc(doc.ref, { lastMessage: text || "image", lastMessageTime: createdAt });
+        console.log("updated for user")
       });
     });
     if (GroupMembers) {
+      console.log("GroupMembers", GroupMembers)
       GroupMembers.forEach(arr => {
         arr.forEach(user => {
           console.log("useraa", user)
@@ -249,10 +250,17 @@ export default function ChatRoom({ route, navigation }) {
             const res = getDocs(docRef);
             console.log("res", res)
             res.then((querySnapshot) => {
+              if(!querySnapshot.empty){
+
               querySnapshot.forEach((doc) => {
                 updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: text || "image", lastMessageTime: createdAt });
                 console.log("updated")
-              });
+              })}
+              else {
+                addDoc(collection(db, user), { Name: route.params.name,UserName: "",userEmail: "",image: auth.currentUser.photoURL, unread: true, unreadCount: 1, lastMessage: text, lastMessageTime: createdAt, type: "group" });
+                console.log("added")
+              }
+                ;
             });
           }
         }
@@ -283,19 +291,29 @@ export default function ChatRoom({ route, navigation }) {
    if (GroupMembers) {
       GroupMembers.forEach(arr => {
         arr.forEach(user => {
-          console.log("user", user)
           if (user !== auth.currentUser.email) {
+            console.log("user", user)
             const docRef = query(collection(db, user), where("Name", "==", route.params.name));
             const res = getDocs(docRef);
             console.log("res", res)
             res.then((querySnapshot) => {
+              // if user has no documentation in db of chat
+              if(!querySnapshot.empty){
               querySnapshot.forEach((doc) => {
                 updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: text || "image", lastMessageTime: createdAt });
                 console.log("updated")
-              });
+              })
+            }
+            // if user has documentation in db of chat
+            else {
+              addDoc(collection(db, user), { Name: route.params.name,UserName: "",userEmail: "",image: auth.currentUser.photoURL, unread: true, unreadCount: 1, lastMessage: text, lastMessageTime: createdAt, type: "group" });
+              console.log("added")
+            }
             });
           }
+         
         }
+        
         )
       });
     }
@@ -309,6 +327,11 @@ export default function ChatRoom({ route, navigation }) {
       });
     }
   }, []);
+
+  useEffect(() => {
+    console.log("group members", GroupMembers)
+  }, [GroupMembers])
+
 
   return (
     <>
@@ -406,7 +429,7 @@ export default function ChatRoom({ route, navigation }) {
               }}
               optionTintColor="#222B45"
             />
-            <Actions {...props}
+            {/* <Actions {...props}
               containerStyle={{
                 width: 34,
                 height: 44,
@@ -420,7 +443,7 @@ export default function ChatRoom({ route, navigation }) {
                 <FontAwesome name="microphone" size={28} color="#548DFF" />
               )}
               onPressActionButton={() => { console.log("audio") }}
-            />
+            /> */}
 
           </>
           )

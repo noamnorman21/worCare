@@ -198,8 +198,7 @@ const ConvoCard = (props) => {
 
   useEffect(() => {
     const temp = props.name.lastMessageTime.toString().split(' ')
-    let date = temp[1] + ' ' + temp[2] + ' ' + temp[3]
-    date=new moment(date).format('MMM DD YYYY')
+    let date=new moment(props.name.lastMessageTime).format('MMM DD YYYY')
     const time= temp[4].split(':').slice(0, 2).join(':')
     setLastMessageTime(time)
     setLastMessageDate(date)
