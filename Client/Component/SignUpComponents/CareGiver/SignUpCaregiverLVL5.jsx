@@ -7,8 +7,7 @@ import { collection, addDoc, query } from "firebase/firestore";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useUserContext } from '../../../UserContext';
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
-import { where, getDocs,updateDoc } from "firebase/firestore";
-
+import { where, getDocs, updateDoc } from "firebase/firestore";
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 export default function SignUpCaregiverLVL5({ navigation, route }) {
@@ -17,7 +16,7 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
   const newUser = route.params.newUser;
   const holidaysType = route.params.holidaysType;
   const [linkTo, setLinkTo] = useState("");
-  const { getPairedEmail,pairedEmail } = useUserContext();
+  const { getPairedEmail, pairedEmail } = useUserContext();
 
   useEffect(() => {
     getInitialUrl();
@@ -47,56 +46,56 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
         }
         console.log(newUser);
         createUserWithEmailAndPassword(auth, newUser.Email, newUser.Password)
-        .then(() => {
-           signInWithEmailAndPassword(auth,newUser.Email, newUser.Password).then((userCredential) => {
-                updateProfile(auth.currentUser, {
-                    displayName: newUser.FirstName + ' ' + newUser.LastName,
-                    photoURL: newUser.userUri
-                }).then(async () => {
-                    console.log("user updated");
-                    let userToUpdate = {
-                        id: auth.currentUser.email,
-                        name: auth.currentUser.displayName, //the name of the user is the first name and the last name
-                        avatar: auth.currentUser.photoURL
-                    }
-                    await addDoc(collection(db, "AllUsers"), {id: userToUpdate.id, name: userToUpdate.name, avatar: userToUpdate.avatar }).then(async () => {
-                      console.log("user added to all users"); 
-                      const q = query(collection(db, "GroupMembers"), where("Name", "==", newForeignUserData.CountryName_En));
-                      const querySnapshot = await getDocs(q);
-                      // check if the group already exists, if not add it to the db
-                      if (querySnapshot.empty) {
-                        console.log("No matching documents.");
-                        console.log(newForeignUserData.CountryName_En);
-                        addDoc(collection(db, "GroupMembers"), { Name: newForeignUserData.CountryName_En ,userEmail:[newUser.Email] });
-                      }
-                      await addDoc(collection(db, auth.currentUser.email), { Name: newForeignUserData.CountryName_En, UserName: "", userEmail: "", image: newUser.userUri, unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date(), type: "group" }).then(() => {
-                        console.log("group added to user");
-                      }).catch((error) => {
-                        console.error(error);
-                      }
-                      );
-                    }).catch((error) => {
-                      console.error(error);
-                    }
-                    );      
-                }).then(() => {
-                    signOut(auth).then(() => {
-                        console.log("user signed out");
-                    }).catch((error) => {
-                    });
-                })
-                .catch((error) => {
-                    console.log(error);
+          .then(() => {
+            signInWithEmailAndPassword(auth, newUser.Email, newUser.Password).then((userCredential) => {
+              updateProfile(auth.currentUser, {
+                displayName: newUser.FirstName + ' ' + newUser.LastName,
+                photoURL: newUser.userUri
+              }).then(async () => {
+                console.log("user updated");
+                let userToUpdate = {
+                  id: auth.currentUser.email,
+                  name: auth.currentUser.displayName, //the name of the user is the first name and the last name
+                  avatar: auth.currentUser.photoURL
+                }
+                await addDoc(collection(db, "AllUsers"), { id: userToUpdate.id, name: userToUpdate.name, avatar: userToUpdate.avatar }).then(async () => {
+                  console.log("user added to all users");
+                  const q = query(collection(db, "GroupMembers"), where("Name", "==", newForeignUserData.CountryName_En));
+                  const querySnapshot = await getDocs(q);
+                  // check if the group already exists, if not add it to the db
+                  if (querySnapshot.empty) {
+                    console.log("No matching documents.");
+                    console.log(newForeignUserData.CountryName_En);
+                    addDoc(collection(db, "GroupMembers"), { Name: newForeignUserData.CountryName_En, userEmail: [newUser.Email] });
+                  }
+                  await addDoc(collection(db, auth.currentUser.email), { Name: newForeignUserData.CountryName_En, UserName: "", userEmail: "", image: newUser.userUri, unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date(), type: "group" }).then(() => {
+                    console.log("group added to user");
+                  }).catch((error) => {
+                    console.error(error);
+                  }
+                  );
+                }).catch((error) => {
+                  console.error(error);
+                }
+                );
+              }).then(() => {
+                signOut(auth).then(() => {
+                  console.log("user signed out");
+                }).catch((error) => {
                 });
-                console.log("user created");
+              })
+                .catch((error) => {
+                  console.log(error);
+                });
+              console.log("user created");
             }).catch((error) => {
-                console.log(error);
+              console.log(error);
             });
-        })
-        .catch((error) => {
+          })
+          .catch((error) => {
             console.error(error);
-        }
-        );
+          }
+          );
         //save the id of the new user that we got from the DB 
         newForeignUserData.Id = json; //save the id of the new user that we got from the DB
         console.log(newForeignUserData.Id);
@@ -126,6 +125,7 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
         console.error(error);
       });
   };
+
   const InsertCaresForPatient = () => {
     const caresForPatient = {
       patientId: route.params.patientId,
@@ -147,20 +147,20 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
 
         //add the new user and paired user to each other's chat
         // getPairedEmail(newUser.Id);
-      //   const q= query(collection(db, "AllUsers"), where("id", "==", pairedEmail.toLowerCase()));
-      //   const querySnapshot = await getDocs(q);
-      //   paierdUser=querySnapshot[0].data();
-      //  console.log(paierdUser);
-      //   let userToUpdate = {
-      //     id: newUser.Email,
-      //     name: newUser.FirstName + " " + newUser.LastName, //the name of the user is the first name and the last name
-      //     avatar: newUser.userUri
-      //   }
-      //   addDoc(collection(db, pairedEmail), { Name: newUser.FirstName + "+" + paierdUser.name, UserName: userToUpdate.name, userEmail: userToUpdate.id, image: userToUpdate.avatar, unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date(), type: "private" });
-      //   addDoc(collection(db, newUser.Email.toLowerCase()), { Name: auth.currentUser.displayName + "+" + paierdUser.name, UserName:paierdUser.name, userEmail: pairedEmail, image: paierdUser.avatar, unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date(), type: "private" });
+        //   const q= query(collection(db, "AllUsers"), where("id", "==", pairedEmail.toLowerCase()));
+        //   const querySnapshot = await getDocs(q);
+        //   paierdUser=querySnapshot[0].data();
+        //  console.log(paierdUser);
+        //   let userToUpdate = {
+        //     id: newUser.Email,
+        //     name: newUser.FirstName + " " + newUser.LastName, //the name of the user is the first name and the last name
+        //     avatar: newUser.userUri
+        //   }
+        //   addDoc(collection(db, pairedEmail), { Name: newUser.FirstName + "+" + paierdUser.name, UserName: userToUpdate.name, userEmail: userToUpdate.id, image: userToUpdate.avatar, unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date(), type: "private" });
+        //   addDoc(collection(db, newUser.Email.toLowerCase()), { Name: auth.currentUser.displayName + "+" + paierdUser.name, UserName:paierdUser.name, userEmail: pairedEmail, image: paierdUser.avatar, unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date(), type: "private" });
         Alert.alert("Great Job !", "You can login now", [
           {
-          
+
             text: "OK",
             onPress: () => {
               navigation.navigate('LogIn');
@@ -207,6 +207,7 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
     </SafeAreaView >
   )
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

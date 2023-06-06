@@ -254,8 +254,6 @@ function HomeScreen({ navigation, route }) {
 }
 
 export default function SettingScreen({ navigation }) {
-const {logOutContext} = useUserContext();
-    
     return (
         <NavigationContainer independent={true}>
             <Stack.Navigator
@@ -272,7 +270,7 @@ const {logOutContext} = useUserContext();
                     headerShown: true,
                 }}>
                 <Stack.Screen name="Settings" component={HomeScreen} options={() => ({ headerTitle: 'Settings', headerShown: true, headerTitleAlign: 'center' })} initialParams={{ logout: () => { navigation.dispatch(StackActions.replace('LogIn')) }, Exit: () => navigation.navigate('AppBarDown') }} />
-                <Stack.Screen name="Privacy" component={Privacy} options={{ headerTitle: 'Privacy & My Account', headerTitleAlign: 'center', headerShown: true }} initialParams={{ logout: () => { navigation.dispatch(StackActions.replace('LogIn')); logOutContext() } }} />
+                <Stack.Screen name="Privacy" component={Privacy} options={{ headerTitle: 'Privacy & My Account', headerTitleAlign: 'center', headerShown: true }} initialParams={{ logout: () => { navigation.dispatch(StackActions.replace('LogIn')) } }} />
             </Stack.Navigator>
         </NavigationContainer>
     )

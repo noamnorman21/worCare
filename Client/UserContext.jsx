@@ -5,7 +5,12 @@ import { useNavigation } from '@react-navigation/native';
 import { auth, db } from './config/firebase';
 import { signInWithEmailAndPassword, signOut, updateProfile } from 'firebase/auth';
 import moment from 'moment';
-//--ruppin api server--
+
+// ---------------- All Server Urls ---------------- 
+
+// General
+let updateProfile = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Settings/UpdateUserProfile'
+let getPairedProfile = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUser/'
 
 // Log In
 let userForLoginUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUserForLogin';
@@ -25,9 +30,10 @@ let insertForeignUser = 'https://proj.ruppin.ac.il/cgroup94/test1/api/ForeignUse
 let insertCaresForPatient = 'https://proj.ruppin.ac.il/cgroup94/test1/api/ForeignUser/InsertCaresForPatient';
 
 // Contacts
+let getContacts = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/GetContacts';
 let newContact = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/NewContact';
 let updateContact = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/UpdateContact/';//+Contact.contactId
-let deleteContactUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/DeleteContact';
+let deleteContact = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/DeleteContact';
 
 // Payments
 let getHistory = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/GetHistory/';//+userId
@@ -80,6 +86,7 @@ export function UserProvider({ children }) {
     const [userCalendar, setUserCalendar] = useState(null)
     const [calendarCode, setCalendarCode] = useState(null)
     const [allDrugs, setAllDrugs] = useState([]);
+
     // new
     const [pairedEmail, setPairedEmail] = useState(null)
     const [userChats, setUserChats] = useState(null)
@@ -143,10 +150,7 @@ export function UserProvider({ children }) {
         else {
             getPairedEmail(userData.involvedInId);
         }
-
-        
     }
-
 
     async function getHolidaysForUser(calendarCode) {
         setHolidays([]);
@@ -181,10 +185,9 @@ export function UserProvider({ children }) {
         }
     }
 
-
     function getPairedEmail(id) {
         console.log('getPairedEmail')
-        fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUser/' + id, {
+        fetch(getPairedProfile + id, {
             method: 'GET',
             headers: new Headers({
                 'Content-Type': 'application/json; charset=UTF-8',
@@ -206,14 +209,12 @@ export function UserProvider({ children }) {
                 });
     }
 
-    //update in main
     function logOutContext() {
         console.log("logOutContext")
         setUserContext(null)
         logOutFireBase()
     }
 
-    //update in main
     function updateUserProfile(userData) {
         const userToUpdate = {
             userId: userData.userId,
@@ -229,7 +230,7 @@ export function UserProvider({ children }) {
             patientId: userData.patientId,
         }
 
-        fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Settings/UpdateUserProfile', {
+        fetch(updateProfile, {
             method: 'PUT',
             headers: new Headers({
                 'Content-Type': 'application/json; charset=UTF-8',
@@ -246,10 +247,6 @@ export function UserProvider({ children }) {
                                 updateUserContext(userToUpdate)
                                 const jsonValue = JSON.stringify(userToUpdate)
                                 AsyncStorage.setItem('userData', jsonValue);
-                                updateProfile(auth.currentUser,{
-                                    displayName: userToUpdate.FirstName + " " + userToUpdate.LastName,
-                                    photoURL: userToUpdate.userUri,
-                                })
                             }
                         )
                 }
@@ -265,11 +262,25 @@ export function UserProvider({ children }) {
             );
     }
 
+    
+
     function updateUserContext(userContext) {
         console.log("updateUser", userContext);
         setUserContext(userContext)
     }
 
+    function updateuserNotifications(notifications) {
+        console.log("updateUser", notifications)
+        setUserNotifications(notifications)
+        AsyncStorage.setItem('userNotifications', JSON.stringify(notifications));
+    }
+
+    async function updateRememberUserContext(userContext) {
+        console.log("updateRememberUser", userContext);
+        setUserContext(userContext);
+    }
+
+    // ---------------- Contacts ----------------
     async function fetchUserContacts(temp) {
         console.log("FetchUserContacts")
         let user = {}
@@ -286,7 +297,7 @@ export function UserProvider({ children }) {
             }
         }
         // new part when server is uploaded
-        const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/GetContacts', {
+        const response = await fetch(getContacts, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -304,23 +315,8 @@ export function UserProvider({ children }) {
         fetchUserContacts();
     }
 
-    function updateuserNotifications(notifications) {
-        console.log("updateUser", notifications)
-        setUserNotifications(notifications)
-        AsyncStorage.setItem('userNotifications', JSON.stringify(notifications));
-    }
-
-    async function updateRememberUserContext(userContext) {
-        console.log("updateRememberUser", userContext);
-        setUserContext(userContext);
-    }
-
-    function updatePendings(pendings) {
-        setUserPendingPayments(pendings);
-    }
-
     function addNewContact(Contact) {
-        fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/NewContact', {
+        fetch(newContact, {
             method: 'POST',
             body: JSON.stringify(Contact),
             headers: new Headers({
@@ -384,7 +380,7 @@ export function UserProvider({ children }) {
                     // If the user confirmed, then we dispatch the action we blocked earlier
                     // This will continue the action that had triggered the removal of the screen
                     onPress: () => {
-                        fetch(deleteContactUrl, {
+                        fetch(deleteContact, {
                             method: 'DELETE',
                             body: JSON.stringify(Contact),
                             headers: new Headers({
@@ -412,7 +408,7 @@ export function UserProvider({ children }) {
         );
     }
 
-    //Finance
+    // ---------------- Finance ----------------
     async function GetUserPending(userData) {
         console.log("GetUserHistory")
         try {
@@ -502,6 +498,11 @@ export function UserProvider({ children }) {
         }
     }
 
+    function updatePendings(pendings) {
+        setUserPendingPayments(pendings);
+    }
+
+    // ---------------- Tasks ----------------
     async function GetAllDrugs() {
         console.log("GetAllDrugs")
         fetch(allDrugsUrl, {
@@ -530,7 +531,6 @@ export function UserProvider({ children }) {
 
     }
 
-    // Tasks
     async function getAllPublicTasks(userData) {
         console.log("getAllPublicTasks")
         try {
@@ -703,7 +703,7 @@ export function UserProvider({ children }) {
             );
     }
 
-    //firebase
+    // ---------------- Firebase ----------------
     async function logInFireBase(email, password) {
         console.log('logInFireBase')
         console.log(email)
@@ -722,7 +722,6 @@ export function UserProvider({ children }) {
 
     async function logOutFireBase() {
         signOut(auth).then(() => {
-            console.log('user logged outtttt');
         }).catch((error) => {
             console.log(error);
         });

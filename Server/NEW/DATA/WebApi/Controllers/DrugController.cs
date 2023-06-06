@@ -24,6 +24,8 @@ namespace WebApi.Controllers
                             {
                                 drugId = d.drugId,
                                 drugName = d.drugName,
+                                drugNameEn = d.drugNameEn,
+                                drugUrlEn = d.drugUrlEn,
                                 drugUrl = d.drugUrl,
                                 modifyDate = d.modifyDate,
                                 Type = d.Type,

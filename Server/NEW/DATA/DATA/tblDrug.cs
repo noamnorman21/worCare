@@ -25,6 +25,8 @@ namespace DATA
         public string drugUrl { get; set; }
         public Nullable<System.DateTime> modifyDate { get; set; }
         public string Type { get; set; }
+        public string drugNameEn { get; set; }
+        public string drugUrlEn { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tblDrugForPatient> tblDrugForPatient { get; set; }

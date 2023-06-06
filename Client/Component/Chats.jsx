@@ -4,7 +4,7 @@ import { auth, db } from '../config/firebase';
 import { GiftedChat, Bubble, Time, MessageImage } from 'react-native-gifted-chat';
 import { collection, addDoc, getDocs, getDoc, query, orderBy, onSnapshot, updateDoc, where, limit, doc, increment } from 'firebase/firestore';
 import { useEffect } from 'react';
-import { createStackNavigator,TransitionPresets } from '@react-navigation/stack';
+import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import { useUserContext } from '../UserContext';
 import { Feather, Entypo, EvilIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
@@ -34,7 +34,7 @@ export default function Chats({ navigation }) {
     }} >
       <Stack.Screen name="ChatRoom" component={ChatRoom} />
       <Stack.Screen name="MainRoom" component={MainRoom} options={{ headerShown: false }} />
-      <Stack.Screen name="ChatProfile" component={ChatProfile} options={{headerTitleAlign:'center'}} animationType="slide" />
+      <Stack.Screen name="ChatProfile" component={ChatProfile} options={{ headerTitleAlign: 'center' }} animationType="slide" />
     </Stack.Navigator>
   )
 }
@@ -183,7 +183,6 @@ function MainRoom({ navigation }) {
       {/* <Modal visible={addNewModalGroup} animationType='slide'>
         <AddNewGroupChat groupNames={publicGroupNames} users={users} closeModal={()=>setAddNewModalGroup(false)} navigate={(name)=>{ navigation.navigate('ChatRoom', { name: name })}} />
       </Modal> */}
-
     </View>
   )
 }
@@ -198,8 +197,8 @@ const ConvoCard = (props) => {
 
   useEffect(() => {
     const temp = props.name.lastMessageTime.toString().split(' ')
-    let date=new moment(props.name.lastMessageTime).format('MMM DD YYYY')
-    const time= temp[4].split(':').slice(0, 2).join(':')
+    let date = new moment(props.name.lastMessageTime).format('MMM DD YYYY')
+    const time = temp[4].split(':').slice(0, 2).join(':')
     setLastMessageTime(time)
     setLastMessageDate(date)
     if (props.name.lastMessage.length > 30) {
@@ -221,7 +220,7 @@ const ConvoCard = (props) => {
   return (
     <>
       <View key={props.name.Name} >
-        <TouchableOpacity style={styles.conCard} key={props.name.Name} onPress={() => navigateToChatRoom(props.name)} onLongPress={()=> {console.log("Long pressed")}}>
+        <TouchableOpacity style={styles.conCard} key={props.name.Name} onPress={() => navigateToChatRoom(props.name)} onLongPress={() => { console.log("Long pressed") }}>
           <View style={styles.conLeft}>
             <Image source={{ uri: props.name.image }} style={styles.convoImage} />
           </View>
@@ -388,5 +387,5 @@ const styles = StyleSheet.create({
     height: 55,
     borderRadius: 54
   },
-  
+
 })

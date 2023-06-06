@@ -96,6 +96,8 @@
     <Property Name="modifyDate" Type="DateTime" Precision="0" />
     <Property Name="Type" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
     <NavigationProperty Name="tblDrugForPatient" Relationship="Self.FK__tblDrugFo__drugI__1411F17C" FromRole="tblDrug" ToRole="tblDrugForPatient" />
+    <Property Name="drugNameEn" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="drugUrlEn" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
   </EntityType>
   <EntityType Name="tblDrugForPatient">
     <Key>
@@ -989,6 +991,14 @@
       <Parameter Name="patientId" Mode="In" Type="String" />
       <Parameter Name="workerId" Mode="In" Type="Int32" />
       <Parameter Name="status" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="InsertNewDrug">
+      <Parameter Name="drugName" Mode="In" Type="String" />
+      <Parameter Name="drugNameEn" Mode="In" Type="String" />
+      <Parameter Name="drugUrl" Mode="In" Type="String" />
+      <Parameter Name="drugUrlEn" Mode="In" Type="String" />
+      <Parameter Name="modifyDate" Mode="In" Type="DateTime" />
+      <Parameter Name="Type" Mode="In" Type="String" />
     </FunctionImport>
   </EntityContainer>
   <ComplexType Name="sp_helpdiagramdefinition_Result">
