@@ -81,7 +81,7 @@ function Request(props) {
   const day = date.getDate();
   const dateString = day + "/" + month + "/" + newYear;
   const [valueChanged, setValueChanged] = useState(false);
-  const [status, setStatus] = useState(props.data.requestStatus);
+  const [status, setStatus] = useState(true);
   const { userContext, GetUserPending, GetUserHistory } = useUserContext();
   const [DownloadProgress, setDownloadProgress] = useState();
 
@@ -95,7 +95,7 @@ function Request(props) {
   };
 
   const editRequest = () => {
-    if (status == "F") {
+    if (!status) {
       Alert.alert(
         'Edit Payment request',
         'You cannot edit a paid request',
@@ -104,7 +104,7 @@ function Request(props) {
         ],
       );
     }
-    else if (status == "P") {
+    else  {
       setModal2Visible(true)
     }
   }
@@ -168,20 +168,32 @@ function Request(props) {
     );
   }
 
-  const askUserBeforeSave = () => {
-    if (status == "F") {
-      setStatus("P")
-    }
-    else if (status == "P") {
-      setStatus("F")
-      setTimeout(() => {
-        saveStatus(props.data.requestId)
-      }, 3000);
-    }
-  }
+  // const askUserBeforeSave = async () => {
+  //   if (status == "F") {
+  //     setStatus("P")
+  //   }
+  //   else if (status == "P") {     
+  //     setTimeout(async () => {
+  //       await setStatus("F")
+  //       // saveStatus(props.data.requestId)
+  //     }, 3000);
+  //   }
+  // }
+
+  useEffect(() => { 
+    console.log("status", status)   
+      if (!status) {
+          const timer = setTimeout(() => {
+            saveStatus(props.data.requestId)
+          }, 2000);
+          return () => clearTimeout(timer);
+      }    
+  }, [status])
 
   const saveStatus = async (id) => {
-    if (status == "F") {
+    console.log("id", id)
+    console.log("status", status)
+    if (!status) {
     try {
       const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/UpdateStatus/', {
         method: 'PUT',
@@ -267,11 +279,11 @@ function Request(props) {
             <View style={styles.requestItemHeaderOpen}>
               <TouchableOpacity onPress={toggle} style={styles.request}>
                 <View style={styles.requestItemLeft}>
-                  <Text style={styles.requestItemText}>{dateString}</Text>
+                <Text style={styles.requestItemText}>{props.subject.length>17? props.subject.slice(0, 12)+"...":props.subject}</Text>
                 </View>
-                <View style={styles.requestItemMiddle}>
+                {/* <View style={styles.requestItemMiddle}>
                   <Text style={styles.requestItemText}>{props.subject.length>17? props.subject.slice(0, 12)+"...":props.subject}</Text>
-                </View>
+                </View> */}
               </TouchableOpacity>
               <Menu style={{ flexDirection: 'column', marginVertical: 0 }} onSelect={value => openModal(value)} >
                 <MenuTrigger
@@ -283,7 +295,7 @@ function Request(props) {
                   <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} value={1} children={<View style={styles.options}><MaterialCommunityIcons name='bell-ring-outline' size={20} /><Text style={styles.optionsText}> Send Notification</Text></View>} />
                   <MenuOption value={2} children={<View style={styles.options}><Feather name='eye' size={20} /><Text style={styles.optionsText}> View Document</Text></View>} />
                   <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} value={3} children={<View style={userContext.userId == props.data.userId ? styles.options : styles.disabledoptions}><Feather name='edit' size={20} /><Text style={styles.optionsText}> Edit Request</Text></View>} />
-                  <MenuOption style={[styles.deleteTxt]} value={4} children={<View style={userContext.userId == props.data.userId ? styles.options : styles.disabledoptions}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={styles.deleteTxt}> Delete Request</Text></View>} />
+                  <MenuOption style={[styles.deleteTxt]} value={4} children={<View style={styles.options}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={styles.deleteTxt}> Delete Request</Text></View>} />
                 </MenuOptions>
               </Menu>
               <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
@@ -318,10 +330,10 @@ function Request(props) {
           </View>
           :
           <View style={styles.requestItemHeader}>
-            <TouchableOpacity style={styles.request} onPress={() => askUserBeforeSave()}>
+            <TouchableOpacity style={styles.request} onPress={() => setStatus(!status)}>
               <View style={styles.requestItemLeft}>
                 {
-                  status != 'F' ?
+                  status?
                     <Feather name="circle" size={30} color="#548DFF" />
                     :
                     <Feather name="check-circle" size={30} color="#548DFF" />
@@ -330,10 +342,10 @@ function Request(props) {
             </TouchableOpacity>
             <TouchableOpacity onPress={toggle} style={styles.requestItemMiddle}>
               <View>
-                <Text style={[styles.requestItemText, status == 'F' ? { textDecorationLine: 'line-through' } : {}]}>{dateString} - {props.subject.length>15? props.subject.slice(0, 12)+"...":props.subject}</Text>
+                <Text style={[styles.requestItemText, !status ? { textDecorationLine: 'line-through' } : {}]}>{dateString} - {props.subject.length>=10? props.subject.slice(0, 10)+"...":props.subject}</Text>
               </View>
             </TouchableOpacity>
-            <Menu style={{ flexDirection: 'column', marginVertical: 0, position: 'relative' }} onSelect={value => openModal(value)} >
+            <Menu style={{ flexDirection: 'column', marginVertical: 0, position: 'relative'}} onSelect={value => openModal(value)} >
               <MenuTrigger
                 children={<View>
                   <MaterialCommunityIcons name="dots-horizontal" size={28} color="gray" />
@@ -424,13 +436,12 @@ const styles = StyleSheet.create({
   },
   requestItemMiddle: {
     justifyContent: 'center',
-    alignItems: 'flex-start',
-    flex: 3.5,
+    flex: 5,
+    alignItems: 'center',
   },
   requestItemLeft: {
     justifyContent: 'center',
     alignItems: 'flex-start',
-    flex: 2,
   },
   requestItemText: {
     fontSize: 18,

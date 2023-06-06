@@ -215,6 +215,8 @@ export function UserProvider({ children }) {
         logOutFireBase()
     }
 
+
+//updated for furebase upadte after settings change
     function updateUserProfile(userData) {
         const userToUpdate = {
             userId: userData.userId,
@@ -247,6 +249,10 @@ export function UserProvider({ children }) {
                                 updateUserContext(userToUpdate)
                                 const jsonValue = JSON.stringify(userToUpdate)
                                 AsyncStorage.setItem('userData', jsonValue);
+                                updateProfile(auth.currentUser,{
+                                    displayName: userToUpdate.FirstName + " " + userToUpdate.LastName,
+                                    photoURL: userToUpdate.userUri,
+                                })
                             }
                         )
                 }

@@ -334,13 +334,12 @@ const styles = StyleSheet.create({
   },
   requestItemMiddle: {
     justifyContent: 'center',
-    alignItems: 'flex-start',
-    flex: 3,
+    flex: 3.5,
+    alignItems: 'center',
   },
   requestItemLeft: {
     justifyContent: 'center',
     alignItems: 'flex-start',
-    flex: 2,
   },
   requestItemText: {
     fontSize: 18,
