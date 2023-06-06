@@ -70,6 +70,14 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
                         console.log(newForeignUserData.CountryName_En);
                         addDoc(collection(db, "GroupMembers"), { Name: newForeignUserData.CountryName_En ,userEmail:[newUser.Email] });
                       }
+                      else {
+                        querySnapshot.forEach((doc) => {
+                          console.log(doc.id, " => ", doc.data());
+                          updateDoc(doc.ref, {
+                            userEmail: [...doc.data().userEmail, newUser.Email]
+                          });
+                        });
+                      }
                       await addDoc(collection(db, auth.currentUser.email), { Name: newForeignUserData.CountryName_En, UserName: "", userEmail: "", image: newUser.userUri, unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date(), type: "group" }).then(() => {
                         console.log("group added to user");
                       }).catch((error) => {

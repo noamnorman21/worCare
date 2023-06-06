@@ -52,6 +52,10 @@ export default function ChatRoom({ route, navigation }) {
 
   }, [navigation]);
 
+  useEffect(() => {
+    console.log("group members", GroupMembers)
+  }, [GroupMembers])
+
   useFocusEffect( //update convo in db that user has read the messages when leaving page
     useCallback(() => {
       const setDocAsRead = async () => {
@@ -279,6 +283,7 @@ export default function ChatRoom({ route, navigation }) {
   }
 
   const onSend = useCallback((messages = [], GroupMembers) => {
+    console.log("group members", GroupMembers)
     const { _id, createdAt, text, user } = messages[0]
     addDoc(collection(db, route.params.name), { _id, createdAt, text, user });
     const docRef = query(collection(db, auth.currentUser.email), where("Name", "==", route.params.name));
@@ -289,6 +294,7 @@ export default function ChatRoom({ route, navigation }) {
       });
     });
    if (GroupMembers) {
+    console.log("GroupMembers", GroupMembers)
       GroupMembers.forEach(arr => {
         arr.forEach(user => {
           if (user !== auth.currentUser.email) {
