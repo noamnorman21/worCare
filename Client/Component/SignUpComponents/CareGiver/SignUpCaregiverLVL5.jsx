@@ -142,7 +142,6 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
       .then((response) => response.json())
       .then(async (json) => {
         console.log(json);
-
         // will be used for chat after publish to filezila
         // fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetPairedUser',
         //   {

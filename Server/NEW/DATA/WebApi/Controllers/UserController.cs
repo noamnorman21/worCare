@@ -34,6 +34,30 @@ namespace WebApi.Controllers
             }
         }
 
+         //new function for chat convo pair.
+        [HttpPost]
+        [Route("GetPairedUser")] // Just for testing purposes
+        public IHttpActionResult GetPairedUser([FromBody] int idnum)
+        {
+            try
+            {
+                string patinetId = db.tblCaresForPatient.Where(x => x.workerId == idnum).Select(x => x.patientId).FirstOrDefault();
+                int userinvolvedInId = db.tblPatient.Where(x => x.patientId == patinetId).Select(y=> y.userId).FirstOrDefault();
+                var user = db.tblUser.Where(x => x.userId == userinvolvedInId).Select(x=> new UserDTO
+                {
+                    Email=x.Email,
+                    FirstName=x.FirstName,
+                    LastName=x.LastName,
+                    userUri= x.userUri
+                }).FirstOrDefault();
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost]
         [Route("GetEmailForgotPassword")] // POST - Because The FromBody - Check if email exists in DB and send email with new password
         public IHttpActionResult GetEmailForgotPassword([FromBody] UserDTO userD)
