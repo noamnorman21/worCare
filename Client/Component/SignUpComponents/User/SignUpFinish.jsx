@@ -6,8 +6,8 @@ const SCREEN_HEIGHT = Dimensions.get('window').height;
 import * as SMS from 'expo-sms';
 import * as Linking from 'expo-linking';
 import { auth, db } from '../../../config/firebase';
-import { collection, addDoc, getDocs, query, orderBy, onSnapshot, listCollection } from 'firebase/firestore';
-import {createUserWithEmailAndPassword, updateProfile} from 'firebase/auth';
+import { collection, addDoc} from 'firebase/firestore';
+import {createUserWithEmailAndPassword, updateProfile, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 
 
 export default function SignUpFinish({ navigation, route }) {
@@ -112,16 +112,22 @@ export default function SignUpFinish({ navigation, route }) {
                             updateProfile(auth.currentUser, {
                                 displayName: route.params.tblUser.FirstName + ' ' + route.params.tblUser.LastName,
                                 photoURL: route.params.tblUser.userUri
-                            }).then(() => {
+                            }).then(async () => {
                                 console.log("user updated");
                                 let userToUpdate = {
                                     id: auth.currentUser.email,
                                     name: auth.currentUser.displayName, //the name of the user is the first name and the last name
                                     avatar: auth.currentUser.photoURL
                                 }
-                                addDoc(collection(db, "AllUsers"), {id: userToUpdate.id, name: userToUpdate.name, avatar: userToUpdate.avatar });
+                                await addDoc(collection(db, "AllUsers"), {id: userToUpdate.id, name: userToUpdate.name, avatar: userToUpdate.avatar }).then(() => {
+                                console.log("user added to all users");
+                                }).catch((error) => {
+                                });
                             }).then(() => {
-                                signOut(auth)
+                                signOut(auth).then(() => {
+                                    console.log("user signed out");
+                                }).catch((error) => {
+                                });
                             })
                             .catch((error) => {
                                 console.log(error);

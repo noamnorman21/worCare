@@ -3,7 +3,8 @@ import { auth, db } from '../../config/firebase';
 import { collection, addDoc, getDocs, getDoc, query, orderBy, onSnapshot, updateDoc, where, limit, doc, increment } from 'firebase/firestore';
 import { useUserContext } from '../../UserContext';
 import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { TextInput } from 'react-native-paper';
 
 const ScreenWidth = Dimensions.get('window').width;
 const ScreenHeight = Dimensions.get('window').height;
@@ -50,16 +51,35 @@ export default function ChatProfile({ route, navigation }) {
     }
   }  
 
+  
+
   return (
     <View style={styles.container}>
-      <Image style={styles.avatar} source={{ uri: route.params.user.avatar }} />
-        <Text>{route.params.user._id}</Text>
-        <Text>{route.params.user.name}</Text>  
+      <View style={styles.profile}>
+      <View style={styles.header}>
+      <Text style={styles.headterTxt}>{route.params.user.name}</Text>
+      </View>
+      <View style={styles.imageView}>
+        <Image style={styles.avatar} source={{ uri: route.params.user.avatar }} />
+      </View>
+      <TextInput
+        label="Email"
+        value={route.params.user._id}
+        mode="outlined"
+        disabled={true}
+        style={styles.inputTxt}
+      textColor='#000'
+        outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+        labelStyle={{ color: '#000', fontSize: 16, fontWeight: 'bold', }}
+        theme={{ colors: { primary: '#548DFF', underlineColor: 'transparent', } }}  
+        contentStyle={{ fontFamily: 'Urbanist-Regular' }}    
+      />
       <TouchableOpacity style={styles.button}
         onPress={() => addNewPrivateChat(route.params.user)}>
-        <AntDesign name='message1' size={20} color={"#548DFF"} />
+        <AntDesign name='message1' size={22} color={"#548DFF"} />
         <Text style={styles.BtnTxt}>Send Messsage </Text>
-      </TouchableOpacity>      
+      </TouchableOpacity>
+      </View>
     </View>
   )
 
@@ -69,7 +89,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  profile: {
+    justifyContent: 'center',
     alignItems: 'center',
+    marginVertical: 20,
   },
    //chat user profile
    avatar: {
@@ -79,7 +103,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 16,
     height: 54,
-    width: ScreenWidth * 0.3,
+    width: ScreenWidth * 0.9,
     borderColor: '#548DFF',
     justifyContent: 'center',
     alignItems: 'center',
@@ -88,5 +112,30 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 3,
     elevation: 1,
+    marginTop:20,
+  },
+  imageView:{
+    margin: 20,
+  },
+  header: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  headterTxt:{
+    fontSize: 20,
+    fontFamily:'Urbanist-Bold',
+  },
+  BtnTxt:{
+    fontSize: 16,
+    fontFamily:'Urbanist-Bold',
+    color:'#548DFF',
+  },
+  inputTxt: {
+    fontFamily: 'Urbanist-Light',
+    fontSize: 16,
+    color: '#000',
+    backgroundColor: '#fff',
+    marginVertical: 10,
+    width: ScreenWidth * 0.9,
   },
 })

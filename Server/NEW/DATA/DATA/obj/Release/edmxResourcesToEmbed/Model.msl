@@ -83,6 +83,8 @@
     <EntitySetMapping Name="tblDrug">
       <EntityTypeMapping TypeName="igroup194_prodModel.tblDrug">
         <MappingFragment StoreEntitySet="tblDrug">
+          <ScalarProperty Name="drugUrlEn" ColumnName="drugUrlEn" />
+          <ScalarProperty Name="drugNameEn" ColumnName="drugNameEn" />
           <ScalarProperty Name="drugId" ColumnName="drugId" />
           <ScalarProperty Name="drugName" ColumnName="drugName" />
           <ScalarProperty Name="drugUrl" ColumnName="drugUrl" />
@@ -324,5 +326,6 @@
     <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="igroup194_prodModel.Store.sp_renamediagram" />
     <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="igroup194_prodModel.Store.sp_upgraddiagrams" />
     <FunctionImportMapping FunctionImportName="updateStatusCaresForPatient" FunctionName="igroup194_prodModel.Store.updateStatusCaresForPatient" />
+    <FunctionImportMapping FunctionImportName="InsertNewDrug" FunctionName="igroup194_prodModel.Store.InsertNewDrug" />
   </EntityContainerMapping>
 </Mapping>

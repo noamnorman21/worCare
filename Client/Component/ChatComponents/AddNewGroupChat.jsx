@@ -17,35 +17,35 @@ export default function AddNewGroupChat(props) {
   const [addNewModalGroup, setAddNewModalGroup] = useState(false)
   const [groupName, setGroupName] = useState("")
   const [selectedUsers, setSelectedUsers] = useState([])
-  const [groupPic, setGroupPic]= useState(null)
+  const [groupPic, setGroupPic] = useState(null)
 
   const checkIfGroupExist = async () => {
     console.log("check if group exist")
     console.log(props.groupNames)
-    let group= props.groupNames.filter((group) => group.Name === groupName)
+    let group = props.groupNames.filter((group) => group.Name === groupName)
     console.log(group.length)
-    if(group.length>0){
+    if (group.length > 0) {
       console.log("true")
       return true
     }
     return false
   }
 
- const validate = (image) => {
-  
-  if(checkIfGroupExist()==true){
-    console.log("group already exist", checkIfGroupExist())
-    return Alert.alert("Group already exist")
-  }
-  if (groupName === "") {
-    return Alert.alert("Please enter group name")
-  }
-  if (groupPic === null) {
-    return Alert.alert("Please add group picture")
-  }
-  sendToFirebase(image)
+  const validate = (image) => {
 
- }
+    if (checkIfGroupExist() == true) {
+      console.log("group already exist", checkIfGroupExist())
+      return Alert.alert("Group already exist")
+    }
+    if (groupName === "") {
+      return Alert.alert("Please enter group name")
+    }
+    if (groupPic === null) {
+      return Alert.alert("Please add group picture")
+    }
+    sendToFirebase(image)
+
+  }
 
   const sendToFirebase = async (image) => {
     // if the user didn't upload an image, we will use the default image
@@ -53,32 +53,32 @@ export default function AddNewGroupChat(props) {
     const storageRef = ref(storage, "groupPics/" + filename);
     const blob = await fetch(image).then(response => response.blob());
     try {
-        const uploadTask = uploadBytesResumable(storageRef, blob);
-        uploadTask.on('state_changed',
-            snapshot => {
-                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                console.log(`Upload is ${progress}% complete`);
-            },
-            error => {
-                console.error(error);
-                Alert.alert('Upload Error', 'Sorry, there was an error uploading your image. Please try again later.');
-            },
-            () => {
-                getDownloadURL(storageRef).then(downloadURL => {
-                    console.log('File available at', downloadURL); 
-                    console.log("send to next db")
-                    addNewGroup(downloadURL);                   
-                });
-            }
-        );
+      const uploadTask = uploadBytesResumable(storageRef, blob);
+      uploadTask.on('state_changed',
+        snapshot => {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log(`Upload is ${progress}% complete`);
+        },
+        error => {
+          console.error(error);
+          Alert.alert('Upload Error', 'Sorry, there was an error uploading your image. Please try again later.');
+        },
+        () => {
+          getDownloadURL(storageRef).then(downloadURL => {
+            console.log('File available at', downloadURL);
+            console.log("send to next db")
+            addNewGroup(downloadURL);
+          });
+        }
+      );
     } catch (error) {
-        console.error(error);
-        Alert.alert('Upload Error', 'Sorry, there was an error uploading your image. Please try again later.');
-        sendDataToNextDB();
+      console.error(error);
+      Alert.alert('Upload Error', 'Sorry, there was an error uploading your image. Please try again later.');
+      sendDataToNextDB();
     }
-}
+  }
 
-  
+
   const addNewGroup = (image) => {
     console.log("add new group")
     let name = groupName;
@@ -88,8 +88,8 @@ export default function AddNewGroupChat(props) {
       console.log(user)
       addDoc(collection(db, user), { Name: name, image: image });
     });
-   props.closeModal()
-   props.navigate(name)
+    props.closeModal()
+    props.navigate(name)
   }
 
   const isItemSelected = (id) => {
@@ -146,10 +146,10 @@ export default function AddNewGroupChat(props) {
     <>
       <View style={styles.modal}>
         <Text style={styles.modalText}>Add new group</Text>
-<TouchableOpacity onPress={()=> pickImageHandler()}>
-  <Image source={groupPic? {uri:groupPic}: require('../../images/Avatar.png')} style={styles.ImagePicker} />
-  </TouchableOpacity>
-          <TextInput style={styles.inputTxt}
+        <TouchableOpacity onPress={() => pickImageHandler()}>
+          <Image source={groupPic ? { uri: groupPic } : require('../../images/Avatar.png')} style={styles.ImagePicker} />
+        </TouchableOpacity>
+        <TextInput style={styles.inputTxt}
           mode='outlined'
           label='Group Name'
           value={groupName}
@@ -161,22 +161,22 @@ export default function AddNewGroupChat(props) {
           activeOutlineColor="#548DFF"
           outlineColor='#E6EBF2' />
         <Text style={styles.modalText}>Add members</Text>
-        <ScrollView style={{marginBottom:10}}>
-            {props.users.map((user, index) => {
-              console.log("Item", user)
-              console.log(index)
-              const selectedStyle = isItemSelected(user.id) ? styles.selectedItem : {};
-              return (
-                <View key={user.name} >
-                  <TouchableOpacity style={[styles.userCard, selectedStyle]} onPress={() => handleItemPress(user)}>
-                    <Image source={{ uri: user.avatar }} style={{ width: 65, height: 65, borderRadius: 54 }} />
-                    <Text style={styles.userName}>{user.id}</Text>
-                  </TouchableOpacity>
-                </View>
-              );
-            })}
+        <ScrollView style={{ marginBottom: 10 }}>
+          {props.users.map((user, index) => {
+            console.log("Item", user)
+            console.log(index)
+            const selectedStyle = isItemSelected(user.id) ? styles.selectedItem : {};
+            return (
+              <View key={user.name} >
+                <TouchableOpacity style={[styles.userCard, selectedStyle]} onPress={() => handleItemPress(user)}>
+                  <Image source={{ uri: user.avatar }} style={{ width: 65, height: 65, borderRadius: 54 }} />
+                  <Text style={styles.userName}>{user.id}</Text>
+                </TouchableOpacity>
+              </View>
+            );
+          })}
         </ScrollView>
-        <View  style={styles.bottom}>
+        <View style={styles.bottom}>
           <TouchableOpacity style={styles.savebutton} onPress={() => validate(groupPic)}>
             <Text style={styles.savebuttonText}>Create</Text>
           </TouchableOpacity>
@@ -321,5 +321,5 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH * 0.95,
   },
   ImagePicker: { width: 100, height: 100, borderRadius: 50 },
- 
+
 })

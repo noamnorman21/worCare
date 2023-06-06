@@ -247,6 +247,8 @@ namespace WebApi.Controllers
                                        where t.drugId == drugForPatientDTO.drugId
                                        select t;
                         drugForPatientDTO.drugName = drugName.First().drugName;
+                        drugForPatientDTO.drugNameEn = drugName.First().drugNameEn;
+                        drugForPatientDTO.drugUrlEn = drugName.First().drugUrlEn;
                         drugForPatientDTO.drugType = drugName.First().Type;
                         drugForPatientDTO.drugUrl = drugName.First().drugUrl;
                         drugForPatientDTO.minQuantity = drugForArr.First().minQuantity;

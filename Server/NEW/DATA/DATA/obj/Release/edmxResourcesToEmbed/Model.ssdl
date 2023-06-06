@@ -83,6 +83,8 @@
     <Property Name="drugUrl" Type="nvarchar" MaxLength="255" />
     <Property Name="modifyDate" Type="date" />
     <Property Name="Type" Type="varchar" MaxLength="10" Nullable="false" />
+    <Property Name="drugNameEn" Type="varchar" MaxLength="50" />
+    <Property Name="drugUrlEn" Type="nvarchar" MaxLength="255" />
   </EntityType>
   <EntityType Name="tblDrugForPatient">
     <Key>
@@ -661,6 +663,14 @@
     <Parameter Name="listId" Type="int" Mode="In" />
     <Parameter Name="actualId" Type="int" Mode="In" />
     <Parameter Name="taskId" Type="int" Mode="In" />
+  </Function>
+  <Function Name="InsertNewDrug" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="drugName" Type="nvarchar" Mode="In" />
+    <Parameter Name="drugNameEn" Type="varchar" Mode="In" />
+    <Parameter Name="drugUrl" Type="nvarchar" Mode="In" />
+    <Parameter Name="drugUrlEn" Type="nvarchar" Mode="In" />
+    <Parameter Name="modifyDate" Type="date" Mode="In" />
+    <Parameter Name="Type" Type="varchar" Mode="In" />
   </Function>
   <Function Name="InsertPatient" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="patientId" Type="char" Mode="In" />
