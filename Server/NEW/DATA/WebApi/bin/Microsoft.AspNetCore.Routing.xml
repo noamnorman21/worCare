@@ -2699,25 +2699,6 @@
             Gets the required route values.
             </summary>
         </member>
-        <member name="M:Microsoft.AspNetCore.Routing.RouteValuesAddressScheme.GetOutboundMatches">
-            Decision tree is built using the 'required values' of actions.
-            - When generating a url using route values, decision tree checks the explicitly supplied route values +
-              ambient values to see if they have a match for the required-values-based-tree.
-            - When generating a url using route name, route values for controller, action etc.might not be provided
-              (this is expected because as a user I want to avoid writing all those and instead chose to use a
-              routename which is quick). So since these values are not provided and might not be even in ambient
-              values, decision tree would fail to find a match. So for this reason decision tree is not used for named
-              matches. Instead all named matches are returned as is and the LinkGenerator uses a TemplateBinder to
-              decide which of the matches can generate a url.
-              For example, for a route defined like below with current ambient values like new { controller = "Home",
-              action = "Index" }
-                "api/orders/{id}",
-                routeName: "OrdersApi",
-                defaults: new { controller = "Orders", action = "GetById" },
-                requiredValues: new { controller = "Orders", action = "GetById" },
-              A call to GetLink("OrdersApi", new { id = "10" }) cannot generate url as neither the supplied values or
-              current ambient values do not satisfy the decision tree that is built based on the required values.
-        </member>
         <member name="T:Microsoft.AspNetCore.Routing.SuppressLinkGenerationMetadata">
             <summary>
             Represents metadata used during link generation. If <see cref="P:Microsoft.AspNetCore.Routing.SuppressLinkGenerationMetadata.SuppressLinkGeneration"/> is <c>true</c> 

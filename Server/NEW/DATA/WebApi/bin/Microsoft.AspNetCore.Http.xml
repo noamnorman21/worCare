@@ -4,18 +4,6 @@
         <name>Microsoft.AspNetCore.Http</name>
     </assembly>
     <members>
-        <member name="T:Microsoft.Extensions.DependencyInjection.HttpServiceCollectionExtensions">
-            <summary>
-            Extension methods for configuring HttpContext services.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.HttpServiceCollectionExtensions.AddHttpContextAccessor(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
-            <summary>
-            Adds a default implementation for the <see cref="T:Microsoft.AspNetCore.Http.IHttpContextAccessor"/> service.
-            </summary>
-            <param name="services">The <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/>.</param>
-            <returns>The service collection.</returns>
-        </member>
         <member name="P:Microsoft.AspNetCore.Http.DefaultHttpContext.Authentication">
             <summary>
             This is obsolete and will be removed in a future version. 
@@ -508,6 +496,18 @@
             <param name="options">Options for reading the form.</param>
             <param name="cancellationToken"></param>
             <returns>The parsed form.</returns>
+        </member>
+        <member name="T:Microsoft.Extensions.DependencyInjection.HttpServiceCollectionExtensions">
+            <summary>
+            Extension methods for configuring HttpContext services.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.HttpServiceCollectionExtensions.AddHttpContextAccessor(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Adds a default implementation for the <see cref="T:Microsoft.AspNetCore.Http.IHttpContextAccessor"/> service.
+            </summary>
+            <param name="services">The <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/>.</param>
+            <returns>The service collection.</returns>
         </member>
     </members>
 </doc>
