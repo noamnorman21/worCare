@@ -9,7 +9,7 @@ import moment from 'moment';
 // ---------------- All Server Urls ---------------- 
 
 // General
-let updateProfile = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Settings/UpdateUserProfile'
+let updateProfileUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Settings/UpdateUserProfile'
 let getPairedProfile = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUser/'
 
 // Log In
@@ -33,7 +33,7 @@ let insertCaresForPatient = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Foreig
 let getContacts = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/GetContacts';
 let newContact = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/NewContact';
 let updateContact = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/UpdateContact/';//+Contact.contactId
-let deleteContact = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/DeleteContact';
+let deleteContactUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/DeleteContact';
 
 // Payments
 let getHistory = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/GetHistory/';//+userId
@@ -230,7 +230,7 @@ export function UserProvider({ children }) {
             patientId: userData.patientId,
         }
 
-        fetch(updateProfile, {
+        fetch(updateProfileUrl, {
             method: 'PUT',
             headers: new Headers({
                 'Content-Type': 'application/json; charset=UTF-8',
@@ -380,7 +380,7 @@ export function UserProvider({ children }) {
                     // If the user confirmed, then we dispatch the action we blocked earlier
                     // This will continue the action that had triggered the removal of the screen
                     onPress: () => {
-                        fetch(deleteContact, {
+                        fetch(deleteContactUrl, {
                             method: 'DELETE',
                             body: JSON.stringify(Contact),
                             headers: new Headers({
