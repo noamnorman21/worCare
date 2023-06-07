@@ -1,6 +1,6 @@
 
 import React, { useState, useCallback, useEffect, useLayoutEffect } from 'react';
-import { View, Text, StyleSheet, Dimensions, Image, Alert, Modal, TouchableOpacity, ScrollView, Platform } from 'react-native'
+import { View, Text, StyleSheet, Dimensions, Image, Alert, Modal, TouchableOpacity, ScrollView, Platform, SafeAreaView } from 'react-native'
 import { GiftedChat, Bubble, Actions, InputToolbar, Time, MessageImage, LoadEarlier } from 'react-native-gifted-chat';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
@@ -51,6 +51,10 @@ export default function ChatRoom({ route, navigation }) {
     return () => { console.log("unsub"); unsubscribe() };
 
   }, [navigation]);
+
+  useEffect(() => {
+    console.log("group members", GroupMembers)
+  }, [GroupMembers])
 
   useFocusEffect( //update convo in db that user has read the messages when leaving page
     useCallback(() => {
@@ -143,74 +147,74 @@ export default function ChatRoom({ route, navigation }) {
   };
 
   //record audio
-  const recordAudio = async () => {
-    const { status } = await Permissions.askAsync(Permissions.AUDIO_RECORDING);
-    if (status !== 'granted') return;
-    const recording = new Audio.Recording();
-    try {
-      await recording.prepareToRecordAsync(Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY);
-      await recording.startAsync();
-      setRecording(recording);
-    } catch (error) {
-      console.log(error);
-      stopRecording();
-    }
-  }
+  // const recordAudio = async () => {
+  //   const { status } = await Permissions.askAsync(Permissions.AUDIO_RECORDING);
+  //   if (status !== 'granted') return;
+  //   const recording = new Audio.Recording();
+  //   try {
+  //     await recording.prepareToRecordAsync(Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY);
+  //     await recording.startAsync();
+  //     setRecording(recording);
+  //   } catch (error) {
+  //     console.log(error);
+  //     stopRecording();
+  //   }
+  // }
 
-  //handle audio recording
-  const onSendAudio = async (recording) => {
-    //add new message to db
-    const newMessage = {
-      _id: Math.random().toString(36).substring(7),
-      createdAt: new Date(),
-      user: {
-        _id: auth.currentUser.email,
-        name: auth.currentUser.displayName,
-        avatar: auth.currentUser.photoURL
-      },
-      audio: recording,
-    }
-    setMessages(previousMessages => GiftedChat.append(previousMessages, [newMessage]));
-    const { _id, createdAt, user, audio } = newMessage
-    addDoc(collection(db, route.params.name), { _id, createdAt, user, audio });
-    console.log("new message added to db")
-    //update last message and last message time in db
-    const docRef = query(collection(db, auth.currentUser.email), where("Name", "==", route.params.name));
-    const res = getDocs(docRef);
-    res.then((querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-        updateDoc(doc.ref, { lastMessage: "audio", lastMessageTime: createdAt });
-      });
-    });
-    if (GroupMembers) {
-      GroupMembers.forEach(arr => {
-        arr.forEach(user => {
-          console.log("usera", user)
-          if (user !== auth.currentUser.email) {
-            const docRef = query(collection(db, user), where("Name", "==", route.params.name));
-            const res = getDocs(docRef);
-            console.log("res", res)
-            res.then((querySnapshot) => {
-              querySnapshot.forEach((doc) => {
-                updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: "audio", lastMessageTime: createdAt });
-                console.log("updated")
-              });
-            });
-          }
-        }
-        )
-      });
-    }
-    else if (route.params.userEmail) {
-      const docRef = query(collection(db, route.params.userEmail), where("Name", "==", route.params.name));
-      const res = getDocs(docRef);
-      res.then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-          updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: "audio", lastMessageTime: createdAt });
-        });
-      });
-    }
-  }
+  // //handle audio recording
+  // const onSendAudio = async (recording) => {
+  //   //add new message to db
+  //   const newMessage = {
+  //     _id: Math.random().toString(36).substring(7),
+  //     createdAt: new Date(),
+  //     user: {
+  //       _id: auth.currentUser.email,
+  //       name: auth.currentUser.displayName,
+  //       avatar: auth.currentUser.photoURL
+  //     },
+  //     audio: recording,
+  //   }
+  //   setMessages(previousMessages => GiftedChat.append(previousMessages, [newMessage]));
+  //   const { _id, createdAt, user, audio } = newMessage
+  //   addDoc(collection(db, route.params.name), { _id, createdAt, user, audio });
+  //   console.log("new message added to db")
+  //   //update last message and last message time in db
+  //   const docRef = query(collection(db, auth.currentUser.email), where("Name", "==", route.params.name));
+  //   const res = getDocs(docRef);
+  //   res.then((querySnapshot) => {
+  //     querySnapshot.forEach((doc) => {
+  //       updateDoc(doc.ref, { lastMessage: "audio", lastMessageTime: createdAt });
+  //     });
+  //   });
+  //   if (GroupMembers) {
+  //     GroupMembers.forEach(arr => {
+  //       arr.forEach(user => {
+  //         console.log("usera", user)
+  //         if (user !== auth.currentUser.email) {
+  //           const docRef = query(collection(db, user), where("Name", "==", route.params.name));
+  //           const res = getDocs(docRef);
+  //           console.log("res", res)
+  //           res.then((querySnapshot) => {
+  //             querySnapshot.forEach((doc) => {
+  //               updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: "audio", lastMessageTime: createdAt });
+  //               console.log("updated")
+  //             });
+  //           });
+  //         }
+  //       }
+  //       )
+  //     });
+  //   }
+  //   else if (route.params.userEmail) {
+  //     const docRef = query(collection(db, route.params.userEmail), where("Name", "==", route.params.name));
+  //     const res = getDocs(docRef);
+  //     res.then((querySnapshot) => {
+  //       querySnapshot.forEach((doc) => {
+  //         updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: "audio", lastMessageTime: createdAt });
+  //       });
+  //     });
+  //   }
+  // }
 
   //send image to firebase
   const onSendImage = async (downloadUrl) => {
@@ -250,17 +254,18 @@ export default function ChatRoom({ route, navigation }) {
             const res = getDocs(docRef);
             console.log("res", res)
             res.then((querySnapshot) => {
-              if(!querySnapshot.empty){
+              if (!querySnapshot.empty) {
 
-              querySnapshot.forEach((doc) => {
-                updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: text || "image", lastMessageTime: createdAt });
-                console.log("updated")
-              })}
+                querySnapshot.forEach((doc) => {
+                  updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: text || "image", lastMessageTime: createdAt });
+                  console.log("updated")
+                })
+              }
               else {
-                addDoc(collection(db, user), { Name: route.params.name,UserName: "",userEmail: "",image: auth.currentUser.photoURL, unread: true, unreadCount: 1, lastMessage: text, lastMessageTime: createdAt, type: "group" });
+                addDoc(collection(db, user), { Name: route.params.name, UserName: "", userEmail: "", image: auth.currentUser.photoURL, unread: true, unreadCount: 1, lastMessage: text, lastMessageTime: createdAt, type: "group" });
                 console.log("added")
               }
-                ;
+              ;
             });
           }
         }
@@ -279,6 +284,7 @@ export default function ChatRoom({ route, navigation }) {
   }
 
   const onSend = useCallback((messages = [], GroupMembers) => {
+    console.log("group members", GroupMembers)
     const { _id, createdAt, text, user } = messages[0]
     addDoc(collection(db, route.params.name), { _id, createdAt, text, user });
     const docRef = query(collection(db, auth.currentUser.email), where("Name", "==", route.params.name));
@@ -288,7 +294,8 @@ export default function ChatRoom({ route, navigation }) {
         updateDoc(doc.ref, { lastMessage: text, lastMessageTime: createdAt });
       });
     });
-   if (GroupMembers) {
+    if (GroupMembers) {
+      console.log("GroupMembers", GroupMembers)
       GroupMembers.forEach(arr => {
         arr.forEach(user => {
           if (user !== auth.currentUser.email) {
@@ -298,22 +305,22 @@ export default function ChatRoom({ route, navigation }) {
             console.log("res", res)
             res.then((querySnapshot) => {
               // if user has no documentation in db of chat
-              if(!querySnapshot.empty){
-              querySnapshot.forEach((doc) => {
-                updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: text || "image", lastMessageTime: createdAt });
-                console.log("updated")
-              })
-            }
-            // if user has documentation in db of chat
-            else {
-              addDoc(collection(db, user), { Name: route.params.name,UserName: "",userEmail: "",image: auth.currentUser.photoURL, unread: true, unreadCount: 1, lastMessage: text, lastMessageTime: createdAt, type: "group" });
-              console.log("added")
-            }
+              if (!querySnapshot.empty) {
+                querySnapshot.forEach((doc) => {
+                  updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: text || "image", lastMessageTime: createdAt });
+                  console.log("updated")
+                })
+              }
+              // if user has documentation in db of chat
+              else {
+                addDoc(collection(db, user), { Name: route.params.name, UserName: "", userEmail: "", image: auth.currentUser.photoURL, unread: true, unreadCount: 1, lastMessage: text, lastMessageTime: createdAt, type: "group" });
+                console.log("added")
+              }
             });
           }
-         
+
         }
-        
+
         )
       });
     }
@@ -334,10 +341,10 @@ export default function ChatRoom({ route, navigation }) {
 
 
   return (
-    <>
+    <View style={{flex:1,marginBottom:15}}>
       <GiftedChat
         wrapInSafeArea={false}
-        //bottomOffset={Platform.OS === 'ios' ? 50 : 0} this in case canceling tab bar wont work
+        bottomOffset={Platform.OS === "ios" ? 15 : 0}
         messages={messages}
         showAvatarForEveryMessage={true}
         onSend={messages => onSend(messages, GroupMembers)}
@@ -408,12 +415,8 @@ export default function ChatRoom({ route, navigation }) {
             <Actions {...props}
               containerStyle={{
                 width: 34,
-                height: 44,
                 alignItems: 'center',
                 justifyContent: 'center',
-                marginLeft: 6,
-                marginRight: 4,
-                marginBottom: 0,
               }}
               icon={() => (
                 <Ionicons name="camera" size={28} color="#548DFF" />
@@ -429,22 +432,6 @@ export default function ChatRoom({ route, navigation }) {
               }}
               optionTintColor="#222B45"
             />
-            {/* <Actions {...props}
-              containerStyle={{
-                width: 34,
-                height: 44,
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginLeft: 4,
-                marginRight: 4,
-                marginBottom: 0,
-              }}
-              icon={() => (
-                <FontAwesome name="microphone" size={28} color="#548DFF" />
-              )}
-              onPressActionButton={() => { console.log("audio") }}
-            /> */}
-
           </>
           )
         }
@@ -453,6 +440,7 @@ export default function ChatRoom({ route, navigation }) {
           return (
             <InputToolbar {...props}
               containerStyle={{
+                paddingHorizontal: 5,
               }}
               primaryStyle={{ alignItems: 'center', justifyContent: 'center' }}  //for the text input
             />
@@ -491,33 +479,6 @@ export default function ChatRoom({ route, navigation }) {
             />
           );
         }}
-        // loadEarlier={true}
-        // renderLoadEarlier={(props) => {
-        //   return (
-        //     <LoadEarlier {...props}
-        //       wrapperStyle={{
-        //         alignItems: 'center',
-        //         justifyContent: 'center',
-        //         height: 44,
-        //         width: ScreenWidth,
-        //       }}
-        //       textStyle={{
-        //         fontFamily: "Urbanist-Regular",
-        //         fontSize: 14,
-        //         color: "#000",
-        //       }}
-        //       label="Load Earlier Messages"
-        //       activityIndicatorColor="#548DFF"
-        //       activityIndicatorStyle={{
-        //         marginTop: 5,
-        //         marginBottom: 5,
-
-        //       }}
-        //       text="Load Earlier Messages"
-        //       />
-        //   )
-        // }
-        // }
       />
       <Modal visible={picPreviewModal} animationType='slide' onRequestClose={() => setPicPreviewModal(false)} >
         <View style={styles.imagePreview}>
@@ -537,7 +498,7 @@ export default function ChatRoom({ route, navigation }) {
           </View>
         </View>
       </Modal>
-    </>
+    </View>
   )
 }
 

@@ -9,7 +9,7 @@ import moment from 'moment';
 // ---------------- All Server Urls ---------------- 
 
 // General
-let updateProfile = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Settings/UpdateUserProfile'
+let updateProfileUser = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Settings/UpdateUserProfile'
 let getPairedProfile = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUser/'
 
 // Log In
@@ -230,7 +230,7 @@ export function UserProvider({ children }) {
             patientId: userData.patientId,
         }
 
-        fetch(updateProfile, {
+        fetch(updateProfileUser, {
             method: 'PUT',
             headers: new Headers({
                 'Content-Type': 'application/json; charset=UTF-8',
@@ -260,9 +260,7 @@ export function UserProvider({ children }) {
                 console.log('Error:', error.message);
             }
             );
-    }
-
-    
+    }    
 
     function updateUserContext(userContext) {
         console.log("updateUser", userContext);
@@ -521,7 +519,6 @@ export function UserProvider({ children }) {
             })
             .then(data => {
                 if (data != null) {
-                    //exmaple of data object: {drugId:1, drugName:"פרסקוטיקס", drugUrl:"https://www.drugs.com/images/pills/augmentin.jpg", modifyDate:"2021-05-05T00:00:00",Type:"pills"} 
                     setAllDrugs(data);
                 }
             })
