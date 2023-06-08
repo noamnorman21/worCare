@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DATA", "DATA\DATA.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi", "WebApi\WebApi.csproj", "{AA35977C-D1B4-449A-8709-2C8E51A3DEBD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "drugScraping", "drugScraping\drugScraping.csproj", "{62046069-8C86-46D7-89AE-D660AB53222F}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,10 +21,6 @@ Global
 		{AA35977C-D1B4-449A-8709-2C8E51A3DEBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA35977C-D1B4-449A-8709-2C8E51A3DEBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA35977C-D1B4-449A-8709-2C8E51A3DEBD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{62046069-8C86-46D7-89AE-D660AB53222F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{62046069-8C86-46D7-89AE-D660AB53222F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{62046069-8C86-46D7-89AE-D660AB53222F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{62046069-8C86-46D7-89AE-D660AB53222F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

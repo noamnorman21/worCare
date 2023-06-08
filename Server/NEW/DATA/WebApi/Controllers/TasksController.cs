@@ -262,8 +262,8 @@ namespace WebApi.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
-            }
-        }
+            }
+        }
 
         [HttpPost]
         [Route("InsertActualList")] //dynamic because the list can be drug or product list

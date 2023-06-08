@@ -669,14 +669,6 @@
           <Parameter Name="actualId" Type="int" Mode="In" />
           <Parameter Name="taskId" Type="int" Mode="In" />
         </Function>
-        <Function Name="InsertNewDrug" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="drugName" Type="nvarchar" Mode="In" />
-          <Parameter Name="drugNameEn" Type="varchar" Mode="In" />
-          <Parameter Name="drugUrl" Type="nvarchar" Mode="In" />
-          <Parameter Name="drugUrlEn" Type="nvarchar" Mode="In" />
-          <Parameter Name="modifyDate" Type="date" Mode="In" />
-          <Parameter Name="Type" Type="varchar" Mode="In" />
-        </Function>
         <Function Name="InsertPatient" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="patientId" Type="char" Mode="In" />
           <Parameter Name="FirstName" Type="varchar" Mode="In" />
@@ -1947,14 +1939,6 @@
             <Parameter Name="workerId" Mode="In" Type="Int32" />
             <Parameter Name="status" Mode="In" Type="String" />
           </FunctionImport>
-          <FunctionImport Name="InsertNewDrug">
-            <Parameter Name="drugName" Mode="In" Type="String" />
-            <Parameter Name="drugNameEn" Mode="In" Type="String" />
-            <Parameter Name="drugUrl" Mode="In" Type="String" />
-            <Parameter Name="drugUrlEn" Mode="In" Type="String" />
-            <Parameter Name="modifyDate" Mode="In" Type="DateTime" />
-            <Parameter Name="Type" Mode="In" Type="String" />
-          </FunctionImport>
         </EntityContainer>
         <ComplexType Name="sp_helpdiagramdefinition_Result">
           <Property Type="Int32" Name="version" Nullable="true" />
@@ -2298,7 +2282,6 @@
           <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="igroup194_prodModel.Store.sp_renamediagram" />
           <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="igroup194_prodModel.Store.sp_upgraddiagrams" />
           <FunctionImportMapping FunctionImportName="updateStatusCaresForPatient" FunctionName="igroup194_prodModel.Store.updateStatusCaresForPatient" />
-          <FunctionImportMapping FunctionImportName="InsertNewDrug" FunctionName="igroup194_prodModel.Store.InsertNewDrug" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

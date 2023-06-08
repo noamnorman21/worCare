@@ -992,14 +992,6 @@
       <Parameter Name="workerId" Mode="In" Type="Int32" />
       <Parameter Name="status" Mode="In" Type="String" />
     </FunctionImport>
-    <FunctionImport Name="InsertNewDrug">
-      <Parameter Name="drugName" Mode="In" Type="String" />
-      <Parameter Name="drugNameEn" Mode="In" Type="String" />
-      <Parameter Name="drugUrl" Mode="In" Type="String" />
-      <Parameter Name="drugUrlEn" Mode="In" Type="String" />
-      <Parameter Name="modifyDate" Mode="In" Type="DateTime" />
-      <Parameter Name="Type" Mode="In" Type="String" />
-    </FunctionImport>
   </EntityContainer>
   <ComplexType Name="sp_helpdiagramdefinition_Result">
     <Property Type="Int32" Name="version" Nullable="true" />
