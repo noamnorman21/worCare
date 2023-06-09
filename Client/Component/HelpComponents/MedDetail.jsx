@@ -5,7 +5,7 @@ import { useIsFocused } from '@react-navigation/native';
 import { Feather, FontAwesome5, Ionicons } from '@expo/vector-icons';
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from "react-native-popup-menu";
 import { Overlay } from '@rneui/themed';
-import { WebView } from 'react-native-webview';
+import * as WebBrowser from 'expo-web-browser';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function MedDetail({ navigation, route }) {
@@ -44,16 +44,17 @@ export default function MedDetail({ navigation, route }) {
       }
    }, [isFocused])
 
+   const openUrl = async (url) => {
+      await WebBrowser.openBrowserAsync (url);
+   }
+
    const openModal = (value) => {
       if (value == 1) {
-         console.log("show leaflet")
-         console.log(task.drug)
          let url = task.drug.drugUrl
          if(userData.userType == "Caregiver"){
             url=task.drug.drugUrlEn
          }  
-          Linking.openURL(url)
-         //mabye use WebView to open the url in the app
+         openUrl(url)
       }
       else if (value == 2) {
          console.log("add instruction")

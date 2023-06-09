@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { View, TouchableOpacity, Image, Dimensions, StyleSheet, Modal, Text } from 'react-native';
+import { View, TouchableOpacity, Image, Dimensions, StyleSheet, Modal, Text, LogBox } from 'react-native';
 import { Octicons, Ionicons, AntDesign, Feather } from '@expo/vector-icons';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { LinearGradient } from 'expo-linear-gradient';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { useUserContext } from '../UserContext';
-
+import LogIn from './SignUpComponents/LogIn';
 import SettingScreen from './SettingScreen';
 import Contacts from './Contacts';
 import PushNotifications from './PushNotifications';
@@ -23,7 +23,7 @@ const Tab = createBottomTabNavigator();
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const SCREEN_WIDTH = Dimensions.get('screen').width;
 
-function CustomHeader() {
+function CustomHeader({ navigation }) {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const { userContext } = useUserContext();
     const { userUri, FirstName } = userContext;
@@ -31,10 +31,18 @@ function CustomHeader() {
     const toggleModal = () => {
         setIsModalVisible(!isModalVisible);
     };
+    //     LogBox.ignoreLogs([
+    //         'Non-serializable values were found in the navigation state',
+    //     ]);
 
     if (!userContext) {
         return null;
     }
+
+    const navigateAndCloseModal = (screenName) => {
+        setIsModalVisible(false);
+        //  navigation.navigate(screenName);
+    };
 
     return (
         <Stack.Navigator>
@@ -46,11 +54,9 @@ function CustomHeader() {
                     headerTitleAlign: 'center',
                     headerLeft: () => (
                         <View style={styles.headerLeft}>
-                            
                             <TouchableOpacity onPress={toggleModal}>
                                 <Feather name="menu" size={28} color="black" />
                             </TouchableOpacity>
-
                             <Modal
                                 visible={isModalVisible}
                                 animationType="fade"
@@ -113,7 +119,7 @@ function CustomHeader() {
                                     </TouchableOpacity>
                                     <View style={styles.line} />
 
-                                    <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+                                    <TouchableOpacity onPress={() => navigation.navigate('LogIn')}>
                                         <View style={styles.menuItem}>
                                             <Feather name="log-out" size={30} color="#fff1e6" />
                                             <Text style={styles.menuItemText}>Log out</Text>
@@ -121,7 +127,6 @@ function CustomHeader() {
                                     </TouchableOpacity>
                                 </View>
                             </Modal>
-
                         </View>
                     ),
                     headerRight: () => (
@@ -171,6 +176,11 @@ function CustomHeader() {
             <Stack.Screen
                 name="Contacts"
                 component={Contacts}
+                options={{ unmountOnBlur: true, headerShown: false }}
+            />
+            <Stack.Screen
+                name="LogIn"
+                component={LogIn}
                 options={{ unmountOnBlur: true, headerShown: false }}
             />
         </Stack.Navigator>

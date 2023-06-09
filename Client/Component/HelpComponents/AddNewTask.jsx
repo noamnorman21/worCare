@@ -58,8 +58,10 @@ function AddNewMedicine(props) {
       if (medTime != '' && medTimeArr.length == 0) {
          medTimeArr.push(medTime);
       }
+      console.log(selectedDrugName);
+     
       let newMedForDb = {
-         drugName: selectedDrugName.drugName,
+         drugNameEn: selectedDrugName.drugNameEn,
          drugId: selectedDrugName.drugId,
          timesInDayArr: medTimeArr,
          fromDate: medFromDate,
@@ -255,8 +257,8 @@ function AddNewMedicine(props) {
                            renderLeftIcon={() => <MaterialIcons name="search" size={30} color="gray" />}
                            inputSearchStyle={styles.inputSearchStyle}
                            data={allDrugs}
-                           labelField="drugName"
-                           valueField="drugName"
+                           labelField={userData.userType == "Caregiver" ? "drugNameEn":"drugName"}
+                           valueField={userData.userType == "Caregiver" ? "drugNameEn":"drugName"}
                            placeholder="Medicine Name"
                            maxHeight={300}
                            fontFamily='Urbanist-Light'

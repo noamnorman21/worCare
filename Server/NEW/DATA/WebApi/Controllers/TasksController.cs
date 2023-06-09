@@ -167,8 +167,6 @@ namespace WebApi.Controllers
                 TimeSpan dateTime = DateTime.Now.TimeOfDay; //will save in temp the current time to use in the query
                 foreach (var item in tasksArr)
                 {
-
-
                     var task = from t in db.tblActualTask
                                where t.taskId == item.taskId &&
                                t.taskDate >= DateTime.Today &&
@@ -230,7 +228,7 @@ namespace WebApi.Controllers
                         }
                     }
 
-                    if (item.type == true)// we will create drug for pation  
+                    if (item.type == true)// we will create drug for Patient 
                     {
                         var drugForArr = from t in db.tblDrugForPatient //find all relavent DrugList for this task
                                          where t.listId == item.listId
@@ -281,7 +279,7 @@ namespace WebApi.Controllers
                 {
                     //isdrug mean that is drug list and not product list
                     isDrug = true;
-                    taskName = list.drugName; //the name of the drug
+                    taskName = list.drugNameEn; //the name of the drug
                 }
                 else if (list.listName != null)
                 {
