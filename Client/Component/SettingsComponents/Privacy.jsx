@@ -80,8 +80,6 @@ export default function Privacy({ navigation, route }) {
       checkPassowrd();
     }
     else if (Email == userContext.Email && !passwordChanged && Notifications !== userNotifications) {
-      console.log('Notifications', Notifications);
-      console.log('userContext.Notifications', userNotifications);
       updateNotifications();
     }
     else {
@@ -327,15 +325,7 @@ export default function Privacy({ navigation, route }) {
 
   // operations on notifications
   const toggleNotifications = (field) => {
-    if (field == 'Email') {
-      if (Notifications.emailNotifications) {
-        setNotifications({ ...Notifications, emailNotifications: false });
-      }
-      else {
-        setNotifications({ ...Notifications, emailNotifications: true });
-      }
-    }
-    else if (field == 'Finance') {
+    if (field == 'Finance') {
       if (Notifications.financeNotifications) {
         setNotifications({ ...Notifications, financeNotifications: false });
       }
@@ -359,34 +349,22 @@ export default function Privacy({ navigation, route }) {
         setNotifications({ ...Notifications, chatNotifications: true });
       }
     }
-    else if (field == 'Contact') {
-      if (Notifications.contactNotifications) {
-        setNotifications({ ...Notifications, contactNotifications: false });
-      }
-      else {
-        setNotifications({ ...Notifications, contactNotifications: true });
-      }
-    }
     else if (field == 'All') {
       if (Notifications.allNotifications) {
         setNotifications({
           ...Notifications,
-          emailNotifications: false,
           financeNotifications: false,
           tasksNotifications: false,
           chatNotifications: false,
-          contactNotifications: false,
           allNotifications: false
         })
       }
       else {
         setNotifications({
           ...Notifications,
-          emailNotifications: true,
           financeNotifications: true,
           tasksNotifications: true,
           chatNotifications: true,
-          contactNotifications: true,
           allNotifications: true
         });
       }
@@ -395,10 +373,8 @@ export default function Privacy({ navigation, route }) {
 
   return (
     <ScrollView alwaysBounceVertical={false} contentContainerStyle={styles.container}>
+      {/* Email View */}
       <View style={styles.emailContainer}>
-        <View style={styles.lineContainer}>
-          <View style={styles.line} />
-        </View>
         <Text style={styles.sectionHeader}>Set new Email</Text>
         <View style={styles.lineContainer}>
           <View style={styles.line} />
@@ -410,10 +386,12 @@ export default function Privacy({ navigation, route }) {
           </TouchableOpacity>
         </View>
       </View>
+
+      {/* Password View */}
       <View style={styles.passwordView}>
-        <View style={styles.lineContainer}>
+        {/* <View style={styles.lineContainer}>
           <View style={styles.line} />
-        </View>
+        </View> */}
         <Text style={styles.passwordHeader}>Set new password</Text>
         <View style={styles.lineContainer}>
           <View style={styles.line} />
@@ -459,10 +437,12 @@ export default function Privacy({ navigation, route }) {
           </TouchableOpacity>
         </View>
       </View>
+
+      {/* Notifications View */}
       <View style={styles.notificationsView}>
-        <View style={styles.lineContainer}>
+        {/* <View style={styles.lineContainer}>
           <View style={styles.line} />
-        </View>
+        </View> */}
         <Text style={styles.sectionHeader}>Notifications</Text>
         <View style={styles.lineContainer}>
           <View style={styles.line} />
@@ -503,30 +483,6 @@ export default function Privacy({ navigation, route }) {
             value={Notifications.chatNotifications}
           />
         </View>
-        {/* Contact notification toggle */}
-        <View style={styles.notificationContainer}>
-          <Text style={styles.notificationSmallHeader}>Contacts </Text>
-          <Switch
-            style={Platform.OS == 'ios' ? { marginVertical: 5, marginRight: 10, transform: [{ scaleX: .85 }, { scaleY: .85 }] } : { marginRight: 5 }} // ios style
-            trackColor={{ false: "#E6EBF2", true: "#81b0ff" }}
-            thumbColor={Notifications.contactNotifications ? "#548DFF" : "#f4f3f4"}
-            ios_backgroundColor="#3e3e3e"
-            onValueChange={() => toggleNotifications('Contact')}
-            value={Notifications.contactNotifications}
-          />
-        </View>
-        {/* Email notification toggle */}
-        <View style={styles.notificationContainer}>
-          <Text style={styles.notificationSmallHeader}>Email </Text>
-          <Switch
-            style={Platform.OS == 'ios' ? { marginVertical: 5, marginRight: 10, transform: [{ scaleX: .85 }, { scaleY: .85 }] } : { marginRight: 5 }} // ios style
-            trackColor={{ false: "#E6EBF2", true: "#81b0ff" }}
-            thumbColor={Notifications.emailNotifications ? "#548DFF" : "#f4f3f4"}
-            ios_backgroundColor="#3e3e3e"
-            onValueChange={() => toggleNotifications('Email')}
-            value={Notifications.emailNotifications}
-          />
-        </View>
         {/* All notification toggle */}
         <View style={styles.notificationContainer}>
           <Text style={styles.notificationSmallHeader}>All Notifications</Text>
@@ -541,17 +497,17 @@ export default function Privacy({ navigation, route }) {
           />
         </View>
       </View>
+
       <View style={styles.accountView}>
-        <View style={styles.lineContainer}>
+        {/* <View style={styles.lineContainer}>
           <View style={styles.line} />
-        </View>
+        </View> */}
         <Text style={styles.sectionHeader}>Account</Text>
         <View style={styles.lineContainer}>
           <View style={styles.line} />
         </View>
         <TouchableOpacity style={styles.logoutBtn}
           onPress={() => {
-            Alert.alert("Add Account")
             AsyncStorage.removeItem("user");
             AsyncStorage.removeItem("userData");
             Alert.alert('Log Out', 'You have been logged out', [
@@ -565,22 +521,6 @@ export default function Privacy({ navigation, route }) {
           }}
         >
           <Text style={styles.btnText1}>Add Account</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.logoutBtn}
-          onPress={() => {
-            AsyncStorage.removeItem("user");
-            AsyncStorage.removeItem("userData");
-            Alert.alert('Log Out', 'You have been logged out', [
-              {
-                text: 'OK',
-                onPress: () => {
-                  route.params.logout();
-                }
-              },
-            ]);
-          }}
-        >
-          <Text style={styles.btnText1}>Log Out</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.deleteButton}
           onPress={() => {
@@ -602,7 +542,7 @@ export default function Privacy({ navigation, route }) {
           <Text style={styles.btnText2}>Delete Account</Text>
         </TouchableOpacity>
       </View>
-    </ScrollView>
+    </ScrollView >
   )
 }
 
@@ -654,6 +594,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#548DFF',
     paddingLeft: 10,
+    marginTop: 5,
     fontFamily: 'Urbanist-SemiBold',
   },
   btnText2: {
@@ -730,15 +671,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
+    marginVertical: 3,
   },
   notificationContainer: {
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
+    marginVertical: 5,
   },
   emailContainer: {
-    width: '100%',
+    marginVertical: 10,
     alignItems: 'center',
     justifyContent: 'center',
   },

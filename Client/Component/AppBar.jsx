@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { View, TouchableOpacity, Image, Dimensions, StyleSheet, Modal, Text, LogBox } from 'react-native';
-import { Octicons, Ionicons, AntDesign, Feather } from '@expo/vector-icons';
+import { View, TouchableOpacity, Image, Dimensions, StyleSheet, Modal, Text, Alert, Linking } from 'react-native';
+import { Octicons, Ionicons, AntDesign, Feather, FontAwesome } from '@expo/vector-icons';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { LinearGradient } from 'expo-linear-gradient';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { useUserContext } from '../UserContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import LogIn from './SignUpComponents/LogIn';
 import SettingScreen from './SettingScreen';
 import Contacts from './Contacts';
@@ -25,24 +27,16 @@ const SCREEN_WIDTH = Dimensions.get('screen').width;
 
 function CustomHeader({ navigation }) {
     const [isModalVisible, setIsModalVisible] = useState(false);
-    const { userContext } = useUserContext();
+    const { userContext, appEmail } = useUserContext();
     const { userUri, FirstName } = userContext;
 
     const toggleModal = () => {
         setIsModalVisible(!isModalVisible);
     };
-    //     LogBox.ignoreLogs([
-    //         'Non-serializable values were found in the navigation state',
-    //     ]);
 
     if (!userContext) {
         return null;
     }
-
-    const navigateAndCloseModal = (screenName) => {
-        setIsModalVisible(false);
-        //  navigation.navigate(screenName);
-    };
 
     return (
         <Stack.Navigator>
@@ -55,7 +49,7 @@ function CustomHeader({ navigation }) {
                     headerLeft: () => (
                         <View style={styles.headerLeft}>
                             <TouchableOpacity onPress={toggleModal}>
-                                <Feather name="menu" size={28} color="black" />
+                                <Feather name="menu" size={30} color="black" />
                             </TouchableOpacity>
                             <Modal
                                 visible={isModalVisible}
@@ -66,20 +60,36 @@ function CustomHeader({ navigation }) {
                                 <View style={styles.modalContainer}>
                                     <View style={styles.imgContainer}>
                                         <LinearGradient
-                                            colors={['#F5F8FF', '#7DA9FF', '#548DFF']}
+                                            colors={['#87AFFF', '#7DA9FF', '#6D9EFF', '#548DFF']}
                                             style={styles.background}
                                         />
                                         <Image style={styles.image} source={{ uri: userUri }} />
                                         <Text style={styles.name}>Hello, {FirstName}</Text>
+                                        <TouchableOpacity
+                                            style={styles.switchUser}
+                                            onPress={() => {
+                                                console.log('Switch User pressed')
+                                                toggleModal()
+                                            }}>
+                                            <AntDesign name="retweet" size={20} color="#216Bff" />
+                                            <Text style={styles.switchTxt}>
+                                                Switch User
+                                            </Text>
+                                        </TouchableOpacity>
                                     </View>
 
                                     <View style={styles.closeButtonContainer}>
                                         <TouchableOpacity onPress={toggleModal}>
-                                            <Feather name="x" size={32} color="white" />
+                                            <Feather name="x" size={32} color="#fff1e6" />
                                         </TouchableOpacity>
                                     </View>
 
-                                    <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+                                    <TouchableOpacity onPress={
+                                        () => {
+                                            navigation.navigate('Profile')
+                                            toggleModal()
+                                        }
+                                    }>
                                         <View style={styles.menuItem}>
                                             <Feather name="user" size={30} color="#fff1e6" />
                                             <Text style={styles.menuItemText}>Patient Profile</Text>
@@ -87,7 +97,10 @@ function CustomHeader({ navigation }) {
                                     </TouchableOpacity>
                                     <View style={styles.line} />
 
-                                    <TouchableOpacity onPress={() => navigation.navigate('SettingScreen')}>
+                                    <TouchableOpacity onPress={() => {
+                                        navigation.navigate('SettingScreen')
+                                        toggleModal()
+                                    }}>
                                         <View style={styles.menuItem}>
                                             <Feather name="settings" size={30} color="#fff1e6" />
                                             <Text style={styles.menuItemText}>Settings</Text>
@@ -95,7 +108,12 @@ function CustomHeader({ navigation }) {
                                     </TouchableOpacity>
                                     <View style={styles.line} />
 
-                                    <TouchableOpacity onPress={() => navigation.navigate('PushNotifications')}>
+                                    <TouchableOpacity onPress={
+                                        () => {
+                                            navigation.navigate('PushNotifications')
+                                            toggleModal()
+                                        }
+                                    }>
                                         <View style={styles.menuItem}>
                                             <Feather name="bell" size={30} color="#fff1e6" />
                                             <Text style={styles.menuItemText}>Notifications</Text>
@@ -103,7 +121,12 @@ function CustomHeader({ navigation }) {
                                     </TouchableOpacity>
                                     <View style={styles.line} />
 
-                                    <TouchableOpacity onPress={() => navigation.navigate('Contacts')}>
+                                    <TouchableOpacity onPress={
+                                        () => {
+                                            navigation.navigate('Contacts')
+                                            toggleModal()
+                                        }
+                                    }>
                                         <View style={styles.menuItem}>
                                             <AntDesign name="contacts" size={30} color="#fff1e6" />
                                             <Text style={styles.menuItemText}>Contacts</Text>
@@ -111,7 +134,12 @@ function CustomHeader({ navigation }) {
                                     </TouchableOpacity>
                                     <View style={styles.line} />
 
-                                    <TouchableOpacity onPress={() => navigation.navigate('AddUser')}>
+                                    <TouchableOpacity onPress={
+                                        () => {
+                                            navigation.navigate('AddUser')
+                                            toggleModal()
+                                        }
+                                    }>
                                         <View style={styles.menuItem}>
                                             <Feather name="user-plus" size={30} color="#fff1e6" />
                                             <Text style={styles.menuItemText}>Add User</Text>
@@ -119,12 +147,33 @@ function CustomHeader({ navigation }) {
                                     </TouchableOpacity>
                                     <View style={styles.line} />
 
-                                    <TouchableOpacity onPress={() => navigation.navigate('LogIn')}>
+                                    <TouchableOpacity onPress={
+                                        () => {
+                                            Linking.openURL(`mailto:${appEmail}`)
+                                            toggleModal()
+                                        }
+                                    }>
+                                        <View style={styles.menuItem}>
+                                            <Feather name="send" size={30} color="#fff1e6" />
+                                            <Text style={styles.menuItemText}>Contact Us</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                    <View style={styles.line} />
+
+                                    <TouchableOpacity onPress={
+                                        () => {
+                                            AsyncStorage.removeItem("user");
+                                            AsyncStorage.removeItem("userData");
+                                            navigation.navigate('LogIn')
+                                            toggleModal()
+                                        }
+                                    }>
                                         <View style={styles.menuItem}>
                                             <Feather name="log-out" size={30} color="#fff1e6" />
                                             <Text style={styles.menuItemText}>Log out</Text>
                                         </View>
                                     </TouchableOpacity>
+
                                 </View>
                             </Modal>
                         </View>
@@ -137,12 +186,12 @@ function CustomHeader({ navigation }) {
                             >
                                 <Feather name="bell" size={28} color="#000000" />
                             </TouchableOpacity>
-                            <TouchableOpacity
+                            {/* <TouchableOpacity
                                 style={{ right: Dimensions.get('screen').width * 0.04 }}
                                 onPress={() => navigation.navigate('Contacts')}
                             >
                                 <AntDesign name="contacts" size={28} color="#000000" />
-                            </TouchableOpacity>
+                            </TouchableOpacity> */}
                         </View>
                     ),
                     headerTitle: () => (
@@ -233,11 +282,35 @@ function AppBarDown() {
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' },
-    tabBar: { backgroundColor: '#fff', paddingTop: 10 },
-    headerLeft: { marginTop: 10, marginLeft: Dimensions.get('screen').width * 0.075, flex: 1, justifyContent: 'space-between', alignContent: 'space-between' },
-    headerRight: { marginTop: 10, marginLeft: Dimensions.get('screen').width * 0.075, flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignContent: 'space-between' },
-    headerLogo: { width: 50, height: 50, bottom: Dimensions.get('screen').height * 0.01, left: Dimensions.get('screen').width * 0.005 },
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    tabBar: {
+        backgroundColor: '#fff',
+        paddingTop: 10
+    },
+    headerLeft: {
+        marginTop: 5,
+        marginLeft: Dimensions.get('screen').width * 0.05,
+        flex: 1,
+        justifyContent: 'space-between',
+        alignContent: 'space-between'
+    },
+    headerRight: {
+        marginTop: 5,
+        flex: 1,
+        justifyContent: 'space-between',
+        alignContent: 'space-between'
+    },
+    headerLogo: {
+        width: 50,
+        height: 50,
+        bottom: Dimensions.get('screen').height * 0.005,
+        left: Dimensions.get('screen').width * 0.005
+    },
     modalContainer: {
         width: SCREEN_WIDTH * 0.75,
         height: SCREEN_HEIGHT,
@@ -289,6 +362,17 @@ const styles = StyleSheet.create({
         width: '100%',
         backgroundColor: '#fff1e6',
         marginVertical: 10,
+    },
+    switchUser: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingLeft: 10,
+    },
+    switchTxt: {
+        fontFamily: 'Urbanist-Bold',
+        fontSize: 16,
+        marginHorizontal: 10,
+        color: '#216Bff',
     },
 });
 

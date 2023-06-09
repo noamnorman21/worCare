@@ -21,7 +21,7 @@ function HomeScreen({ navigation, route }) {
     const [userEmail, setuserEmail] = useState(null);
     const [userId, setUserId] = useState(null);
     const isFocused = useIsFocused();
-    const { userContext, setUserContext, updateUserProfile, appEmail } = useUserContext();
+    const { userContext, setUserContext, updateUserProfile } = useUserContext();
     const [user, setUser] = useState(userContext);
     const [isChanged, setIsChanged] = useState(false);
     const [ImageChange, setImageChange] = useState(false);
@@ -203,10 +203,6 @@ function HomeScreen({ navigation, route }) {
         setNavigation();
     }, [navigation]);
 
-    const optionsToEmail = () => {
-        Linking.openURL(`mailto:${appEmail}`)
-    }
-
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.imgContainer}>
@@ -244,10 +240,10 @@ function HomeScreen({ navigation, route }) {
                     <Text style={styles.btnText}>Privacy & My Account</Text>
                     <Ionicons style={styles.arrowLogoStyle} name="chevron-forward" size={24} color="grey" />
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.btn} onPress={() => optionsToEmail()}>
+                {/* <TouchableOpacity style={styles.btn} onPress={() => optionsToEmail()}>
                     <Text style={styles.btnText}>Contact Us</Text>
                     <Ionicons style={styles.arrowLogoStyle} name="chevron-forward" size={24} color="grey" />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
             </View>
         </SafeAreaView>
     );

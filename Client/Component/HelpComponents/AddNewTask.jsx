@@ -126,15 +126,14 @@ function AddNewMedicine(props) {
 
    const handeleDrugChange = (item) => {
       setSelectedDrugName(item);
-      // להוסיף את הסוגים שאותם ניתן לספור לא רק pills
       if (item.Type != 'Pill') {
-         setNumberPerDay(1);
-         setQuantity(1);
          setEditMode(false);
+         setCapacity(1);
+         setQuantity(1);
       }
       else {
          setEditMode(true);
-         setNumberPerDay(0);
+         setCapacity(0);
          setQuantity(0);
       }
    }
@@ -271,7 +270,8 @@ function AddNewMedicine(props) {
                            onChange={(item) => handeleDrugChange(item)}
                         />
                      </View>
-                     <Text style={styles.subTitle}>More Details...</Text>
+
+                     <Text style={styles.subTitle}>More Details</Text>
                      <View style={styles.inputView}>
                         {/* FIRST ROW */}
                         <View style={styles.doubleRow}>

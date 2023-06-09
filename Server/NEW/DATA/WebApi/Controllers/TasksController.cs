@@ -260,8 +260,8 @@ namespace WebApi.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
-            }
-        }
+            }
+        }
 
         [HttpPost]
         [Route("InsertActualList")] //dynamic because the list can be drug or product list
@@ -319,12 +319,6 @@ namespace WebApi.Controllers
                         drugFor.patientId = list.patientId;
                         drugFor.dosage = list.dosage;
                         drugFor.drugId = list.drugId;
-                        //var drugName = from t in db.tblDrug
-                        //               where t.drugId == drugFor.drugId
-                        //               select t;
-                        //drugFor.drugName = drugName.First().drugName;
-                        //drugFor.drugType = drugName.First().Type;
-                        //drugFor.drugUrl = drugName.First().drugUrl;
                         drugFor.qtyInBox = list.qtyInBox;
                         drugFor.minQuantity = list.qtyInBox * 0.2;//defult will be 20% 
                         drugFor.patientId = list.patientId;
@@ -509,7 +503,11 @@ namespace WebApi.Controllers
                     tblDrugForPatient tblDrugForPatient = db.tblDrugForPatient.Where(x => x.drugId == actualTask.drug.drugId && x.listId == actualTask.listId).FirstOrDefault();
                     if (tblDrugForPatient != null)
                     {
-                        tblDrugForPatient.qtyInBox -= tblDrugForPatient.dosage;
+                        // Only If type is Pills we need to update the quantity of pills
+                        if (actualTask.drug.drugType == "Pills")
+                        {
+                            tblDrugForPatient.qtyInBox -= tblDrugForPatient.dosage;
+                        }
                         tblDrugForPatient.lastTakenDate = DateTime.Now;
                         db.SaveChanges();
                     }
