@@ -30,6 +30,7 @@ namespace WebApi.Controllers
                                 modifyDate = d.modifyDate,
                                 Type = d.Type,
                             };
+                drugs.OrderBy(x => x.drugNameEn);
                 return Ok(drugs);
             }
             catch (Exception ex)

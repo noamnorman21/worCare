@@ -59,7 +59,7 @@ function AddNewMedicine(props) {
          medTimeArr.push(medTime);
       }
       console.log(selectedDrugName);
-     
+
       let newMedForDb = {
          drugNameEn: selectedDrugName.drugNameEn,
          drugId: selectedDrugName.drugId,
@@ -244,8 +244,8 @@ function AddNewMedicine(props) {
 
    return (
       <KeyboardAvoidingView style={[styles.container, modalTimesVisible && { backgroundColor: 'rgba(0, 0, 0, 0.75)' }]} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-         <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
-            <Modal visible={props.isVisible} presentationStyle='formSheet' animationType='slide' onRequestClose={props.onClose}>
+         <Modal visible={props.isVisible} presentationStyle='formSheet' animationType='slide' onRequestClose={props.onClose}>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
                <View style={styles.centeredView}>
                   <View style={styles.modalView}>
                      <Text style={styles.modalText}>Add new Medicine </Text>
@@ -257,8 +257,8 @@ function AddNewMedicine(props) {
                            renderLeftIcon={() => <MaterialIcons name="search" size={30} color="gray" />}
                            inputSearchStyle={styles.inputSearchStyle}
                            data={allDrugs}
-                           labelField={userData.userType == "Caregiver" ? "drugNameEn":"drugName"}
-                           valueField={userData.userType == "Caregiver" ? "drugNameEn":"drugName"}
+                           labelField={userData.userType == "Caregiver" ? "drugNameEn" : "drugName"}
+                           valueField={userData.userType == "Caregiver" ? "drugNameEn" : "drugName"}
                            placeholder="Medicine Name"
                            maxHeight={300}
                            fontFamily='Urbanist-Light'
@@ -521,8 +521,9 @@ function AddNewMedicine(props) {
                      </View>
                   </View>
                </View>
-            </Modal >
-         </TouchableWithoutFeedback>
+
+            </TouchableWithoutFeedback>
+         </Modal >
       </KeyboardAvoidingView>
    )
 }
