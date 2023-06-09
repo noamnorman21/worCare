@@ -6,6 +6,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { LinearGradient } from 'expo-linear-gradient';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { useUserContext } from '../UserContext';
+import { StackActions } from '@react-navigation/native';
+
 
 import SettingScreen from './SettingScreen';
 import Contacts from './Contacts';
@@ -73,7 +75,7 @@ function CustomHeader() {
                                         </TouchableOpacity>
                                     </View>
 
-                                    <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+                                    <TouchableOpacity onPress={() =>{toggleModal(); navigation.navigate('PatientProfile')}}>
                                         <View style={styles.menuItem}>
                                             <Feather name="user" size={30} color="#fff1e6" />
                                             <Text style={styles.menuItemText}>Patient Profile</Text>
@@ -81,7 +83,7 @@ function CustomHeader() {
                                     </TouchableOpacity>
                                     <View style={styles.line} />
 
-                                    <TouchableOpacity onPress={() => navigation.navigate('SettingScreen')}>
+                                    <TouchableOpacity onPress={() => {toggleModal();navigation.navigate('SettingScreen')}}>
                                         <View style={styles.menuItem}>
                                             <Feather name="settings" size={30} color="#fff1e6" />
                                             <Text style={styles.menuItemText}>Settings</Text>
@@ -89,7 +91,7 @@ function CustomHeader() {
                                     </TouchableOpacity>
                                     <View style={styles.line} />
 
-                                    <TouchableOpacity onPress={() => navigation.navigate('PushNotifications')}>
+                                    <TouchableOpacity onPress={() => {toggleModal();navigation.navigate('PushNotifications')}}>
                                         <View style={styles.menuItem}>
                                             <Feather name="bell" size={30} color="#fff1e6" />
                                             <Text style={styles.menuItemText}>Notifications</Text>
@@ -97,7 +99,7 @@ function CustomHeader() {
                                     </TouchableOpacity>
                                     <View style={styles.line} />
 
-                                    <TouchableOpacity onPress={() => navigation.navigate('Contacts')}>
+                                    <TouchableOpacity onPress={() => {toggleModal();navigation.navigate('Contacts')}}>
                                         <View style={styles.menuItem}>
                                             <AntDesign name="contacts" size={30} color="#fff1e6" />
                                             <Text style={styles.menuItemText}>Contacts</Text>
@@ -105,7 +107,7 @@ function CustomHeader() {
                                     </TouchableOpacity>
                                     <View style={styles.line} />
 
-                                    <TouchableOpacity onPress={() => navigation.navigate('AddUser')}>
+                                    <TouchableOpacity onPress={() => {toggleModal();navigation.navigate('AddUser')}}>
                                         <View style={styles.menuItem}>
                                             <Feather name="user-plus" size={30} color="#fff1e6" />
                                             <Text style={styles.menuItemText}>Add User</Text>
@@ -113,7 +115,7 @@ function CustomHeader() {
                                     </TouchableOpacity>
                                     <View style={styles.line} />
 
-                                    <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+                                    <TouchableOpacity onPress={() => {toggleModal();navigation.dispatch(StackActions.replace('LogIn'))}}>
                                         <View style={styles.menuItem}>
                                             <Feather name="log-out" size={30} color="#fff1e6" />
                                             <Text style={styles.menuItemText}>Log out</Text>
@@ -178,6 +180,7 @@ function CustomHeader() {
 }
 
 function AppBarDown() {
+    const { newMessages } = useUserContext();
     return (
         <Tab.Navigator
             screenOptions={({ route }) => ({
@@ -190,6 +193,10 @@ function AppBarDown() {
                     } else if (route.name === 'Finance') {
                         return <Octicons name="credit-card" size={size} color={color} />;
                     } else if (route.name === 'Chats') {
+                        // if(newMessages>0){
+                        //     console.log("newMessages",newMessages)
+                        //   return <Ionicons name="chatbubble-ellipses-outline" size={size} color={"red"} />
+                        // }
                         return <Ionicons name="chatbubble-ellipses-outline" size={size} color={color} />;
                     } else if (route.name === 'Tasks') {
                         return <Octicons name="checklist" size={size} color={color} />;

@@ -11,6 +11,7 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { TextInput } from 'react-native-paper';
 import moment from 'moment';
 import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
+import { useUserContext } from '../../UserContext';
 
 const ScreenHeight = Dimensions.get("window").height;
 const ScreenWidth = Dimensions.get("window").width;
@@ -23,6 +24,7 @@ export default function ChatRoom({ route, navigation }) {
   const [imageDescription, setImageDescription] = useState('')//to send image with description
   const [GroupMembers, setGroupMembers] = useState(); //for group chat
   const [recording, setRecording] = useState(null); // for audio recording
+  const {newMessages, setNewMessages} = useUserContext();
 
   useLayoutEffect(() => {
     const tempMessages = query(collection(db, route.params.name), orderBy('createdAt', 'desc'));
@@ -64,8 +66,9 @@ export default function ChatRoom({ route, navigation }) {
         const res = await getDocs(docRef);
         res.forEach((doc) => {
           updateDoc(doc.ref, { unread: false, unreadCount: 0 });
-        });
+        });        
       }
+      setNewMessages(newMessages-route.params.unreadCount)
       return () => {
         setDocAsRead();
       }
@@ -413,13 +416,9 @@ export default function ChatRoom({ route, navigation }) {
           return (<>
             <Actions {...props}
               containerStyle={{
-                width: 34,
-                height: 44,
+                width: 34,               
                 alignItems: 'center',
-                justifyContent: 'center',
-                marginLeft: 6,
-                marginRight: 4,
-                marginBottom: 0,
+                justifyContent: 'center',               
               }}
               icon={() => (
                 <Ionicons name="camera" size={28} color="#548DFF" />

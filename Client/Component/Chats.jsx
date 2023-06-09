@@ -41,7 +41,7 @@ export default function Chats({ navigation }) {
 
 function MainRoom({ navigation }) {
   const [chatsToDisplay, setchatsToDisplay] = useState([])
-  const { userContext } = useUserContext();
+  const { userContext,setNewMessages } = useUserContext();
   const [users, setUsers] = useState([])
   const [userChats, setUserChats] = useState([])
   const [usersToDisplay, setUsersToDisplay] = useState([])
@@ -52,7 +52,7 @@ function MainRoom({ navigation }) {
 
   useEffect(() => {
     if (userContext) {
-      const tempNames = query(collection(db, auth.currentUser.email));
+      const tempNames = query(collection(db, auth.currentUser.email),orderBy('lastMessageTime', 'desc'));
       // add listener to names collection
       const getNames = onSnapshot(tempNames, (snapshot) => setUserChats(
         snapshot.docs.map(doc => ({
@@ -93,6 +93,7 @@ function MainRoom({ navigation }) {
     //relevant- from user context
     if (userChats) {
       const renderNames = () => {
+        setchatsToDisplay(userChats.orderBy('lastMessageTime', 'desc'))
         setchatsToDisplay(userChats.map((name, index) => (
           <ConvoCard key={index} name={name} userEmails={name.userEmails} />
         )))
@@ -175,7 +176,9 @@ function MainRoom({ navigation }) {
       <Modal visible={addNewModal} animationType='slide'>
         <View style={styles.modal}>
           <Text style={styles.modalText}>Add new chat</Text>
+          <ScrollView style={styles.userScrollview}>
           {usersToDisplay}
+          </ScrollView>
           <TouchableOpacity style={styles.modalButton} onPress={() => { setAddNewModal(false); console.log("pressed close") }}>
             <Text style={styles.modalButtonText}>Cancel</Text>
           </TouchableOpacity>
@@ -196,8 +199,10 @@ const ConvoCard = (props) => {
   const [lastMessageDate, setLastMessageDate] = useState('')
   const today = moment().format('MMM DD YYYY')
   const yasterday = moment().subtract(1, 'days').format('MMM DD YYYY')
+  const { newMessages,setNewMessages }= useUserContext();
 
   useEffect(() => {
+    console.log("props.name.unreadCount",props.name.unreadCount)
     const temp = props.name.lastMessageTime.toString().split(' ')
     let date=new moment(props.name.lastMessageTime).format('MMM DD YYYY')
     const time= temp[4].split(':').slice(0, 2).join(':')
@@ -212,7 +217,7 @@ const ConvoCard = (props) => {
   }, [props.name]);
 
   const navigateToChatRoom = async (user) => {
-    navigation.navigate('ChatRoom', { name: user.Name, UserName: user.UserName, userEmail: user.userEmail, type: props.name.type })
+    navigation.navigate('ChatRoom', { name: user.Name, UserName: user.UserName, userEmail: user.userEmail, type: props.name.type, unreadCount: props.name.unreadCount })
     const docRef = query(collection(db, auth.currentUser.email), where("Name", "==", props.name.Name));
     const res = await getDocs(docRef);
     res.forEach((doc) => {
@@ -333,6 +338,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Urbanist-Bold',
     color: '#000',
     marginBottom: 20,
+    paddingTop: 20,
   },
   modalButton: {
     width: ScreenWidth * 0.8,
@@ -389,5 +395,8 @@ const styles = StyleSheet.create({
     height: 55,
     borderRadius: 54
   },
-  
+  userScrollview: {
+    height: ScreenHeight * 0.5,
+    marginBottom: 20,
+  },
 })

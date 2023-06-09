@@ -5,6 +5,8 @@ import { useNavigation } from '@react-navigation/native';
 import { auth, db } from './config/firebase';
 import { signInWithEmailAndPassword, signOut, updateProfile } from 'firebase/auth';
 import moment from 'moment';
+import { query, updateDoc,collection,getDocs,where } from 'firebase/firestore';
+
 
 // ---------------- All Server Urls ---------------- 
 
@@ -92,6 +94,9 @@ export function UserProvider({ children }) {
     const [userChats, setUserChats] = useState(null)
     const [CountryName_En, setCountryName_En] = useState(null)
     const [holidays, setHolidays] = useState([]);
+
+    //new for chat logo
+    const [newMessages, setNewMessages] = useState(0);
 
     async function logInContext(userData) {
         setUserType(userData.userType);
@@ -212,8 +217,13 @@ export function UserProvider({ children }) {
     function logOutContext() {
         console.log("logOutContext")
         setUserContext(null)
+        setNewMessages(0)
         logOutFireBase()
     }
+
+    useEffect(() => {
+        console.log("newMessagessss", newMessages)
+    }, [newMessages])
 
 
 //updated for furebase upadte after settings change
@@ -244,7 +254,7 @@ export function UserProvider({ children }) {
                 if (res.ok) {
                     return res.json()
                         .then(
-                            (result) => {
+                            async (result) => {
                                 Alert.alert('User Updated', 'Your User has been Updated successfully');
                                 updateUserContext(userToUpdate)
                                 const jsonValue = JSON.stringify(userToUpdate)
@@ -253,6 +263,13 @@ export function UserProvider({ children }) {
                                     displayName: userToUpdate.FirstName + " " + userToUpdate.LastName,
                                     photoURL: userToUpdate.userUri,
                                 })
+                                //update user in firebase Allusers collection for future conversations
+                                const q= query(collection(db, "AllUsers"), where("id", "==", userToUpdate.Email));
+                                const querySnapshot = await getDocs(q);
+                                querySnapshot.forEach((doc) => {
+                                    updateDoc(doc.ref, {id: userToUpdate.Email, name: userToUpdate.FirstName + " " + userToUpdate.LastName, avatar: userToUpdate.userUri});
+                                    console.log("Document successfully updated!");
+                                });
                             }
                         )
                 }
@@ -739,7 +756,8 @@ export function UserProvider({ children }) {
         deleteContact, addNewContact, saveContact, updateActualTask, updateRememberUserContext, logInContext,
         fetchUserContacts, logOutContext, updateUserContext, updateUserContacts, updatePendings,
         updateUserProfile, updateuserNotifications, appEmail, getAllPrivateTasks, getAllPublicTasks,
-        allPublicTasks, allPrivateTasks, UpdateDrugForPatientDTO, holidays, GetAllDrugs, allDrugs, addPrivateTaskContext
+        allPublicTasks, allPrivateTasks, UpdateDrugForPatientDTO, holidays, GetAllDrugs, allDrugs, addPrivateTaskContext,
+        newMessages, setNewMessages
     };
 
     return (
