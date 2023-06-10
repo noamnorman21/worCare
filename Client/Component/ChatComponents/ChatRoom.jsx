@@ -1,6 +1,6 @@
 
 import React, { useState, useCallback, useEffect, useLayoutEffect } from 'react';
-import { View, Text, StyleSheet, Dimensions, Image, Alert, Modal, TouchableOpacity, ScrollView, Platform, SafeAreaView } from 'react-native'
+import { View, Text, StyleSheet, Dimensions, Image, Alert, Modal, TouchableOpacity, ScrollView, Platform } from 'react-native'
 import { GiftedChat, Bubble, Actions, InputToolbar, Time, MessageImage, LoadEarlier } from 'react-native-gifted-chat';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
@@ -11,6 +11,7 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { TextInput } from 'react-native-paper';
 import moment from 'moment';
 import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
+import { useUserContext } from '../../UserContext';
 
 const ScreenHeight = Dimensions.get("window").height;
 const ScreenWidth = Dimensions.get("window").width;
@@ -23,6 +24,7 @@ export default function ChatRoom({ route, navigation }) {
   const [imageDescription, setImageDescription] = useState('')//to send image with description
   const [GroupMembers, setGroupMembers] = useState(); //for group chat
   const [recording, setRecording] = useState(null); // for audio recording
+  const {newMessages, setNewMessages} = useUserContext();
 
   useLayoutEffect(() => {
     const tempMessages = query(collection(db, route.params.name), orderBy('createdAt', 'desc'));
@@ -64,8 +66,9 @@ export default function ChatRoom({ route, navigation }) {
         const res = await getDocs(docRef);
         res.forEach((doc) => {
           updateDoc(doc.ref, { unread: false, unreadCount: 0 });
-        });
+        });        
       }
+      setNewMessages(newMessages-route.params.unreadCount)
       return () => {
         setDocAsRead();
       }
@@ -254,18 +257,17 @@ export default function ChatRoom({ route, navigation }) {
             const res = getDocs(docRef);
             console.log("res", res)
             res.then((querySnapshot) => {
-              if (!querySnapshot.empty) {
+              if(!querySnapshot.empty){
 
-                querySnapshot.forEach((doc) => {
-                  updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: text || "image", lastMessageTime: createdAt });
-                  console.log("updated")
-                })
-              }
+              querySnapshot.forEach((doc) => {
+                updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: text || "image", lastMessageTime: createdAt });
+                console.log("updated")
+              })}
               else {
-                addDoc(collection(db, user), { Name: route.params.name, UserName: "", userEmail: "", image: auth.currentUser.photoURL, unread: true, unreadCount: 1, lastMessage: text, lastMessageTime: createdAt, type: "group" });
+                addDoc(collection(db, user), { Name: route.params.name,UserName: "",userEmail: "",image: auth.currentUser.photoURL, unread: true, unreadCount: 1, lastMessage: text, lastMessageTime: createdAt, type: "group" });
                 console.log("added")
               }
-              ;
+                ;
             });
           }
         }
@@ -294,8 +296,8 @@ export default function ChatRoom({ route, navigation }) {
         updateDoc(doc.ref, { lastMessage: text, lastMessageTime: createdAt });
       });
     });
-    if (GroupMembers) {
-      console.log("GroupMembers", GroupMembers)
+   if (GroupMembers) {
+    console.log("GroupMembers", GroupMembers)
       GroupMembers.forEach(arr => {
         arr.forEach(user => {
           if (user !== auth.currentUser.email) {
@@ -305,22 +307,22 @@ export default function ChatRoom({ route, navigation }) {
             console.log("res", res)
             res.then((querySnapshot) => {
               // if user has no documentation in db of chat
-              if (!querySnapshot.empty) {
-                querySnapshot.forEach((doc) => {
-                  updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: text || "image", lastMessageTime: createdAt });
-                  console.log("updated")
-                })
-              }
-              // if user has documentation in db of chat
-              else {
-                addDoc(collection(db, user), { Name: route.params.name, UserName: "", userEmail: "", image: auth.currentUser.photoURL, unread: true, unreadCount: 1, lastMessage: text, lastMessageTime: createdAt, type: "group" });
-                console.log("added")
-              }
+              if(!querySnapshot.empty){
+              querySnapshot.forEach((doc) => {
+                updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: text || "image", lastMessageTime: createdAt });
+                console.log("updated")
+              })
+            }
+            // if user has documentation in db of chat
+            else {
+              addDoc(collection(db, user), { Name: route.params.name,UserName: "",userEmail: "",image: auth.currentUser.photoURL, unread: true, unreadCount: 1, lastMessage: text, lastMessageTime: createdAt, type: "group" });
+              console.log("added")
+            }
             });
           }
-
+         
         }
-
+        
         )
       });
     }
@@ -341,10 +343,10 @@ export default function ChatRoom({ route, navigation }) {
 
 
   return (
-    <View style={{flex:1,marginBottom:15}}>
+    <>
       <GiftedChat
         wrapInSafeArea={false}
-        bottomOffset={Platform.OS === "ios" ? 15 : 0}
+        //bottomOffset={Platform.OS === 'ios' ? 50 : 0} this in case canceling tab bar wont work
         messages={messages}
         showAvatarForEveryMessage={true}
         onSend={messages => onSend(messages, GroupMembers)}
@@ -414,9 +416,9 @@ export default function ChatRoom({ route, navigation }) {
           return (<>
             <Actions {...props}
               containerStyle={{
-                width: 34,
+                width: 34,               
                 alignItems: 'center',
-                justifyContent: 'center',
+                justifyContent: 'center',               
               }}
               icon={() => (
                 <Ionicons name="camera" size={28} color="#548DFF" />
@@ -432,6 +434,22 @@ export default function ChatRoom({ route, navigation }) {
               }}
               optionTintColor="#222B45"
             />
+            {/* <Actions {...props}
+              containerStyle={{
+                width: 34,
+                height: 44,
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginLeft: 4,
+                marginRight: 4,
+                marginBottom: 0,
+              }}
+              icon={() => (
+                <FontAwesome name="microphone" size={28} color="#548DFF" />
+              )}
+              onPressActionButton={() => { console.log("audio") }}
+            /> */}
+
           </>
           )
         }
@@ -440,7 +458,6 @@ export default function ChatRoom({ route, navigation }) {
           return (
             <InputToolbar {...props}
               containerStyle={{
-                paddingHorizontal: 5,
               }}
               primaryStyle={{ alignItems: 'center', justifyContent: 'center' }}  //for the text input
             />
@@ -479,6 +496,33 @@ export default function ChatRoom({ route, navigation }) {
             />
           );
         }}
+        // loadEarlier={true}
+        // renderLoadEarlier={(props) => {
+        //   return (
+        //     <LoadEarlier {...props}
+        //       wrapperStyle={{
+        //         alignItems: 'center',
+        //         justifyContent: 'center',
+        //         height: 44,
+        //         width: ScreenWidth,
+        //       }}
+        //       textStyle={{
+        //         fontFamily: "Urbanist-Regular",
+        //         fontSize: 14,
+        //         color: "#000",
+        //       }}
+        //       label="Load Earlier Messages"
+        //       activityIndicatorColor="#548DFF"
+        //       activityIndicatorStyle={{
+        //         marginTop: 5,
+        //         marginBottom: 5,
+
+        //       }}
+        //       text="Load Earlier Messages"
+        //       />
+        //   )
+        // }
+        // }
       />
       <Modal visible={picPreviewModal} animationType='slide' onRequestClose={() => setPicPreviewModal(false)} >
         <View style={styles.imagePreview}>
@@ -498,7 +542,7 @@ export default function ChatRoom({ route, navigation }) {
           </View>
         </View>
       </Modal>
-    </View>
+    </>
   )
 }
 

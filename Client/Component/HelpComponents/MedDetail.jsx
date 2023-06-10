@@ -1,4 +1,4 @@
-import { View, Text, Dimensions, TouchableOpacity, Image, Alert, StyleSheet, TextInput, Linking } from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, Image, Alert, StyleSheet, TextInput, Modal } from 'react-native';
 import { useState, useEffect } from 'react';
 import { useUserContext } from '../../UserContext';
 import { useIsFocused } from '@react-navigation/native';
@@ -35,7 +35,8 @@ export default function MedDetail({ navigation, route }) {
    const [editValue, setEditValue] = useState(0);
    const { refreshPublicTask } = route.params;
    const timeInDay = route.params.timeInDay;
-   const dateString = task.drug.toDate.split('T')[0];
+   const taskDate = task.drug.toDate;
+   const dateString = taskDate.split('T')[0];
 
    useEffect(() => {
       if (isFocused) {
@@ -165,30 +166,14 @@ export default function MedDetail({ navigation, route }) {
          drugId: task.drug.drugId,
          listId: task.listId,
          patientId: task.patientId,
+         toDate: taskDate,
+         dosage: task.drug.dosage,
+         qtyInBox: task.drug.qtyInBox,
+         frequency: task.frequency,
       }
-      if (sameChecked) {
-         newDrugForPatient.dosage = task.drug.dosage
-         newDrugForPatient.dosageUnit = task.drug.dosageUnit
-         newDrugForPatient.frequency = task.drug.frequency
-         newDrugForPatient.frequencyUnit = task.drug.frequencyUnit
-         newDrugForPatient.minQuantity = task.drug.minQuantity
-         newDrugForPatient.maxQuantity = task.drug.maxQuantity
-         newDrugForPatient.instruction = task.drug.instruction
-      }
-      else {
-         if (isNaN(newDosege) || newDosege <= 0) {
-            Alert.alert("Invalid input", "Please enter a number for the new dosage");
-         }
-         else {
-            newDrugForPatient.dosage = newDosege
-            newDrugForPatient.dosageUnit = newDosegeUnit
-            newDrugForPatient.frequency = newFrequency
-            newDrugForPatient.frequencyUnit = newFrequencyUnit
-            newDrugForPatient.minQuantity = newMinQuantity
-            newDrugForPatient.maxQuantity = newMaxQuantity
-            newDrugForPatient.instruction = newInstruction
-         }
-      }
+
+      
+
       UpdateDrugForPatientDTO(newDrugForPatient)
       toggleOverlayEdit()
    }
@@ -395,38 +380,13 @@ export default function MedDetail({ navigation, route }) {
          </Overlay>
 
          {/* Edit Med */}
-         <Overlay isVisible={visibleEditMed} onBackdropPress={toggleOverlayEditMed} overlayStyle={{ width: 300, height: 300, borderRadius: 20 }}>
+         <Modal visible={visibleEditMed} onRequestClose={toggleOverlayEditMed} style={{ width: 300, height: 300, borderRadius: 20 }} animationType="slide">
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                <View style={{ flex: 0.7, justifyContent: 'center', alignItems: 'center' }}>
                   <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 20, marginVertical: 10, textAlign: 'center' }}>Edit {task.drug.drugNameEn}</Text>
                </View>
                <View>
-                  <View>
-                     <View style={styles.sameDosContainer}>
-                        <TouchableOpacity style={styles.dosBtn} onPress={() => setDifferentEdit(true)}>
-                           <Feather name={!differentEdit ? radioIcon[0] : radioIcon[1]} size={25} color='#7DA9FF' style={{ marginRight: 10 }} />
-                           <Text style={styles.extraTxt}>Same qty?</Text>
-                        </TouchableOpacity>
-                     </View>
-                     <View style={styles.diffDosContainer}>
-                        <TouchableOpacity style={styles.dosBtn} onPress={() => setDifferentEdit(false)}>
-                           <Feather name={differentEdit ? radioIcon[0] : radioIcon[1]} size={25} color='#7DA9FF' />
-                           <Text style={[styles.extraTxt, { marginHorizontal: 10 }]}>Different qty</Text>
-                        </TouchableOpacity>
-                        {!differentEdit && (
-                           <>
-                              <TextInput
-                                 style={{ width: SCREEN_WIDTH * 0.2, borderBottomColor: '#7DA9FF', borderBottomWidth: 1.5, textAlign: 'center', fontFamily: 'Urbanist-Regular', marginLeft: 20 }}
-                                 onChangeText={text => setEditValue(text)}
-                                 value={editValue}
-                                 placeholder='type here...'
-                                 keyboardType='numeric'
-                                 returnKeyType='done'
-                              />
-                           </>
-                        )}
-                     </View>
-                  </View>
+                  
                </View>
                <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: SCREEN_WIDTH * 0.70, marginVertical: 10 }}>
                   <TouchableOpacity style={styles.cancelBtn} onPress={toggleOverlayEditMed}>
@@ -437,8 +397,7 @@ export default function MedDetail({ navigation, route }) {
                   </TouchableOpacity>
                </View>
             </View>
-         </Overlay>
-
+         </Modal>
       </View >
    )
 }

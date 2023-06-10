@@ -7,6 +7,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { useUserContext } from '../UserContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { StackActions } from '@react-navigation/native';
 
 import LogIn from './SignUpComponents/LogIn';
 import SettingScreen from './SettingScreen';
@@ -25,9 +26,9 @@ const Tab = createBottomTabNavigator();
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const SCREEN_WIDTH = Dimensions.get('screen').width;
 
-function CustomHeader({ navigation }) {
+function CustomHeader() {
     const [isModalVisible, setIsModalVisible] = useState(false);
-    const { userContext, appEmail } = useUserContext();
+    const { userContext, appEmail, logOutFireBase } = useUserContext();
     const { userUri, FirstName } = userContext;
 
     const toggleModal = () => {
@@ -162,10 +163,12 @@ function CustomHeader({ navigation }) {
 
                                     <TouchableOpacity onPress={
                                         () => {
+                                            toggleModal()
                                             AsyncStorage.removeItem("user");
                                             AsyncStorage.removeItem("userData");
                                             navigation.navigate('LogIn')
-                                            toggleModal()
+                                            navigation.dispatch(StackActions.replace('LogIn'));
+                                            logOutFireBase()
                                         }
                                     }>
                                         <View style={styles.menuItem}>
@@ -257,6 +260,12 @@ function AppBarDown() {
                     }
                 },
                 headerShown: false,
+                tabBarBadge: ((route) => {
+                    if (route.name === 'Chats' && newMessages > 0) {
+                        return newMessages;
+                    }
+                }
+                )(route),
             })}
             initialRouteName="Home"
         >

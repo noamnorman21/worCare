@@ -260,7 +260,7 @@ export function UserProvider({ children }) {
                 console.log('Error:', error.message);
             }
             );
-    }    
+    }
 
     function updateUserContext(userContext) {
         console.log("updateUser", userContext);
@@ -730,7 +730,8 @@ export function UserProvider({ children }) {
         deleteContact, addNewContact, saveContact, updateActualTask, updateRememberUserContext, logInContext,
         fetchUserContacts, logOutContext, updateUserContext, updateUserContacts, updatePendings,
         updateUserProfile, updateuserNotifications, appEmail, getAllPrivateTasks, getAllPublicTasks,
-        allPublicTasks, allPrivateTasks, UpdateDrugForPatientDTO, holidays, GetAllDrugs, allDrugs, addPrivateTaskContext
+        allPublicTasks, allPrivateTasks, UpdateDrugForPatientDTO, holidays, GetAllDrugs, allDrugs, addPrivateTaskContext,
+        newMessages, setNewMessages, logOutFireBase
     };
 
     return (
