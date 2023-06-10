@@ -45,6 +45,7 @@
     "expo-sms": "~11.0.0",
     "expo-splash-screen": "~0.17.5",
     "expo-status-bar": "~1.4.2",
+    "expo-web-browser": "~12.0.0",
     "firebase": "^9.17.1",
     "moment": "^2.29.4",
     "react": "18.1.0",
@@ -54,6 +55,7 @@
     "react-native-countries": "^1.0.3",
     "react-native-date-picker": "^4.2.10",
     "react-native-datepicker": "^1.7.2",
+    "react-native-dotenv": "^3.4.8",
     "react-native-dropdown-picker": "^5.4.4",
     "react-native-dropdown-select-list": "^2.0.4",
     "react-native-element-dropdown": "^2.6.0",
@@ -77,8 +79,7 @@
     "react-native-webview": "11.23.1",
     "react-navigation": "^4.4.4",
     "rn-country-picker": "^1.0.1",
-    "rn-select-date-range": "^5.0.0",
-    "expo-web-browser": "~12.0.0"
+    "rn-select-date-range": "^5.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"
