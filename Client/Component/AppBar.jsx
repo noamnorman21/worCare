@@ -27,7 +27,7 @@ const SCREEN_WIDTH = Dimensions.get('screen').width;
 
 function CustomHeader() {
     const [isModalVisible, setIsModalVisible] = useState(false);
-    const { userContext } = useUserContext();
+    const { userContext,logOutFireBase } = useUserContext();
     const { userUri, FirstName } = userContext;
 
     const toggleModal = () => {
@@ -115,7 +115,7 @@ function CustomHeader() {
                                     </TouchableOpacity>
                                     <View style={styles.line} />
 
-                                    <TouchableOpacity onPress={() => {toggleModal();navigation.dispatch(StackActions.replace('LogIn'))}}>
+                                    <TouchableOpacity onPress={() => {toggleModal();navigation.dispatch(StackActions.replace('LogIn'));logOutFireBase()}}>
                                         <View style={styles.menuItem}>
                                             <Feather name="log-out" size={30} color="#fff1e6" />
                                             <Text style={styles.menuItemText}>Log out</Text>
@@ -193,10 +193,6 @@ function AppBarDown() {
                     } else if (route.name === 'Finance') {
                         return <Octicons name="credit-card" size={size} color={color} />;
                     } else if (route.name === 'Chats') {
-                        // if(newMessages>0){
-                        //     console.log("newMessages",newMessages)
-                        //   return <Ionicons name="chatbubble-ellipses-outline" size={size} color={"red"} />
-                        // }
                         return <Ionicons name="chatbubble-ellipses-outline" size={size} color={color} />;
                     } else if (route.name === 'Tasks') {
                         return <Octicons name="checklist" size={size} color={color} />;
@@ -205,6 +201,12 @@ function AppBarDown() {
                     }
                 },
                 headerShown: false,
+                tabBarBadge: ((route) => {
+                    if (route.name === 'Chats' && newMessages > 0) {
+                        return newMessages;
+                    }
+                }
+                )(route),
             })}
             initialRouteName="Home"
         >

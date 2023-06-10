@@ -757,7 +757,7 @@ export function UserProvider({ children }) {
         fetchUserContacts, logOutContext, updateUserContext, updateUserContacts, updatePendings,
         updateUserProfile, updateuserNotifications, appEmail, getAllPrivateTasks, getAllPublicTasks,
         allPublicTasks, allPrivateTasks, UpdateDrugForPatientDTO, holidays, GetAllDrugs, allDrugs, addPrivateTaskContext,
-        newMessages, setNewMessages
+        newMessages, setNewMessages,logOutFireBase
     };
 
     return (

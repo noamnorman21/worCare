@@ -41,7 +41,7 @@ export default function Chats({ navigation }) {
 
 function MainRoom({ navigation }) {
   const [chatsToDisplay, setchatsToDisplay] = useState([])
-  const { userContext,setNewMessages } = useUserContext();
+  const { userContext, setNewMessages } = useUserContext();
   const [users, setUsers] = useState([])
   const [userChats, setUserChats] = useState([])
   const [usersToDisplay, setUsersToDisplay] = useState([])
@@ -90,14 +90,20 @@ function MainRoom({ navigation }) {
   }, [auth.currentUser.email])
 
   useEffect(() => {
-    //relevant- from user context
+    //relevant- from user context   
     if (userChats) {
+      setNewMessages(0);
       const renderNames = () => {
-        setchatsToDisplay(userChats.orderBy('lastMessageTime', 'desc'))
         setchatsToDisplay(userChats.map((name, index) => (
           <ConvoCard key={index} name={name} userEmails={name.userEmails} />
         )))
       }
+      let x=0;
+      userChats.map((name)=>{
+        x+=name.unreadCount;
+      })
+      console.log("new messages: ",x)
+      setNewMessages(x);
       renderNames();
     }
     else {
@@ -199,10 +205,9 @@ const ConvoCard = (props) => {
   const [lastMessageDate, setLastMessageDate] = useState('')
   const today = moment().format('MMM DD YYYY')
   const yasterday = moment().subtract(1, 'days').format('MMM DD YYYY')
-  const { newMessages,setNewMessages }= useUserContext();
+  const { newMessages, setNewMessages }= useUserContext();
 
   useEffect(() => {
-    console.log("props.name.unreadCount",props.name.unreadCount)
     const temp = props.name.lastMessageTime.toString().split(' ')
     let date=new moment(props.name.lastMessageTime).format('MMM DD YYYY')
     const time= temp[4].split(':').slice(0, 2).join(':')
@@ -214,7 +219,7 @@ const ConvoCard = (props) => {
     else {
       setLastMessageText(props.name.lastMessage)
     }
-  }, [props.name]);
+  }, []);
 
   const navigateToChatRoom = async (user) => {
     navigation.navigate('ChatRoom', { name: user.Name, UserName: user.UserName, userEmail: user.userEmail, type: props.name.type, unreadCount: props.name.unreadCount })
