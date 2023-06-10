@@ -5,11 +5,13 @@ import { useNavigation } from '@react-navigation/native';
 import { auth, db } from './config/firebase';
 import { signInWithEmailAndPassword, signOut, updateProfile } from 'firebase/auth';
 import moment from 'moment';
+import { query, updateDoc,collection,getDocs,where } from 'firebase/firestore';
+
 
 // ---------------- All Server Urls ---------------- 
 
 // General
-let updateProfileUser = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Settings/UpdateUserProfile'
+let updateProfileUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Settings/UpdateUserProfile'
 let getPairedProfile = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUser/'
 
 // Log In
@@ -33,7 +35,7 @@ let insertCaresForPatient = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Foreig
 let getContacts = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/GetContacts';
 let newContact = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/NewContact';
 let updateContact = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/UpdateContact/';//+Contact.contactId
-let deleteContact = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/DeleteContact';
+let deleteContactUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/DeleteContact';
 
 // Payments
 let getHistory = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/GetHistory/';//+userId
@@ -92,6 +94,9 @@ export function UserProvider({ children }) {
     const [userChats, setUserChats] = useState(null)
     const [CountryName_En, setCountryName_En] = useState(null)
     const [holidays, setHolidays] = useState([]);
+
+    //new for chat logo
+    const [newMessages, setNewMessages] = useState(0);
 
     async function logInContext(userData) {
         setUserType(userData.userType);
@@ -212,9 +217,16 @@ export function UserProvider({ children }) {
     function logOutContext() {
         console.log("logOutContext")
         setUserContext(null)
+        setNewMessages(0)
         logOutFireBase()
     }
 
+    useEffect(() => {
+        console.log("newMessagessss", newMessages)
+    }, [newMessages])
+
+
+//updated for furebase upadte after settings change
     function updateUserProfile(userData) {
         const userToUpdate = {
             userId: userData.userId,
@@ -230,7 +242,7 @@ export function UserProvider({ children }) {
             patientId: userData.patientId,
         }
 
-        fetch(updateProfileUser, {
+        fetch(updateProfileUrl, {
             method: 'PUT',
             headers: new Headers({
                 'Content-Type': 'application/json; charset=UTF-8',
@@ -242,11 +254,22 @@ export function UserProvider({ children }) {
                 if (res.ok) {
                     return res.json()
                         .then(
-                            (result) => {
+                            async (result) => {
                                 Alert.alert('User Updated', 'Your User has been Updated successfully');
                                 updateUserContext(userToUpdate)
                                 const jsonValue = JSON.stringify(userToUpdate)
                                 AsyncStorage.setItem('userData', jsonValue);
+                                updateProfile(auth.currentUser,{
+                                    displayName: userToUpdate.FirstName + " " + userToUpdate.LastName,
+                                    photoURL: userToUpdate.userUri,
+                                })
+                                //update user in firebase Allusers collection for future conversations
+                                const q= query(collection(db, "AllUsers"), where("id", "==", userToUpdate.Email));
+                                const querySnapshot = await getDocs(q);
+                                querySnapshot.forEach((doc) => {
+                                    updateDoc(doc.ref, {id: userToUpdate.Email, name: userToUpdate.FirstName + " " + userToUpdate.LastName, avatar: userToUpdate.userUri});
+                                    console.log("Document successfully updated!");
+                                });
                             }
                         )
                 }
@@ -261,6 +284,8 @@ export function UserProvider({ children }) {
             }
             );
     }
+
+    
 
     function updateUserContext(userContext) {
         console.log("updateUser", userContext);
@@ -378,7 +403,7 @@ export function UserProvider({ children }) {
                     // If the user confirmed, then we dispatch the action we blocked earlier
                     // This will continue the action that had triggered the removal of the screen
                     onPress: () => {
-                        fetch(deleteContact, {
+                        fetch(deleteContactUrl, {
                             method: 'DELETE',
                             body: JSON.stringify(Contact),
                             headers: new Headers({
@@ -519,6 +544,7 @@ export function UserProvider({ children }) {
             })
             .then(data => {
                 if (data != null) {
+                    //exmaple of data object: {drugId:1, drugName:"פרסקוטיקס", drugUrl:"https://www.drugs.com/images/pills/augmentin.jpg", modifyDate:"2021-05-05T00:00:00",Type:"pills"} 
                     setAllDrugs(data);
                 }
             })
@@ -731,7 +757,7 @@ export function UserProvider({ children }) {
         fetchUserContacts, logOutContext, updateUserContext, updateUserContacts, updatePendings,
         updateUserProfile, updateuserNotifications, appEmail, getAllPrivateTasks, getAllPublicTasks,
         allPublicTasks, allPrivateTasks, UpdateDrugForPatientDTO, holidays, GetAllDrugs, allDrugs, addPrivateTaskContext,
-        newMessages, setNewMessages, logOutFireBase
+        newMessages, setNewMessages,logOutFireBase
     };
 
     return (

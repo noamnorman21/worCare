@@ -240,6 +240,8 @@ function CustomHeader() {
 }
 
 function AppBarDown() {
+    const { newMessages } = useUserContext();
+
     return (
         <Tab.Navigator
             screenOptions={({ route }) => ({
