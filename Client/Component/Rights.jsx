@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Dimensions, TextInput, ScrollView } from 'react-native';
-import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard ,ActivityIndicator} from 'react-native';
+import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, ActivityIndicator } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { Overlay } from '@rneui/themed';
@@ -29,7 +29,7 @@ export default function Rights() {
   ]);
   const [question, setQuestion] = useState('');
   const [gpt3Answer, setGpt3Answer] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const toggleOverlay = () => {
     setVisible(!visible);
@@ -42,19 +42,19 @@ export default function Rights() {
   // Function to send the question to GPT-3 API and get an answer
   const startGptAnswer = async () => {
     if (question === '' || value === null) {
-      return;
+     
     }
-    setIsLoading(true);
     toggleOverlay();
+    setIsLoading(true);
+    return; 
     // Adjust the prompt to include the selected category and the question
     const prompt = `Category: ${value}\nQuestion: ${question}\n\nContext: In Israel, foreign workers in the field of caregiver for the elderly have specific rights and regulations. It is important to provide accurate and reliable information. Please provide an answer that is specific to Israel's laws and guidelines.\n\nAnswer:`;
     // Make the API call and handle the response
-    const apiKey = apiKeyGpt;
     const apiResponse = await fetch('https://api.openai.com/v1/engines/text-davinci-003/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`,
+        'Authorization': `Bearer ${apiKeyGpt}`,
       },
       body: JSON.stringify({
         'prompt': prompt,
@@ -148,16 +148,18 @@ export default function Rights() {
                 <Text style={[styles.smHeader, { textAlign: 'center', fontSize: 22 }]}>Answer</Text>
               </View>
               <View>
-
-                <ScrollView alwaysBounceVertical={false} style={styles.answerScrollView}>
-                  {isLoading ? (
-                    <ActivityIndicator size="large" color="red" />
+                {
+                  isLoading ? (
+                    <View style={{ height:SCREEN_HEIGHT * 0.3, justifyContent: 'center', alignItems: 'center' }}>
+                    <ActivityIndicator size="large" color="#548DFF" style={styles.loadIcon} />
+                  </View>
                   ) : (
-                    <Text style={{ fontFamily: 'Urbanist-Light', fontSize: 16, marginTop: 15 }}>{gpt3Answer}</Text>
-                  )}
-                </ScrollView>
+                    <ScrollView alwaysBounceVertical={false} style={styles.answerScrollView}>
+                        <Text style={{ fontFamily: 'Urbanist-Light', fontSize: 16, marginTop: 15 }}>{gpt3Answer}</Text>
+                    </ScrollView>
+                  )
+                }
               </View>
-
               <View style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'center' }}>
                 <TouchableOpacity style={[styles.btnAsk, { width: '100%' }]} onPress={toggleOverlay}>
                   <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 16, color: '#fff' }}>Close</Text>
@@ -189,6 +191,12 @@ const styles = StyleSheet.create({
     right: 10,
 
   },
+  loadIcon: {
+    //scale transform: [{ scaleX: 1.5 }, 
+    transform: [{ scale: 2 }],
+    alignItems: 'center',
+  },  
+
   answerScrollView: {
     maxHeight: SCREEN_HEIGHT * 0.3,  // Adjust this value based on your requirements.
     width: '100%',
