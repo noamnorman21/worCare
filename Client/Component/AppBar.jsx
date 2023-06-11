@@ -163,11 +163,10 @@ function CustomHeader() {
                                     <View style={styles.line} />
 
                                     <TouchableOpacity onPress={
-                                        () => {
+                                        async () => {
                                             toggleModal()
                                             AsyncStorage.removeItem("user");
                                             AsyncStorage.removeItem("userData");
-                                            navigation.navigate('LogIn')
                                             navigation.dispatch(StackActions.replace('LogIn'));
                                             logOutFireBase()
                                         }
@@ -347,8 +346,9 @@ const styles = StyleSheet.create({
     menuItem: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginVertical: 15,
+        marginVertical: 10,
         paddingLeft: 20,
+        height: 30,
     },
     menuItemText: {
         fontFamily: 'Urbanist-Medium',
