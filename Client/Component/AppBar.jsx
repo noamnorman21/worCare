@@ -13,6 +13,7 @@ import LogIn from './SignUpComponents/LogIn';
 import SettingScreen from './SettingScreen';
 import Contacts from './Contacts';
 import PushNotifications from './PushNotifications';
+import PatientProfile from './ProfileComponents/PatientProfile';
 
 import Home from './Home';
 import Finance from './Finance';
@@ -87,7 +88,7 @@ function CustomHeader() {
 
                                     <TouchableOpacity onPress={
                                         () => {
-                                            navigation.navigate('Profile')
+                                            navigation.navigate('PatientProfile')
                                             toggleModal()
                                         }
                                     }>
@@ -204,6 +205,16 @@ function CustomHeader() {
                         />
                     ),
                     unmountOnBlur: true,
+                })}
+            />
+            <Stack.Screen
+                name="PatientProfile"
+                component={PatientProfile}
+                options={() => ({
+                    headerTitle: 'Patient Profile',
+                    presentation: 'modal',
+                    cardOverlayEnabled: true,
+                    headerShown: true,
                 })}
             />
             <Stack.Screen
