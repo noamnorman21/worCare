@@ -257,7 +257,7 @@ export default function Privacy({ navigation, route }) {
             return res.json()
               .then(
                 async (result) => {
-                  await updatePassword(auth.currentUser, password1);
+                   await updatePassword(auth.currentUser, password1);
                   console.log("fetch POST= ", result);
                   Alert.alert('Password Updated', 'Your Password has been changed successfully');
                   if (Notifications != userNotifications) {
