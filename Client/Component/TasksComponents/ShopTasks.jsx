@@ -145,7 +145,6 @@ export default function ShopTasks(props) {
           }
         })
       }
-
       return task
     }))
   }
@@ -210,6 +209,7 @@ export default function ShopTasks(props) {
         }
       )
   }
+  
   const handleExpandedSubTask = (taskToChangeOpen) => {
     setShopTasks(shopTasks.map((task) => {
       if (task.taskId === taskToChangeOpen.taskId && task.actualId === taskToChangeOpen.actualId) {

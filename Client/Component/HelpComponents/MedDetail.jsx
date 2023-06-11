@@ -1,10 +1,11 @@
-import { View, Text, Dimensions, TouchableOpacity, Image, Alert, StyleSheet, TextInput } from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, Image, Alert, StyleSheet, TextInput, Modal } from 'react-native';
 import { useState, useEffect } from 'react';
 import { useUserContext } from '../../UserContext';
 import { useIsFocused } from '@react-navigation/native';
 import { Feather, FontAwesome5, Ionicons } from '@expo/vector-icons';
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from "react-native-popup-menu";
 import { Overlay } from '@rneui/themed';
+import * as WebBrowser from 'expo-web-browser';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function MedDetail({ navigation, route }) {
@@ -20,6 +21,7 @@ export default function MedDetail({ navigation, route }) {
    const [visiblePause, setVisiblePause] = useState(false);
    const [visibleTakeExtraValue, setVisibleTakeExtraValue] = useState(false);
    const [visibleTakeExtra, setVisibleTakeExtra] = useState(false);
+   const [visibleEditMed, setVisibleEditMed] = useState(false);
    const [sameChecked, setSameChecked] = useState(false);
    const [differentDosage, setDifferentDosage] = useState(true);
    const [takeExtraValue, setTakeExtraValue] = useState(0);
@@ -27,12 +29,14 @@ export default function MedDetail({ navigation, route }) {
    const [visibleLogRefill, setVisibleLogRefill] = useState(false);
    const [differentRefill, setDifferentRefill] = useState(true);
    const [refillValue, setRefillValue] = useState(0);
-
    const { UpdateDrugForPatientDTO, getAllPublicTasks } = useUserContext();
    const [userData, setUserData] = useState(useUserContext().userContext);
+   const [differentEdit, setDifferentEdit] = useState(true);
+   const [editValue, setEditValue] = useState(0);
    const { refreshPublicTask } = route.params;
    const timeInDay = route.params.timeInDay;
-   const dateString = task.drug.toDate.split('T')[0];
+   const taskDate = task.drug.toDate;
+   const dateString = taskDate.split('T')[0];
 
    useEffect(() => {
       if (isFocused) {
@@ -43,12 +47,21 @@ export default function MedDetail({ navigation, route }) {
       }
    }, [isFocused])
 
+   const openUrl = async (url) => {
+      await WebBrowser.openBrowserAsync(url);
+   }
+
    const openModal = (value) => {
       if (value == 1) {
-         console.log("show leaflet")
+         let url = task.drug.drugUrl
+         if (userData.userType == "Caregiver") {
+            url = task.drug.drugUrlEn
+         }
+         openUrl(url)
       }
       else if (value == 2) {
          console.log("add instruction")
+         toggleOverlayEditMed()
       }
       if (value == 3) {
          toggleOverlayPause()
@@ -69,22 +82,24 @@ export default function MedDetail({ navigation, route }) {
    const toggleOverlayTakeExtra = () => {
       setVisibleTakeExtra(!visibleTakeExtra);
    };
+
    const toggleOverlayRefill = () => {
       setVisibleLogRefill(!visibleLogRefill);
+   };
+
+   const toggleOverlayEditMed = () => {
+      setVisibleEditMed(!visibleEditMed)
    };
 
    const deleteMed = () => {
       console.log("Delete Medicine")
       let newDrugForPatient = {
-
          drugId: task.drug.drugId,
          listId: task.listId,
          patientId: task.patientId,
          //lastTakenDate will be now time in Israel
          toDate: new Date().toISOString().slice(0, 19).replace('T', ' '),
-
       }
-
       UpdateDrugForPatientDTO(newDrugForPatient)
       getAllPublicTasks(userData)
       toggleOverlay()
@@ -100,7 +115,6 @@ export default function MedDetail({ navigation, route }) {
       }
       toggleOverlayPause()
    }
-
 
    const takeExtraMed = () => {
       if (differentDosage) {
@@ -122,7 +136,8 @@ export default function MedDetail({ navigation, route }) {
       setVisibleTakeExtra(false)
       // getAllPublicTask(userData)
       // refreshPublicTask()
-   };
+   }
+
    const logRefill = () => {
       let addNum = 0
       if (differentRefill) {
@@ -144,7 +159,24 @@ export default function MedDetail({ navigation, route }) {
       }
       UpdateDrugForPatientDTO(newDrugForPatient)
       setVisibleLogRefill(false)
-   };
+   }
+
+   const editMed = () => {
+      let newDrugForPatient = {
+         drugId: task.drug.drugId,
+         listId: task.listId,
+         patientId: task.patientId,
+         toDate: taskDate,
+         dosage: task.drug.dosage,
+         qtyInBox: task.drug.qtyInBox,
+         frequency: task.frequency,
+      }
+
+      
+
+      UpdateDrugForPatientDTO(newDrugForPatient)
+      toggleOverlayEdit()
+   }
 
    return (
       <View style={styles.container}>
@@ -160,8 +192,8 @@ export default function MedDetail({ navigation, route }) {
                   <MenuTrigger children={<View><Feather name="more-horizontal" size={32} color="#000" /></View>} />
                   <MenuOptions customStyles={{ optionsWrapper: styles.optionsWrapperOpened }}  >
                      <MenuOption value={1} children={<View style={styles.options}><Feather name='eye' size={20} /><Text style={styles.optionsText}>Show Leaflet</Text></View>} />
-                     <MenuOption value={2} children={<View style={styles.options}><Feather name='plus-circle' size={20} /><Text style={styles.optionsText}>Edit this Med</Text></View>} />
-                     <MenuOption value={3} children={<View style={styles.options}><Feather name={isPause ? 'play-circle' : 'pause-circle'} size={20} /><Text style={styles.optionsText}>{isPause ? 'Resume this med' : 'Pause this med'}</Text></View>} />
+                     <MenuOption value={2} children={<View style={styles.options}><Feather name='edit-3' size={20} /><Text style={styles.optionsText}>Edit this Med</Text></View>} />
+                     {/* <MenuOption value={3} children={<View style={styles.options}><Feather name={isPause ? 'play-circle' : 'pause-circle'} size={20} /><Text style={styles.optionsText}>{isPause ? 'Resume this med' : 'Pause this med'}</Text></View>} /> */}
                      <MenuOption value={4} children={<View style={styles.options}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={[styles.optionsText, { color: '#FF3C3C' }]}>Delete this med</Text></View>} />
                   </MenuOptions>
                </Menu>
@@ -346,6 +378,26 @@ export default function MedDetail({ navigation, route }) {
                </View>
             </View>
          </Overlay>
+
+         {/* Edit Med */}
+         <Modal visible={visibleEditMed} onRequestClose={toggleOverlayEditMed} style={{ width: 300, height: 300, borderRadius: 20 }} animationType="slide">
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+               <View style={{ flex: 0.7, justifyContent: 'center', alignItems: 'center' }}>
+                  <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 20, marginVertical: 10, textAlign: 'center' }}>Edit {task.drug.drugNameEn}</Text>
+               </View>
+               <View>
+                  
+               </View>
+               <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: SCREEN_WIDTH * 0.70, marginVertical: 10 }}>
+                  <TouchableOpacity style={styles.cancelBtn} onPress={toggleOverlayEditMed}>
+                     <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 16, color: '#fff' }}>Cancel</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.okBtn} onPress={editMed}>
+                     <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 16, color: '#7DA9FF' }}>Okay</Text>
+                  </TouchableOpacity>
+               </View>
+            </View>
+         </Modal>
       </View >
    )
 }
@@ -546,7 +598,7 @@ const styles = StyleSheet.create({
    },
    optionsWrapperOpened: {
       position: 'absolute',
-      bottom: -100,
+      bottom: -65,
       backgroundColor: '#fff',
       borderRadius: 10,
       left: SCREEN_WIDTH * 0.07,

@@ -58,8 +58,10 @@ function AddNewMedicine(props) {
       if (medTime != '' && medTimeArr.length == 0) {
          medTimeArr.push(medTime);
       }
+      console.log(selectedDrugName);
+
       let newMedForDb = {
-         drugName: selectedDrugName.drugName,
+         drugNameEn: selectedDrugName.drugNameEn,
          drugId: selectedDrugName.drugId,
          timesInDayArr: medTimeArr,
          fromDate: medFromDate,
@@ -124,15 +126,14 @@ function AddNewMedicine(props) {
 
    const handeleDrugChange = (item) => {
       setSelectedDrugName(item);
-      // להוסיף את הסוגים שאותם ניתן לספור לא רק pills
       if (item.Type != 'Pill') {
-         setNumberPerDay(1);
-         setQuantity(1);
          setEditMode(false);
+         setCapacity(1);
+         setQuantity(1);
       }
       else {
          setEditMode(true);
-         setNumberPerDay(0);
+         setCapacity(0);
          setQuantity(0);
       }
    }
@@ -242,8 +243,8 @@ function AddNewMedicine(props) {
 
    return (
       <KeyboardAvoidingView style={[styles.container, modalTimesVisible && { backgroundColor: 'rgba(0, 0, 0, 0.75)' }]} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-         <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
-            <Modal visible={props.isVisible} presentationStyle='formSheet' animationType='slide' onRequestClose={props.onClose}>
+         <Modal visible={props.isVisible} presentationStyle='formSheet' animationType='slide' onRequestClose={props.onClose}>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
                <View style={styles.centeredView}>
                   <View style={styles.modalView}>
                      <Text style={styles.modalText}>Add new Medicine </Text>
@@ -255,8 +256,8 @@ function AddNewMedicine(props) {
                            renderLeftIcon={() => <MaterialIcons name="search" size={30} color="gray" />}
                            inputSearchStyle={styles.inputSearchStyle}
                            data={allDrugs}
-                           labelField="drugName"
-                           valueField="drugName"
+                           labelField={userData.userType == "Caregiver" ? "drugNameEn" : "drugName"}
+                           valueField={userData.userType == "Caregiver" ? "drugNameEn" : "drugName"}
                            placeholder="Medicine Name"
                            maxHeight={300}
                            fontFamily='Urbanist-Light'
@@ -269,7 +270,8 @@ function AddNewMedicine(props) {
                            onChange={(item) => handeleDrugChange(item)}
                         />
                      </View>
-                     <Text style={styles.subTitle}>More Details...</Text>
+
+                     <Text style={styles.subTitle}>More Details</Text>
                      <View style={styles.inputView}>
                         {/* FIRST ROW */}
                         <View style={styles.doubleRow}>
@@ -519,8 +521,9 @@ function AddNewMedicine(props) {
                      </View>
                   </View>
                </View>
-            </Modal >
-         </TouchableWithoutFeedback>
+
+            </TouchableWithoutFeedback>
+         </Modal >
       </KeyboardAvoidingView>
    )
 }

@@ -167,8 +167,6 @@ namespace WebApi.Controllers
                 TimeSpan dateTime = DateTime.Now.TimeOfDay; //will save in temp the current time to use in the query
                 foreach (var item in tasksArr)
                 {
-
-
                     var task = from t in db.tblActualTask
                                where t.taskId == item.taskId &&
                                t.taskDate >= DateTime.Today &&
@@ -230,7 +228,7 @@ namespace WebApi.Controllers
                         }
                     }
 
-                    if (item.type == true)// we will create drug for pation  
+                    if (item.type == true)// we will create drug for Patient 
                     {
                         var drugForArr = from t in db.tblDrugForPatient //find all relavent DrugList for this task
                                          where t.listId == item.listId
@@ -281,7 +279,7 @@ namespace WebApi.Controllers
                 {
                     //isdrug mean that is drug list and not product list
                     isDrug = true;
-                    taskName = list.drugName; //the name of the drug
+                    taskName = list.drugNameEn; //the name of the drug
                 }
                 else if (list.listName != null)
                 {
@@ -321,12 +319,6 @@ namespace WebApi.Controllers
                         drugFor.patientId = list.patientId;
                         drugFor.dosage = list.dosage;
                         drugFor.drugId = list.drugId;
-                        //var drugName = from t in db.tblDrug
-                        //               where t.drugId == drugFor.drugId
-                        //               select t;
-                        //drugFor.drugName = drugName.First().drugName;
-                        //drugFor.drugType = drugName.First().Type;
-                        //drugFor.drugUrl = drugName.First().drugUrl;
                         drugFor.qtyInBox = list.qtyInBox;
                         drugFor.minQuantity = list.qtyInBox * 0.2;//defult will be 20% 
                         drugFor.patientId = list.patientId;
@@ -511,7 +503,11 @@ namespace WebApi.Controllers
                     tblDrugForPatient tblDrugForPatient = db.tblDrugForPatient.Where(x => x.drugId == actualTask.drug.drugId && x.listId == actualTask.listId).FirstOrDefault();
                     if (tblDrugForPatient != null)
                     {
-                        tblDrugForPatient.qtyInBox -= tblDrugForPatient.dosage;
+                        // Only If type is Pills we need to update the quantity of pills
+                        if (actualTask.drug.drugType == "Pills")
+                        {
+                            tblDrugForPatient.qtyInBox -= tblDrugForPatient.dosage;
+                        }
                         tblDrugForPatient.lastTakenDate = DateTime.Now;
                         db.SaveChanges();
                     }

@@ -16,7 +16,7 @@ namespace WebApi.DTO
         public int drugId { get; set; }
         public string patientId { get; set; }
         public TimeSpan[] timesInDayArray { get; set; } //array of TimeSpan
-        public Nullable<System.DateTime> lastTakenDate { get; set; }                                    
+        public Nullable<System.DateTime> lastTakenDate { get; set; }                                     //
 
         //will come from tbldrug
         public string drugName { get; set; }
@@ -24,6 +24,6 @@ namespace WebApi.DTO
         public string drugType { get; set; }
         public string taskComment { get; set; }
         public string drugNameEn { get; set; }
-        public string drugUrlEn { get; set; }        
+        public string drugUrlEn { get; set; }
     }
 }

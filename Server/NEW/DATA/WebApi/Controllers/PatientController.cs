@@ -31,6 +31,23 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
+        [Route("GetPatientData")]
+        public IHttpActionResult GetPatientData([FromBody] PatientDTO patientDTO)
+        {
+            try
+            {
+                // Get patient data from DB and Hobbies and Limitations from DTO                
+                var patient = db.tblPatient.Where(x => x.patientId == patientDTO.patientId).FirstOrDefault();                
+                return Ok(patient);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        [HttpPost]
         [Route("InsertPatient")]
         public IHttpActionResult InsertPatient([FromBody] PatientDTO patient)
         {

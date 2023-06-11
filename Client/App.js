@@ -5,6 +5,7 @@ import SettingScreen from './Component/SettingScreen';
 import NavigateSignUp from './Component/SignUpComponents/NavigateSignUp';
 import * as Font from 'expo-font'; // Import Font from expo-font package
 import { UserProvider } from './UserContext';
+
 export default function App() {
   const [isReady, setIsReady] = useState(false); // Set state for font loading
 

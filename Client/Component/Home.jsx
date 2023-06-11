@@ -3,7 +3,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import TaskView from './HelpComponents/TaskView';
 import { useUserContext } from '../UserContext';
 import { AddBtn, NewTaskModal } from './HelpComponents/AddNewTask';
-import { Fontisto } from '@expo/vector-icons';
+import { Fontisto, FontAwesome5 } from '@expo/vector-icons';
 import { Agenda, CalendarProvider } from 'react-native-calendars';
 import moment from 'moment';
 import { useIsFocused } from '@react-navigation/native';
@@ -99,7 +99,7 @@ export default function Home() {
                       <View style={styles.itemTitle}>
                         <View style={styles.iconContainer}>
                           <View style={styles.icon}>
-                            <Fontisto name="holiday-village" size={24} color="#32D081" />
+                            <FontAwesome5 name="umbrella-beach" size={24} color="#32D081" />
                           </View>
                         </View>
                         <Text style={styles.itemTitleTxt}>

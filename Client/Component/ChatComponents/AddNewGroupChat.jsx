@@ -321,5 +321,4 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH * 0.95,
   },
   ImagePicker: { width: 100, height: 100, borderRadius: 50 },
-
 })
