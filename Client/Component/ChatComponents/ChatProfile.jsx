@@ -23,10 +23,12 @@ export default function ChatProfile({ route, navigation }) {
     if (querySnapshot.docs.length > 0 || querySnapshot2.docs.length > 0) {
       checkifConvoExistsforContact(user)
       console.log("convo exists")
-      navigation.navigate('ChatRoom', { name: auth.currentUser.displayName + "+" + user.name, UserName: user.name })
-      // const editRef= collection(db, auth.currentUser.email, where("Name", "==", auth.currentUser.displayName+"+"+user.name));
-      // const doc= await getDocs(editRef);
-      // await updateDoc(editRef, { unread: false, unreadCount: 0 });
+      if(querySnapshot.docs.length > 0){
+        navigation.navigate('ChatRoom', { name: auth.currentUser.displayName + "+" + user.name, UserName: user.name, userEmail: user.id })
+        }
+        else{
+          navigation.navigate('ChatRoom', { name: user.name + "+" + auth.currentUser.displayName, UserName: user.name, userEmail: user.id })
+        }
     } else {
       console.log("add new private chat")
       let contact = user

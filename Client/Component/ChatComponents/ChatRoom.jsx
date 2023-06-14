@@ -68,6 +68,8 @@ export default function ChatRoom({ route, navigation }) {
           updateDoc(doc.ref, { unread: false, unreadCount: 0 });
         });        
       }
+      console.log("new messages", newMessages)
+      console.log("unread count", route.params.unreadCount)
       setNewMessages(newMessages-route.params.unreadCount)
       return () => {
         setDocAsRead();
@@ -239,6 +241,7 @@ export default function ChatRoom({ route, navigation }) {
     console.log("new message added to db")
     setPicPreviewModal(false);
     //update last message and last message time in db
+    console.log("route.params.name",route.params.name)
     const docRef = query(collection(db, auth.currentUser.email), where("Name", "==", route.params.name));
     const res = getDocs(docRef);
     res.then((querySnapshot) => {
@@ -258,7 +261,6 @@ export default function ChatRoom({ route, navigation }) {
             console.log("res", res)
             res.then((querySnapshot) => {
               if(!querySnapshot.empty){
-
               querySnapshot.forEach((doc) => {
                 updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: text || "image", lastMessageTime: createdAt });
                 console.log("updated")
@@ -274,12 +276,13 @@ export default function ChatRoom({ route, navigation }) {
         )
       });
     }
-    else if (route.params.userEmail) {
+    else {
       const docRef = query(collection(db, route.params.userEmail), where("Name", "==", route.params.name));
       const res = getDocs(docRef);
       res.then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
           updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: text || "image", lastMessageTime: createdAt });
+          console.log("updated for user")
         });
       });
     }
@@ -290,6 +293,7 @@ export default function ChatRoom({ route, navigation }) {
     const { _id, createdAt, text, user } = messages[0]
     addDoc(collection(db, route.params.name), { _id, createdAt, text, user });
     const docRef = query(collection(db, auth.currentUser.email), where("Name", "==", route.params.name));
+    console.log("route.params.name",route.params.name)
     const res = getDocs(docRef);
     res.then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
@@ -307,17 +311,17 @@ export default function ChatRoom({ route, navigation }) {
             console.log("res", res)
             res.then((querySnapshot) => {
               // if user has no documentation in db of chat
-              if(!querySnapshot.empty){
-              querySnapshot.forEach((doc) => {
-                updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: text || "image", lastMessageTime: createdAt });
-                console.log("updated")
-              })
-            }
-            // if user has documentation in db of chat
-            else {
-              addDoc(collection(db, user), { Name: route.params.name,UserName: "",userEmail: "",image: auth.currentUser.photoURL, unread: true, unreadCount: 1, lastMessage: text, lastMessageTime: createdAt, type: "group" });
-              console.log("added")
-            }
+              if (!querySnapshot.empty) {
+                querySnapshot.forEach((doc) => {
+                  updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: text || "image", lastMessageTime: createdAt });
+                  console.log("updated")
+                })
+              }
+              // if user has documentation in db of chat
+              else {
+                addDoc(collection(db, user), { Name: route.params.name, UserName: "", userEmail: "", image: auth.currentUser.photoURL, unread: true, unreadCount: 1, lastMessage: text, lastMessageTime: createdAt, type: "group" });
+                console.log("added")
+              }
             });
           }
          
@@ -326,14 +330,18 @@ export default function ChatRoom({ route, navigation }) {
         )
       });
     }
-    else if (route.params.userEmail) {
+    else {
       const docRef = query(collection(db, route.params.userEmail), where("Name", "==", route.params.name));
       const res = getDocs(docRef);
       res.then((querySnapshot) => {
+        if(!querySnapshot.empty){
         querySnapshot.forEach((doc) => {
           updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: text, lastMessageTime: createdAt });
         });
-      });
+      }
+      else {
+        addDoc(collection(db, route.params.userEmail), { Name: auth.currentUser.displayName + "+" + route.params.UserName, UserName: auth.currentUser.displayName, image: auth.currentUser.photoURL, userEmail: auth.currentUser.email, unread: true, unreadCount: 1, lastMessage: text, lastMessageTime: createdAt });
+      }});
     }
   }, []);
 
