@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Dimensions, TextInput, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Dimensions, TextInput, ScrollView, Alert } from 'react-native';
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, ActivityIndicator } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -22,10 +22,15 @@ export default function Rights() {
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState([
     { label: 'General', value: 'General' },
-    { label: 'Work', value: 'Work' },
-    { label: 'Family', value: 'Family' },
+    { label: 'Salary', value: 'Salary' },
+    { label: 'Holiday', value: 'Family' },
     { label: 'Health', value: 'Health' },
-    { label: 'Other', value: 'Other' },
+    { label: 'Visa', value: 'Visa' },
+    { label: 'Social benefits', value: 'Social benefits' },
+    { label: 'Conditions', value: 'Work conditions' },
+    { label: 'Safety', value: 'Work safety' },
+    { label: 'Contract', value: 'Work contract' },
+    { label: 'Termination', value: 'Termination' },    
   ]);
   const [question, setQuestion] = useState('');
   const [gpt3Answer, setGpt3Answer] = useState('');
@@ -42,11 +47,11 @@ export default function Rights() {
   // Function to send the question to GPT-3 API and get an answer
   const startGptAnswer = async () => {
     if (question === '' || value === null) {
-     
+      Alert.alert('Please fill in all fields');
     }
     toggleOverlay();
     setIsLoading(true);
-    return; 
+    // return; 
     // Adjust the prompt to include the selected category and the question
     const prompt = `Category: ${value}\nQuestion: ${question}\n\nContext: In Israel, foreign workers in the field of caregiver for the elderly have specific rights and regulations. It is important to provide accurate and reliable information. Please provide an answer that is specific to Israel's laws and guidelines.\n\nAnswer:`;
     // Make the API call and handle the response
@@ -58,8 +63,8 @@ export default function Rights() {
       },
       body: JSON.stringify({
         'prompt': prompt,
-        'max_tokens': 400, // Set this to the number of tokens you want the completion to be
-        'temperature': 0.8,
+        'max_tokens': 450, // Set this to the number of tokens you want the completion to be
+        'temperature': 0.5,
         'top_p': 1,
       }),
     });
@@ -150,12 +155,12 @@ export default function Rights() {
               <View>
                 {
                   isLoading ? (
-                    <View style={{ height:SCREEN_HEIGHT * 0.3, justifyContent: 'center', alignItems: 'center' }}>
-                    <ActivityIndicator size="large" color="#548DFF" style={styles.loadIcon} />
-                  </View>
+                    <View style={{ height: SCREEN_HEIGHT * 0.3, justifyContent: 'center', alignItems: 'center' }}>
+                      <ActivityIndicator size="large" color="#548DFF" style={styles.loadIcon} />
+                    </View>
                   ) : (
                     <ScrollView alwaysBounceVertical={false} style={styles.answerScrollView}>
-                        <Text style={{ fontFamily: 'Urbanist-Light', fontSize: 16, marginTop: 15 }}>{gpt3Answer}</Text>
+                      <Text style={{ fontFamily: 'Urbanist-Light', fontSize: 16, marginTop: 15 }}>{gpt3Answer}</Text>
                     </ScrollView>
                   )
                 }
@@ -195,7 +200,7 @@ const styles = StyleSheet.create({
     //scale transform: [{ scaleX: 1.5 }, 
     transform: [{ scale: 2 }],
     alignItems: 'center',
-  },  
+  },
 
   answerScrollView: {
     maxHeight: SCREEN_HEIGHT * 0.3,  // Adjust this value based on your requirements.

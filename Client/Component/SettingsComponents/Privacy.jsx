@@ -255,7 +255,8 @@ export default function Privacy({ navigation, route }) {
           if (res.ok) {
             return res.json()
               .then(
-                (result) => {
+                async (result) => {
+                   await updatePassword(auth.currentUser, password1);
                   console.log("fetch POST= ", result);
                   Alert.alert('Password Updated', 'Your Password has been changed successfully');
                   if (Notifications != userNotifications) {
@@ -290,6 +291,7 @@ export default function Privacy({ navigation, route }) {
       navigation.goBack();
     }
   }
+
 
   //save notifications in DB- for now only in userContext
   const updateNotifications = () => {

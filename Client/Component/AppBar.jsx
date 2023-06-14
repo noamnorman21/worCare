@@ -167,7 +167,6 @@ function CustomHeader() {
                                             toggleModal()
                                             AsyncStorage.removeItem("user");
                                             AsyncStorage.removeItem("userData");
-                                            navigation.navigate('LogIn')
                                             navigation.dispatch(StackActions.replace('LogIn'));
                                             logOutFireBase()
                                         }
