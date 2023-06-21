@@ -22,5 +22,6 @@ namespace WebApi.DTO
         public int workerId { get; set; }
         public int involvedInId { get; set; }
         public string CountryName_En { get; set; }
+        public PatientDTO patient { get; set; }
     }
 }

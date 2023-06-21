@@ -140,7 +140,9 @@ export default function LogIn({ navigation }) {
                         workerId: json.workerId,//if user is a caregiver, this field will be same as userId
                         involvedInId: json.involvedInId,//if user is a not caregiver, this field will be same as userId
                         patientId: json.patientId,
-                        calendarCode: json.calendarCode
+                        calendarCode: json.calendarCode,
+                        patientData: json.patient,
+                        patientHL: json.patient.hobbiesAndLimitationsDTO,
                     }
                     console.log(userContext);
                     const jsonValue = JSON.stringify(userContext)

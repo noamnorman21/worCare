@@ -32,13 +32,19 @@ namespace WebApi.Controllers
 
         [HttpPost]
         [Route("GetPatientData")]
-        public IHttpActionResult GetPatientData([FromBody] PatientDTO patientDTO)
+        public IHttpActionResult GetPatientData([FromBody] string patientId)
         {
             try
             {
                 // Get patient data from DB and Hobbies and Limitations from DTO                
-                var patient = db.tblPatient.Where(x => x.patientId == patientDTO.patientId).FirstOrDefault();                
-                return Ok(patient);
+                var patient = db.tblPatient.Where(x => x.patientId == patientId).FirstOrDefault();
+                // Get patient's hobbies
+                PatientDTO patientDTO = new PatientDTO();
+                patientDTO.FirstName = patient.FirstName;
+                patientDTO.DateOfBirth = patient.DateOfBirth;
+                patientDTO.patientId = patientId;
+                patientDTO.LanguageName_En = patient.tblLanguage.LanguageName_En;                
+                return Ok(patientDTO);
             }
             catch (Exception ex)
             {

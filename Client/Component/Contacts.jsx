@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Modal,ScrollView } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Modal, ScrollView } from 'react-native'
 import { useEffect, useState } from 'react'
 import React from 'react'
 import { Searchbar } from 'react-native-paper';
@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import AddNewContact from './ContactComponents/AddNewContact'
 import { useIsFocused } from '@react-navigation/native';
-import EditContact from './ContactComponents/editContact'
+import EditContact from './ContactComponents/EditContact'
 import ContactDetails from './ContactComponents/ContactDetails'
 import { useUserContext } from '../UserContext'
 import { Octicons } from '@expo/vector-icons';
@@ -39,40 +39,11 @@ function Main({ navigation }) {
   const [ContactToRender, setContactToRender] = useState([])
   const [addModalVisible, setaddModalVisible] = useState(false);
   const { userContext, setuserContacts, updateuserContacts } = useUserContext()
-  const userContacts= useUserContext().userContacts;
+  const userContacts = useUserContext().userContacts;
   const [patientId, setpatientId] = useState(userContext.patientId)
   const isFocused = useIsFocused()
 
   const onChangeSearch = query => setSearch(query);
-
-  //moved function to UserContext
-//   const fetchContacts = async () => {
-//     const user = {
-//       userId: userContext.userId,
-//       userType: userContext.userType,
-//     }
-//     // new part when server is uploaded
-//     const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Contacts/GetContacts', {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//       body: JSON.stringify(user)
-//     });
-//     const data = await response.json();
-  //   if (data.length > 0) {
-  //   let contacts = data.map((item) => {
-  //     return <ContactCard key={item.contactId} contact={item} fetchContacts={fetchContacts} />
-  //   })
-  //   setContacts(data);
-  //   setContactToRender(contacts);
-  // }
-  // else {
-  //   setContacts([])
-  //   setContactToRender([])
-  //   setaddModalVisible(true)
-  // }
-// }
 
   const fetchContacts = async () => {
     if (userContacts.length > 0) {
@@ -87,16 +58,14 @@ function Main({ navigation }) {
       setContactToRender([])
       setaddModalVisible(true)
     }
-    
-   
+
+
   }
 
   useEffect(() => {
-    //render contacts from userContext after fetching from server
     fetchContacts();
   }, [userContacts])
 
-//search function
   useEffect(() => {
     let temp = Contacts.filter((item) => {
       return item.contactName.includes(Search)
@@ -111,7 +80,7 @@ function Main({ navigation }) {
     if (isFocused) {
       fetchContacts();
     }
-  }, [])  
+  }, [])
 
   return (
     <View style={styles.container}>
@@ -129,7 +98,7 @@ function Main({ navigation }) {
       <View style={styles.addBtnView}><AddBtn onPress={() => setaddModalVisible(true)} /></View>
       {/*NewContactModal*/}
       <Modal animationType="slide" visible={addModalVisible}>
-        <AddNewContact contacts={Contacts} patientId={patientId} cancel={() => fetchContacts()} closeModal={()=> setaddModalVisible(false)} goBack={()=>navigation.goBack()}  />
+        <AddNewContact contacts={Contacts} patientId={patientId} cancel={() => fetchContacts()} closeModal={() => setaddModalVisible(false)} goBack={() => navigation.goBack()} />
       </Modal>
     </View>
   )
@@ -140,7 +109,7 @@ function ContactCard(props) {
   return (
     <TouchableOpacity style={styles.contactcard} onPress={() => navigation.navigate('ContactDetails', { contact: props.contact })} >
       <Text style={styles.name}>{props.contact.contactName}</Text>
-      <Text style={styles.number}>{props.contact.mobileNo? props.contact.mobileNo:props.contact.phoneNo}</Text>
+      <Text style={styles.number}>{props.contact.mobileNo ? props.contact.mobileNo : props.contact.phoneNo}</Text>
     </TouchableOpacity>
   )
 }

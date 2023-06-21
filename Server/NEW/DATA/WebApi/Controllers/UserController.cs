@@ -136,7 +136,45 @@ namespace WebApi.Controllers
                             newUser.calendarCode.Add(countryCode.First().calendarCode);
                     }
                 }
-
+                var patient = db.tblPatient.Where(x => x.patientId == newUser.patientId).FirstOrDefault();
+                PatientDTO patientDTO = new PatientDTO();
+                patientDTO.FirstName = patient.FirstName;
+                patientDTO.DateOfBirth = patient.DateOfBirth;
+                patientDTO.patientId = newUser.patientId;
+                patientDTO.LanguageName_En = patient.tblLanguage.LanguageName_En;
+                var hobbies = from h in db.tblHobbies
+                              where h.patientId == newUser.patientId
+                              select h;
+                var limitations = from l in db.tblLimitations
+                                  where l.patientId == newUser.patientId
+                                  select l;
+                patientDTO.hobbiesAndLimitationsDTO = new List<HobbiesAndLimitationsDTO>();
+                HobbiesAndLimitationsDTO hlDTO = new HobbiesAndLimitationsDTO();
+                foreach (var item in hobbies)
+                {
+                    hlDTO.food = item.food;
+                    hlDTO.music = item.music;
+                    hlDTO.movie = item.movie;
+                    hlDTO.books = item.books;
+                    hlDTO.drink = item.drink;
+                    hlDTO.radioChannel = item.radioChannel;
+                    hlDTO.TVShow = item.TVShow;
+                    hlDTO.specialHabits = item.specialHabits;
+                    hlDTO.afternoonNap = item.afternoonNap;
+                    hlDTO.nightSleep = item.nightSleep;
+                    hlDTO.otherH = item.other;
+                }
+                foreach (var item in limitations)
+                {
+                    hlDTO.allergies = item.allergies;
+                    hlDTO.sensitivities = item.sensitivities;
+                    hlDTO.physicalAbilities = item.physicalAbilities;
+                    hlDTO.bathRoutine = item.bathRoutine;
+                    hlDTO.sensitivityToNoise = item.sensitivityToNoise;
+                    hlDTO.otherL = item.other;
+                }
+                patientDTO.hobbiesAndLimitationsDTO.Add(hlDTO);                
+                newUser.patient = patientDTO;
                 return Ok(newUser);
             }
             catch (Exception ex)

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, SafeAreaView, StyleSheet } from 'react-native';
 import { Chip } from 'react-native-paper';
 import { useUserContext } from '../../UserContext';
@@ -6,11 +6,34 @@ import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function PatientProfile() {
     const { userContext } = useUserContext();
-    const { patientId, userLimitations } = userContext;
+    const { patientId } = userContext;
+    let getPatientData = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/GetPatientData';
+    const [patientData, setPatientData] = useState([]);
+
+    useEffect(() => {
+        fetchLimitations();
+    }, [])
+
+    async function fetchLimitations() {
+        const response = await fetch(getPatientData, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                patientId,
+            })
+        })
+        const data = await response.json();
+        if (data != null) {
+            console.log("data:", data);
+            setPatientData(data);
+        }
+    }
 
     return (
         <SafeAreaView style={styles.container}>
-            <Text style={styles.headerTxt}>Name: {patientId}</Text>
+            <Text style={styles.headerTxt}>Name: {patientData.FirstName}</Text>
             <Text style={styles.headerTxt}>Hobbies</Text>
             <View style={styles.chipsContainer}>
                 <Chip

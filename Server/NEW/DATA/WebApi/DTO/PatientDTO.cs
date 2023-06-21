@@ -14,17 +14,11 @@ namespace WebApi.DTO
         public System.DateTime DateOfBirth { get; set; }
         public int userId { get; set; }
         public string LanguageName_En { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tblCaresForPatient> tblCaresForPatient { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tblContacts> tblContacts { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tblDrugForPatient> tblDrugForPatient { get; set; }
-        public virtual tblHobbies tblHobbies { get; set; }
         public virtual tblLanguage tblLanguage { get; set; }
-        public virtual tblLimitations tblLimitations { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<HobbiesAndLimitationsDTO> hobbiesAndLimitationsDTO { get; set; }
         public virtual ICollection<tblPatientTask> tblPatientTask { get; set; }
         public virtual tblUser tblUser { get; set; }
     }

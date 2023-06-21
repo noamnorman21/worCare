@@ -6,9 +6,8 @@ const SCREEN_HEIGHT = Dimensions.get('window').height;
 import * as SMS from 'expo-sms';
 import * as Linking from 'expo-linking';
 import { auth, db } from '../../../config/firebase';
-import { collection, addDoc} from 'firebase/firestore';
-import {createUserWithEmailAndPassword, updateProfile, signInWithEmailAndPassword, signOut } from 'firebase/auth';
-
+import { collection, addDoc } from 'firebase/firestore';
+import { createUserWithEmailAndPassword, updateProfile, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 
 export default function SignUpFinish({ navigation, route }) {
     const tblPatient = route.params.tblPatient;
@@ -32,7 +31,6 @@ export default function SignUpFinish({ navigation, route }) {
     }, []);
 
     const btnSendSMS = async () => {
-
         if (isAvailable) {
             // do your SMS stuff here
             const { result } = await SMS.sendSMSAsync([contactNumber], message);
@@ -108,7 +106,7 @@ export default function SignUpFinish({ navigation, route }) {
             .then((json) => {
                 createUserWithEmailAndPassword(auth, route.params.tblUser.Email, route.params.tblUser.Password)
                     .then(() => {
-                       signInWithEmailAndPassword(auth,route.params.tblUser.Email, route.params.tblUser.Password).then((userCredential) => {
+                        signInWithEmailAndPassword(auth, route.params.tblUser.Email, route.params.tblUser.Password).then((userCredential) => {
                             updateProfile(auth.currentUser, {
                                 displayName: route.params.tblUser.FirstName + ' ' + route.params.tblUser.LastName,
                                 photoURL: route.params.tblUser.userUri
@@ -119,8 +117,8 @@ export default function SignUpFinish({ navigation, route }) {
                                     name: auth.currentUser.displayName, //the name of the user is the first name and the last name
                                     avatar: auth.currentUser.photoURL
                                 }
-                                await addDoc(collection(db, "AllUsers"), {id: userToUpdate.id, name: userToUpdate.name, avatar: userToUpdate.avatar }).then(() => {
-                                console.log("user added to all users");
+                                await addDoc(collection(db, "AllUsers"), { id: userToUpdate.id, name: userToUpdate.name, avatar: userToUpdate.avatar }).then(() => {
+                                    console.log("user added to all users");
                                 }).catch((error) => {
                                 });
                             }).then(() => {
@@ -129,9 +127,9 @@ export default function SignUpFinish({ navigation, route }) {
                                 }).catch((error) => {
                                 });
                             })
-                            .catch((error) => {
-                                console.log(error);
-                            });
+                                .catch((error) => {
+                                    console.log(error);
+                                });
                             console.log("user created");
                         }).catch((error) => {
                             console.log(error);
@@ -282,7 +280,7 @@ export default function SignUpFinish({ navigation, route }) {
                     </View>
                 </View>
             </Modal>
-            
+
             <ContactsList sendVisible={sendVisible} contactVisible={contactVisible} sendContact={sendContact} />
         </View>
     )

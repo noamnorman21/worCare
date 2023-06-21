@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, TouchableOpacity, Image, Dimensions, StyleSheet, Modal, Text, Alert, Linking } from 'react-native';
-import { Octicons, Ionicons, AntDesign, Feather, FontAwesome } from '@expo/vector-icons';
+import { Octicons, Ionicons, AntDesign, Feather } from '@expo/vector-icons';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -112,19 +112,6 @@ function CustomHeader() {
 
                                     <TouchableOpacity onPress={
                                         () => {
-                                            navigation.navigate('PushNotifications')
-                                            toggleModal()
-                                        }
-                                    }>
-                                        <View style={styles.menuItem}>
-                                            <Feather name="bell" size={30} color="#fff1e6" />
-                                            <Text style={styles.menuItemText}>Notifications</Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                    <View style={styles.line} />
-
-                                    <TouchableOpacity onPress={
-                                        () => {
                                             navigation.navigate('Contacts')
                                             toggleModal()
                                         }
@@ -138,13 +125,26 @@ function CustomHeader() {
 
                                     <TouchableOpacity onPress={
                                         () => {
+                                            navigation.navigate('PushNotifications')
+                                            toggleModal()
+                                        }
+                                    }>
+                                        <View style={styles.menuItem}>
+                                            <Feather name="bell" size={30} color="#fff1e6" />
+                                            <Text style={styles.menuItemText}>Notifications</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                    <View style={styles.line} />
+
+                                    <TouchableOpacity onPress={
+                                        () => {
                                             navigation.navigate('AddUser')
                                             toggleModal()
                                         }
                                     }>
                                         <View style={styles.menuItem}>
-                                            <Feather name="user-plus" size={30} color="#fff1e6" />
-                                            <Text style={styles.menuItemText}>Add User</Text>
+                                            <AntDesign name="adduser" size={30} color="#fff1e6" />
+                                            <Text style={styles.menuItemText}>Add New User</Text>
                                         </View>
                                     </TouchableOpacity>
                                     <View style={styles.line} />
@@ -156,14 +156,14 @@ function CustomHeader() {
                                         }
                                     }>
                                         <View style={styles.menuItem}>
-                                            <Feather name="send" size={30} color="#fff1e6" />
+                                            <Feather name="mail" size={30} color="#fff1e6" />
                                             <Text style={styles.menuItemText}>Contact Us</Text>
                                         </View>
                                     </TouchableOpacity>
                                     <View style={styles.line} />
 
                                     <TouchableOpacity onPress={
-                                        () => {
+                                        async () => {
                                             toggleModal()
                                             AsyncStorage.removeItem("user");
                                             AsyncStorage.removeItem("userData");
@@ -176,7 +176,6 @@ function CustomHeader() {
                                             <Text style={styles.menuItemText}>Log out</Text>
                                         </View>
                                     </TouchableOpacity>
-
                                 </View>
                             </Modal>
                         </View>
@@ -189,12 +188,6 @@ function CustomHeader() {
                             >
                                 <Feather name="bell" size={28} color="#000000" />
                             </TouchableOpacity>
-                            {/* <TouchableOpacity
-                                style={{ right: Dimensions.get('screen').width * 0.04 }}
-                                onPress={() => navigation.navigate('Contacts')}
-                            >
-                                <AntDesign name="contacts" size={28} color="#000000" />
-                            </TouchableOpacity> */}
                         </View>
                     ),
                     headerTitle: () => (

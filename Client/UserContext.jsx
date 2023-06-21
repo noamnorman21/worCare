@@ -13,7 +13,7 @@ import { query, updateDoc, collection, getDocs, where } from 'firebase/firestore
 // General
 let updateProfileUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Settings/UpdateUserProfile'
 let getPairedProfile = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUser/'
-
+let getPatientData = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/GetPatientData';
 // Log In
 let userForLoginUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUserForLogin';
 
@@ -90,11 +90,13 @@ export function UserProvider({ children }) {
     const [allDrugs, setAllDrugs] = useState([]);
 
     // new
-    
+
     const [pairedEmail, setPairedEmail] = useState(null)
     const [userChats, setUserChats] = useState(null)
     const [CountryName_En, setCountryName_En] = useState(null)
     const [holidays, setHolidays] = useState([]);
+    const [patientData, setPatientData] = useState(null)
+    const [patientHL, setPatientHL] = useState(null)
 
     //new for chat logo
     const [newMessages, setNewMessages] = useState(0);
@@ -103,8 +105,6 @@ export function UserProvider({ children }) {
         setUserType(userData.userType);
         setUserLanguage(userData.Language);
         setUserCalendar(userData.Calendar);
-        setUserHobbies(userData.Hobbies);
-        setUserLimitations(userData.Limitations);
         setUserCaresFor(userData.CaresFor);
         setUserContacts(userData.Contacts);
         setUserPaychecks(userData.Paychecks);
@@ -118,6 +118,8 @@ export function UserProvider({ children }) {
         setBirthDate(userData.BirthDate);
         setUserGender(userData.Gender)
         setCalendarCode(userData.calendarCode);
+        setPatientHL(userData.patientHL);
+        setPatientData(userData.patientData);
         let usertoSync = {
             userId: userData.userId,
             userType: userData.userType,
@@ -131,16 +133,15 @@ export function UserProvider({ children }) {
             involvedInId: userData.involvedInId,//if user is a not caregiver, this field will be same as userId
             patientId: userData.patientId,
             calendarCode: userData.calendarCode,
-            CountryName_En: userData.CountryName_En,
+            CountryName_En: userData.CountryName_En,    
+            patientHL: userData.patientHL,
+            patientData: userData.patientData,                    
         }
-
         setUserContext(usertoSync);
         let notifications = {
-            emailNotifications: true,
             financeNotifications: true,
             chatNotifications: true,
             tasksNotifications: true,
-            contactNotifications: true,
             allNotifications: true,
         }
         setUserNotifications(notifications)
