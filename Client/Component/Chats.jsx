@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, Dimensions, Image, Alert, Modal, TouchableOpaci
 import { useCallback, useState, useLayoutEffect } from 'react'
 import { auth, db } from '../config/firebase';
 import { GiftedChat, Bubble, Time, MessageImage } from 'react-native-gifted-chat';
-import { collection, addDoc, getDocs, getDoc, query, orderBy, onSnapshot, updateDoc, where, limit, doc, increment } from 'firebase/firestore';
+import { collection, addDoc, getDocs, getDoc, query, orderBy, onSnapshot, updateDoc, where, limit, doc, increment, deleteDoc } from 'firebase/firestore';
 import { useEffect } from 'react';
 import { createStackNavigator,TransitionPresets } from '@react-navigation/stack';
 import { useUserContext } from '../UserContext';
@@ -23,6 +23,7 @@ const ScreenWidth = Dimensions.get("window").width;
 
 import ChatProfile from './ChatComponents/ChatProfile';
 import ChatRoom from './ChatComponents/ChatRoom';
+import { Swipeable } from 'react-native-gesture-handler';
 
 const Stack = createStackNavigator();
 export default function Chats({ navigation }) {
@@ -41,7 +42,7 @@ export default function Chats({ navigation }) {
 
 function MainRoom({ navigation }) {
   const [chatsToDisplay, setchatsToDisplay] = useState([])
-  const { userContext, setNewMessages } = useUserContext();
+  const { userContext,setNewMessages } = useUserContext();
   const [users, setUsers] = useState([])
   const [userChats, setUserChats] = useState([])
   const [usersToDisplay, setUsersToDisplay] = useState([])
@@ -52,7 +53,7 @@ function MainRoom({ navigation }) {
 
   useEffect(() => {
     if (userContext) {
-      const tempNames = query(collection(db, auth.currentUser.email),orderBy('lastMessageTime', 'desc'));
+      const tempNames = query(collection(db, auth.currentUser.email), orderBy("lastMessageTime", "desc"));
       // add listener to names collection
       const getNames = onSnapshot(tempNames, (snapshot) => setUserChats(
         snapshot.docs.map(doc => ({
@@ -77,10 +78,12 @@ function MainRoom({ navigation }) {
           avatar: doc.data().avatar,
         }))
       ))
+
       return () => {
         console.log("unsubscribing")
         getNames();
         getUsers();
+        setNewMessages(0);
       }
     }
     else {
@@ -90,12 +93,12 @@ function MainRoom({ navigation }) {
   }, [auth.currentUser.email])
 
   useEffect(() => {
-    //relevant- from user context   
+    //relevant- from user context
     if (userChats) {
       setNewMessages(0);
       const renderNames = () => {
         setchatsToDisplay(userChats.map((name, index) => (
-          <ConvoCard key={index} name={name} userEmails={name.userEmails} />
+          <ConvoCard key={name.Name} name={name} userEmails={name.userEmails} />
         )))
       }
       let x=0;
@@ -114,7 +117,7 @@ function MainRoom({ navigation }) {
   useEffect(() => {
     const renderUsers = () => {
       const res = users.map((user) => (
-        <View key={user.name} >
+        <View key={user.id} >
           <TouchableOpacity style={styles.userCard} onPress={() => addNewPrivateChat(user)}>
             <Image source={{ uri: user.avatar }} style={{ width: 65, height: 65, borderRadius: 54 }} />
             <Text style={styles.userName}>{user.id}</Text>
@@ -141,7 +144,15 @@ function MainRoom({ navigation }) {
     if (querySnapshot.docs.length > 0 || querySnapshot2.docs.length > 0) {
       checkifConvoExistsforContact(user)
       console.log("convo exists")
-      navigation.navigate('ChatRoom', { name: auth.currentUser.displayName + "+" + user.name, UserName: user.name })
+      if(querySnapshot.docs.length > 0){
+        console.log(querySnapshot.docs[0].data())
+      navigation.navigate('ChatRoom', { name: auth.currentUser.displayName + "+" + user.name, UserName: user.name, userEmail: user.id, unreadCount: querySnapshot.docs[0].data().unreadCount, type: "private" })
+      }
+      else{
+        console.log(querySnapshot2.docs[0].data())
+        navigation.navigate('ChatRoom', { name: user.name + "+" + auth.currentUser.displayName, UserName: user.name, userEmail: user.id, unreadCount: querySnapshot2.docs[0].data().unreadCount, type: "private" })
+      }
+      setAddNewModal(false)
       // const editRef= collection(db, auth.currentUser.email, where("Name", "==", auth.currentUser.displayName+"+"+user.name));
       // const doc= await getDocs(editRef);
       // await updateDoc(editRef, { unread: false, unreadCount: 0 });
@@ -149,23 +160,24 @@ function MainRoom({ navigation }) {
       console.log("add new private chat")
       let contact = user
       console.log("Userrrrr", contact)
-      addDoc(collection(db, auth.currentUser.email), { Name: auth.currentUser.displayName + "+" + contact.name, UserName: contact.name, userEmail: contact.id, image: contact.avatar, unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date() });
+      addDoc(collection(db, auth.currentUser.email), { Name: auth.currentUser.displayName + "+" + contact.name, UserName: contact.name, userEmail: contact.id, image: contact.avatar, unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date(), type: "private" });
       checkifConvoExistsforContact(user)
-      navigation.navigate('ChatRoom', { name: auth.currentUser.displayName + "+" + contact.name, UserName: contact.name, userEmail: contact.id })
+      setAddNewModal(false)
+      navigation.navigate('ChatRoom', { name: auth.currentUser.displayName + "+" + contact.name, UserName: contact.name, userEmail: contact.id, unreadCount: 0, type: "private" })
     }
   }
 
   const checkifConvoExistsforContact = async (contact) => {
     console.log(contact)
-    const q1 = query(collection(db, contact._id), where("Name", "==", auth.currentUser.displayName + "+" + contact.name));
-    const q2 = query(collection(db, contact._id), where("Name", "==", contact.name + "+" + auth.currentUser.displayName));
+    const q1 = query(collection(db, contact.id), where("Name", "==", auth.currentUser.displayName + "+" + contact.name));
+    const q2 = query(collection(db, contact.id), where("Name", "==", contact.name + "+" + auth.currentUser.displayName));
     const query1 = await getDocs(q1);
     const query2 = await getDocs(q2);
     if (query1.docs.length > 0 || query2.docs.length > 0) {
       console.log("convo existsssssss")
     } else {
       console.log("add new private chat")
-      addDoc(collection(db, contact.id), { Name: auth.currentUser.displayName + "+" + contact.name, UserName: auth.currentUser.displayName, image: auth.currentUser.photoURL, userEmail: auth.currentUser.email, unread: true, unreadCount: 0, lastMessage: "", lastMessageTime: new Date() });
+      addDoc(collection(db, contact.id), { Name: auth.currentUser.displayName + "+" + contact.name, UserName: auth.currentUser.displayName, image: auth.currentUser.photoURL, userEmail: auth.currentUser.email, unread: true, unreadCount: 0, lastMessage: "", lastMessageTime: new Date(), type: "private" });
     }
   }  
 
@@ -205,7 +217,6 @@ const ConvoCard = (props) => {
   const [lastMessageDate, setLastMessageDate] = useState('')
   const today = moment().format('MMM DD YYYY')
   const yasterday = moment().subtract(1, 'days').format('MMM DD YYYY')
-  const { newMessages, setNewMessages }= useUserContext();
 
   useEffect(() => {
     const temp = props.name.lastMessageTime.toString().split(' ')
@@ -219,7 +230,7 @@ const ConvoCard = (props) => {
     else {
       setLastMessageText(props.name.lastMessage)
     }
-  }, []);
+  }, [props.name]);
 
   const navigateToChatRoom = async (user) => {
     navigation.navigate('ChatRoom', { name: user.Name, UserName: user.UserName, userEmail: user.userEmail, type: props.name.type, unreadCount: props.name.unreadCount })
@@ -229,8 +240,20 @@ const ConvoCard = (props) => {
       updateDoc(doc.ref, { unread: false, unreadCount: 0 });
     });
   }
+
+  const deleteChat = async () => {
+    console.log("delete chat")
+    console.log(props.name.Name)
+    const docRef = query(collection(db, auth.currentUser.email), where("Name", "==", props.name.Name));
+    const res = await getDocs(docRef);
+    res.forEach((doc) => {
+      deleteDoc(doc.ref);
+    });
+    // deleteDoc(doc(db, auth.currentUser.email),where("Name", "==", props.name.Name));
+  }
   return (
     <>
+    <Swipeable renderRightActions={() => <TouchableOpacity onPress={()=>{deleteChat()}}><Text>Delete</Text></TouchableOpacity>} >
       <View key={props.name.Name} >
         <TouchableOpacity style={styles.conCard} key={props.name.Name} onPress={() => navigateToChatRoom(props.name)} onLongPress={()=> {console.log("Long pressed")}}>
           <View style={styles.conLeft}>
@@ -254,6 +277,7 @@ const ConvoCard = (props) => {
           <View style={styles.line} />
         </View>
       </View>
+      </Swipeable>
     </>
   )
 }
@@ -343,7 +367,6 @@ const styles = StyleSheet.create({
     fontFamily: 'Urbanist-Bold',
     color: '#000',
     marginBottom: 20,
-    paddingTop: 20,
   },
   modalButton: {
     width: ScreenWidth * 0.8,
@@ -400,8 +423,5 @@ const styles = StyleSheet.create({
     height: 55,
     borderRadius: 54
   },
-  userScrollview: {
-    height: ScreenHeight * 0.5,
-    marginBottom: 20,
-  },
+  
 })

@@ -16,7 +16,6 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
   const newUser = route.params.newUser;
   const holidaysType = route.params.holidaysType;
   const [linkTo, setLinkTo] = useState("");
-  const { getPairedEmail,pairedEmail } = useUserContext();
 
   useEffect(() => {
     getInitialUrl();
@@ -47,59 +46,108 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
         }
         console.log(newUser);
         createUserWithEmailAndPassword(auth, newUser.Email, newUser.Password)
-        .then(() => {
-           signInWithEmailAndPassword(auth,newUser.Email, newUser.Password).then((userCredential) => {
-            console.log("user signed in");
-                updateProfile(auth.currentUser, {
-                    displayName: newUser.FirstName + ' ' + newUser.LastName,
-                    photoURL: newUser.userUri
-                }).then(async () => {
-                    console.log("user updated");
-                    let userToUpdate = {
-                        id: auth.currentUser.email,
-                        name: auth.currentUser.displayName, //the name of the user is the first name and the last name
-                        avatar: auth.currentUser.photoURL
-                    }
-                    await addDoc(collection(db, "AllUsers"), {id: userToUpdate.id, name: userToUpdate.name, avatar: userToUpdate.avatar }).then(async () => {
-                      console.log("user added to all users"); 
-                      const q = query(collection(db, "GroupMembers"), where("Name", "==", newForeignUserData.CountryName_En));
-                      const querySnapshot = await getDocs(q);
-                      // check if the group already exists, if not add it to the db
-                      if (querySnapshot.empty) {
-                        console.log("No matching documents.");
-                        console.log(newForeignUserData.CountryName_En);
-                        await addDoc(collection(db, "GroupMembers"), { Name: newForeignUserData.CountryName_En ,userEmail:[newUser.Email] });
-                      }
-                      else {
-                        querySnapshot.forEach((doc) => {
-                          console.log(doc.id, " => ", doc.data());
-                          updateDoc(doc.ref, {
-                            userEmail: [...doc.data().userEmail, newUser.Email]
-                          });
-                        });
-                      }
-                      await addDoc(collection(db, auth.currentUser.email), { Name: newForeignUserData.CountryName_En, UserName: "", userEmail: "", image: newUser.userUri, unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date(), type: "group" }).then(() => {
-                        console.log("group added to user");
-                        signOut(auth).then(() => {
-                          console.log("user signed out");
-                        }).catch((error) => {
-                        });
-                      }).catch((error) => {
-                        console.error(error);
-                      }
-                      );
+        .then(() => {          
+                console.log("user created");
+                console.log("add to chat");
+    console.log(auth);
+    //add the new user and paired user to each other's chat
+   signInWithEmailAndPassword(auth,newUser.Email, newUser.Password).then((userCredential) => {
+       console.log("user signed in");
+           updateProfile(auth.currentUser, {
+               displayName: newUser.FirstName + ' ' + newUser.LastName,
+               photoURL: newUser.userUri
+           }).then(async () => {
+               console.log("user updated");
+               let userToUpdate = {
+                   id: auth.currentUser.email,
+                   name: auth.currentUser.displayName, //the name of the user is the first name and the last name
+                   avatar: auth.currentUser.photoURL
+               }
+               await addDoc(collection(db, "AllUsers"), {id: userToUpdate.id, name: userToUpdate.name, avatar: userToUpdate.avatar }).then(async () => {
+                 console.log("user added to all users"); 
+                 const q = query(collection(db, "GroupMembers"), where("Name", "==", newForeignUserData.CountryName_En));
+                 const querySnapshot = await getDocs(q);
+                 // check if the group already exists, if not add it to the db
+                 if (querySnapshot.empty) {
+                   console.log("No matching documents.");
+                   console.log(newForeignUserData.CountryName_En);
+                   await addDoc(collection(db, "GroupMembers"), { Name: newForeignUserData.CountryName_En ,userEmail:[newUser.Email] });
+                 }
+                 else {
+                   querySnapshot.forEach((doc) => {
+                     console.log(doc.id, " => ", doc.data());
+                     updateDoc(doc.ref, {
+                       userEmail: [...doc.data().userEmail, newUser.Email]
+                     });
+                   });
+                 }
+                 await addDoc(collection(db, auth.currentUser.email), { Name: newForeignUserData.CountryName_En, UserName: "", userEmail: "", image: newUser.userUri, unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date(), type: "group" }).then(() => {
+                   console.log("group added to user");
+                   //delete when published to filezila
+                    signOut(auth).then(() => {
+                      console.log("user signed out");
                     }).catch((error) => {
-                      console.error(error);
-                    }
-                    );      
+                    });
+                   //update when oublished to filezila
+                  //  fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetPairedUser',
+                  //    {
+                  //      method: 'POST',
+                  //      headers: new Headers({
+                  //        'Content-Type': 'application/json; charset=UTF-8',
+                  //      }),
+                  //      body: JSON.stringify({ id: newForeignUserData.Id }),
+                  //    })
+                  //    .then((response) =>{
+                  //    if (response.status === 200) {
+                  //       return response.json();
+                  //     }
+                  //     else {
+                  //       console.log("error");
+                  //     }
+
+                  //   }).then(async (json) => {
+                  //   console.log(json);
+                  //   let pairedUser = {
+                  //     Email: json.Email,
+                  //     Name: json.FirstName + " " + json.LastName,
+                  //     image: json.userUri
+                  //   }
+                  //   let pairedEmail = json.Email;
+                  //   console.log(pairedEmail);
+                  //   //add the new user and paired user to each other's chat
+                  //   await addDoc(collection(db, pairedEmail), { Name: auth.currentUser.displayName + "+" + pairedUser.Name, UserName: auth.currentUser.displayName, userEmail: auth.currentUser.email, image:auth.currentUser.photoURL, unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date(), type: "private" });
+                  //   await addDoc(collection(db, newUser.Email.toLowerCase()), { Name: auth.currentUser.displayName + "+" + "Dar Ya", UserName:pairedUser.Name, userEmail: pairedEmail, image: pairedUser.image , unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date(), type: "private" }).then(() => {
+                  //     signOut(auth).then(() => {
+                  //       console.log("user signed out");
+                  //     }
+                  //     ).catch((error) => {
+                  //     }
+                  //     );
+                  //   }).catch((error) => {
+                  //     console.error(error);
+                  //   }
+                  //   );
+                  // })
+                  // .catch((error) => {
+                  //   console.error(error);
+                  // }
+                  // );
                 })
                 .catch((error) => {
-                    console.log(error);
-                });
-                console.log("user created");
-            }).catch((error) => {
-                console.log(error);
-            });
+                  console.error(error);
+                }
+                );
+              })
+              .catch((error) => {
+                console.error(error);
+              }
+              );
+            })
+            .catch((error) => {
+              console.error(error);
+            }
+            );
+          })
         })
         .catch((error) => {
             console.error(error);
@@ -154,28 +202,37 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
       .then((response) => response.json())
       .then(async (json) => {
         console.log(json);
-        // will be used for chat after publish to filezila
-        // fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetPairedUser',
-        //   {
-        //     method: 'POST',
-        //     headers: new Headers({
-        //       'Content-Type': 'application/json; charset=UTF-8',
-        //     }),
-        //     body: JSON.stringify({ id: newForeignUserData.Id }),
-        //   })
-        //   .then((response) => response.json())
-        //   .then(async (json) => {
-        //     console.log(json);
-        //     let pairedUser = {
-        //       Email: json.Email,
-        //       Name: json.FirstName + " " + json.LastName,
-        //       image: json.userUri
-        //     }
-        //     let pairedEmail = json.Email;
-        //     console.log(pairedEmail);
-        //     //add the new user and paired user to each other's chat
-        //     await addDoc(collection(db, pairedEmail), { Name: auth.currentUser.displayName + "+" + pairedUser.Name, UserName: pairedUser.Name, userEmail: pairedEmail, image: pairedUser.image, unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date(), type: "private" });
-        //     await addDoc(collection(db, newUser.Email.toLowerCase()), { Name: auth.currentUser.displayName + "+" + pairedUser.Name, UserName: auth.currentUser.displayName, userEmail: auth.currentUser.email, image: auth.currentUser.photoURL, unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date(), type: "private" });
+        // await AddToChat();
+        // // will be used for chat after publish to filezila
+        // // fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetPairedUser',
+        // //   {
+        // //     method: 'POST',
+        // //     headers: new Headers({
+        // //       'Content-Type': 'application/json; charset=UTF-8',
+        // //     }),
+        // //     body: JSON.stringify({ id: newForeignUserData.Id }),
+        // //   })
+        // //   .then((response) => response.json())
+        // //   .then(async (json) => {
+        // //     console.log(json);
+        // //     let pairedUser = {
+        // //       Email: json.Email,
+        // //       Name: json.FirstName + " " + json.LastName,
+        // //       image: json.userUri
+        // //     }
+        // //     let pairedEmail = json.Email;
+        // //     console.log(pairedEmail);
+        // //     //add the new user and paired user to each other's chat
+        // //     await addDoc(collection(db, pairedEmail), { Name: auth.currentUser.displayName + "+" + pairedUser.Name, UserName: auth.currentUser.displayName, userEmail: auth.currentUser.email, image:auth.currentUser.photoURL, unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date(), type: "private" });
+        //     await addDoc(collection(db, newUser.Email.toLowerCase()), { Name: auth.currentUser.displayName + "+" + "Dar Ya", UserName:pairedUser.Name, userEmail: pairedEmail, image: pairedUser.image , unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date(), type: "private" }).then(() => {
+        //       signOut(auth).then(() => {
+        //         console.log("user signed out");
+        //       }).catch((error) => {
+        //       });
+            // }).catch((error) => {
+            //   console.error(error);
+            // }
+            // );
         //   })
         Alert.alert("Great Job !", "You can login now", [
           {
@@ -197,6 +254,109 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
     setSelectedHolidays(arr); //arr is the array of the selected holidays
 
   };
+
+  const AddToChat= async () => {
+    console.log("add to chat");
+    console.log(auth);
+    //add the new user and paired user to each other's chat
+   signInWithEmailAndPassword(auth,newUser.Email, newUser.Password).then((userCredential) => {
+       console.log("user signed in");
+           updateProfile(auth.currentUser, {
+               displayName: newUser.FirstName + ' ' + newUser.LastName,
+               photoURL: newUser.userUri
+           }).then(async () => {
+               console.log("user updated");
+               let userToUpdate = {
+                   id: auth.currentUser.email,
+                   name: auth.currentUser.displayName, //the name of the user is the first name and the last name
+                   avatar: auth.currentUser.photoURL
+               }
+               await addDoc(collection(db, "AllUsers"), {id: userToUpdate.id, name: userToUpdate.name, avatar: userToUpdate.avatar }).then(async () => {
+                 console.log("user added to all users"); 
+                 const q = query(collection(db, "GroupMembers"), where("Name", "==", newForeignUserData.CountryName_En));
+                 const querySnapshot = await getDocs(q);
+                 // check if the group already exists, if not add it to the db
+                 if (querySnapshot.empty) {
+                   console.log("No matching documents.");
+                   console.log(newForeignUserData.CountryName_En);
+                   await addDoc(collection(db, "GroupMembers"), { Name: newForeignUserData.CountryName_En ,userEmail:[newUser.Email] });
+                 }
+                 else {
+                   querySnapshot.forEach((doc) => {
+                     console.log(doc.id, " => ", doc.data());
+                     updateDoc(doc.ref, {
+                       userEmail: [...doc.data().userEmail, newUser.Email]
+                     });
+                   });
+                 }
+                 await addDoc(collection(db, auth.currentUser.email), { Name: newForeignUserData.CountryName_En, UserName: "", userEmail: "", image: newUser.userUri, unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date(), type: "group" }).then(() => {
+                   console.log("group added to user");
+                   //delete when published to filezila
+                    signOut(auth).then(() => {
+                      console.log("user signed out");
+                    }).catch((error) => {
+                    });
+                   //update when oublished to filezila
+                  //  fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetPairedUser',
+                  //    {
+                  //      method: 'POST',
+                  //      headers: new Headers({
+                  //        'Content-Type': 'application/json; charset=UTF-8',
+                  //      }),
+                  //      body: JSON.stringify({ id: newForeignUserData.Id }),
+                  //    })
+                  //    .then((response) =>{
+                  //    if (response.status === 200) {
+                  //       return response.json();
+                  //     }
+                  //     else {
+                  //       console.log("error");
+                  //     }
+
+                  //   }).then(async (json) => {
+                  //   console.log(json);
+                  //   let pairedUser = {
+                  //     Email: json.Email,
+                  //     Name: json.FirstName + " " + json.LastName,
+                  //     image: json.userUri
+                  //   }
+                  //   let pairedEmail = json.Email;
+                  //   console.log(pairedEmail);
+                  //   //add the new user and paired user to each other's chat
+                  //   await addDoc(collection(db, pairedEmail), { Name: auth.currentUser.displayName + "+" + pairedUser.Name, UserName: auth.currentUser.displayName, userEmail: auth.currentUser.email, image:auth.currentUser.photoURL, unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date(), type: "private" });
+                  //   await addDoc(collection(db, newUser.Email.toLowerCase()), { Name: auth.currentUser.displayName + "+" + "Dar Ya", UserName:pairedUser.Name, userEmail: pairedEmail, image: pairedUser.image , unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date(), type: "private" }).then(() => {
+                  //     signOut(auth).then(() => {
+                  //       console.log("user signed out");
+                  //     }
+                  //     ).catch((error) => {
+                  //     }
+                  //     );
+                  //   }).catch((error) => {
+                  //     console.error(error);
+                  //   }
+                  //   );
+                  // })
+                  // .catch((error) => {
+                  //   console.error(error);
+                  // }
+                  // );
+                })
+                .catch((error) => {
+                  console.error(error);
+                }
+                );
+              })
+              .catch((error) => {
+                console.error(error);
+              }
+              );
+            })
+            .catch((error) => {
+              console.error(error);
+            }
+            );
+          })
+  }
 
   return (
     <SafeAreaView style={styles.container}>
