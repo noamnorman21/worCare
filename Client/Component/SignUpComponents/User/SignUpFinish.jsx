@@ -168,7 +168,11 @@ export default function SignUpFinish({ navigation, route }) {
             );
     }
     // InsertPatientHobbiesAndLimitations
-    const addHobbiesAndLimitations = () => {
+    const addHobbiesAndLimitations =async () => {
+
+        console.log(route.params.HobbiesAndLimitationsData)
+        console.log("from share: ", fromShare)
+       
         fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/InsertPatientHobbiesAndLimitations', { //send the user data to the DB
             method: 'POST',
             headers: {

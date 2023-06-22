@@ -41,6 +41,7 @@ namespace WebApi.Controllers
                 // Get patient's hobbies
                 PatientDTO patientDTO = new PatientDTO();
                 patientDTO.FirstName = patient.FirstName;
+                patientDTO.LastName = patient.LastName;
                 patientDTO.DateOfBirth = patient.DateOfBirth;
                 patientDTO.patientId = patientId;
                 patientDTO.LanguageName_En = patient.tblLanguage.LanguageName_En;                

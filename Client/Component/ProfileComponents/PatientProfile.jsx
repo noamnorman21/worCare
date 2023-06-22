@@ -1,36 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, SafeAreaView, StyleSheet } from 'react-native';
-import { Chip } from 'react-native-paper';
+import { View, Text, SafeAreaView, StyleSheet,Button } from 'react-native';
+import {Chip } from 'react-native-paper';
 import { useUserContext } from '../../UserContext';
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function PatientProfile() {
     const { userContext } = useUserContext();
-    const { patientId } = userContext;
-    let getPatientData = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/GetPatientData';
-    const [patientData, setPatientData] = useState([]);
-
-    useEffect(() => {
-        fetchLimitations();
-    }, [])
-
-    async function fetchLimitations() {
-        const response = await fetch(getPatientData, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                patientId,
-            })
-        })
-        const data = await response.json();
-        if (data != null) {
-            console.log("data:", data);
-            setPatientData(data);
-        }
+    const patientData = userContext.patientData;
+    const hobbiesAndLimitations = patientData.hobbiesAndLimitationsDTO;
+    const getPatientData =  () => {
+        console.log("Patient Data");
+        console.log(patientData);
+        console.log("Hobbies and Limitations");
+        console.log(hobbiesAndLimitations);
+       
     }
-
+    
     return (
         <SafeAreaView style={styles.container}>
             <Text style={styles.headerTxt}>Name: {patientData.FirstName}</Text>
@@ -73,6 +58,8 @@ export default function PatientProfile() {
                     Peanuts
                 </Chip>
             </View>
+            <Button title="Get Patient Data" onPress={getPatientData} />
+
 
         </SafeAreaView>
     );
