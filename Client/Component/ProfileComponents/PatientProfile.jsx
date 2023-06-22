@@ -58,6 +58,8 @@ export default function PatientProfile() {
                     Peanuts
                 </Chip>
             </View>
+
+            {/* delete this button later */}
             <Button title="Get Patient Data" onPress={getPatientData} />
 
 
