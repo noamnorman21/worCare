@@ -447,7 +447,7 @@ namespace DATA
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertProductList", productIdParameter, actualIdParameter, taskIdParameter, productStatusParameter, productQuantityParameter, commentForProductParameter);
         }
     
-        public virtual int InsertUser(string email, string password, string firstName, string lastName, string gender, string phoneNum, string userUri)
+        public virtual int InsertUser(string email, string password, string firstName, string lastName, string gender, string phoneNum, string userUri, string pushToken)
         {
             var emailParameter = email != null ?
                 new ObjectParameter("Email", email) :
@@ -477,7 +477,11 @@ namespace DATA
                 new ObjectParameter("UserUri", userUri) :
                 new ObjectParameter("UserUri", typeof(string));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertUser", emailParameter, passwordParameter, firstNameParameter, lastNameParameter, genderParameter, phoneNumParameter, userUriParameter);
+            var pushTokenParameter = pushToken != null ?
+                new ObjectParameter("pushToken", pushToken) :
+                new ObjectParameter("pushToken", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertUser", emailParameter, passwordParameter, firstNameParameter, lastNameParameter, genderParameter, phoneNumParameter, userUriParameter, pushTokenParameter);
         }
     
         public virtual int NewContact(string contactName, string phoneNo, string mobileNo, string email, string role, string contactComment, string patientId)
@@ -689,6 +693,35 @@ namespace DATA
                 new ObjectParameter("status", typeof(string));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("updateStatusCaresForPatient", patientIdParameter, workerIdParameter, statusParameter);
+        }
+    
+        public virtual int InsertNewDrug(string drugName, string drugNameEn, string drugUrl, string drugUrlEn, Nullable<System.DateTime> modifyDate, string type)
+        {
+            var drugNameParameter = drugName != null ?
+                new ObjectParameter("drugName", drugName) :
+                new ObjectParameter("drugName", typeof(string));
+    
+            var drugNameEnParameter = drugNameEn != null ?
+                new ObjectParameter("drugNameEn", drugNameEn) :
+                new ObjectParameter("drugNameEn", typeof(string));
+    
+            var drugUrlParameter = drugUrl != null ?
+                new ObjectParameter("drugUrl", drugUrl) :
+                new ObjectParameter("drugUrl", typeof(string));
+    
+            var drugUrlEnParameter = drugUrlEn != null ?
+                new ObjectParameter("drugUrlEn", drugUrlEn) :
+                new ObjectParameter("drugUrlEn", typeof(string));
+    
+            var modifyDateParameter = modifyDate.HasValue ?
+                new ObjectParameter("modifyDate", modifyDate) :
+                new ObjectParameter("modifyDate", typeof(System.DateTime));
+    
+            var typeParameter = type != null ?
+                new ObjectParameter("Type", type) :
+                new ObjectParameter("Type", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertNewDrug", drugNameParameter, drugNameEnParameter, drugUrlParameter, drugUrlEnParameter, modifyDateParameter, typeParameter);
         }
     }
 }

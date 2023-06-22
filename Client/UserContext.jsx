@@ -1,11 +1,13 @@
 import React, { useState, useEffect, createContext, useContext, useRef } from 'react'
-import { Alert } from 'react-native';
+import { Alert, Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { auth, db } from './config/firebase';
 import { signInWithEmailAndPassword, signOut, updateProfile } from 'firebase/auth';
 import moment from 'moment';
 import { query, updateDoc, collection, getDocs, where } from 'firebase/firestore';
+import * as Device from 'expo-device';
+import * as Notifications from 'expo-notifications';
 
 
 // ---------------- All Server Urls ---------------- 
@@ -133,9 +135,9 @@ export function UserProvider({ children }) {
             involvedInId: userData.involvedInId,//if user is a not caregiver, this field will be same as userId
             patientId: userData.patientId,
             calendarCode: userData.calendarCode,
-            CountryName_En: userData.CountryName_En,    
+            CountryName_En: userData.CountryName_En,
             patientHL: userData.patientHL,
-            patientData: userData.patientData,                    
+            patientData: userData.patientData,
         }
         setUserContext(usertoSync);
         let notifications = {
@@ -157,6 +159,38 @@ export function UserProvider({ children }) {
         else {
             getPairedEmail(userData.involvedInId);
         }
+    }
+
+    // For Push Notifications - Start
+    async function registerForPushNotificationsAsync() {
+        let token;
+
+        if (Platform.OS === 'android') {
+            await Notifications.setNotificationChannelAsync('default', {
+                name: 'default',
+                importance: Notifications.AndroidImportance.MAX,
+                vibrationPattern: [0, 250, 250, 250],
+                lightColor: '#FF231F7C',
+            });
+        }
+
+        if (Device.isDevice) {
+            const { status: existingStatus } = await Notifications.getPermissionsAsync();
+            let finalStatus = existingStatus;
+            if (existingStatus !== 'granted') {
+                const { status } = await Notifications.requestPermissionsAsync();
+                finalStatus = status;
+            }
+            if (finalStatus !== 'granted') {
+                Alert.alert('Failed to get push token for push notification!');
+                return;
+            }
+            token = (await Notifications.getExpoPushTokenAsync()).data;
+            console.log(token);
+        } else {
+            Alert.alert('Must use physical device for Push Notifications');
+        }
+        return token;
     }
 
     async function getHolidaysForUser(calendarCode) {
@@ -758,7 +792,7 @@ export function UserProvider({ children }) {
         fetchUserContacts, logOutContext, updateUserContext, updateUserContacts, updatePendings,
         updateUserProfile, updateuserNotifications, appEmail, getAllPrivateTasks, getAllPublicTasks,
         allPublicTasks, allPrivateTasks, UpdateDrugForPatientDTO, holidays, GetAllDrugs, allDrugs, addPrivateTaskContext,
-        newMessages, setNewMessages, logOutFireBase
+        newMessages, setNewMessages, logOutFireBase, registerForPushNotificationsAsync
     };
 
     return (

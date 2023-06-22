@@ -271,6 +271,7 @@
     <EntitySetMapping Name="tblUser">
       <EntityTypeMapping TypeName="igroup194_prodModel.tblUser">
         <MappingFragment StoreEntitySet="tblUser">
+          <ScalarProperty Name="pushToken" ColumnName="pushToken" />
           <ScalarProperty Name="userId" ColumnName="userId" />
           <ScalarProperty Name="Email" ColumnName="Email" />
           <ScalarProperty Name="Password" ColumnName="Password" />
@@ -326,5 +327,6 @@
     <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="igroup194_prodModel.Store.sp_renamediagram" />
     <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="igroup194_prodModel.Store.sp_upgraddiagrams" />
     <FunctionImportMapping FunctionImportName="updateStatusCaresForPatient" FunctionName="igroup194_prodModel.Store.updateStatusCaresForPatient" />
+    <FunctionImportMapping FunctionImportName="InsertNewDrug" FunctionName="igroup194_prodModel.Store.InsertNewDrug" />
   </EntityContainerMapping>
 </Mapping>

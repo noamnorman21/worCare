@@ -263,6 +263,7 @@
     <Property Name="gender" Type="char" MaxLength="1" />
     <Property Name="phoneNum" Type="varchar" MaxLength="10" Nullable="false" />
     <Property Name="userUri" Type="nvarchar" MaxLength="4000" />
+    <Property Name="pushToken" Type="nvarchar" MaxLength="4000" />
   </EntityType>
   <Association Name="FK__tblActual__taskI__795DFB40">
     <End Role="tblPatientTask" Type="Self.tblPatientTask" Multiplicity="1" />
@@ -664,6 +665,14 @@
     <Parameter Name="actualId" Type="int" Mode="In" />
     <Parameter Name="taskId" Type="int" Mode="In" />
   </Function>
+  <Function Name="InsertNewDrug" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="drugName" Type="nvarchar" Mode="In" />
+    <Parameter Name="drugNameEn" Type="varchar" Mode="In" />
+    <Parameter Name="drugUrl" Type="nvarchar" Mode="In" />
+    <Parameter Name="drugUrlEn" Type="nvarchar" Mode="In" />
+    <Parameter Name="modifyDate" Type="date" Mode="In" />
+    <Parameter Name="Type" Type="varchar" Mode="In" />
+  </Function>
   <Function Name="InsertPatient" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="patientId" Type="char" Mode="In" />
     <Parameter Name="FirstName" Type="varchar" Mode="In" />
@@ -739,6 +748,7 @@
     <Parameter Name="Gender" Type="char" Mode="In" />
     <Parameter Name="PhoneNum" Type="varchar" Mode="In" />
     <Parameter Name="UserUri" Type="nvarchar" Mode="In" />
+    <Parameter Name="pushToken" Type="nvarchar" Mode="In" />
   </Function>
   <Function Name="NewContact" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="contactName" Type="varchar" Mode="In" />

@@ -1,13 +1,14 @@
 import { View, StyleSheet, Text, Image, TouchableOpacity, Dimensions, Modal, Alert } from 'react-native'
 import { useState, useEffect } from 'react'
 import ContactsList from '../../HelpComponents/ContactsList';
-const SCREEN_WIDTH = Dimensions.get('window').width;
-const SCREEN_HEIGHT = Dimensions.get('window').height;
 import * as SMS from 'expo-sms';
 import * as Linking from 'expo-linking';
 import { auth, db } from '../../../config/firebase';
 import { collection, addDoc } from 'firebase/firestore';
 import { createUserWithEmailAndPassword, updateProfile, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+const SCREEN_WIDTH = Dimensions.get('window').width;
+const SCREEN_HEIGHT = Dimensions.get('window').height;
+import { useUserContext } from '../../../UserContext';
 
 export default function SignUpFinish({ navigation, route }) {
     const tblPatient = route.params.tblPatient;
@@ -19,6 +20,13 @@ export default function SignUpFinish({ navigation, route }) {
     const [message, setMessage] = useState('');
     const [link, setLink] = useState('');
     const [fromShare, setFromShare] = useState(false);
+    const { registerForPushNotificationsAsync } = useUserContext();
+    const [expoPushToken, setExpoPushToken] = useState('');
+    useEffect(() => {
+        registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+        // This listener is fired whenever a notification is received while the app is foregrounded
+    }, []);
+
     // link to the specific screen in the app and send the patient id to the screen as a parameter
     // link to screen "Welcome" and send the patient id to the screen as a parameter
     useEffect(() => {
@@ -95,12 +103,15 @@ export default function SignUpFinish({ navigation, route }) {
 
     // InsertUser
     const createNewUserInDB = () => {
+        let user = route.params.tblUser
+        user.pushToken = expoPushToken;
+
         fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/InsertUser', { //send the user data to the DB
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json; charset=UTF-8',
             },
-            body: JSON.stringify(route.params.tblUser),
+            body: JSON.stringify(user),
         })
             .then((response) => response.json())
             .then((json) => {
@@ -167,12 +178,13 @@ export default function SignUpFinish({ navigation, route }) {
             }
             );
     }
+
     // InsertPatientHobbiesAndLimitations
-    const addHobbiesAndLimitations =async () => {
+    const addHobbiesAndLimitations = async () => {
 
         console.log(route.params.HobbiesAndLimitationsData)
         console.log("from share: ", fromShare)
-       
+
         fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/InsertPatientHobbiesAndLimitations', { //send the user data to the DB
             method: 'POST',
             headers: {

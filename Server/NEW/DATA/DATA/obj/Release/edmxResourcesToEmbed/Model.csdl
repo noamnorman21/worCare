@@ -319,6 +319,7 @@
     <NavigationProperty Name="tblPatient" Relationship="Self.FK__tblPatien__userI__55209ACA" FromRole="tblUser" ToRole="tblPatient" />
     <NavigationProperty Name="tblPatientTask" Relationship="Self.FK__tblPatien__userI__74994623" FromRole="tblUser" ToRole="tblPatientTask" />
     <NavigationProperty Name="tblPaycheck" Relationship="Self.FK__tblPayche__UserI__618671AF" FromRole="tblUser" ToRole="tblPaycheck" />
+    <Property Name="pushToken" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
   </EntityType>
   <Association Name="FK__tblDrugFo__listI__131DCD43">
     <End Role="tblActualList" Type="Self.tblActualList" Multiplicity="1" />
@@ -931,6 +932,7 @@
       <Parameter Name="Gender" Mode="In" Type="String" />
       <Parameter Name="PhoneNum" Mode="In" Type="String" />
       <Parameter Name="UserUri" Mode="In" Type="String" />
+      <Parameter Name="pushToken" Mode="In" Type="String" />
     </FunctionImport>
     <FunctionImport Name="NewContact">
       <Parameter Name="contactName" Mode="In" Type="String" />
@@ -991,6 +993,14 @@
       <Parameter Name="patientId" Mode="In" Type="String" />
       <Parameter Name="workerId" Mode="In" Type="Int32" />
       <Parameter Name="status" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="InsertNewDrug">
+      <Parameter Name="drugName" Mode="In" Type="String" />
+      <Parameter Name="drugNameEn" Mode="In" Type="String" />
+      <Parameter Name="drugUrl" Mode="In" Type="String" />
+      <Parameter Name="drugUrlEn" Mode="In" Type="String" />
+      <Parameter Name="modifyDate" Mode="In" Type="DateTime" />
+      <Parameter Name="Type" Mode="In" Type="String" />
     </FunctionImport>
   </EntityContainer>
   <ComplexType Name="sp_helpdiagramdefinition_Result">

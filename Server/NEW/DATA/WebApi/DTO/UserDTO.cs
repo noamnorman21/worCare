@@ -23,5 +23,6 @@ namespace WebApi.DTO
         public int involvedInId { get; set; }
         public string CountryName_En { get; set; }
         public PatientDTO patient { get; set; }
+        public string pushToken { get; set; }
     }
 }

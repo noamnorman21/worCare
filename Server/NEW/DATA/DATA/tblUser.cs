@@ -31,6 +31,7 @@ namespace DATA
         public string gender { get; set; }
         public string phoneNum { get; set; }
         public string userUri { get; set; }
+        public string pushToken { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tblCalendarForUser> tblCalendarForUser { get; set; }

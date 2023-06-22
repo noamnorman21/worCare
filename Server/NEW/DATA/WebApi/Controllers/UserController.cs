@@ -243,7 +243,7 @@ namespace WebApi.Controllers
             {
                 tblCalendarForUser calendarForUser = new tblCalendarForUser();
                 //the store procedure is checking if the user already exists in the db, if not, it will insert the user
-                db.InsertUser(user.Email, user.Password, user.FirstName, user.LastName, user.gender, user.phoneNum, user.userUri);
+                db.InsertUser(user.Email, user.Password, user.FirstName, user.LastName, user.gender, user.phoneNum, user.userUri,user.pushToken);
                 db.SaveChanges();
                 var newUser = db.tblUser.Where(x => x.Email == user.Email).FirstOrDefault();
                 if (newUser == null)
