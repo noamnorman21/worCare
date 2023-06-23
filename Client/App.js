@@ -1,13 +1,26 @@
 import { StyleSheet } from 'react-native';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import SettingScreen from './Component/SettingScreen';
 import NavigateSignUp from './Component/SignUpComponents/NavigateSignUp';
 import * as Font from 'expo-font'; // Import Font from expo-font package
 import { UserProvider } from './UserContext';
 
+import * as Notifications from 'expo-notifications';
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+  }),
+});
+
 export default function App() {
   const [isReady, setIsReady] = useState(false); // Set state for font loading
+  const [notification, setNotification] = useState(false);
+  const notificationListener = useRef();
+  const responseListener = useRef();
+
 
   useEffect(() => {
     async function loadFont() {
@@ -22,6 +35,33 @@ export default function App() {
     }
     loadFont();
   }, []);
+
+  // useEffect(() => {
+  //   const subscription = Notifications.addNotificationReceivedListener(notification => {
+  //     console.log(notification);
+  //   });
+
+  //   return () => {
+  //     subscription.remove();
+  //   }
+  // }, []);
+
+  useEffect(() => {
+    // registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+      setNotification(notification);
+    });
+
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+      console.log(response);
+    });
+
+    return () => {
+      Notifications.removeNotificationSubscription(notificationListener.current);
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  }, []);
+
 
   if (!isReady) {
     return null;

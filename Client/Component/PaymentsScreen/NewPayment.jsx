@@ -9,14 +9,16 @@ import { useUserContext } from '../../UserContext';
 import moment from "moment";
 import { AntDesign } from '@expo/vector-icons';
 
+import * as Notifications from 'expo-notifications';
+
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export default function NewPayment(props) {
-  const { userContext,GetUserPending } = useUserContext();
-  const expoToken = userContext.expoToken;
-  const pushTokenSecoundSide = userContext.pushTokenSecoundSide;
-  
+  const { userContext,GetUserPending,sendPushNotification } = useUserContext();
+  const expoToken = userContext.pushToken;
+  const pushToken2 = userContext.pushToken2;
+
   const [payment, setPayment] = useState({
     amountToPay: '',
     requestSubject: '',
@@ -137,6 +139,37 @@ export default function NewPayment(props) {
     }
   };
 
+  // const savePayment = async (downloadURL) => {
+  //   const NewPayment = {
+  //     amountToPay: payment.amountToPay,
+  //     requestSubject: payment.requestSubject,
+  //     requestDate: payment.requestDate,
+  //     requestProofDocument: downloadURL,
+  //     requestComment: payment.requestComment,
+  //     requestStatus: payment.requestStatus,
+  //     userId: payment.userId
+  //   }
+  //   console.log('NewPayment', NewPayment);
+  //   fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/NewRequest', {
+  //     method: 'POST',
+  //     body: JSON.stringify(NewPayment),
+  //     headers: new Headers({
+  //       'Content-Type': 'application/json; charset=UTF-8',
+  //     })
+  //   })
+  //     .then(res => {
+  //       return res.json()
+  //     })
+  //     .then(
+  //       (result) => {
+  //         console.log("fetch POST= ", result);
+  //         GetUserPending()
+  //         props.cancel();
+  //       },
+  //       (error) => {
+  //         console.log("err post=", error);
+  //       });
+  // }
   const savePayment = async (downloadURL) => {
     const NewPayment = {
       amountToPay: payment.amountToPay,
@@ -163,11 +196,25 @@ export default function NewPayment(props) {
           console.log("fetch POST= ", result);
           GetUserPending()
           props.cancel();
+          //for push notification
+          let PushNotificationsData=
+          {
+            expoPushToken: pushToken2,
+            title: "New Request",
+            body: "You have a new payment request from ",
+            data: { data: 'goes here' },
+          }
+
+          sendPushNotification(PushNotificationsData); // This line sends the notification, the function is in UserContext
         },
         (error) => {
           console.log("err post=", error);
         });
   }
+
+  
+
+
 
   return (
     <SafeAreaView style={styles.container}>

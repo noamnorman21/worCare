@@ -57,7 +57,7 @@
         <AssociationConnector Association="igroup194_prodModel.FK__tblPayche__UserI__618671AF" ManuallyRouted="false" />
         <AssociationConnector Association="igroup194_prodModel.FK__tblPrivat__taskI__01F34141" ManuallyRouted="false" />
         <AssociationConnector Association="igroup194_prodModel.FK__tblProduc__produ__2354350C" ManuallyRouted="false" />
-        <EntityTypeShape EntityType="igroup194_prodModel.ScheduledNotifications" Width="1.5" PointX="9.875" PointY="6.5" />
+        <EntityTypeShape EntityType="igroup194_prodModel.ScheduledNotifications" Width="2.75" PointX="9.75" PointY="4.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

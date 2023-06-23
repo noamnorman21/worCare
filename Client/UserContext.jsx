@@ -139,7 +139,7 @@ export function UserProvider({ children }) {
             patientHL: userData.patientHL,
             patientData: userData.patientData,
             pushToken: userData.pushToken,
-            pushTokenSecoundSide: userData.pushTokenSecoundSide,
+            pushToken2: userData.pushTokenSecoundSide,
 
         }
         setUserContext(usertoSync);
@@ -163,7 +163,7 @@ export function UserProvider({ children }) {
             getPairedEmail(userData.involvedInId);
         }
     }
-
+// ----------------------  Push Notifications  ----------------------
     // For Push Notifications - Start
     async function registerForPushNotificationsAsync() {
         let token;
@@ -194,6 +194,21 @@ export function UserProvider({ children }) {
             Alert.alert('Must use physical device for Push Notifications');
         }
         return token;
+    }
+    //send push notification to user from client side without trigger
+    async function sendPushNotification(pushData) {
+        const message = {
+            to: pushData.expoPushToken,
+            // sound: 'default',
+            title: pushData.title,
+            body: pushData.body,
+            //data: { data: pushData.data },
+        };
+        await Notifications.scheduleNotificationAsync({
+            content: message,
+            trigger: null,
+        });
+        console.log('expoPushToken: ', pushData.expoPushToken);
     }
 
     async function getHolidaysForUser(calendarCode) {
@@ -795,7 +810,7 @@ export function UserProvider({ children }) {
         fetchUserContacts, logOutContext, updateUserContext, updateUserContacts, updatePendings,
         updateUserProfile, updateuserNotifications, appEmail, getAllPrivateTasks, getAllPublicTasks,
         allPublicTasks, allPrivateTasks, UpdateDrugForPatientDTO, holidays, GetAllDrugs, allDrugs, addPrivateTaskContext,
-        newMessages, setNewMessages, logOutFireBase, registerForPushNotificationsAsync
+        newMessages, setNewMessages, logOutFireBase, registerForPushNotificationsAsync, sendPushNotification
     };
 
     return (
