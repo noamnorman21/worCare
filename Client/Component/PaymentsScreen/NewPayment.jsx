@@ -14,6 +14,9 @@ const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export default function NewPayment(props) {
   const { userContext,GetUserPending } = useUserContext();
+  const expoToken = userContext.expoToken;
+  const pushTokenSecoundSide = userContext.pushTokenSecoundSide;
+  
   const [payment, setPayment] = useState({
     amountToPay: '',
     requestSubject: '',

@@ -138,6 +138,9 @@ export function UserProvider({ children }) {
             CountryName_En: userData.CountryName_En,
             patientHL: userData.patientHL,
             patientData: userData.patientData,
+            pushToken: userData.pushToken,
+            pushTokenSecoundSide: userData.pushTokenSecoundSide,
+
         }
         setUserContext(usertoSync);
         let notifications = {

@@ -143,6 +143,9 @@ export default function LogIn({ navigation }) {
                         calendarCode: json.calendarCode,
                         patientData: json.patient,
                         patientHL: json.patient.hobbiesAndLimitationsDTO,
+                        pushToken: json.pushToken,
+                        pushTokenSecoundSide: json.pushTokenSecoundSide,
+
                     }
                     console.log(userContext);
                     const jsonValue = JSON.stringify(userContext)

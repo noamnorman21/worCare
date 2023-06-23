@@ -73,6 +73,7 @@ namespace WebApi.Controllers
                 newUser.gender = user.First().gender;
                 newUser.FirstName = user.First().FirstName;
                 newUser.LastName = user.First().LastName;
+                newUser.pushToken = user.First().pushToken;
                 var userCalendar = from c in db.tblCalendarForUser
                                    where c.userId == newUser.userId
                                    select c;
@@ -98,6 +99,11 @@ namespace WebApi.Controllers
                     newUser.involvedInId = (from id in db.tblPatient
                                             where id.patientId == newUser.patientId
                                             select id.userId).FirstOrDefault();
+                    //get the Expo token of the InvolvedIn user
+                    newUser.pushTokenSecoundSide = (from id in db.tblUser
+                                                    where id.userId == newUser.involvedInId
+                                                    select id.pushToken).FirstOrDefault();
+
                     newUser.workerId = newUser.userId;
                     var calendarInvolved = from c in db.tblCalendarForUser
                                            where c.userId == newUser.involvedInId
@@ -124,6 +130,11 @@ namespace WebApi.Controllers
                     newUser.workerId = (from id in db.tblCaresForPatient
                                         where id.patientId == newUser.patientId
                                         select id.workerId).FirstOrDefault();
+                    //get the Expo token of the caregiver user
+                    newUser.pushTokenSecoundSide = (from i in db.tblUser
+                                                    where i.userId == newUser.workerId
+                                                    select i.pushToken).FirstOrDefault();
+                    
                     var calendarCare = from c in db.tblCalendarForUser
                                        where c.userId == newUser.workerId
                                        select c;

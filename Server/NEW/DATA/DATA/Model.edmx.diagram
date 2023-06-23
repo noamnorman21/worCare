@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="2c6394dd48aa47b4800eab3c86a22774" Name="Diagram1" ZoomLevel="108">
+      <Diagram DiagramId="2c6394dd48aa47b4800eab3c86a22774" Name="Diagram1" ZoomLevel="116">
         <EntityTypeShape EntityType="igroup194_prodModel.sysdiagrams" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="igroup194_prodModel.tblActualList" Width="1.5" PointX="3" PointY="10.375" IsExpanded="true" />
         <EntityTypeShape EntityType="igroup194_prodModel.tblActualTask" Width="1.5" PointX="13.5" PointY="16.625" IsExpanded="true" />
@@ -57,6 +57,7 @@
         <AssociationConnector Association="igroup194_prodModel.FK__tblPayche__UserI__618671AF" ManuallyRouted="false" />
         <AssociationConnector Association="igroup194_prodModel.FK__tblPrivat__taskI__01F34141" ManuallyRouted="false" />
         <AssociationConnector Association="igroup194_prodModel.FK__tblProduc__produ__2354350C" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="igroup194_prodModel.ScheduledNotifications" Width="1.5" PointX="9.875" PointY="6.5" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

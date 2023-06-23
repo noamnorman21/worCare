@@ -51,6 +51,7 @@ namespace DATA
         public virtual DbSet<tblProduct> tblProduct { get; set; }
         public virtual DbSet<tblProductList> tblProductList { get; set; }
         public virtual DbSet<tblUser> tblUser { get; set; }
+        public virtual DbSet<ScheduledNotifications> ScheduledNotifications { get; set; }
     
         public virtual int InsertActualList(Nullable<bool> type)
         {
