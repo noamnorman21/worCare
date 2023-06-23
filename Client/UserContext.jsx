@@ -140,7 +140,6 @@ export function UserProvider({ children }) {
             patientData: userData.patientData,
             pushToken: userData.pushToken,
             pushToken2: userData.pushTokenSecoundSide,
-
         }
         setUserContext(usertoSync);
         let notifications = {
@@ -163,7 +162,7 @@ export function UserProvider({ children }) {
             getPairedEmail(userData.involvedInId);
         }
     }
-// ----------------------  Push Notifications  ----------------------
+    // ----------------------  Push Notifications  ----------------------
     // For Push Notifications - Start
     async function registerForPushNotificationsAsync() {
         let token;
@@ -195,7 +194,8 @@ export function UserProvider({ children }) {
         }
         return token;
     }
-    //send push notification to user from client side without trigger
+
+    // send push notification to user from client side without trigger
     async function sendPushNotification(pushData) {
         const message = {
             to: pushData.expoPushToken,
@@ -204,11 +204,16 @@ export function UserProvider({ children }) {
             body: pushData.body,
             //data: { data: pushData.data },
         };
-        await Notifications.scheduleNotificationAsync({
-            content: message,
-            trigger: null,
-        });
         console.log('expoPushToken: ', pushData.expoPushToken);
+        await fetch('https://exp.host/--/api/v2/push/send', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Accept-encoding': 'gzip, deflate',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(message),
+        });
     }
 
     async function getHolidaysForUser(calendarCode) {

@@ -83,27 +83,27 @@ export default function NavigateSignUp() {
 
         {/* שלבי שחזור סיסמה */}
         <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
-        <Stack.Screen name="ForgotPasswordLvl2" component={ForgotPasswordLvl2} options={{ headerShown: true, headerTitle: 'Back' }} />
-        <Stack.Screen name="CreateNewPassword" component={CreateNewPassword} options={{ headerShown: true, headerTitle: 'Back' }} />
+        <Stack.Screen name="ForgotPasswordLvl2" component={ForgotPasswordLvl2} options={{ headerShown: false }} />
+        <Stack.Screen name="CreateNewPassword" component={CreateNewPassword} options={{ headerShown: false }} />
 
         {/* מסך לקישור המטפל למשפחת המטופל*/}
         <Stack.Screen name="Welcome" component={Welcome} options={{ headerShown: false }} />
 
         {/* שלבים 1-3 בתהליך ההרשמה משותפים לשני סוגי המשתמשים */}
-        <Stack.Screen name="SignUp" component={SignUp} options={{ headerShown: true, headerTitle: 'Back' }} />
-        <Stack.Screen name="SignUpLvl2" component={SignUpLvl2} options={{ headerShown: true, headerTitle: 'Back' }} />
-        <Stack.Screen name="SignUpLvl3" component={SignUpLvl3} options={{ headerShown: true, headerTitle: 'Back' }} />
+        <Stack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }} />
+        <Stack.Screen name="SignUpLvl2" component={SignUpLvl2} options={{ headerShown: false }} />
+        <Stack.Screen name="SignUpLvl3" component={SignUpLvl3} options={{ headerShown: false }} />
 
         {/* שלבי המשך עבור הרשמת המטפל */}
-        <Stack.Screen name="SignUpCaregiverLVL4" component={SignUpCaregiverLVL4} options={{ headerShown: true, headerTitle: 'Back' }} />
-        <Stack.Screen name="SignUpCaregiverLVL5" component={SignUpCaregiverLVL5} options={{ headerShown: true, headerTitle: 'Back' }} />
+        <Stack.Screen name="SignUpCaregiverLVL4" component={SignUpCaregiverLVL4} options={{ headerShown: false }} />
+        <Stack.Screen name="SignUpCaregiverLVL5" component={SignUpCaregiverLVL5} options={{ headerShown: false }} />
 
         {/* שלבי המשך עבור הרשמת מעורב בטיפול */}
-        <Stack.Screen name="SignUpUserLVL4" component={SignUpUserLVL4} options={{ headerShown: true, headerTitle: 'Back' }} />
-        <Stack.Screen name="SignUpUserLVL5" component={SignUpUserLVL5} options={{ headerShown: true, headerTitle: 'Back' }} />
-        <Stack.Screen name="SignUpHobbies" component={SignUpHobbies} options={{ headerShown: true, headerTitle: 'Back' }} />
-        <Stack.Screen name="SignUpLimitations" component={SignUpLimitations} options={{ headerShown: true, headerTitle: 'Back' }} />
-        <Stack.Screen name="SignUpFinish" component={SignUpFinish} options={{ headerShown: true, headerTitle: 'Back' }} />
+        <Stack.Screen name="SignUpUserLVL4" component={SignUpUserLVL4} options={{ headerShown: false }} />
+        <Stack.Screen name="SignUpUserLVL5" component={SignUpUserLVL5} options={{ headerShown: false }} />
+        <Stack.Screen name="SignUpHobbies" component={SignUpHobbies} options={{ headerShown: false }} />
+        <Stack.Screen name="SignUpLimitations" component={SignUpLimitations} options={{ headerShown: false }} />
+        <Stack.Screen name="SignUpFinish" component={SignUpFinish} options={{ headerShown: false }} />
         {/* כניסה למערכת */}
       </>
 

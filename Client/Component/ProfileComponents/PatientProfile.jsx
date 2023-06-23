@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, SafeAreaView, StyleSheet,Button } from 'react-native';
 import {Chip } from 'react-native-paper';
 import { useUserContext } from '../../UserContext';
-import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Feather, Fontisto, MaterialCommunityIcons ,MaterialIcons} from '@expo/vector-icons';
 
 export default function PatientProfile() {
     const { userContext } = useUserContext();
@@ -12,10 +12,21 @@ export default function PatientProfile() {
         console.log("Patient Data");
         console.log(patientData);
         console.log("Hobbies and Limitations");
-        console.log(hobbiesAndLimitations);
-       
+        console.log(hobbiesAndLimitations);       
     }
     
+    const icons = {
+        "Books": <Feather name="book-open" size={16} color="#548Dff" />,
+        "TVShow": <Feather name="tv" size={16} color="#548Dff" />,
+        "radioChannel": <Feather name="radio" size={16} color="#548Dff" />,
+        "movies": <MaterialCommunityIcons name="movie" size={16} color="#548Dff" />,
+        "sensitivities": <MaterialIcons name="not-accessible" size={16} color="#548Dff" />,
+        "music": <Feather name="music" size={16} color="#548Dff" />,
+        "allergies": <MaterialCommunityIcons name="allergy" size={16} color="#548Dff" />,
+        "bathRoutine": <MaterialCommunityIcons name="bathtub" size={16} color="#548Dff" />,
+        "physicalAbilities": <Fontisto name="paralysis-disability" size={16} color="#548Dff" />,
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <Text style={styles.headerTxt}>Name: {patientData.FirstName}</Text>

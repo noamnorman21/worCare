@@ -15,14 +15,14 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export default function NewPayment(props) {
-  const { userContext,GetUserPending,sendPushNotification } = useUserContext();
-  const expoToken = userContext.pushToken;
+  const { userContext, GetUserPending, sendPushNotification } = useUserContext();
   const pushToken2 = userContext.pushToken2;
 
   const [payment, setPayment] = useState({
     amountToPay: '',
     requestSubject: '',
     requestDate: moment().format('YYYY-MM-DD'),
+    // Add Expired Date to the request
     requestProofDocument: '',
     requestComment: '',
     requestStatus: 'P',
@@ -139,37 +139,6 @@ export default function NewPayment(props) {
     }
   };
 
-  // const savePayment = async (downloadURL) => {
-  //   const NewPayment = {
-  //     amountToPay: payment.amountToPay,
-  //     requestSubject: payment.requestSubject,
-  //     requestDate: payment.requestDate,
-  //     requestProofDocument: downloadURL,
-  //     requestComment: payment.requestComment,
-  //     requestStatus: payment.requestStatus,
-  //     userId: payment.userId
-  //   }
-  //   console.log('NewPayment', NewPayment);
-  //   fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/NewRequest', {
-  //     method: 'POST',
-  //     body: JSON.stringify(NewPayment),
-  //     headers: new Headers({
-  //       'Content-Type': 'application/json; charset=UTF-8',
-  //     })
-  //   })
-  //     .then(res => {
-  //       return res.json()
-  //     })
-  //     .then(
-  //       (result) => {
-  //         console.log("fetch POST= ", result);
-  //         GetUserPending()
-  //         props.cancel();
-  //       },
-  //       (error) => {
-  //         console.log("err post=", error);
-  //       });
-  // }
   const savePayment = async (downloadURL) => {
     const NewPayment = {
       amountToPay: payment.amountToPay,
@@ -197,24 +166,23 @@ export default function NewPayment(props) {
           GetUserPending()
           props.cancel();
           //for push notification
-          let PushNotificationsData=
+          // ${userContext.userName}
+          // console.log('expoToken1', expoToken);
+          console.log('expoToken2', pushToken2);
+          let PushNotificationsData =
           {
             expoPushToken: pushToken2,
             title: "New Request",
-            body: "You have a new payment request from ",
+            body: `You have a new payment request from for ${payment.amountToPay}`,
             data: { data: 'goes here' },
           }
-
+          
           sendPushNotification(PushNotificationsData); // This line sends the notification, the function is in UserContext
         },
         (error) => {
           console.log("err post=", error);
         });
   }
-
-  
-
-
 
   return (
     <SafeAreaView style={styles.container}>

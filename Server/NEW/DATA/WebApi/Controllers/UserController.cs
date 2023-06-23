@@ -53,6 +53,24 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpPut]
+        [Route("UpdatePushToken")]
+        public IHttpActionResult UpdatePushToken([FromBody] UserDTO userD)
+        {
+            try
+            {
+                var user = db.tblUser.Where(x => x.userId == userD.userId).FirstOrDefault();
+                if (user == null)
+                    return NotFound();
+                user.pushToken = userD.pushToken;
+                db.SaveChanges();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
         [HttpPost]
         [Route("GetUserForLogin")] // POST - Because The FromBody - Check if email and password exists in DB
@@ -134,7 +152,7 @@ namespace WebApi.Controllers
                     newUser.pushTokenSecoundSide = (from i in db.tblUser
                                                     where i.userId == newUser.workerId
                                                     select i.pushToken).FirstOrDefault();
-                    
+
                     var calendarCare = from c in db.tblCalendarForUser
                                        where c.userId == newUser.workerId
                                        select c;
@@ -184,7 +202,7 @@ namespace WebApi.Controllers
                     hlDTO.sensitivityToNoise = item.sensitivityToNoise;
                     hlDTO.otherL = item.other;
                 }
-                patientDTO.hobbiesAndLimitationsDTO.Add(hlDTO);                
+                patientDTO.hobbiesAndLimitationsDTO.Add(hlDTO);
                 newUser.patient = patientDTO;
                 return Ok(newUser);
             }
@@ -254,7 +272,7 @@ namespace WebApi.Controllers
             {
                 tblCalendarForUser calendarForUser = new tblCalendarForUser();
                 //the store procedure is checking if the user already exists in the db, if not, it will insert the user
-                db.InsertUser(user.Email, user.Password, user.FirstName, user.LastName, user.gender, user.phoneNum, user.userUri,user.pushToken);
+                db.InsertUser(user.Email, user.Password, user.FirstName, user.LastName, user.gender, user.phoneNum, user.userUri, user.pushToken);
                 db.SaveChanges();
                 var newUser = db.tblUser.Where(x => x.Email == user.Email).FirstOrDefault();
                 if (newUser == null)

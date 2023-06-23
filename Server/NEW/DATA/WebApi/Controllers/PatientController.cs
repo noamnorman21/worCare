@@ -44,7 +44,7 @@ namespace WebApi.Controllers
                 patientDTO.LastName = patient.LastName;
                 patientDTO.DateOfBirth = patient.DateOfBirth;
                 patientDTO.patientId = patientId;
-                patientDTO.LanguageName_En = patient.tblLanguage.LanguageName_En;                
+                patientDTO.LanguageName_En = patient.tblLanguage.LanguageName_En;
                 return Ok(patientDTO);
             }
             catch (Exception ex)
@@ -100,8 +100,7 @@ namespace WebApi.Controllers
                 string nightSleep = patient.nightSleep;
                 string other = patient.otherH;
                 string patientId = patient.patientId;
-
-                db.InsertPatientHobbies(patientId, books, music, TVShow, radioChannel, food, drink, specialHabits, afternoonNap, movie, nightSleep, other);
+                db.InsertPatientHobbies(patientId, books, music, TVShow, radioChannel, food, drink, movie, specialHabits, afternoonNap, nightSleep, other);
                 db.InsertPatientLimitations(patientId, patient.allergies, patient.sensitivities, patient.physicalAbilities, patient.bathRoutine, patient.sensitivityToNoise, patient.otherL);
                 db.SaveChanges();
                 return Ok("Patient Details added");

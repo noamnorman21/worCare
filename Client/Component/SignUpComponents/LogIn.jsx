@@ -9,6 +9,7 @@ import * as Linking from 'expo-linking';
 import { useUserContext } from '../../UserContext';
 import { auth } from '../../config/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import * as Notifications from 'expo-notifications';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -145,9 +146,43 @@ export default function LogIn({ navigation }) {
                         patientHL: json.patient.hobbiesAndLimitationsDTO,
                         pushToken: json.pushToken,
                         pushTokenSecoundSide: json.pushTokenSecoundSide,
-
                     }
-                    console.log(userContext);
+                    const currentToken = (await Notifications.getExpoPushTokenAsync()).data;
+                    if (currentToken !== userContext.pushToken) {
+                        const userToken = {
+                            userId: userContext.userId,
+                            pushToken: currentToken,
+                        }
+                        userContext.pushToken = currentToken;
+                        const updateTokenUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/UpdatePushToken';
+                        fetch(updateTokenUrl, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(userToken),
+                        })
+                            .then((response) => {
+                                if (response.status === 200) {
+                                    return response.json();
+                                }
+                                else {
+                                    return null;
+                                }
+                            })
+                            .then((json) => {
+                                if (json === null) {
+                                    console.log('update token failed');
+                                }
+                                else {
+                                    console.log('token updated');
+                                }
+                            })
+                            .catch((error) => {
+                                console.log(error);
+                            }
+                            );
+                    }
                     const jsonValue = JSON.stringify(userContext)
                     AsyncStorage.setItem('userData', jsonValue)
                     await logInContext(userContext).then(() => {

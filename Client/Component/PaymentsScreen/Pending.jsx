@@ -14,7 +14,9 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export default function Pending() {
-  const { userContext, userPendingPayments } = useUserContext()
+  const { userContext, userPendingPayments, sendPushNotification } = useUserContext()
+  const pushToken2 = userContext.pushToken2;
+
   //  const {userPendingPayments} = useUserContext()
   const [modal1Visible, setModal1Visible] = useState(false);
   const [Pendings, setPendings] = useState()
@@ -40,21 +42,19 @@ export default function Pending() {
     setPendings(arr)
   }
 
-  const Notification = (id) => {
-    Alert.alert(
-      "Notification",
-      "Are you sure you want to send a notification to the user?",
-      [
-        {
-          text: "Cancel",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel"
-        },
-        { text: "OK", onPress: () => console.log("OK Pressed") }
-      ],
-      { cancelable: false }
-    );
-  }
+  // Should Get also the subject, amount, date, comment
+  // const Notification = () => {
+  //   let PushNotificationsData =
+  //   {
+  //     expoPushToken: pushToken2,
+  //     title: "Reminder: Pending Request",
+  //     body: `You have a payment request pending! \n Subject: ${props.subject} \n Amount: ${props.amountToPay} \n Date: ${dateString}`,
+  //     data: { data: 'goes here' },
+  //     // how to send user to the request screen? 
+  //     // maybe we can send the request id and then in the request screen we will fetch the request by id
+  //   }
+  //   sendPushNotification(PushNotificationsData)
+  // }
 
   return (
     <>
@@ -82,8 +82,9 @@ function Request(props) {
   const dateString = day + "/" + month + "/" + newYear;
   const [valueChanged, setValueChanged] = useState(false);
   const [status, setStatus] = useState(props.data.requestStatus);
-  const { userContext, GetUserPending, GetUserHistory } = useUserContext();
+  const { userContext, GetUserPending, GetUserHistory, sendPushNotification } = useUserContext();
   const [DownloadProgress, setDownloadProgress] = useState();
+  const pushToken2 = userContext.pushToken2;
 
   const toggle = () => {
     const config = {
@@ -111,7 +112,16 @@ function Request(props) {
 
   const openModal = (value) => {
     if (value == 1) {
-      console.log("Notofication")
+      let PushNotificationsData =
+      {
+        expoPushToken: pushToken2,
+        title: "Reminder: Pending Request",
+        body: `You have a payment request pending! \n Subject: ${props.subject} \n Amount: ${props.amountToPay} \n Date: ${dateString}`,
+        data: { data: 'goes here' },
+        // how to send user to the request screen? 
+        // maybe we can send the request id and then in the request screen we will fetch the request by id
+      }
+      sendPushNotification(PushNotificationsData)
     }
     else if (value == 2) {
       setModal1Visible(true)
@@ -182,23 +192,23 @@ function Request(props) {
 
   const saveStatus = async (id) => {
     if (status == "F") {
-    try {
-      const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/UpdateStatus/', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(id)
-      });
-      const data = await response.json();
-      console.log(data)
-      GetUserPending();
-      GetUserHistory();
-    } catch (error) {
-      console.log(error)
+      try {
+        const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/UpdateStatus/', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(id)
+        });
+        const data = await response.json();
+        console.log(data)
+        GetUserPending();
+        GetUserHistory();
+      } catch (error) {
+        console.log(error)
+      }
     }
   }
-}
 
   const callback = downloadProgress => {
     const progress = downloadProgress.totalBytesWritten / downloadProgress.totalBytesExpectedToWrite;
@@ -270,7 +280,7 @@ function Request(props) {
                   <Text style={styles.requestItemText}>{dateString}</Text>
                 </View>
                 <View style={styles.requestItemMiddle}>
-                  <Text style={styles.requestItemText}>{props.subject.length>17? props.subject.slice(0, 12)+"...":props.subject}</Text>
+                  <Text style={styles.requestItemText}>{props.subject.length > 17 ? props.subject.slice(0, 12) + "..." : props.subject}</Text>
                 </View>
               </TouchableOpacity>
               <Menu style={{ flexDirection: 'column', marginVertical: 0 }} onSelect={value => openModal(value)} >
@@ -303,7 +313,7 @@ function Request(props) {
             </View>
             <View style={styles.requestItemBody}>
               <View style={styles.requestItemBodyLeft}>
-              <Text style={styles.requestItemText}>Subject: </Text>
+                <Text style={styles.requestItemText}>Subject: </Text>
                 <Text style={styles.requestItemText}>Date: </Text>
                 <Text style={styles.requestItemText}>Amount: </Text>
                 <Text style={[styles.requestItemText, props.requestComment == null || props.requestComment == '' && { display: 'none' }]}>Comment: </Text>
@@ -330,7 +340,7 @@ function Request(props) {
             </TouchableOpacity>
             <TouchableOpacity onPress={toggle} style={styles.requestItemMiddle}>
               <View>
-                <Text style={[styles.requestItemText, status == 'F' ? { textDecorationLine: 'line-through' } : {}]}>{dateString} - {props.subject.length>15? props.subject.slice(0, 12)+"...":props.subject}</Text>
+                <Text style={[styles.requestItemText, status == 'F' ? { textDecorationLine: 'line-through' } : {}]}>{dateString} - {props.subject.length > 15 ? props.subject.slice(0, 12) + "..." : props.subject}</Text>
               </View>
             </TouchableOpacity>
             <Menu style={{ flexDirection: 'column', marginVertical: 0, position: 'relative' }} onSelect={value => openModal(value)} >
