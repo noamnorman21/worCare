@@ -1,9 +1,11 @@
-import { View, Text, Alert, SafeAreaView, TouchableOpacity, Dimensions, StyleSheet } from 'react-native'
-import { useState } from 'react'
+import { View, Text, Alert, SafeAreaView, TouchableOpacity, Dimensions, StyleSheet, Platform } from 'react-native'
+import { useEffect, useState } from 'react'
 import { FontAwesome, Entypo, MaterialIcons } from '@expo/vector-icons';
 import DatePicker from 'react-native-datepicker';
 import { Dropdown } from 'react-native-element-dropdown';
 import { OrLine, HaveAccount } from '../FooterLine';
+import DateTimePicker from '@react-native-community/datetimepicker';
+
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
@@ -12,6 +14,44 @@ export default function SignUpCaregiverLVL4({ navigation, route }) {
   const [country, setCountry] = useState(route.params.country);
   const [holidaysType, setHolidaysType] = useState(route.params.holidaysType);
   const userData = route.params.userData;
+  const [platfr, setPlatfr] = useState(Platform.OS);
+  const [showPickerAndroidBD, setShowPickerAndroidBD] = useState(false);
+  const [showPickerAndroidVE, setShowPickerAndroidVE] = useState(false);
+
+  //for date picker android
+  // birth date
+  const showDatepickerBD = () => {
+    // showMode('date');
+    console.log('show date picker');
+    setShowPickerAndroidBD(!showPickerAndroidBD);
+  };
+
+  const onChangeDateBD = (selectedDate) => {
+    console.log('date changed');
+    const birthDate = new Date(selectedDate.nativeEvent.timestamp).toISOString().substring(0, 10);
+    console.log(birthDate, "birthDate");
+    console.log(date, "date");
+    if(birthDate!=='1980-01-01'){setDate(birthDate);}
+    setShowPickerAndroidBD(!showPickerAndroidBD);
+  };
+
+  // visa expiration
+  const showDatepickerVE = () => {
+    // showMode('date');
+    console.log('show date picker');
+    setShowPickerAndroidVE(!showPickerAndroidVE);
+  };
+
+  const onChangeDateVE = (selectedDate) => {
+   setVisaExpiration(new Date(selectedDate.nativeEvent.timestamp).toISOString().substring(0, 10));
+    setShowPickerAndroidVE(!showPickerAndroidVE);
+  };
+
+  useEffect(() => {
+    console.log(visaExpiration, "visaExpiration");
+  }, [visaExpiration])
+
+
 
   const getMinDate = () => {
     var date = new Date().getDate(); //Current Date
@@ -28,6 +68,7 @@ export default function SignUpCaregiverLVL4({ navigation, route }) {
 
   const [visaExpiration, setVisaExpiration] = useState('');
   const [date, setDate] = useState('');
+  
 
   const [openCountry, setOpenCountry] = useState(false);
   const [valueCountry, setValueCountry] = useState(null);
@@ -75,6 +116,13 @@ export default function SignUpCaregiverLVL4({ navigation, route }) {
       {/* Input Container */}
       <View style={styles.inputContainer}>
         {/* Date Picker for birth-date */}
+        {platfr !== 'ios' ? <TouchableOpacity style={styles.datePicker} onPress={showDatepickerBD}>
+                  <Text style={styles.dateInputTxt}>
+                    {date === '' ? 'Date Of Birth' : date}                  
+                  </Text>
+                  {!date&& <FontAwesome name="calendar-check-o" size={24} color="gray" />}
+                  {/* <Octicons style={{ textAlign: 'right' }} name="calendar" size={22} /> */}
+                </TouchableOpacity>:
         <DatePicker
           useNativeDriver={true}
           iconComponent={<FontAwesome name="calendar-check-o" size={24} color="gray" />}
@@ -106,12 +154,31 @@ export default function SignUpCaregiverLVL4({ navigation, route }) {
             }
           }}
           onDateChange={(date) => { setDate(date) }}
-        />
+        />}
+         {showPickerAndroidBD && (
+                  <DateTimePicker
+                    //testID="dateTimePicker"
+                    value={new Date('1980-01-01')}
+                    // mode={"date"}
+                    is24Hour={true}
+                    onChange={(date) => onChangeDateBD(date)}
+                    display="default"
+                    maximumDate={new Date()}
+                    minimumDate={new Date('1920-01-01')}
+                  />
+                )}
       </View>
 
       {/* Input Container */}
       <View style={styles.inputContainer}>
         {/* Date Picker for visa expiration min date should be today*/}
+        {platfr !== 'ios' ? <TouchableOpacity style={styles.datePicker} onPress={showDatepickerVE}>
+                  <Text style={styles.dateInputTxt}>
+                    {visaExpiration === '' ? 'Visa Expiration' : visaExpiration}
+                  </Text>
+                  {!visaExpiration&& <FontAwesome name="calendar-times-o" size={24} color="gray" />}
+                  {/* <Octicons style={{ textAlign: 'right' }} name="calendar" size={22} /> */}
+                </TouchableOpacity>:
         <DatePicker
           iconComponent={<FontAwesome name="calendar-times-o" size={24} color="gray" />}
           useNativeDriver={true}
@@ -142,7 +209,18 @@ export default function SignUpCaregiverLVL4({ navigation, route }) {
             }
           }}
           onDateChange={(date) => { setVisaExpiration(date) }}
-        />
+        />}
+        {showPickerAndroidVE && (
+                  <DateTimePicker
+                    //testID="dateTimePicker"
+                    value={visaExpiration? new Date(visaExpiration):new Date()}
+                    // mode={"date"}
+                    is24Hour={true}
+                    onChange={(date) => onChangeDateVE(date)}
+                    display="default"
+                    minimumDate={new Date()}
+                  />
+                )}
       </View>
 
       {/* Drop Down Picker for Country */}
@@ -321,5 +399,28 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     justifyContent: 'center',
     marginVertical: 10,
-  }
+  },
+  datePicker: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: SCREEN_WIDTH * 0.9,
+    height: 54,
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    fontSize: 16,
+    fontFamily: 'Urbanist-Medium',
+    color: 'gray',
+    borderColor: '#E6EBF2',
+    borderWidth: 1.5,
+    marginVertical: 10,
+  },
+  dateInputTxt: {
+    color: '#000',
+    fontSize: 16,
+    fontFamily: 'Urbanist-Medium',
+    fontSize: 16,
+    color: 'gray',
+  },
 })

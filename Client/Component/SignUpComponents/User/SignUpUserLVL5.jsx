@@ -1,9 +1,11 @@
-import { View, Text, SafeAreaView, StyleSheet, Dimensions, TextInput, TouchableOpacity, Alert } from 'react-native'
+import { View, Text, SafeAreaView, StyleSheet, Dimensions, TextInput, TouchableOpacity, Alert, Platform } from 'react-native'
 import { useState, useEffect } from 'react'
 import { OrLine, HaveAccount } from '../FooterLine'
 import DatePicker from 'react-native-datepicker';
 import { Dropdown } from 'react-native-element-dropdown';
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
+import DateTimePicker from '@react-native-community/datetimepicker';
+
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 export default function SignUpUserLVL5({ navigation, route }) {
@@ -13,6 +15,26 @@ export default function SignUpUserLVL5({ navigation, route }) {
   const [patientID, setPatientID] = useState('');
   const [patientFirstName, setPatientFirstName] = useState('');
   const [patientLastName, setPatientLastName] = useState('');
+  const [platfr, setPlatfr] = useState(Platform.OS);
+  const [showPickerAndroid, setShowPickerAndroid] = useState(false);
+
+  //for date picker android
+  const showDatepicker = () => {
+    // showMode('date');
+    console.log('show date picker');
+    setShowPickerAndroid(!showPickerAndroid);
+  };
+
+  const onChangeDate = (selectedDate) => {
+    console.log('date changed');
+    const birthDate = new Date(selectedDate.nativeEvent.timestamp).toISOString().substring(0, 10);
+    console.log(birthDate, "birthDate");
+    console.log(date, "date");
+    if(birthDate!=='1980-01-01'){setDate(birthDate);}
+    setShowPickerAndroid(!showPickerAndroid);
+  };
+
+
 
   const handleInputAndContinue = () => {
     if (patientFirstName === '' || patientLastName === '' || patientID === '' || date === '' || valueLanguage === null) {
@@ -71,8 +93,15 @@ export default function SignUpUserLVL5({ navigation, route }) {
           onChangeText={(patientID) => setPatientID(patientID)}
         />
         {/* Date Picker for birth-date */}
-        {
-          <DatePicker
+        {platfr !== 'ios' ? <TouchableOpacity style={styles.datePicker} onPress={showDatepicker}>
+                  <Text style={styles.dateInputTxt}>
+                    {date === '' ? 'Date Of Birth' : date}
+                  
+                  </Text>
+                  {!date&& <FontAwesome name="calendar-check-o" size={24} color="gray" />}
+                  {/* <Octicons style={{ textAlign: 'right' }} name="calendar" size={22} /> */}
+                </TouchableOpacity>:
+            <DatePicker
             useNativeDriver={'true'}
             iconComponent={<FontAwesome name="calendar-check-o" size={24} color="gray" />}
             style={styles.inputFull}
@@ -104,8 +133,21 @@ export default function SignUpUserLVL5({ navigation, route }) {
               }
             }}
             onDateChange={(date) => { setDate(date) }}
-          />
-        }
+          />}
+          {showPickerAndroid && (
+                  <DateTimePicker
+                    //testID="dateTimePicker"
+                    value={new Date('1980-01-01')}
+                    // mode={"date"}
+                    is24Hour={true}
+                    onChange={(date) => onChangeDate(date)}
+                    display="default"
+                    maximumDate={new Date()}
+                    minimumDate={new Date('1920-01-01')}
+                  />
+                )}
+
+        
       </View>
 
       <View style={styles.listContainer}>
@@ -262,5 +304,35 @@ const styles = StyleSheet.create({
   containerStyle: {
     justifyContent: 'flex-start',
     borderRadius: 16,
+  },
+  datePicker: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: Dimensions.get('window').width * 0.92,
+    marginBottom: 10,
+    paddingLeft: 10,
+    paddingRight: 15,
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: '#E6EBF2',
+    shadowColor: '#000',
+    height: 54,
+    fontFamily: 'Urbanist-Light',
+    fontSize: 16,
+  },
+  dateInputTxt: {
+    color: '#000',
+    paddingHorizontal: 5,
+    fontSize: 16,
+    fontFamily: 'Urbanist-Regular',
+    fontSize: 16,
+    color: '#808080',
+  },
+  dateIcon: {
+    position: 'absolute',
+    right: 0,
+    top: 10,
+    marginLeft: 0.2
   },
 })
