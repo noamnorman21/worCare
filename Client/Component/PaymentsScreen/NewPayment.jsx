@@ -110,6 +110,10 @@ export default function NewPayment(props) {
       Alert.alert('Please enter subject');
       return;
     }
+    if (payment.requestSubject.length>20) {
+      Alert.alert('Subject is too long, please enter up to 20 characters');
+      return;
+    }
     const filename = image.substring(image.lastIndexOf('/') + 1);
     const storageRef = ref(storage, "requests/" + filename);
     const blob = await fetch(image).then(response => response.blob());

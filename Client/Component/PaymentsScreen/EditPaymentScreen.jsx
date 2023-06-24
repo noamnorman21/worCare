@@ -193,6 +193,10 @@ export default function EditPaymentScreen(props) {
   }
 
   const savePayment = async (downloadURL) => {
+    if(Payment.requestSubject.length>20){
+      Alert.alert('Error', 'Subject must be less than 20 characters');
+      return;
+    }
     const temp = {
       requestId: Payment.requestId,
       amountToPay: Payment.amountToPay,

@@ -366,7 +366,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontFamily: 'Urbanist-Bold',
     color: '#000',
-    marginBottom: 20,
+    margin: 10,
   },
   modalButton: {
     width: ScreenWidth * 0.8,
@@ -375,7 +375,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 20,
+    margin:10,
+
   },
   modalButtonText: {
     fontSize: 24,

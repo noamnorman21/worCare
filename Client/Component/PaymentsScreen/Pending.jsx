@@ -85,7 +85,7 @@ function Request(props) {
   const day = date.getDate();
   const dateString = day + "/" + month + "/" + newYear;
   const [valueChanged, setValueChanged] = useState(false);
-  const [status, setStatus] = useState(props.data.requestStatus);
+  const [status, setStatus] = useState(false);
   const { userContext, GetUserPending, GetUserHistory, sendPushNotification } = useUserContext();
   const [DownloadProgress, setDownloadProgress] = useState();
   const pushToken2 = userContext.pushToken2;
@@ -100,7 +100,7 @@ function Request(props) {
   };
 
   const editRequest = () => {
-    if (status == "F") {
+    if (status) {
       Alert.alert(
         'Edit Payment request',
         'You cannot edit a paid request',
@@ -109,7 +109,7 @@ function Request(props) {
         ],
       );
     }
-    else if (status == "P") {
+    else  {
       setModal2Visible(true)
     }
   }
@@ -131,6 +131,7 @@ function Request(props) {
       setModal1Visible(true)
     }
     if (value == 3) {
+      console.log("edit")
       editRequest()
     }
     if (value == 4) {
@@ -182,20 +183,33 @@ function Request(props) {
     );
   }
 
-  const askUserBeforeSave = () => {
-    if (status == "F") {
-      setStatus("P")
-    }
-    else if (status == "P") {
-      setStatus("F")
-      setTimeout(() => {
-        saveStatus(props.data.requestId)
-      }, 3000);
-    }
-  }
+  // const askUserBeforeSave = () => {
+  //   if (status == "F") {
+  //     setStatus("P")
+  //   }
+  //   else if (status == "P") {
+  //     setStatus("F")
+  //     // console.log("status = P")
+  //     // setTimeout(() => {
+  //     //   saveStatus(props.data.requestId)
+  //     // }, 2000);
+  //   }
+  // }
+
+  useEffect(() => { 
+    console.log("status", status)   
+      if (status) {
+          const timer = setTimeout(() => {
+            saveStatus(props.data.requestId)
+          }, 2000);
+          return () => clearTimeout(timer);
+      }    
+  }, [status])
 
   const saveStatus = async (id) => {
-    if (status == "F") {
+
+    if (status) {
+      console.log("status = F")
       try {
         const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/UpdateStatus/', {
           method: 'PUT',
@@ -331,10 +345,10 @@ function Request(props) {
           </View>
           :
           <View style={styles.requestItemHeader}>
-            <TouchableOpacity style={styles.request} onPress={() => askUserBeforeSave()}>
+            <TouchableOpacity style={styles.request} onPress={() => setStatus(!status)}>
               <View style={styles.requestItemLeft}>
                 {
-                  status != 'F' ?
+                  !status  ?
                     <Feather name="circle" size={30} color="#548DFF" />
                     :
                     <Feather name="check-circle" size={30} color="#548DFF" />
@@ -343,7 +357,7 @@ function Request(props) {
             </TouchableOpacity>
             <TouchableOpacity onPress={toggle} style={styles.requestItemMiddle}>
               <View>
-                <Text style={[styles.requestItemText, status == 'F' ? { textDecorationLine: 'line-through' } : {}]}>{dateString} - {props.subject.length > 15 ? props.subject.slice(0, 12) + "..." : props.subject}</Text>
+                <Text style={[styles.requestItemText, status ? { textDecorationLine: 'line-through' } : {}]}>{dateString} - {props.subject.length > 15 ? props.subject.slice(0, 12) + "..." : props.subject}</Text>
               </View>
             </TouchableOpacity>
             <Menu style={{ flexDirection: 'column', marginVertical: 0, position: 'relative' }} onSelect={value => openModal(value)} >
