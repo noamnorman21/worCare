@@ -23,7 +23,6 @@ function AddBtn(props) {
 }
 
 function AddNewMedicine(props) {
-   //const {useUserContext} = useUserContext();
    const PlatformType = Platform.OS;
    const [show, setShow] = useState(false);
    const [userData, setUserData] = useState(useUserContext().userContext);
@@ -59,6 +58,14 @@ function AddNewMedicine(props) {
          medTimeArr.push(medTime);
       }
       console.log(selectedDrugName);
+      // push token for notification - if user is a involved, we will use the push token of the worker
+      let pushToken;
+      if (userData.userType == "User") {
+         pushToken = userData.pushToken2;
+      }
+      else {
+         pushToken = userData.pushToken;
+      }
 
       let newMedForDb = {
          drugNameEn: selectedDrugName.drugNameEn,
@@ -73,7 +80,7 @@ function AddNewMedicine(props) {
          dosage: quantity,
          taskComment: medComment,
          frequency: selectedFrequency,
-         //dosageUnit: medDosageUnit, //not relevant for now
+         pushToken: pushToken,
       }
       console.log(newMedForDb);
 
@@ -679,14 +686,23 @@ function NewTaskModal(props) {
       addPrivateTaskContext(taskData)
       clearInputs();
    }
+
+   let pushToken;
+   if (userType == "User") {
+      pushToken = userData.pushToken2;
+   }
+   else {
+      pushToken = userData.pushToken;
+   }
+
    const addTask = () => {
       //if it caregiver than check if the task is private or public
-      if (userType == "Caregiver") {
+      if (userType == "Caregiver") {         
          if (isPrivate) {
             addPrivateTask();
             return;
          }
-      }
+      }      
       if (taskCategory == 'General') {
          addPublicTask();
       }
@@ -712,6 +728,7 @@ function NewTaskModal(props) {
          userId: userData.involvedInId,
          taskComment: taskComment,
          frequency: taskFrequency,
+         pushToken: pushToken,
       }
       console.log("newTaskForDb= ", newTaskForDb);
       let InsertActualList = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/InsertActualList';
@@ -743,6 +760,7 @@ function NewTaskModal(props) {
          }
          );
    }
+
    const addPublicTask = () => {
       if (taskTime != '' && taskTimeArr.length == 0) {
          taskTimeArr.push(taskTime);
@@ -757,6 +775,7 @@ function NewTaskModal(props) {
          userId: userData.involvedInId,
          taskComment: taskComment,
          frequency: taskFrequency,
+         pushToken: pushToken,
       }
       console.log(newTaskForDb);
       let addTaskUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/InsertActualList';
@@ -789,6 +808,7 @@ function NewTaskModal(props) {
          );
 
    }
+
    const clearInputs = () => {
       setTaskName('')
       setTaskNameBorder('')

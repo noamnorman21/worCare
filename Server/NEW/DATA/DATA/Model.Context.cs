@@ -51,7 +51,7 @@ namespace DATA
         public virtual DbSet<tblProduct> tblProduct { get; set; }
         public virtual DbSet<tblProductList> tblProductList { get; set; }
         public virtual DbSet<tblUser> tblUser { get; set; }
-        public virtual DbSet<ScheduledNotifications> ScheduledNotifications { get; set; }
+        public virtual DbSet<tblScheduledNotifications> tblScheduledNotifications { get; set; }
     
         public virtual int InsertActualList(Nullable<bool> type)
         {
@@ -723,6 +723,39 @@ namespace DATA
                 new ObjectParameter("Type", typeof(string));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertNewDrug", drugNameParameter, drugNameEnParameter, drugUrlParameter, drugUrlEnParameter, modifyDateParameter, typeParameter);
+        }
+    
+        public virtual int InsertScheduledNotification(string pushToken, string title, string pushMessage, Nullable<System.DateTime> scheduledTime, string data, Nullable<int> actualTaskId, Nullable<int> paymentId)
+        {
+            var pushTokenParameter = pushToken != null ?
+                new ObjectParameter("pushToken", pushToken) :
+                new ObjectParameter("pushToken", typeof(string));
+    
+            var titleParameter = title != null ?
+                new ObjectParameter("title", title) :
+                new ObjectParameter("title", typeof(string));
+    
+            var pushMessageParameter = pushMessage != null ?
+                new ObjectParameter("pushMessage", pushMessage) :
+                new ObjectParameter("pushMessage", typeof(string));
+    
+            var scheduledTimeParameter = scheduledTime.HasValue ?
+                new ObjectParameter("scheduledTime", scheduledTime) :
+                new ObjectParameter("scheduledTime", typeof(System.DateTime));
+    
+            var dataParameter = data != null ?
+                new ObjectParameter("data", data) :
+                new ObjectParameter("data", typeof(string));
+    
+            var actualTaskIdParameter = actualTaskId.HasValue ?
+                new ObjectParameter("actualTaskId", actualTaskId) :
+                new ObjectParameter("actualTaskId", typeof(int));
+    
+            var paymentIdParameter = paymentId.HasValue ?
+                new ObjectParameter("paymentId", paymentId) :
+                new ObjectParameter("paymentId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertScheduledNotification", pushTokenParameter, titleParameter, pushMessageParameter, scheduledTimeParameter, dataParameter, actualTaskIdParameter, paymentIdParameter);
         }
     }
 }

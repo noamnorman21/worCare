@@ -1,14 +1,9 @@
-﻿using System;
+﻿using HtmlAgilityPack; // for HtmlDocument
+using Newtonsoft.Json.Linq; // for JObject
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Data.Entity; // for DbContext
-using System.Web.Http;
-using System.Web.Http.Results;
 using System.Net.Http;
-using HtmlAgilityPack; // for HtmlDocument
-using Newtonsoft.Json.Linq; // for JObject
 
 namespace DATA
 {
@@ -42,11 +37,12 @@ namespace DATA
     public partial class tblActualTask
     {
         igroup194Db db = new igroup194Db();
-        public bool InsertActualTask(string frequency, TimeSpan[] timesInDayArr, int taskId, DateTime taskFromDate, DateTime taskToDate, int listId, Nullable<bool> type, string taskName)
+        public bool InsertActualTask(string frequency, TimeSpan[] timesInDayArr, int taskId, DateTime taskFromDate, DateTime taskToDate, int listId, Nullable<bool> type, string taskName, string pushToken)
         {
             try
             {
                 var list = db.tblActualList.Where(x => x.listId == listId).First();
+                string pushTitle = "Reminder: " + taskName;
                 DateTime tempDate = taskFromDate;
                 if (frequency == "Once")
                 {
@@ -56,39 +52,44 @@ namespace DATA
                         {
                             //task.taskToDate in this content is the date of the task
                             db.InsertActualTask(taskId, taskToDate, timesInDayArr[i], "P");
+                            int actualId = db.tblActualTask.Max(x => x.actualId);
                             if (type == false)
                             {
-                                int actualId = db.tblActualTask.Max(x => x.actualId);
                                 var task = db.tblActualTask.Where(x => x.actualId == actualId).First();
                                 db.InsertList(taskName, list.listId, actualId, task.taskId);
                             }
+                            DateTime pushTime = new DateTime(taskToDate.Year, taskToDate.Month, taskToDate.Day, timesInDayArr[i].Hours, timesInDayArr[i].Minutes, timesInDayArr[i].Seconds);
+                            db.InsertScheduledNotification(pushToken, pushTitle, "bla bla", pushTime, null, actualId, null); // Change bla bla
                         }
                     }
                     else
                     {     //task.taskToDate in this content is the date of the task
                         db.InsertActualTask(taskId, taskToDate, timesInDayArr[0], "P");
+                        int actualId = db.tblActualTask.Max(x => x.actualId);
                         if (type == false)
                         {
-                            int actualId = db.tblActualTask.Max(x => x.actualId);
                             var task = db.tblActualTask.Where(x => x.actualId == actualId).First();
                             db.InsertList(taskName, list.listId, actualId, task.taskId);
                         }
+                        DateTime pushTime = new DateTime(taskToDate.Year, taskToDate.Month, taskToDate.Day, timesInDayArr[0].Hours, timesInDayArr[0].Minutes, timesInDayArr[0].Seconds);
+                        db.InsertScheduledNotification(pushToken, pushTitle, "bla bla", pushTime, null, actualId, null); // Change bla bla
                     }
                 }
                 else if (frequency == "Daily")
                 {
                     while (tempDate < taskToDate)
                     {
-
                         for (int i = 0; i < timesInDayArr.Length; i++)
                         {
                             db.InsertActualTask(taskId, tempDate, timesInDayArr[i], "P");
+                            int actualId = db.tblActualTask.Max(x => x.actualId);
                             if (type == false)
                             {
-                                int actualId = db.tblActualTask.Max(x => x.actualId);
                                 var task = db.tblActualTask.Where(x => x.actualId == actualId).First();
                                 db.InsertList(taskName, list.listId, actualId, task.taskId);
                             }
+                            DateTime pushTime = new DateTime(tempDate.Year, tempDate.Month, tempDate.Day, timesInDayArr[i].Hours, timesInDayArr[i].Minutes, timesInDayArr[i].Seconds);
+                            db.InsertScheduledNotification(pushToken, pushTitle, "bla bla", pushTime, null, actualId, null); // Change bla bla
                         }
                         tempDate = tempDate.AddDays(1);
                     }
@@ -97,16 +98,17 @@ namespace DATA
                 {
                     while (tempDate.AddDays(7) < taskToDate)
                     {
-                       
                         for (int i = 0; i < timesInDayArr.Length; i++)
                         {
                             db.InsertActualTask(taskId, tempDate, timesInDayArr[i], "P");
+                            int actualId = db.tblActualTask.Max(x => x.actualId);
                             if (type == false)
                             {
-                                int actualId = db.tblActualTask.Max(x => x.actualId);
                                 var task = db.tblActualTask.Where(x => x.actualId == actualId).First();
                                 db.InsertList(taskName, list.listId, actualId, task.taskId);
                             }
+                            DateTime pushTime = new DateTime(tempDate.Year, tempDate.Month, tempDate.Day, timesInDayArr[i].Hours, timesInDayArr[i].Minutes, timesInDayArr[i].Seconds);
+                            db.InsertScheduledNotification(pushToken, pushTitle, "bla bla", pushTime, null, actualId, null); // Change bla bla
                         }
                         tempDate = tempDate.AddDays(7);
                     }
@@ -115,70 +117,29 @@ namespace DATA
                 {
                     while (tempDate.AddMonths(1) < taskToDate)
                     {
-                     
+
                         for (int i = 0; i < timesInDayArr.Length; i++)
                         {
                             db.InsertActualTask(taskId, tempDate, timesInDayArr[i], "P");
+                            int actualId = db.tblActualTask.Max(x => x.actualId);
                             if (type == false)
                             {
                                 var task = db.tblActualTask.Where(x => x.actualId == actualId).First();
                                 db.InsertList(taskName, list.listId, task.actualId, task.taskId);
                             }
+                            DateTime pushTime = new DateTime(tempDate.Year, tempDate.Month, tempDate.Day, timesInDayArr[i].Hours, timesInDayArr[i].Minutes, timesInDayArr[i].Seconds);
+                            db.InsertScheduledNotification(pushToken, pushTitle, "bla bla", pushTime, null, actualId, null); // Change bla bla
                         }
                         tempDate = tempDate.AddMonths(1);
                     }
                 }
-                
-                
                 db.SaveChanges();
                 return true;
             }
-            catch (Exception )
+            catch (Exception)
             {
                 return false;
             }
         }
-    }
-
-    class Program
-    {
-        igroup194Db db = new igroup194Db();
-
-        static async System.Threading.Tasks.Task Main(string[] args)
-        {
-            var url = "https://israeldrugs.health.gov.il/#!/byDrug"; // url for Drug Registery
-            var web = new HtmlWeb();
-            var doc = await web.LoadFromWebAsync(url);
-
-            var searchBar = doc.DocumentNode.SelectSingleNode("//input[@id='drugSearchInput']");
-            var autocompleteUrl = searchBar.GetAttributeValue("autocomplete-url", "");
-
-            using (var client = new HttpClient())
-            {
-                var response = await client.GetAsync(autocompleteUrl);
-                var content = await response.Content.ReadAsStringAsync();
-                var suggestions = ExtractSuggestionsFromJson(content);
-                Console.WriteLine(string.Join(Environment.NewLine, suggestions));
-            }
-        }
-        static List<string> ExtractSuggestionsFromJson(string json)
-        {
-            var suggestions = new List<string>();
-            var root = JObject.Parse(json);
-            var data = root.SelectToken("Data") as JArray;
-            if (data != null)
-            {
-                foreach (var item in data)
-                {
-                    var suggestion = item.SelectToken("Name")?.Value<string>();
-                    if (!string.IsNullOrEmpty(suggestion))
-                    {
-                        suggestions.Add(suggestion);
-                    }
-                }
-            }
-            return suggestions;
-        }
-
     }
 }

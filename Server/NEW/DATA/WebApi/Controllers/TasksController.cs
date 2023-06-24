@@ -340,8 +340,9 @@ namespace WebApi.Controllers
                         db.InsertPatientTask(task.taskName, task.taskFromDate, task.taskToDate, task.taskComment, task.patientId, task.workerId, task.userId, actualListId, task.frequency);
                         db.SaveChanges();
                         int taskId = db.tblPatientTask.Max(x => x.taskId);
-                        //we use here partial class to add the actual tasks to the db                                  
-                        if (!actualTask.InsertActualTask(task.frequency, task.timesInDayArr, taskId, task.taskFromDate, task.taskToDate, task.listId, isDrug, task.taskName))
+                        //we use here partial class to add the actual tasks to the db
+                        string pushToken = list.pushToken;
+                        if (!actualTask.InsertActualTask(task.frequency, task.timesInDayArr, taskId, task.taskFromDate, task.taskToDate, task.listId, isDrug, task.taskName, pushToken))
                             throw new Exception("error Insert Actual Tasks ");
                         return Ok("Actual Tasks added");
                     }
@@ -375,8 +376,9 @@ namespace WebApi.Controllers
                     db.InsertPatientTask(task.taskName, task.taskFromDate, task.taskToDate, task.taskComment, task.patientId, task.workerId, task.userId, actualListId, task.frequency);
                     int taskId = db.tblPatientTask.Max(x => x.taskId);
                     db.SaveChanges();
-                    //we use here partial class to add the actual tasks to the db                                  
-                    if (!actualTask.InsertActualTask(task.frequency, task.timesInDayArr, taskId, task.taskFromDate, task.taskToDate, task.listId, isDrug, task.taskName))
+                    //we use here partial class to add the actual tasks to the db
+                    string pushToken = list.pushToken;
+                    if (!actualTask.InsertActualTask(task.frequency, task.timesInDayArr, taskId, task.taskFromDate, task.taskToDate, task.listId, isDrug, task.taskName, pushToken))
                         throw new Exception("error Insert Actual Tasks ");
                     return Ok("Actual Tasks added");
                 }
@@ -412,7 +414,8 @@ namespace WebApi.Controllers
                         db.SaveChanges();
                         int taskId = db.tblPatientTask.Max(x => x.taskId);
                         //we use here partial class to add the actual tasks to the db
-                        if (!actualTask.InsertActualTask(task.frequency, task.timesInDayArr, taskId, task.taskFromDate, task.taskToDate, task.listId, isDrug, task.taskName))
+                        string pushToken = list.pushToken;
+                        if (!actualTask.InsertActualTask(task.frequency, task.timesInDayArr, taskId, task.taskFromDate, task.taskToDate, task.listId, isDrug, task.taskName, pushToken))
                             throw new Exception("error Insert Actual Tasks ");
                         return Ok("Actual Tasks added");
                     }

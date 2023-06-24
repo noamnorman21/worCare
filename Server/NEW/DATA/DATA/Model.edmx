@@ -5,17 +5,6 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="igroup194_prodModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <EntityType Name="ScheduledNotifications">
-          <Key>
-            <PropertyRef Name="NotificationID" />
-          </Key>
-          <Property Name="NotificationID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="pushToken" Type="nvarchar" MaxLength="4000" Nullable="false" />
-          <Property Name="Title" Type="nvarchar" MaxLength="255" Nullable="false" />
-          <Property Name="pushMessage" Type="nvarchar" MaxLength="4000" Nullable="false" />
-          <Property Name="ScheduledTime" Type="datetime" Nullable="false" />
-          <Property Name="Data" Type="nvarchar(max)" />
-        </EntityType>
         <EntityType Name="sysdiagrams">
           <Key>
             <PropertyRef Name="diagram_id" />
@@ -266,6 +255,19 @@
           <Property Name="productStatus" Type="char" MaxLength="1" Nullable="false" />
           <Property Name="productQuantity" Type="int" Nullable="false" />
           <Property Name="commentForProduct" Type="varchar(max)" />
+        </EntityType>
+        <EntityType Name="tblScheduledNotifications">
+          <Key>
+            <PropertyRef Name="notificationID" />
+          </Key>
+          <Property Name="notificationID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="pushToken" Type="nvarchar" MaxLength="4000" Nullable="false" />
+          <Property Name="title" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="pushMessage" Type="nvarchar" MaxLength="4000" Nullable="false" />
+          <Property Name="scheduledTime" Type="datetime" Nullable="false" />
+          <Property Name="data" Type="nvarchar(max)" />
+          <Property Name="actualTaskId" Type="int" />
+          <Property Name="paymentId" Type="int" />
         </EntityType>
         <EntityType Name="tblUser">
           <Key>
@@ -756,6 +758,15 @@
           <Parameter Name="productQuantity" Type="int" Mode="In" />
           <Parameter Name="commentForProduct" Type="varchar(max)" Mode="In" />
         </Function>
+        <Function Name="InsertScheduledNotification" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="pushToken" Type="nvarchar" Mode="In" />
+          <Parameter Name="title" Type="nvarchar" Mode="In" />
+          <Parameter Name="pushMessage" Type="nvarchar" Mode="In" />
+          <Parameter Name="scheduledTime" Type="datetime" Mode="In" />
+          <Parameter Name="data" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="actualTaskId" Type="int" Mode="In" />
+          <Parameter Name="paymentId" Type="int" Mode="In" />
+        </Function>
         <Function Name="InsertUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="Email" Type="varchar" Mode="In" />
           <Parameter Name="Password" Type="varchar" Mode="In" />
@@ -827,7 +838,6 @@
           <Parameter Name="status" Type="char" Mode="In" />
         </Function>
         <EntityContainer Name="igroup194_prodModelStoreContainer">
-          <EntitySet Name="ScheduledNotifications" EntityType="Self.ScheduledNotifications" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tblActualList" EntityType="Self.tblActualList" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tblActualTask" EntityType="Self.tblActualTask" Schema="dbo" store:Type="Tables" />
@@ -851,6 +861,7 @@
           <EntitySet Name="tblPrivateTask" EntityType="Self.tblPrivateTask" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tblProduct" EntityType="Self.tblProduct" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tblProductList" EntityType="Self.tblProductList" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblScheduledNotifications" EntityType="Self.tblScheduledNotifications" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tblUser" EntityType="Self.tblUser" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK__tblActual__taskI__795DFB40" Association="Self.FK__tblActual__taskI__795DFB40">
             <End Role="tblPatientTask" EntitySet="tblPatientTask" />
@@ -1971,7 +1982,16 @@
             <Parameter Name="modifyDate" Mode="In" Type="DateTime" />
             <Parameter Name="Type" Mode="In" Type="String" />
           </FunctionImport>
-          <EntitySet Name="ScheduledNotifications" EntityType="igroup194_prodModel.ScheduledNotifications" />
+          <EntitySet Name="tblScheduledNotifications" EntityType="igroup194_prodModel.tblScheduledNotifications" />
+          <FunctionImport Name="InsertScheduledNotification">
+            <Parameter Name="pushToken" Mode="In" Type="String" />
+            <Parameter Name="title" Mode="In" Type="String" />
+            <Parameter Name="pushMessage" Mode="In" Type="String" />
+            <Parameter Name="scheduledTime" Mode="In" Type="DateTime" />
+            <Parameter Name="data" Mode="In" Type="String" />
+            <Parameter Name="actualTaskId" Mode="In" Type="Int32" />
+            <Parameter Name="paymentId" Mode="In" Type="Int32" />
+          </FunctionImport>
         </EntityContainer>
         <ComplexType Name="sp_helpdiagramdefinition_Result">
           <Property Type="Int32" Name="version" Nullable="true" />
@@ -1984,16 +2004,18 @@
           <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
           <Property Type="Int32" Name="OwnerID" Nullable="false" />
         </ComplexType>
-        <EntityType Name="ScheduledNotifications">
+        <EntityType Name="tblScheduledNotifications">
           <Key>
-            <PropertyRef Name="NotificationID" />
+            <PropertyRef Name="notificationID" />
           </Key>
-          <Property Name="NotificationID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="notificationID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="pushToken" Type="String" Nullable="false" MaxLength="4000" FixedLength="false" Unicode="true" />
-          <Property Name="Title" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="title" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="pushMessage" Type="String" Nullable="false" MaxLength="4000" FixedLength="false" Unicode="true" />
-          <Property Name="ScheduledTime" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="Data" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="scheduledTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="data" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="actualTaskId" Type="Int32" />
+          <Property Name="paymentId" Type="Int32" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -2328,18 +2350,21 @@
           <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="igroup194_prodModel.Store.sp_upgraddiagrams" />
           <FunctionImportMapping FunctionImportName="updateStatusCaresForPatient" FunctionName="igroup194_prodModel.Store.updateStatusCaresForPatient" />
           <FunctionImportMapping FunctionImportName="InsertNewDrug" FunctionName="igroup194_prodModel.Store.InsertNewDrug" />
-          <EntitySetMapping Name="ScheduledNotifications">
-            <EntityTypeMapping TypeName="igroup194_prodModel.ScheduledNotifications">
-              <MappingFragment StoreEntitySet="ScheduledNotifications">
-                <ScalarProperty Name="Data" ColumnName="Data" />
-                <ScalarProperty Name="ScheduledTime" ColumnName="ScheduledTime" />
+          <EntitySetMapping Name="tblScheduledNotifications">
+            <EntityTypeMapping TypeName="igroup194_prodModel.tblScheduledNotifications">
+              <MappingFragment StoreEntitySet="tblScheduledNotifications">
+                <ScalarProperty Name="paymentId" ColumnName="paymentId" />
+                <ScalarProperty Name="actualTaskId" ColumnName="actualTaskId" />
+                <ScalarProperty Name="data" ColumnName="data" />
+                <ScalarProperty Name="scheduledTime" ColumnName="scheduledTime" />
                 <ScalarProperty Name="pushMessage" ColumnName="pushMessage" />
-                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="title" ColumnName="title" />
                 <ScalarProperty Name="pushToken" ColumnName="pushToken" />
-                <ScalarProperty Name="NotificationID" ColumnName="NotificationID" />
+                <ScalarProperty Name="notificationID" ColumnName="notificationID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="InsertScheduledNotification" FunctionName="igroup194_prodModel.Store.InsertScheduledNotification" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

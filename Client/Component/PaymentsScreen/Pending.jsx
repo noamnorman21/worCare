@@ -16,8 +16,6 @@ const SCREEN_HEIGHT = Dimensions.get('window').height;
 export default function Pending() {
   const { userContext, userPendingPayments, sendPushNotification } = useUserContext()
   const pushToken2 = userContext.pushToken2;
-
-  //  const {userPendingPayments} = useUserContext()
   const [modal1Visible, setModal1Visible] = useState(false);
   const [Pendings, setPendings] = useState()
   const isFocused = useIsFocused()
@@ -31,7 +29,7 @@ export default function Pending() {
       return (
         <Request
           key={item.requestId} renderPendings={renderPendings} data={item}
-          id={item.requestId} Notification={Notification}
+          id={item.requestId} Notification={() => { Notification(item.requestSubject, item.amountToPay, item.requestDate) }}
           View={View} subject={item.requestSubject}
           amountToPay={item.amountToPay}
           date={item.requestDate} requestComment={item.requestComment}
@@ -42,19 +40,25 @@ export default function Pending() {
     setPendings(arr)
   }
 
-  // Should Get also the subject, amount, date, comment
-  // const Notification = () => {
-  //   let PushNotificationsData =
-  //   {
-  //     expoPushToken: pushToken2,
-  //     title: "Reminder: Pending Request",
-  //     body: `You have a payment request pending! \n Subject: ${props.subject} \n Amount: ${props.amountToPay} \n Date: ${dateString}`,
-  //     data: { data: 'goes here' },
-  //     // how to send user to the request screen? 
-  //     // maybe we can send the request id and then in the request screen we will fetch the request by id
-  //   }
-  //   sendPushNotification(PushNotificationsData)
-  // }
+  // Should Get also the subject, amount, date
+  const Notification = (subject, amount, date) => {
+    const newdate = new Date(date);
+    const year = newdate.getFullYear();
+    const newYear = year.toString().substr(-2);
+    const month = newdate.getMonth() + 1;
+    const day = newdate.getDate();
+    const dateString = day + "/" + month + "/" + newYear;
+    let PushNotificationsData =
+    {
+      expoPushToken: pushToken2,
+      title: "Reminder: Pending Request",
+      body: `You have a payment request pending! \n Subject: ${subject} \n Amount: ${amount} \n Date: ${dateString}`,
+      data: { data: 'goes here' },
+      // how to send user to the request screen? 
+      // maybe we can send the request id and then in the request screen we will fetch the request by id
+    }
+    sendPushNotification(PushNotificationsData)
+  }
 
   return (
     <>
@@ -242,7 +246,6 @@ function Request(props) {
       console.log(error)
       Alert.alert("Error", error)
     }
-
   }
 
   const saveFile = async (res, fileName, type) => {

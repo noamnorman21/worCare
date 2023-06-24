@@ -301,6 +301,7 @@
     <Compile Include="DTO\DrugForPatientDTO.cs" />
     <Compile Include="DTO\ForeignUserDTO.cs" />
     <Compile Include="DTO\HobbiesAndLimitationsDTO.cs" />
+    <Compile Include="DTO\NotificationDTO.cs" />
     <Compile Include="DTO\PatientDTO.cs" />
     <Compile Include="DTO\PatientTaskDTO.cs" />
     <Compile Include="DTO\PayCheckDTO.cs" />

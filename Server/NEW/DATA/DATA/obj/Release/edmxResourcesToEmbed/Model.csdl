@@ -1002,7 +1002,16 @@
       <Parameter Name="modifyDate" Mode="In" Type="DateTime" />
       <Parameter Name="Type" Mode="In" Type="String" />
     </FunctionImport>
-    <EntitySet Name="ScheduledNotifications" EntityType="igroup194_prodModel.ScheduledNotifications" />
+    <EntitySet Name="tblScheduledNotifications" EntityType="igroup194_prodModel.tblScheduledNotifications" />
+    <FunctionImport Name="InsertScheduledNotification">
+      <Parameter Name="pushToken" Mode="In" Type="String" />
+      <Parameter Name="title" Mode="In" Type="String" />
+      <Parameter Name="pushMessage" Mode="In" Type="String" />
+      <Parameter Name="scheduledTime" Mode="In" Type="DateTime" />
+      <Parameter Name="data" Mode="In" Type="String" />
+      <Parameter Name="actualTaskId" Mode="In" Type="Int32" />
+      <Parameter Name="paymentId" Mode="In" Type="Int32" />
+    </FunctionImport>
   </EntityContainer>
   <ComplexType Name="sp_helpdiagramdefinition_Result">
     <Property Type="Int32" Name="version" Nullable="true" />
@@ -1015,15 +1024,17 @@
     <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
     <Property Type="Int32" Name="OwnerID" Nullable="false" />
   </ComplexType>
-  <EntityType Name="ScheduledNotifications">
+  <EntityType Name="tblScheduledNotifications">
     <Key>
-      <PropertyRef Name="NotificationID" />
+      <PropertyRef Name="notificationID" />
     </Key>
-    <Property Name="NotificationID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="notificationID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="pushToken" Type="String" Nullable="false" MaxLength="4000" FixedLength="false" Unicode="true" />
-    <Property Name="Title" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="title" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
     <Property Name="pushMessage" Type="String" Nullable="false" MaxLength="4000" FixedLength="false" Unicode="true" />
-    <Property Name="ScheduledTime" Type="DateTime" Nullable="false" Precision="3" />
-    <Property Name="Data" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="scheduledTime" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="data" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="actualTaskId" Type="Int32" />
+    <Property Name="paymentId" Type="Int32" />
   </EntityType>
 </Schema>

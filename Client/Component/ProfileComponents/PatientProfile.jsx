@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, SafeAreaView, StyleSheet,Button } from 'react-native';
-import {Chip } from 'react-native-paper';
+import { View, Text, SafeAreaView, StyleSheet, Button } from 'react-native';
+import { Chip } from 'react-native-paper';
 import { useUserContext } from '../../UserContext';
-import { Feather, Fontisto, MaterialCommunityIcons ,MaterialIcons} from '@expo/vector-icons';
+import { Feather, Fontisto, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 
 export default function PatientProfile() {
     const { userContext } = useUserContext();
     const patientData = userContext.patientData;
     const hobbiesAndLimitations = patientData.hobbiesAndLimitationsDTO;
-    const getPatientData =  () => {
+    const getPatientData = () => {
         console.log("Patient Data");
         console.log(patientData);
         console.log("Hobbies and Limitations");
-        console.log(hobbiesAndLimitations);       
+        console.log(hobbiesAndLimitations);
     }
-    
+
     const icons = {
         "Books": <Feather name="book-open" size={16} color="#548Dff" />,
         "TVShow": <Feather name="tv" size={16} color="#548Dff" />,
@@ -37,11 +37,7 @@ export default function PatientProfile() {
                     style={styles.chip}
                     mode="outlined"
                     onPress={() => console.log('Pressed')}>
-                    <Feather
-                        name="book-open"
-                        size={16}
-                        color="#548Dff"
-                    />
+                    {icons["TVShow"]}
                     Action
                 </Chip>
                 <Chip style={styles.chip} textStyle={styles.chipTxt} mode="outlined" onPress={() => console.log('Pressed')}>

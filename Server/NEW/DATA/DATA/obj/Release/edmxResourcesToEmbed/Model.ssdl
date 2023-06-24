@@ -1,16 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Schema Namespace="igroup194_prodModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-  <EntityType Name="ScheduledNotifications">
-    <Key>
-      <PropertyRef Name="NotificationID" />
-    </Key>
-    <Property Name="NotificationID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="pushToken" Type="nvarchar" MaxLength="4000" Nullable="false" />
-    <Property Name="Title" Type="nvarchar" MaxLength="255" Nullable="false" />
-    <Property Name="pushMessage" Type="nvarchar" MaxLength="4000" Nullable="false" />
-    <Property Name="ScheduledTime" Type="datetime" Nullable="false" />
-    <Property Name="Data" Type="nvarchar(max)" />
-  </EntityType>
   <EntityType Name="sysdiagrams">
     <Key>
       <PropertyRef Name="diagram_id" />
@@ -261,6 +250,19 @@
     <Property Name="productStatus" Type="char" MaxLength="1" Nullable="false" />
     <Property Name="productQuantity" Type="int" Nullable="false" />
     <Property Name="commentForProduct" Type="varchar(max)" />
+  </EntityType>
+  <EntityType Name="tblScheduledNotifications">
+    <Key>
+      <PropertyRef Name="notificationID" />
+    </Key>
+    <Property Name="notificationID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="pushToken" Type="nvarchar" MaxLength="4000" Nullable="false" />
+    <Property Name="title" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="pushMessage" Type="nvarchar" MaxLength="4000" Nullable="false" />
+    <Property Name="scheduledTime" Type="datetime" Nullable="false" />
+    <Property Name="data" Type="nvarchar(max)" />
+    <Property Name="actualTaskId" Type="int" />
+    <Property Name="paymentId" Type="int" />
   </EntityType>
   <EntityType Name="tblUser">
     <Key>
@@ -751,6 +753,15 @@
     <Parameter Name="productQuantity" Type="int" Mode="In" />
     <Parameter Name="commentForProduct" Type="varchar(max)" Mode="In" />
   </Function>
+  <Function Name="InsertScheduledNotification" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="pushToken" Type="nvarchar" Mode="In" />
+    <Parameter Name="title" Type="nvarchar" Mode="In" />
+    <Parameter Name="pushMessage" Type="nvarchar" Mode="In" />
+    <Parameter Name="scheduledTime" Type="datetime" Mode="In" />
+    <Parameter Name="data" Type="nvarchar(max)" Mode="In" />
+    <Parameter Name="actualTaskId" Type="int" Mode="In" />
+    <Parameter Name="paymentId" Type="int" Mode="In" />
+  </Function>
   <Function Name="InsertUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="Email" Type="varchar" Mode="In" />
     <Parameter Name="Password" Type="varchar" Mode="In" />
@@ -822,7 +833,6 @@
     <Parameter Name="status" Type="char" Mode="In" />
   </Function>
   <EntityContainer Name="igroup194_prodModelStoreContainer">
-    <EntitySet Name="ScheduledNotifications" EntityType="Self.ScheduledNotifications" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="tblActualList" EntityType="Self.tblActualList" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="tblActualTask" EntityType="Self.tblActualTask" Schema="dbo" store:Type="Tables" />
@@ -846,6 +856,7 @@
     <EntitySet Name="tblPrivateTask" EntityType="Self.tblPrivateTask" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="tblProduct" EntityType="Self.tblProduct" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="tblProductList" EntityType="Self.tblProductList" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="tblScheduledNotifications" EntityType="Self.tblScheduledNotifications" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="tblUser" EntityType="Self.tblUser" Schema="dbo" store:Type="Tables" />
     <AssociationSet Name="FK__tblActual__taskI__795DFB40" Association="Self.FK__tblActual__taskI__795DFB40">
       <End Role="tblPatientTask" EntitySet="tblPatientTask" />
