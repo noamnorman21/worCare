@@ -22,6 +22,7 @@ namespace DATA
         public string requestComment { get; set; }
         public string requestStatus { get; set; }
         public int userId { get; set; }
+        public Nullable<System.DateTime> requestEndDate { get; set; }
     
         public virtual tblForeignUser tblForeignUser { get; set; }
     }

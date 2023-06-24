@@ -543,7 +543,7 @@ namespace DATA
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("NewPaycheck", paycheckDateParameter, paycheckSummaryParameter, paycheckCommentParameter, userIdParameter, payCheckProofDocumentParameter);
         }
     
-        public virtual int NewPaymentRequest(string requestSubject, Nullable<double> amountToPay, Nullable<System.DateTime> requestDate, string requestProofDocument, string requestComment, string requestStatus, Nullable<int> userId)
+        public virtual int NewPaymentRequest(string requestSubject, Nullable<double> amountToPay, Nullable<System.DateTime> requestDate, string requestProofDocument, string requestComment, string requestStatus, Nullable<int> userId, Nullable<System.DateTime> requestEndDate)
         {
             var requestSubjectParameter = requestSubject != null ?
                 new ObjectParameter("requestSubject", requestSubject) :
@@ -573,7 +573,11 @@ namespace DATA
                 new ObjectParameter("userId", userId) :
                 new ObjectParameter("userId", typeof(int));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("NewPaymentRequest", requestSubjectParameter, amountToPayParameter, requestDateParameter, requestProofDocumentParameter, requestCommentParameter, requestStatusParameter, userIdParameter);
+            var requestEndDateParameter = requestEndDate.HasValue ?
+                new ObjectParameter("requestEndDate", requestEndDate) :
+                new ObjectParameter("requestEndDate", typeof(System.DateTime));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("NewPaymentRequest", requestSubjectParameter, amountToPayParameter, requestDateParameter, requestProofDocumentParameter, requestCommentParameter, requestStatusParameter, userIdParameter, requestEndDateParameter);
         }
     
         public virtual int sp_alterdiagram(string diagramname, Nullable<int> owner_id, Nullable<int> version, byte[] definition)

@@ -38,6 +38,7 @@ namespace WebApi.Controllers
                     requestComment = y.requestComment,
                     requestStatus = y.requestStatus,
                     userId = y.userId,
+                    requestEndDate = y.requestEndDate,
                 }).ToList();
                 return Ok(Pendings);
             }
@@ -71,6 +72,7 @@ namespace WebApi.Controllers
                     requestComment = y.requestComment,
                     requestStatus = y.requestStatus,
                     userId = y.userId,
+                    requestEndDate = y.requestEndDate,
                 }).ToList();
                 return Ok(Payments);
             }
@@ -86,7 +88,11 @@ namespace WebApi.Controllers
         {
             try
             {
-                db.NewPaymentRequest(req.requestSubject, req.amountToPay, req.requestDate, req.requestProofDocument, req.requestComment, req.requestStatus, req.userId);
+                string pushToken = db.tblUser.Where(x => x.userId == req.userId).Select(y => y.pushToken).FirstOrDefault();
+                DateTime endDate = req.requestDate.AddDays(14); // requestEndDate should be requestDate + 14 days
+                db.NewPaymentRequest(req.requestSubject, req.amountToPay, req.requestDate, req.requestProofDocument, req.requestComment, req.requestStatus, req.userId, endDate);
+                int requestId = db.tblPaymentRequest.Max(x => x.requestId);
+                db.InsertScheduledNotification(pushToken, "Reminder: Payment Request", "You have a pending payment request", endDate, null, null, requestId);
                 db.SaveChanges();
                 return Ok("Request added successfully!");
             }
@@ -108,6 +114,7 @@ namespace WebApi.Controllers
                     p.requestSubject = req.requestSubject;
                     p.amountToPay = req.amountToPay;
                     p.requestDate = req.requestDate;
+                    DateTime endDate = req.requestDate.AddDays(14); // requestEndDate should be requestDate + 14 days
                     p.requestProofDocument = req.requestProofDocument;
                     p.requestComment = req.requestComment;
                     p.requestStatus = req.requestStatus;

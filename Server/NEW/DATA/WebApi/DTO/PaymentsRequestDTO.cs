@@ -16,5 +16,7 @@ namespace WebApi.DTO
         public string requestStatus { get; set; }
         public int userId { get; set; }
         public int fId { get; set; }
+        public Nullable<System.DateTime> requestEndDate { get; set; }
+
     }
 }

@@ -212,6 +212,7 @@
           <Property Name="requestComment" Type="varchar(max)" />
           <Property Name="requestStatus" Type="char" MaxLength="1" Nullable="false" />
           <Property Name="userId" Type="int" Nullable="false" />
+          <Property Name="requestEndDate" Type="date" />
         </EntityType>
         <EntityType Name="tblPrivateActualTask">
           <Key>
@@ -801,6 +802,7 @@
           <Parameter Name="requestComment" Type="varchar(max)" Mode="In" />
           <Parameter Name="requestStatus" Type="char" Mode="In" />
           <Parameter Name="userId" Type="int" Mode="In" />
+          <Parameter Name="requestEndDate" Type="date" Mode="In" />
         </Function>
         <Function Name="sp_alterdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
@@ -1232,6 +1234,7 @@
           <Property Name="requestStatus" Type="String" MaxLength="1" FixedLength="true" Unicode="false" Nullable="false" />
           <Property Name="userId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="tblForeignUser" Relationship="Self.FK__tblPaymen__userI__1CA7377D" FromRole="tblPaymentRequest" ToRole="tblForeignUser" />
+          <Property Name="requestEndDate" Type="DateTime" Precision="0" />
         </EntityType>
         <EntityType Name="tblPrivateActualTask">
           <Key>
@@ -1938,6 +1941,7 @@
             <Parameter Name="requestComment" Mode="In" Type="String" />
             <Parameter Name="requestStatus" Mode="In" Type="String" />
             <Parameter Name="userId" Mode="In" Type="Int32" />
+            <Parameter Name="requestEndDate" Mode="In" Type="DateTime" />
           </FunctionImport>
           <FunctionImport Name="sp_alterdiagram">
             <Parameter Name="diagramname" Mode="In" Type="String" />
@@ -2235,6 +2239,7 @@
           <EntitySetMapping Name="tblPaymentRequest">
             <EntityTypeMapping TypeName="igroup194_prodModel.tblPaymentRequest">
               <MappingFragment StoreEntitySet="tblPaymentRequest">
+                <ScalarProperty Name="requestEndDate" ColumnName="requestEndDate" />
                 <ScalarProperty Name="requestId" ColumnName="requestId" />
                 <ScalarProperty Name="requestSubject" ColumnName="requestSubject" />
                 <ScalarProperty Name="amountToPay" ColumnName="amountToPay" />
