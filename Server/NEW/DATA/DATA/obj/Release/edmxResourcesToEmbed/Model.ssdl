@@ -207,6 +207,7 @@
     <Property Name="requestComment" Type="varchar(max)" />
     <Property Name="requestStatus" Type="char" MaxLength="1" Nullable="false" />
     <Property Name="userId" Type="int" Nullable="false" />
+    <Property Name="requestEndDate" Type="date" />
   </EntityType>
   <EntityType Name="tblPrivateActualTask">
     <Key>
@@ -796,6 +797,7 @@
     <Parameter Name="requestComment" Type="varchar(max)" Mode="In" />
     <Parameter Name="requestStatus" Type="char" Mode="In" />
     <Parameter Name="userId" Type="int" Mode="In" />
+    <Parameter Name="requestEndDate" Type="date" Mode="In" />
   </Function>
   <Function Name="sp_alterdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="diagramname" Type="nvarchar" Mode="In" />

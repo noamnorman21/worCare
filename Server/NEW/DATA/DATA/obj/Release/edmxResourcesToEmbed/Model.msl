@@ -213,6 +213,7 @@
     <EntitySetMapping Name="tblPaymentRequest">
       <EntityTypeMapping TypeName="igroup194_prodModel.tblPaymentRequest">
         <MappingFragment StoreEntitySet="tblPaymentRequest">
+          <ScalarProperty Name="requestEndDate" ColumnName="requestEndDate" />
           <ScalarProperty Name="requestId" ColumnName="requestId" />
           <ScalarProperty Name="requestSubject" ColumnName="requestSubject" />
           <ScalarProperty Name="amountToPay" ColumnName="amountToPay" />
