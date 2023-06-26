@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, LayoutAnimation, Animated, Modal, Image, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, LayoutAnimation, Animated, Modal, Image, ScrollView, Platform } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import NewPayment from './NewPayment';
 import { useUserContext } from '../../UserContext';
@@ -14,10 +14,24 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export default function History({ navigation, route }) {
-  const { userContext,userHistoryPayments } = useUserContext();// יש להחליף למשתנה של המשתמש הנוכחי
+  const { userContext, userHistoryPayments } = useUserContext();
   const [History, setHistory] = useState('')
   const [modal1Visible, setModal1Visible] = useState(false);
   const isFocused = useIsFocused()
+  const [isAtBottom, setIsAtBottom] = useState(false);
+  const scrollRef = useRef();
+  const onScroll = (event) => {
+    const offsetY = event.nativeEvent.contentOffset.y;
+    const contentHeight = event.nativeEvent.contentSize.height;
+    const layoutHeight = event.nativeEvent.layoutMeasurement.height;
+    const isBottom = offsetY + layoutHeight >= contentHeight - 45;
+    setIsAtBottom(isBottom);
+  };
+
+  const onContentSizeChange = () => {
+    // Call scrollTo with y offset of 0 to trigger onScroll.
+    // scrollRef.current.scrollTo({ x: 0, y: 0, animated: true });
+  };
 
   const Edit = (id, data) => {
     Alert.alert(
@@ -35,7 +49,7 @@ export default function History({ navigation, route }) {
     );
   }
 
- useEffect(() => {
+  useEffect(() => {
     renderHistory()
   }, [userHistoryPayments])
 
@@ -43,7 +57,7 @@ export default function History({ navigation, route }) {
     try {
       let arr = userHistoryPayments.map((item) => {
         return (
-          <Request key={item.requestId} renderHistory={renderHistory} data={item} id={item.requestId} Notofication={Notification} View={View} Edit={Edit} subject={item.requestSubject} amountToPay={item.amountToPay} date={item.requestDate} requestComment={item.requestComment} />
+          <Request key={item.requestId} renderHistory={renderHistory} data={item} id={item.requestId} View={View} Edit={Edit} subject={item.requestSubject} amountToPay={item.amountToPay} date={item.requestDate} requestComment={item.requestComment} />
         )
       })
       setHistory(arr)
@@ -52,32 +66,25 @@ export default function History({ navigation, route }) {
     }
   }
 
-
-  const Notification = (id) => {
-    Alert.alert(
-      "Notification",
-      "Are you sure you want to send a notification to the user?",
-      [
-        {
-          text: "Cancel",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel"
-        },
-        { text: "OK", onPress: () => console.log("OK Pressed") }
-      ],
-      { cancelable: false }
-    );
-  }
-
   return (
     <>
-      <ScrollView contentContainerStyle={styles.pending}>
+      <ScrollView
+        contentContainerStyle={styles.pending}
+        ref={scrollRef}
+        onScroll={onScroll}
+        onContentSizeChange={onContentSizeChange}
+        scrollEventThrottle={16}
+      >
         {History}
         <Modal animationType='slide' transparent={true} visible={modal1Visible}>
           <NewPayment cancel={() => setModal1Visible(false)} />
         </Modal>
       </ScrollView>
-      {userContext.userType == "Caregiver" ? <View style={styles.addBtnView}><AddBtn onPress={() => setModal1Visible(true)} /></View> : null}
+      {userContext.userType == "Caregiver" && !isAtBottom && (
+        <View style={styles.addBtnView}>
+          <AddBtn onPress={() => setModal1Visible(true)} />
+        </View>
+      )}
     </>
   );
 }
@@ -101,10 +108,7 @@ function Request(props) {
   };
 
   const openModal = (value) => {
-    if (value == 1) {
-      console.log("Notofication")
-    }
-    else if (value == 2) {
+    if (value == 2) {
       setModal1Visible(true)
     }
     if (value == 3) {
@@ -188,11 +192,8 @@ function Request(props) {
           <View style={styles.requestOpen}>
             <View style={styles.requestItemHeaderOpen}>
               <TouchableOpacity onPress={toggle} style={styles.request}>
-                <View style={styles.requestItemLeft}>
-                  <Text style={styles.requestItemText}>{dateString}</Text>
-                </View>
                 <View style={styles.requestItemMiddle}>
-                  <Text style={styles.requestItemText}><Text style={styles.requestItemText}>{props.subject.length>17? props.subject.slice(0, 15)+"...":props.subject}</Text></Text>
+                  <Text style={styles.requestItemText}><Text style={styles.requestItemText}>{props.subject}</Text></Text>
                 </View>
               </TouchableOpacity>
               <Menu style={{ flexDirection: 'column', marginVertical: 0 }} onSelect={value => openModal(value)} >
@@ -228,50 +229,48 @@ function Request(props) {
                 <Text style={[styles.requestItemText, props.requestComment == null || props.requestComment == '' && { display: 'none' }]}>Comment: </Text>
               </View>
               <View style={styles.requestItemBodyRight}>
-                <Text style={styles.requestItemText}>{dateString}</Text>
-                <Text style={styles.requestItemText}>{props.data.amountToPay}</Text>
-                <Text style={styles.requestItemText}>{displayStatus()}</Text>
-                <Text style={[styles.requestItemText, props.data.requestComment == null || props.data.requestComment == '' && { display: 'none' }]}>{props.requestComment}</Text>
+                <Text style={[styles.requestItemText, { fontFamily: 'Urbanist-Regular' }]}>{dateString}</Text>
+                <Text style={[styles.requestItemText, { fontFamily: 'Urbanist-Regular' }]}>{props.data.amountToPay}</Text>
+                <Text style={[styles.requestItemText, { fontFamily: 'Urbanist-Regular' }]}>{displayStatus()}</Text>
+                <Text style={[styles.requestItemText, { fontFamily: 'Urbanist-Regular' }, props.data.requestComment == null || props.data.requestComment == '' && { display: 'none' }]}>{props.requestComment}</Text>
               </View>
             </View>
           </View>
           :
-          <View style={styles.requestClosed}>
-            <View style={styles.requestItemHeader}>
-              <TouchableOpacity onPress={toggle} style={styles.request}>
-                <View style={styles.requestItemLeft}>
-                  <Text style={styles.requestItemText}>{dateString}</Text>
-                </View>
-                <View style={styles.requestItemMiddle}>
-                  <Text style={styles.requestItemText}><Text style={styles.requestItemText}>{props.subject.length>17? props.subject.slice(0, 15)+"...":props.subject}</Text></Text>
-                </View>
-              </TouchableOpacity>
-              <Menu style={{ flexDirection: 'column', marginVertical: 0 }} onSelect={value => openModal(value)} >
-                <MenuTrigger
-                  children={<View>
-                    <MaterialCommunityIcons name="dots-horizontal" size={28} color="gray" />
-                  </View>}
-                />
-                <MenuOptions customStyles={{
-                  optionsWrapper: styles.optionsWrapper,
-                }}
-                >
-                  <MenuOption style={{ borderRadius: 16 }} value={2} children={<View style={styles.options}><Feather name='eye' size={20} /><Text style={styles.optionsText}> View Document</Text></View>} />
-                  <MenuOption disableTouchable={true} style={styles.deleteTxt} value={4} children={<View style={styles.disabledoptions}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={styles.deleteTxt}> Delete Requset</Text></View>} />
-                </MenuOptions>
-              </Menu>
-              <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
-                <View style={styles.documentview}>
-                  <TouchableOpacity style={styles.closeBtn} onPress={() => setModal1Visible(false)}>
-                    <AntDesign name="close" size={24} color="black" />
-                  </TouchableOpacity>
-                  <Image source={{ uri: props.data.requestProofDocument }} style={styles.documentImg} />
-                  <TouchableOpacity style={styles.documentDownloadButton} onPress={downloadFile} >
-                    <Text style={styles.documentButtonText}>Download</Text>
-                  </TouchableOpacity>
-                </View>
-              </Modal>
-            </View>
+          <View style={styles.requestItemHeader}>
+            <TouchableOpacity onPress={toggle} style={styles.request}>
+              <View style={styles.requestItemLeft}>
+                <Text style={styles.requestItemText}>{dateString}</Text>
+              </View>
+              <View style={styles.requestItemMiddleClose}>
+                <Text style={styles.requestItemText}><Text style={styles.requestItemText}>{props.subject.length > 17 ? props.subject.slice(0, 15) + "..." : props.subject}</Text></Text>
+              </View>
+            </TouchableOpacity>
+            <Menu style={{ alignItems: 'flex-end', marginVertical: 0, flexDirection: 'column' }} onSelect={value => openModal(value)} >
+              <MenuTrigger
+                children={<View>
+                  <MaterialCommunityIcons name="dots-horizontal" size={28} color="gray" />
+                </View>}
+              />
+              <MenuOptions customStyles={{
+                optionsWrapper: styles.optionsWrapper,
+              }}
+              >
+                <MenuOption style={{ borderRadius: 16 }} value={2} children={<View style={styles.options}><Feather name='eye' size={20} /><Text style={styles.optionsText}> View Document</Text></View>} />
+                <MenuOption disableTouchable={true} style={styles.deleteTxt} value={4} children={<View style={styles.disabledoptions}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={styles.deleteTxt}> Delete Requset</Text></View>} />
+              </MenuOptions>
+            </Menu>
+            <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
+              <View style={styles.documentview}>
+                <TouchableOpacity style={styles.closeBtn} onPress={() => setModal1Visible(false)}>
+                  <AntDesign name="close" size={24} color="black" />
+                </TouchableOpacity>
+                <Image source={{ uri: props.data.requestProofDocument }} style={styles.documentImg} />
+                <TouchableOpacity style={styles.documentDownloadButton} onPress={downloadFile} >
+                  <Text style={styles.documentButtonText}>Download</Text>
+                </TouchableOpacity>
+              </View>
+            </Modal>
           </View>
         }
       </View>
@@ -282,12 +281,13 @@ function Request(props) {
 const styles = StyleSheet.create({
   requestItemHeader: {
     justifyContent: 'space-between',
-    width: Dimensions.get('screen').width * 0.9,
+    width: SCREEN_WIDTH * 0.9,
     height: 65,
     alignItems: 'center',
     borderRadius: 16,
     borderWidth: 1.5,
     borderColor: '#E6EBF2',
+    marginVertical: 10,
     backgroundColor: '#FFF',
     padding: 12,
     flexDirection: 'row',
@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
   requestItemHeaderOpen: {
     // justifyContent: 'flex-start',
     width: SCREEN_WIDTH * 0.9,
-    height: 65,
+    height: 55,
     alignItems: 'center',
     paddingHorizontal: 12,
     flexDirection: 'row',
@@ -313,12 +313,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5F8FF',
     padding: 5,
   },
-  requestClosed: {
-    width: SCREEN_WIDTH * 0.9,
-    alignItems: 'center',
-    marginVertical: 5,
-    padding: 5,
-  },
   requestItemBody: {
     justifyContent: 'space-between',
     width: SCREEN_WIDTH * 0.9,
@@ -332,15 +326,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flex: 1,
   },
+  requestItemMiddleClose: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 10,
+    flex: 7,
+  },
   requestItemMiddle: {
     justifyContent: 'center',
     alignItems: 'flex-start',
-    flex: 3,
+    flex: 1,
   },
   requestItemLeft: {
     justifyContent: 'center',
     alignItems: 'flex-start',
-    flex: 2,
+    flex: 2.25,
+    // paddingRight: 5,    
   },
   requestItemText: {
     fontSize: 18,
@@ -406,7 +407,7 @@ const styles = StyleSheet.create({
     flex: 2,
   },
   requestItemBodyRight: {
-    flex: 3,
+    flex: 5,
     alignItems: 'flex-start',
   },
   closeBtn: {
@@ -431,6 +432,9 @@ const styles = StyleSheet.create({
     height: SCREEN_HEIGHT * 0.5,
     width: SCREEN_WIDTH * 0.9,
     borderRadius: 16,
+    marginVertical: 10,
+    borderColor: '#808080',
+    borderWidth: 1.5,
   },
   documentDownloadButton: {
     fontSize: 16,

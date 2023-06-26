@@ -63,6 +63,10 @@ namespace WebApi.Controllers
                 if (user == null)
                     return NotFound();
                 user.pushToken = userD.pushToken;
+                foreach (var item in db.tblScheduledNotifications.Where(x => x.pushToken == userD.lastToken).ToList())
+                {
+                    item.pushToken = userD.pushToken;
+                }
                 db.SaveChanges();
                 return Ok();
             }

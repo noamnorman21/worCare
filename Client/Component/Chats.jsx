@@ -4,7 +4,7 @@ import { auth, db } from '../config/firebase';
 import { GiftedChat, Bubble, Time, MessageImage } from 'react-native-gifted-chat';
 import { collection, addDoc, getDocs, getDoc, query, orderBy, onSnapshot, updateDoc, where, limit, doc, increment, deleteDoc } from 'firebase/firestore';
 import { useEffect } from 'react';
-import { createStackNavigator,TransitionPresets } from '@react-navigation/stack';
+import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import { useUserContext } from '../UserContext';
 import { Feather, Entypo, EvilIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
@@ -33,16 +33,16 @@ export default function Chats({ navigation }) {
       ...TransitionPresets.SlideFromRightIOS,
       headerBlurEffect: 'light',
     }} >
-      <Stack.Screen name="ChatRoom" component={ChatRoom} />
-      <Stack.Screen name="MainRoom" component={MainRoom} options={{ headerShown: false }} />
-      <Stack.Screen name="ChatProfile" component={ChatProfile} options={{headerTitleAlign:'center'}} animationType="slide" />
+      <Stack.Screen name="ChatRoom" component={ChatRoom} options={{ headerShown: true, headerTitleAlign: 'center' }} />
+      <Stack.Screen name="MainRoom" component={MainRoom} options={{ headerShown: false, headerTitleAlign: 'center' }} />
+      <Stack.Screen name="ChatProfile" component={ChatProfile} options={{ headerShown: true, headerTitle: '' }} animationType="slide" />
     </Stack.Navigator>
   )
 }
 
 function MainRoom({ navigation }) {
   const [chatsToDisplay, setchatsToDisplay] = useState([])
-  const { userContext,setNewMessages } = useUserContext();
+  const { userContext, setNewMessages } = useUserContext();
   const [users, setUsers] = useState([])
   const [userChats, setUserChats] = useState([])
   const [usersToDisplay, setUsersToDisplay] = useState([])
@@ -101,11 +101,11 @@ function MainRoom({ navigation }) {
           <ConvoCard key={name.Name} name={name} userEmails={name.userEmails} />
         )))
       }
-      let x=0;
-      userChats.map((name)=>{
-        x+=name.unreadCount;
+      let x = 0;
+      userChats.map((name) => {
+        x += name.unreadCount;
       })
-      console.log("new messages: ",x)
+      console.log("new messages: ", x)
       setNewMessages(x);
       renderNames();
     }
@@ -144,11 +144,11 @@ function MainRoom({ navigation }) {
     if (querySnapshot.docs.length > 0 || querySnapshot2.docs.length > 0) {
       checkifConvoExistsforContact(user)
       console.log("convo exists")
-      if(querySnapshot.docs.length > 0){
+      if (querySnapshot.docs.length > 0) {
         console.log(querySnapshot.docs[0].data())
-      navigation.navigate('ChatRoom', { name: auth.currentUser.displayName + "+" + user.name, UserName: user.name, userEmail: user.id, unreadCount: querySnapshot.docs[0].data().unreadCount, type: "private" })
+        navigation.navigate('ChatRoom', { name: auth.currentUser.displayName + "+" + user.name, UserName: user.name, userEmail: user.id, unreadCount: querySnapshot.docs[0].data().unreadCount, type: "private" })
       }
-      else{
+      else {
         console.log(querySnapshot2.docs[0].data())
         navigation.navigate('ChatRoom', { name: user.name + "+" + auth.currentUser.displayName, UserName: user.name, userEmail: user.id, unreadCount: querySnapshot2.docs[0].data().unreadCount, type: "private" })
       }
@@ -174,19 +174,20 @@ function MainRoom({ navigation }) {
     const query1 = await getDocs(q1);
     const query2 = await getDocs(q2);
     if (query1.docs.length > 0 || query2.docs.length > 0) {
-      console.log("convo existsssssss")
+      console.log("convo exists for contact")
     } else {
       console.log("add new private chat")
       addDoc(collection(db, contact.id), { Name: auth.currentUser.displayName + "+" + contact.name, UserName: auth.currentUser.displayName, image: auth.currentUser.photoURL, userEmail: auth.currentUser.email, unread: true, unreadCount: 0, lastMessage: "", lastMessageTime: new Date(), type: "private" });
     }
-  }  
-
+  }
 
   return (
     <View style={styles.container}>
       <View style={styles.top}>
         <Text style={styles.header}>Chat Room</Text>
-        <Feather name='edit' size={20} onPress={() => { setAddNewModal(true) }} />
+        <TouchableOpacity onPress={() => { setAddNewModal(true) }}>
+          <Feather name='edit' size={24} />
+        </TouchableOpacity>
       </View>
       <ScrollView>
         {chatsToDisplay}
@@ -195,17 +196,13 @@ function MainRoom({ navigation }) {
         <View style={styles.modal}>
           <Text style={styles.modalText}>Add new chat</Text>
           <ScrollView style={styles.userScrollview}>
-          {usersToDisplay}
+            {usersToDisplay}
           </ScrollView>
           <TouchableOpacity style={styles.modalButton} onPress={() => { setAddNewModal(false); console.log("pressed close") }}>
             <Text style={styles.modalButtonText}>Cancel</Text>
           </TouchableOpacity>
         </View>
       </Modal>
-      {/* <Modal visible={addNewModalGroup} animationType='slide'>
-        <AddNewGroupChat groupNames={publicGroupNames} users={users} closeModal={()=>setAddNewModalGroup(false)} navigate={(name)=>{ navigation.navigate('ChatRoom', { name: name })}} />
-      </Modal> */}
-
     </View>
   )
 }
@@ -220,8 +217,8 @@ const ConvoCard = (props) => {
 
   useEffect(() => {
     const temp = props.name.lastMessageTime.toString().split(' ')
-    let date=new moment(props.name.lastMessageTime).format('MMM DD YYYY')
-    const time= temp[4].split(':').slice(0, 2).join(':')
+    let date = new moment(props.name.lastMessageTime).format('MMM DD YYYY')
+    const time = temp[4].split(':').slice(0, 2).join(':')
     setLastMessageTime(time)
     setLastMessageDate(date)
     if (props.name.lastMessage.length > 30) {
@@ -253,30 +250,29 @@ const ConvoCard = (props) => {
   }
   return (
     <>
-    <Swipeable renderRightActions={() => <TouchableOpacity onPress={()=>{deleteChat()}}><Text>Delete</Text></TouchableOpacity>} >
-      <View key={props.name.Name} >
-        <TouchableOpacity style={styles.conCard} key={props.name.Name} onPress={() => navigateToChatRoom(props.name)} onLongPress={()=> {console.log("Long pressed")}}>
-          <View style={styles.conLeft}>
-            <Image source={{ uri: props.name.image }} style={styles.convoImage} />
+      <Swipeable renderRightActions={() => <TouchableOpacity onPress={() => { deleteChat() }}><Text>Delete</Text></TouchableOpacity>} >
+        <View key={props.name.Name} >
+          <TouchableOpacity style={styles.conCard} key={props.name.Name} onPress={() => navigateToChatRoom(props.name)} onLongPress={() => { console.log("Long pressed") }}>
+            <View style={styles.conLeft}>
+              <Image source={{ uri: props.name.image }} style={styles.convoImage} />
+            </View>
+            <View style={styles.conMiddle}>
+              <Text style={styles.conName}>{props.name.UserName ? props.name.UserName : props.name.Name}</Text>
+              <Text style={styles.conLastMessage}>{lastMessageText}</Text>
+            </View>
+            <View style={styles.conRight}>
+              {props.name.unreadCount > 0 && <View style={styles.unread}>
+                <Text style={styles.unreadTxt}>{props.name.unreadCount}</Text>
+              </View>}
+              {lastMessageDate === today && <Text style={styles.conTime}>{lastMessageTime}</Text>}
+              {lastMessageDate === yasterday && <Text style={styles.conDate}>yasterday</Text>}
+              {lastMessageDate !== today && lastMessageDate !== yasterday && <Text style={styles.conDate}>{lastMessageDate}</Text>}
+            </View>
+          </TouchableOpacity>
+          <View style={styles.lineContainer}>
+            <View style={styles.line} />
           </View>
-          <View style={styles.conMiddle}>
-            <Text style={styles.conName}>{props.name.UserName ? props.name.UserName : props.name.Name}</Text>
-            <Text style={styles.conLastMessage}>{lastMessageText}</Text>
-          </View>
-          <View style={styles.conRight}>
-            {props.name.unreadCount > 0 && <View style={styles.unread}>
-              <Text style={styles.unreadTxt}>{props.name.unreadCount}</Text>
-            </View>}
-            {lastMessageDate === today && <Text style={styles.conTime}>{lastMessageTime}</Text>}
-            {lastMessageDate === yasterday && <Text style={styles.conDate}>yasterday</Text>}
-            {lastMessageDate !== today && lastMessageDate !== yasterday && <Text style={styles.conDate}>{lastMessageDate}</Text>}
-
-          </View>
-        </TouchableOpacity>
-        <View style={styles.lineContainer}>
-          <View style={styles.line} />
         </View>
-      </View>
       </Swipeable>
     </>
   )
@@ -375,7 +371,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    margin:10,
+    margin: 10,
 
   },
   modalButtonText: {
@@ -424,5 +420,5 @@ const styles = StyleSheet.create({
     height: 55,
     borderRadius: 54
   },
-  
+
 })

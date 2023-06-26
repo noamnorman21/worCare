@@ -17,6 +17,7 @@ namespace WebApi.DTO
         public int userId { get; set; }
         public int fId { get; set; }
         public Nullable<System.DateTime> requestEndDate { get; set; }
+        public string pushToken2 { get; set; }
 
     }
 }

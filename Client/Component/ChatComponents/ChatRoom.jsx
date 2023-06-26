@@ -1,6 +1,5 @@
-
 import React, { useState, useCallback, useEffect, useLayoutEffect } from 'react';
-import { View, Text, StyleSheet, Dimensions, Image, Alert, Modal, TouchableOpacity, ScrollView, Platform } from 'react-native'
+import { View, Text, StyleSheet, Dimensions, Image, Alert, Modal, TouchableOpacity, ScrollView, Platform, SafeAreaView } from 'react-native'
 import { GiftedChat, Bubble, Actions, InputToolbar, Time, MessageImage, LoadEarlier } from 'react-native-gifted-chat';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
@@ -10,7 +9,7 @@ import { db, auth, storage } from '../../config/firebase';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { TextInput } from 'react-native-paper';
 import moment from 'moment';
-import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
+// import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 import { useUserContext } from '../../UserContext';
 
 const ScreenHeight = Dimensions.get("window").height;
@@ -24,7 +23,7 @@ export default function ChatRoom({ route, navigation }) {
   const [imageDescription, setImageDescription] = useState('')//to send image with description
   const [GroupMembers, setGroupMembers] = useState(); //for group chat
   const [recording, setRecording] = useState(null); // for audio recording
-  const {newMessages, setNewMessages} = useUserContext();
+  const { newMessages, setNewMessages } = useUserContext();
 
   useLayoutEffect(() => {
     const tempMessages = query(collection(db, route.params.name), orderBy('createdAt', 'desc'));
@@ -54,10 +53,6 @@ export default function ChatRoom({ route, navigation }) {
 
   }, [navigation]);
 
-  useEffect(() => {
-    console.log("group members", GroupMembers)
-  }, [GroupMembers])
-
   useFocusEffect( //update convo in db that user has read the messages when leaving page
     useCallback(() => {
       const setDocAsRead = async () => {
@@ -66,21 +61,25 @@ export default function ChatRoom({ route, navigation }) {
         const res = await getDocs(docRef);
         res.forEach((doc) => {
           updateDoc(doc.ref, { unread: false, unreadCount: 0 });
-        });        
+        });
       }
       console.log("new messages", newMessages)
       console.log("unread count", route.params.unreadCount)
-      setNewMessages(newMessages-route.params.unreadCount)
+      setNewMessages(newMessages - route.params.unreadCount)
       return () => {
         setDocAsRead();
       }
     }, [])
   );
 
-
   useEffect(() => {
     navigation.setOptions({
       headerTitle: route.params.UserName ? route.params.UserName : route.params.name,
+      headerLeft: () => (
+        <TouchableOpacity style={{ marginLeft: 10 }} onPress={() => navigation.goBack()}>
+          <Ionicons name="chevron-back" size={28} color="#58" />
+        </TouchableOpacity>
+      ),
     })
   }, [navigation]);
 
@@ -241,17 +240,16 @@ export default function ChatRoom({ route, navigation }) {
     console.log("new message added to db")
     setPicPreviewModal(false);
     //update last message and last message time in db
-    console.log("route.params.name",route.params.name)
+    console.log("route.params.name", route.params.name)
     const docRef = query(collection(db, auth.currentUser.email), where("Name", "==", route.params.name));
     const res = getDocs(docRef);
     res.then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
-        updateDoc(doc.ref, { lastMessage: text || "image", lastMessageTime: createdAt });
+        updateDoc(doc.ref, { lastMessage: text || "Image", lastMessageTime: createdAt });
         console.log("updated for user")
       });
     });
     if (GroupMembers) {
-      console.log("GroupMembers", GroupMembers)
       GroupMembers.forEach(arr => {
         arr.forEach(user => {
           console.log("useraa", user)
@@ -260,16 +258,17 @@ export default function ChatRoom({ route, navigation }) {
             const res = getDocs(docRef);
             console.log("res", res)
             res.then((querySnapshot) => {
-              if(!querySnapshot.empty){
-              querySnapshot.forEach((doc) => {
-                updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: text || "image", lastMessageTime: createdAt });
-                console.log("updated")
-              })}
+              if (!querySnapshot.empty) {
+                querySnapshot.forEach((doc) => {
+                  updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: text || "Image", lastMessageTime: createdAt });
+                  console.log("updated")
+                })
+              }
               else {
-                addDoc(collection(db, user), { Name: route.params.name,UserName: "",userEmail: "",image: auth.currentUser.photoURL, unread: true, unreadCount: 1, lastMessage: text, lastMessageTime: createdAt, type: "group" });
+                addDoc(collection(db, user), { Name: route.params.name, UserName: "", userEmail: "", image: auth.currentUser.photoURL, unread: true, unreadCount: 1, lastMessage: text, lastMessageTime: createdAt, type: "group" });
                 console.log("added")
               }
-                ;
+              ;
             });
           }
         }
@@ -281,7 +280,7 @@ export default function ChatRoom({ route, navigation }) {
       const res = getDocs(docRef);
       res.then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-          updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: text || "image", lastMessageTime: createdAt });
+          updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: text || "Image", lastMessageTime: createdAt });
           console.log("updated for user")
         });
       });
@@ -289,19 +288,17 @@ export default function ChatRoom({ route, navigation }) {
   }
 
   const onSend = useCallback((messages = [], GroupMembers) => {
-    console.log("group members", GroupMembers)
     const { _id, createdAt, text, user } = messages[0]
     addDoc(collection(db, route.params.name), { _id, createdAt, text, user });
     const docRef = query(collection(db, auth.currentUser.email), where("Name", "==", route.params.name));
-    console.log("route.params.name",route.params.name)
+    console.log("route.params.name", route.params.name)
     const res = getDocs(docRef);
     res.then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
         updateDoc(doc.ref, { lastMessage: text, lastMessageTime: createdAt });
       });
     });
-   if (GroupMembers) {
-    console.log("GroupMembers", GroupMembers)
+    if (GroupMembers) {
       GroupMembers.forEach(arr => {
         arr.forEach(user => {
           if (user !== auth.currentUser.email) {
@@ -313,7 +310,7 @@ export default function ChatRoom({ route, navigation }) {
               // if user has no documentation in db of chat
               if (!querySnapshot.empty) {
                 querySnapshot.forEach((doc) => {
-                  updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: text || "image", lastMessageTime: createdAt });
+                  updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: text || "Image", lastMessageTime: createdAt });
                   console.log("updated")
                 })
               }
@@ -324,9 +321,7 @@ export default function ChatRoom({ route, navigation }) {
               }
             });
           }
-         
         }
-        
         )
       });
     }
@@ -334,20 +329,17 @@ export default function ChatRoom({ route, navigation }) {
       const docRef = query(collection(db, route.params.userEmail), where("Name", "==", route.params.name));
       const res = getDocs(docRef);
       res.then((querySnapshot) => {
-        if(!querySnapshot.empty){
-        querySnapshot.forEach((doc) => {
-          updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: text, lastMessageTime: createdAt });
-        });
-      }
-      else {
-        addDoc(collection(db, route.params.userEmail), { Name: auth.currentUser.displayName + "+" + route.params.UserName, UserName: auth.currentUser.displayName, image: auth.currentUser.photoURL, userEmail: auth.currentUser.email, unread: true, unreadCount: 1, lastMessage: text, lastMessageTime: createdAt });
-      }});
+        if (!querySnapshot.empty) {
+          querySnapshot.forEach((doc) => {
+            updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: text, lastMessageTime: createdAt });
+          });
+        }
+        else {
+          addDoc(collection(db, route.params.userEmail), { Name: auth.currentUser.displayName + "+" + route.params.UserName, UserName: auth.currentUser.displayName, image: auth.currentUser.photoURL, userEmail: auth.currentUser.email, unread: true, unreadCount: 1, lastMessage: text, lastMessageTime: createdAt });
+        }
+      });
     }
   }, []);
-
-  useEffect(() => {
-    console.log("group members", GroupMembers)
-  }, [GroupMembers])
 
 
   return (
@@ -424,9 +416,9 @@ export default function ChatRoom({ route, navigation }) {
           return (<>
             <Actions {...props}
               containerStyle={{
-                width: 34,               
+                width: 34,
                 alignItems: 'center',
-                justifyContent: 'center',               
+                justifyContent: 'center',
               }}
               icon={() => (
                 <Ionicons name="camera" size={28} color="#548DFF" />
@@ -504,36 +496,9 @@ export default function ChatRoom({ route, navigation }) {
             />
           );
         }}
-        // loadEarlier={true}
-        // renderLoadEarlier={(props) => {
-        //   return (
-        //     <LoadEarlier {...props}
-        //       wrapperStyle={{
-        //         alignItems: 'center',
-        //         justifyContent: 'center',
-        //         height: 44,
-        //         width: ScreenWidth,
-        //       }}
-        //       textStyle={{
-        //         fontFamily: "Urbanist-Regular",
-        //         fontSize: 14,
-        //         color: "#000",
-        //       }}
-        //       label="Load Earlier Messages"
-        //       activityIndicatorColor="#548DFF"
-        //       activityIndicatorStyle={{
-        //         marginTop: 5,
-        //         marginBottom: 5,
-
-        //       }}
-        //       text="Load Earlier Messages"
-        //       />
-        //   )
-        // }
-        // }
       />
       <Modal visible={picPreviewModal} animationType='slide' onRequestClose={() => setPicPreviewModal(false)} >
-        <View style={styles.imagePreview}>
+        <SafeAreaView style={styles.imagePreview}>
           <View>
             <Image source={{ uri: selectedPic }} style={styles.image} />
           </View>
@@ -541,14 +506,17 @@ export default function ChatRoom({ route, navigation }) {
             <TextInput style={styles.modalInput}
               mode='outlined'
               onChangeText={(text) => setImageDescription(text)}
-              placeholder="Add a caption...(optional)"
+              placeholder="Add a caption..."
               outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
               contentStyle={{ fontFamily: 'Urbanist-Medium' }}
               activeOutlineColor="#548DFF"
-              outlineColor='#E6EBF2' />
-            <Ionicons name='send' size={30} color='#fff' onPress={() => { setPicPreviewModal(false); sendToFirebase(selectedPic) }} />
+              outlineColor='#E6EBF2'
+            />
+            <TouchableOpacity style={styles.iconSend} onPress={() => { setPicPreviewModal(false); sendToFirebase(selectedPic) }}>
+              <Ionicons name='send' size={25} color='#000' />
+            </TouchableOpacity>
           </View>
-        </View>
+        </SafeAreaView>
       </Modal>
     </>
   )
@@ -573,36 +541,45 @@ const styles = StyleSheet.create({
     backgroundColor: '#000'
   },
   image: {
-    width: ScreenWidth * 1,
-    height: ScreenHeight * 1,
+    width: ScreenWidth * 0.95,
+    height: ScreenHeight * 0.8,
     borderRadius: 10,
-    resizeMode: 'contain'
+    // resizeMode: 'contain'
   },
   inputAndSend: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
     width: ScreenWidth,
     padding: 10,
   },
   lightboxHeader: {
-    width: ScreenWidth,
+    width: 50,
     height: 50,
+    borderRadius: 25,
+    position: 'absolute',
+    top: 25,
+    left: 5,
+    backgroundColor: '#C0C0C0',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 10
   },
   modalInput: {
-    width: ScreenWidth * 0.8,
+    width: ScreenWidth * 0.95,
     backgroundColor: '#fff',
     borderRadius: 10,
-    padding: 10,
+    // padding: 5,
+    height: 54,
+    justifyContent: 'center',
     fontFamily: 'Urbanist-Regular',
     fontSize: 16,
-    marginVertical: 10
+  },
+  iconSend: {
+    position: 'absolute',
+    right: 20,
+    justifyContent: 'center',
+    top: 30,
   },
 })

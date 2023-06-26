@@ -66,6 +66,9 @@ namespace WebApi.DTO
                     {
                         if (item.paymentId != null && paymentRequest.Any(x => x.requestId == item.paymentId))
                         {
+                            // only foreign user can add payment request 
+                            // only regular user should get push notification
+                            
                             var objectToSend = new
                             {
                                 to = item.pushToken,

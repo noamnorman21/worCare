@@ -109,7 +109,7 @@ function Request(props) {
         ],
       );
     }
-    else  {
+    else {
       setModal2Visible(true)
     }
   }
@@ -183,33 +183,17 @@ function Request(props) {
     );
   }
 
-  // const askUserBeforeSave = () => {
-  //   if (status == "F") {
-  //     setStatus("P")
-  //   }
-  //   else if (status == "P") {
-  //     setStatus("F")
-  //     // console.log("status = P")
-  //     // setTimeout(() => {
-  //     //   saveStatus(props.data.requestId)
-  //     // }, 2000);
-  //   }
-  // }
-
-  useEffect(() => { 
-    console.log("status", status)   
-      if (status) {
-          const timer = setTimeout(() => {
-            saveStatus(props.data.requestId)
-          }, 2000);
-          return () => clearTimeout(timer);
-      }    
+  useEffect(() => {
+    if (status) {
+      const timer = setTimeout(() => {
+        saveStatus(props.data.requestId)
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
   }, [status])
 
   const saveStatus = async (id) => {
-
     if (status) {
-      console.log("status = F")
       try {
         const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/UpdateStatus/', {
           method: 'PUT',
@@ -293,11 +277,8 @@ function Request(props) {
           <View style={styles.requestOpen}>
             <View style={styles.requestItemHeaderOpen}>
               <TouchableOpacity onPress={toggle} style={styles.request}>
-                <View style={styles.requestItemLeft}>
-                  <Text style={styles.requestItemText}>{dateString}</Text>
-                </View>
                 <View style={styles.requestItemMiddle}>
-                  <Text style={styles.requestItemText}>{props.subject.length > 17 ? props.subject.slice(0, 12) + "..." : props.subject}</Text>
+                  <Text style={[styles.requestItemText, { marginLeft: 0 }]}>{props.subject}</Text>
                 </View>
               </TouchableOpacity>
               <Menu style={{ flexDirection: 'column', marginVertical: 0 }} onSelect={value => openModal(value)} >
@@ -330,16 +311,16 @@ function Request(props) {
             </View>
             <View style={styles.requestItemBody}>
               <View style={styles.requestItemBodyLeft}>
-                <Text style={styles.requestItemText}>Subject: </Text>
+                {/* <Text style={styles.requestItemText}>Subject: </Text> */}
                 <Text style={styles.requestItemText}>Date: </Text>
                 <Text style={styles.requestItemText}>Amount: </Text>
                 <Text style={[styles.requestItemText, props.requestComment == null || props.requestComment == '' && { display: 'none' }]}>Comment: </Text>
               </View>
               <View style={styles.requestItemBodyRight}>
-                <Text style={styles.requestItemText}>{props.subject}</Text>
-                <Text style={styles.requestItemText}>{dateString}</Text>
-                <Text style={styles.requestItemText}>{props.amountToPay}</Text>
-                <Text style={[styles.requestItemText, props.requestComment == null || props.requestComment == '' && { display: 'none' }]}>{props.requestComment}</Text>
+                {/* <Text style={styles.requestItemSmallText}>{props.subject}</Text> */}
+                <Text style={styles.requestItemSmallText}>{dateString}</Text>
+                <Text style={styles.requestItemSmallText}>{props.amountToPay}</Text>
+                <Text style={[styles.requestItemSmallText, props.requestComment == null || props.requestComment == '' && { display: 'none' }]}>{props.requestComment}</Text>
               </View>
             </View>
           </View>
@@ -348,14 +329,14 @@ function Request(props) {
             <TouchableOpacity style={styles.request} onPress={() => setStatus(!status)}>
               <View style={styles.requestItemLeft}>
                 {
-                  !status  ?
+                  !status ?
                     <Feather name="circle" size={30} color="#548DFF" />
                     :
                     <Feather name="check-circle" size={30} color="#548DFF" />
                 }
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={toggle} style={styles.requestItemMiddle}>
+            <TouchableOpacity onPress={toggle} style={styles.requestItemMiddleClose}>
               <View>
                 <Text style={[styles.requestItemText, status ? { textDecorationLine: 'line-through' } : {}]}>{dateString} - {props.subject.length > 15 ? props.subject.slice(0, 12) + "..." : props.subject}</Text>
               </View>
@@ -380,7 +361,7 @@ function Request(props) {
                 <MenuOption value={4} children={<View style={styles.options}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={styles.deleteTxt}> Delete Request</Text></View>} />
               </MenuOptions>
             </Menu>
-            <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
+            <Modal animationType='slide' transparent={false} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
               <View style={styles.documentview}>
                 <TouchableOpacity style={styles.closeBtn} onPress={() => setModal1Visible(false)}>
                   <AntDesign name="close" size={24} color="black" />
@@ -404,7 +385,7 @@ function Request(props) {
 const styles = StyleSheet.create({
   requestItemHeader: {
     justifyContent: 'space-between',
-    width: Dimensions.get('screen').width * 0.9,
+    width: SCREEN_WIDTH * 0.9,
     height: 65,
     alignItems: 'center',
     borderRadius: 16,
@@ -418,7 +399,7 @@ const styles = StyleSheet.create({
   requestItemHeaderOpen: {
     // justifyContent: 'flex-start',
     width: SCREEN_WIDTH * 0.9,
-    height: 65,
+    height: 55,
     alignItems: 'center',
     paddingHorizontal: 12,
     flexDirection: 'row',
@@ -449,10 +430,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flex: 1,
   },
+  requestItemMiddleClose: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 8,
+  },
   requestItemMiddle: {
     justifyContent: 'center',
     alignItems: 'flex-start',
-    flex: 3.5,
+    flex: 1,
   },
   requestItemLeft: {
     justifyContent: 'center',
@@ -463,6 +449,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#000000',
     fontFamily: 'Urbanist-SemiBold',
+  },
+  requestItemSmallText: {
+    fontSize: 18,
+    color: '#000000',
+    fontFamily: 'Urbanist-Regular',
   },
   options: {
     flexDirection: 'row',
@@ -523,7 +514,7 @@ const styles = StyleSheet.create({
     flex: 2,
   },
   requestItemBodyRight: {
-    flex: 3,
+    flex: 5,
     alignItems: 'flex-start',
   },
   closeBtn: {
@@ -548,6 +539,9 @@ const styles = StyleSheet.create({
     height: SCREEN_HEIGHT * 0.5,
     width: SCREEN_WIDTH * 0.9,
     borderRadius: 16,
+    marginVertical: 10,
+    borderColor: '#808080',
+    borderWidth: 1.5,
   },
   documentDownloadButton: {
     fontSize: 16,
@@ -564,7 +558,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     alignContent: 'center',
-    backgroundColor: 'white',
+    // backgroundColor: 'white',
     flex: 1,
   },
   documentButtonText: {

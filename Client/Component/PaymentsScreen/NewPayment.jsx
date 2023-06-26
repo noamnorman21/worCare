@@ -151,7 +151,8 @@ export default function NewPayment(props) {
       requestProofDocument: downloadURL,
       requestComment: payment.requestComment,
       requestStatus: payment.requestStatus,
-      userId: payment.userId
+      userId: payment.userId,
+      pushToken2: pushToken2
     }
     console.log('NewPayment', NewPayment);
     fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/NewRequest', {
@@ -169,9 +170,6 @@ export default function NewPayment(props) {
           console.log("fetch POST= ", result);
           GetUserPending()
           props.cancel();
-          //for push notification
-          // ${userContext.userName}
-          // console.log('expoToken1', expoToken);
           console.log('expoToken2', pushToken2);
           let PushNotificationsData =
           {
@@ -179,8 +177,7 @@ export default function NewPayment(props) {
             title: "New Request",
             body: `You have a new payment request from for ${payment.amountToPay}`,
             data: { data: 'goes here' },
-          }
-          
+          }          
           sendPushNotification(PushNotificationsData); // This line sends the notification, the function is in UserContext
         },
         (error) => {

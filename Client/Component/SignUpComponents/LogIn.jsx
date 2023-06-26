@@ -138,9 +138,9 @@ export default function LogIn({ navigation }) {
                         phoneNum: json.phoneNum,
                         userUri: json.userUri,
                         userType: json.userType,
-                        workerId: json.workerId,//if user is a caregiver, this field will be same as userId
-                        involvedInId: json.involvedInId,//if user is a not caregiver, this field will be same as userId
-                        patientId: json.patientId,
+                        workerId: json.workerId, // if user is a caregiver, this field will be same as userId
+                        involvedInId: json.involvedInId, // if user is a not caregiver, this field will be same as userId
+                        patientId: json.patientId, 
                         calendarCode: json.calendarCode,
                         patientData: json.patient,
                         patientHL: json.patient.hobbiesAndLimitationsDTO,
@@ -152,6 +152,7 @@ export default function LogIn({ navigation }) {
                         const userToken = {
                             userId: userContext.userId,
                             pushToken: currentToken,
+                            lastToken: userContext.pushToken,
                         }
                         userContext.pushToken = currentToken;
                         const updateTokenUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/UpdatePushToken';
