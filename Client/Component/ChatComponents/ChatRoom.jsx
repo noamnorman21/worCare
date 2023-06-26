@@ -499,6 +499,11 @@ export default function ChatRoom({ route, navigation }) {
       />
       <Modal visible={picPreviewModal} animationType='slide' onRequestClose={() => setPicPreviewModal(false)} >
         <SafeAreaView style={styles.imagePreview}>
+          <View style={styles.imagePreviewheader}>
+            <TouchableOpacity onPress={() => setPicPreviewModal(false)}>
+              <Ionicons name='close' size={30} color='#000' />
+            </TouchableOpacity>
+          </View>
           <View>
             <Image source={{ uri: selectedPic }} style={styles.image} />
           </View>
@@ -581,5 +586,19 @@ const styles = StyleSheet.create({
     right: 20,
     justifyContent: 'center',
     top: 30,
+  },
+  imagePreviewheader: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    position: 'absolute',
+    top: 25,
+    left: 5,
+    backgroundColor: '#C0C0C0',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    zIndex: 1
   },
 })

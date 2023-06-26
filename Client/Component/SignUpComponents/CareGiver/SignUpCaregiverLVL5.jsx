@@ -9,6 +9,9 @@ import { useUserContext } from '../../../UserContext';
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { where, getDocs, updateDoc } from "firebase/firestore";
 
+const groupImage='https://firebasestorage.googleapis.com/v0/b/worcare-3df72.appspot.com/o/groupPics%2FCrowd.png?alt=media&token=b7e7a4ef-ba86-4f3b-9ba8-e032dfed204f'
+
+
 const SCREEN_WIDTH = Dimensions.get('window').width;
 export default function SignUpCaregiverLVL5({ navigation, route }) {
   const [selectedHolidays, setSelectedHolidays] = useState([]);
@@ -85,7 +88,7 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
                       });
                     });
                   }
-                  await addDoc(collection(db, auth.currentUser.email), { Name: newForeignUserData.CountryName_En, UserName: "", userEmail: "", image: newUser.userUri, unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date(), type: "group" }).then(() => {
+                  await addDoc(collection(db, auth.currentUser.email), { Name: newForeignUserData.CountryName_En, UserName: "", userEmail: "", image: groupImage, unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date(), type: "group" }).then(() => {
                     console.log("group added to user");
                     //delete when published to filezila
                     signOut(auth).then(() => {
