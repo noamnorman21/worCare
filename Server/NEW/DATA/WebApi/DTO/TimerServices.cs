@@ -48,27 +48,15 @@ namespace WebApi.DTO
                             };
                             string postData = JsonConvert.SerializeObject(objectToSend);
                             var content = new StringContent(postData, Encoding.UTF8, "application/json");
-
                             HttpResponseMessage response = await client.PostAsync("https://exp.host/--/api/v2/push/send", content);
-                            if (response.IsSuccessStatusCode)
-                            {
-                                db.tblScheduledNotifications.Remove(item);
-                                await db.SaveChangesAsync();
-                            }
-                            else
-                            {
-                                var responseBody = await response.Content.ReadAsStringAsync();
-                                Console.WriteLine(responseBody);
-                            }
+                            db.tblScheduledNotifications.Remove(item);
+                            await db.SaveChangesAsync();
                         }
                     }
                     else if (nowWithoutSeconds == pushRequestTime)
                     {
                         if (item.paymentId != null && paymentRequest.Any(x => x.requestId == item.paymentId))
                         {
-                            // only foreign user can add payment request 
-                            // only regular user should get push notification
-                            
                             var objectToSend = new
                             {
                                 to = item.pushToken,
@@ -78,20 +66,16 @@ namespace WebApi.DTO
                             };
                             string postData = JsonConvert.SerializeObject(objectToSend);
                             var content = new StringContent(postData, Encoding.UTF8, "application/json");
-
                             HttpResponseMessage response = await client.PostAsync("https://exp.host/--/api/v2/push/send", content);
-                            if (response.IsSuccessStatusCode)
-                            {
-                                db.tblScheduledNotifications.Remove(item);
-                                await db.SaveChangesAsync();
-                            }
-                            else
-                            {
-                                var responseBody = await response.Content.ReadAsStringAsync();
-                                Console.WriteLine(responseBody);
-                            }
+                            db.tblScheduledNotifications.Remove(item);
+                            await db.SaveChangesAsync();
                         }
                     }
+                    if (item.scheduledTime < nowWithoutSeconds)
+                    {
+                        db.tblScheduledNotifications.Remove(item);
+                    }
+                    await db.SaveChangesAsync();
                 }
             }
         }

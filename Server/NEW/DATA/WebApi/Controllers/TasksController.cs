@@ -9,6 +9,8 @@ using WebApi.DTO;
 using System.Web.Http.Cors;
 using Microsoft.Ajax.Utilities;
 using System.Data.Entity.SqlServer;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace WebApi.Controllers
 {
@@ -507,9 +509,20 @@ namespace WebApi.Controllers
                     if (tblDrugForPatient != null)
                     {
                         // Only If type is Pills we need to update the quantity of pills
-                        if (actualTask.drug.drugType == "Pills")
+                        if (actualTask.drug.drugType == "Pill")
                         {
                             tblDrugForPatient.qtyInBox -= tblDrugForPatient.dosage;
+                            if (tblDrugForPatient.minQuantity >= tblDrugForPatient.qtyInBox)
+                            {                                
+                                string userToken = db.tblUser.Where(x => x.userId == actualTask.userId).Select(x => x.pushToken).FirstOrDefault();
+                                string foreignToken = db.tblUser.Where(x => x.userId == actualTask.workerId).Select(x => x.pushToken).FirstOrDefault();
+                                if (userToken != null && foreignToken != null)
+                                {                                    
+                                    string title = "Drug is Running Low";
+                                    string body = actualTask.drug.drugNameEn + " - Running low!";
+                                    SendPushNotification(foreignToken, userToken, title,body);
+                                }
+                            }
                         }
                         tblDrugForPatient.lastTakenDate = DateTime.Now;
                         db.SaveChanges();
@@ -521,6 +534,31 @@ namespace WebApi.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+        // Send Push async function
+        private static HttpClient client = new HttpClient();
+        public async void SendPushNotification(string foreignToken, string userToken , string title, string body)
+        {
+            var objectToSendUser = new
+            {
+                to = userToken,
+                title = title,
+                body = body,
+                //data = item.data
+            };
+            var objectToSendForeign = new
+            {
+                to = foreignToken,
+                title = title,
+                body = body,
+                //data = item.data
+            };
+            string postData = JsonConvert.SerializeObject(objectToSendUser);
+            string postData1 = JsonConvert.SerializeObject(objectToSendForeign);
+            var content = new StringContent(postData, Encoding.UTF8, "application/json");
+            var content1 = new StringContent(postData1, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await client.PostAsync("https://exp.host/--/api/v2/push/send", content);
+            HttpResponseMessage response1 = await client.PostAsync("https://exp.host/--/api/v2/push/send", content1);
         }
 
         [HttpPut]

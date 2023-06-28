@@ -17,6 +17,7 @@ const SCREEN_HEIGHT = Dimensions.get('window').height;
 export default function NewPayment(props) {
   const { userContext, GetUserPending, sendPushNotification } = useUserContext();
   const pushToken2 = userContext.pushToken2;
+  const userName = userContext.FirstName;
 
   const [payment, setPayment] = useState({
     amountToPay: '',
@@ -110,7 +111,7 @@ export default function NewPayment(props) {
       Alert.alert('Please enter subject');
       return;
     }
-    if (payment.requestSubject.length>20) {
+    if (payment.requestSubject.length > 20) {
       Alert.alert('Subject is too long, please enter up to 20 characters');
       return;
     }
@@ -168,17 +169,17 @@ export default function NewPayment(props) {
       .then(
         (result) => {
           console.log("fetch POST= ", result);
-          GetUserPending()
-          props.cancel();
-          console.log('expoToken2', pushToken2);
           let PushNotificationsData =
           {
             expoPushToken: pushToken2,
-            title: "New Request",
-            body: `You have a new payment request from for ${payment.amountToPay}`,
+            title: "New Payment Request",
+            body: `You have a new payment request from ${userName}\n for ${payment.amountToPay}NIS`,
             data: { data: 'goes here' },
-          }          
+          }
           sendPushNotification(PushNotificationsData); // This line sends the notification, the function is in UserContext
+          GetUserPending()
+          props.cancel();
+          console.log('expoToken2', pushToken2);         
         },
         (error) => {
           console.log("err post=", error);
@@ -231,7 +232,7 @@ export default function NewPayment(props) {
           </View>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
-    </SafeAreaView >
+    </SafeAreaView>
   );
 }
 

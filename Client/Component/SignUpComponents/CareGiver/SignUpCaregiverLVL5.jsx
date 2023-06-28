@@ -11,7 +11,6 @@ import { where, getDocs, updateDoc } from "firebase/firestore";
 
 const groupImage='https://firebasestorage.googleapis.com/v0/b/worcare-3df72.appspot.com/o/groupPics%2FCrowd.png?alt=media&token=b7e7a4ef-ba86-4f3b-9ba8-e032dfed204f'
 
-
 const SCREEN_WIDTH = Dimensions.get('window').width;
 export default function SignUpCaregiverLVL5({ navigation, route }) {
   const [selectedHolidays, setSelectedHolidays] = useState([]);
@@ -54,9 +53,6 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
         console.log(newUser);
         createUserWithEmailAndPassword(auth, newUser.Email, newUser.Password)
           .then(() => {
-            console.log("user created");
-            console.log("add to chat");
-            console.log(auth);
             //add the new user and paired user to each other's chat
             signInWithEmailAndPassword(auth, newUser.Email, newUser.Password).then((userCredential) => {
               console.log("user signed in");
@@ -64,14 +60,12 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
                 displayName: newUser.FirstName + ' ' + newUser.LastName,
                 photoURL: newUser.userUri
               }).then(async () => {
-                console.log("user updated");
                 let userToUpdate = {
                   id: auth.currentUser.email,
                   name: auth.currentUser.displayName, //the name of the user is the first name and the last name
                   avatar: auth.currentUser.photoURL
                 }
                 await addDoc(collection(db, "AllUsers"), { id: userToUpdate.id, name: userToUpdate.name, avatar: userToUpdate.avatar }).then(async () => {
-                  console.log("user added to all users");
                   const q = query(collection(db, "GroupMembers"), where("Name", "==", newForeignUserData.CountryName_En));
                   const querySnapshot = await getDocs(q);
                   // check if the group already exists, if not add it to the db
@@ -215,7 +209,6 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
 
   const isItemSelected = (arr) => {
     setSelectedHolidays(arr); //arr is the array of the selected holidays
-
   };
 
   const AddToChat = async () => {

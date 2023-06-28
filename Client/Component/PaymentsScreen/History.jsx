@@ -287,10 +287,13 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 1.5,
     borderColor: '#E6EBF2',
-    marginVertical: 10,
     backgroundColor: '#FFF',
     padding: 12,
     flexDirection: 'row',
+    // margin for platform
+    // marginVertical: 10,
+    marginTop: Platform.OS === 'ios' ? -10 : 10,
+    marginBottom: Platform.OS === 'ios' ? 10 : 10,
   },
   requestItemHeaderOpen: {
     // justifyContent: 'flex-start',

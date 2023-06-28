@@ -38,6 +38,7 @@ export default function MedCard(props) {
             return;
         }
         let doneTask = props.task;
+        doneTask.userId = userData.involvedInId;
         doneTask.taskStatus = 'F';
         updateActualTask(doneTask, false);
         getAllPublicTasks(userData);
@@ -83,7 +84,7 @@ export default function MedCard(props) {
         setTimeInDay(timeInDay[0] + ":" + timeInDay[1])
     }
 
-    const taggleIsDone = () => {
+    const toggleIsDone = () => {
         setIsDone(!isDone)
     }
 
@@ -121,7 +122,7 @@ export default function MedCard(props) {
                 </View>
 
                 <View style={styles.iconCheckBoxContainer}>
-                    <TouchableOpacity onPress={taggleIsDone}>
+                    <TouchableOpacity onPress={toggleIsDone}>
                         {
                             isDone ?
                                 <Feather name="check-circle" size={25} color={iconColors[0]} />

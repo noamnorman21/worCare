@@ -30,7 +30,7 @@ export default function Rights() {
     { label: 'Conditions', value: 'Work conditions' },
     { label: 'Safety', value: 'Work safety' },
     { label: 'Contract', value: 'Work contract' },
-    { label: 'Termination', value: 'Termination' },    
+    { label: 'Termination', value: 'Termination' },
   ]);
   const [question, setQuestion] = useState('');
   const [gpt3Answer, setGpt3Answer] = useState('');
@@ -53,7 +53,8 @@ export default function Rights() {
     setIsLoading(true);
     // return; 
     // Adjust the prompt to include the selected category and the question
-    const prompt = `Category: ${value}\nQuestion: ${question}\n\nContext: In Israel, foreign workers in the field of caregiver for the elderly have specific rights and regulations. It is important to provide accurate and reliable information. Please provide an answer that is specific to Israel's laws and guidelines.\n\nAnswer:`;
+    const context = `Context: In Israel, foreign workers in the field of caregiver for the elderly have specific rights and regulations. It is important to provide accurate and reliable information. Please provide an answer that is specific to Israel's laws and guidelines.`
+    const prompt = `Category: ${value}\nQuestion: ${question}\n\n${context}\n\nAnswer:`;
     // Make the API call and handle the response
     const apiResponse = await fetch('https://api.openai.com/v1/engines/text-davinci-003/completions', {
       method: 'POST',
@@ -76,7 +77,6 @@ export default function Rights() {
     setGpt3Answer(answer);
     setIsLoading(false);
     // Show the answer overlay
-
   };
 
   const handleAddBtnPress = () => {
@@ -194,7 +194,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 20,
     right: 10,
-
   },
   loadIcon: {
     //scale transform: [{ scaleX: 1.5 }, 

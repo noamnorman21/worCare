@@ -6,6 +6,8 @@ import { useUserContext } from '../../UserContext';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function TaskCheckBox(props) {
+    const { userContext } = useUserContext()
+    const [userData, setUserData] = useState(useUserContext().userContext);
     const [isDone, setIsDone] = useState(false);
     const checkIcon = ["check-circle", "circle"]
     const { updateActualTask } = useUserContext();
@@ -33,6 +35,7 @@ export default function TaskCheckBox(props) {
         }
         let doneTask = props.task;
         doneTask.taskStatus = 'F';
+        doneTask.userId = userData.involvedInId;
         updateActualTask(doneTask, props.isPrivate);
         setIsDone(false);
     }

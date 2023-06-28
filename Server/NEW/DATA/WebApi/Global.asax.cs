@@ -31,7 +31,6 @@ namespace WebApi
         
         private void tm_Tick(object sender,ElapsedEventArgs e)
         {
-            StopTimer();
             WebApi.DTO.TimerServices.CheckPush();
         }
         
@@ -44,8 +43,6 @@ namespace WebApi
         {
             timer.Stop();
         }
-
         // End of timer code
-
     }
 }

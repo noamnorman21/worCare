@@ -696,7 +696,6 @@ export function UserProvider({ children }) {
                     console.log('Error:', error.message);
                 }
                 );
-
         }
         else {
             fetch(updateActualTaskUrL, {
@@ -719,7 +718,6 @@ export function UserProvider({ children }) {
                     }
                     else {
                         console.log('err post=', res);
-
                     }
                 }
                 )
@@ -728,7 +726,6 @@ export function UserProvider({ children }) {
                 }
                 );
         }
-
     }
 
     function UpdateDrugForPatientDTO(drugForPatient) {
@@ -752,7 +749,6 @@ export function UserProvider({ children }) {
                 }
                 else {
                     console.log('err post=', res);
-
                 }
             }
             )
