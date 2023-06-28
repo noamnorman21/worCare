@@ -32,6 +32,10 @@ namespace DATA
         public string phoneNum { get; set; }
         public string userUri { get; set; }
         public string pushToken { get; set; }
+        public Nullable<bool> financeNotifications { get; set; }
+        public Nullable<bool> chatNotifications { get; set; }
+        public Nullable<bool> medNotifications { get; set; }
+        public Nullable<bool> tasksNotifications { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tblCalendarForUser> tblCalendarForUser { get; set; }

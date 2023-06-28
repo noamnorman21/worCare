@@ -278,6 +278,10 @@
     <Property Name="phoneNum" Type="varchar" MaxLength="10" Nullable="false" />
     <Property Name="userUri" Type="nvarchar" MaxLength="4000" />
     <Property Name="pushToken" Type="nvarchar" MaxLength="4000" />
+    <Property Name="financeNotifications" Type="bit" />
+    <Property Name="chatNotifications" Type="bit" />
+    <Property Name="medNotifications" Type="bit" />
+    <Property Name="tasksNotifications" Type="bit" />
   </EntityType>
   <Association Name="FK__tblActual__taskI__795DFB40">
     <End Role="tblPatientTask" Type="Self.tblPatientTask" Multiplicity="1" />
@@ -772,6 +776,10 @@
     <Parameter Name="PhoneNum" Type="varchar" Mode="In" />
     <Parameter Name="UserUri" Type="nvarchar" Mode="In" />
     <Parameter Name="pushToken" Type="nvarchar" Mode="In" />
+    <Parameter Name="tasksNotifications" Type="bit" Mode="In" />
+    <Parameter Name="financeNotifications" Type="bit" Mode="In" />
+    <Parameter Name="chatNotifications" Type="bit" Mode="In" />
+    <Parameter Name="medNotifications" Type="bit" Mode="In" />
   </Function>
   <Function Name="NewContact" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="contactName" Type="varchar" Mode="In" />

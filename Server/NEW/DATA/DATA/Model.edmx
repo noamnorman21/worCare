@@ -283,6 +283,10 @@
           <Property Name="phoneNum" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="userUri" Type="nvarchar" MaxLength="4000" />
           <Property Name="pushToken" Type="nvarchar" MaxLength="4000" />
+          <Property Name="financeNotifications" Type="bit" />
+          <Property Name="chatNotifications" Type="bit" />
+          <Property Name="medNotifications" Type="bit" />
+          <Property Name="tasksNotifications" Type="bit" />
         </EntityType>
         <Association Name="FK__tblActual__taskI__795DFB40">
           <End Role="tblPatientTask" Type="Self.tblPatientTask" Multiplicity="1" />
@@ -777,6 +781,10 @@
           <Parameter Name="PhoneNum" Type="varchar" Mode="In" />
           <Parameter Name="UserUri" Type="nvarchar" Mode="In" />
           <Parameter Name="pushToken" Type="nvarchar" Mode="In" />
+          <Parameter Name="tasksNotifications" Type="bit" Mode="In" />
+          <Parameter Name="financeNotifications" Type="bit" Mode="In" />
+          <Parameter Name="chatNotifications" Type="bit" Mode="In" />
+          <Parameter Name="medNotifications" Type="bit" Mode="In" />
         </Function>
         <Function Name="NewContact" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="contactName" Type="varchar" Mode="In" />
@@ -1303,6 +1311,10 @@
           <NavigationProperty Name="tblPatientTask" Relationship="Self.FK__tblPatien__userI__74994623" FromRole="tblUser" ToRole="tblPatientTask" />
           <NavigationProperty Name="tblPaycheck" Relationship="Self.FK__tblPayche__UserI__618671AF" FromRole="tblUser" ToRole="tblPaycheck" />
           <Property Name="pushToken" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
+          <Property Name="financeNotifications" Type="Boolean" />
+          <Property Name="chatNotifications" Type="Boolean" />
+          <Property Name="medNotifications" Type="Boolean" />
+          <Property Name="tasksNotifications" Type="Boolean" />
         </EntityType>
         <Association Name="FK__tblDrugFo__listI__131DCD43">
           <End Role="tblActualList" Type="Self.tblActualList" Multiplicity="1" />
@@ -1916,6 +1928,10 @@
             <Parameter Name="PhoneNum" Mode="In" Type="String" />
             <Parameter Name="UserUri" Mode="In" Type="String" />
             <Parameter Name="pushToken" Mode="In" Type="String" />
+            <Parameter Name="tasksNotifications" Mode="In" Type="Boolean" />
+            <Parameter Name="financeNotifications" Mode="In" Type="Boolean" />
+            <Parameter Name="chatNotifications" Mode="In" Type="Boolean" />
+            <Parameter Name="medNotifications" Mode="In" Type="Boolean" />
           </FunctionImport>
           <FunctionImport Name="NewContact">
             <Parameter Name="contactName" Mode="In" Type="String" />
@@ -2298,6 +2314,10 @@
           <EntitySetMapping Name="tblUser">
             <EntityTypeMapping TypeName="igroup194_prodModel.tblUser">
               <MappingFragment StoreEntitySet="tblUser">
+                <ScalarProperty Name="tasksNotifications" ColumnName="tasksNotifications" />
+                <ScalarProperty Name="medNotifications" ColumnName="medNotifications" />
+                <ScalarProperty Name="chatNotifications" ColumnName="chatNotifications" />
+                <ScalarProperty Name="financeNotifications" ColumnName="financeNotifications" />
                 <ScalarProperty Name="pushToken" ColumnName="pushToken" />
                 <ScalarProperty Name="userId" ColumnName="userId" />
                 <ScalarProperty Name="Email" ColumnName="Email" />

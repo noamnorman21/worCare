@@ -19,21 +19,6 @@ namespace WebApi.Controllers
     {
         igroup194Db db = new igroup194Db();
 
-        [HttpGet]
-        [Route("GetUser/{id}")] // Just for testing purposes
-        public IHttpActionResult GetUser(int id)
-        {
-            try
-            {
-                var user = db.tblUser.Where(x => x.userId == id).FirstOrDefault();
-                return Ok(user.FirstName + " " + user.LastName + " - Email:" + user.Email);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
         [HttpPost]
         [Route("GetEmailForgotPassword")] // POST - Because The FromBody - Check if email exists in DB and send email with new password
         public IHttpActionResult GetEmailForgotPassword([FromBody] UserDTO userD)
@@ -53,6 +38,7 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        
         [HttpPut]
         [Route("UpdatePushToken")]
         public IHttpActionResult UpdatePushToken([FromBody] UserDTO userD)
@@ -96,6 +82,10 @@ namespace WebApi.Controllers
                 newUser.FirstName = user.First().FirstName;
                 newUser.LastName = user.First().LastName;
                 newUser.pushToken = user.First().pushToken;
+                newUser.medNotifications = user.First().medNotifications;
+                newUser.chatNotifications = user.First().chatNotifications;
+                newUser.financeNotifications = user.First().financeNotifications;
+                newUser.tasksNotifications = user.First().tasksNotifications;
                 var userCalendar = from c in db.tblCalendarForUser
                                    where c.userId == newUser.userId
                                    select c;
@@ -276,7 +266,7 @@ namespace WebApi.Controllers
             {
                 tblCalendarForUser calendarForUser = new tblCalendarForUser();
                 //the store procedure is checking if the user already exists in the db, if not, it will insert the user
-                db.InsertUser(user.Email, user.Password, user.FirstName, user.LastName, user.gender, user.phoneNum, user.userUri, user.pushToken);
+                db.InsertUser(user.Email, user.Password, user.FirstName, user.LastName, user.gender, user.phoneNum, user.userUri, user.pushToken,true,true,true,true);
                 db.SaveChanges();
                 var newUser = db.tblUser.Where(x => x.Email == user.Email).FirstOrDefault();
                 if (newUser == null)

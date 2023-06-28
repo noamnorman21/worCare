@@ -240,10 +240,6 @@ function HomeScreen({ navigation, route }) {
                     <Text style={styles.btnText}>Privacy & My Account</Text>
                     <Ionicons style={styles.arrowLogoStyle} name="chevron-forward" size={24} color="grey" />
                 </TouchableOpacity>
-                {/* <TouchableOpacity style={styles.btn} onPress={() => optionsToEmail()}>
-                    <Text style={styles.btnText}>Contact Us</Text>
-                    <Ionicons style={styles.arrowLogoStyle} name="chevron-forward" size={24} color="grey" />
-                </TouchableOpacity> */}
             </View>
         </SafeAreaView>
     );

@@ -146,6 +146,7 @@ export function UserProvider({ children }) {
             financeNotifications: true,
             chatNotifications: true,
             tasksNotifications: true,
+            medNotifications: true,
             allNotifications: true,
         }
         setUserNotifications(notifications)

@@ -27,6 +27,7 @@ export default function Privacy({ navigation, route }) {
   useEffect(() => {
     const getData = async () => {
       try {
+        console.log(Notifications);
         setEmail(userContext.Email)
       } catch (e) {
         console.log('error', e);
@@ -55,14 +56,11 @@ export default function Privacy({ navigation, route }) {
         </View>
       ),
     });
-    console.log("setnavigations")
     setNavigation();
     getData();
   }, []);
 
   useEffect(() => {
-    console.log("useEffect")
-    console.log("saving", saving)
     if (saving) {
       saveAllChanges();
     }
@@ -256,7 +254,7 @@ export default function Privacy({ navigation, route }) {
             return res.json()
               .then(
                 async (result) => {
-                   await updatePassword(auth.currentUser, password1);
+                  await updatePassword(auth.currentUser, password1);
                   console.log("fetch POST= ", result);
                   Alert.alert('Password Updated', 'Your Password has been changed successfully');
                   if (Notifications != userNotifications) {
@@ -292,19 +290,16 @@ export default function Privacy({ navigation, route }) {
     }
   }
 
-
   //save notifications in DB- for now only in userContext
   const updateNotifications = () => {
     let notificationsUpdate = {
       userId: userContext.userId,
-      emailNotifications: Notifications.emailNotifications,
       financeNotifications: Notifications.financeNotifications,
       chatNotifications: Notifications.chatNotifications,
+      medNotifications: Notifications.medNotifications,
       tasksNotifications: Notifications.tasksNotifications,
-      contactNotifications: Notifications.contactNotifications,
       allNotifications: Notifications.allNotifications,
     }
-    console.log('notificationsUpdate', notificationsUpdate);
     try {
       updateuserNotifications(notificationsUpdate);
       Alert.alert('Changes Updated Successfully');
@@ -343,6 +338,14 @@ export default function Privacy({ navigation, route }) {
         setNotifications({ ...Notifications, tasksNotifications: true });
       }
     }
+    else if (field == 'Med') {
+      if (Notifications.medNotifications) {
+        setNotifications({ ...Notifications, medNotifications: false });
+      }
+      else {
+        setNotifications({ ...Notifications, medNotifications: true });
+      }
+    }
     else if (field == 'Chat') {
       if (Notifications.chatNotifications) {
         setNotifications({ ...Notifications, chatNotifications: false });
@@ -356,6 +359,7 @@ export default function Privacy({ navigation, route }) {
         setNotifications({
           ...Notifications,
           financeNotifications: false,
+          medNotifications: false,
           tasksNotifications: false,
           chatNotifications: false,
           allNotifications: false
@@ -366,6 +370,7 @@ export default function Privacy({ navigation, route }) {
           ...Notifications,
           financeNotifications: true,
           tasksNotifications: true,
+          medNotifications: true,
           chatNotifications: true,
           allNotifications: true
         });
@@ -471,6 +476,18 @@ export default function Privacy({ navigation, route }) {
             ios_backgroundColor="#3e3e3e"
             onValueChange={() => toggleNotifications('Tasks')}
             value={Notifications.tasksNotifications}
+          />
+        </View>
+        {/*Medicine notifications toggle */}
+        <View style={styles.notificationContainer}>
+          <Text style={styles.notificationSmallHeader}>Medicines</Text>
+          <Switch
+            style={Platform.OS == 'ios' ? { marginVertical: 5, marginRight: 10, transform: [{ scaleX: .85 }, { scaleY: .85 }] } : { marginRight: 5 }} // ios style
+            trackColor={{ false: "#E6EBF2", true: "#81b0ff" }}
+            thumbColor={Notifications.medNotifications ? "#548DFF" : "#f4f3f4"}
+            ios_backgroundColor="#3e3e3e"
+            onValueChange={() => toggleNotifications('Med')}
+            value={Notifications.medNotifications}
           />
         </View>
         {/* Chat notification toggle */}

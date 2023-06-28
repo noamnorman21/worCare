@@ -272,6 +272,10 @@
     <EntitySetMapping Name="tblUser">
       <EntityTypeMapping TypeName="igroup194_prodModel.tblUser">
         <MappingFragment StoreEntitySet="tblUser">
+          <ScalarProperty Name="tasksNotifications" ColumnName="tasksNotifications" />
+          <ScalarProperty Name="medNotifications" ColumnName="medNotifications" />
+          <ScalarProperty Name="chatNotifications" ColumnName="chatNotifications" />
+          <ScalarProperty Name="financeNotifications" ColumnName="financeNotifications" />
           <ScalarProperty Name="pushToken" ColumnName="pushToken" />
           <ScalarProperty Name="userId" ColumnName="userId" />
           <ScalarProperty Name="Email" ColumnName="Email" />

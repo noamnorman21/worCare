@@ -448,7 +448,7 @@ namespace DATA
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertProductList", productIdParameter, actualIdParameter, taskIdParameter, productStatusParameter, productQuantityParameter, commentForProductParameter);
         }
     
-        public virtual int InsertUser(string email, string password, string firstName, string lastName, string gender, string phoneNum, string userUri, string pushToken)
+        public virtual int InsertUser(string email, string password, string firstName, string lastName, string gender, string phoneNum, string userUri, string pushToken, Nullable<bool> tasksNotifications, Nullable<bool> financeNotifications, Nullable<bool> chatNotifications, Nullable<bool> medNotifications)
         {
             var emailParameter = email != null ?
                 new ObjectParameter("Email", email) :
@@ -482,7 +482,23 @@ namespace DATA
                 new ObjectParameter("pushToken", pushToken) :
                 new ObjectParameter("pushToken", typeof(string));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertUser", emailParameter, passwordParameter, firstNameParameter, lastNameParameter, genderParameter, phoneNumParameter, userUriParameter, pushTokenParameter);
+            var tasksNotificationsParameter = tasksNotifications.HasValue ?
+                new ObjectParameter("tasksNotifications", tasksNotifications) :
+                new ObjectParameter("tasksNotifications", typeof(bool));
+    
+            var financeNotificationsParameter = financeNotifications.HasValue ?
+                new ObjectParameter("financeNotifications", financeNotifications) :
+                new ObjectParameter("financeNotifications", typeof(bool));
+    
+            var chatNotificationsParameter = chatNotifications.HasValue ?
+                new ObjectParameter("chatNotifications", chatNotifications) :
+                new ObjectParameter("chatNotifications", typeof(bool));
+    
+            var medNotificationsParameter = medNotifications.HasValue ?
+                new ObjectParameter("medNotifications", medNotifications) :
+                new ObjectParameter("medNotifications", typeof(bool));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertUser", emailParameter, passwordParameter, firstNameParameter, lastNameParameter, genderParameter, phoneNumParameter, userUriParameter, pushTokenParameter, tasksNotificationsParameter, financeNotificationsParameter, chatNotificationsParameter, medNotificationsParameter);
         }
     
         public virtual int NewContact(string contactName, string phoneNo, string mobileNo, string email, string role, string contactComment, string patientId)
