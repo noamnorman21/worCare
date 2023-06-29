@@ -8,6 +8,9 @@ import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { useUserContext } from '../UserContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StackActions } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
+import { Button, Paragraph, Dialog, Portal, Provider } from 'react-native-paper';
+
 
 import LogIn from './SignUpComponents/LogIn';
 import SettingScreen from './SettingScreen';
@@ -31,6 +34,16 @@ function CustomHeader() {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const { userContext, appEmail, logOutFireBase } = useUserContext();
     const { userUri, FirstName } = userContext;
+    const [dialogVisable, setDialogVisable] = useState(false);
+    const navigation = useNavigation();
+
+    const navigateToSignUp = () => {
+        AsyncStorage.removeItem("user");
+        AsyncStorage.removeItem("userData");
+        logOutFireBase()
+        navigation.dispatch(StackActions.replace('SignUp', { userType: "User", patientId: undefined }))
+    }
+
 
     const toggleModal = () => {
         setIsModalVisible(!isModalVisible);
@@ -41,204 +54,226 @@ function CustomHeader() {
     }
 
     return (
-        <Stack.Navigator>
-            <Stack.Screen
-                name="AppBarDown"
-                component={AppBarDown}
-                options={({ navigation }) => ({
-                    title: ' ',
-                    headerTitleAlign: 'center',
-                    headerLeft: () => (
-                        <View style={styles.headerLeft}>
-                            <TouchableOpacity onPress={toggleModal}>
-                                <Feather name="menu" size={30} color="black" />
-                            </TouchableOpacity>
-                            <Modal
-                                visible={isModalVisible}
-                                animationType="fade"
-                                transparent={true}
-                                onRequestClose={toggleModal}
-                            >
-                                <View style={styles.modalContainer}>
-                                    <View style={styles.imgContainer}>
-                                        <LinearGradient
-                                            colors={['#87AFFF', '#7DA9FF', '#6D9EFF', '#548DFF']}
-                                            style={styles.background}
-                                        />
-                                        <Image style={styles.image} source={{ uri: userUri }} />
-                                        <Text style={styles.name}>Hello, {FirstName}</Text>
-                                        <TouchableOpacity
-                                            style={styles.switchUser}
-                                            onPress={() => {
-                                                console.log('Switch User pressed')
+        <>
+            <Stack.Navigator>
+                <Stack.Screen
+                    name="AppBarDown"
+                    component={AppBarDown}
+                    options={({ navigation }) => ({
+                        title: ' ',
+                        headerTitleAlign: 'center',
+                        headerLeft: () => (
+                            <View style={styles.headerLeft}>
+                                <TouchableOpacity onPress={toggleModal}>
+                                    <Feather name="menu" size={30} color="black" />
+                                </TouchableOpacity>
+                                <Modal
+                                    visible={isModalVisible}
+                                    animationType="fade"
+                                    transparent={true}
+                                    onRequestClose={toggleModal}
+                                >
+                                    <View style={styles.modalContainer}>
+                                        <View style={styles.imgContainer}>
+                                            <LinearGradient
+                                                colors={['#87AFFF', '#7DA9FF', '#6D9EFF', '#548DFF']}
+                                                style={styles.background}
+                                            />
+                                            <Image style={styles.image} source={{ uri: userUri }} />
+                                            <Text style={styles.name}>Hello, {FirstName}</Text>
+                                            <TouchableOpacity
+                                                style={styles.switchUser}
+                                                onPress={() => {
+                                                    console.log('Switch User pressed')
+                                                    toggleModal()
+                                                }}>
+                                                <AntDesign name="retweet" size={20} color="#216Bff" />
+                                                <Text style={styles.switchTxt}>
+                                                    Switch User
+                                                </Text>
+                                            </TouchableOpacity>
+                                        </View>
+
+                                        <View style={styles.closeButtonContainer}>
+                                            <TouchableOpacity onPress={toggleModal}>
+                                                <Feather name="x" size={32} color="#fff1e6" />
+                                            </TouchableOpacity>
+                                        </View>
+
+                                        <TouchableOpacity onPress={
+                                            () => {
+                                                navigation.navigate('PatientProfile')
                                                 toggleModal()
-                                            }}>
-                                            <AntDesign name="retweet" size={20} color="#216Bff" />
-                                            <Text style={styles.switchTxt}>
-                                                Switch User
-                                            </Text>
+                                            }
+                                        }>
+                                            <View style={styles.menuItem}>
+                                                <Feather name="user" size={30} color="#fff1e6" />
+                                                <Text style={styles.menuItemText}>Patient Profile</Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                        <View style={styles.line} />
+
+                                        <TouchableOpacity onPress={() => {
+                                            navigation.navigate('SettingScreen')
+                                            toggleModal()
+                                        }}>
+                                            <View style={styles.menuItem}>
+                                                <Feather name="settings" size={30} color="#fff1e6" />
+                                                <Text style={styles.menuItemText}>Settings</Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                        <View style={styles.line} />
+
+                                        <TouchableOpacity onPress={
+                                            () => {
+                                                navigation.navigate('Contacts')
+                                                toggleModal()
+                                            }
+                                        }>
+                                            <View style={styles.menuItem}>
+                                                <AntDesign name="contacts" size={30} color="#fff1e6" />
+                                                <Text style={styles.menuItemText}>Contacts</Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                        <View style={styles.line} />
+
+                                        <TouchableOpacity onPress={
+                                            () => {
+                                                navigation.navigate('PushNotifications')
+                                                toggleModal()
+                                            }
+                                        }>
+                                            <View style={styles.menuItem}>
+                                                <Feather name="bell" size={30} color="#fff1e6" />
+                                                <Text style={styles.menuItemText}>Notifications</Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                        <View style={styles.line} />
+
+                                        <TouchableOpacity onPress={
+                                            () => {
+                                                userContext.userType === 'User' ?
+                                                    setDialogVisable(true) :
+                                                    navigateToSignUp()
+                                                toggleModal()
+                                            }
+                                        }>
+                                            <View style={styles.menuItem}>
+                                                <AntDesign name="adduser" size={30} color="#fff1e6" />
+                                                <Text style={styles.menuItemText}>Add New User</Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                        <View style={styles.line} />
+
+                                        <TouchableOpacity onPress={
+                                            () => {
+                                                Linking.openURL(`mailto:${appEmail}`)
+                                                toggleModal()
+                                            }
+                                        }>
+                                            <View style={styles.menuItem}>
+                                                <Feather name="mail" size={30} color="#fff1e6" />
+                                                <Text style={styles.menuItemText}>Contact Us</Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                        <View style={styles.line} />
+
+                                        <TouchableOpacity onPress={
+                                            async () => {
+                                                toggleModal()
+                                                AsyncStorage.removeItem("user");
+                                                AsyncStorage.removeItem("userData");
+                                                navigation.dispatch(StackActions.replace('LogIn'));
+                                                logOutFireBase()
+                                            }
+                                        }>
+                                            <View style={styles.menuItem}>
+                                                <Feather name="log-out" size={30} color="#fff1e6" />
+                                                <Text style={styles.menuItemText}>Log out</Text>
+                                            </View>
                                         </TouchableOpacity>
                                     </View>
-
-                                    <View style={styles.closeButtonContainer}>
-                                        <TouchableOpacity onPress={toggleModal}>
-                                            <Feather name="x" size={32} color="#fff1e6" />
-                                        </TouchableOpacity>
-                                    </View>
-
-                                    <TouchableOpacity onPress={
-                                        () => {
-                                            navigation.navigate('PatientProfile')
-                                            toggleModal()
-                                        }
-                                    }>
-                                        <View style={styles.menuItem}>
-                                            <Feather name="user" size={30} color="#fff1e6" />
-                                            <Text style={styles.menuItemText}>Patient Profile</Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                    <View style={styles.line} />
-
-                                    <TouchableOpacity onPress={() => {
-                                        navigation.navigate('SettingScreen')
-                                        toggleModal()
-                                    }}>
-                                        <View style={styles.menuItem}>
-                                            <Feather name="settings" size={30} color="#fff1e6" />
-                                            <Text style={styles.menuItemText}>Settings</Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                    <View style={styles.line} />
-
-                                    <TouchableOpacity onPress={
-                                        () => {
-                                            navigation.navigate('Contacts')
-                                            toggleModal()
-                                        }
-                                    }>
-                                        <View style={styles.menuItem}>
-                                            <AntDesign name="contacts" size={30} color="#fff1e6" />
-                                            <Text style={styles.menuItemText}>Contacts</Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                    <View style={styles.line} />
-
-                                    <TouchableOpacity onPress={
-                                        () => {
-                                            navigation.navigate('PushNotifications')
-                                            toggleModal()
-                                        }
-                                    }>
-                                        <View style={styles.menuItem}>
-                                            <Feather name="bell" size={30} color="#fff1e6" />
-                                            <Text style={styles.menuItemText}>Notifications</Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                    <View style={styles.line} />
-
-                                    <TouchableOpacity onPress={
-                                        () => {
-                                            navigation.navigate('AddUser')
-                                            toggleModal()
-                                        }
-                                    }>
-                                        <View style={styles.menuItem}>
-                                            <AntDesign name="adduser" size={30} color="#fff1e6" />
-                                            <Text style={styles.menuItemText}>Add New User</Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                    <View style={styles.line} />
-
-                                    <TouchableOpacity onPress={
-                                        () => {
-                                            Linking.openURL(`mailto:${appEmail}`)
-                                            toggleModal()
-                                        }
-                                    }>
-                                        <View style={styles.menuItem}>
-                                            <Feather name="mail" size={30} color="#fff1e6" />
-                                            <Text style={styles.menuItemText}>Contact Us</Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                    <View style={styles.line} />
-
-                                    <TouchableOpacity onPress={
-                                        async () => {
-                                            toggleModal()
-                                            AsyncStorage.removeItem("user");
-                                            AsyncStorage.removeItem("userData");
-                                            navigation.dispatch(StackActions.replace('LogIn'));
-                                            logOutFireBase()
-                                        }
-                                    }>
-                                        <View style={styles.menuItem}>
-                                            <Feather name="log-out" size={30} color="#fff1e6" />
-                                            <Text style={styles.menuItemText}>Log out</Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                </View>
-                            </Modal>
-                        </View>
-                    ),
-                    headerRight: () => (
-                        <View style={styles.headerRight}>
-                            <TouchableOpacity
-                                style={{ right: Dimensions.get('screen').width * 0.06 }}
-                                onPress={() => navigation.navigate('PushNotifications')}
-                            >
-                                <Feather name="bell" size={28} color="#000000" />
-                            </TouchableOpacity>
-                        </View>
-                    ),
-                    headerTitle: () => (
-                        <Image
-                            source={require('../images/logo_New_Small.png')}
-                            style={styles.headerLogo}
-                        />
-                    ),
-                    unmountOnBlur: true,
-                })}
-            />
-            <Stack.Screen
-                name="PatientProfile"
-                component={PatientProfile}
-                options={() => ({
-                    headerTitle: 'Patient Profile',
-                    presentation: 'modal',
-                    cardOverlayEnabled: true,
-                    headerShown: true,
-                })}
-            />
-            <Stack.Screen
-                name="SettingScreen"
-                component={SettingScreen}
-                options={() => ({
-                    headerTitle: 'Settings',
-                    presentation: 'stack',
-                    cardOverlayEnabled: true,
-                    headerShown: false,
-                })}
-            />
-            <Stack.Screen
-                name="PushNotifications"
-                component={PushNotifications}
-                options={() => ({
-                    headerTitle: 'Notifications',
-                    presentation: 'stack',
-                    cardOverlayEnabled: true,
-                })}
-            />
-            <Stack.Screen
-                name="Contacts"
-                component={Contacts}
-                options={{ unmountOnBlur: true, headerShown: false }}
-            />
-            <Stack.Screen
-                name="LogIn"
-                component={LogIn}
-                options={{ unmountOnBlur: true, headerShown: false }}
-            />
-        </Stack.Navigator>
+                                </Modal>
+                            </View>
+                        ),
+                        headerRight: () => (
+                            <View style={styles.headerRight}>
+                                <TouchableOpacity
+                                    style={{ right: Dimensions.get('screen').width * 0.06 }}
+                                    onPress={() => navigation.navigate('PushNotifications')}
+                                >
+                                    <Feather name="bell" size={28} color="#000000" />
+                                </TouchableOpacity>
+                            </View>
+                        ),
+                        headerTitle: () => (
+                            <Image
+                                source={require('../images/logo_New_Small.png')}
+                                style={styles.headerLogo}
+                            />
+                        ),
+                        unmountOnBlur: true,
+                    })}
+                />
+                <Stack.Screen
+                    name="PatientProfile"
+                    component={PatientProfile}
+                    options={() => ({
+                        headerTitle: 'Patient Profile',
+                        presentation: 'modal',
+                        cardOverlayEnabled: true,
+                        headerShown: true,
+                    })}
+                />
+                <Stack.Screen
+                    name="SettingScreen"
+                    component={SettingScreen}
+                    options={() => ({
+                        headerTitle: 'Settings',
+                        presentation: 'stack',
+                        cardOverlayEnabled: true,
+                        headerShown: false,
+                    })}
+                />
+                <Stack.Screen
+                    name="PushNotifications"
+                    component={PushNotifications}
+                    options={() => ({
+                        headerTitle: 'Notifications',
+                        presentation: 'stack',
+                        cardOverlayEnabled: true,
+                    })}
+                />
+                <Stack.Screen
+                    name="Contacts"
+                    component={Contacts}
+                    options={{ unmountOnBlur: true, headerShown: false }}
+                />
+                <Stack.Screen
+                    name="LogIn"
+                    component={LogIn}
+                    options={{ unmountOnBlur: true, headerShown: false }}
+                />
+            </Stack.Navigator>
+            <Dialog visible={dialogVisable} onDismiss={() => setDialogVisable(false)}
+                style={{ backgroundColor: '#87AFFF', fontFamily:'Urbanist-Regular' }}>
+                <Dialog.Title style={{ fontFamily:'Urbanist-SemiBold' }}>Choose User Type</Dialog.Title>
+                <Dialog.Content>
+                    <Paragraph style={{ fontFamily: 'Urbanist-Medium' }}>Do you want to create an new User or New Patient Profile?</Paragraph>
+                </Dialog.Content>
+                <Dialog.Actions>
+                    <Button labelStyle={{ color: "#000", fontFamily: 'Urbanist-Regular' }} onPress={() => {
+                        setDialogVisable(false)
+                        navigateToSignUp()
+                    }}>New User</Button>
+                    <Button labelStyle={{ color: "#000", fontFamily: 'Urbanist-Regular' }} onPress={() => {
+                        setDialogVisable(false)
+                        console.log('new patient')
+                        navigation.navigate('NewPatientLvl1')
+                    }}>New Patient</Button>
+                </Dialog.Actions>
+            </Dialog>
+        </>
     );
 }
 
@@ -329,6 +364,7 @@ const styles = StyleSheet.create({
         width: SCREEN_WIDTH * 0.75,
         height: SCREEN_HEIGHT,
         paddingVertical: 25,
+
     },
     closeButtonContainer: {
         position: 'absolute',

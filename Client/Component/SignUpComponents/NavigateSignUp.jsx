@@ -19,6 +19,10 @@ import SignUpHobbies from './User/SignUpHobbies';
 import SignUpLimitations from './User/SignUpLimitations';
 import SignUpFinish from './User/SignUpFinish'
 import Welcome from '../Welcome';
+import NewPatientLvl1 from '../ProfileComponents/NewPatientLvl1';
+import NewPatientLvl2 from '../ProfileComponents/NewPatientLvl2';
+import NewPatientLvl3 from '../ProfileComponents/NewPatientLvl3';
+import NewPatientFinish from '../ProfileComponents/NewPatientFinish';
 import { useUserContext } from '../../UserContext';
 
 const Stack = createStackNavigator();
@@ -105,6 +109,12 @@ export default function NavigateSignUp() {
         <Stack.Screen name="SignUpLimitations" component={SignUpLimitations} options={{ headerShown: false }} />
         <Stack.Screen name="SignUpFinish" component={SignUpFinish} options={{ headerShown: false }} />
         {/* כניסה למערכת */}
+
+        <Stack.Screen name="NewPatientLvl1" component={NewPatientLvl1} options={{ headerShown: false }} />
+        <Stack.Screen name="NewPatientLvl2" component={NewPatientLvl2} options={{ headerShown: false }} />
+        <Stack.Screen name="NewPatientLvl3" component={NewPatientLvl3} options={{ headerShown: false }} />
+        <Stack.Screen name="NewPatientFinish" component={NewPatientFinish} options={{ headerShown: false }} />
+        {/*הוספה של מטופל חדש למשתמש קיים */}
       </>
 
     </Stack.Navigator>
