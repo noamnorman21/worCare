@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, LogBox } from 'react-native';
 import { useState, useEffect, useRef } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import SettingScreen from './Component/SettingScreen';
@@ -7,6 +7,9 @@ import * as Font from 'expo-font'; // Import Font from expo-font package
 import { UserProvider } from './UserContext';
 import * as Notifications from 'expo-notifications';
 
+// Ignore specific warning logs
+LogBox.ignoreLogs(["AsyncStorage has been extracted from react-native core and will be removed in a future release."]);
+LogBox.ignoreLogs(['Sending `onAnimatedValueUpdate` with no listeners registered.']);
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -21,7 +24,7 @@ export default function App() {
   const [notification, setNotification] = useState(false);
   const notificationListener = useRef();
   const responseListener = useRef();
-  
+
   useEffect(() => {
     async function loadFont() {
       await Font.loadAsync({

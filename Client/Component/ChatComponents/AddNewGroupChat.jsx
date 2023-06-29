@@ -11,7 +11,6 @@ import { storage } from '../../config/firebase';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const ScreenHeight = Dimensions.get('window').height;
 
-
 export default function AddNewGroupChat(props) {
 
   const [addNewModalGroup, setAddNewModalGroup] = useState(false)

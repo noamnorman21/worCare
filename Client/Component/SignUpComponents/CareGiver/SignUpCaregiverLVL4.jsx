@@ -6,7 +6,6 @@ import { Dropdown } from 'react-native-element-dropdown';
 import { OrLine, HaveAccount } from '../FooterLine';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function SignUpCaregiverLVL4({ navigation, route }) {

@@ -9,7 +9,6 @@ import { TextInput } from 'react-native-paper';
 const ScreenWidth = Dimensions.get('window').width;
 const ScreenHeight = Dimensions.get('window').height;
 
-
 export default function ChatProfile({ route, navigation }) {
 
   useEffect(() => {
@@ -18,7 +17,7 @@ export default function ChatProfile({ route, navigation }) {
       headerTitleAlign: 'center',
       headerTitleStyle: {
         fontSize: 20,
-        fontFamily:'Urbanist-Bold',
+        fontFamily: 'Urbanist-Bold',
       },
       headerStyle: {
         shadowColor: '#fff',
@@ -45,13 +44,13 @@ export default function ChatProfile({ route, navigation }) {
     if (querySnapshot.docs.length > 0 || querySnapshot2.docs.length > 0) {
       checkifConvoExistsforContact(user)
       console.log("convo exists")
-      if(querySnapshot.docs.length > 0){
+      if (querySnapshot.docs.length > 0) {
         navigation.popToTop()
-        navigation.navigate('ChatRoom', { name: auth.currentUser.displayName + "+" + user.name, UserName: user.name, userEmail: user.id , unreadCount: querySnapshot.docs[0].data().unreadCount, type: "private" })
-        }
+        navigation.navigate('ChatRoom', { name: auth.currentUser.displayName + "+" + user.name, UserName: user.name, userEmail: user.id, unreadCount: querySnapshot.docs[0].data().unreadCount, type: "private" })
+      }
       else {
         navigation.popToTop()
-        navigation.navigate('ChatRoom', { name: user.name + "+" + auth.currentUser.displayName, UserName: user.name, userEmail: user.id,unreadCount: querySnapshot2.docs[0].data().unreadCount, type: "private" })
+        navigation.navigate('ChatRoom', { name: user.name + "+" + auth.currentUser.displayName, UserName: user.name, userEmail: user.id, unreadCount: querySnapshot2.docs[0].data().unreadCount, type: "private" })
       }
     } else {
       console.log("add new private chat")
@@ -65,7 +64,7 @@ export default function ChatProfile({ route, navigation }) {
   }
 
   const checkifConvoExistsforContact = async (contact) => {
-    console.log("contact",contact)
+    console.log("contact", contact)
     const q1 = query(collection(db, auth.currentUser.email), where("Name", "==", auth.currentUser.displayName + "+" + contact.name));
     const q2 = query(collection(db, auth.currentUser.email), where("Name", "==", contact.name + "+" + auth.currentUser.displayName));
     const query1 = await getDocs(q1);
@@ -77,8 +76,8 @@ export default function ChatProfile({ route, navigation }) {
       console.log("Userrrrr", contact)
       addDoc(collection(db, contact._id), { Name: auth.currentUser.displayName + "+" + contact.name, UserName: auth.currentUser.displayName, image: auth.currentUser.photoURL, userEmail: auth.currentUser.email, unread: true, unreadCount: 0, lastMessage: "", lastMessageTime: new Date() });
     }
-  } 
-  
+  }
+
   // const addNewPrivateChat = async (user) => {
   //   // check if convo already exists in firestore 
   //   // if yes, navigate to chat room
@@ -127,38 +126,35 @@ export default function ChatProfile({ route, navigation }) {
   //   }
   // }
 
-  
-
   return (
     <View style={styles.container}>
       <View style={styles.profile}>
-      <View style={styles.header}>
-      {/* <Text style={styles.headterTxt}>{route.params.user.name}</Text> */}
-      </View>
-      <View style={styles.imageView}>
-        <Image style={styles.avatar} source={{ uri: route.params.user.avatar }} />
-      </View>
-      <TextInput
-        label="Email"
-        value={route.params.user._id}
-        mode="outlined"
-        disabled={true}
-        style={styles.inputTxt}
-      textColor='#000'
-        outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
-        labelStyle={{ color: '#000', fontSize: 16, fontWeight: 'bold', }}
-        theme={{ colors: { primary: '#548DFF', underlineColor: 'transparent', } }}  
-        contentStyle={{ fontFamily: 'Urbanist-Regular' }}    
-      />
-      <TouchableOpacity style={styles.button}
-        onPress={() => addNewPrivateChat(route.params.user)}>
-        <AntDesign name='message1' size={22} color={"#548DFF"} />
-        <Text style={styles.BtnTxt}>Send Messsage </Text>
-      </TouchableOpacity>
+        <View style={styles.header}>
+          {/* <Text style={styles.headterTxt}>{route.params.user.name}</Text> */}
+        </View>
+        <View style={styles.imageView}>
+          <Image style={styles.avatar} source={{ uri: route.params.user.avatar }} />
+        </View>
+        <TextInput
+          label="Email"
+          value={route.params.user._id}
+          mode="outlined"
+          disabled={true}
+          style={styles.inputTxt}
+          textColor='#000'
+          outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+          labelStyle={{ color: '#000', fontSize: 16, fontWeight: 'bold', }}
+          theme={{ colors: { primary: '#548DFF', underlineColor: 'transparent', } }}
+          contentStyle={{ fontFamily: 'Urbanist-Regular' }}
+        />
+        <TouchableOpacity style={styles.button}
+          onPress={() => addNewPrivateChat(route.params.user)}>
+          <AntDesign name='message1' size={22} color={"#548DFF"} />
+          <Text style={styles.BtnTxt}>Send Messsage </Text>
+        </TouchableOpacity>
       </View>
     </View>
   )
-
 }
 
 const styles = StyleSheet.create({
@@ -171,9 +167,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginVertical: 20,
   },
-   //chat user profile
-   avatar: {
-    height:150,width:150, borderRadius:75
+  //chat user profile
+  avatar: {
+    height: 150, width: 150, borderRadius: 75
   },
   button: {
     backgroundColor: '#fff',
@@ -188,23 +184,23 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 3,
     elevation: 1,
-    marginTop:20,
+    marginTop: 20,
   },
-  imageView:{
+  imageView: {
     margin: 20,
   },
   header: {
     alignItems: 'center',
     justifyContent: 'center',
   },
-  headterTxt:{
+  headterTxt: {
     fontSize: 20,
-    fontFamily:'Urbanist-Bold',
+    fontFamily: 'Urbanist-Bold',
   },
-  BtnTxt:{
+  BtnTxt: {
     fontSize: 16,
-    fontFamily:'Urbanist-Bold',
-    color:'#548DFF',
+    fontFamily: 'Urbanist-Bold',
+    color: '#548DFF',
   },
   inputTxt: {
     fontFamily: 'Urbanist-Light',

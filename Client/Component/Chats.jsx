@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Dimensions, Image, Alert, Modal, TouchableOpacity, ScrollView, Platform } from 'react-native'
+import { View, Text, StyleSheet, Dimensions, Image, Alert, Modal, TouchableOpacity, ScrollView, Platform, SafeAreaView } from 'react-native'
 import { useCallback, useState, useLayoutEffect } from 'react'
 import { auth, db } from '../config/firebase';
 import { GiftedChat, Bubble, Time, MessageImage } from 'react-native-gifted-chat';
@@ -17,6 +17,7 @@ import { storage } from '../config/firebase';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { TextInput } from 'react-native-paper';
 import moment from 'moment';
+import { Searchbar } from 'react-native-paper';
 
 const ScreenHeight = Dimensions.get("window").height;
 const ScreenWidth = Dimensions.get("window").width;
@@ -50,6 +51,7 @@ function MainRoom({ navigation }) {
   const [newName, setNewName] = useState('')
   const [addNewModalGroup, setAddNewModalGroup] = useState(false)
   const [publicGroupNames, setPublicGroupNames] = useState([])
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     if (userContext) {
@@ -117,17 +119,17 @@ function MainRoom({ navigation }) {
 
   useEffect(() => {
     const renderUsers = () => {
-      const res = users.map((user) =>{
-        return( user.userType==userContext.userType && 
-        <View key={user.id} >
-          <TouchableOpacity style={styles.userCard} onPress={() => addNewPrivateChat(user)}>
-            <Image source={{ uri: user.avatar }} style={{ width: 65, height: 65, borderRadius: 54 }} />
-            <Text style={styles.userName}>{user.id}</Text>
-          </TouchableOpacity>
-          <View style={styles.lineContainer}>
-            <View style={styles.line} />
+      const res = users.map((user) => {
+        return (user.userType == userContext.userType &&
+          <View key={user.id} >
+            <TouchableOpacity style={styles.userCard} onPress={() => addNewPrivateChat(user)}>
+              <Image source={{ uri: user.avatar }} style={{ width: 45, height: 45, borderRadius: 45 }} />
+              <Text style={styles.userName}>{user.name}</Text>
+            </TouchableOpacity>
+            <View style={styles.lineContainer}>
+              <View style={styles.line} />
+            </View>
           </View>
-        </View>
         )
       }
       )
@@ -138,8 +140,7 @@ function MainRoom({ navigation }) {
 
   const addNewPrivateChat = async (user) => {
     // check if convo already exists in firestore 
-    // if yes, navigate to chat room
-    // if no, add new convo to firestore and navigate to chat room
+    // if yes, navigate to chat room - if no, add new convo to firestore and navigate to chat room
     const q1 = query(collection(db, auth.currentUser.email), where("Name", "==", auth.currentUser.displayName + "+" + user.name));
     const q2 = query(collection(db, auth.currentUser.email), where("Name", "==", user.name + "+" + auth.currentUser.displayName));
     const querySnapshot = await getDocs(q1);
@@ -184,29 +185,51 @@ function MainRoom({ navigation }) {
     }
   }
 
+  const filteredUsers = users.filter(user => user.userType === userContext.userType && user.name.toLowerCase().includes(searchQuery.toLowerCase()));
+
+  const res = filteredUsers.map(user => (
+    <View key={user.id}>
+      {/* User card code */}
+    </View>
+  ));
+
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.top}>
-        <Text style={styles.header}>Chat Room</Text>
+        <Text style={styles.header}>Chats</Text>
         <TouchableOpacity onPress={() => { setAddNewModal(true) }}>
           <Feather name='edit' size={24} />
         </TouchableOpacity>
       </View>
-      <ScrollView>
+      <ScrollView alwaysBounceVertical={false}>
         {chatsToDisplay}
       </ScrollView>
-      <Modal visible={addNewModal} animationType='slide'>
-        <View style={styles.modal}>
-          <Text style={styles.modalText}>Add new chat</Text>
-          <ScrollView style={styles.userScrollview}>
+      <Modal presentationStyle="pageSheet" visible={addNewModal} animationType="slide">
+        <SafeAreaView style={styles.modal}>
+          <View style={styles.top}>
+            <View style={styles.closeBtnContainer}>
+              <TouchableOpacity style={styles.closeButton} onPress={() => setAddNewModal(false)}>
+                <Ionicons name="ios-close-circle-outline" size={30} style={styles.closeButtonIcon} />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.txtContainer}>
+              <Text style={[styles.header, { marginLeft: 0, fontSize: 20 }]}>New Chat</Text>
+            </View>
+          </View>
+          <View style={styles.searchBarContainer}>
+            <Searchbar
+              placeholder="Search"
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              style={styles.searchBar}
+            />
+          </View>
+          <ScrollView alwaysBounceVertical={false} style={styles.userScrollView}>
             {usersToDisplay}
           </ScrollView>
-          <TouchableOpacity style={styles.modalButton} onPress={() => { setAddNewModal(false)}}>
-            <Text style={styles.modalButtonText}>Cancel</Text>
-          </TouchableOpacity>
-        </View>
+        </SafeAreaView>
       </Modal>
-    </View>
+    </SafeAreaView>
   )
 }
 
@@ -251,6 +274,7 @@ const ConvoCard = (props) => {
     });
     // deleteDoc(doc(db, auth.currentUser.email),where("Name", "==", props.name.Name));
   }
+
   return (
     <>
       <Swipeable renderRightActions={() => <TouchableOpacity onPress={() => { deleteChat() }}><Text>Delete</Text></TouchableOpacity>} >
@@ -261,7 +285,7 @@ const ConvoCard = (props) => {
             </View>
             <View style={styles.conMiddle}>
               <Text style={styles.conName}>{props.name.UserName ? props.name.UserName : props.name.Name}</Text>
-              <Text style={styles.conLastMessage}>{lastMessageText.length>=20? lastMessageText.substring(0,18)+"...":lastMessageText}</Text>
+              <Text style={styles.conLastMessage}>{lastMessageText.length >= 20 ? lastMessageText.substring(0, 18) + "..." : lastMessageText}</Text>
             </View>
             <View style={styles.conRight}>
               {props.name.unreadCount > 0 && <View style={styles.unread}>
@@ -286,6 +310,35 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     backgroundColor: '#fff'
+  },
+  searchBarContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 15,
+  },
+  searchBar: {
+    width: ScreenWidth * 0.9,
+    height: 54,
+    borderRadius: 16,
+    marginRight: 10,
+    backgroundColor: '#EEEEEE',
+  },
+  closeButton: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
+  },
+  closeBtnContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+  txtContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   conName: {
     fontSize: 20,
@@ -358,14 +411,21 @@ const styles = StyleSheet.create({
   },
   modal: {
     flex: 1,
+    backgroundColor: "#fff",
+  },
+  modalHeader: {
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
+    marginVertical: 15,
+  },
+  userScrollView: {
+    flex: 1,
   },
   modalText: {
     fontSize: 24,
     fontFamily: 'Urbanist-Bold',
     color: '#000',
-    margin: 10,
   },
   modalButton: {
     width: ScreenWidth * 0.8,
@@ -375,7 +435,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     margin: 10,
-
   },
   modalButtonText: {
     fontSize: 24,
@@ -384,15 +443,14 @@ const styles = StyleSheet.create({
   },
   userName: {
     fontSize: 20,
-    fontFamily: 'Urbanist-SemiBold',
-    marginBottom: 5,
+    fontFamily: 'Urbanist-Medium',
     color: '#000',
+    marginLeft: 10,
   },
   userCard: {
     width: ScreenWidth * 0.9,
-    height: ScreenHeight * 0.13,
-    borderRadius: 10,
-    padding: 10,
+    height: ScreenHeight * 0.07,
+    paddingHorizontal: 10,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',

@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect, useLayoutEffect } from 'react';
 import { View, Text, StyleSheet, Dimensions, Image, Alert, Modal, TouchableOpacity, ScrollView, Platform, SafeAreaView } from 'react-native'
-import { GiftedChat, Bubble, Actions, InputToolbar, Time, MessageImage, LoadEarlier, Composer } from 'react-native-gifted-chat';
-import { Ionicons, FontAwesome } from '@expo/vector-icons';
+import { GiftedChat, Bubble, Actions, InputToolbar, Time, MessageImage, LoadEarlier, Composer, Send } from 'react-native-gifted-chat';
+import { Ionicons, FontAwesome, Feather } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import { collection, query, where, getDocs, addDoc, updateDoc, orderBy, onSnapshot } from "firebase/firestore";
 import * as ImagePicker from 'expo-image-picker';
@@ -9,12 +9,13 @@ import { db, auth, storage } from '../../config/firebase';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { TextInput } from 'react-native-paper';
 import moment from 'moment';
+import { Audio } from 'expo-av';
+
 // import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 import { useUserContext } from '../../UserContext';
 
 const ScreenHeight = Dimensions.get("window").height;
 const ScreenWidth = Dimensions.get("window").width;
-
 
 export default function ChatRoom({ route, navigation }) {
   const [messages, setMessages] = useState([]);
@@ -22,9 +23,13 @@ export default function ChatRoom({ route, navigation }) {
   const [selectedPic, setSelectedPic] = useState(null); //to send image to firebase
   const [imageDescription, setImageDescription] = useState('')//to send image with description
   const [GroupMembers, setGroupMembers] = useState(); //for group chat
-  const [recording, setRecording] = useState(null); // for audio recording
   const { newMessages, setNewMessages } = useUserContext();
-// get messages from firebase
+
+  const [recording, setRecording] = useState(null); // for audio recording
+  const [audioPermission, setAudioPermission] = useState(false); // for audio recording
+  const [recordingStatus, setRecordingStatus] = useState('not recording'); // for audio recording
+
+  // get messages from firebase
   useLayoutEffect(() => {
     const tempMessages = query(collection(db, route.params.name), orderBy('createdAt', 'desc'));
     const unsubscribe = onSnapshot(tempMessages, (snapshot) => {
@@ -40,7 +45,6 @@ export default function ChatRoom({ route, navigation }) {
     });
     // get group members if group chat
     if (route.params.type === "group") {
-      console.log("group chat")
       const groupusers = query(collection(db, "GroupMembers"), where("Name", "==", route.params.name));
       getDocs(groupusers).then((querySnapshot) => {
         setGroupMembers(querySnapshot.docs.map(doc => doc.data().userEmail))
@@ -54,9 +58,7 @@ export default function ChatRoom({ route, navigation }) {
         </TouchableOpacity>
       ),
     })
-
     return () => { console.log("unsub"); unsubscribe() };
-
   }, [navigation]);
 
   useFocusEffect( //update convo in db that user has read the messages when leaving page
@@ -69,16 +71,12 @@ export default function ChatRoom({ route, navigation }) {
           updateDoc(doc.ref, { unread: false, unreadCount: 0 });
         });
       }
-      console.log("new messages", newMessages)
-      console.log("unread count", route.params.unreadCount)
       setNewMessages(newMessages - route.params.unreadCount)
       return () => {
         setDocAsRead();
       }
     }, [])
   );
-
-
 
   const openCamera = async () => {
     // Ask the user for the permission to access the camera
@@ -112,7 +110,6 @@ export default function ChatRoom({ route, navigation }) {
       setPicPreviewModal(true);
       console.log("result.uri", result.assets[0].uri)
       setSelectedPic(result.assets[0].uri);
-
       // sendToFirebase(result.assets[0].uri);     
     }
   };
@@ -147,75 +144,141 @@ export default function ChatRoom({ route, navigation }) {
     }
   };
 
-  //record audio
-  // const recordAudio = async () => {
-  //   const { status } = await Permissions.askAsync(Permissions.AUDIO_RECORDING);
-  //   if (status !== 'granted') return;
-  //   const recording = new Audio.Recording();
-  //   try {
-  //     await recording.prepareToRecordAsync(Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY);
-  //     await recording.startAsync();
-  //     setRecording(recording);
-  //   } catch (error) {
-  //     console.log(error);
-  //     stopRecording();
-  //   }
-  // }
+  useEffect(() => {
+    async function getAudioPermission() {
+      await Audio.requestPermissionsAsync().then((premission) => {
+        console.log("premission", premission.granted)
+        setAudioPermission(premission.granted)
 
-  // //handle audio recording
-  // const onSendAudio = async (recording) => {
-  //   //add new message to db
-  //   const newMessage = {
-  //     _id: Math.random().toString(36).substring(7),
-  //     createdAt: new Date(),
-  //     user: {
-  //       _id: auth.currentUser.email,
-  //       name: auth.currentUser.displayName,
-  //       avatar: auth.currentUser.photoURL
-  //     },
-  //     audio: recording,
-  //   }
-  //   setMessages(previousMessages => GiftedChat.append(previousMessages, [newMessage]));
-  //   const { _id, createdAt, user, audio } = newMessage
-  //   addDoc(collection(db, route.params.name), { _id, createdAt, user, audio });
-  //   console.log("new message added to db")
-  //   //update last message and last message time in db
-  //   const docRef = query(collection(db, auth.currentUser.email), where("Name", "==", route.params.name));
-  //   const res = getDocs(docRef);
-  //   res.then((querySnapshot) => {
-  //     querySnapshot.forEach((doc) => {
-  //       updateDoc(doc.ref, { lastMessage: "audio", lastMessageTime: createdAt });
-  //     });
-  //   });
-  //   if (GroupMembers) {
-  //     GroupMembers.forEach(arr => {
-  //       arr.forEach(user => {
-  //         console.log("usera", user)
-  //         if (user !== auth.currentUser.email) {
-  //           const docRef = query(collection(db, user), where("Name", "==", route.params.name));
-  //           const res = getDocs(docRef);
-  //           console.log("res", res)
-  //           res.then((querySnapshot) => {
-  //             querySnapshot.forEach((doc) => {
-  //               updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: "audio", lastMessageTime: createdAt });
-  //               console.log("updated")
-  //             });
-  //           });
-  //         }
-  //       }
-  //       )
-  //     });
-  //   }
-  //   else if (route.params.userEmail) {
-  //     const docRef = query(collection(db, route.params.userEmail), where("Name", "==", route.params.name));
-  //     const res = getDocs(docRef);
-  //     res.then((querySnapshot) => {
-  //       querySnapshot.forEach((doc) => {
-  //         updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: "audio", lastMessageTime: createdAt });
-  //       });
-  //     });
-  //   }
-  // }
+      }).catch((error) => {
+        console.log("error", error)
+      })
+    }
+    getAudioPermission();
+    return () => {
+      if (recording) {
+        stopRecording();
+      }
+    };
+
+  }, []);
+
+  async function startRecording() {
+    try {
+      // Set the audio mode
+      await Audio.setAudioModeAsync({
+        allowsRecordingIOS: true,
+        interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_MIX_WITH_OTHERS,
+        playsInSilentModeIOS: true,
+      });
+
+      if (audioPermission) {
+        await Audio.requestPermissionsAsync();
+      }
+
+      const newRecording = new Audio.Recording();
+      console.log("Start recording");
+      await newRecording.prepareToRecordAsync(Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY);
+      await newRecording.startAsync();
+      setRecording(newRecording);
+      setRecordingStatus('recording');
+    } catch (err) {
+      console.log('Failed to start recording', err);
+    }
+  }
+
+  async function stopRecording() {
+    try {
+      if (recordingStatus === 'recording') {
+        console.log("Stop recording")
+        await recording.stopAndUnloadAsync();
+        const recordingUri = recording.getURI();
+
+        const fileName = `recording-${Date.now()}.caf`;
+        await FileSystem.makeDirectoryAsync(FileSystem.documentDirectory + 'recordings/', { intermediates: true });
+        await FileSystem.moveAsync({
+          from: recordingUri,
+          to: `${FileSystem.documentDirectory}recordings/${fileName}`,
+        });
+
+        const playbackObject = new Audio.Sound();
+        await playbackObject.loadAsync({ uri: `${FileSystem.documentDirectory}recordings/${fileName}` });
+        await playbackObject.playAsync();
+
+        setRecording(null);
+        setRecordingStatus('not recording');
+      }
+    }
+    catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function handleRecordButtonPress() {
+    if (recording) {
+      const audioUri = await stopRecording(recording);
+      if (audioUri) {
+        console.log("audioUri", audioUri)
+      }
+    } else {
+      await startRecording();
+    }
+  }
+
+  //handle audio recording
+  const onSendAudio = async (recording) => {
+    //add new message to db
+    const newMessage = {
+      _id: Math.random().toString(36).substring(7),
+      createdAt: new Date(),
+      user: {
+        _id: auth.currentUser.email,
+        name: auth.currentUser.displayName,
+        avatar: auth.currentUser.photoURL
+      },
+      audio: recording,
+    }
+    setMessages(previousMessages => GiftedChat.append(previousMessages, [newMessage]));
+    const { _id, createdAt, user, audio } = newMessage
+    addDoc(collection(db, route.params.name), { _id, createdAt, user, audio });
+    console.log("new message added to db")
+    //update last message and last message time in db
+    const docRef = query(collection(db, auth.currentUser.email), where("Name", "==", route.params.name));
+    const res = getDocs(docRef);
+    res.then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        updateDoc(doc.ref, { lastMessage: "audio", lastMessageTime: createdAt });
+      });
+    });
+    if (GroupMembers) {
+      GroupMembers.forEach(arr => {
+        arr.forEach(user => {
+          console.log("usera", user)
+          if (user !== auth.currentUser.email) {
+            const docRef = query(collection(db, user), where("Name", "==", route.params.name));
+            const res = getDocs(docRef);
+            console.log("res", res)
+            res.then((querySnapshot) => {
+              querySnapshot.forEach((doc) => {
+                updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: "audio", lastMessageTime: createdAt });
+                console.log("updated")
+              });
+            });
+          }
+        }
+        )
+      });
+    }
+    else if (route.params.userEmail) {
+      const docRef = query(collection(db, route.params.userEmail), where("Name", "==", route.params.name));
+      const res = getDocs(docRef);
+      res.then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: "audio", lastMessageTime: createdAt });
+        });
+      });
+    }
+  }
 
   //send image to firebase
   const onSendImage = async (downloadUrl) => {
@@ -286,7 +349,6 @@ export default function ChatRoom({ route, navigation }) {
   // send text message to firebase
   const onSend = useCallback((messages = [], GroupMembers) => {
     const { _id, createdAt, text, user } = messages[0]
-    console.log("message text is", text)
     addDoc(collection(db, route.params.name), { _id, createdAt, text, user });
     const docRef = query(collection(db, auth.currentUser.email), where("Name", "==", route.params.name));
     const res = getDocs(docRef);
@@ -338,222 +400,242 @@ export default function ChatRoom({ route, navigation }) {
     }
   }, []);
 
-
   return (
     <>
-      <GiftedChat
-        wrapInSafeArea={false}
-        //bottomOffset={Platform.OS === 'ios' ? 50 : 0} this in case canceling tab bar wont work
-        messages={messages}
-        showAvatarForEveryMessage={true}
-        onSend={messages => onSend(messages, GroupMembers)}
-        user={{
-          _id: auth?.currentUser?.email,
-          name: auth?.currentUser?.displayName,
-          avatar: auth?.currentUser?.photoURL
-        }}
-        isLoadingEarlier={true}
-        showUserAvatar={true}
-        renderBubble={(props) => {
-          return (
-            <Bubble {...props}
-              wrapperStyle={{
-                left: {
-                  backgroundColor: "#D9D9D980",
-                  borderColor: "#808080",
-                  borderWidth: 1,
-                  borderRadius: 15,
-                },
-                right: {
-                  backgroundColor: "#7DA9FF",
-                  borderColor: "#548DFF",
-                  borderWidth: 1,
-                  borderRadius: 15,
-                }
-              }}
-              textStyle={{
-                left: { fontFamily: "Urbanist-Regular" },
-                right: { fontFamily: "Urbanist-Regular", color: "#fff" }
-              }}
-              renderTime={(props) => {
-                if (props.currentMessage.image && !props.currentMessage.text) {
-                  return (
-                    <View style={{ position: 'absolute', bottom: 5, paddingRight: 10, paddingLeft: 10 }}>
-                      <Text style={{ fontSize: 12, fontFamily: "Urbanist-Regular", color: '#fff' }}>{moment(props.currentMessage.createdAt).format('HH:MM')}</Text>
-                    </View>
-                  )
-                }
-                else {
-                  return (
-                    <Time {...props}
-                      timeTextStyle={{
-                        left: { fontFamily: "Urbanist-Regular", color: "#000", fontSize: 12 },
-                        right: { fontFamily: "Urbanist-Regular", color: "#fff", fontSize: 12 },
-                      }}
-                      timeFormat='HH:mm'
-                    />
-                  )
-                }
-              }
-              }
-
-            />
-          )
-        }}
-        onPressAvatar={(user) => {
-          if (user._id !== auth.currentUser.email) {
-            navigation.navigate('ChatProfile', { user: user });
-          }
-          else {
-            console.log("user is me")
-          }
-        }
-        }
-   
-       
-        renderInputToolbar={(props) => {
-          return (
-            <InputToolbar {...props}
-              containerStyle={{
-                height:46,
-              }}
-              primaryStyle={{ alignItems: 'center', justifyContent: 'center' }}  //for the text input
-              renderActions={(props) => {
-                return (
-                <>
-                  <Actions {...props}
-                    containerStyle={{
-                      width: 30,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                    icon={() => (
-                      <Ionicons name="camera" size={30} color="#548DFF" />
-                    )}
-                    options={{
-                      'Take Photo': () => {
-                        openCamera();
-                      },
-                      'Choose From Gallery': () => {
-                        pickImage();
-                      },
-                      Cancel: () => { },
-                    }}
-                    optionTintColor="#222B45"
-                  />
-                  {/* <Actions {...props}
-                    containerStyle={{
-                      width: 34,
-                      height: 44,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      marginLeft: 4,
-                      marginRight: 4,
-                      marginBottom: 0,
-                    }}
-                    icon={() => (
-                      <FontAwesome name="microphone" size={28} color="#548DFF" />
-                    )}
-                    onPressActionButton={() => { console.log("audio") }}
-                  /> */}
-      
-                </>
-                )
-              }
-              }
-              renderComposer={(props) => {
-                return (
-                  <Composer {...props}
-                    textInputStyle={{
-                      fontFamily: "Urbanist-Regular",
-                      fontSize: 16,
-                      color: "#000",
-                      paddingTop: 10,
-                      paddingBottom: 10,
-                    }}
-                    multiline={false}
-                    placeholder="Type a message..."
-                    placeholderTextColor="#808080"
-                    // onInputSizeChanged={(size) => {
-                    //   console.log(size)
-                    // }}
-
-                  />
-                
-
-                )
-              }
-              }
-            />
-          )
-        }
-        }
-
-        imageStyle={{ width: 200, height: 200, borderRadius: 10 }}
-        renderMessageImage={(props) => {
-          return (
-            <MessageImage
-              {...props}
-              imageProps={{ resizeMode: 'contain' }}
-              lightboxProps={{
-                underlayColor: 'transparent',
-                backgroundColor: '#000',
-                swipeToDismiss: false,
-                springConfig: { tension: 100000, friction: 100000 },
-                renderHeader: (close) => (
-                  <View style={styles.lightboxHeader}>
-                    <TouchableOpacity onPress={close}>
-                      <Ionicons name='close' size={30} color='000' />
-                    </TouchableOpacity>
-                  </View>
-                ),
-                renderContent: () => (
-                  <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                    <Image
-                      source={{ uri: props.currentMessage.image }}
-                      style={{ width: ScreenWidth * 0.95, height: ScreenHeight * 0.85, resizeMode: 'contain', }}
-                    />
-                    {props.currentMessage.text &&
-                      <View style={styles.txtBox}>
-                        <Text style={styles.lightboxTxt} >{props.currentMessage.text}</Text>
+      <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+        <GiftedChat
+          wrapInSafeArea={false}
+          bottomOffset={Platform.OS === 'ios' ? 10 : 0} //this in case canceling tab bar wont work
+          messages={messages}
+          showAvatarForEveryMessage={false}
+          alwaysShowSend={true}
+          renderAvatarOnTop={true}
+          renderSend={(props) => {
+            return (
+              <Send {...props}>
+                <View style={{
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginLeft: 5,
+                  marginRight: 5,
+                  marginBottom: 0,
+                  width: 30,
+                  height: 44,
+                }}>
+                  <Ionicons name="send" size={28} color="#548DFF" />
+                </View>
+              </Send>
+            )
+          }}
+          onSend={messages => onSend(messages, GroupMembers)}
+          user={{
+            _id: auth?.currentUser?.email,
+            name: auth?.currentUser?.displayName,
+            avatar: auth?.currentUser?.photoURL
+          }}
+          isLoadingEarlier={true}
+          showUserAvatar={true}
+          renderBubble={(props) => {
+            return (
+              <Bubble {...props}
+                wrapperStyle={{
+                  left: {
+                    backgroundColor: "#D9D9D980",
+                    borderColor: "#808080",
+                    borderWidth: 1.5,
+                    borderRadius: 20,
+                  },
+                  right: {
+                    backgroundColor: "#7DA9FF",
+                    borderColor: "#548DFF",
+                    borderWidth: 1.5,
+                    borderRadius: 20,
+                  }
+                }}
+                textStyle={{
+                  left: { fontFamily: "Urbanist-Regular", fontSize: 16 },
+                  right: { fontFamily: "Urbanist-Regular", color: "#fff", fontSize: 16 }
+                }}
+                renderTime={(props) => {
+                  if (props.currentMessage.image && !props.currentMessage.text) {
+                    return (
+                      <View style={{ position: 'absolute', bottom: 5, paddingRight: 10, paddingLeft: 10 }}>
+                        <Text style={{ fontSize: 12, fontFamily: "Urbanist-Regular", color: '#fff' }}>{moment(props.currentMessage.createdAt).format('HH:MM')}</Text>
                       </View>
-                    }
-                  </View>
-                ),
-                modalProps:{
-                  animationType: 'slide',
+                    )
+                  }
+                  else {
+                    return (
+                      <Time {...props}
+                        timeTextStyle={{
+                          left: { fontFamily: "Urbanist-Regular", color: "#000", fontSize: 12 },
+                          right: { fontFamily: "Urbanist-Regular", color: "#fff", fontSize: 12 },
+                        }}
+                        timeFormat='HH:mm'
+                      />
+                    )
+                  }
                 }
-              }}
-            />
-          );
-        }}
-      />
-      <Modal visible={picPreviewModal} animationType='slide' onRequestClose={() => setPicPreviewModal(false)} >
-        <SafeAreaView style={styles.imagePreview}>
-          <View style={styles.imagePreviewheader}>
-            <TouchableOpacity onPress={() => setPicPreviewModal(false)}>
-              <Ionicons name='close' size={30} color='#000' />
-            </TouchableOpacity>
-          </View>
-          <View>
-            <Image source={{ uri: selectedPic }} style={styles.image} />
-          </View>
-          <View style={styles.inputAndSend}>
-            <TextInput style={styles.modalInput}
-              mode='outlined'
-              onChangeText={(text) => setImageDescription(text)}
-              placeholder="Add a caption..."
-              outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
-              contentStyle={{ fontFamily: 'Urbanist-Medium' }}
-              activeOutlineColor="#548DFF"
-              outlineColor='#E6EBF2'
-            />
-            <TouchableOpacity style={styles.iconSend} onPress={() => { setPicPreviewModal(false); sendToFirebase(selectedPic) }}>
-              <Ionicons name='send' size={25} color='#000' />
-            </TouchableOpacity>
-          </View>
-        </SafeAreaView>
-      </Modal>
+                }
+
+              />
+            )
+          }}
+          onPressAvatar={(user) => {
+            if (user._id !== auth.currentUser.email) {
+              navigation.navigate('ChatProfile', { user: user });
+            }
+            else {
+              console.log("user is me")
+            }
+          }
+          }
+          renderInputToolbar={(props) => {
+            return (
+              <InputToolbar {...props}
+                containerStyle={{
+                  height: 45,
+                }}
+                primaryStyle={{
+                  backgroundColor: '#D9D9D9',
+                  borderColor: "#9E9E9E",
+                  borderWidth: 1.5,
+                  borderRadius: 16,
+                  width: ScreenWidth * 0.975,
+                  margin: 5,
+                }}  //for the text input
+                renderActions={(props) => {
+                  return (
+                    <>
+                      <Actions {...props}
+                        containerStyle={{
+                          width: 30,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}
+                        icon={() => (
+                          <Ionicons name="camera" size={28} color="#548DFF" />
+                        )}
+                        options={{
+                          'Take Photo': () => {
+                            openCamera();
+                          },
+                          'Choose From Gallery': () => {
+                            pickImage();
+                          },
+                          Cancel: () => { },
+                        }}
+                        optionTintColor="#222B45"
+                      />
+                      <Actions {...props}
+                        containerStyle={{
+                          width: 35,
+                          height: 44,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          marginLeft: 4,
+                          marginBottom: 0,
+                        }}
+                        icon={() => (
+                          <TouchableOpacity
+                            onPress={handleRecordButtonPress}
+                          // onPressIn={startRecording}
+                          // onPressOut={stopRecording}
+                          >
+                            <Ionicons name="mic-sharp" size={28} color="#548DFF" />
+                          </TouchableOpacity>
+                        )}
+                      />
+                    </>
+                  )
+                }
+                }
+                renderComposer={(props) => {
+                  return (
+                    <Composer {...props}
+                      textInputStyle={{
+                        fontFamily: "Urbanist-Medium",
+                        fontSize: 16,
+                        color: "#000",
+                        paddingVertical: 0,
+                      }}
+                      multiline={false}
+                      placeholder="Type a message..."
+                      placeholderTextColor="#808080"
+                    />
+                  )
+                }
+                }
+              />
+            )
+          }
+          }
+          imageStyle={{ width: 200, height: 200, borderRadius: 10 }}
+          renderMessageImage={(props) => {
+            return (
+              <MessageImage
+                {...props}
+                imageProps={{ resizeMode: 'contain' }}
+                lightboxProps={{
+                  underlayColor: 'transparent',
+                  backgroundColor: '#000',
+                  swipeToDismiss: false,
+                  springConfig: { tension: 100000, friction: 100000 },
+                  renderHeader: (close) => (
+                    <View style={styles.lightboxHeader}>
+                      <TouchableOpacity onPress={close}>
+                        <Ionicons name='close' size={30} color='000' />
+                      </TouchableOpacity>
+                    </View>
+                  ),
+                  renderContent: () => (
+                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                      <Image
+                        source={{ uri: props.currentMessage.image }}
+                        style={{ width: ScreenWidth * 0.95, height: ScreenHeight * 0.85, resizeMode: 'contain', }}
+                      />
+                      {props.currentMessage.text &&
+                        <View style={styles.txtBox}>
+                          <Text style={styles.lightboxTxt} >{props.currentMessage.text}</Text>
+                        </View>
+                      }
+                    </View>
+                  ),
+                  modalProps: {
+                    animationType: 'slide',
+                  }
+                }}
+              />
+            );
+          }}
+        />
+        <Modal visible={picPreviewModal} animationType='slide' onRequestClose={() => setPicPreviewModal(false)} >
+          <SafeAreaView style={styles.imagePreview}>
+            <View style={styles.imagePreviewheader}>
+              <TouchableOpacity onPress={() => setPicPreviewModal(false)}>
+                <Ionicons name='close' size={30} color='#000' />
+              </TouchableOpacity>
+            </View>
+            <View>
+              <Image source={{ uri: selectedPic }} style={styles.image} />
+            </View>
+            <View style={styles.inputAndSend}>
+              <TextInput style={styles.modalInput}
+                mode='outlined'
+                onChangeText={(text) => setImageDescription(text)}
+                placeholder="Add a caption..."
+                outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                contentStyle={{ fontFamily: 'Urbanist-Medium' }}
+                activeOutlineColor="#548DFF"
+                outlineColor='#E6EBF2'
+              />
+              <TouchableOpacity style={styles.iconSend} onPress={() => { setPicPreviewModal(false); sendToFirebase(selectedPic) }}>
+                <Ionicons name='send' size={25} color='#000' />
+              </TouchableOpacity>
+            </View>
+          </SafeAreaView>
+        </Modal>
+      </SafeAreaView>
     </>
   )
 }
@@ -639,7 +721,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Urbanist-Regular',
     fontSize: 16,
     textAlign: 'center',
-   
+
   },
   txtBox: {
     width: ScreenWidth * 0.95,
