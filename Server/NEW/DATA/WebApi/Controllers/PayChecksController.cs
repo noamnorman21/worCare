@@ -25,14 +25,16 @@ namespace WebApi.Controllers
                 if (user.userType == "User")
                 {
                     userId = user.userId;
-                    var Patients = db.tblPatient.Where(x => x.userId == user.userId).Select(y => y.patientId).FirstOrDefault();
-                    CareGiverId = db.tblCaresForPatient.Where(x => x.patientId == Patients).Select(y => y.workerId).FirstOrDefault();
+                    string patientId = user.patientId;
+                    //var Patients = db.tblPatient.Where(x => x.userId == user.userId).Select(y => y.patientId).FirstOrDefault();
+                    CareGiverId = db.tblCaresForPatient.Where(x => x.patientId == patientId).Select(y => y.workerId).FirstOrDefault();
                 }
                 else
                 {
                     CareGiverId = user.userId;
-                    var Patients = db.tblCaresForPatient.Where(x => x.workerId == CareGiverId).Select(y => y.patientId).FirstOrDefault();
-                    userId = db.tblPatient.Where(x => x.patientId == Patients).Select(y => y.userId).FirstOrDefault();
+                    string patientId = user.patientId;
+                    //var Patients = db.tblCaresForPatient.Where(x => x.workerId == CareGiverId).Select(y => y.patientId).FirstOrDefault();
+                    userId = db.tblPatient.Where(x => x.patientId == patientId).Select(y => y.userId).FirstOrDefault();
                 }
                 var payChecks = db.tblPaycheck.Where(x => x.UserId == userId || x.UserId == CareGiverId).Select(y => new PayCheckDTO
                 {

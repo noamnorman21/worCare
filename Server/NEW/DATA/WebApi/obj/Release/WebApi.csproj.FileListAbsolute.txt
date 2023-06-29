@@ -607,3 +607,19 @@ C:\Users\amita\Desktop\WorCare\worCare\Server\NEW\DATA\WebApi\bin\Polly.xml
 C:\Users\amita\Desktop\WorCare\worCare\Server\NEW\DATA\WebApi\bin\Polly.Contrib.WaitAndRetry.pdb
 C:\Users\amita\Desktop\WorCare\worCare\Server\NEW\DATA\WebApi\bin\Polly.Contrib.WaitAndRetry.xml
 C:\Users\amita\Desktop\WorCare\worCare\Server\NEW\DATA\WebApi\bin\Polly.Extensions.Http.xml
+C:\Users\oryan\Desktop\app dev\worCare\Server\NEW\DATA\WebApi\bin\Community.Expo.Server.SDK.dll
+C:\Users\oryan\Desktop\app dev\worCare\Server\NEW\DATA\WebApi\bin\Expo.Server.SDK.dll
+C:\Users\oryan\Desktop\app dev\worCare\Server\NEW\DATA\WebApi\bin\HtmlAgilityPack.dll
+C:\Users\oryan\Desktop\app dev\worCare\Server\NEW\DATA\WebApi\bin\Microsoft.Bcl.AsyncInterfaces.dll
+C:\Users\oryan\Desktop\app dev\worCare\Server\NEW\DATA\WebApi\bin\Polly.Contrib.WaitAndRetry.dll
+C:\Users\oryan\Desktop\app dev\worCare\Server\NEW\DATA\WebApi\bin\Polly.dll
+C:\Users\oryan\Desktop\app dev\worCare\Server\NEW\DATA\WebApi\bin\Polly.Extensions.Http.dll
+C:\Users\oryan\Desktop\app dev\worCare\Server\NEW\DATA\WebApi\bin\HtmlAgilityPack.pdb
+C:\Users\oryan\Desktop\app dev\worCare\Server\NEW\DATA\WebApi\bin\HtmlAgilityPack.xml
+C:\Users\oryan\Desktop\app dev\worCare\Server\NEW\DATA\WebApi\bin\Microsoft.Bcl.AsyncInterfaces.xml
+C:\Users\oryan\Desktop\app dev\worCare\Server\NEW\DATA\WebApi\bin\Polly.pdb
+C:\Users\oryan\Desktop\app dev\worCare\Server\NEW\DATA\WebApi\bin\Polly.xml
+C:\Users\oryan\Desktop\app dev\worCare\Server\NEW\DATA\WebApi\bin\Polly.Contrib.WaitAndRetry.pdb
+C:\Users\oryan\Desktop\app dev\worCare\Server\NEW\DATA\WebApi\bin\Polly.Contrib.WaitAndRetry.xml
+C:\Users\oryan\Desktop\app dev\worCare\Server\NEW\DATA\WebApi\bin\Polly.Extensions.Http.xml
+C:\Users\oryan\Desktop\app dev\worCare\Server\NEW\DATA\WebApi\obj\Release\WebApi.csproj.CopyComplete

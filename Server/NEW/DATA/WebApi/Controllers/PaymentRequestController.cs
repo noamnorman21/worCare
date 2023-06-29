@@ -23,7 +23,7 @@ namespace WebApi.Controllers
                 int id;
                 if (user.userType == "User")
                 {
-                    string patient = db.tblPatient.Where(x => x.userId == user.userId).Select(y => y.patientId).FirstOrDefault();
+                    string patient = user.patientId;
                     id = db.tblCaresForPatient.Where(x => x.patientId == patient).Select(y => y.workerId).FirstOrDefault();
                 }
                 else
@@ -57,7 +57,7 @@ namespace WebApi.Controllers
                 int id;
                 if (user.userType == "User")
                 {
-                    string patient = db.tblPatient.Where(x => x.userId == user.userId).Select(y => y.patientId).FirstOrDefault();
+                    string patient = user.patientId;
                     id = db.tblCaresForPatient.Where(x => x.patientId == patient).Select(y => y.workerId).FirstOrDefault();
                 }
                 else

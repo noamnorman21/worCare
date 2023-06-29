@@ -25,11 +25,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                string PatientId;
-                if (user.userType == "User")
-                    PatientId = db.tblPatient.Where(x => x.userId == user.userId).Select(y => y.patientId).FirstOrDefault();
-                else
-                    PatientId = db.tblCaresForPatient.Where(x => x.workerId == user.userId).Select(y => y.patientId).FirstOrDefault();
+                string PatientId= user.patientId;
                 var Contacts = db.tblContacts.Where(x => x.patientId == PatientId).Select(y => new ContactDTO
                 {
                     contactId = y.contactId,

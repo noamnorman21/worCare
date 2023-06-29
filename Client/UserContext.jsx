@@ -45,6 +45,7 @@ let deletePayment = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/Delet
 let updateRequest = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/UpdateRequest';
 let newRequest = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/NewRequest';
 let getPending = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/GetPending/';//+userId
+let getPaychecksUrl='https://proj.ruppin.ac.il/cgroup94/test1/api/PayChecks/GetPaychecks/';
 
 // Tasks
 let updateActualTaskUrL = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/UpdateActualTask';
@@ -99,6 +100,8 @@ export function UserProvider({ children }) {
     const [holidays, setHolidays] = useState([]);
     const [patientData, setPatientData] = useState(null)
     const [patientHL, setPatientHL] = useState(null)
+    const [patientId, setPatientId] = useState(null)
+
 
     //new for chat logo
     const [newMessages, setNewMessages] = useState(0);
@@ -122,6 +125,7 @@ export function UserProvider({ children }) {
         setCalendarCode(userData.calendarCode);
         setPatientHL(userData.patientHL);
         setPatientData(userData.patientData);
+        setPatientId(userData.patientId);
         let usertoSync = {
             userId: userData.userId,
             userType: userData.userType,
@@ -153,6 +157,7 @@ export function UserProvider({ children }) {
         fetchUserContacts(usertoSync);
         GetUserPending(usertoSync);
         GetUserHistory(usertoSync);
+        getPaychecks(usertoSync);
         await getAllPrivateTasks(usertoSync);
         await getAllPublicTasks(usertoSync);
         await getHolidaysForUser(usertoSync.calendarCode);
@@ -281,9 +286,7 @@ export function UserProvider({ children }) {
         logOutFireBase()
     }
 
-    useEffect(() => {
-        console.log("newMessagessss", newMessages)
-    }, [newMessages])
+
 
 
     //updated for firebase upadte after settings change
@@ -368,12 +371,14 @@ export function UserProvider({ children }) {
         if (temp != undefined) {
             user = {
                 userId: temp.userId,
+                patientId: temp.patientId,
                 userType: temp.userType,
             }
         }
         else {
             user = {
                 userId: userContext.userId,
+                patientId: userContext.patientId,
                 userType: userContext.userType,
             }
         }
@@ -391,6 +396,21 @@ export function UserProvider({ children }) {
             return data;
         }
     }
+
+    useEffect(() => {
+        if(patientId!=null && userContext!=null){
+        console.log(patientId)
+        console.log(userContext.patientId)
+        fetchUserContacts(userContext);
+        getAllPublicTasks(userContext);
+        getAllPrivateTasks(userContext);
+        GetUserPending(userContext);
+        GetUserHistory(userContext);
+        getPaychecks(userContext);        
+        }
+    }, [patientId]);
+
+
 
     function updateUserContacts() {
         fetchUserContacts();
@@ -491,21 +511,23 @@ export function UserProvider({ children }) {
 
     // ---------------- Finance ----------------
     async function GetUserPending(userData) {
-        console.log("GetUserHistory")
+        console.log("GetUserPending")
         try {
             let user;
             if (userData === undefined) {
                 user = {
                     userId: userContext.userId,
-                    userType: userContext.userType
+                    userType: userContext.userType,
+                    patientId: userContext.patientId
                 }
             }
             else {
                 user = {
                     userId: userData.userId,
-                    userType: userData.userType
+                    userType: userData.userType,
+                    patientId: userData.patientId
                 }
-            }
+            }            
             fetch(getPending, {
                 method: 'POST',
                 headers: {
@@ -542,13 +564,15 @@ export function UserProvider({ children }) {
             if (userData === undefined) {
                 user = {
                     userId: userContext.userId,
-                    userType: userContext.userType
+                    userType: userContext.userType,
+                    patientId: userContext.patientId
                 }
             }
             else {
                 user = {
                     userId: userData.userId,
-                    userType: userData.userType
+                    userType: userData.userType,
+                    patientId: userData.patientId
                 }
             }
             fetch(getHistory, {
@@ -578,6 +602,41 @@ export function UserProvider({ children }) {
             console.log(error)
         }
     }
+
+    async function getPaychecks(userData) {
+        console.log("getPaychecks")
+        let user;
+        if (userData === undefined) {
+
+            user = {
+                userId: userContext.userId,
+                userType: userContext.userType,
+                patientId: userContext.patientId
+            }
+        }
+        else {
+            user = {
+                userId: userData.userId,
+                userType: userData.userType,
+                patientId: userData.patientId
+            }
+        }
+        try {
+          const response = await fetch(getPaychecksUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(user)
+          });
+          const data = await response.json();
+          if (data != null) {
+            setUserPaychecks(data);
+          }          
+        } catch (error) {
+          console.log(error)
+        }
+      }
 
     function updatePendings(pendings) {
         setUserPendingPayments(pendings);
@@ -804,14 +863,20 @@ export function UserProvider({ children }) {
         });
     }
 
+
+    function UpdatePatientId(patientId) {
+        setPatientId(patientId);
+        setUserContext({ ...userContext, patientId: patientId });
+    }
+
     const value = {
         userContext, allShopTasks, allMedicineTasks, userContacts, userNotifications, userPendingPayments,
-        userHistoryPayments, userChats, setUserChats, logInFireBase, GetUserHistory, GetUserPending,
+        userHistoryPayments, userChats, setUserChats, logInFireBase, GetUserHistory, GetUserPending, getPaychecks,
         deleteContact, addNewContact, saveContact, updateActualTask, updateRememberUserContext, logInContext,
         fetchUserContacts, logOutContext, updateUserContext, updateUserContacts, updatePendings,
         updateUserProfile, updateuserNotifications, appEmail, getAllPrivateTasks, getAllPublicTasks,
         allPublicTasks, allPrivateTasks, UpdateDrugForPatientDTO, holidays, GetAllDrugs, allDrugs, addPrivateTaskContext,
-        newMessages, setNewMessages, logOutFireBase, registerForPushNotificationsAsync, sendPushNotification
+        newMessages, setNewMessages, logOutFireBase, registerForPushNotificationsAsync, sendPushNotification,UpdatePatientId, userPaychecks
     };
 
     return (

@@ -13,7 +13,7 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function NewPaycheck(props) {
   const PlatformType = Platform.OS;
-  const { userContext } = useUserContext();
+  const { userContext, getPaychecks } = useUserContext();
   const [show, setShow] = useState(false);
   const [dateSelected, setDateSelected] = useState(false);
   const [PayCheck, setPayCheck] = useState({
@@ -168,6 +168,7 @@ export default function NewPaycheck(props) {
       .then(
         (result) => {
           console.log("fetch POST= ", result);
+          getPaychecks();
           props.cancel();
         },
         (error) => {

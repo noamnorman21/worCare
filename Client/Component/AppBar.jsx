@@ -32,7 +32,7 @@ const SCREEN_WIDTH = Dimensions.get('screen').width;
 
 function CustomHeader() {
     const [isModalVisible, setIsModalVisible] = useState(false);
-    const { userContext, appEmail, logOutFireBase } = useUserContext();
+    const { userContext, appEmail, logOutFireBase,UpdatePatientId } = useUserContext();
     const { userUri, FirstName } = userContext;
     const [dialogVisable, setDialogVisable] = useState(false);
     const navigation = useNavigation();
@@ -85,6 +85,7 @@ function CustomHeader() {
                                                 style={styles.switchUser}
                                                 onPress={() => {
                                                     console.log('Switch User pressed')
+                                                    UpdatePatientId(123456789)
                                                     toggleModal()
                                                 }}>
                                                 <AntDesign name="retweet" size={20} color="#216Bff" />

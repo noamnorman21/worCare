@@ -66,7 +66,7 @@ export default function Paychecks() {
       <ScrollView contentContainerStyle={styles.pending}>
         {History}
         <Modal animationType='slide' transparent={true} visible={modal1Visible}>
-          <NewPaycheck cancel={() => { setModal1Visible(false); getPaychecks() }} userId={userContext.userId} />
+          <NewPaycheck cancel={() => { setModal1Visible(false); }} getPaychecks={()=> getPaychecks()} userId={userContext.userId} />
         </Modal>
       </ScrollView>
       <View style={styles.addBtnView}><AddBtn onPress={() => setModal1Visible(true)} /></View>
@@ -127,7 +127,7 @@ function Paycheck(props) {
           onPress: () => {
             fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Paychecks/DeletePaycheck/', {
               method: 'POST',
-              body: JSON.stringify(paycheck.payCheckNum),
+              body: JSON.stringify(paycheck),
               headers: {
                 'Content-Type': 'application/json',
               },
