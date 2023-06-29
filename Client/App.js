@@ -5,8 +5,9 @@ import SettingScreen from './Component/SettingScreen';
 import NavigateSignUp from './Component/SignUpComponents/NavigateSignUp';
 import * as Font from 'expo-font'; // Import Font from expo-font package
 import { UserProvider } from './UserContext';
-
 import * as Notifications from 'expo-notifications';
+
+
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -20,8 +21,7 @@ export default function App() {
   const [notification, setNotification] = useState(false);
   const notificationListener = useRef();
   const responseListener = useRef();
-
-
+  
   useEffect(() => {
     async function loadFont() {
       await Font.loadAsync({
@@ -35,16 +35,6 @@ export default function App() {
     }
     loadFont();
   }, []);
-
-  // useEffect(() => {
-  //   const subscription = Notifications.addNotificationReceivedListener(notification => {
-  //     console.log(notification);
-  //   });
-
-  //   return () => {
-  //     subscription.remove();
-  //   }
-  // }, []);
 
   useEffect(() => {
     // registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
