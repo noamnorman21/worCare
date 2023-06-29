@@ -12,7 +12,6 @@ namespace DATA
         igroup194Db db = new igroup194Db();
         public int InsertCalendar(int id, int[] calendarsTypeArr)
         {
-
             try
             {
                 tblUser userExist = db.tblUser.Where(x => x.userId == id).First();

@@ -595,3 +595,15 @@ C:\Users\noam1\OneDrive\Desktop\worCare_New\worCare\Server\NEW\DATA\WebApi\bin\P
 C:\Users\noam1\OneDrive\Desktop\worCare_New\worCare\Server\NEW\DATA\WebApi\bin\Polly.Contrib.WaitAndRetry.pdb
 C:\Users\noam1\OneDrive\Desktop\worCare_New\worCare\Server\NEW\DATA\WebApi\bin\Polly.Contrib.WaitAndRetry.xml
 C:\Users\noam1\OneDrive\Desktop\worCare_New\worCare\Server\NEW\DATA\WebApi\bin\Polly.Extensions.Http.xml
+C:\Users\amita\Desktop\WorCare\worCare\Server\NEW\DATA\WebApi\bin\Community.Expo.Server.SDK.dll
+C:\Users\amita\Desktop\WorCare\worCare\Server\NEW\DATA\WebApi\bin\Expo.Server.SDK.dll
+C:\Users\amita\Desktop\WorCare\worCare\Server\NEW\DATA\WebApi\bin\Microsoft.Bcl.AsyncInterfaces.dll
+C:\Users\amita\Desktop\WorCare\worCare\Server\NEW\DATA\WebApi\bin\Polly.Contrib.WaitAndRetry.dll
+C:\Users\amita\Desktop\WorCare\worCare\Server\NEW\DATA\WebApi\bin\Polly.dll
+C:\Users\amita\Desktop\WorCare\worCare\Server\NEW\DATA\WebApi\bin\Polly.Extensions.Http.dll
+C:\Users\amita\Desktop\WorCare\worCare\Server\NEW\DATA\WebApi\bin\Microsoft.Bcl.AsyncInterfaces.xml
+C:\Users\amita\Desktop\WorCare\worCare\Server\NEW\DATA\WebApi\bin\Polly.pdb
+C:\Users\amita\Desktop\WorCare\worCare\Server\NEW\DATA\WebApi\bin\Polly.xml
+C:\Users\amita\Desktop\WorCare\worCare\Server\NEW\DATA\WebApi\bin\Polly.Contrib.WaitAndRetry.pdb
+C:\Users\amita\Desktop\WorCare\worCare\Server\NEW\DATA\WebApi\bin\Polly.Contrib.WaitAndRetry.xml
+C:\Users\amita\Desktop\WorCare\worCare\Server\NEW\DATA\WebApi\bin\Polly.Extensions.Http.xml

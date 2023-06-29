@@ -8,6 +8,7 @@ import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useUserContext } from '../../../UserContext';
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { where, getDocs, updateDoc } from "firebase/firestore";
+import * as Notifications from 'expo-notifications';
 
 const groupImage='https://firebasestorage.googleapis.com/v0/b/worcare-3df72.appspot.com/o/groupPics%2FCrowd.png?alt=media&token=b7e7a4ef-ba86-4f3b-9ba8-e032dfed204f'
 
@@ -23,19 +24,33 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
 
   useEffect(() => {
     getInitialUrl();
-    registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+  
   }, []);
+  // useEffect (()=>{
+  //   registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+  //   console.log("token:",expoPushToken);
+  // },[])
 
   const getInitialUrl = async () => {
     setLinkTo(await Linking.getInitialURL());
     console.log("link:", linkTo);
   }
 
+  const getPush = async () => {
+    const currentToken = (await Notifications.getExpoPushTokenAsync()).data
+    console.log("token:", currentToken);
+    setExpoPushToken(currentToken);
+    console.log("token:", expoPushToken);
+  }
+
   //updated for chat
   const createUserInDB = () => {
-    console.log("new user:", newUser);
+    getPush();
     newUser.pushToken = expoPushToken;
-    newUser.Calendars = selectedHolidays; //selectedHolidays is the array of the selected holidays,use them in data base with stored procedure "InsertCalendarForUser"        
+    newUser.Calendars = selectedHolidays;
+    console.log("new user:", newUser);
+
+ //selectedHolidays is the array of the selected holidays,use them in data base with stored procedure "InsertCalendarForUser"        
     fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/InsertUser', { //send the user data to the DB
       method: 'POST',
       headers: {
@@ -148,6 +163,7 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
       linkTo: linkTo,
       status: "P"
     };
+    console.log("caresForPatient:");
     console.log(caresForPatient);
     fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/ForeignUser/InsertCaresForPatient', {
       method: "POST",
@@ -156,54 +172,21 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
       },
       body: JSON.stringify(caresForPatient),
     })
-      .then((response) => response.json())
-      .then(async (json) => {
-        console.log(json);
-        // await AddToChat();
-        // // will be used for chat after publish to filezila
-        // // fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetPairedUser',
-        // //   {
-        // //     method: 'POST',
-        // //     headers: new Headers({
-        // //       'Content-Type': 'application/json; charset=UTF-8',
-        // //     }),
-        // //     body: JSON.stringify({ id: newForeignUserData.Id }),
-        // //   })
-        // //   .then((response) => response.json())
-        // //   .then(async (json) => {
-        // //     console.log(json);
-        // //     let pairedUser = {
-        // //       Email: json.Email,
-        // //       Name: json.FirstName + " " + json.LastName,
-        // //       image: json.userUri
-        // //     }
-        // //     let pairedEmail = json.Email;
-        // //     console.log(pairedEmail);
-        // //     //add the new user and paired user to each other's chat
-        // //     await addDoc(collection(db, pairedEmail), { Name: auth.currentUser.displayName + "+" + pairedUser.Name, UserName: auth.currentUser.displayName, userEmail: auth.currentUser.email, image:auth.currentUser.photoURL, unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date(), type: "private" });
-        //     await addDoc(collection(db, newUser.Email.toLowerCase()), { Name: auth.currentUser.displayName + "+" + "Dar Ya", UserName:pairedUser.Name, userEmail: pairedEmail, image: pairedUser.image , unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date(), type: "private" }).then(() => {
-        //       signOut(auth).then(() => {
-        //         console.log("user signed out");
-        //       }).catch((error) => {
-        //       });
-        // }).catch((error) => {
-        //   console.error(error);
-        // }
-        // );
-        //   })
+      .then(async () => {
+        //console.log(json);
         Alert.alert("Great Job !", "You can login now", [
           {
             text: "OK",
             onPress: () => {
               navigation.navigate('LogIn');
-
               //we will add to this stage a notification to the user that a new caregiver was added to his care team, and he will approve it
             }
           }
         ]);
       })
       .catch((error) => {
-        console.error(error);
+        console.error("error frrm cares for patient:");
+        console.error(error.message);
       });
   };
 
@@ -252,50 +235,6 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
               console.log("user signed out");
             }).catch((error) => {
             });
-            //update when oublished to filezila
-            //  fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetPairedUser',
-            //    {
-            //      method: 'POST',
-            //      headers: new Headers({
-            //        'Content-Type': 'application/json; charset=UTF-8',
-            //      }),
-            //      body: JSON.stringify({ id: newForeignUserData.Id }),
-            //    })
-            //    .then((response) =>{
-            //    if (response.status === 200) {
-            //       return response.json();
-            //     }
-            //     else {
-            //       console.log("error");
-            //     }
-
-            //   }).then(async (json) => {
-            //   console.log(json);
-            //   let pairedUser = {
-            //     Email: json.Email,
-            //     Name: json.FirstName + " " + json.LastName,
-            //     image: json.userUri
-            //   }
-            //   let pairedEmail = json.Email;
-            //   console.log(pairedEmail);
-            //   //add the new user and paired user to each other's chat
-            //   await addDoc(collection(db, pairedEmail), { Name: auth.currentUser.displayName + "+" + pairedUser.Name, UserName: auth.currentUser.displayName, userEmail: auth.currentUser.email, image:auth.currentUser.photoURL, unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date(), type: "private" });
-            //   await addDoc(collection(db, newUser.Email.toLowerCase()), { Name: auth.currentUser.displayName + "+" + "Dar Ya", UserName:pairedUser.Name, userEmail: pairedEmail, image: pairedUser.image , unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date(), type: "private" }).then(() => {
-            //     signOut(auth).then(() => {
-            //       console.log("user signed out");
-            //     }
-            //     ).catch((error) => {
-            //     }
-            //     );
-            //   }).catch((error) => {
-            //     console.error(error);
-            //   }
-            //   );
-            // })
-            // .catch((error) => {
-            //   console.error(error);
-            // }
-            // );
           })
             .catch((error) => {
               console.error(error);

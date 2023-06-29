@@ -67,6 +67,8 @@ namespace WebApi.Controllers
                     string postData = JsonConvert.SerializeObject(objectToSend);
                     var content = new StringContent(postData, Encoding.UTF8, "application/json");
                     SendPushNotification(content);
+                    
+                    
                 }
                 return Ok("linked succesfuly");
             }
@@ -81,6 +83,8 @@ namespace WebApi.Controllers
         public async void SendPushNotification(StringContent content)
         {
             HttpResponseMessage response = await client.PostAsync("https://exp.host/--/api/v2/push/send", content);
+            return;
+
         }
     }
 }
