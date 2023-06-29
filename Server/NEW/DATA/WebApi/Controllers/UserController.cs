@@ -61,6 +61,22 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        
+        //need to publish in filezilla
+        [HttpPost]
+        [Route("GetUserToken")] // POST - Because The FromBody - Check if email and password exists in DB
+        public IHttpActionResult GetUserToken([FromBody] UserDTO userDTO)
+        {
+            try
+            {
+                var user = db.tblUser.Where(x => x.Email == userDTO.Email).Select(x=> x.pushToken).FirstOrDefault();
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
         [HttpPost]
         [Route("GetUserForLogin")] // POST - Because The FromBody - Check if email and password exists in DB
