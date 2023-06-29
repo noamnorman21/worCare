@@ -613,7 +613,6 @@ export function UserProvider({ children }) {
     }
 
     async function getAllPublicTasks(userData) {
-        console.log("getAllPublicTasks")
         try {
             const response = await fetch(getAllPublicTasksUrl, {
                 method: 'POST',

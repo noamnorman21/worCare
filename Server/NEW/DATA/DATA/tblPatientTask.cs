@@ -30,6 +30,7 @@ namespace DATA
         public int workerId { get; set; }
         public int userId { get; set; }
         public int listId { get; set; }
+        public string timesInDayArray { get; set; }
     
         public virtual tblActualList tblActualList { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

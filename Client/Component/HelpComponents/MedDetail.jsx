@@ -7,6 +7,7 @@ import { Menu, MenuOptions, MenuOption, MenuTrigger } from "react-native-popup-m
 import { Overlay } from '@rneui/themed';
 import * as WebBrowser from 'expo-web-browser';
 const SCREEN_WIDTH = Dimensions.get('window').width;
+import EditMed from './EditMed';
 
 export default function MedDetail({ navigation, route }) {
    const medTypeIcon = route.params.medTypeIcon;
@@ -61,7 +62,7 @@ export default function MedDetail({ navigation, route }) {
       }
       else if (value == 2) {
          console.log("add instruction")
-         toggleOverlayEditMed()
+         setVisibleEditMed(!visibleEditMed)
       }
       if (value == 3) {
          toggleOverlayPause()
@@ -85,10 +86,6 @@ export default function MedDetail({ navigation, route }) {
 
    const toggleOverlayRefill = () => {
       setVisibleLogRefill(!visibleLogRefill);
-   };
-
-   const toggleOverlayEditMed = () => {
-      setVisibleEditMed(!visibleEditMed)
    };
 
    const deleteMed = () => {
@@ -161,32 +158,13 @@ export default function MedDetail({ navigation, route }) {
       setVisibleLogRefill(false)
    }
 
-   const editMed = () => {
-      let newDrugForPatient = {
-         drugId: task.drug.drugId,
-         listId: task.listId,
-         patientId: task.patientId,
-         toDate: taskDate,
-         dosage: task.drug.dosage,
-         qtyInBox: task.drug.qtyInBox,
-         frequency: task.frequency,
-      }
-
-
-
-      UpdateDrugForPatientDTO(newDrugForPatient)
-      toggleOverlayEdit()
-   }
-
    return (
       <View style={styles.container}>
          <View style={styles.headerContainer}>
-
             <TouchableOpacity style={styles.leftHeaderContainer} onPress={() => navigation.goBack()} >
                <Feather name="chevron-left" size={32} color="black" />
                <Text style={styles.headerTxt}>Med List</Text>
             </TouchableOpacity>
-
             <View style={styles.rightHeaderContainer}>
                <Menu style={{ flexDirection: 'column', marginVertical: 0 }} onSelect={value => openModal(value)} >
                   <MenuTrigger children={<View><Feather name="more-horizontal" size={32} color="#000" /></View>} />
@@ -249,8 +227,11 @@ export default function MedDetail({ navigation, route }) {
             </TouchableOpacity>
          </View>
 
+         <EditMed task={task} visible={visibleEditMed} />
+
          {/* Delete med */}
-         <Overlay isVisible={visible} onBackdropPress={toggleOverlay} overlayStyle={{ width: 300, height: 250, borderRadius: 20 }}>
+         < Overlay isVisible={visible} onBackdropPress={toggleOverlay} overlayStyle={{ width: 300, height: 250, borderRadius: 20 }
+         }>
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                <View style={{ flex: 0.85, justifyContent: 'center', alignItems: 'center' }}>
                   <Feather name='alert-triangle' size={30} color='#FF3C3C' />
@@ -266,10 +247,10 @@ export default function MedDetail({ navigation, route }) {
                   </TouchableOpacity>
                </View>
             </View>
-         </Overlay>
+         </Overlay >
 
          {/* Pause Med */}
-         <Overlay isVisible={visiblePause} onBackdropPress={toggleOverlayPause} overlayStyle={{ width: 300, height: 250, borderRadius: 20 }}>
+         < Overlay isVisible={visiblePause} onBackdropPress={toggleOverlayPause} overlayStyle={{ width: 300, height: 250, borderRadius: 20 }}>
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                <View style={{ flex: 0.85, justifyContent: 'center', alignItems: 'center' }}>
                   <Feather name='alert-triangle' size={30} color='#FF3C3C' />
@@ -285,10 +266,10 @@ export default function MedDetail({ navigation, route }) {
                   </TouchableOpacity>
                </View>
             </View>
-         </Overlay>
+         </Overlay >
 
          {/* Take Extra Med */}
-         <Overlay isVisible={visibleTakeExtra} onBackdropPress={toggleOverlayTakeExtra} overlayStyle={{ width: 300, height: 300, borderRadius: 20 }}>
+         < Overlay isVisible={visibleTakeExtra} onBackdropPress={toggleOverlayTakeExtra} overlayStyle={{ width: 300, height: 300, borderRadius: 20 }}>
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                <View style={{ flex: 0.7, justifyContent: 'center', alignItems: 'center' }}>
                   <Ionicons name="medical-outline" size={30} color="black" />
@@ -331,10 +312,10 @@ export default function MedDetail({ navigation, route }) {
                   </TouchableOpacity>
                </View>
             </View>
-         </Overlay>
+         </Overlay >
 
          {/* Refill Med */}
-         <Overlay isVisible={visibleLogRefill} onBackdropPress={toggleOverlayRefill} overlayStyle={{ width: 300, height: 300, borderRadius: 20 }}>
+         < Overlay isVisible={visibleLogRefill} onBackdropPress={toggleOverlayRefill} overlayStyle={{ width: 300, height: 300, borderRadius: 20 }}>
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                <View style={{ flex: 0.7, justifyContent: 'center', alignItems: 'center' }}>
                   <FontAwesome5 name="hand-holding-medical" size={30} color="black" />
@@ -377,28 +358,7 @@ export default function MedDetail({ navigation, route }) {
                   </TouchableOpacity>
                </View>
             </View>
-         </Overlay>
-
-         {/* Edit Med */}
-         <Modal presentationStyle='pageSheet' visible={visibleEditMed} onRequestClose={toggleOverlayEditMed} animationType="slide">
-            <View style={{ flex: 1 }}>
-               <View style={{ flex: 0.7, justifyContent: 'center', alignItems: 'center' }}>
-                  <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 20, marginVertical: 5, textAlign: 'center' }}>Edit Medication:</Text>
-                  <Text style={{ fontFamily: 'Urbanist-SemiBold', fontSize: 18, marginVertical: 5, textAlign: 'center' }}>{task.drug.drugNameEn}</Text>
-               </View>
-               <View>
-
-               </View>
-               <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: SCREEN_WIDTH * 0.975, marginVertical: 10 }}>
-                  <TouchableOpacity style={styles.cancelBtn} onPress={toggleOverlayEditMed}>
-                     <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 16, color: '#fff' }}>Cancel</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.okBtn} onPress={editMed}>
-                     <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 16, color: '#7DA9FF' }}>Okay</Text>
-                  </TouchableOpacity>
-               </View>
-            </View>
-         </Modal>
+         </Overlay >
       </View >
    )
 }

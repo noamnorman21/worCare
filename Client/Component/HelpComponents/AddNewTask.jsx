@@ -697,12 +697,12 @@ function NewTaskModal(props) {
 
    const addTask = () => {
       //if it caregiver than check if the task is private or public
-      if (userType == "Caregiver") {         
+      if (userType == "Caregiver") {
          if (isPrivate) {
             addPrivateTask();
             return;
          }
-      }      
+      }
       if (taskCategory == 'General') {
          addPublicTask();
       }

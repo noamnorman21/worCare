@@ -23,5 +23,6 @@ namespace WebApi.DTO
         public Nullable<bool> type { get; set; }
         public List<ProductListDTO> prodList { get; set; } //will be relevant only if the type will be prodact list (type=false)
         public DrugForPatientDTO drug { get; set; } //will be relevant only if the type will be drug (type=true)
+        public string timesInDayArray { get; set; }
     }
 }

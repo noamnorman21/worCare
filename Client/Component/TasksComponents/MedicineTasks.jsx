@@ -39,8 +39,11 @@ function MedTask({ navigation, route }) {
 
    useEffect(() => {
       navigation.setOptions({
-         refreshPublicTask: () => getAllPublicTasks(userData)
+         tabBar: ({ state }) => ({
+            refreshPublicTask: () => getAllPublicTasks(userData),
+         }),
       });
+
    }, []);
 
    return (

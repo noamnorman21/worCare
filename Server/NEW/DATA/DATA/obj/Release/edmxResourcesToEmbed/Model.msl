@@ -185,6 +185,7 @@
     <EntitySetMapping Name="tblPatientTask">
       <EntityTypeMapping TypeName="igroup194_prodModel.tblPatientTask">
         <MappingFragment StoreEntitySet="tblPatientTask">
+          <ScalarProperty Name="timesInDayArray" ColumnName="timesInDayArray" />
           <ScalarProperty Name="taskId" ColumnName="taskId" />
           <ScalarProperty Name="taskName" ColumnName="taskName" />
           <ScalarProperty Name="taskFromDate" ColumnName="taskFromDate" />

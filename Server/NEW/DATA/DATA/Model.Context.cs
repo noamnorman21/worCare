@@ -319,7 +319,7 @@ namespace DATA
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertPatientLimitations", patientIdParameter, allergiesParameter, sensitivitiesParameter, physicalAbilitiesParameter, bathRoutineParameter, sensitivityToNoiseParameter, otherParameter);
         }
     
-        public virtual int InsertPatientTask(string taskName, Nullable<System.DateTime> taskFromDate, Nullable<System.DateTime> taskToDate, string taskComment, string patientId, Nullable<int> workerId, Nullable<int> userId, Nullable<int> listId, string frequency)
+        public virtual int InsertPatientTask(string taskName, Nullable<System.DateTime> taskFromDate, Nullable<System.DateTime> taskToDate, string taskComment, string patientId, Nullable<int> workerId, Nullable<int> userId, Nullable<int> listId, string frequency, string timesInDayArray)
         {
             var taskNameParameter = taskName != null ?
                 new ObjectParameter("taskName", taskName) :
@@ -357,7 +357,11 @@ namespace DATA
                 new ObjectParameter("frequency", frequency) :
                 new ObjectParameter("frequency", typeof(string));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertPatientTask", taskNameParameter, taskFromDateParameter, taskToDateParameter, taskCommentParameter, patientIdParameter, workerIdParameter, userIdParameter, listIdParameter, frequencyParameter);
+            var timesInDayArrayParameter = timesInDayArray != null ?
+                new ObjectParameter("timesInDayArray", timesInDayArray) :
+                new ObjectParameter("timesInDayArray", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertPatientTask", taskNameParameter, taskFromDateParameter, taskToDateParameter, taskCommentParameter, patientIdParameter, workerIdParameter, userIdParameter, listIdParameter, frequencyParameter, timesInDayArrayParameter);
         }
     
         public virtual int InsertPrivateActualTask(Nullable<int> taskId, Nullable<System.DateTime> taskDate, Nullable<System.TimeSpan> timeInDay, string taskStatus)

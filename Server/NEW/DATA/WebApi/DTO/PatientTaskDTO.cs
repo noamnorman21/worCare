@@ -25,5 +25,6 @@ namespace WebApi.DTO
         public virtual tblPatient tblPatient { get; set; }
         public virtual tblUser tblUser { get; set; }
         public TimeSpan[] timesInDayArr { get; set; }
+        public string timesInDayArray { get; set; }
     }
 }

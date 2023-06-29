@@ -183,6 +183,7 @@
     <Property Name="workerId" Type="int" Nullable="false" />
     <Property Name="userId" Type="int" Nullable="false" />
     <Property Name="listId" Type="int" Nullable="false" />
+    <Property Name="timesInDayArray" Type="varchar" MaxLength="255" />
   </EntityType>
   <EntityType Name="tblPaycheck">
     <Key>
@@ -732,6 +733,7 @@
     <Parameter Name="userId" Type="int" Mode="In" />
     <Parameter Name="listId" Type="int" Mode="In" />
     <Parameter Name="frequency" Type="varchar" Mode="In" />
+    <Parameter Name="timesInDayArray" Type="varchar" Mode="In" />
   </Function>
   <Function Name="InsertPrivateActualTask" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="taskId" Type="int" Mode="In" />

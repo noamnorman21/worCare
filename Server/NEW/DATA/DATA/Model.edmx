@@ -188,6 +188,7 @@
           <Property Name="workerId" Type="int" Nullable="false" />
           <Property Name="userId" Type="int" Nullable="false" />
           <Property Name="listId" Type="int" Nullable="false" />
+          <Property Name="timesInDayArray" Type="varchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="tblPaycheck">
           <Key>
@@ -737,6 +738,7 @@
           <Parameter Name="userId" Type="int" Mode="In" />
           <Parameter Name="listId" Type="int" Mode="In" />
           <Parameter Name="frequency" Type="varchar" Mode="In" />
+          <Parameter Name="timesInDayArray" Type="varchar" Mode="In" />
         </Function>
         <Function Name="InsertPrivateActualTask" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="taskId" Type="int" Mode="In" />
@@ -1216,6 +1218,7 @@
           <NavigationProperty Name="tblForeignUser" Relationship="Self.FK__tblPatien__worke__73A521EA" FromRole="tblPatientTask" ToRole="tblForeignUser" />
           <NavigationProperty Name="tblPatient" Relationship="Self.FK__tblPatien__patie__72B0FDB1" FromRole="tblPatientTask" ToRole="tblPatient" />
           <NavigationProperty Name="tblUser" Relationship="Self.FK__tblPatien__userI__74994623" FromRole="tblPatientTask" ToRole="tblUser" />
+          <Property Name="timesInDayArray" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="tblPaycheck">
           <Key>
@@ -1893,6 +1896,7 @@
             <Parameter Name="userId" Mode="In" Type="Int32" />
             <Parameter Name="listId" Mode="In" Type="Int32" />
             <Parameter Name="frequency" Mode="In" Type="String" />
+            <Parameter Name="timesInDayArray" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="InsertPrivateActualTask">
             <Parameter Name="taskId" Mode="In" Type="Int32" />
@@ -2227,6 +2231,7 @@
           <EntitySetMapping Name="tblPatientTask">
             <EntityTypeMapping TypeName="igroup194_prodModel.tblPatientTask">
               <MappingFragment StoreEntitySet="tblPatientTask">
+                <ScalarProperty Name="timesInDayArray" ColumnName="timesInDayArray" />
                 <ScalarProperty Name="taskId" ColumnName="taskId" />
                 <ScalarProperty Name="taskName" ColumnName="taskName" />
                 <ScalarProperty Name="taskFromDate" ColumnName="taskFromDate" />

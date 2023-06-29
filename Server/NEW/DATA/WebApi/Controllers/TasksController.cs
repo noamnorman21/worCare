@@ -190,6 +190,7 @@ namespace WebApi.Controllers
                         actualTask.frequency = item.frequency;
                         actualTask.listId = item.listId;
                         actualTask.actualId = item2.actualId;
+                        actualTask.timesInDayArray = item.timesInDayArray;
                         actualTasks.Add(actualTask);
                     }
                 }
@@ -242,7 +243,6 @@ namespace WebApi.Controllers
                         drugForPatientDTO.fromDate = drugForArr.First().fromDate;
                         drugForPatientDTO.toDate = drugForArr.First().toDate;
                         drugForPatientDTO.lastTakenDate = drugForArr.First().lastTakenDate;
-
                         var drugName = from t in db.tblDrug
                                        where t.drugId == drugForPatientDTO.drugId
                                        select t;
@@ -325,7 +325,7 @@ namespace WebApi.Controllers
                         drugFor.minQuantity = list.qtyInBox * 0.2;//defult will be 20% 
                         drugFor.patientId = list.patientId;
                         drugFor.listId = actualListId;
-                        drugFor.timesInDayArray = timesInDayArray; //will not send to the db just a temp field
+                        drugFor.timesInDayArray = timesInDayArray; // will not send to the db just a temp field
                         db.InsertDrugForPatient(actualListId, drugFor.fromDate, drugFor.toDate, drugFor.dosage, drugFor.qtyInBox, drugFor.minQuantity, drugFor.drugId, drugFor.patientId);
                         db.SaveChanges();
                         PatientTaskDTO task = new PatientTaskDTO();
@@ -339,7 +339,7 @@ namespace WebApi.Controllers
                         task.userId = list.userId;
                         task.listId = actualListId;
                         task.timesInDayArr = timesInDayArray;
-                        db.InsertPatientTask(task.taskName, task.taskFromDate, task.taskToDate, task.taskComment, task.patientId, task.workerId, task.userId, actualListId, task.frequency);
+                        db.InsertPatientTask(task.taskName, task.taskFromDate, task.taskToDate, task.taskComment, task.patientId, task.workerId, task.userId, actualListId, task.frequency, timesInDayArray.ToString());
                         db.SaveChanges();
                         int taskId = db.tblPatientTask.Max(x => x.taskId);
                         //we use here partial class to add the actual tasks to the db
@@ -375,7 +375,7 @@ namespace WebApi.Controllers
                     task.userId = list.userId;
                     task.listId = actualListId;
                     task.timesInDayArr = timesInDayArray;
-                    db.InsertPatientTask(task.taskName, task.taskFromDate, task.taskToDate, task.taskComment, task.patientId, task.workerId, task.userId, actualListId, task.frequency);
+                    db.InsertPatientTask(task.taskName, task.taskFromDate, task.taskToDate, task.taskComment, task.patientId, task.workerId, task.userId, actualListId, task.frequency, timesInDayArray.ToString());
                     int taskId = db.tblPatientTask.Max(x => x.taskId);
                     db.SaveChanges();
                     //we use here partial class to add the actual tasks to the db
@@ -412,7 +412,7 @@ namespace WebApi.Controllers
                         task.userId = list.userId;
                         task.listId = actualListId;
                         task.timesInDayArr = timesInDayArray;
-                        int resInsertPatientTask = db.InsertPatientTask(task.taskName, task.taskFromDate, task.taskToDate, task.taskComment, task.patientId, task.workerId, task.userId, actualListId, task.frequency);
+                        int resInsertPatientTask = db.InsertPatientTask(task.taskName, task.taskFromDate, task.taskToDate, task.taskComment, task.patientId, task.workerId, task.userId, actualListId, task.frequency, timesInDayArray.ToString());
                         db.SaveChanges();
                         int taskId = db.tblPatientTask.Max(x => x.taskId);
                         //we use here partial class to add the actual tasks to the db
@@ -513,14 +513,14 @@ namespace WebApi.Controllers
                         {
                             tblDrugForPatient.qtyInBox -= tblDrugForPatient.dosage;
                             if (tblDrugForPatient.minQuantity >= tblDrugForPatient.qtyInBox)
-                            {                                
+                            {
                                 string userToken = db.tblUser.Where(x => x.userId == actualTask.userId).Select(x => x.pushToken).FirstOrDefault();
                                 string foreignToken = db.tblUser.Where(x => x.userId == actualTask.workerId).Select(x => x.pushToken).FirstOrDefault();
                                 if (userToken != null && foreignToken != null)
-                                {                                    
+                                {
                                     string title = "Drug is Running Low";
                                     string body = actualTask.drug.drugNameEn + " - Running low!";
-                                    SendPushNotification(foreignToken, userToken, title,body);
+                                    SendPushNotification(foreignToken, userToken, title, body);
                                 }
                             }
                         }
@@ -537,7 +537,7 @@ namespace WebApi.Controllers
         }
         // Send Push async function
         private static HttpClient client = new HttpClient();
-        public async void SendPushNotification(string foreignToken, string userToken , string title, string body)
+        public async void SendPushNotification(string foreignToken, string userToken, string title, string body)
         {
             var objectToSendUser = new
             {
