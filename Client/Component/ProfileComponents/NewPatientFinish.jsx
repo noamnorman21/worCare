@@ -20,7 +20,7 @@ export default function NewPatientFinish({ navigation, route }) {
     const [message, setMessage] = useState('');
     const [link, setLink] = useState('');
     const [fromShare, setFromShare] = useState(false);
-    const { registerForPushNotificationsAsync } = useUserContext();
+    const { registerForPushNotificationsAsync, userContext } = useUserContext();
     const [expoPushToken, setExpoPushToken] = useState('');
     useEffect(() => {
         registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
@@ -48,7 +48,7 @@ export default function NewPatientFinish({ navigation, route }) {
                 Alert.alert('Invitation sent', 'We will notify you when your friend will join', [
                     {
                         text: "OK",
-                        onPress: () => { setModalVisible(false), createNewUserInDB() },
+                        onPress: () => { setModalVisible(false), createNewPatient() },
                         style: "cancel"
                     },
                 ]);
@@ -102,66 +102,67 @@ export default function NewPatientFinish({ navigation, route }) {
     }
 
     // InsertUser
-    const createNewUserInDB = () => {
-        let user = route.params.tblUser
-        user.pushToken = expoPushToken;
+    // const createNewUserInDB = () => {
+    //     let user = route.params.tblUser
+    //     user.pushToken = expoPushToken;
 
-        fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/InsertUser', { //send the user data to the DB
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json; charset=UTF-8',
-            },
-            body: JSON.stringify(user),
-        })
-            .then((response) => response.json())
-            .then((json) => {
-                createUserWithEmailAndPassword(auth, route.params.tblUser.Email, route.params.tblUser.Password)
-                    .then(() => {
-                        signInWithEmailAndPassword(auth, route.params.tblUser.Email, route.params.tblUser.Password).then((userCredential) => {
-                            updateProfile(auth.currentUser, {
-                                displayName: route.params.tblUser.FirstName + ' ' + route.params.tblUser.LastName,
-                                photoURL: route.params.tblUser.userUri
-                            }).then(async () => {
-                                console.log("user updated");
-                                let userToUpdate = {
-                                    id: auth.currentUser.email,
-                                    name: auth.currentUser.displayName, //the name of the user is the first name and the last name
-                                    avatar: auth.currentUser.photoURL
-                                }
-                                await addDoc(collection(db, "AllUsers"), { id: userToUpdate.id, name: userToUpdate.name, avatar: userToUpdate.avatar, userType:"User" }).then(() => {
-                                    console.log("user added to all users");
-                                }).catch((error) => {
-                                });
-                            }).then(() => {
-                                signOut(auth).then(() => {
-                                    console.log("user signed out");
-                                }).catch((error) => {
-                                });
-                            })
-                                .catch((error) => {
-                                    console.log(error);
-                                });
-                            console.log("user created");
-                        }).catch((error) => {
-                            console.log(error);
-                        });
-                    })
-                    .catch((error) => {
-                        console.error(error);
-                    }
-                    );
-                //save the id of the new user that we got from the DB 
-                tblPatient.userId = json; //save the id of the new user that we got from the DB
-                createNewPatient() //create the foreign user in the DB
-            })
-            .catch((error) => {
-                console.error(error);
-            }
-            );
-    }
+    //     fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/InsertUser', { //send the user data to the DB
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json; charset=UTF-8',
+    //         },
+    //         body: JSON.stringify(user),
+    //     })
+    //         .then((response) => response.json())
+    //         .then((json) => {
+    //             createUserWithEmailAndPassword(auth, route.params.tblUser.Email, route.params.tblUser.Password)
+    //                 .then(() => {
+    //                     signInWithEmailAndPassword(auth, route.params.tblUser.Email, route.params.tblUser.Password).then((userCredential) => {
+    //                         updateProfile(auth.currentUser, {
+    //                             displayName: route.params.tblUser.FirstName + ' ' + route.params.tblUser.LastName,
+    //                             photoURL: route.params.tblUser.userUri
+    //                         }).then(async () => {
+    //                             console.log("user updated");
+    //                             let userToUpdate = {
+    //                                 id: auth.currentUser.email,
+    //                                 name: auth.currentUser.displayName, //the name of the user is the first name and the last name
+    //                                 avatar: auth.currentUser.photoURL
+    //                             }
+    //                             await addDoc(collection(db, "AllUsers"), { id: userToUpdate.id, name: userToUpdate.name, avatar: userToUpdate.avatar, userType:"User" }).then(() => {
+    //                                 console.log("user added to all users");
+    //                             }).catch((error) => {
+    //                             });
+    //                         }).then(() => {
+    //                             signOut(auth).then(() => {
+    //                                 console.log("user signed out");
+    //                             }).catch((error) => {
+    //                             });
+    //                         })
+    //                             .catch((error) => {
+    //                                 console.log(error);
+    //                             });
+    //                         console.log("user created");
+    //                     }).catch((error) => {
+    //                         console.log(error);
+    //                     });
+    //                 })
+    //                 .catch((error) => {
+    //                     console.error(error);
+    //                 }
+    //                 );
+    //             //save the id of the new user that we got from the DB 
+    //             tblPatient.userId = json; //save the id of the new user that we got from the DB
+    //             createNewPatient() //create the foreign user in the DB
+    //         })
+    //         .catch((error) => {
+    //             console.error(error);
+    //         }
+    //         );
+    // }
 
     // InsertPatient
     const createNewPatient = () => {
+        tblPatient.userId = userContext.userId;
         fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/InsertPatient', { //send the patient data to the DB
             method: 'POST',
             headers: {
@@ -241,7 +242,7 @@ export default function NewPatientFinish({ navigation, route }) {
                 <View style={styles.btnContainer}>
                     <TouchableOpacity
                         style={styles.button}
-                        onPress={createNewUserInDB}
+                        onPress={createNewPatient}
                     >
                         <Text style={styles.buttonText}>Sign Up</Text>
                     </TouchableOpacity>
