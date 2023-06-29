@@ -158,7 +158,6 @@ export default function EditMed(props) {
         showMode('date');
     };
 
-
     return (
         <SafeAreaView style={{ flex: 1, flexDirection: 'row' }}>
             {/* Edit Med */}
@@ -171,7 +170,7 @@ export default function EditMed(props) {
                     <View style={styles.editMedContainer}>
                         {/* toDate */}
                         <View style={[styles.doubleRow, modalTimesVisible && { display: 'none' }]}>
-                            <Text style={{ fontFamily: 'Urbanist-Regular', fontSize: 16 }}>To Date:</Text>
+                            <Text style={{ fontFamily: 'Urbanist-Regular', fontSize: 16 }}>To Date: </Text>
                             {PlatformType !== 'ios' ?
                                 <TouchableOpacity style={styles.datePicker} onPress={showDatepicker}></TouchableOpacity>
                                 :

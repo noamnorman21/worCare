@@ -339,7 +339,8 @@ namespace WebApi.Controllers
                         task.userId = list.userId;
                         task.listId = actualListId;
                         task.timesInDayArr = timesInDayArray;
-                        db.InsertPatientTask(task.taskName, task.taskFromDate, task.taskToDate, task.taskComment, task.patientId, task.workerId, task.userId, actualListId, task.frequency, timesInDayArray.ToString());
+                        string timesInDayString = string.Join(",", timesInDayArray.Select(ts => ts.ToString()));
+                        db.InsertPatientTask(task.taskName, task.taskFromDate, task.taskToDate, task.taskComment, task.patientId, task.workerId, task.userId, actualListId, task.frequency, timesInDayString);
                         db.SaveChanges();
                         int taskId = db.tblPatientTask.Max(x => x.taskId);
                         //we use here partial class to add the actual tasks to the db
@@ -375,7 +376,8 @@ namespace WebApi.Controllers
                     task.userId = list.userId;
                     task.listId = actualListId;
                     task.timesInDayArr = timesInDayArray;
-                    db.InsertPatientTask(task.taskName, task.taskFromDate, task.taskToDate, task.taskComment, task.patientId, task.workerId, task.userId, actualListId, task.frequency, timesInDayArray.ToString());
+                    string timesInDayString = string.Join(",", timesInDayArray.Select(ts => ts.ToString()));
+                    db.InsertPatientTask(task.taskName, task.taskFromDate, task.taskToDate, task.taskComment, task.patientId, task.workerId, task.userId, actualListId, task.frequency, timesInDayString);
                     int taskId = db.tblPatientTask.Max(x => x.taskId);
                     db.SaveChanges();
                     //we use here partial class to add the actual tasks to the db

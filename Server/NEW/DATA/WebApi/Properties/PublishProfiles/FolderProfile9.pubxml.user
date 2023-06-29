@@ -5,7 +5,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
 <Project>
   <PropertyGroup>
     <_PublishTargetUrl>C:\Users\noam1\OneDrive\Desktop\worCarePublish</_PublishTargetUrl>
-    <History>True|2023-06-29T15:30:24.5973195Z;</History>
+    <History>True|2023-06-29T17:15:22.6611808Z;True|2023-06-29T18:30:24.5973195+03:00;</History>
     <LastFailureDetails />
   </PropertyGroup>
   <ItemGroup>
@@ -82,13 +82,13 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>10/11/2022 15:51:26</publishTime>
     </File>
     <File Include="bin/DATA.dll">
-      <publishTime>06/29/2023 18:30:21</publishTime>
+      <publishTime>06/29/2023 20:04:16</publishTime>
     </File>
     <File Include="bin/DATA.dll.config">
       <publishTime>06/08/2023 17:54:50</publishTime>
     </File>
     <File Include="bin/DATA.pdb">
-      <publishTime>06/29/2023 18:30:21</publishTime>
+      <publishTime>06/29/2023 20:04:16</publishTime>
     </File>
     <File Include="bin/EntityFramework.dll">
       <publishTime>04/10/2023 13:45:58</publishTime>
@@ -367,10 +367,10 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>04/10/2023 13:45:59</publishTime>
     </File>
     <File Include="bin/WebApi.dll">
-      <publishTime>06/29/2023 18:30:22</publishTime>
+      <publishTime>06/29/2023 20:12:11</publishTime>
     </File>
     <File Include="bin/WebApi.pdb">
-      <publishTime>06/29/2023 18:30:22</publishTime>
+      <publishTime>06/29/2023 20:12:11</publishTime>
     </File>
     <File Include="bin/WebGrease.dll">
       <publishTime>04/10/2023 13:46:02</publishTime>
@@ -553,7 +553,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>04/10/2023 13:45:55</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>06/29/2023 18:30:23</publishTime>
+      <publishTime>06/29/2023 20:15:21</publishTime>
     </File>
   </ItemGroup>
 </Project>
