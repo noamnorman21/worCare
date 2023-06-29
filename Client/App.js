@@ -10,7 +10,7 @@ import * as Notifications from 'expo-notifications';
 // Ignore specific warning logs
 LogBox.ignoreLogs(["AsyncStorage has been extracted from react-native core and will be removed in a future release."]);
 LogBox.ignoreLogs(['Sending `onAnimatedValueUpdate` with no listeners registered.']);
-
+LogBox.ignoreLogs(['Warning: componentWillReceiveProps has been renamed, and is not recommended for use. See https://reactjs.org/link/unsafe-component-lifecycles for details.']);
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,

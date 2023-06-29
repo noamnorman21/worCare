@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
   },
   //chat user profile
   avatar: {
-    height: 150, width: 150, borderRadius: 75
+    height: 75, width: 75, borderRadius: 75
   },
   button: {
     backgroundColor: '#fff',

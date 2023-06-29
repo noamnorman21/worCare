@@ -83,7 +83,6 @@ function MainRoom({ navigation }) {
       ))
 
       return () => {
-        console.log("unsubscribing")
         getNames();
         getUsers();
         setNewMessages(0);
@@ -108,7 +107,6 @@ function MainRoom({ navigation }) {
       userChats.map((name) => {
         x += name.unreadCount;
       })
-      console.log("new messages: ", x)
       setNewMessages(x);
       renderNames();
     }
@@ -118,8 +116,9 @@ function MainRoom({ navigation }) {
   }, [userChats]);
 
   useEffect(() => {
+    const filteredUsers = users.filter(user => user.userType === userContext.userType && user.name.toLowerCase().includes(searchQuery.toLowerCase()));
     const renderUsers = () => {
-      const res = users.map((user) => {
+      const res = filteredUsers.map((user) => {
         return (user.userType == userContext.userType &&
           <View key={user.id} >
             <TouchableOpacity style={styles.userCard} onPress={() => addNewPrivateChat(user)}>
@@ -185,14 +184,6 @@ function MainRoom({ navigation }) {
     }
   }
 
-  const filteredUsers = users.filter(user => user.userType === userContext.userType && user.name.toLowerCase().includes(searchQuery.toLowerCase()));
-
-  const res = filteredUsers.map(user => (
-    <View key={user.id}>
-      {/* User card code */}
-    </View>
-  ));
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.top}>
@@ -218,10 +209,12 @@ function MainRoom({ navigation }) {
           </View>
           <View style={styles.searchBarContainer}>
             <Searchbar
-              placeholder="Search"
+              placeholder="Search..."
               value={searchQuery}
               onChangeText={setSearchQuery}
               style={styles.searchBar}
+              placeholderTextColor={"#808080"}
+            // placeholderStyle={{ fontSize: 14, fontFamily: 'Urbanist-Medium' }}
             />
           </View>
           <ScrollView alwaysBounceVertical={false} style={styles.userScrollView}>
@@ -323,6 +316,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     marginRight: 10,
     backgroundColor: '#EEEEEE',
+    fontFamily: 'Urbanist-Medium',
   },
   closeButton: {
     justifyContent: 'center',

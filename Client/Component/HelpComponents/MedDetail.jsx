@@ -172,7 +172,7 @@ export default function MedDetail({ navigation, route }) {
          frequency: task.frequency,
       }
 
-      
+
 
       UpdateDrugForPatientDTO(newDrugForPatient)
       toggleOverlayEdit()
@@ -380,15 +380,16 @@ export default function MedDetail({ navigation, route }) {
          </Overlay>
 
          {/* Edit Med */}
-         <Modal visible={visibleEditMed} onRequestClose={toggleOverlayEditMed} style={{ width: 300, height: 300, borderRadius: 20 }} animationType="slide">
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+         <Modal presentationStyle='pageSheet' visible={visibleEditMed} onRequestClose={toggleOverlayEditMed} animationType="slide">
+            <View style={{ flex: 1 }}>
                <View style={{ flex: 0.7, justifyContent: 'center', alignItems: 'center' }}>
-                  <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 20, marginVertical: 10, textAlign: 'center' }}>Edit {task.drug.drugNameEn}</Text>
+                  <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 20, marginVertical: 5, textAlign: 'center' }}>Edit Medication:</Text>
+                  <Text style={{ fontFamily: 'Urbanist-SemiBold', fontSize: 18, marginVertical: 5, textAlign: 'center' }}>{task.drug.drugNameEn}</Text>
                </View>
                <View>
-                  
+
                </View>
-               <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: SCREEN_WIDTH * 0.70, marginVertical: 10 }}>
+               <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: SCREEN_WIDTH * 0.975, marginVertical: 10 }}>
                   <TouchableOpacity style={styles.cancelBtn} onPress={toggleOverlayEditMed}>
                      <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 16, color: '#fff' }}>Cancel</Text>
                   </TouchableOpacity>
@@ -433,7 +434,7 @@ const styles = StyleSheet.create({
    },
    okBtn: {
       backgroundColor: '#fff',
-      width: SCREEN_WIDTH * 0.325,
+      width: SCREEN_WIDTH * 0.425,
       height: 45,
       borderRadius: 16,
       justifyContent: 'center',
@@ -443,7 +444,7 @@ const styles = StyleSheet.create({
    },
    cancelBtn: {
       backgroundColor: '#7DA9FF',
-      width: SCREEN_WIDTH * 0.325,
+      width: SCREEN_WIDTH * 0.425,
       height: 45,
       borderRadius: 16,
       justifyContent: 'center',
