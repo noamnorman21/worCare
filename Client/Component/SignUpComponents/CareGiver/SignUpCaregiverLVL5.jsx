@@ -80,7 +80,7 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
                   name: auth.currentUser.displayName, //the name of the user is the first name and the last name
                   avatar: auth.currentUser.photoURL
                 }
-                await addDoc(collection(db, "AllUsers"), { id: userToUpdate.id, name: userToUpdate.name, avatar: userToUpdate.avatar }).then(async () => {
+                await addDoc(collection(db, "AllUsers"), { id: userToUpdate.id, name: userToUpdate.name, avatar: userToUpdate.avatar, userType:"Caregiver" }).then(async () => {
                   const q = query(collection(db, "GroupMembers"), where("Name", "==", newForeignUserData.CountryName_En));
                   const querySnapshot = await getDocs(q);
                   // check if the group already exists, if not add it to the db

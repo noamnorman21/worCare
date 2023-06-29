@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, Dimensions, Image, Alert, Modal, TouchableOpaci
 import { auth, db } from '../../config/firebase';
 import { collection, addDoc, getDocs, getDoc, query, orderBy, onSnapshot, updateDoc, where, limit, doc, increment } from 'firebase/firestore';
 import { useUserContext } from '../../UserContext';
-import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
+import { AntDesign, Ionicons } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
 import { TextInput } from 'react-native-paper';
 
@@ -11,6 +11,28 @@ const ScreenHeight = Dimensions.get('window').height;
 
 
 export default function ChatProfile({ route, navigation }) {
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerTitle: route.params.user.name,
+      headerTitleAlign: 'center',
+      headerTitleStyle: {
+        fontSize: 20,
+        fontFamily:'Urbanist-Bold',
+      },
+      headerStyle: {
+        shadowColor: '#fff',
+        elevation: 0,
+      },
+      headerTintColor: '#000',
+      headerBackTitleVisible: false,
+      headerLeft: () => (
+        <TouchableOpacity style={{ marginLeft: 10 }} onPress={() => navigation.goBack()}>
+          <Ionicons name="chevron-back" size={28} color="#58" />
+        </TouchableOpacity>
+      ),
+    });
+  }, []);
 
   const addNewPrivateChat = async (user) => {
     // check if convo already exists in firestore 
@@ -24,34 +46,86 @@ export default function ChatProfile({ route, navigation }) {
       checkifConvoExistsforContact(user)
       console.log("convo exists")
       if(querySnapshot.docs.length > 0){
-        navigation.navigate('ChatRoom', { name: auth.currentUser.displayName + "+" + user.name, UserName: user.name, userEmail: user.id })
+        navigation.popToTop()
+        navigation.navigate('ChatRoom', { name: auth.currentUser.displayName + "+" + user.name, UserName: user.name, userEmail: user.id , unreadCount: querySnapshot.docs[0].data().unreadCount, type: "private" })
         }
-        else{
-          navigation.navigate('ChatRoom', { name: user.name + "+" + auth.currentUser.displayName, UserName: user.name, userEmail: user.id })
-        }
+      else {
+        navigation.popToTop()
+        navigation.navigate('ChatRoom', { name: user.name + "+" + auth.currentUser.displayName, UserName: user.name, userEmail: user.id,unreadCount: querySnapshot2.docs[0].data().unreadCount, type: "private" })
+      }
     } else {
       console.log("add new private chat")
       let contact = user
       console.log("Userrrrr", contact)
       addDoc(collection(db, auth.currentUser.email), { Name: auth.currentUser.displayName + "+" + contact.name, UserName: contact.name, userEmail: contact._id, image: contact.avatar, unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date() });
       checkifConvoExistsforContact(user)
-      navigation.navigate('ChatRoom', { name: auth.currentUser.displayName + "+" + contact.name, UserName: contact.name, userEmail: contact.id })
+      navigation.popToTop()
+      navigation.navigate('ChatRoom', { name: auth.currentUser.displayName + "+" + contact.name, UserName: contact.name, userEmail: contact.id, unreadCount: 0, type: "private" })
     }
   }
 
   const checkifConvoExistsforContact = async (contact) => {
-    console.log(contact)
-    const q1 = query(collection(db, contact._id), where("Name", "==", auth.currentUser.displayName + "+" + contact.name));
-    const q2 = query(collection(db, contact._id), where("Name", "==", contact.name + "+" + auth.currentUser.displayName));
+    console.log("contact",contact)
+    const q1 = query(collection(db, auth.currentUser.email), where("Name", "==", auth.currentUser.displayName + "+" + contact.name));
+    const q2 = query(collection(db, auth.currentUser.email), where("Name", "==", contact.name + "+" + auth.currentUser.displayName));
     const query1 = await getDocs(q1);
     const query2 = await getDocs(q2);
     if (query1.docs.length > 0 || query2.docs.length > 0) {
       console.log("convo existsssssss")
     } else {
       console.log("add new private chat")
-      addDoc(collection(db, contact.id), { Name: auth.currentUser.displayName + "+" + contact.name, UserName: auth.currentUser.displayName, image: auth.currentUser.photoURL, userEmail: auth.currentUser.email, unread: true, unreadCount: 0, lastMessage: "", lastMessageTime: new Date() });
+      console.log("Userrrrr", contact)
+      addDoc(collection(db, contact._id), { Name: auth.currentUser.displayName + "+" + contact.name, UserName: auth.currentUser.displayName, image: auth.currentUser.photoURL, userEmail: auth.currentUser.email, unread: true, unreadCount: 0, lastMessage: "", lastMessageTime: new Date() });
     }
-  }  
+  } 
+  
+  // const addNewPrivateChat = async (user) => {
+  //   // check if convo already exists in firestore 
+  //   // if yes, navigate to chat room
+  //   // if no, add new convo to firestore and navigate to chat room
+  //   const q1 = query(collection(db, auth.currentUser.email), where("Name", "==", auth.currentUser.displayName + "+" + user.name));
+  //   const q2 = query(collection(db, auth.currentUser.email), where("Name", "==", user.name + "+" + auth.currentUser.displayName));
+  //   const querySnapshot = await getDocs(q1);
+  //   const querySnapshot2 = await getDocs(q2);
+  //   if (querySnapshot.docs.length > 0 || querySnapshot2.docs.length > 0) {
+  //     checkifConvoExistsforContact(user)
+  //     console.log("convo exists")
+  //     if (querySnapshot.docs.length > 0) {
+  //       console.log(querySnapshot.docs[0].data())
+  //       navigation.navigate('ChatRoom', { name: auth.currentUser.displayName + "+" + user.name, UserName: user.name, userEmail: user.id, unreadCount: querySnapshot.docs[0].data().unreadCount, type: "private" })
+  //     }
+  //     else {
+  //       console.log(querySnapshot2.docs[0].data())
+  //       navigation.navigate('ChatRoom', { name: user.name + "+" + auth.currentUser.displayName, UserName: user.name, userEmail: user.id, unreadCount: querySnapshot2.docs[0].data().unreadCount, type: "private" })
+  //     }
+  //     setAddNewModal(false)
+  //     // const editRef= collection(db, auth.currentUser.email, where("Name", "==", auth.currentUser.displayName+"+"+user.name));
+  //     // const doc= await getDocs(editRef);
+  //     // await updateDoc(editRef, { unread: false, unreadCount: 0 });
+  //   } else {
+  //     console.log("add new private chat")
+  //     let contact = user
+  //     console.log("Userrrrr", contact)
+  //     addDoc(collection(db, auth.currentUser.email), { Name: auth.currentUser.displayName + "+" + contact.name, UserName: contact.name, userEmail: contact.id, image: contact.avatar, unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date(), type: "private" });
+  //     checkifConvoExistsforContact(user)
+  //     setAddNewModal(false)
+  //     navigation.navigate('ChatRoom', { name: auth.currentUser.displayName + "+" + contact.name, UserName: contact.name, userEmail: contact.id, unreadCount: 0, type: "private" })
+  //   }
+  // }
+
+  // const checkifConvoExistsforContact = async (contact) => {
+  //   console.log(contact)
+  //   const q1 = query(collection(db, contact.id), where("Name", "==", auth.currentUser.displayName + "+" + contact.name));
+  //   const q2 = query(collection(db, contact.id), where("Name", "==", contact.name + "+" + auth.currentUser.displayName));
+  //   const query1 = await getDocs(q1);
+  //   const query2 = await getDocs(q2);
+  //   if (query1.docs.length > 0 || query2.docs.length > 0) {
+  //     console.log("convo exists for contact")
+  //   } else {
+  //     console.log("add new private chat")
+  //     addDoc(collection(db, contact.id), { Name: auth.currentUser.displayName + "+" + contact.name, UserName: auth.currentUser.displayName, image: auth.currentUser.photoURL, userEmail: auth.currentUser.email, unread: true, unreadCount: 0, lastMessage: "", lastMessageTime: new Date(), type: "private" });
+  //   }
+  // }
 
   
 
@@ -59,7 +133,7 @@ export default function ChatProfile({ route, navigation }) {
     <View style={styles.container}>
       <View style={styles.profile}>
       <View style={styles.header}>
-      <Text style={styles.headterTxt}>{route.params.user.name}</Text>
+      {/* <Text style={styles.headterTxt}>{route.params.user.name}</Text> */}
       </View>
       <View style={styles.imageView}>
         <Image style={styles.avatar} source={{ uri: route.params.user.avatar }} />

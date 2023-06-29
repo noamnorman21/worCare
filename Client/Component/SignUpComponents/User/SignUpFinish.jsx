@@ -128,7 +128,7 @@ export default function SignUpFinish({ navigation, route }) {
                                     name: auth.currentUser.displayName, //the name of the user is the first name and the last name
                                     avatar: auth.currentUser.photoURL
                                 }
-                                await addDoc(collection(db, "AllUsers"), { id: userToUpdate.id, name: userToUpdate.name, avatar: userToUpdate.avatar }).then(() => {
+                                await addDoc(collection(db, "AllUsers"), { id: userToUpdate.id, name: userToUpdate.name, avatar: userToUpdate.avatar, userType:"User" }).then(() => {
                                     console.log("user added to all users");
                                 }).catch((error) => {
                                 });

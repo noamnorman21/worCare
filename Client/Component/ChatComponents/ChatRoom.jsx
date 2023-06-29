@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect, useLayoutEffect } from 'react';
 import { View, Text, StyleSheet, Dimensions, Image, Alert, Modal, TouchableOpacity, ScrollView, Platform, SafeAreaView } from 'react-native'
-import { GiftedChat, Bubble, Actions, InputToolbar, Time, MessageImage, LoadEarlier } from 'react-native-gifted-chat';
+import { GiftedChat, Bubble, Actions, InputToolbar, Time, MessageImage, LoadEarlier, Composer } from 'react-native-gifted-chat';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import { collection, query, where, getDocs, addDoc, updateDoc, orderBy, onSnapshot } from "firebase/firestore";
@@ -24,7 +24,7 @@ export default function ChatRoom({ route, navigation }) {
   const [GroupMembers, setGroupMembers] = useState(); //for group chat
   const [recording, setRecording] = useState(null); // for audio recording
   const { newMessages, setNewMessages } = useUserContext();
-
+// get messages from firebase
   useLayoutEffect(() => {
     const tempMessages = query(collection(db, route.params.name), orderBy('createdAt', 'desc'));
     const unsubscribe = onSnapshot(tempMessages, (snapshot) => {
@@ -38,6 +38,7 @@ export default function ChatRoom({ route, navigation }) {
         }))
       )
     });
+    // get group members if group chat
     if (route.params.type === "group") {
       console.log("group chat")
       const groupusers = query(collection(db, "GroupMembers"), where("Name", "==", route.params.name));
@@ -45,9 +46,14 @@ export default function ChatRoom({ route, navigation }) {
         setGroupMembers(querySnapshot.docs.map(doc => doc.data().userEmail))
       });
     }
-    // navigation.setOptions({
-    //   headerTitle: route.params.UserName ? route.params.UserName : route.params.name,
-    // })
+    navigation.setOptions({
+      headerTitle: route.params.UserName ? route.params.UserName : route.params.name,
+      headerLeft: () => (
+        <TouchableOpacity style={{ marginLeft: 10 }} onPress={() => navigation.goBack()}>
+          <Ionicons name="chevron-back" size={28} color="#58" />
+        </TouchableOpacity>
+      ),
+    })
 
     return () => { console.log("unsub"); unsubscribe() };
 
@@ -72,16 +78,7 @@ export default function ChatRoom({ route, navigation }) {
     }, [])
   );
 
-  useEffect(() => {
-    navigation.setOptions({
-      headerTitle: route.params.UserName ? route.params.UserName : route.params.name,
-      headerLeft: () => (
-        <TouchableOpacity style={{ marginLeft: 10 }} onPress={() => navigation.goBack()}>
-          <Ionicons name="chevron-back" size={28} color="#58" />
-        </TouchableOpacity>
-      ),
-    })
-  }, [navigation]);
+
 
   const openCamera = async () => {
     // Ask the user for the permission to access the camera
@@ -240,7 +237,6 @@ export default function ChatRoom({ route, navigation }) {
     console.log("new message added to db")
     setPicPreviewModal(false);
     //update last message and last message time in db
-    console.log("route.params.name", route.params.name)
     const docRef = query(collection(db, auth.currentUser.email), where("Name", "==", route.params.name));
     const res = getDocs(docRef);
     res.then((querySnapshot) => {
@@ -287,11 +283,12 @@ export default function ChatRoom({ route, navigation }) {
     }
   }
 
+  // send text message to firebase
   const onSend = useCallback((messages = [], GroupMembers) => {
     const { _id, createdAt, text, user } = messages[0]
+    console.log("message text is", text)
     addDoc(collection(db, route.params.name), { _id, createdAt, text, user });
     const docRef = query(collection(db, auth.currentUser.email), where("Name", "==", route.params.name));
-    console.log("route.params.name", route.params.name)
     const res = getDocs(docRef);
     res.then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
@@ -412,54 +409,81 @@ export default function ChatRoom({ route, navigation }) {
           }
         }
         }
-        renderActions={(props) => {
-          return (<>
-            <Actions {...props}
-              containerStyle={{
-                width: 34,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-              icon={() => (
-                <Ionicons name="camera" size={28} color="#548DFF" />
-              )}
-              options={{
-                'Take Photo': () => {
-                  openCamera();
-                },
-                'Choose From Gallery': () => {
-                  pickImage();
-                },
-                Cancel: () => { },
-              }}
-              optionTintColor="#222B45"
-            />
-            {/* <Actions {...props}
-              containerStyle={{
-                width: 34,
-                height: 44,
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginLeft: 4,
-                marginRight: 4,
-                marginBottom: 0,
-              }}
-              icon={() => (
-                <FontAwesome name="microphone" size={28} color="#548DFF" />
-              )}
-              onPressActionButton={() => { console.log("audio") }}
-            /> */}
-
-          </>
-          )
-        }
-        }
+   
+       
         renderInputToolbar={(props) => {
           return (
             <InputToolbar {...props}
               containerStyle={{
+                height:46,
               }}
               primaryStyle={{ alignItems: 'center', justifyContent: 'center' }}  //for the text input
+              renderActions={(props) => {
+                return (
+                <>
+                  <Actions {...props}
+                    containerStyle={{
+                      width: 30,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                    icon={() => (
+                      <Ionicons name="camera" size={30} color="#548DFF" />
+                    )}
+                    options={{
+                      'Take Photo': () => {
+                        openCamera();
+                      },
+                      'Choose From Gallery': () => {
+                        pickImage();
+                      },
+                      Cancel: () => { },
+                    }}
+                    optionTintColor="#222B45"
+                  />
+                  {/* <Actions {...props}
+                    containerStyle={{
+                      width: 34,
+                      height: 44,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginLeft: 4,
+                      marginRight: 4,
+                      marginBottom: 0,
+                    }}
+                    icon={() => (
+                      <FontAwesome name="microphone" size={28} color="#548DFF" />
+                    )}
+                    onPressActionButton={() => { console.log("audio") }}
+                  /> */}
+      
+                </>
+                )
+              }
+              }
+              renderComposer={(props) => {
+                return (
+                  <Composer {...props}
+                    textInputStyle={{
+                      fontFamily: "Urbanist-Regular",
+                      fontSize: 16,
+                      color: "#000",
+                      paddingTop: 10,
+                      paddingBottom: 10,
+                    }}
+                    multiline={false}
+                    placeholder="Type a message..."
+                    placeholderTextColor="#808080"
+                    // onInputSizeChanged={(size) => {
+                    //   console.log(size)
+                    // }}
+
+                  />
+                
+
+                )
+              }
+              }
             />
           )
         }
@@ -473,9 +497,9 @@ export default function ChatRoom({ route, navigation }) {
               imageProps={{ resizeMode: 'contain' }}
               lightboxProps={{
                 underlayColor: 'transparent',
-                backgroundColor: '#fff',
-                swipeToDismiss: true,
-                springConfig: { tension: 30, friction: 7 },
+                backgroundColor: '#000',
+                swipeToDismiss: false,
+                springConfig: { tension: 100000, friction: 100000 },
                 renderHeader: (close) => (
                   <View style={styles.lightboxHeader}>
                     <TouchableOpacity onPress={close}>
@@ -489,9 +513,16 @@ export default function ChatRoom({ route, navigation }) {
                       source={{ uri: props.currentMessage.image }}
                       style={{ width: ScreenWidth * 0.95, height: ScreenHeight * 0.85, resizeMode: 'contain', }}
                     />
-                    <Text style={{ color: 'red' }} >{props.currentMessage.text}</Text>
+                    {props.currentMessage.text &&
+                      <View style={styles.txtBox}>
+                        <Text style={styles.lightboxTxt} >{props.currentMessage.text}</Text>
+                      </View>
+                    }
                   </View>
                 ),
+                modalProps:{
+                  animationType: 'slide',
+                }
               }}
             />
           );
@@ -552,6 +583,8 @@ const styles = StyleSheet.create({
     // resizeMode: 'contain'
   },
   inputAndSend: {
+    position: 'absolute',
+    bottom: 0,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -601,4 +634,24 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     zIndex: 1
   },
+  lightboxTxt: {
+    color: '#fff',
+    fontFamily: 'Urbanist-Regular',
+    fontSize: 16,
+    textAlign: 'center',
+   
+  },
+  txtBox: {
+    width: ScreenWidth * 0.95,
+    position: 'absolute',
+    bottom: 0,
+    backgroundColor: '#080808',
+    borderRadius: 10,
+    borderTopEndRadius: 0,
+    borderTopStartRadius: 0,
+    padding: 10,
+    opacity: 0.8,
+    height: 54,
+  }
+
 })

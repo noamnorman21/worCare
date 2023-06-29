@@ -76,6 +76,7 @@ function MainRoom({ navigation }) {
           id: doc.data().id,
           name: doc.data().name,
           avatar: doc.data().avatar,
+          userType: doc.data().userType,
         }))
       ))
 
@@ -116,7 +117,8 @@ function MainRoom({ navigation }) {
 
   useEffect(() => {
     const renderUsers = () => {
-      const res = users.map((user) => (
+      const res = users.map((user) =>{
+        return( user.userType==userContext.userType && 
         <View key={user.id} >
           <TouchableOpacity style={styles.userCard} onPress={() => addNewPrivateChat(user)}>
             <Image source={{ uri: user.avatar }} style={{ width: 65, height: 65, borderRadius: 54 }} />
@@ -126,7 +128,8 @@ function MainRoom({ navigation }) {
             <View style={styles.line} />
           </View>
         </View>
-      )
+        )
+      }
       )
       setUsersToDisplay(res)
     }
@@ -198,7 +201,7 @@ function MainRoom({ navigation }) {
           <ScrollView style={styles.userScrollview}>
             {usersToDisplay}
           </ScrollView>
-          <TouchableOpacity style={styles.modalButton} onPress={() => { setAddNewModal(false); console.log("pressed close") }}>
+          <TouchableOpacity style={styles.modalButton} onPress={() => { setAddNewModal(false)}}>
             <Text style={styles.modalButtonText}>Cancel</Text>
           </TouchableOpacity>
         </View>
@@ -212,12 +215,12 @@ const ConvoCard = (props) => {
   const [lastMessageTime, setLastMessageTime] = useState('')
   const [lastMessageText, setLastMessageText] = useState('')
   const [lastMessageDate, setLastMessageDate] = useState('')
-  const today = moment().format('MMM DD YYYY')
-  const yasterday = moment().subtract(1, 'days').format('MMM DD YYYY')
+  const today = moment().format('MMM DD ,YYYY')
+  const yasterday = moment().subtract(1, 'days').format('MMM DD ,YYYY')
 
   useEffect(() => {
     const temp = props.name.lastMessageTime.toString().split(' ')
-    let date = new moment(props.name.lastMessageTime).format('MMM DD YYYY')
+    let date = new moment(props.name.lastMessageTime).format('MMM DD ,YYYY')
     const time = temp[4].split(':').slice(0, 2).join(':')
     setLastMessageTime(time)
     setLastMessageDate(date)
@@ -258,7 +261,7 @@ const ConvoCard = (props) => {
             </View>
             <View style={styles.conMiddle}>
               <Text style={styles.conName}>{props.name.UserName ? props.name.UserName : props.name.Name}</Text>
-              <Text style={styles.conLastMessage}>{lastMessageText}</Text>
+              <Text style={styles.conLastMessage}>{lastMessageText.length>=20? lastMessageText.substring(0,18)+"...":lastMessageText}</Text>
             </View>
             <View style={styles.conRight}>
               {props.name.unreadCount > 0 && <View style={styles.unread}>
