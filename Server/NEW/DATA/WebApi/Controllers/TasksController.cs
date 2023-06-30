@@ -172,7 +172,7 @@ namespace WebApi.Controllers
                     var task = from t in db.tblActualTask
                                where t.taskId == item.taskId &&
                                t.taskDate >= DateTime.Today &&
-                               t.taskDate <= SqlFunctions.DateAdd("d", 7, DateTime.Now) &&
+                               t.taskDate <= SqlFunctions.DateAdd("d", 3, DateTime.Now) &&
                                t.taskStatus == "P"
                                select t;
 

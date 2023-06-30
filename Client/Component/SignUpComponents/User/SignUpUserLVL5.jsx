@@ -35,6 +35,7 @@ export default function SignUpUserLVL5({ navigation, route }) {
 
   const IsPatientIdUniqueFunc = () => { //check if the patient id is unique in the db
     let IsPatientExistUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/IsPatientExist';
+    console.log("patientID=", patientID);
     let patientDTO = {
       patientId: patientID
     }

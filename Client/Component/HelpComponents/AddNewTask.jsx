@@ -687,13 +687,6 @@ function NewTaskModal(props) {
       clearInputs();
    }
 
-   let pushToken;
-   if (userType == "User") {
-      pushToken = userData.pushToken2;
-   }
-   else {
-      pushToken = userData.pushToken;
-   }
 
    const addTask = () => {
       //if it caregiver than check if the task is private or public
@@ -716,6 +709,15 @@ function NewTaskModal(props) {
       if (taskTime != '' && taskTimeArr.length == 0) {
          taskTimeArr.push(taskTime);
       }
+
+      let pushToken;
+      if (userType == "User") {
+         pushToken = userData.pushToken2;
+      }
+      else {
+         pushToken = userData.pushToken;
+      }
+   
 
       let newTaskForDb = {
          taskName: taskName,
@@ -765,11 +767,19 @@ function NewTaskModal(props) {
       if (taskTime != '' && taskTimeArr.length == 0) {
          taskTimeArr.push(taskTime);
       }
+      let pushToken;
+      if (userType == "User") {
+         pushToken = userData.pushToken2;
+      }
+      else {
+         pushToken = userData.pushToken;
+      }
+   
       let newTaskForDb = {
          taskName: taskName,
          timesInDayArr: taskTimeArr,
          fromDate: taskFromDate,
-         toDate: taskToDate,
+         toDate: taskFromDate, //because it's once task so the date is the same
          patientId: userData.patientId,
          workerId: userData.workerId,
          userId: userData.involvedInId,
@@ -778,6 +788,7 @@ function NewTaskModal(props) {
          pushToken: pushToken,
       }
       console.log(newTaskForDb);
+  
       let addTaskUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/InsertActualList';
       fetch(addTaskUrl, {
          method: 'POST',
