@@ -157,7 +157,7 @@ export function UserProvider({ children }) {
         fetchUserContacts(usertoSync);
         GetUserPending(usertoSync);
         GetUserHistory(usertoSync);
-        getPaychecks(usertoSync);
+        // getPaychecks(usertoSync);
         await getAllPrivateTasks(usertoSync);
         await getAllPublicTasks(usertoSync);
         await getHolidaysForUser(usertoSync.calendarCode);
@@ -406,7 +406,7 @@ export function UserProvider({ children }) {
         getAllPrivateTasks(userContext);
         GetUserPending(userContext);
         GetUserHistory(userContext);
-        getPaychecks(userContext);        
+        // getPaychecks(userContext);        
         }
     }, [patientId]);
 
@@ -518,16 +518,19 @@ export function UserProvider({ children }) {
                 user = {
                     userId: userContext.userId,
                     userType: userContext.userType,
-                    patientId: userContext.patientId
+                    patientId: userContext.patientId,
+                    workerId: userContext.workerId
                 }
             }
             else {
                 user = {
                     userId: userData.userId,
                     userType: userData.userType,
-                    patientId: userData.patientId
+                    patientId: userData.patientId,
+                    workerId: userData.workerId
                 }
             }            
+            console.log(user,)
             fetch(getPending, {
                 method: 'POST',
                 headers: {
@@ -565,14 +568,16 @@ export function UserProvider({ children }) {
                 user = {
                     userId: userContext.userId,
                     userType: userContext.userType,
-                    patientId: userContext.patientId
+                    patientId: userContext.patientId,
+                    workerId: userContext.workerId
                 }
             }
             else {
                 user = {
                     userId: userData.userId,
                     userType: userData.userType,
-                    patientId: userData.patientId
+                    patientId: userData.patientId,
+                    workerId: userData.workerId
                 }
             }
             fetch(getHistory, {
@@ -603,40 +608,40 @@ export function UserProvider({ children }) {
         }
     }
 
-    async function getPaychecks(userData) {
-        console.log("getPaychecks")
-        let user;
-        if (userData === undefined) {
+    // async function getPaychecks(userData) {
+    //     console.log("getPaychecks")
+    //     let user;
+    //     if (userData === undefined) {
 
-            user = {
-                userId: userContext.userId,
-                userType: userContext.userType,
-                patientId: userContext.patientId
-            }
-        }
-        else {
-            user = {
-                userId: userData.userId,
-                userType: userData.userType,
-                patientId: userData.patientId
-            }
-        }
-        try {
-          const response = await fetch(getPaychecksUrl, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(user)
-          });
-          const data = await response.json();
-          if (data != null) {
-            setUserPaychecks(data);
-          }          
-        } catch (error) {
-          console.log(error)
-        }
-      }
+    //         user = {
+    //             userId: userContext.userId,
+    //             userType: userContext.userType,
+    //             patientId: userContext.patientId
+    //         }
+    //     }
+    //     else {
+    //         user = {
+    //             userId: userData.userId,
+    //             userType: userData.userType,
+    //             patientId: userData.patientId
+    //         }
+    //     }
+    //     try {
+    //       const response = await fetch(getPaychecksUrl, {
+    //         method: 'POST',
+    //         headers: {
+    //           'Content-Type': 'application/json',
+    //         },
+    //         body: JSON.stringify(user)
+    //       });
+    //       const data = await response.json();
+    //       if (data != null) {
+    //         setUserPaychecks(data);
+    //       }          
+    //     } catch (error) {
+    //       console.log(error)
+    //     }
+    //   }
 
     function updatePendings(pendings) {
         setUserPendingPayments(pendings);
@@ -865,13 +870,21 @@ export function UserProvider({ children }) {
 
 
     function UpdatePatientId(patientId) {
+        if (userContext.userType != "Caregiver") {
+            //need to set new involved in id            
+            return;
+        }
+        else {
+            //need to set new worker Id
+        }
+
         setPatientId(patientId);
         setUserContext({ ...userContext, patientId: patientId });
     }
 
     const value = {
         userContext, allShopTasks, allMedicineTasks, userContacts, userNotifications, userPendingPayments,
-        userHistoryPayments, userChats, setUserChats, logInFireBase, GetUserHistory, GetUserPending, getPaychecks,
+        userHistoryPayments, userChats, setUserChats, logInFireBase, GetUserHistory, GetUserPending, 
         deleteContact, addNewContact, saveContact, updateActualTask, updateRememberUserContext, logInContext,
         fetchUserContacts, logOutContext, updateUserContext, updateUserContacts, updatePendings,
         updateUserProfile, updateuserNotifications, appEmail, getAllPrivateTasks, getAllPublicTasks,

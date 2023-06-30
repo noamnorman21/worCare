@@ -32,7 +32,10 @@ export default function Paychecks() {
     const user = {
       userId: userContext.userId,
       userType: userContext.userType,
+      workerId: userContext.workerId,
+      involvedInId: userContext.involvedInId
     }
+    console.log(user)
 
     try {
       const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/PayChecks/GetPaychecks/', {

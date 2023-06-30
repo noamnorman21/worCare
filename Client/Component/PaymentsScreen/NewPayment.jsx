@@ -27,15 +27,9 @@ export default function NewPayment(props) {
     requestProofDocument: '',
     requestComment: '',
     requestStatus: 'P',
-    userId: null // will be changed to current user id,
+    userId: userContext.userId // will be changed to current user id,
   })
 
-  useEffect(() => {
-    AsyncStorage.getItem('userData').then((value) => {
-      const data = JSON.parse(value);
-      setPayment({ ...payment, userId: userContext.userId });
-    })
-  }, []);
 
   const openCamera = async () => {
     // Ask the user for the permission to access the camera
