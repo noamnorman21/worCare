@@ -17,59 +17,80 @@ export default function NewPatientLvl1({ navigation, route }) {
     const [patientLastName, setPatientLastName] = useState('');
     const [platfr, setPlatfr] = useState(Platform.OS);
     const [showPickerAndroid, setShowPickerAndroid] = useState(false);
-    const {userContext}=useUserContext();
+    const { userContext } = useUserContext();
+
+    const [IsPatientIdUnique, setIsPatientIdUnique] = useState(true);
     let urlforLanguages = 'https://proj.ruppin.ac.il/cgroup94/test1/api/LanguageCountry/GetAllLanguages';
 
 
     //for date picker android
     const showDatepicker = () => {
-        // showMode('date');
-        console.log('show date picker');
         setShowPickerAndroid(!showPickerAndroid);
     };
 
     useEffect(() => {
-
-   
-            fetch(urlforLanguages, {
-                method: 'GET',
-                headers: {
-                  'Content-Type': 'application/json; charset=UTF-8',
-                },
-              })
-                .then(res => {
-                  if (res.ok) {
+        fetch(urlforLanguages, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json; charset=UTF-8',
+            },
+        })
+            .then(res => {
+                if (res.ok) {
                     return res.json()
-                  }
-                  else {
+                }
+                else {
                     console.log("not found")
-                  }
-                })
-                .then(data => {
-                  if (data != null) {
+                }
+            })
+            .then(data => {
+                if (data != null) {
                     for (let i = 0; i < data.length; i++) {
-                      language.push({
-                        label: data[i].LanguageName_Origin,
-                        value: data[i].LanguageName_En,
-                      })
+                        language.push({
+                            label: data[i].LanguageName_Origin,
+                            value: data[i].LanguageName_En,
+                        })
                     }
-                  }
-                })
-                .catch((error) => {
-                  console.log("err=", error);
-                });
-        
+                }
+            })
+            .catch((error) => {
+                console.log("err=", error);
+            });
+
     }, [])
 
     const onChangeDate = (selectedDate) => {
-        console.log('date changed');
         const birthDate = new Date(selectedDate.nativeEvent.timestamp).toISOString().substring(0, 10);
-        console.log(birthDate, "birthDate");
-        console.log(date, "date");
         if (birthDate !== '1980-01-01') { setDate(birthDate); }
         setShowPickerAndroid(!showPickerAndroid);
     };
 
+    const IsPatientIdUniqueFunc = () => { //check if the patient id is unique in the db
+        let IsPatientExistUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/IsPatientExist';
+        console.log("patientID=", patientID);
+        let patientDTO = {
+            patientId: patientID
+        }
+        fetch(IsPatientExistUrl, {
+            method: 'POST',
+            body: JSON.stringify(patientDTO),
+            headers: new Headers({
+                'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
+            })
+        })
+            .then(res => {
+                if (res.ok) {
+                    IsPatientIdUnique(true);
+                    return res.json()
+                }
+                else {
+                    setIsPatientIdUnique(false);
+                }
+            })
+            .catch((error) => {
+                console.log("err in IsPatientIdUnique=", error);
+            });
+    }
 
 
     const handleInputAndContinue = () => {
@@ -77,10 +98,15 @@ export default function NewPatientLvl1({ navigation, route }) {
             Alert.alert('Please fill all the fields')
             return
         }
+        if (!IsPatientIdUnique) {
+            Alert.alert('Patient ID already exist')
+            return
+        }
         if (patientID.length !== 9) {
             Alert.alert('Patient ID must be 9 digits')
             return
         }
+
         // after all the checks, we can navigate to the next screen and pass the data 
         // after all ready uncomment the following lines and delete the lines below it
         const patientData = {
@@ -90,9 +116,6 @@ export default function NewPatientLvl1({ navigation, route }) {
             DateOfBirth: date,
             LanguageName_En: valueLanguage
         }
-        console.log(patientData);
-        console.log(userContext);
-        navigation.navigate('NewPatientLvl2', { patientData: patientData, tblUser: userContext })
     }
 
     return (
@@ -129,6 +152,7 @@ export default function NewPatientLvl1({ navigation, route }) {
                     keyboardType="numeric"
                     value={patientID}
                     onChangeText={(patientID) => setPatientID(patientID)}
+                    onBlur={() => IsPatientIdUniqueFunc()}
                 />
                 {/* Date Picker for birth-date */}
                 {platfr !== 'ios' ? <TouchableOpacity style={styles.datePicker} onPress={showDatepicker}>
