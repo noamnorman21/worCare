@@ -55,6 +55,7 @@ namespace WebApi.Controllers
         }
 
 
+       
         [HttpPost]
         [Route("GetAllPatients")]
         public IHttpActionResult GetAllPatients([FromBody] UserDTO user)
@@ -68,11 +69,46 @@ namespace WebApi.Controllers
                         patientId = x.patientId,
                         FirstName = x.FirstName,
                         LastName = x.LastName,
-                        userId= x.userId,
+                        userId = x.userId,
                         workerId = db.tblCaresForPatient.Where(y => y.patientId == x.patientId).Select(y => y.workerId).FirstOrDefault()
                     }).ToList();
                     if (patients != null)
                     {
+                        foreach (PatientDTO patientDTO in patients)
+                        {
+                            var hobbies = from h in db.tblHobbies
+                                          where h.patientId == patientDTO.patientId
+                                          select h;
+                            var limitations = from l in db.tblLimitations
+                                              where l.patientId == patientDTO.patientId
+                                              select l;
+                            patientDTO.hobbiesAndLimitationsDTO = new List<HobbiesAndLimitationsDTO>();
+                            HobbiesAndLimitationsDTO hlDTO = new HobbiesAndLimitationsDTO();
+                            foreach (var item in hobbies)
+                            {
+                                hlDTO.food = item.food;
+                                hlDTO.music = item.music;
+                                hlDTO.movie = item.movie;
+                                hlDTO.books = item.books;
+                                hlDTO.drink = item.drink;
+                                hlDTO.radioChannel = item.radioChannel;
+                                hlDTO.TVShow = item.TVShow;
+                                hlDTO.specialHabits = item.specialHabits;
+                                hlDTO.afternoonNap = item.afternoonNap;
+                                hlDTO.nightSleep = item.nightSleep;
+                                hlDTO.otherH = item.other;
+                            }
+                            foreach (var item in limitations)
+                            {
+                                hlDTO.allergies = item.allergies;
+                                hlDTO.sensitivities = item.sensitivities;
+                                hlDTO.physicalAbilities = item.physicalAbilities;
+                                hlDTO.bathRoutine = item.bathRoutine;
+                                hlDTO.sensitivityToNoise = item.sensitivityToNoise;
+                                hlDTO.otherL = item.other;
+                            }
+                            patientDTO.hobbiesAndLimitationsDTO.Add(hlDTO);
+                        }
                         return Ok(patients);
                     }
                     else
@@ -84,15 +120,50 @@ namespace WebApi.Controllers
                     List<dynamic> patientList = new List<dynamic>();
                     foreach (var item in patientIds)
                     {
-                        var temp = db.tblPatient.Where(x => x.patientId == item).Select(x => new PatientDTO
+                        var patientDTO = db.tblPatient.Where(x => x.patientId == item).Select(x => new PatientDTO
                         {
                             patientId = x.patientId,
                             FirstName = x.FirstName,
                             LastName = x.LastName,
-                            workerId = db.tblCaresForPatient.Where(y => y.patientId == x.patientId).Select(y => y.workerId).FirstOrDefault(),
-                            userId= x.userId
+                            workerId = user.userId,
+                            userId = x.userId, 
+                            DateOfBirth=x.DateOfBirth,
+                            LanguageName_En = x.LanguageName_En,
+                            
                         }).FirstOrDefault();
-                        patientList.Add(temp);
+                        var hobbies = from h in db.tblHobbies
+                                      where h.patientId == patientDTO.patientId
+                                      select h;
+                        var limitations = from l in db.tblLimitations
+                                          where l.patientId == patientDTO.patientId
+                                          select l;
+                        patientDTO.hobbiesAndLimitationsDTO = new List<HobbiesAndLimitationsDTO>();
+                        HobbiesAndLimitationsDTO hlDTO = new HobbiesAndLimitationsDTO();
+                        foreach (var item1 in hobbies)
+                        {
+                            hlDTO.food = item1.food;
+                            hlDTO.music = item1.music;
+                            hlDTO.movie = item1.movie;
+                            hlDTO.books = item1.books;
+                            hlDTO.drink = item1.drink;
+                            hlDTO.radioChannel = item1.radioChannel;
+                            hlDTO.TVShow = item1.TVShow;
+                            hlDTO.specialHabits = item1.specialHabits;
+                            hlDTO.afternoonNap = item1.afternoonNap;
+                            hlDTO.nightSleep = item1.nightSleep;
+                            hlDTO.otherH = item1.other;
+                        }
+                        foreach (var item2 in limitations)
+                        {
+                            hlDTO.allergies = item2.allergies;
+                            hlDTO.sensitivities = item2.sensitivities;
+                            hlDTO.physicalAbilities = item2.physicalAbilities;
+                            hlDTO.bathRoutine = item2.bathRoutine;
+                            hlDTO.sensitivityToNoise = item2.sensitivityToNoise;
+                            hlDTO.otherL = item2.other;
+                        }
+                        patientDTO.hobbiesAndLimitationsDTO.Add(hlDTO);
+                        patientList.Add(patientDTO);
                     }
                     return Ok(patientList);
                 }

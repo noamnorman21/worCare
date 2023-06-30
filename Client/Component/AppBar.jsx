@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, TouchableOpacity, Image, Dimensions, StyleSheet, Modal, Text, Alert, Linking } from 'react-native';
 import { Octicons, Ionicons, AntDesign, Feather } from '@expo/vector-icons';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -32,9 +32,12 @@ const SCREEN_WIDTH = Dimensions.get('screen').width;
 
 function CustomHeader() {
     const [isModalVisible, setIsModalVisible] = useState(false);
-    const { userContext, appEmail, logOutFireBase,UpdatePatientId } = useUserContext();
+    //upadtes
+    const { userContext, appEmail, logOutFireBase, UpdatePatient, patientList } = useUserContext();
     const { userUri, FirstName } = userContext;
-    const [dialogVisable, setDialogVisable] = useState(false);
+    const [newUserDialogVisable, setNewUserDialogVisable] = useState(false);
+    const [switchPatientDialogVisable, setSwitchPatientDialogVisable] = useState(false);
+    const [patientArr, setPatientArr] = useState([])
     const navigation = useNavigation();
 
     const navigateToSignUp = () => {
@@ -51,6 +54,55 @@ function CustomHeader() {
 
     if (!userContext) {
         return null;
+    }
+
+    //updates 
+    useEffect(() => {
+        if (patientList.length > 0) {
+            let arr = patientList.map(element => {
+                return (
+                    <Button key={element.patientId} labelStyle={styles.dialogTxt} onPress={() => {
+                        setSwitchPatientDialogVisable(false)
+                        console.log(`patient: ${element.patientId}`)
+                        switchPatient(element)
+                        // navigation.navigate('NewPatientLvl1')
+                    }}>{element.FirstName} {element.LastName}</Button>
+                )
+            });
+            setPatientArr(arr)
+        }
+    }, [patientList])
+
+    function switchPatient(patient){
+        let usertoSync = {
+            userId: userContext.userId,
+            userType: userContext.userType,
+            FirstName: userContext.FirstName,
+            LastName: userContext.LastName,
+            Email: userContext.Email,
+            phoneNum: userContext.phoneNum,
+            userUri: userContext.userUri,
+            gender: userContext.gender,
+            workerId: userContext.workerId,//if user is a caregiver, this field will be same as userId
+            involvedInId: userContext.involvedInId,//if user is a not caregiver, this field will be same as userId
+            patientId: patient.patientId,
+            calendarCode: userContext.calendarCode,
+            CountryName_En: userContext.CountryName_En,
+            patientHL: userContext.patientHL,
+            patientData: userContext.patientData,
+            pushToken: userContext.pushToken,
+            pushToken2: userContext.pushTokenSecoundSide,
+        }
+        usertoSync.patientId=patient.patientId;
+        if (usertoSync.userType == "User") {
+            usertoSync.workerId= patient.workerId;
+        }
+        else{
+            usertoSync.involvedInId= patient.involvedInId;
+        }
+        usertoSync.patientData= patient;
+        usertoSync.patientHL= patient.hobbiesAndLimitationsDTO;
+        UpdatePatient(usertoSync)
     }
 
     return (
@@ -85,12 +137,13 @@ function CustomHeader() {
                                                 style={styles.switchUser}
                                                 onPress={() => {
                                                     console.log('Switch User pressed')
-                                                    UpdatePatientId(123456789)
                                                     toggleModal()
+                                                    setSwitchPatientDialogVisable(true)
+                                                    
                                                 }}>
                                                 <AntDesign name="retweet" size={20} color="#216Bff" />
                                                 <Text style={styles.switchTxt}>
-                                                    Switch Patient 
+                                                    Switch Patient
                                                 </Text>
                                             </TouchableOpacity>
                                         </View>
@@ -154,7 +207,7 @@ function CustomHeader() {
                                         <TouchableOpacity onPress={
                                             () => {
                                                 userContext.userType === 'User' ?
-                                                    setDialogVisable(true) :
+                                                    setNewUserDialogVisable(true) :
                                                     navigateToSignUp()
                                                 toggleModal()
                                             }
@@ -256,23 +309,34 @@ function CustomHeader() {
                     options={{ unmountOnBlur: true, headerShown: false }}
                 />
             </Stack.Navigator>
-            <Dialog visible={dialogVisable} onDismiss={() => setDialogVisable(false)}
-                style={{ backgroundColor: '#87AFFF', fontFamily:'Urbanist-Regular' }}>
-                <Dialog.Title style={{ fontFamily:'Urbanist-SemiBold' }}>Choose User Type</Dialog.Title>
+            <Dialog visible={newUserDialogVisable} onDismiss={() => setNewUserDialogVisable(false)}
+                style={styles.dialogStyle}>
+                <Dialog.Title style={styles.dialogTitle}>Choose User Type</Dialog.Title>
                 <Dialog.Content>
-                    <Paragraph style={{ fontFamily: 'Urbanist-Medium' }}>Do you want to create an new User or New Patient Profile?</Paragraph>
+                    <Paragraph style={{ fontFamily: 'Urbanist-Medium', fontSize:18 }}>Do you want to create an new User or New Patient Profile?</Paragraph>
                 </Dialog.Content>
                 <Dialog.Actions>
-                    <Button labelStyle={{ color: "#000", fontFamily: 'Urbanist-Regular' }} onPress={() => {
-                        setDialogVisable(false)
+                    <Button labelStyle={styles.dialogTxt} onPress={() => {
+                        setNewUserDialogVisable(false)
                         navigateToSignUp()
                     }}>New User</Button>
-                    <Button labelStyle={{ color: "#000", fontFamily: 'Urbanist-Regular' }} onPress={() => {
-                        setDialogVisable(false)
+                    <Button labelStyle={styles.dialogTxt} onPress={() => {
+                        setNewUserDialogVisable(false)
                         console.log('new patient')
                         navigation.navigate('NewPatientLvl1')
                     }}>New Patient</Button>
                 </Dialog.Actions>
+            </Dialog>
+            <Dialog visible={switchPatientDialogVisable} onDismiss={() => setSwitchPatientDialogVisable(false)}
+              style={styles.dialogStyle}>
+                <Dialog.Title style={styles.dialogTitle}>Switch Patient</Dialog.Title>
+                <Dialog.Content>
+                    <Paragraph style={styles.dialpgParagraph}>Do you want to switch to another patient?</Paragraph>
+                </Dialog.Content>
+                <Dialog.Actions>                    
+                  {patientArr}
+                </Dialog.Actions>
+
             </Dialog>
         </>
     );
@@ -424,6 +488,23 @@ const styles = StyleSheet.create({
         fontSize: 16,
         marginHorizontal: 10,
         color: '#216Bff',
+    },
+    dialogStyle: {
+        backgroundColor: '#87AFFF',
+    },
+    dialogTxt: {
+        fontFamily: 'Urbanist-SemiBold',
+        color: '#000',
+    },
+    dialogTitle: {
+        fontFamily: 'Urbanist-SemiBold',
+        color: '#000',
+        fontSize: 24,
+    },
+    dialpgParagraph:{
+        color:"#000",
+        fontFamily:"Urbanist-Regular",
+        fontSize:16
     },
 });
 

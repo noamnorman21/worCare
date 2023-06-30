@@ -16,6 +16,8 @@ import * as Notifications from 'expo-notifications';
 let updateProfileUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Settings/UpdateUserProfile'
 let getPairedProfile = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUser/'
 let getPatientData = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/GetPatientData';
+let GetAllPatients= 'https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/GetAllPatients'
+
 // Log In
 let userForLoginUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUserForLogin';
 
@@ -101,6 +103,8 @@ export function UserProvider({ children }) {
     const [patientData, setPatientData] = useState(null)
     const [patientHL, setPatientHL] = useState(null)
     const [patientId, setPatientId] = useState(null)
+    const [patientList, setPatientList] = useState(null)
+
 
 
     //new for chat logo
@@ -157,6 +161,7 @@ export function UserProvider({ children }) {
         fetchUserContacts(usertoSync);
         GetUserPending(usertoSync);
         GetUserHistory(usertoSync);
+        fetchPatientList(usertoSync);
         // getPaychecks(usertoSync);
         await getAllPrivateTasks(usertoSync);
         await getAllPublicTasks(usertoSync);
@@ -869,18 +874,87 @@ export function UserProvider({ children }) {
     }
 
 
-    function UpdatePatientId(patientId) {
-        if (userContext.userType != "Caregiver") {
-            //need to set new involved in id            
-            return;
+    // ---------------- patient ----------------
+    function UpdatePatient(userData) {     
+        console.log("UpdatePatient","as",userContext.patientId) 
+        // console.log("UpdatePatient","as",userContext)
+        console.log("user",userData.patientId)        
+        setPatientId(userData.patientId);
+        setUserContext(userData);
+    }
+
+    async function fetchPatientData(userData) {
+        let patient;
+        if (userData != null) {
+            patient = {
+                patientId: userData.patientId
+            }
         }
         else {
-            //need to set new worker Id
+            patient = {
+                patientId: patientId
+            }
         }
-
-        setPatientId(patientId);
-        setUserContext({ ...userContext, patientId: patientId });
+        try {
+            const response = await fetch(getPatientData, {
+                method: 'POST',
+                headers: new Headers({ 'Content-Type': 'application/json; charset=UTF-8', }),
+                body: JSON.stringify(patient),
+            });
+            const result = await response.json();
+            console.log("fetchPatientData",result)
+            return result;
+        } catch (error) {
+            console.log('err post=', error);
+        }
     }
+
+    useEffect(() => {
+        if(patientId!=null && userContext!=null){
+        console.log("Patient id is ",patientId)
+        console.log(userContext.patientId)
+        fetchUserContacts(userContext);
+        getAllPublicTasks(userContext);
+        getAllPrivateTasks(userContext);
+        GetUserPending(userContext);
+        GetUserHistory(userContext);
+        // getPaychecks(userContext);        
+        }
+    }, [patientId]);
+
+
+        // new for patient switch
+        function fetchPatientList(userData) {
+            let user;
+            if (userData != null) {
+                user = {
+                    userId: userData.userId,
+                    userType: userData.userType
+                }
+            }
+            else {
+                user = {
+                    userId: userContext.userId,
+                    userType: userContext.userType
+                }
+            }
+            console.log("fetchPatientList",user)
+            fetch(GetAllPatients, {
+                method: 'POST',
+                headers: new Headers({ 'Content-Type': 'application/json; charset=UTF-8', }),
+                body: JSON.stringify(user),
+            })
+                .then(res => { return res.json() })
+                .then(
+                    (result) => {
+                        setPatientList(result);
+                    }
+                )
+                .catch((error) => {
+                    console.log('Error=', error);
+                }
+                );
+        }
 
     const value = {
         userContext, allShopTasks, allMedicineTasks, userContacts, userNotifications, userPendingPayments,
@@ -889,7 +963,8 @@ export function UserProvider({ children }) {
         fetchUserContacts, logOutContext, updateUserContext, updateUserContacts, updatePendings,
         updateUserProfile, updateuserNotifications, appEmail, getAllPrivateTasks, getAllPublicTasks,
         allPublicTasks, allPrivateTasks, UpdateDrugForPatientDTO, holidays, GetAllDrugs, allDrugs, addPrivateTaskContext,
-        newMessages, setNewMessages, logOutFireBase, registerForPushNotificationsAsync, sendPushNotification,UpdatePatientId, userPaychecks
+        newMessages, setNewMessages, logOutFireBase, registerForPushNotificationsAsync, sendPushNotification,UpdatePatient, userPaychecks,
+        fetchPatientList,patientList
     };
 
     return (
