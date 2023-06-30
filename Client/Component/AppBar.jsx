@@ -90,7 +90,7 @@ function CustomHeader() {
                                                 }}>
                                                 <AntDesign name="retweet" size={20} color="#216Bff" />
                                                 <Text style={styles.switchTxt}>
-                                                    Switch User
+                                                    Switch Patient 
                                                 </Text>
                                             </TouchableOpacity>
                                         </View>
