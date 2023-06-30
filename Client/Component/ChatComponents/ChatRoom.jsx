@@ -24,7 +24,7 @@ export default function ChatRoom({ route, navigation }) {
   const [imageDescription, setImageDescription] = useState('')//to send image with description
   const [GroupMembers, setGroupMembers] = useState(); //for group chat
   const { newMessages, setNewMessages, sendPushNotification } = useUserContext();
-  const [userToken2, setUserToken2] = useState('ExponentPushToken[el9IekIBCP0V4xgt5_bXc5]'); //for push notification- temporary- will start as ''
+  const [userToken2, setUserToken2] = useState(''); //for push notification- temporary- will start as ''
 
   const [recording, setRecording] = useState(null); // for audio recording
   const [audioPermission, setAudioPermission] = useState(false); // for audio recording
@@ -65,15 +65,18 @@ export default function ChatRoom({ route, navigation }) {
     return () => { console.log("unsub"); unsubscribe() };
   }, [navigation]);
 
+  useEffect(() => {
+    console.log("userToken2", userToken2)
+  }, [userToken2])
+
   //delete return when pubished
   const getUserToken = async () => {
     console.log("getUserToken")
     let user = {
       Email: route.params.userEmail
     }
-    return console.log("route.params.userEmail", user)
-
-    fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Settings/UpdateUserProfile', {
+    console.log("user", user)
+    fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUserToken', {
       method: 'POST',
       headers: new Headers({
         'Content-Type': 'application/json; charset=UTF-8',
@@ -377,7 +380,6 @@ export default function ChatRoom({ route, navigation }) {
           console.log("updated for user")
         });
       });
-      console.log("pushtoken2", userToken2)
       if (userToken2 != '') {
         let PushNotificationsData =
         {
@@ -395,7 +397,7 @@ export default function ChatRoom({ route, navigation }) {
   }
 
   // send text message to firebase
-  const onSend = useCallback((messages = [], GroupMembers) => {
+  const onSend = useCallback((messages = [], GroupMembers, userToken2) => {
     const { _id, createdAt, text, user } = messages[0]
     addDoc(collection(db, route.params.name), { _id, createdAt, text, user });
     const docRef = query(collection(db, auth.currentUser.email), where("Name", "==", route.params.name));
@@ -445,9 +447,8 @@ export default function ChatRoom({ route, navigation }) {
           addDoc(collection(db, route.params.userEmail), { Name: auth.currentUser.displayName + "+" + route.params.UserName, UserName: auth.currentUser.displayName, image: auth.currentUser.photoURL, userEmail: auth.currentUser.email, unread: true, unreadCount: 1, lastMessage: text, lastMessageTime: createdAt });
         }
       });
-      let pushtoken2 = "ExponentPushToken[el9IekIBCP0V4xgt5_bXc5]"
-      console.log("pushtoken2", userToken2)
       if (userToken2 != '') {
+        console.log("pushtoken2", userToken2)
       let PushNotificationsData =
       {
         expoPushToken: userToken2,
@@ -490,7 +491,7 @@ export default function ChatRoom({ route, navigation }) {
               </Send>
             )
           }}
-          onSend={messages => onSend(messages, GroupMembers)}
+          onSend={messages => onSend(messages, GroupMembers, userToken2)}
           user={{
             _id: auth?.currentUser?.email,
             name: auth?.currentUser?.displayName,
@@ -797,6 +798,5 @@ const styles = StyleSheet.create({
     padding: 10,
     opacity: 0.8,
     height: 54,
-  }
-
+  },
 })
