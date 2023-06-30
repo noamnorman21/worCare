@@ -56,6 +56,55 @@ namespace WebApi.Controllers
 
 
         [HttpPost]
+        [Route("GetAllPatients")]
+        public IHttpActionResult GetAllPatients([FromBody] UserDTO user)
+        {
+            try
+            {
+                if (user.userType == "User")
+                {
+                    var patients = db.tblPatient.Where(x => x.userId == user.userId).Select(x => new PatientDTO
+                    {
+                        patientId = x.patientId,
+                        FirstName = x.FirstName,
+                        LastName = x.LastName,
+                        userId= x.userId,
+                        workerId = db.tblCaresForPatient.Where(y => y.patientId == x.patientId).Select(y => y.workerId).FirstOrDefault()
+                    }).ToList();
+                    if (patients != null)
+                    {
+                        return Ok(patients);
+                    }
+                    else
+                        return BadRequest("No Patients Found");
+                }
+                else
+                {
+                    var patientIds = db.tblCaresForPatient.Where(x => x.workerId == user.userId).Select(x => x.patientId).ToList();
+                    List<dynamic> patientList = new List<dynamic>();
+                    foreach (var item in patientIds)
+                    {
+                        var temp = db.tblPatient.Where(x => x.patientId == item).Select(x => new PatientDTO
+                        {
+                            patientId = x.patientId,
+                            FirstName = x.FirstName,
+                            LastName = x.LastName,
+                            workerId = db.tblCaresForPatient.Where(y => y.patientId == x.patientId).Select(y => y.workerId).FirstOrDefault(),
+                            userId= x.userId
+                        }).FirstOrDefault();
+                        patientList.Add(temp);
+                    }
+                    return Ok(patientList);
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        [HttpPost]
         [Route("GetPatientData")]
         public IHttpActionResult GetPatientData([FromBody] string patientId)
         {

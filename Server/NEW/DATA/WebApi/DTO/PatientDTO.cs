@@ -12,6 +12,8 @@ namespace WebApi.DTO
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public System.DateTime DateOfBirth { get; set; }
+
+        public int workerId { get; set; }
         public int userId { get; set; }
         public string LanguageName_En { get; set; }
         public virtual ICollection<tblCaresForPatient> tblCaresForPatient { get; set; }

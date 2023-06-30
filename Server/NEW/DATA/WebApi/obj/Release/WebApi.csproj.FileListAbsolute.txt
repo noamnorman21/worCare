@@ -622,4 +622,3 @@ C:\Users\oryan\Desktop\app dev\worCare\Server\NEW\DATA\WebApi\bin\Polly.xml
 C:\Users\oryan\Desktop\app dev\worCare\Server\NEW\DATA\WebApi\bin\Polly.Contrib.WaitAndRetry.pdb
 C:\Users\oryan\Desktop\app dev\worCare\Server\NEW\DATA\WebApi\bin\Polly.Contrib.WaitAndRetry.xml
 C:\Users\oryan\Desktop\app dev\worCare\Server\NEW\DATA\WebApi\bin\Polly.Extensions.Http.xml
-C:\Users\oryan\Desktop\app dev\worCare\Server\NEW\DATA\WebApi\obj\Release\WebApi.csproj.CopyComplete

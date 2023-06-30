@@ -27,14 +27,14 @@ namespace WebApi.Controllers
                     userId = user.userId;
                     string patientId = user.patientId;
                     //var Patients = db.tblPatient.Where(x => x.userId == user.userId).Select(y => y.patientId).FirstOrDefault();
-                    CareGiverId = db.tblCaresForPatient.Where(x => x.patientId == patientId).Select(y => y.workerId).FirstOrDefault();
+                    CareGiverId = user.workerId;
                 }
                 else
                 {
                     CareGiverId = user.userId;
                     string patientId = user.patientId;
                     //var Patients = db.tblCaresForPatient.Where(x => x.workerId == CareGiverId).Select(y => y.patientId).FirstOrDefault();
-                    userId = db.tblPatient.Where(x => x.patientId == patientId).Select(y => y.userId).FirstOrDefault();
+                    userId = user.involvedInId;
                 }
                 var payChecks = db.tblPaycheck.Where(x => x.UserId == userId || x.UserId == CareGiverId).Select(y => new PayCheckDTO
                 {
