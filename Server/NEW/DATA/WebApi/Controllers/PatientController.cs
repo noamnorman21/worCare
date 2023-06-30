@@ -29,6 +29,31 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        
+        [HttpPost]
+        [Route("IsPatientExist")]
+        public IHttpActionResult IsPatientExist([FromBody] PatientDTO patient)
+        {
+            try
+            {
+                var patientExist = db.tblPatient.Where(x => x.patientId == patient.patientId).FirstOrDefault();
+                if (patientExist == null)
+                {
+                    return Ok("patient not exist");
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+
+        }
+
 
         [HttpPost]
         [Route("GetPatientData")]

@@ -17,11 +17,10 @@ export default function SignUpUserLVL5({ navigation, route }) {
   const [patientLastName, setPatientLastName] = useState('');
   const [platfr, setPlatfr] = useState(Platform.OS);
   const [showPickerAndroid, setShowPickerAndroid] = useState(false);
+  const [IsPatientIdUnique, setIsPatientIdUnique] = useState(true);
 
   //for date picker android
   const showDatepicker = () => {
-    // showMode('date');
-    console.log('show date picker');
     setShowPickerAndroid(!showPickerAndroid);
   };
 
@@ -30,11 +29,35 @@ export default function SignUpUserLVL5({ navigation, route }) {
     const birthDate = new Date(selectedDate.nativeEvent.timestamp).toISOString().substring(0, 10);
     console.log(birthDate, "birthDate");
     console.log(date, "date");
-    if(birthDate!=='1980-01-01'){setDate(birthDate);}
+    if (birthDate !== '1980-01-01') { setDate(birthDate); }
     setShowPickerAndroid(!showPickerAndroid);
   };
 
-
+  const IsPatientIdUniqueFunc = () => { //check if the patient id is unique in the db
+    let IsPatientExistUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/IsPatientExist';
+    let patientDTO = {
+      patientId: patientID
+    }
+    fetch(IsPatientExistUrl, {
+      method: 'POST',
+      body: JSON.stringify(patientDTO),
+      headers: new Headers({
+        'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
+      })
+    })
+      .then(res => {
+        if (res.ok) {
+          IsPatientIdUnique(true);
+          return res.json()
+        }
+        else {
+          setIsPatientIdUnique(false);
+        }
+      })
+      .catch((error) => {
+        console.log("err in IsPatientIdUnique=", error);
+      });
+  }
 
   const handleInputAndContinue = () => {
     if (patientFirstName === '' || patientLastName === '' || patientID === '' || date === '' || valueLanguage === null) {
@@ -43,6 +66,10 @@ export default function SignUpUserLVL5({ navigation, route }) {
     }
     if (patientID.length !== 9) {
       Alert.alert('Patient ID must be 9 digits')
+      return
+    }
+    if (!IsPatientIdUnique) {
+      Alert.alert('Patient ID already exist')
       return
     }
     // after all the checks, we can navigate to the next screen and pass the data 
@@ -82,7 +109,6 @@ export default function SignUpUserLVL5({ navigation, route }) {
           value={patientLastName}
           onChangeText={(patientLastName) => setPatientLastName(patientLastName)}
         />
-
         <TextInput
           style={styles.inputFull}
           placeholder="Patient ID (9 Digits)"
@@ -91,17 +117,19 @@ export default function SignUpUserLVL5({ navigation, route }) {
           keyboardType="numeric"
           value={patientID}
           onChangeText={(patientID) => setPatientID(patientID)}
+          onBlur={() => IsPatientIdUniqueFunc()}
+
         />
         {/* Date Picker for birth-date */}
         {platfr !== 'ios' ? <TouchableOpacity style={styles.datePicker} onPress={showDatepicker}>
-                  <Text style={styles.dateInputTxt}>
-                    {date === '' ? 'Date Of Birth' : date}
-                  
-                  </Text>
-                  {!date&& <FontAwesome name="calendar-check-o" size={24} color="gray" />}
-                  {/* <Octicons style={{ textAlign: 'right' }} name="calendar" size={22} /> */}
-                </TouchableOpacity>:
-            <DatePicker
+          <Text style={styles.dateInputTxt}>
+            {date === '' ? 'Date Of Birth' : date}
+
+          </Text>
+          {!date && <FontAwesome name="calendar-check-o" size={24} color="gray" />}
+          {/* <Octicons style={{ textAlign: 'right' }} name="calendar" size={22} /> */}
+        </TouchableOpacity> :
+          <DatePicker
             useNativeDriver={'true'}
             iconComponent={<FontAwesome name="calendar-check-o" size={24} color="gray" />}
             style={styles.inputFull}
@@ -134,20 +162,19 @@ export default function SignUpUserLVL5({ navigation, route }) {
             }}
             onDateChange={(date) => { setDate(date) }}
           />}
-          {showPickerAndroid && (
-                  <DateTimePicker
-                    //testID="dateTimePicker"
-                    value={new Date('1980-01-01')}
-                    // mode={"date"}
-                    is24Hour={true}
-                    onChange={(date) => onChangeDate(date)}
-                    display="default"
-                    maximumDate={new Date()}
-                    minimumDate={new Date('1920-01-01')}
-                  />
-                )}
+        {showPickerAndroid && (
+          <DateTimePicker
+            //testID="dateTimePicker"
+            value={new Date('1980-01-01')}
+            // mode={"date"}
+            is24Hour={true}
+            onChange={(date) => onChangeDate(date)}
+            display="default"
+            maximumDate={new Date()}
+            minimumDate={new Date('1920-01-01')}
+          />
+        )}
 
-        
       </View>
 
       <View style={styles.listContainer}>
@@ -182,7 +209,6 @@ export default function SignUpUserLVL5({ navigation, route }) {
           <Text style={styles.buttonText}>Continue</Text>
         </View>
       </TouchableOpacity>
-
       <OrLine />
       <HaveAccount />
     </SafeAreaView >
