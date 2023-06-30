@@ -163,7 +163,7 @@ namespace WebApi.Controllers
             try
             {
                 var tasksArr = from t in db.tblPatientTask
-                               where t.patientId == patientId && t.taskToDate >= DateTime.Now
+                               where t.patientId == patientId && t.taskToDate >= DateTime.Today
                                select t;
                 List<ActualTaskDTO> actualTasks = new List<ActualTaskDTO>();
                 TimeSpan dateTime = DateTime.Now.TimeOfDay; //will save in temp the current time to use in the query
