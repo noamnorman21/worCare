@@ -35,8 +35,6 @@ export default function Paychecks() {
       workerId: userContext.workerId,
       involvedInId: userContext.involvedInId
     }
-    console.log(user)
-
     try {
       const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/PayChecks/GetPaychecks/', {
         method: 'POST',
