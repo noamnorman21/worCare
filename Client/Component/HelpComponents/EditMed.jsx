@@ -26,7 +26,8 @@ export default function EditMed(props) {
     const timePickers = [];
     const [medTime, setMedTime] = useState('')
     const [medTimeArr, setMedTimeArr] = useState([])
-    const [toDate, setToDate] = useState(null);
+    const originDate = moment(task.drug.toDate).format('DD/MM/YYYY');
+    const [toDate, setToDate] = useState(originDate);
     const [modalTimesVisible, setModalTimesVisible] = useState(false);
     const { UpdateDrugForPatientDTO, getAllPublicTasks } = useUserContext();
     const [visibleEditMed, setVisibleEditMed] = useState(false);
@@ -53,7 +54,7 @@ export default function EditMed(props) {
     const medTimes = task.timesInDayArray;
     // "timesInDayArray": "20:10:00,22:10:00" // LOG  ["08:00:00", "14:00:00"]
     const medTimesArr = medTimes.split(',');
-    const originDate = moment(task.toDate).format('DD/MM/YYYY');
+    //const originDate = moment(task.toDate).format('DD/MM/YYYY');
     const [numberPerDay, setNumberPerDay] = useState(medTimesArr.length);
     const [quantity, setQuantity] = useState(task.drug.dosage);
     const [isEdited, setIsEdited] = useState(false);
@@ -122,20 +123,20 @@ export default function EditMed(props) {
         setModalTimesVisible(false);
     }
 
-    const saveMed = () => {
-        let newDrugForPatient = {
-            drugId: task.drug.drugId,
-            listId: task.listId,
-            patientId: task.patientId,
-            toDate: taskDate,
-            dosage: task.drug.dosage,
-            qtyInBox: task.drug.qtyInBox,
-            frequency: task.frequency,
-        }
+    // const saveMed = () => {
+    //     let newDrugForPatient = {
+    //         drugId: task.drug.drugId,
+    //         listId: task.listId,
+    //         patientId: task.patientId,
+    //         toDate: taskDate,
+    //         dosage: task.drug.dosage,
+    //         qtyInBox: task.drug.qtyInBox,
+    //         frequency: task.frequency,
+    //     }
 
-        UpdateDrugForPatientDTO(newDrugForPatient)
-        toggleOverlayEditMed(); // <-- Fix the function name here
-    }
+    //     UpdateDrugForPatientDTO(newDrugForPatient)
+    //     toggleOverlayEditMed(); // <-- Fix the function name here
+    // }
 
     const cancelEdit = () => {
         setEditMode(false);
@@ -165,6 +166,7 @@ export default function EditMed(props) {
     };
 
     const handleDrugEdited = () => {
+        //console.log(task);
         if (toDate == null || toDate < moment().format('YYYY-MM-DD')) {
             Alert.alert('Please select a date');
             return;
@@ -199,6 +201,10 @@ export default function EditMed(props) {
         else {
             setIsEdited(false);
         }
+        console.log('task', task);
+        console.log('newDrugForPatient', newDrugForPatient);
+
+
         setModalTimesVisible(false);
         props.onClose()
     }
@@ -224,7 +230,7 @@ export default function EditMed(props) {
                                         useNativeDriver={'true'}
                                         iconComponent={<Feather style={styles.addIcon} name="calendar" size={24} color="#808080" />}
                                         style={[styles.doubleRowItem, originDate && { borderColor: '#000' }]}
-                                        date={originDate}
+                                        date={toDate}
                                         mode="date"
                                         placeholder="dd/mm/yyyy"
                                         format='DD/MM/YYYY'
