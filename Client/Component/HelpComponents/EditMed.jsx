@@ -55,7 +55,6 @@ export default function EditMed(props) {
     const medTimes = task.timesInDayArray;
     // "timesInDayArray": "20:10:00,22:10:00" // LOG  ["08:00:00", "14:00:00"]
     const medTimesArr = medTimes.split(',');
-    //const originDate = moment(task.toDate).format('DD/MM/YYYY');
     const [numberPerDay, setNumberPerDay] = useState(medTimesArr.length);
     const [quantity, setQuantity] = useState(task.drug.dosage);
     const [isEdited, setIsEdited] = useState(false);
@@ -198,9 +197,7 @@ export default function EditMed(props) {
         let newDrugForPatient = {
             drugNameEn: task.drug.drugNameEn,
             drugId: task.drug.drugId,
-            //listId: task.listId,
             timesInDayArr: medTimeArr,
-            //from date will be the date of today
             fromDate: moment().format('YYYY-MM-DD'),
             toDate: toDate,
             patientId: task.patientId,
@@ -214,25 +211,13 @@ export default function EditMed(props) {
 
         }
         console.log(newDrugForPatient);
-        //thta is the new drug for patient and how it should look like 
-        // let newMedForDb = {
-        //     drugNameEn: selectedDrugName.drugNameEn,
-        //     drugId: selectedDrugName.drugId,
-        //     timesInDayArr: medTimeArr,
-        //     fromDate: medFromDate,
-        //     toDate: medToDate,
-        //     qtyInBox: capacity,
-        //     patientId: userData.patientId,
-        //     workerId: userData.workerId,
-        //     userId: userData.involvedInId,
-        //     dosage: quantity,
-        //     taskComment: medComment,
-        //     frequency: selectedFrequency,
-        //     pushToken: pushToken,
-        //  }
-
-        return;
-
+        let taskForDelete = {
+            taskId: task.taskId,
+            listId: task.listId,
+        }
+        console.log(taskForDelete);
+    
+        return;// for now until the backend is ready
 
         if (toDate != originDate || quantity != task.drug.dosage || numberPerDay != medTimesArr.length || medTimeArr != medTimesArr) {
             setIsEdited(true);
@@ -243,8 +228,6 @@ export default function EditMed(props) {
         }
         console.log('task', task);
         console.log('newDrugForPatient', newDrugForPatient);
-
-
         setModalTimesVisible(false);
         props.onClose()
     }
