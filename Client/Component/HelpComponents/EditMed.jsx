@@ -22,15 +22,14 @@ export default function EditMed(props) {
         { id: 1, name: 'Daily' },
         { id: 3, name: 'Weekly' },
         { id: 4, name: 'Monthly' },
-    ]
-    const timePickers = [];
-    const [medTime, setMedTime] = useState('')
-    const [medTimeArr, setMedTimeArr] = useState([])
+    ];
+    const [medTime, setMedTime] = useState('');
+    const medTimes = task.timesInDayArray;
+    const [medTimesArr, setMedTimesArr] = useState(medTimes.split(','));
     const originDate = moment(task.drug.toDate).format('DD/MM/YYYY');
     const [toDate, setToDate] = useState(originDate);
     const [modalTimesVisible, setModalTimesVisible] = useState(false);
     const { UpdateDrugForPatientDTO, getAllPublicTasks, userContext } = useUserContext();
-
     const [visibleEditMed, setVisibleEditMed] = useState(false);
     const stylesForTimeModal = StyleSheet.create({
         timePicker: {
@@ -49,12 +48,9 @@ export default function EditMed(props) {
             borderWidth: 1.5,
             borderRadius: 16,
             padding: 5,
-        }
+        },
+    });
 
-    })
-    const medTimes = task.timesInDayArray;
-    // "timesInDayArray": "20:10:00,22:10:00" // LOG  ["08:00:00", "14:00:00"]
-    const medTimesArr = medTimes.split(',');
     const [numberPerDay, setNumberPerDay] = useState(medTimesArr.length);
     const [quantity, setQuantity] = useState(task.drug.dosage);
     const [isEdited, setIsEdited] = useState(false);
@@ -63,6 +59,7 @@ export default function EditMed(props) {
     };
 
     function rowForEachTime() {
+        const timePickers = [];
         for (let i = 0; i < numberPerDay; i++) {
             timePickers.push(
                 <View key={i} style={stylesForTimeModal.timePicker}>
@@ -100,43 +97,29 @@ export default function EditMed(props) {
                                 },
                             }}
                             onDateChange={(date) => {
-                                let newArr = [...medTimeArr];
+                                let newArr = [...medTimesArr];
                                 newArr[i] = date;
-                                setMedTimeArr(newArr);
+                                console.log(newArr);
+                                setMedTimesArr(newArr);
                             }}
                         />
                     </View>
                 </View>
-            )
+            );
         }
         return timePickers;
     }
 
     const saveTimeArr = () => {
-        for (let i = 0; i < timePickers.length; i++) {
-            if (medTimeArr[i] == '' || medTimeArr[i] == null) {
-                Alert.alert('Please Fill all the time fields');
+        for (let i = 0; i < medTimesArr.length; i++) {
+            if (medTimesArr[i] === '' || medTimesArr[i] === null) {
+                Alert.alert('Please fill in all the time fields');
                 return;
             }
         }
-        setMedTimeArr(medTimeArr);
+        setMedTimesArr(medTimesArr);
         setModalTimesVisible(false);
-    }
-
-    // const saveMed = () => {
-    //     let newDrugForPatient = {
-    //         drugId: task.drug.drugId,
-    //         listId: task.listId,
-    //         patientId: task.patientId,
-    //         toDate: taskDate,
-    //         dosage: task.drug.dosage,
-    //         qtyInBox: task.drug.qtyInBox,
-    //         frequency: task.frequency,
-    //     }
-
-    //     UpdateDrugForPatientDTO(newDrugForPatient)
-    //     toggleOverlayEditMed(); // <-- Fix the function name here
-    // }
+    };
 
     const cancelEdit = () => {
         setEditMode(false);
@@ -144,12 +127,10 @@ export default function EditMed(props) {
         setNumberPerDay(medTimesArr.length);
         setQuantity(task.drug.dosage);
         setToDate(originDate);
-        setMedTimeArr(medTimesArr);
-        //close modal
+        setMedTimesArr(medTimesArr);
         setModalTimesVisible(false);
-        props.onClose()
-
-    }
+        props.onClose();
+    };
 
     const showMode = (currentMode) => {
         if (Platform.OS === 'android') {
@@ -166,11 +147,10 @@ export default function EditMed(props) {
     };
 
     const handleDrugEdited = () => {
-        //console.log(task);
-        // if (toDate == null || toDate < moment().format('YYYY-MM-DD')) {
-        //     Alert.alert('Please select a date');
-        //     return;
-        // }
+        if (toDate == null || toDate < moment().format('YYYY-MM-DD')) {
+            Alert.alert('Please select a date');
+            return;
+        }
         if (quantity == null || quantity == 0) {
             Alert.alert('Please select a quantity');
             return;
@@ -179,10 +159,10 @@ export default function EditMed(props) {
             Alert.alert('Please select a number of times per day');
             return;
         }
-        // if (medTimeArr == null || medTimeArr == '') {
-        //     Alert.alert('Please select a time');
-        //     return;
-        // }
+        if (medTimesArr == null || medTimesArr == '') {
+            Alert.alert('Please select a time');
+            return;
+        }
 
         //check the type the user for the push notification
         let pushToken = '';
@@ -193,11 +173,10 @@ export default function EditMed(props) {
             pushToken = userContext.pushToken;
         }
 
-
         let newDrugForPatient = {
             drugNameEn: task.drug.drugNameEn,
             drugId: task.drug.drugId,
-            timesInDayArr: medTimeArr,
+            timesInDayArr: medTimesArr,
             fromDate: moment().format('YYYY-MM-DD'),
             toDate: toDate,
             patientId: task.patientId,
@@ -216,10 +195,15 @@ export default function EditMed(props) {
             listId: task.listId,
         }
         console.log(taskForDelete);
-    
+
+        let objToSend = {
+            newDrugForPatient: newDrugForPatient,
+            taskForDelete: taskForDelete,
+        }
+
         return;// for now until the backend is ready
 
-        if (toDate != originDate || quantity != task.drug.dosage || numberPerDay != medTimesArr.length || medTimeArr != medTimesArr) {
+        if (toDate != originDate || quantity != task.drug.dosage || numberPerDay != medTimesArr.length || medTimesArr != medTimesArr) {
             setIsEdited(true);
             UpdateDrugForPatientDTO(newDrugForPatient);
         }
@@ -404,8 +388,8 @@ export default function EditMed(props) {
                                 <View style={styles.doubleRow}>
                                     <View><Text style={styles.txtLabel}>Intakes Time:</Text></View>
                                     <TouchableOpacity onPress={() => { setModalTimesVisible(true) }}>
-                                        <View style={[styles.doubleRowItem, medTimeArr.length == numberPerDay && { borderColor: '#000' }]}>
-                                            <Text style={[styles.inputNumber2, medTimeArr.length == numberPerDay && { color: '#000' }]}>
+                                        <View style={[styles.doubleRowItem, medTimesArr.length == numberPerDay && { borderColor: '#000' }]}>
+                                            <Text style={[styles.inputNumber2, medTimesArr.length == numberPerDay && { color: '#000' }]}>
                                                 Change Times
                                             </Text>
                                             <MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />

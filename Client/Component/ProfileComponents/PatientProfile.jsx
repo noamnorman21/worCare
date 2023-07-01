@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, SafeAreaView, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, SafeAreaView, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Chip } from 'react-native-paper';
 import { useUserContext } from '../../UserContext';
 import { Feather, Fontisto, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import moment from 'moment';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import HobbiesJSON from '../SignUpComponents/User/Hobbies.json';
+import LimitationsJSON from '../SignUpComponents/User/Limitations.json';
 const Tab = createMaterialTopTabNavigator();
-const BUBBLE_SIZE = 80;
+const BUBBLE_SIZE = 100;
 const CONTAINER_PADDING = 10;
-import { LinearGradient } from 'expo-linear-gradient';
 
 export default function PatientProfile() {
     const { userContext } = useUserContext();
@@ -106,84 +107,138 @@ export default function PatientProfile() {
         },
     ];
 
-
-    const [hobbies, setHobbies] = useState([]);
-    useEffect(() => {
-        hobbiesArr.forEach((hobbyObj) => {
-            const hobbiesData = hobbiesAndLimitations[0][hobbyObj.key];
-            if (hobbiesData) {
-                const hobbyArr = hobbiesData.split(', ');
-                hobbyArr.forEach((hobby) => {
-                    const { icon, label } = hobbyObj;
-                    setHobbies((prevHobbies) => [
-                        ...prevHobbies,
-                        { hobby, icon, label },
-                    ]);
-                });
-            }
-        });
-    }, []);
-
     const [limitations, setLimitations] = useState([]);
     useEffect(() => {
+        const updatedLimitations = [];
         limitationsArr.forEach((limitationObj) => {
             const limitationsData = hobbiesAndLimitations[0][limitationObj.key];
             if (limitationsData) {
                 const limitationArr = limitationsData.split(', ');
                 limitationArr.forEach((limitation) => {
                     const { icon, label } = limitationObj;
-                    setLimitations((prevLimitations) => [
-                        ...prevLimitations,
-                        { limitation, icon, label },
-                    ]);
+                    updatedLimitations.push({ limitation, icon, label });
                 });
             }
         });
-    }, []);
+        setLimitations(updatedLimitations);
+    }, [hobbiesAndLimitations]);
+
+    const [selectedCategory, setSelectedCategory] = useState('All');
+    const [selectedHobbies, setSelectedHobbies] = useState([]);
+
+    const [hobbies, setHobbies] = useState([]);
+    useEffect(() => {
+        const updatedHobbies = [];
+        hobbiesArr.forEach((hobbyObj) => {
+            const hobbiesData = hobbiesAndLimitations[0][hobbyObj.key];
+            // console.log(hobbiesAndLimitations)
+            if (hobbiesData) {
+                const hobbyArr = hobbiesData.split(', ');
+                hobbyArr.forEach((hobby) => {
+                    const { icon, label } = hobbyObj;
+                    const selected = selectedHobbies.some((h) => h.name === hobbiesData.label);
+                    updatedHobbies.push({ name: hobby, icon, label, selected });
+                });
+            } else {
+                updatedHobbies.push({ name: hobbyObj.key, icon: hobbyObj.icon, label: hobbyObj.label, selected: false });
+            }
+        });
+        setHobbies(updatedHobbies);
+    }, [hobbiesAndLimitations, selectedCategory, selectedHobbies]);
+
+    useEffect(() => {
+        const categoryHobbies = HobbiesJSON[selectedCategory];
+        setSelectedHobbies(categoryHobbies ? categoryHobbies.map((hobby) => ({ ...hobby, selected: false })) : []);
+    }, [selectedCategory]);
+
+    const handleHobbyToggle = (hobby) => {
+        const updatedHobbies = selectedHobbies.map((h) => {
+            if (h.name === hobby.name) {
+                return { ...h, selected: !h.selected };
+            }
+            return h;
+        });
+        setSelectedHobbies(updatedHobbies);
+    };
 
     const HobbiesScreen = () => {
         return (
-            <LinearGradient
-                colors={['#6D9EFF50', '#548DFF']}
-                style={styles.background}
-            >
+            <View>
+                <ScrollView horizontal contentContainerStyle={styles.filterContainer}>
+                    {hobbiesArr.map((category) => (
+                        <Chip
+                            key={category.key}
+                            style={[
+                                styles.filterButton,
+                                selectedCategory === category.key && styles.selectedFilterButton,
+                            ]}
+                            onPress={() => setSelectedCategory(category.key)}
+                        >
+                            <Text
+                                style={[
+                                    styles.filterButtonText,
+                                    selectedCategory === category.key && styles.selectedFilterTxt,
+                                ]}
+                            >
+                                {category.label}
+                            </Text>
+                        </Chip>
+                    ))}
+                </ScrollView>
                 <ScrollView contentContainerStyle={styles.collageContainer}>
                     {hobbies.map((h, index) => (
                         <View key={index} style={styles.collageItemContainer}>
                             <Chip
-                                style={styles.collageBubble}
-                                mode="outlined"
+                                style={[
+                                    styles.collageBubble,
+                                    h.selected ? styles.selectedCollageBubble : null,
+                                ]}
+                                onPress={() => handleHobbyToggle(h)}
                             >
-                                {h.icon}
+                                <Text style={h.selected ? styles.selectedCollageText : styles.collageText}>{h.name}</Text>
                             </Chip>
-                            <Text style={styles.collageLabelText}>{h.hobby}</Text>
                         </View>
                     ))}
                 </ScrollView>
-            </LinearGradient>
+            </View>
         );
     };
 
     const LimitationsScreen = () => {
+        const [selectedFilter, setSelectedFilter] = useState('All');
+
+        // Filter the limitations array based on the selected filter
+        const filteredLimitations = selectedFilter === 'All'
+            ? limitations
+            : limitations.filter((l) => l.key === selectedFilter);
+
         return (
-            <LinearGradient
-                colors={['#6D9EFF50', '#548DFF']}
-                style={styles.background}
-            >
+            <View>
+                <ScrollView horizontal contentContainerStyle={styles.filterContainer}>
+                    {limitationsArr.map((filter, index) => (
+                        <TouchableOpacity
+                            key={index}
+                            style={[
+                                styles.filterButton,
+                                selectedFilter === filter.key && styles.selectedFilterButton,
+                            ]}
+                            onPress={() => setSelectedFilter(filter.key)}
+                        >
+                            <Text style={styles.filterButtonText}>{filter.key}</Text>
+                        </TouchableOpacity>
+                    ))}
+                </ScrollView>
                 <ScrollView contentContainerStyle={styles.collageContainer}>
-                    {limitations.map((l, index) => (
+                    {filteredLimitations.map((l, index) => (
                         <View key={index} style={styles.collageItemContainer}>
-                            <Chip
-                                style={styles.collageBubble}
-                                mode="outlined"
-                            >
+                            <Chip style={styles.collageBubble} mode="outlined">
                                 {l.icon}
                             </Chip>
                             <Text style={styles.collageLabelText}>{l.limitation}</Text>
                         </View>
                     ))}
                 </ScrollView>
-            </LinearGradient>
+            </View>
         );
     };
 
@@ -206,7 +261,6 @@ export default function PatientProfile() {
             <View style={styles.hobbiesAndLimitationsContainer}>
                 <Tab.Navigator
                     screenOptions={{
-                        tabBarStyle: { backgroundColor: '#6D9EFF20' },
                         tabBarPressColor: '#548DFF',
                         tabBarPressOpacity: 0.5,
                         tabBarLabelStyle: {
@@ -239,14 +293,6 @@ export default function PatientProfile() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#216BFF90',
-    },
-    background: {
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        top: 0,
-        bottom: 0,
     },
     headerBlock: {
         justifyContent: 'center',
@@ -256,7 +302,6 @@ const styles = StyleSheet.create({
         borderWidth: 1.5,
         borderRadius: 20,
         marginHorizontal: 5,
-        // SHADOW EFFECT
         shadowColor: '#548DFF',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.5,
@@ -281,12 +326,6 @@ const styles = StyleSheet.create({
         padding: 10,
         color: '#548DFF',
     },
-    headerTxt: {
-        fontSize: 20,
-        fontFamily: 'Urbanist-Bold',
-        textAlign: 'center',
-        marginVertical: 10,
-    },
     hobbiesAndLimitationsContainer: {
         flex: 4,
         backgroundColor: '#D0DFFF',
@@ -310,11 +349,11 @@ const styles = StyleSheet.create({
         borderWidth: 1.5,
     },
     collageLabelText: {
-        fontSize: 15, // Adjust the font size as needed
+        fontSize: 15,
         fontFamily: 'Urbanist-Medium',
         color: '#548DFF',
         textAlign: 'center',
-        marginTop: 5, // Add a margin top to create space between icon and text
+        marginTop: 5,
     },
     collageContent: {
         flex: 1,
@@ -326,5 +365,31 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         margin: 5,
+    },
+    filterContainer: {
+        alignItems: 'center',
+        paddingVertical: 10,
+    },
+    filterButton: {
+        paddingHorizontal: 15,
+        height: 40,
+        marginHorizontal: 4,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 20,
+        backgroundColor: '#D0DFFF',
+    },
+    selectedFilterButton: {
+        backgroundColor: '#548DFF',
+    },
+    filterButtonText: {
+        fontSize: 14,
+        fontFamily: 'Urbanist-Medium',
+        color: '#548DFF',
+    },
+    selectedFilterTxt: {
+        fontSize: 14,
+        fontFamily: 'Urbanist-Medium',
+        color: '#D0DFFF',
     },
 });

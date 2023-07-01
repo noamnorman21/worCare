@@ -21,7 +21,7 @@ export default function AddNewContact(props) {
 
   const handleInputChange = (field, value) => {
     setContact({ ...Contact, [field]: value });
-  }
+  };
 
   //validate that phone contains only digits
   const validatePhone = (phone) => {
@@ -77,17 +77,12 @@ export default function AddNewContact(props) {
     return emailRegex.test(email)
   }
 
-  const closeModal = () => {
-    console.log("closeModal");
-    if (props.contacts.length == 0) {
-      props.closeModal();
-      props.goBack();
+  const closeModal = async () => {
+    if (props.contacts.length === 0) {
+      await props.goBack();
     }
-    else {
-      props.closeModal();
-      props.cancel();
-    }
-  }
+    props.closeModal();
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -152,11 +147,12 @@ export default function AddNewContact(props) {
                     outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
                     activeOutlineColor="#548DFF"
                     outlineColor='#E6EBF2' />
-                  <TextInput style={styles.inputTxt}
-                    mode='outlined'
-                    label='Comment (optional)'
-                    value={Contact.comment}
-                    onChangeText={(val) => handleInputChange('comment', val)}
+                  <TextInput
+                    style={styles.inputTxt}
+                    mode="outlined"
+                    label="Comment (optional)"
+                    value={Contact.contactComment} // Updated key
+                    onChangeText={(val) => handleInputChange('contactComment', val)} // Updated key
                     placeholder="Type Something..."
                     multiline
                     numberOfLines={4}
@@ -164,7 +160,8 @@ export default function AddNewContact(props) {
                     contentStyle={{ height: 100, fontFamily: 'Urbanist-Regular' }}
                     outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
                     activeOutlineColor="#548DFF"
-                    outlineColor='#E6EBF2' />
+                    outlineColor="#E6EBF2"
+                  />
                 </View>
               </View>
               <View style={styles.bottom}>
@@ -256,5 +253,3 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
-
-

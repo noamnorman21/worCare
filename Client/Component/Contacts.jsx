@@ -57,8 +57,6 @@ function Main({ navigation }) {
       setContactToRender([])
       setaddModalVisible(true)
     }
-
-
   }
 
   useEffect(() => {
