@@ -137,15 +137,17 @@ export default function EditMed(props) {
         toggleOverlayEditMed(); // <-- Fix the function name here
     }
 
-    const handeleDrugChange = () => {
-        if (task.drug.Type != 'Pill') {
-            setEditMode(false);
-            setQuantity(task.drug.dosage);
-        }
-        else {
-            setEditMode(true);
-            setQuantity(0);
-        }
+    const cancelEdit = () => {
+        setEditMode(false);
+        setFrequency(task.frequency);
+        setNumberPerDay(medTimesArr.length);
+        setQuantity(task.drug.dosage);
+        setToDate(originDate);
+        setMedTimeArr(medTimesArr);
+        //close modal
+        setModalTimesVisible(false);
+        props.onClose()
+
     }
 
     const showMode = (currentMode) => {
@@ -417,10 +419,10 @@ export default function EditMed(props) {
 
                         {/* Footer */}
                         <View style={[styles.footer, modalTimesVisible && { display: 'none' }]}>
-                            <TouchableOpacity style={styles.footerBtn1} onPress={handleDrugEdited}>
+                            <TouchableOpacity style={styles.footerBtn1} onPress={cancelEdit}>
                                 <Text style={styles.footerTxt1}>Cancel</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.footerBtn2} onPress={saveMed}>
+                            <TouchableOpacity style={styles.footerBtn2} onPress={handleDrugEdited}>
                                 <Text style={styles.footerTxt2}>Save</Text>
                             </TouchableOpacity>
                         </View>
