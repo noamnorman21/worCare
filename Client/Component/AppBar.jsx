@@ -74,6 +74,7 @@ function CustomHeader() {
     }, [patientList])
 
     function switchPatient(patient) {
+        console.log(`switchPatient: `, patient)
         let usertoSync = {
             userId: userContext.userId,
             userType: userContext.userType,
@@ -84,8 +85,8 @@ function CustomHeader() {
             userUri: userContext.userUri,
             gender: userContext.gender,
             workerId: userContext.workerId,//if user is a caregiver, this field will be same as userId
-            involvedInId: userContext.involvedInId,//if user is a not caregiver, this field will be same as userId
-            patientId: patient.patientId,
+            involvedInId: userContext.userId,//if user is a not caregiver, this field will be same as userId
+            patientId: userContext.patientId,
             calendarCode: userContext.calendarCode,
             CountryName_En: userContext.CountryName_En,
             patientHL: userContext.patientHL,
@@ -98,7 +99,7 @@ function CustomHeader() {
             usertoSync.workerId = patient.workerId;
         }
         else {
-            usertoSync.involvedInId = patient.involvedInId;
+            usertoSync.involvedInId = patient.userId;
         }
         usertoSync.patientData = patient;
         usertoSync.patientHL = patient.hobbiesAndLimitationsDTO;
