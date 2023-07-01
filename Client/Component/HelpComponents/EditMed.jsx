@@ -29,7 +29,8 @@ export default function EditMed(props) {
     const originDate = moment(task.drug.toDate).format('DD/MM/YYYY');
     const [toDate, setToDate] = useState(originDate);
     const [modalTimesVisible, setModalTimesVisible] = useState(false);
-    const { UpdateDrugForPatientDTO, getAllPublicTasks } = useUserContext();
+    const { UpdateDrugForPatientDTO, getAllPublicTasks, userContext } = useUserContext();
+
     const [visibleEditMed, setVisibleEditMed] = useState(false);
     const stylesForTimeModal = StyleSheet.create({
         timePicker: {
@@ -167,10 +168,10 @@ export default function EditMed(props) {
 
     const handleDrugEdited = () => {
         //console.log(task);
-        if (toDate == null || toDate < moment().format('YYYY-MM-DD')) {
-            Alert.alert('Please select a date');
-            return;
-        }
+        // if (toDate == null || toDate < moment().format('YYYY-MM-DD')) {
+        //     Alert.alert('Please select a date');
+        //     return;
+        // }
         if (quantity == null || quantity == 0) {
             Alert.alert('Please select a quantity');
             return;
@@ -179,20 +180,59 @@ export default function EditMed(props) {
             Alert.alert('Please select a number of times per day');
             return;
         }
-        if (medTimeArr == null || medTimeArr == '') {
-            Alert.alert('Please select a time');
-            return;
+        // if (medTimeArr == null || medTimeArr == '') {
+        //     Alert.alert('Please select a time');
+        //     return;
+        // }
+
+        //check the type the user for the push notification
+        let pushToken = '';
+        if (userContext.userType == 'User') {
+            pushToken = userContext.pushToken2;
+        }
+        else {
+            pushToken = userContext.pushToken;
         }
 
+
         let newDrugForPatient = {
+            drugNameEn: task.drug.drugNameEn,
             drugId: task.drug.drugId,
-            listId: task.listId,
-            patientId: task.patientId,
+            //listId: task.listId,
+            timesInDayArr: medTimeArr,
+            //from date will be the date of today
+            fromDate: moment().format('YYYY-MM-DD'),
             toDate: toDate,
+            patientId: task.patientId,
+            workerId: task.workerId,
+            userId: task.userId,
             dosage: quantity,
-            qtyInBox: task.drug.qtyInBox,
+            taskComment: task.taskComment,
             frequency: frequency,
+            qtyInBox: task.drug.qtyInBox,
+            pushToken: pushToken,
+
         }
+        console.log(newDrugForPatient);
+        //thta is the new drug for patient and how it should look like 
+        // let newMedForDb = {
+        //     drugNameEn: selectedDrugName.drugNameEn,
+        //     drugId: selectedDrugName.drugId,
+        //     timesInDayArr: medTimeArr,
+        //     fromDate: medFromDate,
+        //     toDate: medToDate,
+        //     qtyInBox: capacity,
+        //     patientId: userData.patientId,
+        //     workerId: userData.workerId,
+        //     userId: userData.involvedInId,
+        //     dosage: quantity,
+        //     taskComment: medComment,
+        //     frequency: selectedFrequency,
+        //     pushToken: pushToken,
+        //  }
+
+        return;
+
 
         if (toDate != originDate || quantity != task.drug.dosage || numberPerDay != medTimesArr.length || medTimeArr != medTimesArr) {
             setIsEdited(true);
