@@ -22,7 +22,6 @@ export default function NewPatientLvl1({ navigation, route }) {
     const [IsPatientIdUnique, setIsPatientIdUnique] = useState(true);
     let urlforLanguages = 'https://proj.ruppin.ac.il/cgroup94/test1/api/LanguageCountry/GetAllLanguages';
 
-
     //for date picker android
     const showDatepicker = () => {
         setShowPickerAndroid(!showPickerAndroid);
@@ -91,7 +90,6 @@ export default function NewPatientLvl1({ navigation, route }) {
                 console.log("err in IsPatientIdUnique=", error);
             });
     }
-
 
     const handleInputAndContinue = () => {
         if (patientFirstName === '' || patientLastName === '' || patientID === '' || date === '' || valueLanguage === null) {

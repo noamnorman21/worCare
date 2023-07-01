@@ -32,13 +32,13 @@ const SCREEN_WIDTH = Dimensions.get('screen').width;
 
 function CustomHeader() {
     const [isModalVisible, setIsModalVisible] = useState(false);
-    //upadtes
     const { userContext, appEmail, logOutFireBase, UpdatePatient, patientList } = useUserContext();
     const { userUri, FirstName } = userContext;
     const [newUserDialogVisable, setNewUserDialogVisable] = useState(false);
     const [switchPatientDialogVisable, setSwitchPatientDialogVisable] = useState(false);
     const [patientArr, setPatientArr] = useState([])
     const navigation = useNavigation();
+    const patientFirstName = userContext.patientData.FirstName.split(' ')[0];
 
     const navigateToSignUp = () => {
         AsyncStorage.removeItem("user");
@@ -73,7 +73,7 @@ function CustomHeader() {
         }
     }, [patientList])
 
-    function switchPatient(patient){
+    function switchPatient(patient) {
         let usertoSync = {
             userId: userContext.userId,
             userType: userContext.userType,
@@ -93,15 +93,15 @@ function CustomHeader() {
             pushToken: userContext.pushToken,
             pushToken2: userContext.pushTokenSecoundSide,
         }
-        usertoSync.patientId=patient.patientId;
+        usertoSync.patientId = patient.patientId;
         if (usertoSync.userType == "User") {
-            usertoSync.workerId= patient.workerId;
+            usertoSync.workerId = patient.workerId;
         }
-        else{
-            usertoSync.involvedInId= patient.involvedInId;
+        else {
+            usertoSync.involvedInId = patient.involvedInId;
         }
-        usertoSync.patientData= patient;
-        usertoSync.patientHL= patient.hobbiesAndLimitationsDTO;
+        usertoSync.patientData = patient;
+        usertoSync.patientHL = patient.hobbiesAndLimitationsDTO;
         UpdatePatient(usertoSync)
     }
 
@@ -139,7 +139,7 @@ function CustomHeader() {
                                                     console.log('Switch User pressed')
                                                     toggleModal()
                                                     setSwitchPatientDialogVisable(true)
-                                                    
+
                                                 }}>
                                                 <AntDesign name="retweet" size={20} color="#216Bff" />
                                                 <Text style={styles.switchTxt}>
@@ -273,7 +273,7 @@ function CustomHeader() {
                     name="PatientProfile"
                     component={PatientProfile}
                     options={() => ({
-                        headerTitle: 'Patient Profile',
+                        headerTitle: `${patientFirstName}'s Profile`,
                         presentation: 'modal',
                         cardOverlayEnabled: true,
                         headerShown: true,
@@ -313,7 +313,7 @@ function CustomHeader() {
                 style={styles.dialogStyle}>
                 <Dialog.Title style={styles.dialogTitle}>Choose User Type</Dialog.Title>
                 <Dialog.Content>
-                    <Paragraph style={{ fontFamily: 'Urbanist-Medium', fontSize:18 }}>Do you want to create an new User or New Patient Profile?</Paragraph>
+                    <Paragraph style={{ fontFamily: 'Urbanist-Medium', fontSize: 18 }}>Do you want to create an new User or New Patient Profile?</Paragraph>
                 </Dialog.Content>
                 <Dialog.Actions>
                     <Button labelStyle={styles.dialogTxt} onPress={() => {
@@ -328,13 +328,13 @@ function CustomHeader() {
                 </Dialog.Actions>
             </Dialog>
             <Dialog visible={switchPatientDialogVisable} onDismiss={() => setSwitchPatientDialogVisable(false)}
-              style={styles.dialogStyle}>
+                style={styles.dialogStyle}>
                 <Dialog.Title style={styles.dialogTitle}>Switch Patient</Dialog.Title>
                 <Dialog.Content>
                     <Paragraph style={styles.dialpgParagraph}>Do you want to switch to another patient?</Paragraph>
                 </Dialog.Content>
-                <Dialog.Actions>                    
-                  {patientArr}
+                <Dialog.Actions>
+                    {patientArr}
                 </Dialog.Actions>
 
             </Dialog>
@@ -501,10 +501,10 @@ const styles = StyleSheet.create({
         color: '#000',
         fontSize: 24,
     },
-    dialpgParagraph:{
-        color:"#000",
-        fontFamily:"Urbanist-Regular",
-        fontSize:16
+    dialpgParagraph: {
+        color: "#000",
+        fontFamily: "Urbanist-Regular",
+        fontSize: 16
     },
 });
 

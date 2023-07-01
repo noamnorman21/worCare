@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, SafeAreaView, StyleSheet, Button, ScrollView } from 'react-native';
+import { View, Text, SafeAreaView, StyleSheet, ScrollView } from 'react-native';
 import { Chip } from 'react-native-paper';
 import { useUserContext } from '../../UserContext';
 import { Feather, Fontisto, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
-import moment from "moment";
+import moment from 'moment';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+const Tab = createMaterialTopTabNavigator();
+const BUBBLE_SIZE = 80;
+const CONTAINER_PADDING = 10;
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function PatientProfile() {
     const { userContext } = useUserContext();
     const patientData = userContext.patientData;
     const hobbiesAndLimitations = patientData.hobbiesAndLimitationsDTO;
-    // DateOfBirth , languange, ID 
     const birthDate = moment(patientData.DateOfBirth).format('DD/MM/YYYY');
     const hobbiesArr = [
         {
@@ -102,6 +106,7 @@ export default function PatientProfile() {
         },
     ];
 
+
     const [hobbies, setHobbies] = useState([]);
     useEffect(() => {
         hobbiesArr.forEach((hobbyObj) => {
@@ -136,58 +141,97 @@ export default function PatientProfile() {
         });
     }, []);
 
+    const HobbiesScreen = () => {
+        return (
+            <LinearGradient
+                colors={['#6D9EFF50', '#548DFF']}
+                style={styles.background}
+            >
+                <ScrollView contentContainerStyle={styles.collageContainer}>
+                    {hobbies.map((h, index) => (
+                        <View key={index} style={styles.collageItemContainer}>
+                            <Chip
+                                style={styles.collageBubble}
+                                mode="outlined"
+                            >
+                                {h.icon}
+                            </Chip>
+                            <Text style={styles.collageLabelText}>{h.hobby}</Text>
+                        </View>
+                    ))}
+                </ScrollView>
+            </LinearGradient>
+        );
+    };
+
+    const LimitationsScreen = () => {
+        return (
+            <LinearGradient
+                colors={['#6D9EFF50', '#548DFF']}
+                style={styles.background}
+            >
+                <ScrollView contentContainerStyle={styles.collageContainer}>
+                    {limitations.map((l, index) => (
+                        <View key={index} style={styles.collageItemContainer}>
+                            <Chip
+                                style={styles.collageBubble}
+                                mode="outlined"
+                            >
+                                {l.icon}
+                            </Chip>
+                            <Text style={styles.collageLabelText}>{l.limitation}</Text>
+                        </View>
+                    ))}
+                </ScrollView>
+            </LinearGradient>
+        );
+    };
+
     return (
         <SafeAreaView style={styles.container}>
-            <Text style={styles.headerTxt}>Name: {patientData.FirstName}</Text>
             <View style={styles.headerData}>
                 <View style={styles.headerBlock}>
-                    <Text style={styles.headerTxtSM}>Date of Birth</Text>
                     <Text style={styles.headerTxtSM}>{birthDate}</Text>
+                    <Text style={styles.headerTxtXS}>Date of Birth</Text>
                 </View>
                 <View style={styles.headerBlock}>
-                    <Text style={styles.headerTxtSM}>Language</Text>
                     <Text style={styles.headerTxtSM}>{patientData.LanguageName_En}</Text>
+                    <Text style={styles.headerTxtXS}>Language</Text>
                 </View>
                 <View style={styles.headerBlock}>
-                    <Text style={styles.headerTxtSM}>ID</Text>
                     <Text style={styles.headerTxtSM}>{patientData.patientId}</Text>
+                    <Text style={styles.headerTxtXS}>ID</Text>
                 </View>
             </View>
-
-            <Text style={styles.headerTxt}>Hobbies</Text>
-            <ScrollView horizontal={true} style={{ marginHorizontal: 5 }}>
-                <View style={styles.chipsContainer}>
-                    {hobbies.map((h, index) => (
-                        <Chip
-                            key={index}
-                            textStyle={styles.chipTxt}
-                            style={styles.chip}
-                            mode="outlined"
-                            onPress={() => console.log('Pressed')}
-                        >
-                            {h.icon}
-                            {h.hobby}
-                        </Chip>
-                    ))}
-                </View>
-            </ScrollView>
-            <Text style={styles.headerTxt}>Limitations</Text>
-            <ScrollView horizontal={true} style={{ marginHorizontal: 5 }}>
-                <View style={styles.chipsContainer}>
-                    {limitations.map((l, index) => (
-                        <Chip
-                            key={index}
-                            textStyle={styles.chipTxt}
-                            style={styles.chip}
-                            mode="outlined"
-                            onPress={() => console.log(patientData)}
-                        >
-                            {l.icon}
-                            {l.limitation}
-                        </Chip>
-                    ))}
-                </View>
-            </ScrollView>
+            <View style={styles.hobbiesAndLimitationsContainer}>
+                <Tab.Navigator
+                    screenOptions={{
+                        tabBarStyle: { backgroundColor: '#6D9EFF20' },
+                        tabBarPressColor: '#548DFF',
+                        tabBarPressOpacity: 0.5,
+                        tabBarLabelStyle: {
+                            height: 25,
+                            fontSize: 16,
+                            fontFamily: 'Urbanist-Bold',
+                            alignItems: 'center',
+                            textTransform: 'none',
+                        },
+                        tabBarIndicatorStyle: {
+                            backgroundColor: '#548DFF',
+                            height: 3,
+                            borderRadius: 50,
+                            width: '35%',
+                            justifyContent: 'center',
+                            alignSelf: 'center',
+                            marginLeft: '6%',
+                            marginBottom: 10,
+                        },
+                    }}
+                >
+                    <Tab.Screen name="Hobbies" component={HobbiesScreen} />
+                    <Tab.Screen name="Limitations" component={LimitationsScreen} />
+                </Tab.Navigator>
+            </View>
         </SafeAreaView>
     );
 }
@@ -195,20 +239,34 @@ export default function PatientProfile() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: '#216BFF90',
+    },
+    background: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
     },
     headerBlock: {
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: '#D0DFFF',
         borderColor: '#548DFF',
-        borderWidth: 1,
-        borderRadius: 10,
+        borderWidth: 1.5,
+        borderRadius: 20,
+        marginHorizontal: 5,
+        // SHADOW EFFECT
+        shadowColor: '#548DFF',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.5,
     },
     headerData: {
         flexDirection: 'row',
         justifyContent: 'space-around',
         alignItems: 'center',
         marginVertical: 10,
+        flex: 1,
     },
     headerTxtSM: {
         fontSize: 16,
@@ -216,32 +274,57 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         padding: 10,
     },
+    headerTxtXS: {
+        fontSize: 14,
+        fontFamily: 'Urbanist-Regular',
+        textAlign: 'center',
+        padding: 10,
+        color: '#548DFF',
+    },
     headerTxt: {
         fontSize: 20,
         fontFamily: 'Urbanist-Bold',
         textAlign: 'center',
         marginVertical: 10,
     },
-    chipsContainer: {
+    hobbiesAndLimitationsContainer: {
+        flex: 4,
+        backgroundColor: '#D0DFFF',
+        marginVertical: 10,
+    },
+    collageContainer: {
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'center',
         alignItems: 'center',
-        marginHorizontal: 5,
     },
-    chip: {
-        marginVertical: 8,
-        marginHorizontal: 8,
-        height: 55,
-        justifyContent: 'center',
+    collageBubble: {
+        width: BUBBLE_SIZE,
+        height: BUBBLE_SIZE,
         alignItems: 'center',
+        justifyContent: 'center',
+        margin: CONTAINER_PADDING / 4,
+        borderRadius: BUBBLE_SIZE / 2,
         backgroundColor: '#D0DFFF',
         borderColor: '#548DFF',
         borderWidth: 1.5,
     },
-    chipTxt: {
+    collageLabelText: {
+        fontSize: 15, // Adjust the font size as needed
         fontFamily: 'Urbanist-Medium',
-        fontSize: 16,
         color: '#548DFF',
+        textAlign: 'center',
+        marginTop: 5, // Add a margin top to create space between icon and text
+    },
+    collageContent: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'column',
+    },
+    collageItemContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        margin: 5,
     },
 });

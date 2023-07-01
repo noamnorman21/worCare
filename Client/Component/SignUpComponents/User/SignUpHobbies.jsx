@@ -85,7 +85,7 @@ export default function SignUpHobbies({ navigation, route }) {
     const activeDrinkString = activeDrink.join(', ');
     const activeHobbiesString = activeHobbies.join(', ');
     const activeMoviesString = activeMovies.join(', ');
-    
+
     const HobbiesAndLimitationsData = {
       patientId: route.params.tblPatient.patientId,
       books: activeBooksString,
@@ -105,8 +105,8 @@ export default function SignUpHobbies({ navigation, route }) {
       bathRoutine: route.params.tblLimitations.bathRoutine,
       sensitivityToNoise: route.params.tblLimitations.sensitivityToNoise,
       otherL: route.params.tblLimitations.otherL,
-    };    
-    navigation.navigate('SignUpFinish', { HobbiesAndLimitationsData: HobbiesAndLimitationsData, tblPatient: route.params.tblPatient , tblUser: route.params.tblUser });
+    };
+    navigation.navigate('SignUpFinish', { HobbiesAndLimitationsData: HobbiesAndLimitationsData, tblPatient: route.params.tblPatient, tblUser: route.params.tblUser });
   };
 
   return (

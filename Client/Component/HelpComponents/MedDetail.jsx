@@ -61,8 +61,7 @@ export default function MedDetail({ navigation, route }) {
          openUrl(url)
       }
       else if (value == 2) {
-         console.log("add instruction")
-         setVisibleEditMed(!visibleEditMed)
+         toggleOverlayEdit()
       }
       if (value == 3) {
          toggleOverlayPause()
@@ -78,6 +77,10 @@ export default function MedDetail({ navigation, route }) {
 
    const toggleOverlay = () => {
       setVisible(!visible);
+   };
+
+   const toggleOverlayEdit = () => {
+      setVisibleEditMed(!visibleEditMed);
    };
 
    const toggleOverlayTakeExtra = () => {
@@ -217,6 +220,8 @@ export default function MedDetail({ navigation, route }) {
             </View> */}
          </View>
 
+         <EditMed task={task} visibleEditMed={visibleEditMed} onClose={toggleOverlayEdit} />
+
          <View style={styles.bottomContainer}>
             <TouchableOpacity style={styles.bottomBtn} onPress={toggleOverlayRefill}>
                <Text style={styles.bottomBtnTxt}>Log A Refill</Text>
@@ -226,8 +231,6 @@ export default function MedDetail({ navigation, route }) {
                <Text style={styles.bottomBtnTxt}>Take Extra Dose</Text>
             </TouchableOpacity>
          </View>
-
-         <EditMed task={task} visible={visibleEditMed} />
 
          {/* Delete med */}
          < Overlay isVisible={visible} onBackdropPress={toggleOverlay} overlayStyle={{ width: 300, height: 250, borderRadius: 20 }

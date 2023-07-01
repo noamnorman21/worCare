@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { AddBtn, AddNewMedicine } from '../HelpComponents/AddNewTask';
 import MedCard from '../HelpComponents/MedCard';
 import MedDetail from '../HelpComponents/MedDetail';
+import EditMed from '../HelpComponents/EditMed';
 import { useUserContext } from '../../UserContext';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer, useIsFocused } from '@react-navigation/native';
@@ -79,12 +80,16 @@ export default function MedicineTasks(props) {
          <Stack.Navigator>
             <Stack.Screen
                options={{ headerShown: false }}
-               initialParams={{ refreshPublicTask: refreshPublicTask, refreshPrivateTask: props.refreshPrivateTask, allMedicineTasks: allMedicineTasks, userData: userContext }}
+               initialParams={{ refreshPublicTask: refreshPublicTask, allMedicineTasks: allMedicineTasks, userData: userContext }}
                name="MedTask" component={MedTask} />
             <Stack.Screen
                initialParams={{ changeHeader: changeHeader, refreshPublicTask: refreshPublicTask }}
                options={{ headerShown: false }}
                name="MedDetail" component={MedDetail} />
+            <Stack.Screen
+               initialParams={{ changeHeader: changeHeader, refreshPublicTask: refreshPublicTask }}
+               options={{ headerShown: false }}
+               name="EditMed" component={EditMed} />
          </Stack.Navigator>
       </NavigationContainer>
    );

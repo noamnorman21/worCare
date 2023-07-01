@@ -717,7 +717,7 @@ function NewTaskModal(props) {
       else {
          pushToken = userData.pushToken;
       }
-   
+
 
       let newTaskForDb = {
          taskName: taskName,
@@ -774,7 +774,7 @@ function NewTaskModal(props) {
       else {
          pushToken = userData.pushToken;
       }
-   
+
       let newTaskForDb = {
          taskName: taskName,
          timesInDayArr: taskTimeArr,
@@ -788,7 +788,7 @@ function NewTaskModal(props) {
          pushToken: pushToken,
       }
       console.log(newTaskForDb);
-  
+
       let addTaskUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/InsertActualList';
       fetch(addTaskUrl, {
          method: 'POST',
@@ -1114,7 +1114,7 @@ function NewTaskModal(props) {
                            }
                            {/* Modal Box For TIMES ARRAY */}
                            <View>
-                              <Modal visible={modalTimesVisible} transparent={true} style={styles.modalDate} animationType='slide' onRequestClose={() => setModalTimesVisible(false)}>
+                              <Modal visible={modalTimesVisible} transparent={true} animationType='slide' onRequestClose={() => setModalTimesVisible(false)}>
                                  <View style={styles.modalTimesView}>
                                     {/* Header for add times*/}
                                     <View style={styles.modalTimesHeader}>
@@ -1318,7 +1318,6 @@ const styles = StyleSheet.create({
       width: 54,
       justifyContent: 'center',
       alignItems: 'center',
-
    },
    inputView: {
       width: SCREEN_WIDTH * 0.95,

@@ -12,7 +12,7 @@ LogBox.ignoreLogs(["AsyncStorage has been extracted from react-native core and w
 LogBox.ignoreLogs(['Sending `onAnimatedValueUpdate` with no listeners registered.']);
 LogBox.ignoreLogs(['Animated: `useNativeDriver` was not specified. This is a required option and must be explicitly set to `true` or `false`']);
 LogBox.ignoreLogs(['Warning: componentWillReceiveProps has been renamed, and is not recommended for use. See https://reactjs.org/link/unsafe-component-lifecycles for details.']);
-
+LogBox.ignoreLogs([`Key "cancelled" in the image picker result is deprecated and will be removed in SDK 48, use "canceled" instead`]);
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -56,7 +56,6 @@ export default function App() {
       Notifications.removeNotificationSubscription(responseListener.current);
     };
   }, []);
-
 
   if (!isReady) {
     return null;
