@@ -6,8 +6,7 @@ import ImagePickerExample from '../HelpComponents/ImagePickerExample'
 import { OrLine, HaveAccount } from './FooterLine'
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
-// Sign up Screen - level 1 - first + last name, email, phone number, password, image 
-// On submit, user is taken to SignUpLvl2 Screen - address, city, state, zip code, country
+
 export default function CreateUser({ navigation, route }) {
   const [showPassword, setShowPassword] = useState(false);//for password visibility
   const [userImage, setUserImage] = useState(null)
@@ -167,14 +166,14 @@ export default function CreateUser({ navigation, route }) {
                   placeholderTextColor={'#9E9E9E'}
                   keyboardType='ascii-capable'
                   autoCorrect={false}
-                  onChangeText={(value) => handleInputChange('firstName', value)}
+                  onChangeText={(value) => handleInputChange('firstName', value.trim())}
                 />
                 <TextInput
                   style={[styles.input, styles.lastNameInput]}
                   placeholder="Last Name"
                   placeholderTextColor={'#9E9E9E'}
                   keyboardType='ascii-capable'
-                  onChangeText={(value) => handleInputChange('lastName', value)}
+                  onChangeText={(value) => handleInputChange('lastName', value.trim())}
                 />
               </View>
               <TextInput
@@ -182,7 +181,7 @@ export default function CreateUser({ navigation, route }) {
                 placeholder="Email Address"
                 placeholderTextColor={'#9E9E9E'}
                 keyboardType='ascii-capable'
-                onChangeText={(value) => handleInputChange('email', value)}
+                onChangeText={(value) => handleInputChange('email', value.trim())}
                 autoCapitalize='none'
                 autoCorrect={false}
                 onBlur={() => {

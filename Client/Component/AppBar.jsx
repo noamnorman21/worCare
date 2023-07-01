@@ -47,7 +47,6 @@ function CustomHeader() {
         navigation.dispatch(StackActions.replace('SignUp', { userType: "User", patientId: undefined }))
     }
 
-
     const toggleModal = () => {
         setIsModalVisible(!isModalVisible);
     };
@@ -74,7 +73,6 @@ function CustomHeader() {
     }, [patientList])
 
     function switchPatient(patient) {
-        console.log(`switchPatient: `, patient)
         let usertoSync = {
             userId: userContext.userId,
             userType: userContext.userType,
@@ -137,10 +135,8 @@ function CustomHeader() {
                                             <TouchableOpacity
                                                 style={styles.switchUser}
                                                 onPress={() => {
-                                                    console.log('Switch User pressed')
                                                     toggleModal()
                                                     setSwitchPatientDialogVisable(true)
-
                                                 }}>
                                                 <AntDesign name="retweet" size={20} color="#216Bff" />
                                                 <Text style={styles.switchTxt}>
@@ -238,7 +234,7 @@ function CustomHeader() {
                                                 toggleModal()
                                                 AsyncStorage.removeItem("user");
                                                 AsyncStorage.removeItem("userData");
-                                                navigation.dispatch(StackActions.replace('LogIn'));
+                                                await navigation.dispatch(StackActions.replace('LogIn'));
                                                 logOutFireBase()
                                             }
                                         }>

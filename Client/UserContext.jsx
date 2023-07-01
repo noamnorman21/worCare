@@ -94,8 +94,7 @@ export function UserProvider({ children }) {
     const [calendarCode, setCalendarCode] = useState(null)
     const [allDrugs, setAllDrugs] = useState([]);
 
-    // new
-
+    // New
     const [pairedEmail, setPairedEmail] = useState(null)
     const [userChats, setUserChats] = useState(null)
     const [CountryName_En, setCountryName_En] = useState(null)
@@ -104,11 +103,7 @@ export function UserProvider({ children }) {
     const [patientHL, setPatientHL] = useState(null)
     const [patientId, setPatientId] = useState(null)
     const [patientList, setPatientList] = useState(null)
-
-
-
-    //new for chat logo
-    const [newMessages, setNewMessages] = useState(0);
+    const [newMessages, setNewMessages] = useState(0); //new for chat logo
 
     async function logInContext(userData) {
         setUserType(userData.userType);
@@ -173,6 +168,7 @@ export function UserProvider({ children }) {
             getPairedEmail(userData.involvedInId);
         }
     }
+
     // ----------------------  Push Notifications  ----------------------
     // For Push Notifications - Start
     async function registerForPushNotificationsAsync() {
@@ -206,7 +202,7 @@ export function UserProvider({ children }) {
         return token;
     }
 
-    // send push notification to user from client side without trigger
+    // Send push notification to user from client side without trigger
     async function sendPushNotification(pushData) {
         const message = {
             to: pushData.expoPushToken,
@@ -285,16 +281,10 @@ export function UserProvider({ children }) {
     }
 
     function logOutContext() {
-        console.log("logOutContext")
-        setUserContext(null)
-        setNewMessages(0)
-        logOutFireBase()
+        setUserContext('')
     }
 
-
-
-
-    //updated for firebase upadte after settings change
+    // Updated for firebase upadte after settings change
     function updateUserProfile(userData) {
         const userToUpdate = {
             userId: userData.userId,
@@ -308,6 +298,12 @@ export function UserProvider({ children }) {
             workerId: userData.workerId,//if user is a caregiver, this field will be same as userId
             involvedInId: userData.involvedInId,//if user is a not caregiver, this field will be same as userId
             patientId: userData.patientId,
+            calendarCode: userData.calendarCode,
+            CountryName_En: userData.CountryName_En,
+            patientHL: userData.patientHL,
+            patientData: userData.patientData,
+            pushToken: userData.pushToken,
+            pushToken2: userData.pushTokenSecoundSide,
         }
 
         fetch(updateProfileUrl, {
@@ -323,7 +319,7 @@ export function UserProvider({ children }) {
                     return res.json()
                         .then(
                             async (result) => {
-                                Alert.alert('User Updated', 'Your User has been Updated successfully');
+                                Alert.alert('Profile Updated', 'Your User has been Updated successfully');
                                 updateUserContext(userToUpdate)
                                 const jsonValue = JSON.stringify(userToUpdate)
                                 AsyncStorage.setItem('userData', jsonValue);
@@ -335,8 +331,7 @@ export function UserProvider({ children }) {
                                 const q = query(collection(db, "AllUsers"), where("id", "==", userToUpdate.Email));
                                 const querySnapshot = await getDocs(q);
                                 querySnapshot.forEach((doc) => {
-                                    updateDoc(doc.ref, { id: userToUpdate.Email, name: userToUpdate.FirstName + " " + userToUpdate.LastName, avatar: userToUpdate.userUri });
-                                    console.log("Document successfully updated!");
+                                    updateDoc(doc.ref, { id: userToUpdate.Email, name: userToUpdate.FirstName + " " + userToUpdate.LastName, avatar: userToUpdate.userUri, userType: userToUpdate.userType });
                                 });
                             }
                         )
@@ -354,7 +349,6 @@ export function UserProvider({ children }) {
     }
 
     function updateUserContext(userContext) {
-        console.log("updateUser", userContext);
         setUserContext(userContext)
     }
 
@@ -414,8 +408,6 @@ export function UserProvider({ children }) {
             // getPaychecks(userContext);        
         }
     }, [patientId]);
-
-
 
     function updateUserContacts() {
         fetchUserContacts();
@@ -873,8 +865,7 @@ export function UserProvider({ children }) {
         });
     }
 
-
-    // ---------------- patient ----------------
+    // ---------------- Patient ----------------
     function UpdatePatient(userData) {
         console.log("UpdatePatient", "as", userContext.patientId)
         // console.log("UpdatePatient","as",userContext)
@@ -921,7 +912,6 @@ export function UserProvider({ children }) {
             // getPaychecks(userContext);        
         }
     }, [patientId]);
-
 
     // new for patient switch
     function fetchPatientList(userData) {

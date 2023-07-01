@@ -38,7 +38,7 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        
+
         [HttpPut]
         [Route("UpdatePushToken")]
         public IHttpActionResult UpdatePushToken([FromBody] UserDTO userD)
@@ -61,7 +61,7 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        
+
         //need to publish in filezilla
         [HttpPost]
         [Route("GetUserToken")] // POST - Because The FromBody - Check if email and password exists in DB
@@ -69,7 +69,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                var user = db.tblUser.Where(x => x.Email == userDTO.Email).Select(x=> x.pushToken).FirstOrDefault();
+                var user = db.tblUser.Where(x => x.Email == userDTO.Email).Select(x => x.pushToken).FirstOrDefault();
                 return Ok(user);
             }
             catch (Exception ex)
@@ -90,18 +90,18 @@ namespace WebApi.Controllers
                 if (user == null)
                     return NotFound();
                 UserDTO newUser = new UserDTO();
-                newUser.userId = user.First().userId;
-                newUser.Email = user.First().Email;
-                newUser.phoneNum = user.First().phoneNum;
-                newUser.userUri = user.First().userUri;
-                newUser.gender = user.First().gender;
-                newUser.FirstName = user.First().FirstName;
-                newUser.LastName = user.First().LastName;
-                newUser.pushToken = user.First().pushToken;
-                newUser.medNotifications = user.First().medNotifications;
-                newUser.chatNotifications = user.First().chatNotifications;
-                newUser.financeNotifications = user.First().financeNotifications;
-                newUser.tasksNotifications = user.First().tasksNotifications;
+                newUser.userId = user.FirstOrDefault().userId;
+                newUser.Email = user.FirstOrDefault().Email;
+                newUser.phoneNum = user.FirstOrDefault().phoneNum;
+                newUser.userUri = user.FirstOrDefault().userUri;
+                newUser.gender = user.FirstOrDefault().gender;
+                newUser.FirstName = user.FirstOrDefault().FirstName;
+                newUser.LastName = user.FirstOrDefault().LastName;
+                newUser.pushToken = user.FirstOrDefault().pushToken;
+                newUser.medNotifications = user.FirstOrDefault().medNotifications;
+                newUser.chatNotifications = user.FirstOrDefault().chatNotifications;
+                newUser.financeNotifications = user.FirstOrDefault().financeNotifications;
+                newUser.tasksNotifications = user.FirstOrDefault().tasksNotifications;
                 var userCalendar = from c in db.tblCalendarForUser
                                    where c.userId == newUser.userId
                                    select c;
@@ -112,7 +112,7 @@ namespace WebApi.Controllers
                     var countryCode = from c in db.tblCalendarsType
                                       where c.calendarNum == item.calendarNum
                                       select c;
-                    newUser.calendarCode.Add(countryCode.First().calendarCode);
+                    newUser.calendarCode.Add(countryCode.FirstOrDefault().calendarCode);
                 }
 
                 var userRole = from r in db.tblForeignUser
@@ -141,8 +141,8 @@ namespace WebApi.Controllers
                         var countryCode = from c in db.tblCalendarsType
                                           where c.calendarNum == item.calendarNum
                                           select c;
-                        if (!newUser.calendarCode.Contains(countryCode.First().calendarCode))
-                            newUser.calendarCode.Add(countryCode.First().calendarCode);
+                        if (!newUser.calendarCode.Contains(countryCode.FirstOrDefault().calendarCode))
+                            newUser.calendarCode.Add(countryCode.FirstOrDefault().calendarCode);
                     }
                     newUser.CountryName_En = (from c in db.tblForeignUser
                                               where c.Id == newUser.userId
@@ -171,8 +171,8 @@ namespace WebApi.Controllers
                         var countryCode = from c in db.tblCalendarsType
                                           where c.calendarNum == item.calendarNum
                                           select c;
-                        if (!newUser.calendarCode.Contains(countryCode.First().calendarCode))
-                            newUser.calendarCode.Add(countryCode.First().calendarCode);
+                        if (!newUser.calendarCode.Contains(countryCode.FirstOrDefault().calendarCode))
+                            newUser.calendarCode.Add(countryCode.FirstOrDefault().calendarCode);
                     }
                 }
                 var patient = db.tblPatient.Where(x => x.patientId == newUser.patientId).FirstOrDefault();
@@ -282,7 +282,7 @@ namespace WebApi.Controllers
             {
                 tblCalendarForUser calendarForUser = new tblCalendarForUser();
                 //the store procedure is checking if the user already exists in the db, if not, it will insert the user
-                db.InsertUser(user.Email, user.Password, user.FirstName, user.LastName, user.gender, user.phoneNum, user.userUri, user.pushToken,true,true,true,true);
+                db.InsertUser(user.Email, user.Password, user.FirstName, user.LastName, user.gender, user.phoneNum, user.userUri, user.pushToken, true, true, true, true);
                 db.SaveChanges();
                 var newUser = db.tblUser.Where(x => x.Email == user.Email).FirstOrDefault();
                 if (newUser == null)

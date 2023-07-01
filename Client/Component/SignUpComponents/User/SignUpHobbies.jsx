@@ -19,18 +19,18 @@ export default function SignUpHobbies({ navigation, route }) {
   const [booksOther, setBooksOther] = useState('');
   const [music, setMusic] = useState(HobbiesData.music);
   const [musicOther, setMusicOther] = useState('');
-  const [tvShows, setTvShows] = useState(HobbiesData.tvShows);
-  const [tvShowsOther, setTvShowsOther] = useState('');
+  const [TVShow, setTVShow] = useState(HobbiesData.TVShow);
+  const [TVShowOther, setTVShowOther] = useState('');
   const [radioChannel, setRadioChannel] = useState(HobbiesData.radioChannel);
   const [radioChannelOther, setRadioChannelOther] = useState('');
   const [food, setFood] = useState(HobbiesData.food);
   const [foodOther, setFoodOther] = useState('');
   const [drink, setDrink] = useState(HobbiesData.drink);
   const [drinkOther, setDrinkOther] = useState('');
-  const [hobbies, setHobbies] = useState(HobbiesData.hobbies);
-  const [hobbiesOther, setHobbiesOther] = useState('');
-  const [movies, setMovies] = useState(HobbiesData.movies);
-  const [moviesOther, setMoviesOther] = useState('');
+  const [specialHabits, setSpecialHabits] = useState(HobbiesData.specialHabits);
+  const [specialHabitsOther, setSpecialHabitsOther] = useState('');
+  const [movie, setMovie] = useState(HobbiesData.movie);
+  const [movieOther, setMovieOther] = useState('');
   const [other, setOther] = useState('');
 
   // Hours Night should start at 18:00 and end at 1:00
@@ -46,20 +46,20 @@ export default function SignUpHobbies({ navigation, route }) {
   const NavigateToNextLVL = () => {
     const activeBooks = books.filter((book) => book.selected).map((book) => book.name);
     const activeMusic = music.filter((music) => music.selected).map((music) => music.name);
-    const activeTvShows = tvShows.filter((tvShow) => tvShow.selected).map((tvShow) => tvShow.name);
+    const activeTVShow = TVShow.filter((tvShow) => tvShow.selected).map((tvShow) => tvShow.name);
     const activeRadioChannel = radioChannel.filter((radio) => radio.selected).map((radio) => radio.name);
     const activeFood = food.filter((food) => food.selected).map((food) => food.name);
     const activeDrink = drink.filter((drink) => drink.selected).map((drink) => drink.name);
-    const activeHobbies = hobbies.filter((hobby) => hobby.selected).map((hobby) => hobby.name);
-    const activeMovies = movies.filter((movie) => movie.selected).map((movie) => movie.name);
+    const activeSpecialHabits = specialHabits.filter((hobby) => hobby.selected).map((hobby) => hobby.name);
+    const activeMovies = movie.filter((movie) => movie.selected).map((movie) => movie.name);
     if (booksOther !== '') {
       activeBooks.push(booksOther);
     }
     if (musicOther !== '') {
       activeMusic.push(musicOther);
     }
-    if (tvShowsOther !== '') {
-      activeTvShows.push(tvShowsOther);
+    if (TVShowOther !== '') {
+      activeTVShow.push(TVShowOther);
     }
     if (radioChannelOther !== '') {
       activeRadioChannel.push(radioChannelOther);
@@ -70,31 +70,31 @@ export default function SignUpHobbies({ navigation, route }) {
     if (drinkOther !== '') {
       activeDrink.push(drinkOther);
     }
-    if (hobbiesOther !== '') {
-      activeHobbies.push(hobbiesOther);
+    if (specialHabitsOther !== '') {
+      activeSpecialHabits.push(specialHabitsOther);
     }
-    if (moviesOther !== '') {
-      activeMovies.push(moviesOther);
+    if (movieOther !== '') {
+      activeMovies.push(movieOther);
     }
     // turns each array into a string with commas between each item without the last comma    
     const activeBooksString = activeBooks.join(', ');
     const activeMusicString = activeMusic.join(', ');
-    const activeTvShowsString = activeTvShows.join(', ');
+    const activeTVShowtring = activeTVShow.join(', ');
     const activeRadioChannelString = activeRadioChannel.join(', ');
     const activeFoodString = activeFood.join(', ');
     const activeDrinkString = activeDrink.join(', ');
-    const activeHobbiesString = activeHobbies.join(', ');
+    const activeSpecialHabitsString = activeSpecialHabits.join(', ');
     const activeMoviesString = activeMovies.join(', ');
 
     const HobbiesAndLimitationsData = {
       patientId: route.params.tblPatient.patientId,
       books: activeBooksString,
       music: activeMusicString,
-      TVShow: activeTvShowsString,
+      TVShow: activeTVShowtring,
       radioChannel: activeRadioChannelString,
       food: activeFoodString,
       drink: activeDrinkString,
-      specialHabits: activeHobbiesString,
+      specialHabits: activeSpecialHabitsString,
       movie: activeMoviesString,
       afternoonNap: selectedAfterNoonNaps,
       nightSleep: selectedNightHour,
@@ -273,16 +273,16 @@ export default function SignUpHobbies({ navigation, route }) {
           <Text style={styles.modalXSText}>Pick Tv Shows </Text>
           <View style={styles.doubleContainer}>
             <FlatList
-              data={tvShows}
+              data={TVShow}
               renderItem={({ item, index }) => (
                 <View style={{ margin: 3 }}>
                   <TouchableOpacity
                     key={index}
                     style={[styles.XSInput, item.selected && { borderColor: '#548DFF' }]}
                     onPress={() => {
-                      const newTvShows = [...tvShows];
-                      newTvShows[index].selected = !newTvShows[index].selected;
-                      setTvShows(newTvShows);
+                      const newTVShow = [...TVShow];
+                      newTVShow[index].selected = !newTVShow[index].selected;
+                      setTVShow(newTVShow);
                     }}>
                     <Text style={styles.booksText}>{item.name}</Text>
                   </TouchableOpacity>
@@ -297,21 +297,21 @@ export default function SignUpHobbies({ navigation, route }) {
               style={styles.inputOther}
               placeholder="Other..."
               placeholderTextColor={'#000'}
-              value={tvShowsOther}
-              onChangeText={(text) => setTvShowsOther(text)}
+              value={TVShowOther}
+              onChangeText={(text) => setTVShowOther(text)}
             />
           </View>
 
           <Text style={styles.modalXSText}>Pick Movies </Text>
           <View style={styles.TVContainer}>
-            {movies.map((movie, index) => (
+            {movie.map((movie, index) => (
               <TouchableOpacity
                 key={index}
                 style={[styles.XSInput, movie.selected && { borderColor: '#548DFF' }]}
                 onPress={() => {
-                  const newMovies = [...movies];
+                  const newMovies = [...movie];
                   newMovies[index].selected = !newMovies[index].selected;
-                  setMovies(newMovies);
+                  setMovie(newMovies);
                 }}>
                 <Text style={styles.booksText}>{movie.name}</Text>
               </TouchableOpacity>
@@ -320,8 +320,8 @@ export default function SignUpHobbies({ navigation, route }) {
               style={styles.inputOther}
               placeholder="Other..."
               placeholderTextColor={'#000'}
-              value={moviesOther}
-              onChangeText={(text) => setMoviesOther(text)}
+              value={movieOther}
+              onChangeText={(text) => setMovieOther(text)}
             />
           </View>
 
@@ -499,24 +499,24 @@ export default function SignUpHobbies({ navigation, route }) {
         <View style={styles.modal}>
           <Text style={styles.modalText}>Pick Hobbies</Text>
           <View style={styles.FoodContainer}>
-            {hobbies.map((hobbie, index) => (
+            {specialHabits.map((specialHabits, index) => (
               <TouchableOpacity
                 key={index}
-                style={[styles.XSInput, hobbie.selected && { borderColor: '#548DFF' }]}
+                style={[styles.XSInput, specialHabits.selected && { borderColor: '#548DFF' }]}
                 onPress={() => {
-                  const newHobbies = [...hobbies];
+                  const newHobbies = [...specialHabits];
                   newHobbies[index].selected = !newHobbies[index].selected;
-                  setHobbies(newHobbies);
+                  setSpecialHabits(newHobbies);
                 }}>
-                <Text style={styles.booksText}>{hobbie.name}</Text>
+                <Text style={styles.booksText}>{specialHabits.name}</Text>
               </TouchableOpacity>
             ))}
             <TextInput
               style={styles.inputOther}
               placeholder="Other..."
               placeholderTextColor={'#000'}
-              value={hobbiesOther}
-              onChangeText={(text) => setHobbiesOther(text)}
+              value={specialHabitsOther}
+              onChangeText={(text) => setSpecialHabitsOther(text)}
             />
           </View>
           <View style={styles.btnModalContainer}>

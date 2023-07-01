@@ -14,8 +14,25 @@ const CONTAINER_PADDING = 10;
 export default function PatientProfile() {
     const { userContext } = useUserContext();
     const patientData = userContext.patientData;
-    const hobbiesAndLimitations = patientData.hobbiesAndLimitationsDTO;
+    const hobbiesAndLimitations = userContext.patientHL;
     const birthDate = moment(patientData.DateOfBirth).format('DD/MM/YYYY');
+    const [selectedCategory, setSelectedCategory] = useState('TVShow');
+    const [selectedHobbies, setSelectedHobby] = useState([]);
+    // Hobbies
+    const [hobbies, setHobbies] = useState([]);
+    const [books, setBooks] = useState(HobbiesJSON.books);
+    const [drink, setDrink] = useState(HobbiesJSON.drink);
+    const [food, setFood] = useState(HobbiesJSON.food);
+    const [movie, setMovie] = useState(HobbiesJSON.movie);
+    const [music, setMusic] = useState(HobbiesJSON.music);
+    const [specialHabits, setSpecialHabits] = useState(LimitationsJSON.specialHabits);
+    // Limitations
+    const [limitations, setLimitations] = useState([]);
+    const [allergies, setAllergies] = useState(LimitationsJSON.allergies);
+    const [sensitivities, setSensitivities] = useState(LimitationsJSON.sensitivities);
+    const [physicalAbilities, setPhysicalAbilities] = useState(LimitationsJSON.physicalAbilities);
+    const [bathRoutine, setBathRoutine] = useState(LimitationsJSON.bathRoutine);
+
     const hobbiesArr = [
         {
             key: 'TVShow',
@@ -107,11 +124,11 @@ export default function PatientProfile() {
         },
     ];
 
-    const [limitations, setLimitations] = useState([]);
     useEffect(() => {
         const updatedLimitations = [];
         limitationsArr.forEach((limitationObj) => {
             const limitationsData = hobbiesAndLimitations[0][limitationObj.key];
+            // console.log(limitationsData);
             if (limitationsData) {
                 const limitationArr = limitationsData.split(', ');
                 limitationArr.forEach((limitation) => {
@@ -123,11 +140,8 @@ export default function PatientProfile() {
         setLimitations(updatedLimitations);
     }, [hobbiesAndLimitations]);
 
-    const [selectedCategory, setSelectedCategory] = useState('All');
-    const [selectedHobbies, setSelectedHobbies] = useState([]);
-
-    const [hobbies, setHobbies] = useState([]);
     useEffect(() => {
+        // console.log(hobbiesAndLimitations);
         const updatedHobbies = [];
         hobbiesArr.forEach((hobbyObj) => {
             const hobbiesData = hobbiesAndLimitations[0][hobbyObj.key];
@@ -148,57 +162,68 @@ export default function PatientProfile() {
 
     useEffect(() => {
         const categoryHobbies = HobbiesJSON[selectedCategory];
-        setSelectedHobbies(categoryHobbies ? categoryHobbies.map((hobby) => ({ ...hobby, selected: false })) : []);
+        setSelectedHobby(categoryHobbies ? categoryHobbies.map((hobby) => ({ ...hobby, selected: false })) : []);
     }, [selectedCategory]);
 
     const handleHobbyToggle = (hobby) => {
-        const updatedHobbies = selectedHobbies.map((h) => {
-            if (h.name === hobby.name) {
-                return { ...h, selected: !h.selected };
-            }
-            return h;
-        });
-        setSelectedHobbies(updatedHobbies);
+        // Check if the hobby is already selected
+        const isHobbySelected = selectedHobbies.some(h => h.name === hobby.name);
+
+        let updatedHobbies;
+        if (isHobbySelected) {
+            // If the hobby is already selected, then we remove it
+            updatedHobbies = selectedHobbies.filter(h => h.name !== hobby.name);
+        } else {
+            // If the hobby is not selected, then we add it
+            updatedHobbies = [...selectedHobbies, hobby];
+        }
+
+        setSelectedHobby(updatedHobbies);
     };
+
 
     const HobbiesScreen = () => {
         return (
             <View>
                 <ScrollView horizontal contentContainerStyle={styles.filterContainer}>
                     {hobbiesArr.map((category) => (
-                        <Chip
-                            key={category.key}
+                        <TouchableOpacity
                             style={[
-                                styles.filterButton,
-                                selectedCategory === category.key && styles.selectedFilterButton,
+                                styles.filterButtonText,
+                                selectedCategory === category.key && styles.selectedFilterTxt,
                             ]}
                             onPress={() => setSelectedCategory(category.key)}
                         >
-                            <Text
+                            <View
+                                key={category.key}
                                 style={[
-                                    styles.filterButtonText,
-                                    selectedCategory === category.key && styles.selectedFilterTxt,
+                                    styles.filterButton,
+                                    selectedCategory === category.key && styles.selectedFilterButton,
                                 ]}
                             >
-                                {category.label}
-                            </Text>
-                        </Chip>
-                    ))}
-                </ScrollView>
+                                <Text style={styles.filterText}>{category.label}</Text>
+                            </View>
+                        </TouchableOpacity>
+                    ))
+                    }
+
+                </ScrollView >
                 <ScrollView contentContainerStyle={styles.collageContainer}>
-                    {hobbies.map((h, index) => (
-                        <View key={index} style={styles.collageItemContainer}>
-                            <Chip
-                                style={[
-                                    styles.collageBubble,
-                                    h.selected ? styles.selectedCollageBubble : null,
-                                ]}
-                                onPress={() => handleHobbyToggle(h)}
-                            >
-                                <Text style={h.selected ? styles.selectedCollageText : styles.collageText}>{h.name}</Text>
-                            </Chip>
-                        </View>
-                    ))}
+                    {
+                        selectedCategory && HobbiesJSON[selectedCategory] &&
+                        HobbiesJSON[selectedCategory].map((hobby, index) => {
+                            return (
+                                <TouchableOpacity
+                                    style={[styles.collageItemContainer, hobby.selected ? styles.selectedCollageBubble : null]}
+                                    onPress={() => handleHobbyToggle(hobby)}
+                                >
+                                    <View key={index} style={styles.collageBubble}>
+                                        <Text style={hobby.selected ? styles.selectedCollageText : styles.collageText}>{hobby.name}</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            )
+                        })
+                    }
                 </ScrollView>
             </View>
         );

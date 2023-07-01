@@ -11,7 +11,6 @@ import { Switch } from 'react-native-paper';
 import { updateEmail } from 'firebase/auth';
 import { auth, db } from '../../config/firebase';
 
-
 export default function Privacy({ navigation, route }) {
   const [Email, setEmail] = useState(null);
   const { userContext, updateUserContext, userNotifications, updateuserNotifications } = useUserContext();
@@ -108,13 +107,11 @@ export default function Privacy({ navigation, route }) {
 
   // check if email already exists in DB
   const checkEmailInDB = () => {
-    console.log('checkEmailInDB', Email);
     if (Email !== null && validateEmail(Email)) {
       let checkMail = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetEmail';
       let userDto = {
         Email: Email,
       }
-      console.log('userDto', userDto);
       fetch(checkMail, {
         method: 'POST',
         body: JSON.stringify(userDto),
@@ -155,6 +152,12 @@ export default function Privacy({ navigation, route }) {
       involvedInId: userContext.involvedInId,//if user is a not caregiver, this field will be same as userId
       patientId: userContext.patientId,
       userUri: userContext.userUri,
+      calendarCode: userContext.calendarCode,
+      CountryName_En: userContext.CountryName_En,
+      patientHL: userContext.patientHL,
+      patientData: userContext.patientData,
+      pushToken: userContext.pushToken,
+      pushToken2: userContext.pushTokenSecoundSide,
     }
 
     fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Settings/UpdateUserEmail', {

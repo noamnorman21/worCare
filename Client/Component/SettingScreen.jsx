@@ -110,6 +110,12 @@ function HomeScreen({ navigation, route }) {
             workerId: userContext.workerId,//if user is a caregiver, this field will be same as userId
             involvedInId: userContext.involvedInId,//if user is a not caregiver, this field will be same as userId
             patientId: userContext.patientId,
+            calendarCode: userContext.calendarCode,
+            CountryName_En: userContext.CountryName_En,
+            patientHL: userContext.patientHL,
+            patientData: userContext.patientData,
+            pushToken: userContext.pushToken,
+            pushToken2: userContext.pushTokenSecoundSide,
         }
         if (userToUpdate.phoneNum != userContext.phoneNum) {
             fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetPhoneNum', {

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, Modal, Dimensions, SafeAreaView,Keyboard } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, Modal, Dimensions, SafeAreaView, Keyboard } from 'react-native';
 import { Entypo } from '@expo/vector-icons';
 import { Dropdown } from 'react-native-element-dropdown';
 import LimitationsData from './Limitations.json';
@@ -48,7 +48,7 @@ export default function SignUpLimitations({ navigation, route }) {
     const sensitivitiesString = activeSensitivities.join(', ');
     const physicalAbilitiesString = activePhysicalAbilities.join(', ');
     const bathRoutineString = activeBathRoutine.join(', ');
-    
+
     // creates a table with the data
     const tblLimitations = {
       allergies: allergiesString,
@@ -57,14 +57,14 @@ export default function SignUpLimitations({ navigation, route }) {
       bathRoutine: bathRoutineString,
       sensitivityToNoise: noiseSensitive,
       otherL: comments,
-    };    
-    navigation.navigate('SignUpHobbies', { tblLimitations: tblLimitations, tblPatient : route.params.patientData, tblUser : route.params.tblUser }); // Navigate to next lvl
+    };
+    navigation.navigate('SignUpHobbies', { tblLimitations: tblLimitations, tblPatient: route.params.patientData, tblUser: route.params.tblUser }); // Navigate to next lvl
   };
   changebathRoutine = (value) => {
     if (value === 'All') { // if the user clicked on the "All" button
       // change the state of all the checkboxes with inverse value
       if (bathRoutine.filter((item) => item.selected === true).length === bathRoutine.length - 1) {
-        bathRoutine[bathRoutine.length - 1].selected = true;        
+        bathRoutine[bathRoutine.length - 1].selected = true;
       }
       // if all the checkboxes are checked, uncheck all of them
       if (bathRoutine.filter((item) => item.selected === true).length === bathRoutine.length) {
@@ -348,10 +348,10 @@ export default function SignUpLimitations({ navigation, route }) {
         onChangeText={setComments}
         value={comments}
         multiline={true}
-      //  keyboardType="default"
+        //  keyboardType="default"
         returnKeyType='done'
         //close keyboard when pressing done
-        onSubmitEditing={Keyboard.dismiss}     
+        onSubmitEditing={Keyboard.dismiss}
       />
 
       {/* Continue Button */}

@@ -118,7 +118,7 @@
          "selected": false
       }
    ],
-   "movies": [
+   "movie": [
       {
          "id": 1,
          "name": "Action",
@@ -165,7 +165,7 @@
          "selected": false
       }
    ],
-   "tvShows": [
+   "TVShow": [
       {
          "id": 1,
          "name": "Action",
@@ -393,7 +393,7 @@
          "selected": false
       }
    ],
-   "hobbies": [
+   "specialHabits": [
       {
          "id": 1,
          "name": "Gardening",
