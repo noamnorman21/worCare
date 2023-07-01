@@ -565,46 +565,54 @@ namespace WebApi.Controllers
 
         [HttpPut]
         [Route("UpdateDrugForPatientDTO")]
-        public IHttpActionResult UpdateDrugForPatientDTO([FromBody] DrugForPatientDTO drug)
+        public IHttpActionResult UpdateDrugForPatientDTO([FromBody] dynamic list)
         {
-            try
+            int listId = list.taskForDelete.listId;
+            int taskId = list.taskForDelete.taskId;
+
+            //first we will remove from the db all actacul tasks that from this taskId and also remove the push notification using the actaculId 
+            var actualTasks = from a in db.tblActualTask
+                              where a.taskId == taskId
+                              select a;
+            foreach (tblActualTask actualTask in actualTasks)
             {
-                tblDrugForPatient tblDrugForPatient = db.tblDrugForPatient.Where(x => x.drugId == drug.drugId && x.listId == drug.listId).FirstOrDefault();
-                if (tblDrugForPatient != null)
-                {
-                    if (drug.qtyInBox != null)
-                    {
-                        tblDrugForPatient.qtyInBox = drug.qtyInBox;
-                    }
-                    if (drug.dosage != 0 && drug.dosage != tblDrugForPatient.dosage)
-                    {
-                        tblDrugForPatient.dosage = drug.dosage;
-                    }
-                    if (drug.lastTakenDate != null)
-                    {
-                        tblDrugForPatient.lastTakenDate = DateTime.Now;
-                    }
-                    db.SaveChanges();
-                    tblPatientTask patientTask = db.tblPatientTask.Where(x => x.listId == drug.listId).FirstOrDefault();
-                    if (patientTask != null)
-                    {
-                        if (drug.toDate != null)
-                        {
-                            patientTask.taskToDate = drug.toDate;
-                        }
-                        if (patientTask.taskComment != "" && drug.taskComment != null)
-                        {
-                            patientTask.taskComment = drug.taskComment;
-                        }
-                        db.SaveChanges();
-                    }
-                }
-                return Ok("Med updated");
+                db.tblActualTask.Remove(actualTask);
+                db.SaveChanges();
             }
-            catch (Exception ex)
+            //remove the patientTask
+            tblPatientTask tblPatientTask = db.tblPatientTask.Where(x => x.taskId == taskId).FirstOrDefault();
+            if (tblPatientTask != null)
             {
-                return BadRequest(ex.Message);
+                db.tblPatientTask.Remove(tblPatientTask);
+                db.SaveChanges();
             }
+            
+            //remove all related DrugForPatient using the listId
+            var drugForPatient = from d in db.tblDrugForPatient
+                                 where d.listId == listId
+                                 select d;
+            foreach (tblDrugForPatient drug in drugForPatient)
+            {
+                db.tblDrugForPatient.Remove(drug);
+                db.SaveChanges();
+            }
+            //remove all actualList using the listId
+            var actualList = from a in db.tblActualList
+                             where a.listId == listId
+                             select a;
+            foreach (tblActualList actual in actualList)
+            {
+                db.tblActualList.Remove(actual);
+                db.SaveChanges();
+            }
+
+
+
+
+
+            ///רק לבינתיים....
+
+            return Ok("DrugForPatientDTO updated"); 
         }
     }
 }
