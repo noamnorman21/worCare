@@ -274,6 +274,7 @@ function CustomHeader() {
                         presentation: 'modal',
                         cardOverlayEnabled: true,
                         headerShown: true,
+                        headerTitleAlign: 'center',
                     })}
                 />
                 <Stack.Screen

@@ -53,6 +53,8 @@ function MainRoom({ navigation }) {
   const [publicGroupNames, setPublicGroupNames] = useState([])
   const [searchQuery, setSearchQuery] = useState('');
 
+  const onChangeSearch = query => searchQuery(query);
+
   useEffect(() => {
     if (userContext) {
       const tempNames = query(collection(db, auth.currentUser.email), orderBy("lastMessageTime", "desc"));
@@ -115,27 +117,37 @@ function MainRoom({ navigation }) {
     }
   }, [userChats]);
 
-  useEffect(() => {
-    const filteredUsers = users.filter(user => user.userType === userContext.userType && user.name.toLowerCase().includes(searchQuery.toLowerCase()));
-    const renderUsers = () => {
-      const res = filteredUsers.map((user) => {
-        return (user.userType == userContext.userType &&
-          <View key={user.id} >
-            <TouchableOpacity style={styles.userCard} onPress={() => addNewPrivateChat(user)}>
-              <Image source={{ uri: user.avatar }} style={{ width: 45, height: 45, borderRadius: 45 }} />
-              <Text style={styles.userName}>{user.name}</Text>
-            </TouchableOpacity>
-            <View style={styles.lineContainer}>
-              <View style={styles.line} />
-            </View>
+  const renderUsers = (users) => {
+    const res = users.map((user) => {
+      return (user.userType == userContext.userType &&
+        <View key={user.id} >
+          <TouchableOpacity style={styles.userCard} onPress={() => addNewPrivateChat(user)}>
+            <Image source={{ uri: user.avatar }} style={{ width: 45, height: 45, borderRadius: 45 }} />
+            <Text style={styles.userName}>{user.name}</Text>
+          </TouchableOpacity>
+          <View style={styles.lineContainer}>
+            <View style={styles.line} />
           </View>
-        )
-      }
+        </View>
       )
-      setUsersToDisplay(res)
     }
-    renderUsers();
+    )
+    setUsersToDisplay(res)
+  }
+
+  useEffect(() => {
+    const filteredUsers = users.filter(user => user.userType === userContext.userType);
+    renderUsers(filteredUsers);
   }, [users]);
+
+  useEffect(() => {
+    const filteredUsers = users.filter(user => user.userType === userContext.userType);
+    const searchedUsers = filteredUsers.filter((itsearchQueryem) => {
+      return itsearchQueryem.name.includes(searchQuery)
+    });
+    renderUsers(searchedUsers);
+  }, [searchQuery]);
+  
 
   const addNewPrivateChat = async (user) => {
     // check if convo already exists in firestore 
