@@ -337,6 +337,7 @@
     <EntitySetMapping Name="tblScheduledNotifications">
       <EntityTypeMapping TypeName="igroup194_prodModel.tblScheduledNotifications">
         <MappingFragment StoreEntitySet="tblScheduledNotifications">
+          <ScalarProperty Name="taskId" ColumnName="taskId" />
           <ScalarProperty Name="paymentId" ColumnName="paymentId" />
           <ScalarProperty Name="actualTaskId" ColumnName="actualTaskId" />
           <ScalarProperty Name="data" ColumnName="data" />

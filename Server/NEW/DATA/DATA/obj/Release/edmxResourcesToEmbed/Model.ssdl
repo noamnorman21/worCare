@@ -265,6 +265,7 @@
     <Property Name="data" Type="nvarchar(max)" />
     <Property Name="actualTaskId" Type="int" />
     <Property Name="paymentId" Type="int" />
+    <Property Name="taskId" Type="int" />
   </EntityType>
   <EntityType Name="tblUser">
     <Key>
@@ -768,6 +769,7 @@
     <Parameter Name="data" Type="nvarchar(max)" Mode="In" />
     <Parameter Name="actualTaskId" Type="int" Mode="In" />
     <Parameter Name="paymentId" Type="int" Mode="In" />
+    <Parameter Name="taskId" Type="int" Mode="In" />
   </Function>
   <Function Name="InsertUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="Email" Type="varchar" Mode="In" />

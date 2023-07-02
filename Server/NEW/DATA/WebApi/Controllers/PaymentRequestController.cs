@@ -90,7 +90,7 @@ namespace WebApi.Controllers
                 DateTime endDate = req.requestDate.AddDays(14); // requestEndDate should be requestDate + 14 days
                 db.NewPaymentRequest(req.requestSubject, req.amountToPay, req.requestDate, req.requestProofDocument, req.requestComment, req.requestStatus, req.userId, endDate);
                 int requestId = db.tblPaymentRequest.Max(x => x.requestId);
-                db.InsertScheduledNotification(req.pushToken2, "Reminder: Payment Request", "You have a pending payment request", endDate, null, null, requestId);
+                db.InsertScheduledNotification(req.pushToken2, "Reminder: Payment Request", "You have a pending payment request", endDate, null, null, requestId,null);
                 db.SaveChanges();
                 return Ok("Request added successfully!");
             }

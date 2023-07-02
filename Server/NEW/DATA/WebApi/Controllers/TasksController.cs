@@ -11,6 +11,7 @@ using Microsoft.Ajax.Utilities;
 using System.Data.Entity.SqlServer;
 using Newtonsoft.Json;
 using System.Text;
+using System.Globalization;
 
 namespace WebApi.Controllers
 {
@@ -269,6 +270,75 @@ namespace WebApi.Controllers
         [Route("InsertActualList")] //dynamic because the list can be drug or product list
         public IHttpActionResult InsertActualList([FromBody] dynamic list)
         {
+            //this section is for update a drugForPatient
+            if (list.taskForDelete.taskId != null)
+            {
+
+                int listId = list.taskForDelete.listId;
+                int taskId = list.taskForDelete.taskId;
+
+                //first we will remove from the db all actacul tasks that from this taskId and also remove the push notification using the actaculId 
+                var actualTasks = from a in db.tblActualTask
+                                  where a.taskId == taskId
+                                  select a;
+                foreach (tblActualTask actualT in actualTasks)
+                {
+                    db.tblActualTask.Remove(actualT);
+                    
+                }
+                db.SaveChanges();
+
+                //remove the patientTask
+                tblPatientTask tblPatientTask = db.tblPatientTask.Where(x => x.taskId == taskId).FirstOrDefault();
+                if (tblPatientTask != null)
+                {
+                    db.tblPatientTask.Remove(tblPatientTask);
+                    db.SaveChanges();
+                }
+
+                //remove all ScheduledNotification
+                var scheduledNotification = from sc in db.tblScheduledNotifications
+                                            where sc.taskId == taskId
+                                            select sc;
+                foreach (tblScheduledNotifications item in scheduledNotification)
+                {
+                    db.tblScheduledNotifications.Remove(item);
+                  
+
+                }
+                db.SaveChanges();
+                //remove all related DrugForPatient using the listId
+                var drugForPatient = from d in db.tblDrugForPatient
+                                     where d.listId == listId
+                                     select d;
+                foreach (tblDrugForPatient drug in drugForPatient)
+                {
+                    db.tblDrugForPatient.Remove(drug);
+                   
+                }
+                db.SaveChanges();
+                //remove all actualList using the listId
+                var actualList = from a in db.tblActualList
+                                 where a.listId == listId
+                                 select a;
+                foreach (tblActualList actual in actualList)
+                {
+                    db.tblActualList.Remove(actual);
+             
+                }
+                db.SaveChanges();
+                list = list.newDrugForPatient;
+
+                //"30/07/2023" convert this format to DateTime
+                ///this is the formt 2023-05-16
+                ///
+                
+         
+
+
+            }
+
+
             // type = 1 - True -  drug list
             // type = 0 - False - product list
             // type = null - regular task

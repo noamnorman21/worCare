@@ -1023,6 +1023,7 @@
       <Parameter Name="data" Mode="In" Type="String" />
       <Parameter Name="actualTaskId" Mode="In" Type="Int32" />
       <Parameter Name="paymentId" Mode="In" Type="Int32" />
+      <Parameter Name="taskId" Mode="In" Type="Int32" />
     </FunctionImport>
   </EntityContainer>
   <ComplexType Name="sp_helpdiagramdefinition_Result">
@@ -1048,5 +1049,6 @@
     <Property Name="data" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
     <Property Name="actualTaskId" Type="Int32" />
     <Property Name="paymentId" Type="Int32" />
+    <Property Name="taskId" Type="Int32" />
   </EntityType>
 </Schema>
