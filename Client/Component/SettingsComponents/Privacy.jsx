@@ -205,15 +205,17 @@ export default function Privacy({ navigation, route }) {
   }
 
   const deleteProfile = () => {
+    let user= {
+      userId: userContext.userId,
+      Email: Email,
+    }
+    return console.log(user);
     fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/DeleteUser', {
       method: 'DELETE',
       headers: new Headers({
         'Content-Type': 'application/json; charset=UTF-8',
       }),
-      body: JSON.stringify({
-        userId: userId,
-        Email: Email,
-      })
+      body: JSON.stringify(user)
     })
       .then(res => {
         console.log('res.ok', res.ok);
