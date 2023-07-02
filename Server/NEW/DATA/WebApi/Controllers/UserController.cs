@@ -411,7 +411,6 @@ namespace WebApi.Controllers
                 }
                 else
                 {
-
                     var patientTasks = db.tblPatientTask.Where(x => x.workerId == userToDelete.userId).ToList();
                     foreach (var task in patientTasks)
                     {
@@ -470,7 +469,6 @@ namespace WebApi.Controllers
                         db.tblForeignUser.Remove(forigenUser);
                     }
                 }
-
 
                 // remove Paychecks
                 var paychecks = db.tblPaycheck.Where(x => x.UserId == userToDelete.userId).ToList();

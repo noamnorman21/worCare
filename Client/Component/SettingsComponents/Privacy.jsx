@@ -13,7 +13,7 @@ import { auth, db } from '../../config/firebase';
 
 export default function Privacy({ navigation, route }) {
   const [Email, setEmail] = useState(null);
-  const { userContext, updateUserContext, userNotifications, updateuserNotifications } = useUserContext();
+  const { userContext, updateUserContext, userNotifications, updateuserNotifications, logOutFireBase } = useUserContext();
   const [showPassword, setShowPassword] = useState(false);
   const [showPassword2, setShowPassword2] = useState(false);
   const [password1, setPassword1] = useState('');
@@ -534,6 +534,7 @@ export default function Privacy({ navigation, route }) {
           onPress={() => {
             AsyncStorage.removeItem("user");
             AsyncStorage.removeItem("userData");
+            logOutFireBase()
             Alert.alert('Log Out', 'You have been logged out', [
               {
                 text: 'OK',
