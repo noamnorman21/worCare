@@ -9,7 +9,7 @@ namespace DATA
 {
     public partial class tblCalendarForUser
     {
-        igroup194Db db = new igroup194Db();
+        igroup194DB db = new igroup194DB();
         public int InsertCalendar(int id, int[] calendarsTypeArr)
         {
             try
@@ -35,7 +35,7 @@ namespace DATA
     }
     public partial class tblActualTask
     {
-        igroup194Db db = new igroup194Db();
+        igroup194DB db = new igroup194DB();
         public bool InsertActualTask(string frequency, TimeSpan[] timesInDayArr, int taskId, DateTime taskFromDate, DateTime taskToDate, int listId, Nullable<bool> type, string taskName, string pushToken)
         {
             try

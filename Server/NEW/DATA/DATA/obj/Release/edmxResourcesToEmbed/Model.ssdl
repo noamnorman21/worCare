@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Schema Namespace="igroup194_prodModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+<Schema Namespace="igroup194.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
   <EntityType Name="sysdiagrams">
     <Key>
       <PropertyRef Name="diagram_id" />
@@ -180,7 +180,7 @@
     <Property Name="frequency" Type="varchar" MaxLength="15" Nullable="false" />
     <Property Name="taskComment" Type="varchar(max)" />
     <Property Name="patientId" Type="char" MaxLength="9" />
-    <Property Name="workerId" Type="int" Nullable="false" />
+    <Property Name="workerId" Type="int" />
     <Property Name="userId" Type="int" Nullable="false" />
     <Property Name="listId" Type="int" Nullable="false" />
     <Property Name="timesInDayArray" Type="varchar" MaxLength="255" />
@@ -552,7 +552,7 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="FK__tblPatien__worke__73A521EA">
-    <End Role="tblForeignUser" Type="Self.tblForeignUser" Multiplicity="1" />
+    <End Role="tblForeignUser" Type="Self.tblForeignUser" Multiplicity="0..1" />
     <End Role="tblPatientTask" Type="Self.tblPatientTask" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="tblForeignUser">
@@ -846,7 +846,7 @@
     <Parameter Name="workerId" Type="int" Mode="In" />
     <Parameter Name="status" Type="char" Mode="In" />
   </Function>
-  <EntityContainer Name="igroup194_prodModelStoreContainer">
+  <EntityContainer Name="igroup194StoreContainer">
     <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="tblActualList" EntityType="Self.tblActualList" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="tblActualTask" EntityType="Self.tblActualTask" Schema="dbo" store:Type="Tables" />

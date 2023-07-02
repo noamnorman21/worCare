@@ -415,7 +415,52 @@ namespace WebApi.Controllers
                     var patientTasks = db.tblPatientTask.Where(x => x.workerId == userToDelete.userId).ToList();
                     foreach (var task in patientTasks)
                     {
+                        var actuall = db.tblActualTask.Where(y => y.taskId == task.taskId).ToList();
+                        foreach (var act in actuall)
+                        {
+                            var noti = db.tblScheduledNotifications.Where(y => y.actualTaskId == act.actualId).FirstOrDefault();
+                            if (noti != null)
+                            {
+                                db.tblScheduledNotifications.Remove(noti);
+                            }
+                        }
                         task.workerId = null;
+                    }
+
+                    //remove paymentRequests
+                    var payments = db.tblPaymentRequest.Where(x => x.userId == userToDelete.userId).ToList();
+                    foreach (var pay in payments)
+                    {
+                        var notifications = db.tblScheduledNotifications.Where(x => x.paymentId == pay.requestId).ToList();
+                        foreach (var noti in notifications)
+                        {
+                            db.tblScheduledNotifications.Remove(noti);
+                        }
+                        db.tblPaymentRequest.Remove(pay);
+                    }
+
+                    //remove caresForPatient
+                    var cares = db.tblCaresForPatient.Where(x => x.workerId == userToDelete.userId).ToList();
+                    foreach (var care in cares)
+                    {
+                        db.tblCaresForPatient.Remove(care);
+                    }
+
+                    //remove private Task
+                    var privateTasks = db.tblPrivateTask.Where(x => x.workerId == userToDelete.userId).ToList();
+                    foreach (var task in privateTasks)
+                    {
+                        var actuall = db.tblPrivateActualTask.Where(y => y.taskId == task.taskId).ToList();
+                        foreach (var act in actuall)
+                        {
+                            var noti = db.tblScheduledNotifications.Where(y => y.actualTaskId == act.actualId).FirstOrDefault();
+                            if (noti != null)
+                            {
+                                db.tblScheduledNotifications.Remove(noti);
+                            }
+                            db.tblPrivateActualTask.Remove(act);
+                        }
+                        db.tblPrivateTask.Remove(task);
                     }
 
                     //remove forigen user

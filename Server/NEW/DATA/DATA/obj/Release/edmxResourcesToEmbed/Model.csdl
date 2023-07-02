@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Schema Namespace="igroup194_prodModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+<Schema Namespace="igroup194" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
   <EntityType Name="sysdiagrams">
     <Key>
       <PropertyRef Name="diagram_id" />
@@ -49,9 +49,9 @@
       <PropertyRef Name="calendarNum" />
     </Key>
     <Property Name="calendarNum" Type="Int32" Nullable="false" />
+    <Property Name="calendarCode" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
     <Property Name="calendarName" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
     <NavigationProperty Name="tblCalendarForUser" Relationship="Self.FK__tblCalend__calen__07AC1A97" FromRole="tblCalendarsType" ToRole="tblCalendarForUser" />
-    <Property Name="calendarCode" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
   </EntityType>
   <EntityType Name="tblCaresForPatient">
     <Key>
@@ -95,9 +95,9 @@
     <Property Name="drugUrl" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
     <Property Name="modifyDate" Type="DateTime" Precision="0" />
     <Property Name="Type" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
-    <NavigationProperty Name="tblDrugForPatient" Relationship="Self.FK__tblDrugFo__drugI__1411F17C" FromRole="tblDrug" ToRole="tblDrugForPatient" />
     <Property Name="drugNameEn" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
     <Property Name="drugUrlEn" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="tblDrugForPatient" Relationship="Self.FK__tblDrugFo__drugI__1411F17C" FromRole="tblDrug" ToRole="tblDrugForPatient" />
   </EntityType>
   <EntityType Name="tblDrugForPatient">
     <Key>
@@ -111,10 +111,10 @@
     <Property Name="minQuantity" Type="Byte" />
     <Property Name="drugId" Type="Int32" Nullable="false" />
     <Property Name="patientId" Type="String" MaxLength="9" FixedLength="true" Unicode="false" />
+    <Property Name="lastTakenDate" Type="DateTime" Precision="3" />
     <NavigationProperty Name="tblActualList" Relationship="Self.FK__tblDrugFo__listI__131DCD43" FromRole="tblDrugForPatient" ToRole="tblActualList" />
     <NavigationProperty Name="tblDrug" Relationship="Self.FK__tblDrugFo__drugI__1411F17C" FromRole="tblDrugForPatient" ToRole="tblDrug" />
     <NavigationProperty Name="tblPatient" Relationship="Self.FK__tblDrugFo__patie__150615B5" FromRole="tblDrugForPatient" ToRole="tblPatient" />
-    <Property Name="lastTakenDate" Type="DateTime" Precision="3" />
   </EntityType>
   <EntityType Name="tblForeignUser">
     <Key>
@@ -218,15 +218,15 @@
     <Property Name="frequency" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
     <Property Name="taskComment" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
     <Property Name="patientId" Type="String" MaxLength="9" FixedLength="true" Unicode="false" />
-    <Property Name="workerId" Type="Int32" Nullable="false" />
+    <Property Name="workerId" Type="Int32" />
     <Property Name="userId" Type="Int32" Nullable="false" />
     <Property Name="listId" Type="Int32" Nullable="false" />
+    <Property Name="timesInDayArray" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
     <NavigationProperty Name="tblActualList" Relationship="Self.FK__tblPatien__listI__758D6A5C" FromRole="tblPatientTask" ToRole="tblActualList" />
     <NavigationProperty Name="tblActualTask" Relationship="Self.FK__tblActual__taskI__795DFB40" FromRole="tblPatientTask" ToRole="tblActualTask" />
     <NavigationProperty Name="tblForeignUser" Relationship="Self.FK__tblPatien__worke__73A521EA" FromRole="tblPatientTask" ToRole="tblForeignUser" />
     <NavigationProperty Name="tblPatient" Relationship="Self.FK__tblPatien__patie__72B0FDB1" FromRole="tblPatientTask" ToRole="tblPatient" />
     <NavigationProperty Name="tblUser" Relationship="Self.FK__tblPatien__userI__74994623" FromRole="tblPatientTask" ToRole="tblUser" />
-    <Property Name="timesInDayArray" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
   </EntityType>
   <EntityType Name="tblPaycheck">
     <Key>
@@ -252,8 +252,8 @@
     <Property Name="requestComment" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
     <Property Name="requestStatus" Type="String" MaxLength="1" FixedLength="true" Unicode="false" Nullable="false" />
     <Property Name="userId" Type="Int32" Nullable="false" />
-    <NavigationProperty Name="tblForeignUser" Relationship="Self.FK__tblPaymen__userI__1CA7377D" FromRole="tblPaymentRequest" ToRole="tblForeignUser" />
     <Property Name="requestEndDate" Type="DateTime" Precision="0" />
+    <NavigationProperty Name="tblForeignUser" Relationship="Self.FK__tblPaymen__userI__1CA7377D" FromRole="tblPaymentRequest" ToRole="tblForeignUser" />
   </EntityType>
   <EntityType Name="tblPrivateActualTask">
     <Key>
@@ -304,6 +304,20 @@
     <NavigationProperty Name="tblList" Relationship="Self.FK__tblProductList__226010D3" FromRole="tblProductList" ToRole="tblList" />
     <NavigationProperty Name="tblProduct" Relationship="Self.FK__tblProduc__produ__2354350C" FromRole="tblProductList" ToRole="tblProduct" />
   </EntityType>
+  <EntityType Name="tblScheduledNotifications">
+    <Key>
+      <PropertyRef Name="notificationID" />
+    </Key>
+    <Property Name="notificationID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="pushToken" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="title" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="pushMessage" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="scheduledTime" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="data" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="actualTaskId" Type="Int32" />
+    <Property Name="paymentId" Type="Int32" />
+    <Property Name="taskId" Type="Int32" />
+  </EntityType>
   <EntityType Name="tblUser">
     <Key>
       <PropertyRef Name="userId" />
@@ -316,16 +330,16 @@
     <Property Name="gender" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
     <Property Name="phoneNum" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
     <Property Name="userUri" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
-    <NavigationProperty Name="tblCalendarForUser" Relationship="Self.FK__tblCalend__userI__06B7F65E" FromRole="tblUser" ToRole="tblCalendarForUser" />
-    <NavigationProperty Name="tblForeignUser" Relationship="Self.FK__tblForeignUs__Id__6462DE5A" FromRole="tblUser" ToRole="tblForeignUser" />
-    <NavigationProperty Name="tblPatient" Relationship="Self.FK__tblPatien__userI__55209ACA" FromRole="tblUser" ToRole="tblPatient" />
-    <NavigationProperty Name="tblPatientTask" Relationship="Self.FK__tblPatien__userI__74994623" FromRole="tblUser" ToRole="tblPatientTask" />
-    <NavigationProperty Name="tblPaycheck" Relationship="Self.FK__tblPayche__UserI__618671AF" FromRole="tblUser" ToRole="tblPaycheck" />
     <Property Name="pushToken" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
     <Property Name="financeNotifications" Type="Boolean" />
     <Property Name="chatNotifications" Type="Boolean" />
     <Property Name="medNotifications" Type="Boolean" />
     <Property Name="tasksNotifications" Type="Boolean" />
+    <NavigationProperty Name="tblCalendarForUser" Relationship="Self.FK__tblCalend__userI__06B7F65E" FromRole="tblUser" ToRole="tblCalendarForUser" />
+    <NavigationProperty Name="tblForeignUser" Relationship="Self.FK__tblForeignUs__Id__6462DE5A" FromRole="tblUser" ToRole="tblForeignUser" />
+    <NavigationProperty Name="tblPatient" Relationship="Self.FK__tblPatien__userI__55209ACA" FromRole="tblUser" ToRole="tblPatient" />
+    <NavigationProperty Name="tblPatientTask" Relationship="Self.FK__tblPatien__userI__74994623" FromRole="tblUser" ToRole="tblPatientTask" />
+    <NavigationProperty Name="tblPaycheck" Relationship="Self.FK__tblPayche__UserI__618671AF" FromRole="tblUser" ToRole="tblPaycheck" />
   </EntityType>
   <Association Name="FK__tblDrugFo__listI__131DCD43">
     <End Role="tblActualList" Type="Self.tblActualList" Multiplicity="1" />
@@ -516,7 +530,7 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="FK__tblPatien__worke__73A521EA">
-    <End Role="tblForeignUser" Type="Self.tblForeignUser" Multiplicity="1" />
+    <End Role="tblForeignUser" Type="Self.tblForeignUser" Multiplicity="0..1" />
     <End Role="tblPatientTask" Type="Self.tblPatientTask" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="tblForeignUser">
@@ -683,7 +697,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <EntityContainer Name="igroup194Db" annotation:LazyLoadingEnabled="true">
+  <EntityContainer Name="igroup194DB" annotation:LazyLoadingEnabled="true">
     <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
     <EntitySet Name="tblActualList" EntityType="Self.tblActualList" />
     <EntitySet Name="tblActualTask" EntityType="Self.tblActualTask" />
@@ -707,6 +721,7 @@
     <EntitySet Name="tblPrivateTask" EntityType="Self.tblPrivateTask" />
     <EntitySet Name="tblProduct" EntityType="Self.tblProduct" />
     <EntitySet Name="tblProductList" EntityType="Self.tblProductList" />
+    <EntitySet Name="tblScheduledNotifications" EntityType="Self.tblScheduledNotifications" />
     <EntitySet Name="tblUser" EntityType="Self.tblUser" />
     <AssociationSet Name="FK__tblDrugFo__listI__131DCD43" Association="Self.FK__tblDrugFo__listI__131DCD43">
       <End Role="tblActualList" EntitySet="tblActualList" />
@@ -863,6 +878,14 @@
       <Parameter Name="actualId" Mode="In" Type="Int32" />
       <Parameter Name="taskId" Mode="In" Type="Int32" />
     </FunctionImport>
+    <FunctionImport Name="InsertNewDrug">
+      <Parameter Name="drugName" Mode="In" Type="String" />
+      <Parameter Name="drugNameEn" Mode="In" Type="String" />
+      <Parameter Name="drugUrl" Mode="In" Type="String" />
+      <Parameter Name="drugUrlEn" Mode="In" Type="String" />
+      <Parameter Name="modifyDate" Mode="In" Type="DateTime" />
+      <Parameter Name="Type" Mode="In" Type="String" />
+    </FunctionImport>
     <FunctionImport Name="InsertPatient">
       <Parameter Name="patientId" Mode="In" Type="String" />
       <Parameter Name="FirstName" Mode="In" Type="String" />
@@ -931,6 +954,16 @@
       <Parameter Name="productQuantity" Mode="In" Type="Int32" />
       <Parameter Name="commentForProduct" Mode="In" Type="String" />
     </FunctionImport>
+    <FunctionImport Name="InsertScheduledNotification">
+      <Parameter Name="pushToken" Mode="In" Type="String" />
+      <Parameter Name="title" Mode="In" Type="String" />
+      <Parameter Name="pushMessage" Mode="In" Type="String" />
+      <Parameter Name="scheduledTime" Mode="In" Type="DateTime" />
+      <Parameter Name="data" Mode="In" Type="String" />
+      <Parameter Name="actualTaskId" Mode="In" Type="Int32" />
+      <Parameter Name="paymentId" Mode="In" Type="Int32" />
+      <Parameter Name="taskId" Mode="In" Type="Int32" />
+    </FunctionImport>
     <FunctionImport Name="InsertUser">
       <Parameter Name="Email" Mode="In" Type="String" />
       <Parameter Name="Password" Mode="In" Type="String" />
@@ -987,11 +1020,11 @@
       <Parameter Name="diagramname" Mode="In" Type="String" />
       <Parameter Name="owner_id" Mode="In" Type="Int32" />
     </FunctionImport>
-    <FunctionImport Name="sp_helpdiagramdefinition" ReturnType="Collection(igroup194_prodModel.sp_helpdiagramdefinition_Result)">
+    <FunctionImport Name="sp_helpdiagramdefinition" ReturnType="Collection(igroup194.sp_helpdiagramdefinition_Result)">
       <Parameter Name="diagramname" Mode="In" Type="String" />
       <Parameter Name="owner_id" Mode="In" Type="Int32" />
     </FunctionImport>
-    <FunctionImport Name="sp_helpdiagrams" ReturnType="Collection(igroup194_prodModel.sp_helpdiagrams_Result)">
+    <FunctionImport Name="sp_helpdiagrams" ReturnType="Collection(igroup194.sp_helpdiagrams_Result)">
       <Parameter Name="diagramname" Mode="In" Type="String" />
       <Parameter Name="owner_id" Mode="In" Type="Int32" />
     </FunctionImport>
@@ -1006,25 +1039,6 @@
       <Parameter Name="workerId" Mode="In" Type="Int32" />
       <Parameter Name="status" Mode="In" Type="String" />
     </FunctionImport>
-    <FunctionImport Name="InsertNewDrug">
-      <Parameter Name="drugName" Mode="In" Type="String" />
-      <Parameter Name="drugNameEn" Mode="In" Type="String" />
-      <Parameter Name="drugUrl" Mode="In" Type="String" />
-      <Parameter Name="drugUrlEn" Mode="In" Type="String" />
-      <Parameter Name="modifyDate" Mode="In" Type="DateTime" />
-      <Parameter Name="Type" Mode="In" Type="String" />
-    </FunctionImport>
-    <EntitySet Name="tblScheduledNotifications" EntityType="igroup194_prodModel.tblScheduledNotifications" />
-    <FunctionImport Name="InsertScheduledNotification">
-      <Parameter Name="pushToken" Mode="In" Type="String" />
-      <Parameter Name="title" Mode="In" Type="String" />
-      <Parameter Name="pushMessage" Mode="In" Type="String" />
-      <Parameter Name="scheduledTime" Mode="In" Type="DateTime" />
-      <Parameter Name="data" Mode="In" Type="String" />
-      <Parameter Name="actualTaskId" Mode="In" Type="Int32" />
-      <Parameter Name="paymentId" Mode="In" Type="Int32" />
-      <Parameter Name="taskId" Mode="In" Type="Int32" />
-    </FunctionImport>
   </EntityContainer>
   <ComplexType Name="sp_helpdiagramdefinition_Result">
     <Property Type="Int32" Name="version" Nullable="true" />
@@ -1037,18 +1051,4 @@
     <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
     <Property Type="Int32" Name="OwnerID" Nullable="false" />
   </ComplexType>
-  <EntityType Name="tblScheduledNotifications">
-    <Key>
-      <PropertyRef Name="notificationID" />
-    </Key>
-    <Property Name="notificationID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="pushToken" Type="String" Nullable="false" MaxLength="4000" FixedLength="false" Unicode="true" />
-    <Property Name="title" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-    <Property Name="pushMessage" Type="String" Nullable="false" MaxLength="4000" FixedLength="false" Unicode="true" />
-    <Property Name="scheduledTime" Type="DateTime" Nullable="false" Precision="3" />
-    <Property Name="data" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-    <Property Name="actualTaskId" Type="Int32" />
-    <Property Name="paymentId" Type="Int32" />
-    <Property Name="taskId" Type="Int32" />
-  </EntityType>
 </Schema>
