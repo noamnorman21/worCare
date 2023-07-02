@@ -1,4 +1,4 @@
-import { View, StyleSheet, Text, Image, TouchableOpacity, Dimensions, Modal, Alert } from 'react-native'
+import { View, StyleSheet, Text, Image, TouchableOpacity, Dimensions, Modal, Alert, Platform } from 'react-native'
 import { useState, useEffect } from 'react'
 import ContactsList from '../../HelpComponents/ContactsList';
 import * as SMS from 'expo-sms';
@@ -8,7 +8,9 @@ import { collection, addDoc } from 'firebase/firestore';
 import { createUserWithEmailAndPassword, updateProfile, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
-import { useUserContext } from '../../../UserContext';
+import * as Notifications from 'expo-notifications';
+import { Buffer } from 'buffer';
+
 
 export default function SignUpFinish({ navigation, route }) {
     const tblPatient = route.params.tblPatient;
@@ -20,23 +22,30 @@ export default function SignUpFinish({ navigation, route }) {
     const [message, setMessage] = useState('');
     const [link, setLink] = useState('');
     const [fromShare, setFromShare] = useState(false);
-    const { registerForPushNotificationsAsync } = useUserContext();
     const [expoPushToken, setExpoPushToken] = useState('');
+
+    const encryptPatientId = (patientId) => {
+        const encodedId = Buffer.from(patientId).toString('base64');
+        return encodedId;
+    };
+
     useEffect(() => {
-        registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
-        // This listener is fired whenever a notification is received while the app is foregrounded
+        const currentToken = (Notifications.getExpoPushTokenAsync()).data;
+        setExpoPushToken(currentToken);
     }, []);
 
     // link to the specific screen in the app and send the patient id to the screen as a parameter
     // link to screen "Welcome" and send the patient id to the screen as a parameter
     useEffect(() => {
         (async () => {
-            setLink(Linking.createURL(`InvitedFrom/${tblPatient.patientId}/${route.params.tblUser.FirstName}`));
+            const encryptedPatientId = await encryptPatientId(tblPatient.patientId);
+            setLink(Linking.createURL(`InvitedFrom/${encryptedPatientId}/${route.params.tblUser.FirstName}/${route.params.tblUser.Email}`));
             const isAvailable = await SMS.isAvailableAsync();
             setIsAvailable(isAvailable);
         }
         )();
     }, []);
+
 
     const btnSendSMS = async () => {
         if (isAvailable) {
@@ -105,7 +114,6 @@ export default function SignUpFinish({ navigation, route }) {
     const createNewUserInDB = () => {
         let user = route.params.tblUser
         user.pushToken = expoPushToken;
-
         fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/InsertUser', { //send the user data to the DB
             method: 'POST',
             headers: {
@@ -128,7 +136,7 @@ export default function SignUpFinish({ navigation, route }) {
                                     name: auth.currentUser.displayName, //the name of the user is the first name and the last name
                                     avatar: auth.currentUser.photoURL
                                 }
-                                await addDoc(collection(db, "AllUsers"), { id: userToUpdate.id, name: userToUpdate.name, avatar: userToUpdate.avatar, userType:"User" }).then(() => {
+                                await addDoc(collection(db, "AllUsers"), { id: userToUpdate.id, name: userToUpdate.name, avatar: userToUpdate.avatar, userType: "User" }).then(() => {
                                     console.log("user added to all users");
                                 }).catch((error) => {
                                 });

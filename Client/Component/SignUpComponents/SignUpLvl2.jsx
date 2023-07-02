@@ -113,37 +113,39 @@ export default function SignUpLvl2({ navigation, route }) {
       return;
     }
     // if the user didn't upload an image, we will use the default image
-    if (image === null) {
+    if (image === null || image === '') {
       //זה תמונה מכוערת -נועם תחליף אותה
       let defultImage = "https://png.pngtree.com/element_our/20200610/ourmid/pngtree-character-default-avatar-image_2237203.jpg"
       sendDataToNextLVL(defultImage);
     }
-    const filename = image.substring(image.lastIndexOf('/') + 1);
-    const storageRef = ref(storage, "images/" + filename);
-    const blob = await fetch(image).then(response => response.blob());
-    try {
-      const uploadTask = uploadBytesResumable(storageRef, blob);
-      uploadTask.on('state_changed',
-        snapshot => {
-          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log(`Upload is ${progress}% complete`);
-        },
-        error => {
-          console.error(error);
-          Alert.alert('Upload Error', 'Sorry, there was an error uploading your image. Please try again later.');
-        },
-        () => {
-          getDownloadURL(storageRef).then(downloadURL => {
-            console.log('File available at', downloadURL);
-            setImageFireBaseUrl(downloadURL);
-            sendDataToNextLVL(downloadURL);
-          });
-        }
-      );
-    } catch (error) {
-      console.error(error);
-      Alert.alert('Upload Error', 'Sorry, there was an error uploading your image. Please try again later.');
-      sendDataToNextLVL();
+    else {
+      const filename = image.substring(image.lastIndexOf('/') + 1);
+      const storageRef = ref(storage, "images/" + filename);
+      const blob = await fetch(image).then(response => response.blob());
+      try {
+        const uploadTask = uploadBytesResumable(storageRef, blob);
+        uploadTask.on('state_changed',
+          snapshot => {
+            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log(`Upload is ${progress}% complete`);
+          },
+          error => {
+            console.error(error);
+            Alert.alert('Upload Error', 'Sorry, there was an error uploading your image. Please try again later.');
+          },
+          () => {
+            getDownloadURL(storageRef).then(downloadURL => {
+              console.log('File available at', downloadURL);
+              setImageFireBaseUrl(downloadURL);
+              sendDataToNextLVL(downloadURL);
+            });
+          }
+        );
+      } catch (error) {
+        console.error(error);
+        Alert.alert('Upload Error', 'Sorry, there was an error uploading your image. Please try again later.');
+        sendDataToNextLVL();
+      }
     }
   }
 
@@ -169,7 +171,6 @@ export default function SignUpLvl2({ navigation, route }) {
     else if (userType === 'Caregiver') {
       navigation.navigate('SignUpCaregiverLVL4', { userData: newUserToDB, patientId: patientId, holidaysType: holidaysType, language: language, country: country })
     }
-
   }
   const NavigateToLogIn = () => {
     navigation.navigate('LogIn')

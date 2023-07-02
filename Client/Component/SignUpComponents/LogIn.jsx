@@ -10,6 +10,7 @@ import { useUserContext } from '../../UserContext';
 import { auth } from '../../config/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import * as Notifications from 'expo-notifications';
+import { Buffer } from 'buffer';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -27,22 +28,27 @@ export default function LogIn({ navigation }) {
         // check if the app was opened from a link
         const initialUrl = await Linking.getInitialURL();
         //example of the url: exp://l4rfr8w.anonymous.19000.exp.direct/--/InvitedFrom/123456789/Noam
-        // Example of the real url: exp://l4rfr8w.anonymous.19000.exp.direct/
-        if (initialUrl === null || initialUrl === undefined) {
+        if (initialUrl === null || initialUrl === undefined || initialUrl.includes('InvitedFrom/') === false) {
             return;
         }
         else {
             // if the app was opened from a link, navigate to the correct screen
             const route = initialUrl.replace(/.*?:\/\//g, '');
             const routeName = route.split('/')[2];
-            const patientId = route.split('/')[3];
+            const patientId = decryptPatientId(route.split('/')[3]);
             const userName = route.split('/')[4];
+            const routeEmail = route.split('/')[5]; // For Oryan Chat
             if (routeName === 'InvitedFrom') {
                 setUserType('Caregiver');
                 navigation.navigate('Welcome', { patientId: patientId, userName: userName, userType: userType });
             }
         }
     }
+
+    const decryptPatientId = (patientId) => {
+        const decodedId = Buffer.from(patientId, 'base64').toString('ascii');
+        return decodedId;
+    };
 
     //login function
     const logInBtn = () => {
@@ -140,7 +146,7 @@ export default function LogIn({ navigation }) {
                         userType: json.userType,
                         workerId: json.workerId, // if user is a caregiver, this field will be same as userId
                         involvedInId: json.involvedInId, // if user is a not caregiver, this field will be same as userId
-                        patientId: json.patientId, 
+                        patientId: json.patientId,
                         calendarCode: json.calendarCode,
                         patientData: json.patient,
                         patientHL: json.patient.hobbiesAndLimitationsDTO,

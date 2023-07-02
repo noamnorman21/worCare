@@ -235,25 +235,25 @@ export function UserProvider({ children }) {
     }
 
     async function getHolidays(country) {
-        const apiKey = '1269df65cf0081dab91555b4d1bd5171de6dc403'
+        const apiHolidaysKey = '1269df65cf0081dab91555b4d1bd5171de6dc403'
         const year = moment().year();
-        const url = `https://calendarific.com/api/v2/holidays?api_key=${apiKey}&country=${country}&year=${year}`;
-        try {
-            const response = await fetch(url);
-            const data = await response.json();
-            if (data.response && data.response.holidays) {
-                const holidays = data.response.holidays.map((holiday) => ({
-                    date: holiday.date.iso,
-                    name: holiday.name,
-                    desc: holiday.description,
-                }));
-                setHolidays((prev) => [...prev, ...holidays]);
-            } else {
-                throw new Error('Invalid API response');
-            }
-        } catch (error) {
-            console.error('Error fetching holidays:', error);
-        }
+        const url = `https://calendarific.com/api/v2/holidays?api_key=${apiHolidaysKey}&country=${country}&year=${year}`;
+        // try {
+        //     const response = await fetch(url);
+        //     const data = await response.json();
+        //     if (data.response && data.response.holidays) {
+        //         const holidays = data.response.holidays.map((holiday) => ({
+        //             date: holiday.date.iso,
+        //             name: holiday.name,
+        //             desc: holiday.description,
+        //         }));
+        //         setHolidays((prev) => [...prev, ...holidays]);
+        //     } else {
+        //         throw new Error('Invalid API response');
+        //     }
+        // } catch (error) {
+        //     console.error('Error fetching holidays:', error);
+        // }
     }
 
     function getPairedEmail(id) {
@@ -527,7 +527,6 @@ export function UserProvider({ children }) {
                     workerId: userData.workerId
                 }
             }
-            console.log(user,)
             fetch(getPending, {
                 method: 'POST',
                 headers: {
@@ -549,7 +548,7 @@ export function UserProvider({ children }) {
                     }
                 })
                 .catch((error) => {
-                    console.log(error);
+                    console.log("error", error);
                 }
                 )
         } catch (error) {

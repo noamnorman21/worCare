@@ -10,7 +10,7 @@ import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { where, getDocs, updateDoc } from "firebase/firestore";
 import * as Notifications from 'expo-notifications';
 
-const groupImage='https://firebasestorage.googleapis.com/v0/b/worcare-3df72.appspot.com/o/groupPics%2FCrowd.png?alt=media&token=b7e7a4ef-ba86-4f3b-9ba8-e032dfed204f'
+const groupImage = 'https://firebasestorage.googleapis.com/v0/b/worcare-3df72.appspot.com/o/groupPics%2FCrowd.png?alt=media&token=b7e7a4ef-ba86-4f3b-9ba8-e032dfed204f'
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 export default function SignUpCaregiverLVL5({ navigation, route }) {
@@ -24,12 +24,7 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
 
   useEffect(() => {
     getInitialUrl();
-  
   }, []);
-  // useEffect (()=>{
-  //   registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
-  //   console.log("token:",expoPushToken);
-  // },[])
 
   const getInitialUrl = async () => {
     setLinkTo(await Linking.getInitialURL());
@@ -38,9 +33,7 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
 
   const getPush = async () => {
     const currentToken = (await Notifications.getExpoPushTokenAsync()).data
-    console.log("token:", currentToken);
     setExpoPushToken(currentToken);
-    console.log("token:", expoPushToken);
   }
 
   //updated for chat
@@ -50,7 +43,7 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
     newUser.Calendars = selectedHolidays;
     console.log("new user:", newUser);
 
- //selectedHolidays is the array of the selected holidays,use them in data base with stored procedure "InsertCalendarForUser"        
+    //selectedHolidays is the array of the selected holidays,use them in data base with stored procedure "InsertCalendarForUser"        
     fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/InsertUser', { //send the user data to the DB
       method: 'POST',
       headers: {
@@ -80,7 +73,7 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
                   name: auth.currentUser.displayName, //the name of the user is the first name and the last name
                   avatar: auth.currentUser.photoURL
                 }
-                await addDoc(collection(db, "AllUsers"), { id: userToUpdate.id, name: userToUpdate.name, avatar: userToUpdate.avatar, userType:"Caregiver" }).then(async () => {
+                await addDoc(collection(db, "AllUsers"), { id: userToUpdate.id, name: userToUpdate.name, avatar: userToUpdate.avatar, userType: "Caregiver" }).then(async () => {
                   const q = query(collection(db, "GroupMembers"), where("Name", "==", newForeignUserData.CountryName_En));
                   const querySnapshot = await getDocs(q);
                   // check if the group already exists, if not add it to the db
@@ -193,65 +186,6 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
   const isItemSelected = (arr) => {
     setSelectedHolidays(arr); //arr is the array of the selected holidays
   };
-
-  const AddToChat = async () => {
-    console.log("add to chat");
-    console.log(auth);
-    //add the new user and paired user to each other's chat
-    signInWithEmailAndPassword(auth, newUser.Email, newUser.Password).then((userCredential) => {
-      console.log("user signed in");
-      updateProfile(auth.currentUser, {
-        displayName: newUser.FirstName + ' ' + newUser.LastName,
-        photoURL: newUser.userUri
-      }).then(async () => {
-        console.log("user updated");
-        let userToUpdate = {
-          id: auth.currentUser.email,
-          name: auth.currentUser.displayName, //the name of the user is the first name and the last name
-          avatar: auth.currentUser.photoURL
-        }
-        await addDoc(collection(db, "AllUsers"), { id: userToUpdate.id, name: userToUpdate.name, avatar: userToUpdate.avatar }).then(async () => {
-          console.log("user added to all users");
-          const q = query(collection(db, "GroupMembers"), where("Name", "==", newForeignUserData.CountryName_En));
-          const querySnapshot = await getDocs(q);
-          // check if the group already exists, if not add it to the db
-          if (querySnapshot.empty) {
-            console.log("No matching documents.");
-            console.log(newForeignUserData.CountryName_En);
-            await addDoc(collection(db, "GroupMembers"), { Name: newForeignUserData.CountryName_En, userEmail: [newUser.Email] });
-          }
-          else {
-            querySnapshot.forEach((doc) => {
-              console.log(doc.id, " => ", doc.data());
-              updateDoc(doc.ref, {
-                userEmail: [...doc.data().userEmail, newUser.Email]
-              });
-            });
-          }
-          await addDoc(collection(db, auth.currentUser.email), { Name: newForeignUserData.CountryName_En, UserName: "", userEmail: "", image: newUser.userUri, unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date(), type: "group" }).then(() => {
-            console.log("group added to user");
-            //delete when published to filezila
-            signOut(auth).then(() => {
-              console.log("user signed out");
-            }).catch((error) => {
-            });
-          })
-            .catch((error) => {
-              console.error(error);
-            }
-            );
-        })
-          .catch((error) => {
-            console.error(error);
-          }
-          );
-      })
-        .catch((error) => {
-          console.error(error);
-        }
-        );
-    })
-  }
 
   return (
     <SafeAreaView style={styles.container}>

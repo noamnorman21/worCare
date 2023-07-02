@@ -57,7 +57,7 @@ function CustomHeader() {
 
     //updates 
     useEffect(() => {
-        if (patientList.length > 0) {
+        if (patientList && patientList.length > 1) {
             let arr = patientList.map(element => {
                 return (
                     <Button key={element.patientId} labelStyle={styles.dialogTxt} onPress={() => {

@@ -304,16 +304,16 @@ export default function SignUpHobbies({ navigation, route }) {
 
           <Text style={styles.modalXSText}>Pick Movies </Text>
           <View style={styles.TVContainer}>
-            {movie.map((movie, index) => (
+            {movie.map((m, index) => (
               <TouchableOpacity
                 key={index}
-                style={[styles.XSInput, movie.selected && { borderColor: '#548DFF' }]}
+                style={[styles.XSInput, m.selected && { borderColor: '#548DFF' }]}
                 onPress={() => {
                   const newMovies = [...movie];
                   newMovies[index].selected = !newMovies[index].selected;
                   setMovie(newMovies);
                 }}>
-                <Text style={styles.booksText}>{movie.name}</Text>
+                <Text style={styles.booksText}>{m.name}</Text>
               </TouchableOpacity>
             ))}
             <TextInput
@@ -499,16 +499,16 @@ export default function SignUpHobbies({ navigation, route }) {
         <View style={styles.modal}>
           <Text style={styles.modalText}>Pick Hobbies</Text>
           <View style={styles.FoodContainer}>
-            {specialHabits.map((specialHabits, index) => (
+            {specialHabits.map((special, index) => (
               <TouchableOpacity
                 key={index}
-                style={[styles.XSInput, specialHabits.selected && { borderColor: '#548DFF' }]}
+                style={[styles.XSInput, special.selected && { borderColor: '#548DFF' }]}
                 onPress={() => {
                   const newHobbies = [...specialHabits];
                   newHobbies[index].selected = !newHobbies[index].selected;
                   setSpecialHabits(newHobbies);
                 }}>
-                <Text style={styles.booksText}>{specialHabits.name}</Text>
+                <Text style={styles.booksText}>{special.name}</Text>
               </TouchableOpacity>
             ))}
             <TextInput

@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useLayoutEffect } from 'react';
-import { View, Text, StyleSheet, Dimensions, Image, Alert, Modal, TouchableOpacity, ScrollView, Platform, SafeAreaView } from 'react-native'
+import { View, Text, StyleSheet, Dimensions, Image, Alert, Modal, TouchableOpacity, ScrollView, Platform, SafeAreaView, KeyboardAvoidingView } from 'react-native'
 import { GiftedChat, Bubble, Actions, InputToolbar, Time, MessageImage, LoadEarlier, Composer, Send } from 'react-native-gifted-chat';
 import { Ionicons, FontAwesome, Feather } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
@@ -11,7 +11,6 @@ import { TextInput } from 'react-native-paper';
 import moment from 'moment';
 import { Audio } from 'expo-av';
 
-// import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 import { useUserContext } from '../../UserContext';
 
 const ScreenHeight = Dimensions.get("window").height;
@@ -91,7 +90,6 @@ export default function ChatRoom({ route, navigation }) {
       )
       .then(
         (result) => {
-          console.log("result", result)
           setUserToken2(result)
           // sendPushNotification(result.Token, result.Name)
         }
@@ -184,7 +182,6 @@ export default function ChatRoom({ route, navigation }) {
   useEffect(() => {
     async function getAudioPermission() {
       await Audio.requestPermissionsAsync().then((premission) => {
-        console.log("premission", premission.granted)
         setAudioPermission(premission.granted)
 
       }).catch((error) => {
@@ -449,19 +446,19 @@ export default function ChatRoom({ route, navigation }) {
       });
       if (userToken2 != '') {
         console.log("pushtoken2", userToken2)
-      let PushNotificationsData =
-      {
-        expoPushToken: userToken2,
-        title: "New Message",
-        body: `You have a New Message from ${auth.currentUser.displayName}`,
-        data: { data: 'goes here' },
-        // how to send user to the request screen? 
-        // maybe we can send the request id and then in the request screen we will fetch the request by id
+        let PushNotificationsData =
+        {
+          expoPushToken: userToken2,
+          title: "New Message",
+          body: `You have a New Message from ${auth.currentUser.displayName}`,
+          data: { data: 'goes here' },
+          // how to send user to the request screen? 
+          // maybe we can send the request id and then in the request screen we will fetch the request by id
+        }
+        console.log("PushNotificationsData", PushNotificationsData)
+        sendPushNotification(PushNotificationsData)
       }
-      console.log("PushNotificationsData", PushNotificationsData)
-      sendPushNotification(PushNotificationsData)
     }
-  }
   }, []);
 
   return (
@@ -541,7 +538,6 @@ export default function ChatRoom({ route, navigation }) {
                   }
                 }
                 }
-
               />
             )
           }}
@@ -558,7 +554,7 @@ export default function ChatRoom({ route, navigation }) {
             return (
               <InputToolbar {...props}
                 containerStyle={{
-                  height: 45,
+                  height: 50,
                 }}
                 primaryStyle={{
                   backgroundColor: '#D9D9D9',
@@ -566,16 +562,19 @@ export default function ChatRoom({ route, navigation }) {
                   borderWidth: 1.5,
                   borderRadius: 16,
                   width: ScreenWidth * 0.975,
-                  margin: 5,
+                  marginBottom: 5,
+                  marginHorizontal: 5
                 }}  //for the text input
                 renderActions={(props) => {
                   return (
                     <>
                       <Actions {...props}
                         containerStyle={{
-                          width: 30,
+                          width: 28,
                           alignItems: 'center',
+                          left: 0,
                           justifyContent: 'center',
+                          bottom: 2,
                         }}
                         icon={() => (
                           <Ionicons name="camera" size={28} color="#548DFF" />
@@ -590,25 +589,6 @@ export default function ChatRoom({ route, navigation }) {
                           Cancel: () => { },
                         }}
                         optionTintColor="#222B45"
-                      />
-                      <Actions {...props}
-                        containerStyle={{
-                          width: 35,
-                          height: 44,
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          marginLeft: 4,
-                          marginBottom: 0,
-                        }}
-                        icon={() => (
-                          <TouchableOpacity
-                            onPress={handleRecordButtonPress}
-                          // onPressIn={startRecording}
-                          // onPressOut={stopRecording}
-                          >
-                            <Ionicons name="mic-sharp" size={28} color="#548DFF" />
-                          </TouchableOpacity>
-                        )}
                       />
                     </>
                   )
@@ -646,7 +626,7 @@ export default function ChatRoom({ route, navigation }) {
                   swipeToDismiss: false,
                   springConfig: { tension: 100000, friction: 100000 },
                   renderHeader: (close) => (
-                    <View style={styles.lightboxHeader}>
+                    <View style={styles.imagePreviewheader}>
                       <TouchableOpacity onPress={close}>
                         <Ionicons name='close' size={30} color='000' />
                       </TouchableOpacity>
@@ -660,7 +640,7 @@ export default function ChatRoom({ route, navigation }) {
                       />
                       {props.currentMessage.text &&
                         <View style={styles.txtBox}>
-                          <Text style={styles.lightboxTxt} >{props.currentMessage.text}</Text>
+                          <Text style={styles.lightboxTxt}>{props.currentMessage.text}</Text>
                         </View>
                       }
                     </View>
@@ -673,18 +653,22 @@ export default function ChatRoom({ route, navigation }) {
             );
           }}
         />
-        <Modal visible={picPreviewModal} animationType='slide' onRequestClose={() => setPicPreviewModal(false)} >
+        <Modal visible={picPreviewModal} animationType='slide' onRequestClose={() => setPicPreviewModal(false)}>
           <SafeAreaView style={styles.imagePreview}>
-            <View style={styles.imagePreviewheader}>
-              <TouchableOpacity onPress={() => setPicPreviewModal(false)}>
+            <TouchableOpacity style={styles.imagePreviewheader} onPress={() => setPicPreviewModal(false)}>
+              <View>
                 <Ionicons name='close' size={30} color='#000' />
-              </TouchableOpacity>
-            </View>
+              </View>
+            </TouchableOpacity>
             <View>
               <Image source={{ uri: selectedPic }} style={styles.image} />
             </View>
-            <View style={styles.inputAndSend}>
-              <TextInput style={styles.modalInput}
+            <KeyboardAvoidingView
+              behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+              style={styles.inputAndSend}
+            >
+              <TextInput
+                style={[styles.modalInput, { fontFamily: 'Urbanist-Medium', fontSize: 16 }]}
                 mode='outlined'
                 onChangeText={(text) => setImageDescription(text)}
                 placeholder="Add a caption..."
@@ -696,7 +680,7 @@ export default function ChatRoom({ route, navigation }) {
               <TouchableOpacity style={styles.iconSend} onPress={() => { setPicPreviewModal(false); sendToFirebase(selectedPic) }}>
                 <Ionicons name='send' size={25} color='#000' />
               </TouchableOpacity>
-            </View>
+            </KeyboardAvoidingView>
           </SafeAreaView>
         </Modal>
       </SafeAreaView>
@@ -730,25 +714,12 @@ const styles = StyleSheet.create({
   },
   inputAndSend: {
     position: 'absolute',
-    bottom: 0,
+    bottom: 15,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     width: ScreenWidth,
     padding: 10,
-  },
-  lightboxHeader: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    position: 'absolute',
-    top: 25,
-    left: 5,
-    backgroundColor: '#C0C0C0',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10
   },
   modalInput: {
     width: ScreenWidth * 0.95,
@@ -769,10 +740,10 @@ const styles = StyleSheet.create({
   imagePreviewheader: {
     width: 50,
     height: 50,
-    borderRadius: 25,
+    borderRadius: 50,
     position: 'absolute',
-    top: 25,
-    left: 5,
+    top: 75,
+    right: 5,
     backgroundColor: '#C0C0C0',
     flexDirection: 'row',
     alignItems: 'center',
@@ -782,21 +753,19 @@ const styles = StyleSheet.create({
   },
   lightboxTxt: {
     color: '#fff',
-    fontFamily: 'Urbanist-Regular',
-    fontSize: 16,
+    fontFamily: 'Urbanist-SemiBold',
+    fontSize: 18,
     textAlign: 'center',
-
   },
   txtBox: {
     width: ScreenWidth * 0.95,
     position: 'absolute',
-    bottom: 0,
+    bottom: 25,
     backgroundColor: '#080808',
-    borderRadius: 10,
+    borderRadius: 16,
     borderTopEndRadius: 0,
     borderTopStartRadius: 0,
     padding: 10,
-    opacity: 0.8,
     height: 54,
   },
 })

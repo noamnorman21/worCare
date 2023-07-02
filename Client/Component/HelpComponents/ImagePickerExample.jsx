@@ -32,7 +32,7 @@ export default function ImagePickerExample(props) {
         mediaTypes: ImagePicker.MediaTypeOptions.All,
         allowsEditing: true,
         aspect: [4, 3],
-        quality: 0.06,
+        quality: 0.075,
       }
     );
     // Explore the result
@@ -52,13 +52,11 @@ export default function ImagePickerExample(props) {
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: [4, 3],
-      quality: 0.1,
+      quality: 0.075,
     });
     // const { canceled, assets } = result;
     if (!result.canceled) {
       setImage(result.assets[0].uri);
-      // const { uri } = result.assets[0];
-      // const filename = uri.substring(uri.lastIndexOf('/') + 1);
       props.onImgChange(result.assets[0].uri)
     }
   };

@@ -30,7 +30,7 @@ export default function SignUpCaregiverLVL4({ navigation, route }) {
     const birthDate = new Date(selectedDate.nativeEvent.timestamp).toISOString().substring(0, 10);
     console.log(birthDate, "birthDate");
     console.log(date, "date");
-    if(birthDate!=='1980-01-01'){setDate(birthDate);}
+    if (birthDate !== '1980-01-01') { setDate(birthDate); }
     setShowPickerAndroidBD(!showPickerAndroidBD);
   };
 
@@ -42,15 +42,13 @@ export default function SignUpCaregiverLVL4({ navigation, route }) {
   };
 
   const onChangeDateVE = (selectedDate) => {
-   setVisaExpiration(new Date(selectedDate.nativeEvent.timestamp).toISOString().substring(0, 10));
+    setVisaExpiration(new Date(selectedDate.nativeEvent.timestamp).toISOString().substring(0, 10));
     setShowPickerAndroidVE(!showPickerAndroidVE);
   };
 
   useEffect(() => {
     console.log(visaExpiration, "visaExpiration");
   }, [visaExpiration])
-
-
 
   const getMinDate = () => {
     var date = new Date().getDate(); //Current Date
@@ -67,7 +65,7 @@ export default function SignUpCaregiverLVL4({ navigation, route }) {
 
   const [visaExpiration, setVisaExpiration] = useState('');
   const [date, setDate] = useState('');
-  
+
 
   const [openCountry, setOpenCountry] = useState(false);
   const [valueCountry, setValueCountry] = useState(null);
@@ -95,13 +93,8 @@ export default function SignUpCaregiverLVL4({ navigation, route }) {
       const newForeignUserData = {
         CountryName_En: valueCountry,
         LanguageName_En: valueLanguage,
-        // DateOfBirth: new Date("1990-01-01"),
-        // VisaExpirationDate: new Date("2025-01-01"),  
-        ///לבדוק!!!!
         dateOfBirth: new Date(date),
-        visaExpirationDate: new Date(visaExpiration),   
-        // DateOfBirth: date,
-        // VisaExpirationDate: visaExpiration,
+        visaExpirationDate: new Date(visaExpiration),
       };
       navigation.navigate("SignUpCaregiverLVL5", { newForeignUserData: newForeignUserData, newUser: newUser, holidaysType: holidaysType, patientId: route.params.patientId });
     }
@@ -116,110 +109,110 @@ export default function SignUpCaregiverLVL4({ navigation, route }) {
       <View style={styles.inputContainer}>
         {/* Date Picker for birth-date */}
         {platfr !== 'ios' ? <TouchableOpacity style={styles.datePicker} onPress={showDatepickerBD}>
-                  <Text style={styles.dateInputTxt}>
-                    {date === '' ? 'Date Of Birth' : date}                  
-                  </Text>
-                  {!date&& <FontAwesome name="calendar-check-o" size={24} color="gray" />}
-                  {/* <Octicons style={{ textAlign: 'right' }} name="calendar" size={22} /> */}
-                </TouchableOpacity>:
-        <DatePicker
-          useNativeDriver={true}
-          iconComponent={<FontAwesome name="calendar-check-o" size={24} color="gray" />}
-          style={styles.input}
-          date={date}
-          mode="date"
-          placeholder="Date Of Birth"
-          format="YYYY-MM-DD"
-          minDate="1940-01-01"
-          maxDate="2001-01-01"
-          confirmBtnText="Confirm"
-          cancelBtnText="Cancel"
-          customStyles={{
-            dateIcon: {
-              position: 'absolute',
-              right: 0,
-              top: 0,
-              marginLeft: 0.2
-            },
-            dateInput: {
-              marginLeft: 0,
-              alignItems: 'flex-start',
-              borderWidth: 0,
-            },
-            placeholderText: {
-              color: 'gray',
-              fontFamily: 'Urbanist-Medium',
-              fontSize: 16
-            }
-          }}
-          onDateChange={(date) => { setDate(date) }}
-        />}
-         {showPickerAndroidBD && (
-                  <DateTimePicker
-                    //testID="dateTimePicker"
-                    value={new Date('1980-01-01')}
-                    // mode={"date"}
-                    is24Hour={true}
-                    onChange={(date) => onChangeDateBD(date)}
-                    display="default"
-                    maximumDate={new Date()}
-                    minimumDate={new Date('1920-01-01')}
-                  />
-                )}
+          <Text style={styles.dateInputTxt}>
+            {date === '' ? 'Date Of Birth' : date}
+          </Text>
+          {!date && <FontAwesome name="calendar-check-o" size={24} color="gray" />}
+          {/* <Octicons style={{ textAlign: 'right' }} name="calendar" size={22} /> */}
+        </TouchableOpacity> :
+          <DatePicker
+            useNativeDriver={true}
+            iconComponent={<FontAwesome name="calendar-check-o" size={24} color="gray" />}
+            style={styles.input}
+            date={date}
+            mode="date"
+            placeholder="Date Of Birth"
+            format="YYYY-MM-DD"
+            minDate="1940-01-01"
+            maxDate="2001-01-01"
+            confirmBtnText="Confirm"
+            cancelBtnText="Cancel"
+            customStyles={{
+              dateIcon: {
+                position: 'absolute',
+                right: 0,
+                top: 0,
+                marginLeft: 0.2
+              },
+              dateInput: {
+                marginLeft: 0,
+                alignItems: 'flex-start',
+                borderWidth: 0,
+              },
+              placeholderText: {
+                color: 'gray',
+                fontFamily: 'Urbanist-Medium',
+                fontSize: 16
+              }
+            }}
+            onDateChange={(date) => { setDate(date) }}
+          />}
+        {showPickerAndroidBD && (
+          <DateTimePicker
+            //testID="dateTimePicker"
+            value={new Date('1980-01-01')}
+            // mode={"date"}
+            is24Hour={true}
+            onChange={(date) => onChangeDateBD(date)}
+            display="default"
+            maximumDate={new Date()}
+            minimumDate={new Date('1920-01-01')}
+          />
+        )}
       </View>
 
       {/* Input Container */}
       <View style={styles.inputContainer}>
         {/* Date Picker for visa expiration min date should be today*/}
         {platfr !== 'ios' ? <TouchableOpacity style={styles.datePicker} onPress={showDatepickerVE}>
-                  <Text style={styles.dateInputTxt}>
-                    {visaExpiration === '' ? 'Visa Expiration' : visaExpiration}
-                  </Text>
-                  {!visaExpiration&& <FontAwesome name="calendar-times-o" size={24} color="gray" />}
-                  {/* <Octicons style={{ textAlign: 'right' }} name="calendar" size={22} /> */}
-                </TouchableOpacity>:
-        <DatePicker
-          iconComponent={<FontAwesome name="calendar-times-o" size={24} color="gray" />}
-          useNativeDriver={true}
-          style={styles.input}
-          date={visaExpiration}
-          mode="date"
-          placeholder="Visa Expiration"
-          format="YYYY-MM-DD"
-          minDate={getMinDate()}
-          maxDate={getMaxDate()}
-          confirmBtnText="Confirm"
-          cancelBtnText="Cancel"
-          customStyles={{
-            dateIcon: {
-              position: 'absolute',
-              right: 0,
-              top: 0,
-            },
-            dateInput: {
-              marginLeft: 0,
-              alignItems: 'flex-start',
-              borderWidth: 0,
-            },
-            placeholderText: {
-              color: 'gray',
-              fontFamily: 'Urbanist-Medium',
-              fontSize: 16
-            }
-          }}
-          onDateChange={(date) => { setVisaExpiration(date) }}
-        />}
+          <Text style={styles.dateInputTxt}>
+            {visaExpiration === '' ? 'Visa Expiration' : visaExpiration}
+          </Text>
+          {!visaExpiration && <FontAwesome name="calendar-times-o" size={24} color="gray" />}
+          {/* <Octicons style={{ textAlign: 'right' }} name="calendar" size={22} /> */}
+        </TouchableOpacity> :
+          <DatePicker
+            iconComponent={<FontAwesome name="calendar-times-o" size={24} color="gray" />}
+            useNativeDriver={true}
+            style={styles.input}
+            date={visaExpiration}
+            mode="date"
+            placeholder="Visa Expiration"
+            format="YYYY-MM-DD"
+            minDate={getMinDate()}
+            maxDate={getMaxDate()}
+            confirmBtnText="Confirm"
+            cancelBtnText="Cancel"
+            customStyles={{
+              dateIcon: {
+                position: 'absolute',
+                right: 0,
+                top: 0,
+              },
+              dateInput: {
+                marginLeft: 0,
+                alignItems: 'flex-start',
+                borderWidth: 0,
+              },
+              placeholderText: {
+                color: 'gray',
+                fontFamily: 'Urbanist-Medium',
+                fontSize: 16
+              }
+            }}
+            onDateChange={(date) => { setVisaExpiration(date) }}
+          />}
         {showPickerAndroidVE && (
-                  <DateTimePicker
-                    //testID="dateTimePicker"
-                    value={visaExpiration? new Date(visaExpiration):new Date()}
-                    // mode={"date"}
-                    is24Hour={true}
-                    onChange={(date) => onChangeDateVE(date)}
-                    display="default"
-                    minimumDate={new Date()}
-                  />
-                )}
+          <DateTimePicker
+            //testID="dateTimePicker"
+            value={visaExpiration ? new Date(visaExpiration) : new Date()}
+            // mode={"date"}
+            is24Hour={true}
+            onChange={(date) => onChangeDateVE(date)}
+            display="default"
+            minimumDate={new Date()}
+          />
+        )}
       </View>
 
       {/* Drop Down Picker for Country */}

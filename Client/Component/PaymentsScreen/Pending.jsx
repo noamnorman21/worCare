@@ -294,7 +294,7 @@ function Request(props) {
                   <MenuOption style={[styles.deleteTxt]} value={4} children={<View style={userContext.userId == props.data.userId ? styles.options : styles.disabledoptions}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={styles.deleteTxt}> Delete Request</Text></View>} />
                 </MenuOptions>
               </Menu>
-              <Modal animationType='slide' transparent={true} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
+              <Modal animationType='slide' transparent={false} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
                 <View style={styles.documentview}>
                   <TouchableOpacity style={styles.closeBtn} onPress={() => setModal1Visible(false)}>
                     <AntDesign name="close" size={24} color="black" />
@@ -305,7 +305,7 @@ function Request(props) {
                   </TouchableOpacity>
                 </View>
               </Modal>
-              <Modal animationType='slide' transparent={true} visible={modal2Visible}>
+              <Modal animationType='slide' transparent={false} visible={modal2Visible}>
                 <EditPaymentScreen cancel={() => { setModal2Visible(false); props.renderPendings() }} data={props.data} />
               </Modal>
             </View>
@@ -391,7 +391,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 1.5,
     borderColor: '#E6EBF2',
-    marginVertical: 10,    
+    marginVertical: 10,
     backgroundColor: '#FFF',
     padding: 12,
     flexDirection: 'row',

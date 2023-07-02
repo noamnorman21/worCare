@@ -150,7 +150,7 @@ export default function ChatProfile({ route, navigation }) {
         <TouchableOpacity style={styles.button}
           onPress={() => addNewPrivateChat(route.params.user)}>
           <AntDesign name='message1' size={22} color={"#548DFF"} />
-          <Text style={styles.BtnTxt}>Send Messsage </Text>
+          <Text style={styles.BtnTxt}>Send Messsage</Text>
         </TouchableOpacity>
       </View>
     </View>

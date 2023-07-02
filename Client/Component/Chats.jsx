@@ -147,7 +147,7 @@ function MainRoom({ navigation }) {
     });
     renderUsers(searchedUsers);
   }, [searchQuery]);
-  
+
 
   const addNewPrivateChat = async (user) => {
     // check if convo already exists in firestore 
@@ -158,7 +158,6 @@ function MainRoom({ navigation }) {
     const querySnapshot2 = await getDocs(q2);
     if (querySnapshot.docs.length > 0 || querySnapshot2.docs.length > 0) {
       checkifConvoExistsforContact(user)
-      console.log("convo exists")
       if (querySnapshot.docs.length > 0) {
         console.log(querySnapshot.docs[0].data())
         navigation.navigate('ChatRoom', { name: auth.currentUser.displayName + "+" + user.name, UserName: user.name, userEmail: user.id, unreadCount: querySnapshot.docs[0].data().unreadCount, type: "private" })

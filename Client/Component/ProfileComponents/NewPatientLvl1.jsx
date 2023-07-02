@@ -79,7 +79,7 @@ export default function NewPatientLvl1({ navigation, route }) {
         })
             .then(res => {
                 if (res.ok) {
-                    IsPatientIdUnique(true);
+                    setIsPatientIdUnique(true);
                     return res.json()
                 }
                 else {
