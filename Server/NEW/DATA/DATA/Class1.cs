@@ -58,7 +58,7 @@ namespace DATA
                                 db.InsertList(taskName, list.listId, actualId, task.taskId);
                             }
                             DateTime pushTime = new DateTime(taskToDate.Year, taskToDate.Month, taskToDate.Day, timesInDayArr[i].Hours, timesInDayArr[i].Minutes, timesInDayArr[i].Seconds);
-                            db.InsertScheduledNotification(pushToken, pushTitle, "bla bla", pushTime, null, actualId, null); // Change bla bla
+                            db.InsertScheduledNotification(pushToken, pushTitle, "bla bla", pushTime, null, actualId, null, taskId); // Change bla bla
                         }
                     }
                     else
@@ -71,7 +71,7 @@ namespace DATA
                             db.InsertList(taskName, list.listId, actualId, task.taskId);
                         }
                         DateTime pushTime = new DateTime(taskToDate.Year, taskToDate.Month, taskToDate.Day, timesInDayArr[0].Hours, timesInDayArr[0].Minutes, timesInDayArr[0].Seconds);
-                        db.InsertScheduledNotification(pushToken, pushTitle, "bla bla", pushTime, null, actualId, null); // Change bla bla
+                        db.InsertScheduledNotification(pushToken, pushTitle, "bla bla", pushTime, null, actualId, null, taskId); // Change bla bla
                     }
                 }
                 else if (frequency == "Daily")
@@ -88,7 +88,7 @@ namespace DATA
                                 db.InsertList(taskName, list.listId, actualId, task.taskId);
                             }
                             DateTime pushTime = new DateTime(tempDate.Year, tempDate.Month, tempDate.Day, timesInDayArr[i].Hours, timesInDayArr[i].Minutes, timesInDayArr[i].Seconds);
-                            db.InsertScheduledNotification(pushToken, pushTitle, "bla bla", pushTime, null, actualId, null); // Change bla bla
+                            db.InsertScheduledNotification(pushToken, pushTitle, "bla bla", pushTime, null, actualId, null, taskId); // Change bla bla
                         }
                         tempDate = tempDate.AddDays(1);
                     }
@@ -107,7 +107,7 @@ namespace DATA
                                 db.InsertList(taskName, list.listId, actualId, task.taskId);
                             }
                             DateTime pushTime = new DateTime(tempDate.Year, tempDate.Month, tempDate.Day, timesInDayArr[i].Hours, timesInDayArr[i].Minutes, timesInDayArr[i].Seconds);
-                            db.InsertScheduledNotification(pushToken, pushTitle, "bla bla", pushTime, null, actualId, null); // Change bla bla
+                            db.InsertScheduledNotification(pushToken, pushTitle, "bla bla", pushTime, null, actualId, null, taskId); // Change bla bla
                         }
                         tempDate = tempDate.AddDays(7);
                     }
@@ -127,7 +127,7 @@ namespace DATA
                                 db.InsertList(taskName, list.listId, task.actualId, task.taskId);
                             }
                             DateTime pushTime = new DateTime(tempDate.Year, tempDate.Month, tempDate.Day, timesInDayArr[i].Hours, timesInDayArr[i].Minutes, timesInDayArr[i].Seconds);
-                            db.InsertScheduledNotification(pushToken, pushTitle, "bla bla", pushTime, null, actualId, null); // Change bla bla
+                            db.InsertScheduledNotification(pushToken, pushTitle, "bla bla", pushTime, null, actualId, null, taskId); // Change bla bla
                         }
                         tempDate = tempDate.AddMonths(1);
                     }
@@ -140,5 +140,6 @@ namespace DATA
                 return false;
             }
         }
+
     }
 }

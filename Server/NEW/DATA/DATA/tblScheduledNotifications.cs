@@ -22,5 +22,6 @@ namespace DATA
         public string data { get; set; }
         public Nullable<int> actualTaskId { get; set; }
         public Nullable<int> paymentId { get; set; }
+        public Nullable<int> taskId { get; set; }
     }
 }

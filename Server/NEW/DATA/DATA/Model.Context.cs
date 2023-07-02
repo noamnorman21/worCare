@@ -749,7 +749,7 @@ namespace DATA
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertNewDrug", drugNameParameter, drugNameEnParameter, drugUrlParameter, drugUrlEnParameter, modifyDateParameter, typeParameter);
         }
     
-        public virtual int InsertScheduledNotification(string pushToken, string title, string pushMessage, Nullable<System.DateTime> scheduledTime, string data, Nullable<int> actualTaskId, Nullable<int> paymentId)
+        public virtual int InsertScheduledNotification(string pushToken, string title, string pushMessage, Nullable<System.DateTime> scheduledTime, string data, Nullable<int> actualTaskId, Nullable<int> paymentId, Nullable<int> taskId)
         {
             var pushTokenParameter = pushToken != null ?
                 new ObjectParameter("pushToken", pushToken) :
@@ -779,7 +779,11 @@ namespace DATA
                 new ObjectParameter("paymentId", paymentId) :
                 new ObjectParameter("paymentId", typeof(int));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertScheduledNotification", pushTokenParameter, titleParameter, pushMessageParameter, scheduledTimeParameter, dataParameter, actualTaskIdParameter, paymentIdParameter);
+            var taskIdParameter = taskId.HasValue ?
+                new ObjectParameter("taskId", taskId) :
+                new ObjectParameter("taskId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertScheduledNotification", pushTokenParameter, titleParameter, pushMessageParameter, scheduledTimeParameter, dataParameter, actualTaskIdParameter, paymentIdParameter, taskIdParameter);
         }
     }
 }
