@@ -324,6 +324,116 @@ namespace WebApi.Controllers
         {
             try
             {
+                var claendar = db.tblCalendarForUser.Where(x => x.userId == userToDelete.userId).ToList();
+                foreach (var item in claendar)
+                {
+                    db.tblCalendarForUser.Remove(item);
+                }
+
+                if (userToDelete.userType == "User")
+                {
+                    var Patients = db.tblPatient.Where(x => x.userId == userToDelete.userId);
+                    foreach (var item in Patients)
+                    {
+                        //Remove Contacts
+                        var contacts = db.tblContacts.Where(x => x.patientId == item.patientId).ToList();
+                        foreach (var con in contacts)
+                        {
+                            db.tblContacts.Remove(con);
+                        }
+
+                        //remove Hobbies
+                        var hobbies = db.tblHobbies.Where(x => x.patientId == item.patientId).ToList();
+                        foreach (var hobby in hobbies)
+                        {
+                            db.tblHobbies.Remove(hobby);
+                        }
+
+                        //remove Limitations
+                        var limitations = db.tblLimitations.Where(x => x.patientId == item.patientId).ToList();
+                        foreach (var limit in limitations)
+                        {
+                            db.tblLimitations.Remove(limit);
+                        }
+                        //remove PatientTask
+                        var PatientTasks = db.tblPatientTask.Where(x => x.patientId == item.patientId).ToList();
+                        foreach (var task in PatientTasks)
+                        {
+                            var ProdList = db.tblProductList.Where(x => x.taskId == task.taskId).ToList();
+                            foreach (var prod in ProdList)
+                            {
+                                db.tblProductList.Remove(prod);
+                            }
+
+                            var Lists = db.tblList.Where(x => x.taskId == task.taskId).ToList();
+                            foreach (var list in Lists)
+                            {
+                                db.tblList.Remove(list);
+                            }
+
+                            var actualTasks = db.tblActualTask.Where(x => x.taskId == task.taskId).ToList();
+                            foreach (var act in actualTasks)
+                            {
+                                var noti = db.tblScheduledNotifications.Where(y => y.actualTaskId == act.actualId).FirstOrDefault();
+                                if (noti != null)
+                                {
+                                    db.tblScheduledNotifications.Remove(noti);
+                                }
+                                db.tblActualTask.Remove(act);
+                            }
+
+                            //remove Actuall list
+                            var actuall = db.tblActualList.Where(x => x.listId == task.listId).ToList();
+                            foreach (var act in actuall)
+                            {
+                                db.tblActualList.Remove(act);
+                            }
+
+                            //remove DrugForPatient
+                            var dForp = db.tblDrugForPatient.Where(y => y.listId == task.listId).ToList();
+                            foreach (var drug in dForp)
+                            {
+                                db.tblDrugForPatient.Remove(drug);
+                            }
+                            db.tblPatientTask.Remove(task);
+                        }
+
+                        //remove CaresForPatient 
+                        var caresForPatient = db.tblCaresForPatient.Where(x => x.patientId == item.patientId).ToList();
+                        foreach (var care in caresForPatient)
+                        {
+                            db.tblCaresForPatient.Remove(care);
+                        }
+
+                        //remove Patient
+                        db.tblPatient.Remove(item);
+                    }
+                }
+                else
+                {
+
+                    var patientTasks = db.tblPatientTask.Where(x => x.workerId == userToDelete.userId).ToList();
+                    foreach (var task in patientTasks)
+                    {
+                        task.workerId = null;
+                    }
+
+                    //remove forigen user
+                    var forigenUser = db.tblForeignUser.Where(x => x.Id == userToDelete.userId).FirstOrDefault();
+                    if (forigenUser != null)
+                    {
+                        db.tblForeignUser.Remove(forigenUser);
+                    }
+                }
+
+
+                // remove Paychecks
+                var paychecks = db.tblPaycheck.Where(x => x.UserId == userToDelete.userId).ToList();
+                foreach (var item in paychecks)
+                {
+                    db.tblPaycheck.Remove(item);
+                }
+                //remove User
                 var user = db.tblUser.Where(x => x.Email == userToDelete.Email).FirstOrDefault();
                 if (user == null)
                     return NotFound();
