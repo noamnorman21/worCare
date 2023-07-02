@@ -12,7 +12,7 @@ namespace WebApi.Controllers
     [RoutePrefix("api/Payments")]
     public class PaymentRequestController : ApiController
     {
-        igroup194Db db = new igroup194Db();
+        igroup194DB db = new igroup194DB();
 
         [HttpPost]
         [Route("GetPending")]

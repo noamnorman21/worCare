@@ -11,7 +11,7 @@ namespace WebApi.Controllers
     [RoutePrefix("api/LanguageCountry")]
     public class LanguageCountryController : ApiController
     {
-        igroup194Db db = new igroup194Db();
+        igroup194DB db = new igroup194DB();
 
         [HttpGet]
         [Route("GetAllLanguages")]

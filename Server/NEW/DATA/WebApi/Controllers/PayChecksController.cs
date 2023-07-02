@@ -12,7 +12,7 @@ namespace WebApi.Controllers
     [RoutePrefix("api/PayChecks")]
     public class PayChecksController : ApiController
     {
-        igroup194Db db = new igroup194Db();
+        igroup194DB db = new igroup194DB();
 
         [HttpPost]
         [Route("GetPaychecks")]

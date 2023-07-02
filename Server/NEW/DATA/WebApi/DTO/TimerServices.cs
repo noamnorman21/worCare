@@ -21,7 +21,7 @@ namespace WebApi.DTO
 
         public static async void CheckPush()
         {
-            using (igroup194Db db = new igroup194Db())
+            using (igroup194DB db = new igroup194DB())
             {
                 DateTime now = DateTime.Now;
                 DateTime nowWithoutSeconds = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, 0);

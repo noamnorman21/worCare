@@ -12,7 +12,7 @@ namespace WebApi.Controllers
     [RoutePrefix("api/Settings")]
     public class SettingsController : ApiController
     {
-        igroup194Db db = new igroup194Db();
+        igroup194DB db = new igroup194DB();
 
         // gets all user details and updates them - if only one field is changed,
         // the other fields will be updated to the same value as before

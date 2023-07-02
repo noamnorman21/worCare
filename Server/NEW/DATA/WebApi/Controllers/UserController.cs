@@ -17,7 +17,7 @@ namespace WebApi.Controllers
     [RoutePrefix("api/User")]
     public class UserController : ApiController
     {
-        igroup194Db db = new igroup194Db();
+        igroup194DB db = new igroup194DB();
 
         [HttpPost]
         [Route("GetEmailForgotPassword")] // POST - Because The FromBody - Check if email exists in DB and send email with new password

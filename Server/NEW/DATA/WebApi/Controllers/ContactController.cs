@@ -17,7 +17,7 @@ namespace WebApi.Controllers
     [RoutePrefix("api/Contacts")]
     public class ContactController : ApiController
     {
-        igroup194Db db = new igroup194Db();
+        igroup194DB db = new igroup194DB();
 
         [HttpPost]
         [Route("GetContacts")]

@@ -17,7 +17,7 @@ namespace WebApi.DTO
         public string frequency { get; set; }
         public string taskComment { get; set; }
         public string patientId { get; set; }
-        public int workerId { get; set; }
+        public Nullable<int>workerId { get; set; }
         public int userId { get; set; }
         public int listId { get; set; }
         public Nullable<bool> type { get; set; }

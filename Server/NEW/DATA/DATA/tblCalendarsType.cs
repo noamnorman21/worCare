@@ -21,8 +21,8 @@ namespace DATA
         }
     
         public int calendarNum { get; set; }
-        public string calendarName { get; set; }
         public string calendarCode { get; set; }
+        public string calendarName { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tblCalendarForUser> tblCalendarForUser { get; set; }

@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="igroup194_prodModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="igroup194.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="sysdiagrams">
           <Key>
             <PropertyRef Name="diagram_id" />
@@ -185,7 +185,7 @@
           <Property Name="frequency" Type="varchar" MaxLength="15" Nullable="false" />
           <Property Name="taskComment" Type="varchar(max)" />
           <Property Name="patientId" Type="char" MaxLength="9" />
-          <Property Name="workerId" Type="int" Nullable="false" />
+          <Property Name="workerId" Type="int" />
           <Property Name="userId" Type="int" Nullable="false" />
           <Property Name="listId" Type="int" Nullable="false" />
           <Property Name="timesInDayArray" Type="varchar" MaxLength="255" />
@@ -557,7 +557,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK__tblPatien__worke__73A521EA">
-          <End Role="tblForeignUser" Type="Self.tblForeignUser" Multiplicity="1" />
+          <End Role="tblForeignUser" Type="Self.tblForeignUser" Multiplicity="0..1" />
           <End Role="tblPatientTask" Type="Self.tblPatientTask" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="tblForeignUser">
@@ -851,7 +851,7 @@
           <Parameter Name="workerId" Type="int" Mode="In" />
           <Parameter Name="status" Type="char" Mode="In" />
         </Function>
-        <EntityContainer Name="igroup194_prodModelStoreContainer">
+        <EntityContainer Name="igroup194StoreContainer">
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tblActualList" EntityType="Self.tblActualList" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tblActualTask" EntityType="Self.tblActualTask" Schema="dbo" store:Type="Tables" />
@@ -990,10 +990,11 @@
             <End Role="tblProductList" EntitySet="tblProductList" />
           </AssociationSet>
         </EntityContainer>
-      </Schema></edmx:StorageModels>
+      </Schema>
+    </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
-      <Schema Namespace="igroup194_prodModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+      <Schema Namespace="igroup194" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityType Name="sysdiagrams">
           <Key>
             <PropertyRef Name="diagram_id" />
@@ -1043,9 +1044,9 @@
             <PropertyRef Name="calendarNum" />
           </Key>
           <Property Name="calendarNum" Type="Int32" Nullable="false" />
+          <Property Name="calendarCode" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
           <Property Name="calendarName" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="tblCalendarForUser" Relationship="Self.FK__tblCalend__calen__07AC1A97" FromRole="tblCalendarsType" ToRole="tblCalendarForUser" />
-          <Property Name="calendarCode" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="tblCaresForPatient">
           <Key>
@@ -1089,9 +1090,9 @@
           <Property Name="drugUrl" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="modifyDate" Type="DateTime" Precision="0" />
           <Property Name="Type" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
-          <NavigationProperty Name="tblDrugForPatient" Relationship="Self.FK__tblDrugFo__drugI__1411F17C" FromRole="tblDrug" ToRole="tblDrugForPatient" />
           <Property Name="drugNameEn" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="drugUrlEn" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="tblDrugForPatient" Relationship="Self.FK__tblDrugFo__drugI__1411F17C" FromRole="tblDrug" ToRole="tblDrugForPatient" />
         </EntityType>
         <EntityType Name="tblDrugForPatient">
           <Key>
@@ -1105,10 +1106,10 @@
           <Property Name="minQuantity" Type="Byte" />
           <Property Name="drugId" Type="Int32" Nullable="false" />
           <Property Name="patientId" Type="String" MaxLength="9" FixedLength="true" Unicode="false" />
+          <Property Name="lastTakenDate" Type="DateTime" Precision="3" />
           <NavigationProperty Name="tblActualList" Relationship="Self.FK__tblDrugFo__listI__131DCD43" FromRole="tblDrugForPatient" ToRole="tblActualList" />
           <NavigationProperty Name="tblDrug" Relationship="Self.FK__tblDrugFo__drugI__1411F17C" FromRole="tblDrugForPatient" ToRole="tblDrug" />
           <NavigationProperty Name="tblPatient" Relationship="Self.FK__tblDrugFo__patie__150615B5" FromRole="tblDrugForPatient" ToRole="tblPatient" />
-          <Property Name="lastTakenDate" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="tblForeignUser">
           <Key>
@@ -1212,15 +1213,15 @@
           <Property Name="frequency" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="taskComment" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="patientId" Type="String" MaxLength="9" FixedLength="true" Unicode="false" />
-          <Property Name="workerId" Type="Int32" Nullable="false" />
+          <Property Name="workerId" Type="Int32" />
           <Property Name="userId" Type="Int32" Nullable="false" />
           <Property Name="listId" Type="Int32" Nullable="false" />
+          <Property Name="timesInDayArray" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="tblActualList" Relationship="Self.FK__tblPatien__listI__758D6A5C" FromRole="tblPatientTask" ToRole="tblActualList" />
           <NavigationProperty Name="tblActualTask" Relationship="Self.FK__tblActual__taskI__795DFB40" FromRole="tblPatientTask" ToRole="tblActualTask" />
           <NavigationProperty Name="tblForeignUser" Relationship="Self.FK__tblPatien__worke__73A521EA" FromRole="tblPatientTask" ToRole="tblForeignUser" />
           <NavigationProperty Name="tblPatient" Relationship="Self.FK__tblPatien__patie__72B0FDB1" FromRole="tblPatientTask" ToRole="tblPatient" />
           <NavigationProperty Name="tblUser" Relationship="Self.FK__tblPatien__userI__74994623" FromRole="tblPatientTask" ToRole="tblUser" />
-          <Property Name="timesInDayArray" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="tblPaycheck">
           <Key>
@@ -1246,8 +1247,8 @@
           <Property Name="requestComment" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="requestStatus" Type="String" MaxLength="1" FixedLength="true" Unicode="false" Nullable="false" />
           <Property Name="userId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="tblForeignUser" Relationship="Self.FK__tblPaymen__userI__1CA7377D" FromRole="tblPaymentRequest" ToRole="tblForeignUser" />
           <Property Name="requestEndDate" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="tblForeignUser" Relationship="Self.FK__tblPaymen__userI__1CA7377D" FromRole="tblPaymentRequest" ToRole="tblForeignUser" />
         </EntityType>
         <EntityType Name="tblPrivateActualTask">
           <Key>
@@ -1298,6 +1299,20 @@
           <NavigationProperty Name="tblList" Relationship="Self.FK__tblProductList__226010D3" FromRole="tblProductList" ToRole="tblList" />
           <NavigationProperty Name="tblProduct" Relationship="Self.FK__tblProduc__produ__2354350C" FromRole="tblProductList" ToRole="tblProduct" />
         </EntityType>
+        <EntityType Name="tblScheduledNotifications">
+          <Key>
+            <PropertyRef Name="notificationID" />
+          </Key>
+          <Property Name="notificationID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="pushToken" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="title" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="pushMessage" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="scheduledTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="data" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="actualTaskId" Type="Int32" />
+          <Property Name="paymentId" Type="Int32" />
+          <Property Name="taskId" Type="Int32" />
+        </EntityType>
         <EntityType Name="tblUser">
           <Key>
             <PropertyRef Name="userId" />
@@ -1310,16 +1325,16 @@
           <Property Name="gender" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
           <Property Name="phoneNum" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="userUri" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="tblCalendarForUser" Relationship="Self.FK__tblCalend__userI__06B7F65E" FromRole="tblUser" ToRole="tblCalendarForUser" />
-          <NavigationProperty Name="tblForeignUser" Relationship="Self.FK__tblForeignUs__Id__6462DE5A" FromRole="tblUser" ToRole="tblForeignUser" />
-          <NavigationProperty Name="tblPatient" Relationship="Self.FK__tblPatien__userI__55209ACA" FromRole="tblUser" ToRole="tblPatient" />
-          <NavigationProperty Name="tblPatientTask" Relationship="Self.FK__tblPatien__userI__74994623" FromRole="tblUser" ToRole="tblPatientTask" />
-          <NavigationProperty Name="tblPaycheck" Relationship="Self.FK__tblPayche__UserI__618671AF" FromRole="tblUser" ToRole="tblPaycheck" />
           <Property Name="pushToken" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
           <Property Name="financeNotifications" Type="Boolean" />
           <Property Name="chatNotifications" Type="Boolean" />
           <Property Name="medNotifications" Type="Boolean" />
           <Property Name="tasksNotifications" Type="Boolean" />
+          <NavigationProperty Name="tblCalendarForUser" Relationship="Self.FK__tblCalend__userI__06B7F65E" FromRole="tblUser" ToRole="tblCalendarForUser" />
+          <NavigationProperty Name="tblForeignUser" Relationship="Self.FK__tblForeignUs__Id__6462DE5A" FromRole="tblUser" ToRole="tblForeignUser" />
+          <NavigationProperty Name="tblPatient" Relationship="Self.FK__tblPatien__userI__55209ACA" FromRole="tblUser" ToRole="tblPatient" />
+          <NavigationProperty Name="tblPatientTask" Relationship="Self.FK__tblPatien__userI__74994623" FromRole="tblUser" ToRole="tblPatientTask" />
+          <NavigationProperty Name="tblPaycheck" Relationship="Self.FK__tblPayche__UserI__618671AF" FromRole="tblUser" ToRole="tblPaycheck" />
         </EntityType>
         <Association Name="FK__tblDrugFo__listI__131DCD43">
           <End Role="tblActualList" Type="Self.tblActualList" Multiplicity="1" />
@@ -1510,7 +1525,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK__tblPatien__worke__73A521EA">
-          <End Role="tblForeignUser" Type="Self.tblForeignUser" Multiplicity="1" />
+          <End Role="tblForeignUser" Type="Self.tblForeignUser" Multiplicity="0..1" />
           <End Role="tblPatientTask" Type="Self.tblPatientTask" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="tblForeignUser">
@@ -1677,7 +1692,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="igroup194Db" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="igroup194DB" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
           <EntitySet Name="tblActualList" EntityType="Self.tblActualList" />
           <EntitySet Name="tblActualTask" EntityType="Self.tblActualTask" />
@@ -1701,6 +1716,7 @@
           <EntitySet Name="tblPrivateTask" EntityType="Self.tblPrivateTask" />
           <EntitySet Name="tblProduct" EntityType="Self.tblProduct" />
           <EntitySet Name="tblProductList" EntityType="Self.tblProductList" />
+          <EntitySet Name="tblScheduledNotifications" EntityType="Self.tblScheduledNotifications" />
           <EntitySet Name="tblUser" EntityType="Self.tblUser" />
           <AssociationSet Name="FK__tblDrugFo__listI__131DCD43" Association="Self.FK__tblDrugFo__listI__131DCD43">
             <End Role="tblActualList" EntitySet="tblActualList" />
@@ -1815,7 +1831,7 @@
             <End Role="tblProductList" EntitySet="tblProductList" />
           </AssociationSet>
           <FunctionImport Name="InsertActualList">
-          <Parameter Name="type" Mode="In" Type="Boolean" />
+            <Parameter Name="type" Mode="In" Type="Boolean" />
           </FunctionImport>
           <FunctionImport Name="InsertActualTask">
             <Parameter Name="taskId" Mode="In" Type="Int32" />
@@ -1856,6 +1872,14 @@
             <Parameter Name="listId" Mode="In" Type="Int32" />
             <Parameter Name="actualId" Mode="In" Type="Int32" />
             <Parameter Name="taskId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="InsertNewDrug">
+            <Parameter Name="drugName" Mode="In" Type="String" />
+            <Parameter Name="drugNameEn" Mode="In" Type="String" />
+            <Parameter Name="drugUrl" Mode="In" Type="String" />
+            <Parameter Name="drugUrlEn" Mode="In" Type="String" />
+            <Parameter Name="modifyDate" Mode="In" Type="DateTime" />
+            <Parameter Name="Type" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="InsertPatient">
             <Parameter Name="patientId" Mode="In" Type="String" />
@@ -1915,7 +1939,7 @@
             <Parameter Name="workerId" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="InsertProduct">
-          <Parameter Name="productName" Mode="In" Type="String" />
+            <Parameter Name="productName" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="InsertProductList">
             <Parameter Name="productId" Mode="In" Type="Int32" />
@@ -1924,6 +1948,16 @@
             <Parameter Name="productStatus" Mode="In" Type="String" />
             <Parameter Name="productQuantity" Mode="In" Type="Int32" />
             <Parameter Name="commentForProduct" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="InsertScheduledNotification">
+            <Parameter Name="pushToken" Mode="In" Type="String" />
+            <Parameter Name="title" Mode="In" Type="String" />
+            <Parameter Name="pushMessage" Mode="In" Type="String" />
+            <Parameter Name="scheduledTime" Mode="In" Type="DateTime" />
+            <Parameter Name="data" Mode="In" Type="String" />
+            <Parameter Name="actualTaskId" Mode="In" Type="Int32" />
+            <Parameter Name="paymentId" Mode="In" Type="Int32" />
+            <Parameter Name="taskId" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="InsertUser">
             <Parameter Name="Email" Mode="In" Type="String" />
@@ -1981,11 +2015,11 @@
             <Parameter Name="diagramname" Mode="In" Type="String" />
             <Parameter Name="owner_id" Mode="In" Type="Int32" />
           </FunctionImport>
-          <FunctionImport Name="sp_helpdiagramdefinition" ReturnType="Collection(igroup194_prodModel.sp_helpdiagramdefinition_Result)">
+          <FunctionImport Name="sp_helpdiagramdefinition" ReturnType="Collection(igroup194.sp_helpdiagramdefinition_Result)">
             <Parameter Name="diagramname" Mode="In" Type="String" />
             <Parameter Name="owner_id" Mode="In" Type="Int32" />
           </FunctionImport>
-          <FunctionImport Name="sp_helpdiagrams" ReturnType="Collection(igroup194_prodModel.sp_helpdiagrams_Result)">
+          <FunctionImport Name="sp_helpdiagrams" ReturnType="Collection(igroup194.sp_helpdiagrams_Result)">
             <Parameter Name="diagramname" Mode="In" Type="String" />
             <Parameter Name="owner_id" Mode="In" Type="Int32" />
           </FunctionImport>
@@ -2000,25 +2034,6 @@
             <Parameter Name="workerId" Mode="In" Type="Int32" />
             <Parameter Name="status" Mode="In" Type="String" />
           </FunctionImport>
-          <FunctionImport Name="InsertNewDrug">
-            <Parameter Name="drugName" Mode="In" Type="String" />
-            <Parameter Name="drugNameEn" Mode="In" Type="String" />
-            <Parameter Name="drugUrl" Mode="In" Type="String" />
-            <Parameter Name="drugUrlEn" Mode="In" Type="String" />
-            <Parameter Name="modifyDate" Mode="In" Type="DateTime" />
-            <Parameter Name="Type" Mode="In" Type="String" />
-          </FunctionImport>
-          <EntitySet Name="tblScheduledNotifications" EntityType="igroup194_prodModel.tblScheduledNotifications" />
-          <FunctionImport Name="InsertScheduledNotification">
-            <Parameter Name="pushToken" Mode="In" Type="String" />
-            <Parameter Name="title" Mode="In" Type="String" />
-            <Parameter Name="pushMessage" Mode="In" Type="String" />
-            <Parameter Name="scheduledTime" Mode="In" Type="DateTime" />
-            <Parameter Name="data" Mode="In" Type="String" />
-            <Parameter Name="actualTaskId" Mode="In" Type="Int32" />
-            <Parameter Name="paymentId" Mode="In" Type="Int32" />
-            <Parameter Name="taskId" Mode="In" Type="Int32" />
-          </FunctionImport>
         </EntityContainer>
         <ComplexType Name="sp_helpdiagramdefinition_Result">
           <Property Type="Int32" Name="version" Nullable="true" />
@@ -2031,28 +2046,14 @@
           <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
           <Property Type="Int32" Name="OwnerID" Nullable="false" />
         </ComplexType>
-        <EntityType Name="tblScheduledNotifications">
-          <Key>
-            <PropertyRef Name="notificationID" />
-          </Key>
-          <Property Name="notificationID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="pushToken" Type="String" Nullable="false" MaxLength="4000" FixedLength="false" Unicode="true" />
-          <Property Name="title" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="pushMessage" Type="String" Nullable="false" MaxLength="4000" FixedLength="false" Unicode="true" />
-          <Property Name="scheduledTime" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="data" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="actualTaskId" Type="Int32" />
-          <Property Name="paymentId" Type="Int32" />
-          <Property Name="taskId" Type="Int32" />
-        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="igroup194_prodModelStoreContainer" CdmEntityContainer="igroup194Db">
+        <EntityContainerMapping StorageEntityContainer="igroup194StoreContainer" CdmEntityContainer="igroup194DB">
           <EntitySetMapping Name="sysdiagrams">
-            <EntityTypeMapping TypeName="igroup194_prodModel.sysdiagrams">
+            <EntityTypeMapping TypeName="igroup194.sysdiagrams">
               <MappingFragment StoreEntitySet="sysdiagrams">
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="principal_id" ColumnName="principal_id" />
@@ -2063,7 +2064,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tblActualList">
-            <EntityTypeMapping TypeName="igroup194_prodModel.tblActualList">
+            <EntityTypeMapping TypeName="igroup194.tblActualList">
               <MappingFragment StoreEntitySet="tblActualList">
                 <ScalarProperty Name="listId" ColumnName="listId" />
                 <ScalarProperty Name="type" ColumnName="type" />
@@ -2071,7 +2072,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tblActualTask">
-            <EntityTypeMapping TypeName="igroup194_prodModel.tblActualTask">
+            <EntityTypeMapping TypeName="igroup194.tblActualTask">
               <MappingFragment StoreEntitySet="tblActualTask">
                 <ScalarProperty Name="actualId" ColumnName="actualId" />
                 <ScalarProperty Name="taskId" ColumnName="taskId" />
@@ -2082,7 +2083,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tblCalendarForUser">
-            <EntityTypeMapping TypeName="igroup194_prodModel.tblCalendarForUser">
+            <EntityTypeMapping TypeName="igroup194.tblCalendarForUser">
               <MappingFragment StoreEntitySet="tblCalendarForUser">
                 <ScalarProperty Name="calendarNum" ColumnName="calendarNum" />
                 <ScalarProperty Name="userId" ColumnName="userId" />
@@ -2091,16 +2092,16 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tblCalendarsType">
-            <EntityTypeMapping TypeName="igroup194_prodModel.tblCalendarsType">
+            <EntityTypeMapping TypeName="igroup194.tblCalendarsType">
               <MappingFragment StoreEntitySet="tblCalendarsType">
-                <ScalarProperty Name="calendarCode" ColumnName="calendarCode" />
                 <ScalarProperty Name="calendarNum" ColumnName="calendarNum" />
+                <ScalarProperty Name="calendarCode" ColumnName="calendarCode" />
                 <ScalarProperty Name="calendarName" ColumnName="calendarName" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tblCaresForPatient">
-            <EntityTypeMapping TypeName="igroup194_prodModel.tblCaresForPatient">
+            <EntityTypeMapping TypeName="igroup194.tblCaresForPatient">
               <MappingFragment StoreEntitySet="tblCaresForPatient">
                 <ScalarProperty Name="patientId" ColumnName="patientId" />
                 <ScalarProperty Name="workerId" ColumnName="workerId" />
@@ -2110,7 +2111,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tblContacts">
-            <EntityTypeMapping TypeName="igroup194_prodModel.tblContacts">
+            <EntityTypeMapping TypeName="igroup194.tblContacts">
               <MappingFragment StoreEntitySet="tblContacts">
                 <ScalarProperty Name="contactId" ColumnName="contactId" />
                 <ScalarProperty Name="contactName" ColumnName="contactName" />
@@ -2124,29 +2125,28 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tblCountry">
-            <EntityTypeMapping TypeName="igroup194_prodModel.tblCountry">
+            <EntityTypeMapping TypeName="igroup194.tblCountry">
               <MappingFragment StoreEntitySet="tblCountry">
                 <ScalarProperty Name="CountryName_En" ColumnName="CountryName_En" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tblDrug">
-            <EntityTypeMapping TypeName="igroup194_prodModel.tblDrug">
+            <EntityTypeMapping TypeName="igroup194.tblDrug">
               <MappingFragment StoreEntitySet="tblDrug">
-                <ScalarProperty Name="drugUrlEn" ColumnName="drugUrlEn" />
-                <ScalarProperty Name="drugNameEn" ColumnName="drugNameEn" />
                 <ScalarProperty Name="drugId" ColumnName="drugId" />
                 <ScalarProperty Name="drugName" ColumnName="drugName" />
                 <ScalarProperty Name="drugUrl" ColumnName="drugUrl" />
                 <ScalarProperty Name="modifyDate" ColumnName="modifyDate" />
                 <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="drugNameEn" ColumnName="drugNameEn" />
+                <ScalarProperty Name="drugUrlEn" ColumnName="drugUrlEn" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tblDrugForPatient">
-            <EntityTypeMapping TypeName="igroup194_prodModel.tblDrugForPatient">
+            <EntityTypeMapping TypeName="igroup194.tblDrugForPatient">
               <MappingFragment StoreEntitySet="tblDrugForPatient">
-                <ScalarProperty Name="lastTakenDate" ColumnName="lastTakenDate" />
                 <ScalarProperty Name="listId" ColumnName="listId" />
                 <ScalarProperty Name="fromDate" ColumnName="fromDate" />
                 <ScalarProperty Name="toDate" ColumnName="toDate" />
@@ -2155,11 +2155,12 @@
                 <ScalarProperty Name="minQuantity" ColumnName="minQuantity" />
                 <ScalarProperty Name="drugId" ColumnName="drugId" />
                 <ScalarProperty Name="patientId" ColumnName="patientId" />
+                <ScalarProperty Name="lastTakenDate" ColumnName="lastTakenDate" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tblForeignUser">
-            <EntityTypeMapping TypeName="igroup194_prodModel.tblForeignUser">
+            <EntityTypeMapping TypeName="igroup194.tblForeignUser">
               <MappingFragment StoreEntitySet="tblForeignUser">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="DateOfBirth" ColumnName="DateOfBirth" />
@@ -2170,7 +2171,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tblHobbies">
-            <EntityTypeMapping TypeName="igroup194_prodModel.tblHobbies">
+            <EntityTypeMapping TypeName="igroup194.tblHobbies">
               <MappingFragment StoreEntitySet="tblHobbies">
                 <ScalarProperty Name="patientId" ColumnName="patientId" />
                 <ScalarProperty Name="books" ColumnName="books" />
@@ -2188,7 +2189,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tblLanguage">
-            <EntityTypeMapping TypeName="igroup194_prodModel.tblLanguage">
+            <EntityTypeMapping TypeName="igroup194.tblLanguage">
               <MappingFragment StoreEntitySet="tblLanguage">
                 <ScalarProperty Name="LanguageName_En" ColumnName="LanguageName_En" />
                 <ScalarProperty Name="LanguageName_He" ColumnName="LanguageName_He" />
@@ -2198,7 +2199,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tblLimitations">
-            <EntityTypeMapping TypeName="igroup194_prodModel.tblLimitations">
+            <EntityTypeMapping TypeName="igroup194.tblLimitations">
               <MappingFragment StoreEntitySet="tblLimitations">
                 <ScalarProperty Name="patientId" ColumnName="patientId" />
                 <ScalarProperty Name="allergies" ColumnName="allergies" />
@@ -2211,7 +2212,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tblList">
-            <EntityTypeMapping TypeName="igroup194_prodModel.tblList">
+            <EntityTypeMapping TypeName="igroup194.tblList">
               <MappingFragment StoreEntitySet="tblList">
                 <ScalarProperty Name="listId" ColumnName="listId" />
                 <ScalarProperty Name="listName" ColumnName="listName" />
@@ -2221,7 +2222,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tblPatient">
-            <EntityTypeMapping TypeName="igroup194_prodModel.tblPatient">
+            <EntityTypeMapping TypeName="igroup194.tblPatient">
               <MappingFragment StoreEntitySet="tblPatient">
                 <ScalarProperty Name="patientId" ColumnName="patientId" />
                 <ScalarProperty Name="FirstName" ColumnName="FirstName" />
@@ -2233,9 +2234,8 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tblPatientTask">
-            <EntityTypeMapping TypeName="igroup194_prodModel.tblPatientTask">
+            <EntityTypeMapping TypeName="igroup194.tblPatientTask">
               <MappingFragment StoreEntitySet="tblPatientTask">
-                <ScalarProperty Name="timesInDayArray" ColumnName="timesInDayArray" />
                 <ScalarProperty Name="taskId" ColumnName="taskId" />
                 <ScalarProperty Name="taskName" ColumnName="taskName" />
                 <ScalarProperty Name="taskFromDate" ColumnName="taskFromDate" />
@@ -2246,11 +2246,12 @@
                 <ScalarProperty Name="workerId" ColumnName="workerId" />
                 <ScalarProperty Name="userId" ColumnName="userId" />
                 <ScalarProperty Name="listId" ColumnName="listId" />
+                <ScalarProperty Name="timesInDayArray" ColumnName="timesInDayArray" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tblPaycheck">
-            <EntityTypeMapping TypeName="igroup194_prodModel.tblPaycheck">
+            <EntityTypeMapping TypeName="igroup194.tblPaycheck">
               <MappingFragment StoreEntitySet="tblPaycheck">
                 <ScalarProperty Name="payCheckNum" ColumnName="payCheckNum" />
                 <ScalarProperty Name="paycheckDate" ColumnName="paycheckDate" />
@@ -2262,9 +2263,8 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tblPaymentRequest">
-            <EntityTypeMapping TypeName="igroup194_prodModel.tblPaymentRequest">
+            <EntityTypeMapping TypeName="igroup194.tblPaymentRequest">
               <MappingFragment StoreEntitySet="tblPaymentRequest">
-                <ScalarProperty Name="requestEndDate" ColumnName="requestEndDate" />
                 <ScalarProperty Name="requestId" ColumnName="requestId" />
                 <ScalarProperty Name="requestSubject" ColumnName="requestSubject" />
                 <ScalarProperty Name="amountToPay" ColumnName="amountToPay" />
@@ -2273,11 +2273,12 @@
                 <ScalarProperty Name="requestComment" ColumnName="requestComment" />
                 <ScalarProperty Name="requestStatus" ColumnName="requestStatus" />
                 <ScalarProperty Name="userId" ColumnName="userId" />
+                <ScalarProperty Name="requestEndDate" ColumnName="requestEndDate" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tblPrivateActualTask">
-            <EntityTypeMapping TypeName="igroup194_prodModel.tblPrivateActualTask">
+            <EntityTypeMapping TypeName="igroup194.tblPrivateActualTask">
               <MappingFragment StoreEntitySet="tblPrivateActualTask">
                 <ScalarProperty Name="actualId" ColumnName="actualId" />
                 <ScalarProperty Name="taskId" ColumnName="taskId" />
@@ -2288,7 +2289,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tblPrivateTask">
-            <EntityTypeMapping TypeName="igroup194_prodModel.tblPrivateTask">
+            <EntityTypeMapping TypeName="igroup194.tblPrivateTask">
               <MappingFragment StoreEntitySet="tblPrivateTask">
                 <ScalarProperty Name="taskId" ColumnName="taskId" />
                 <ScalarProperty Name="taskName" ColumnName="taskName" />
@@ -2301,7 +2302,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tblProduct">
-            <EntityTypeMapping TypeName="igroup194_prodModel.tblProduct">
+            <EntityTypeMapping TypeName="igroup194.tblProduct">
               <MappingFragment StoreEntitySet="tblProduct">
                 <ScalarProperty Name="productId" ColumnName="productId" />
                 <ScalarProperty Name="productName" ColumnName="productName" />
@@ -2309,7 +2310,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tblProductList">
-            <EntityTypeMapping TypeName="igroup194_prodModel.tblProductList">
+            <EntityTypeMapping TypeName="igroup194.tblProductList">
               <MappingFragment StoreEntitySet="tblProductList">
                 <ScalarProperty Name="productId" ColumnName="productId" />
                 <ScalarProperty Name="actualId" ColumnName="actualId" />
@@ -2320,14 +2321,24 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="tblUser">
-            <EntityTypeMapping TypeName="igroup194_prodModel.tblUser">
-              <MappingFragment StoreEntitySet="tblUser">
-                <ScalarProperty Name="tasksNotifications" ColumnName="tasksNotifications" />
-                <ScalarProperty Name="medNotifications" ColumnName="medNotifications" />
-                <ScalarProperty Name="chatNotifications" ColumnName="chatNotifications" />
-                <ScalarProperty Name="financeNotifications" ColumnName="financeNotifications" />
+          <EntitySetMapping Name="tblScheduledNotifications">
+            <EntityTypeMapping TypeName="igroup194.tblScheduledNotifications">
+              <MappingFragment StoreEntitySet="tblScheduledNotifications">
+                <ScalarProperty Name="notificationID" ColumnName="notificationID" />
                 <ScalarProperty Name="pushToken" ColumnName="pushToken" />
+                <ScalarProperty Name="title" ColumnName="title" />
+                <ScalarProperty Name="pushMessage" ColumnName="pushMessage" />
+                <ScalarProperty Name="scheduledTime" ColumnName="scheduledTime" />
+                <ScalarProperty Name="data" ColumnName="data" />
+                <ScalarProperty Name="actualTaskId" ColumnName="actualTaskId" />
+                <ScalarProperty Name="paymentId" ColumnName="paymentId" />
+                <ScalarProperty Name="taskId" ColumnName="taskId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblUser">
+            <EntityTypeMapping TypeName="igroup194.tblUser">
+              <MappingFragment StoreEntitySet="tblUser">
                 <ScalarProperty Name="userId" ColumnName="userId" />
                 <ScalarProperty Name="Email" ColumnName="Email" />
                 <ScalarProperty Name="Password" ColumnName="Password" />
@@ -2336,42 +2347,49 @@
                 <ScalarProperty Name="gender" ColumnName="gender" />
                 <ScalarProperty Name="phoneNum" ColumnName="phoneNum" />
                 <ScalarProperty Name="userUri" ColumnName="userUri" />
+                <ScalarProperty Name="pushToken" ColumnName="pushToken" />
+                <ScalarProperty Name="financeNotifications" ColumnName="financeNotifications" />
+                <ScalarProperty Name="chatNotifications" ColumnName="chatNotifications" />
+                <ScalarProperty Name="medNotifications" ColumnName="medNotifications" />
+                <ScalarProperty Name="tasksNotifications" ColumnName="tasksNotifications" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <FunctionImportMapping FunctionImportName="InsertActualList" FunctionName="igroup194_prodModel.Store.InsertActualList" />
-          <FunctionImportMapping FunctionImportName="InsertActualTask" FunctionName="igroup194_prodModel.Store.InsertActualTask" />
-          <FunctionImportMapping FunctionImportName="InsertCalendarForUser" FunctionName="igroup194_prodModel.Store.InsertCalendarForUser" />
-          <FunctionImportMapping FunctionImportName="InsertCaresForPatient" FunctionName="igroup194_prodModel.Store.InsertCaresForPatient" />
-          <FunctionImportMapping FunctionImportName="InsertDrugForPatient" FunctionName="igroup194_prodModel.Store.InsertDrugForPatient" />
-          <FunctionImportMapping FunctionImportName="InsertForeignUser" FunctionName="igroup194_prodModel.Store.InsertForeignUser" />
-          <FunctionImportMapping FunctionImportName="InsertList" FunctionName="igroup194_prodModel.Store.InsertList" />
-          <FunctionImportMapping FunctionImportName="InsertPatient" FunctionName="igroup194_prodModel.Store.InsertPatient" />
-          <FunctionImportMapping FunctionImportName="InsertPatientHobbies" FunctionName="igroup194_prodModel.Store.InsertPatientHobbies" />
-          <FunctionImportMapping FunctionImportName="InsertPatientLimitations" FunctionName="igroup194_prodModel.Store.InsertPatientLimitations" />
-          <FunctionImportMapping FunctionImportName="InsertPatientTask" FunctionName="igroup194_prodModel.Store.InsertPatientTask" />
-          <FunctionImportMapping FunctionImportName="InsertPrivateActualTask" FunctionName="igroup194_prodModel.Store.InsertPrivateActualTask" />
-          <FunctionImportMapping FunctionImportName="InsertPrivateTask" FunctionName="igroup194_prodModel.Store.InsertPrivateTask" />
-          <FunctionImportMapping FunctionImportName="InsertProduct" FunctionName="igroup194_prodModel.Store.InsertProduct" />
-          <FunctionImportMapping FunctionImportName="InsertProductList" FunctionName="igroup194_prodModel.Store.InsertProductList" />
-          <FunctionImportMapping FunctionImportName="InsertUser" FunctionName="igroup194_prodModel.Store.InsertUser" />
-          <FunctionImportMapping FunctionImportName="NewContact" FunctionName="igroup194_prodModel.Store.NewContact" />
-          <FunctionImportMapping FunctionImportName="NewPaycheck" FunctionName="igroup194_prodModel.Store.NewPaycheck" />
-          <FunctionImportMapping FunctionImportName="NewPaymentRequest" FunctionName="igroup194_prodModel.Store.NewPaymentRequest" />
-          <FunctionImportMapping FunctionImportName="sp_alterdiagram" FunctionName="igroup194_prodModel.Store.sp_alterdiagram" />
-          <FunctionImportMapping FunctionImportName="sp_creatediagram" FunctionName="igroup194_prodModel.Store.sp_creatediagram" />
-          <FunctionImportMapping FunctionImportName="sp_dropdiagram" FunctionName="igroup194_prodModel.Store.sp_dropdiagram" />
-          <FunctionImportMapping FunctionImportName="sp_helpdiagramdefinition" FunctionName="igroup194_prodModel.Store.sp_helpdiagramdefinition">
+          <FunctionImportMapping FunctionImportName="InsertActualList" FunctionName="igroup194.Store.InsertActualList" />
+          <FunctionImportMapping FunctionImportName="InsertActualTask" FunctionName="igroup194.Store.InsertActualTask" />
+          <FunctionImportMapping FunctionImportName="InsertCalendarForUser" FunctionName="igroup194.Store.InsertCalendarForUser" />
+          <FunctionImportMapping FunctionImportName="InsertCaresForPatient" FunctionName="igroup194.Store.InsertCaresForPatient" />
+          <FunctionImportMapping FunctionImportName="InsertDrugForPatient" FunctionName="igroup194.Store.InsertDrugForPatient" />
+          <FunctionImportMapping FunctionImportName="InsertForeignUser" FunctionName="igroup194.Store.InsertForeignUser" />
+          <FunctionImportMapping FunctionImportName="InsertList" FunctionName="igroup194.Store.InsertList" />
+          <FunctionImportMapping FunctionImportName="InsertNewDrug" FunctionName="igroup194.Store.InsertNewDrug" />
+          <FunctionImportMapping FunctionImportName="InsertPatient" FunctionName="igroup194.Store.InsertPatient" />
+          <FunctionImportMapping FunctionImportName="InsertPatientHobbies" FunctionName="igroup194.Store.InsertPatientHobbies" />
+          <FunctionImportMapping FunctionImportName="InsertPatientLimitations" FunctionName="igroup194.Store.InsertPatientLimitations" />
+          <FunctionImportMapping FunctionImportName="InsertPatientTask" FunctionName="igroup194.Store.InsertPatientTask" />
+          <FunctionImportMapping FunctionImportName="InsertPrivateActualTask" FunctionName="igroup194.Store.InsertPrivateActualTask" />
+          <FunctionImportMapping FunctionImportName="InsertPrivateTask" FunctionName="igroup194.Store.InsertPrivateTask" />
+          <FunctionImportMapping FunctionImportName="InsertProduct" FunctionName="igroup194.Store.InsertProduct" />
+          <FunctionImportMapping FunctionImportName="InsertProductList" FunctionName="igroup194.Store.InsertProductList" />
+          <FunctionImportMapping FunctionImportName="InsertScheduledNotification" FunctionName="igroup194.Store.InsertScheduledNotification" />
+          <FunctionImportMapping FunctionImportName="InsertUser" FunctionName="igroup194.Store.InsertUser" />
+          <FunctionImportMapping FunctionImportName="NewContact" FunctionName="igroup194.Store.NewContact" />
+          <FunctionImportMapping FunctionImportName="NewPaycheck" FunctionName="igroup194.Store.NewPaycheck" />
+          <FunctionImportMapping FunctionImportName="NewPaymentRequest" FunctionName="igroup194.Store.NewPaymentRequest" />
+          <FunctionImportMapping FunctionImportName="sp_alterdiagram" FunctionName="igroup194.Store.sp_alterdiagram" />
+          <FunctionImportMapping FunctionImportName="sp_creatediagram" FunctionName="igroup194.Store.sp_creatediagram" />
+          <FunctionImportMapping FunctionImportName="sp_dropdiagram" FunctionName="igroup194.Store.sp_dropdiagram" />
+          <FunctionImportMapping FunctionImportName="sp_helpdiagramdefinition" FunctionName="igroup194.Store.sp_helpdiagramdefinition">
             <ResultMapping>
-              <ComplexTypeMapping TypeName="igroup194_prodModel.sp_helpdiagramdefinition_Result">
+              <ComplexTypeMapping TypeName="igroup194.sp_helpdiagramdefinition_Result">
                 <ScalarProperty Name="version" ColumnName="version" />
                 <ScalarProperty Name="definition" ColumnName="definition" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="sp_helpdiagrams" FunctionName="igroup194_prodModel.Store.sp_helpdiagrams">
+          <FunctionImportMapping FunctionImportName="sp_helpdiagrams" FunctionName="igroup194.Store.sp_helpdiagrams">
             <ResultMapping>
-              <ComplexTypeMapping TypeName="igroup194_prodModel.sp_helpdiagrams_Result">
+              <ComplexTypeMapping TypeName="igroup194.sp_helpdiagrams_Result">
                 <ScalarProperty Name="Database" ColumnName="Database" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
@@ -2380,26 +2398,9 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="igroup194_prodModel.Store.sp_renamediagram" />
-          <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="igroup194_prodModel.Store.sp_upgraddiagrams" />
-          <FunctionImportMapping FunctionImportName="updateStatusCaresForPatient" FunctionName="igroup194_prodModel.Store.updateStatusCaresForPatient" />
-          <FunctionImportMapping FunctionImportName="InsertNewDrug" FunctionName="igroup194_prodModel.Store.InsertNewDrug" />
-          <EntitySetMapping Name="tblScheduledNotifications">
-            <EntityTypeMapping TypeName="igroup194_prodModel.tblScheduledNotifications">
-              <MappingFragment StoreEntitySet="tblScheduledNotifications">
-                <ScalarProperty Name="taskId" ColumnName="taskId" />
-                <ScalarProperty Name="paymentId" ColumnName="paymentId" />
-                <ScalarProperty Name="actualTaskId" ColumnName="actualTaskId" />
-                <ScalarProperty Name="data" ColumnName="data" />
-                <ScalarProperty Name="scheduledTime" ColumnName="scheduledTime" />
-                <ScalarProperty Name="pushMessage" ColumnName="pushMessage" />
-                <ScalarProperty Name="title" ColumnName="title" />
-                <ScalarProperty Name="pushToken" ColumnName="pushToken" />
-                <ScalarProperty Name="notificationID" ColumnName="notificationID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <FunctionImportMapping FunctionImportName="InsertScheduledNotification" FunctionName="igroup194_prodModel.Store.InsertScheduledNotification" />
+          <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="igroup194.Store.sp_renamediagram" />
+          <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="igroup194.Store.sp_upgraddiagrams" />
+          <FunctionImportMapping FunctionImportName="updateStatusCaresForPatient" FunctionName="igroup194.Store.updateStatusCaresForPatient" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

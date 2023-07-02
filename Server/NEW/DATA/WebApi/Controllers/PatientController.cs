@@ -13,7 +13,7 @@ namespace WebApi.Controllers
     [RoutePrefix("api/Patient")]
     public class PatientController : ApiController
     {
-        igroup194Db db = new igroup194Db();
+        igroup194DB db = new igroup194DB();
 
         [HttpGet]
         [Route("GetPatient/{id}")] // Just for testing

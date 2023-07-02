@@ -4,60 +4,60 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="2c6394dd48aa47b4800eab3c86a22774" Name="Diagram1" ZoomLevel="67">
-        <EntityTypeShape EntityType="igroup194_prodModel.sysdiagrams" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="igroup194_prodModel.tblActualList" Width="1.5" PointX="3" PointY="10.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="igroup194_prodModel.tblActualTask" Width="1.5" PointX="13.5" PointY="16.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="igroup194_prodModel.tblCalendarForUser" Width="1.5" PointX="3" PointY="18.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="igroup194_prodModel.tblCalendarsType" Width="1.5" PointX="0.75" PointY="23" IsExpanded="true" />
-        <EntityTypeShape EntityType="igroup194_prodModel.tblCaresForPatient" Width="1.5" PointX="8.25" PointY="16.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="igroup194_prodModel.tblContacts" Width="1.5" PointX="5.25" PointY="10.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="igroup194_prodModel.tblCountry" Width="1.5" PointX="3.75" PointY="8.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="igroup194_prodModel.tblDrug" Width="1.5" PointX="3" PointY="22.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="igroup194_prodModel.tblDrugForPatient" Width="1.5" PointX="5.25" PointY="14.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="igroup194_prodModel.tblForeignUser" Width="1.5" PointX="6" PointY="18.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="igroup194_prodModel.tblHobbies" Width="1.5" PointX="5.25" PointY="23.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="igroup194_prodModel.tblLanguage" Width="1.5" PointX="0.75" PointY="14.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="igroup194_prodModel.tblLimitations" Width="1.5" PointX="5.25" PointY="27.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="igroup194_prodModel.tblList" Width="1.5" PointX="15.75" PointY="16.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="igroup194_prodModel.tblPatient" Width="1.5" PointX="3" PointY="14" IsExpanded="true" />
-        <EntityTypeShape EntityType="igroup194_prodModel.tblPatientTask" Width="1.5" PointX="11.25" PointY="15.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="igroup194_prodModel.tblPaycheck" Width="1.5" PointX="3" PointY="39.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="igroup194_prodModel.tblPaymentRequest" Width="1.5" PointX="8.25" PointY="24.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="igroup194_prodModel.tblPrivateActualTask" Width="1.5" PointX="10.5" PointY="28.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="igroup194_prodModel.tblPrivateTask" Width="1.5" PointX="8.25" PointY="27.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="igroup194_prodModel.tblProduct" Width="1.5" PointX="15.75" PointY="14" IsExpanded="true" />
-        <EntityTypeShape EntityType="igroup194_prodModel.tblProductList" Width="1.5" PointX="18" PointY="16.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="igroup194_prodModel.tblUser" Width="1.5" PointX="0.75" PointY="18.125" IsExpanded="true" />
-        <AssociationConnector Association="igroup194_prodModel.FK__tblDrugFo__listI__131DCD43" ManuallyRouted="false" />
-        <AssociationConnector Association="igroup194_prodModel.FK__tblList__listId__7E22B05D" ManuallyRouted="false" />
-        <AssociationConnector Association="igroup194_prodModel.FK__tblPatien__listI__758D6A5C" ManuallyRouted="false" />
-        <AssociationConnector Association="igroup194_prodModel.FK__tblActual__taskI__795DFB40" ManuallyRouted="false" />
-        <AssociationConnector Association="igroup194_prodModel.FK__tblList__7F16D496" ManuallyRouted="false" />
-        <AssociationConnector Association="igroup194_prodModel.FK__tblCalend__calen__07AC1A97" ManuallyRouted="false" />
-        <AssociationConnector Association="igroup194_prodModel.FK__tblCalend__userI__06B7F65E" ManuallyRouted="false" />
-        <AssociationConnector Association="igroup194_prodModel.FK__tblCaresF__patie__0A888742" ManuallyRouted="false" />
-        <AssociationConnector Association="igroup194_prodModel.FK__tblCaresF__worke__0B7CAB7B" ManuallyRouted="false" />
-        <AssociationConnector Association="igroup194_prodModel.FK__tblContac__patie__10416098" ManuallyRouted="false" />
-        <AssociationConnector Association="igroup194_prodModel.FK__tblForeig__Count__673F4B05" ManuallyRouted="false" />
-        <AssociationConnector Association="igroup194_prodModel.FK__tblDrugFo__drugI__1411F17C" ManuallyRouted="false" />
-        <AssociationConnector Association="igroup194_prodModel.FK__tblDrugFo__patie__150615B5" ManuallyRouted="false" />
-        <AssociationConnector Association="igroup194_prodModel.FK__tblForeig__Langu__664B26CC" ManuallyRouted="false" />
-        <AssociationConnector Association="igroup194_prodModel.FK__tblForeignUs__Id__6462DE5A" ManuallyRouted="false" />
-        <AssociationConnector Association="igroup194_prodModel.FK__tblPatien__worke__73A521EA" ManuallyRouted="false" />
-        <AssociationConnector Association="igroup194_prodModel.FK__tblPaymen__userI__1CA7377D" ManuallyRouted="false" />
-        <AssociationConnector Association="igroup194_prodModel.FK__tblPrivat__worke__6CF8245B" ManuallyRouted="false" />
-        <AssociationConnector Association="igroup194_prodModel.FK__tblHobbie__patie__59E54FE7" ManuallyRouted="false" />
-        <AssociationConnector Association="igroup194_prodModel.FK__tblPatien__Langu__5614BF03" ManuallyRouted="false" />
-        <AssociationConnector Association="igroup194_prodModel.FK__tblLimita__patie__5CC1BC92" ManuallyRouted="false" />
-        <AssociationConnector Association="igroup194_prodModel.FK__tblProductList__226010D3" ManuallyRouted="false" />
-        <AssociationConnector Association="igroup194_prodModel.FK__tblPatien__patie__72B0FDB1" ManuallyRouted="false" />
-        <AssociationConnector Association="igroup194_prodModel.FK__tblPatien__userI__55209ACA" ManuallyRouted="false" />
-        <AssociationConnector Association="igroup194_prodModel.FK__tblPatien__userI__74994623" ManuallyRouted="false" />
-        <AssociationConnector Association="igroup194_prodModel.FK__tblPayche__UserI__618671AF" ManuallyRouted="false" />
-        <AssociationConnector Association="igroup194_prodModel.FK__tblPrivat__taskI__01F34141" ManuallyRouted="false" />
-        <AssociationConnector Association="igroup194_prodModel.FK__tblProduc__produ__2354350C" ManuallyRouted="false" />
-        <EntityTypeShape EntityType="igroup194_prodModel.tblScheduledNotifications" Width="2.875" PointX="8.125" PointY="1.75" />
+      <Diagram DiagramId="abadbad52efe4110ba0d996ff9c770d3" Name="Diagram1">
+        <EntityTypeShape EntityType="igroup194.sysdiagrams" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup194.tblActualList" Width="1.5" PointX="6" PointY="14.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup194.tblActualTask" Width="1.5" PointX="13.5" PointY="17.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup194.tblCalendarForUser" Width="1.5" PointX="3" PointY="19.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup194.tblCalendarsType" Width="1.5" PointX="0.75" PointY="23.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup194.tblCaresForPatient" Width="1.5" PointX="8.25" PointY="19" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup194.tblContacts" Width="1.5" PointX="5.25" PointY="11" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup194.tblCountry" Width="1.5" PointX="3.75" PointY="8.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup194.tblDrug" Width="1.5" PointX="6" PointY="7.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup194.tblDrugForPatient" Width="1.5" PointX="8.25" PointY="14.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup194.tblForeignUser" Width="1.5" PointX="6" PointY="18.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup194.tblHobbies" Width="1.5" PointX="5.25" PointY="22.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup194.tblLanguage" Width="1.5" PointX="0.75" PointY="14.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup194.tblLimitations" Width="1.5" PointX="5.25" PointY="26.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup194.tblList" Width="1.5" PointX="15.75" PointY="17.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup194.tblPatient" Width="1.5" PointX="3" PointY="14.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup194.tblPatientTask" Width="1.5" PointX="11.25" PointY="16.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup194.tblPaycheck" Width="1.5" PointX="3" PointY="40" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup194.tblPaymentRequest" Width="1.5" PointX="8.25" PointY="24.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup194.tblPrivateActualTask" Width="1.5" PointX="10.5" PointY="28.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup194.tblPrivateTask" Width="1.5" PointX="8.25" PointY="28.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup194.tblProduct" Width="1.5" PointX="15.75" PointY="14.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup194.tblProductList" Width="1.5" PointX="18" PointY="17.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup194.tblScheduledNotifications" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="igroup194.tblUser" Width="1.5" PointX="0.75" PointY="18" IsExpanded="true" />
+        <AssociationConnector Association="igroup194.FK__tblDrugFo__listI__131DCD43" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194.FK__tblList__listId__7E22B05D" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194.FK__tblPatien__listI__758D6A5C" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194.FK__tblActual__taskI__795DFB40" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194.FK__tblList__7F16D496" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194.FK__tblCalend__calen__07AC1A97" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194.FK__tblCalend__userI__06B7F65E" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194.FK__tblCaresF__patie__0A888742" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194.FK__tblCaresF__worke__0B7CAB7B" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194.FK__tblContac__patie__10416098" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194.FK__tblForeig__Count__673F4B05" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194.FK__tblDrugFo__drugI__1411F17C" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194.FK__tblDrugFo__patie__150615B5" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194.FK__tblForeig__Langu__664B26CC" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194.FK__tblForeignUs__Id__6462DE5A" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194.FK__tblPatien__worke__73A521EA" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194.FK__tblPaymen__userI__1CA7377D" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194.FK__tblPrivat__worke__6CF8245B" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194.FK__tblHobbie__patie__59E54FE7" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194.FK__tblPatien__Langu__5614BF03" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194.FK__tblLimita__patie__5CC1BC92" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194.FK__tblProductList__226010D3" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194.FK__tblPatien__patie__72B0FDB1" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194.FK__tblPatien__userI__55209ACA" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194.FK__tblPatien__userI__74994623" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194.FK__tblPayche__UserI__618671AF" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194.FK__tblPrivat__taskI__01F34141" ManuallyRouted="false" />
+        <AssociationConnector Association="igroup194.FK__tblProduc__produ__2354350C" ManuallyRouted="false" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

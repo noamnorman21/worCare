@@ -18,7 +18,7 @@ namespace WebApi.Controllers
     [RoutePrefix("api/Task")]
     public class TasksController : ApiController
     {
-        igroup194Db db = new igroup194Db();
+        igroup194DB db = new igroup194DB();
         //Private Task section    
         [HttpPost]
         [Route("InsertPrivateTask")] //Insert new private task by foreign user

@@ -11,7 +11,7 @@ namespace WebApi.Controllers
     [RoutePrefix("api/Calendars")] // Calendars Types
     public class CalendarsController : ApiController
     {
-        igroup194Db db = new igroup194Db();
+        igroup194DB db = new igroup194DB();
        
         [HttpGet] //get all calendars types
         [Route("GetAllCalendars")]

@@ -18,7 +18,7 @@ namespace WebApi.Controllers
     [RoutePrefix("api/ForeignUser")]
     public class ForeignUserController : ApiController
     {
-        igroup194Db db = new igroup194Db();
+        igroup194DB db = new igroup194DB();
 
         [HttpPost]
         [Route("InsertForeignUser")]

@@ -11,7 +11,7 @@ namespace WebApi.Controllers
     [RoutePrefix("api/Drug")] //get all drugs for show in search
     public class DrugController : ApiController
     {
-        igroup194Db db = new igroup194Db();
+        igroup194DB db = new igroup194DB();
          
         [HttpGet]
         [Route("GetAllDrugs")]
