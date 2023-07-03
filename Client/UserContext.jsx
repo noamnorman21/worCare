@@ -8,6 +8,7 @@ import moment from 'moment';
 import { query, updateDoc, collection, getDocs, where } from 'firebase/firestore';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
+import { set } from 'react-native-reanimated';
 
 
 // ---------------- All Server Urls ---------------- 
@@ -20,6 +21,7 @@ let GetAllPatients = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/GetAl
 
 // Log In
 let userForLoginUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUserForLogin';
+let getUserNoti = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUserNotificatoins';
 
 // Sign Up
 let insertUser = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/InsertUser';
@@ -146,14 +148,7 @@ export function UserProvider({ children }) {
             pushToken2: userData.pushTokenSecoundSide,
         }
         setUserContext(usertoSync);
-        let notifications = {
-            financeNotifications: true,
-            chatNotifications: true,
-            tasksNotifications: true,
-            medNotifications: true,
-            allNotifications: true,
-        }
-        setUserNotifications(notifications)
+        fetchUserNotifications(usertoSync);
         fetchUserContacts(usertoSync);
         GetUserPending(usertoSync);
         GetUserHistory(usertoSync);
@@ -171,6 +166,27 @@ export function UserProvider({ children }) {
     }
 
     // ----------------------  Push Notifications  ----------------------
+    function fetchUserNotifications(usertoSync) {
+        fetch(getUserNoti, {
+            method: 'POST',
+            headers: new Headers({
+                'Content-Type': 'application/json; charset=UTF-8',
+            }),
+            body: JSON.stringify(usertoSync.Email),
+        }).then(res => {
+            if (res.ok) {
+                return res.json()
+            }
+        })
+            .then(
+                (result) => {
+                    setUserNotifications(result);
+                },
+                (error) => {
+                    console.log("err post=", error);
+                });
+    }
+
     // For Push Notifications - Start
     async function registerForPushNotificationsAsync() {
         let token;
@@ -954,7 +970,7 @@ export function UserProvider({ children }) {
         updateUserProfile, updateuserNotifications, appEmail, getAllPrivateTasks, getAllPublicTasks,
         allPublicTasks, allPrivateTasks, UpdateDrugForPatientDTO, holidays, GetAllDrugs, allDrugs, addPrivateTaskContext,
         newMessages, setNewMessages, logOutFireBase, registerForPushNotificationsAsync, sendPushNotification, UpdatePatient, userPaychecks,
-        fetchPatientList, patientList,setRouteEmail,routeEmail
+        fetchPatientList, patientList, setRouteEmail, routeEmail
     };
 
     return (

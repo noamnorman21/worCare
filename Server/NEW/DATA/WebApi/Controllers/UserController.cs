@@ -79,6 +79,52 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
+        [Route("GetUserNotificatoins")] // POST - Because The FromBody - Check if email and password exists in DB
+        public IHttpActionResult GetUserNotificatoins([FromBody] UserDTO userDTO)
+        {
+            try
+            {
+                var user = db.tblUser.Where(x => x.Email == userDTO.Email).FirstOrDefault();
+                if (user == null)
+                    return NotFound();
+
+                UserDTO newUser = new UserDTO();
+                newUser.chatNotifications = user.chatNotifications;
+                newUser.tasksNotifications = user.tasksNotifications;
+                newUser.medNotifications = user.medNotifications;
+                newUser.financeNotifications = user.financeNotifications;
+                return Ok(newUser);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut]
+        [Route("UpdateUserNotificatoins")] 
+        public IHttpActionResult UpdateUserNotificatoins([FromBody] UserDTO userDTO)
+        {
+            try
+            {
+                var user = db.tblUser.Where(x => x.Email == userDTO.Email).FirstOrDefault();
+                if (user == null)
+                    return NotFound();
+
+                user.chatNotifications = userDTO.chatNotifications;
+                user.tasksNotifications = userDTO.tasksNotifications;
+                user.medNotifications = userDTO.medNotifications;
+                user.financeNotifications = userDTO.financeNotifications;
+                db.SaveChanges();
+                return Ok("Notifications Updated :)");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost]
         [Route("GetUserForLogin")] // POST - Because The FromBody - Check if email and password exists in DB
         public IHttpActionResult GetUserForLogin([FromBody] UserDTO userDTO)
         {
@@ -348,7 +394,7 @@ namespace WebApi.Controllers
                                 }
                             }
                         }
-                        
+
                         //Remove Contacts
                         var contacts = db.tblContacts.Where(x => x.patientId == item.patientId).ToList();
                         foreach (var con in contacts)

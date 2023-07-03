@@ -50,7 +50,7 @@ export default function EditMed(props) {
             padding: 5,
         },
     });
-
+    const [userData, setUserData] = useState(useUserContext().userContext);
     const [numberPerDay, setNumberPerDay] = useState(medTimesArr.length);
     const [quantity, setQuantity] = useState(task.drug.dosage);
     const [isEdited, setIsEdited] = useState(false);
@@ -180,14 +180,13 @@ export default function EditMed(props) {
             fromDate: moment().format('YYYY-MM-DD'),
             toDate: toDate,
             patientId: task.patientId,
-            workerId: task.workerId,
-            userId: task.userId,
             dosage: quantity,
             taskComment: task.taskComment,
             frequency: frequency,
             qtyInBox: task.drug.qtyInBox,
+            workerId: userData.workerId,
+            userId: userData.involvedInId,
             pushToken: pushToken,
-
         }
         console.log(newDrugForPatient);
         let taskForDelete = {

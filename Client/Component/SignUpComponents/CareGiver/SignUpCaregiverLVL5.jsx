@@ -91,11 +91,11 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
                       });
                     });
                   }
-                  await addDoc(collection(db, auth.currentUser.email), { Name: newForeignUserData.CountryName_En, UserName: "", userEmail: "", image: groupImage, unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date(), type: "group" }).then( async () => {
+                  await addDoc(collection(db, auth.currentUser.email), { Name: newForeignUserData.CountryName_En, UserName: "", userEmail: "", image: groupImage, unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date(), type: "group" }).then(async () => {
                     console.log("group added to user");
                     let userQuery = query(collection(db, "AllUsers"), where("id", "==", routeEmail));
                     let userQuerySnapshot = await getDocs(userQuery);
-                    let user={
+                    let user = {
                       id: userQuerySnapshot.docs[0].data().id,
                       name: userQuerySnapshot.docs[0].data().name,
                       avatar: userQuerySnapshot.docs[0].data().avatar,
@@ -167,8 +167,6 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
       linkTo: linkTo,
       status: "P"
     };
-    console.log("caresForPatient:");
-    console.log(caresForPatient);
     fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/ForeignUser/InsertCaresForPatient', {
       method: "POST",
       headers: {
@@ -189,7 +187,7 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
         ]);
       })
       .catch((error) => {
-        console.error("error frrm cares for patient:");
+        console.error("error from cares for patient:");
         console.error(error.message);
       });
   };

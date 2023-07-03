@@ -25,7 +25,8 @@ export default function PatientProfile() {
     const [food, setFood] = useState(HobbiesJSON.food);
     const [movie, setMovie] = useState(HobbiesJSON.movie);
     const [music, setMusic] = useState(HobbiesJSON.music);
-    const [specialHabits, setSpecialHabits] = useState(LimitationsJSON.specialHabits);
+    const [radioChannel, setRadioChannel] = useState(HobbiesJSON.radioChannel);
+    const [specialHabits, setSpecialHabits] = useState(HobbiesJSON.specialHabits);
     // Limitations
     const [limitations, setLimitations] = useState([]);
     const [allergies, setAllergies] = useState(LimitationsJSON.allergies);
@@ -125,6 +126,7 @@ export default function PatientProfile() {
     ];
 
     useEffect(() => {
+        // console.log(books);
         const updatedLimitations = [];
         limitationsArr.forEach((limitationObj) => {
             const limitationsData = hobbiesAndLimitations[0][limitationObj.key];
@@ -141,22 +143,30 @@ export default function PatientProfile() {
     }, [hobbiesAndLimitations]);
 
     useEffect(() => {
-        // console.log(hobbiesAndLimitations);
         const updatedHobbies = [];
+
         hobbiesArr.forEach((hobbyObj) => {
             const hobbiesData = hobbiesAndLimitations[0][hobbyObj.key];
-            // console.log(hobbiesAndLimitations)
+            //console.log(hobbiesData);
             if (hobbiesData) {
                 const hobbyArr = hobbiesData.split(', ');
                 hobbyArr.forEach((hobby) => {
                     const { icon, label } = hobbyObj;
-                    const selected = selectedHobbies.some((h) => h.name === hobbiesData.label);
-                    updatedHobbies.push({ name: hobby, icon, label, selected });
+                    if (HobbiesJSON[hobbyObj.key]) {
+                        for (const h of HobbiesJSON[hobbyObj.key]) {
+                            if (h.name === hobby) {
+                                //console.log(h);
+                                // updatedHobbies.push({ name: hobby, icon, label, selected: true, ...h });
+                                break; // exit the loop once a match is found
+                            }
+                        }
+                    }
                 });
             } else {
                 updatedHobbies.push({ name: hobbyObj.key, icon: hobbyObj.icon, label: hobbyObj.label, selected: false });
             }
         });
+
         setHobbies(updatedHobbies);
     }, [hobbiesAndLimitations, selectedCategory, selectedHobbies]);
 
@@ -166,28 +176,16 @@ export default function PatientProfile() {
     }, [selectedCategory]);
 
     const handleHobbyToggle = (hobby) => {
-        // Check if the hobby is already selected
-        const isHobbySelected = selectedHobbies.some(h => h.name === hobby.name);
-
-        let updatedHobbies;
-        if (isHobbySelected) {
-            // If the hobby is already selected, then we remove it
-            updatedHobbies = selectedHobbies.filter(h => h.name !== hobby.name);
-        } else {
-            // If the hobby is not selected, then we add it
-            updatedHobbies = [...selectedHobbies, hobby];
-        }
-
-        setSelectedHobby(updatedHobbies);
+        console.log(hobbies);
     };
-
 
     const HobbiesScreen = () => {
         return (
             <View>
                 <ScrollView horizontal contentContainerStyle={styles.filterContainer}>
-                    {hobbiesArr.map((category) => (
+                    {hobbiesArr.map((category, index) => (
                         <TouchableOpacity
+                            key={index}
                             style={[
                                 styles.filterButtonText,
                                 selectedCategory === category.key && styles.selectedFilterTxt,
@@ -195,7 +193,7 @@ export default function PatientProfile() {
                             onPress={() => setSelectedCategory(category.key)}
                         >
                             <View
-                                key={category.key}
+                                key={index}
                                 style={[
                                     styles.filterButton,
                                     selectedCategory === category.key && styles.selectedFilterButton,
@@ -216,6 +214,7 @@ export default function PatientProfile() {
                                 <TouchableOpacity
                                     style={[styles.collageItemContainer, hobby.selected ? styles.selectedCollageBubble : null]}
                                     onPress={() => handleHobbyToggle(hobby)}
+                                    key={index}
                                 >
                                     <View key={index} style={styles.collageBubble}>
                                         <Text style={hobby.selected ? styles.selectedCollageText : styles.collageText}>{hobby.name}</Text>
@@ -256,7 +255,7 @@ export default function PatientProfile() {
                 <ScrollView contentContainerStyle={styles.collageContainer}>
                     {filteredLimitations.map((l, index) => (
                         <View key={index} style={styles.collageItemContainer}>
-                            <Chip style={styles.collageBubble} mode="outlined">
+                            <Chip key={index} style={styles.collageBubble} mode="outlined">
                                 {l.icon}
                             </Chip>
                             <Text style={styles.collageLabelText}>{l.limitation}</Text>

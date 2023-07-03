@@ -10,9 +10,10 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 import * as Notifications from 'expo-notifications';
 import { Buffer } from 'buffer';
-
+import { useUserContext } from '../../../UserContext';
 
 export default function SignUpFinish({ navigation, route }) {
+    const { registerForPushNotificationsAsync } = useUserContext();
     const tblPatient = route.params.tblPatient;
     const [contactUser, setContactUser] = useState('');
     const [modalVisible, setModalVisible] = useState(false);
@@ -30,8 +31,13 @@ export default function SignUpFinish({ navigation, route }) {
     };
 
     useEffect(() => {
-        const currentToken = (Notifications.getExpoPushTokenAsync()).data;
-        setExpoPushToken(currentToken);
+        if (Platform.OS === 'android') {
+            const currentToken = (Notifications.getExpoPushTokenAsync()).data;
+            setExpoPushToken(currentToken);
+        }
+        else {
+            registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+        }
     }, []);
 
     // link to the specific screen in the app and send the patient id to the screen as a parameter

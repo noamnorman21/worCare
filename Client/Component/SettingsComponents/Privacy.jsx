@@ -237,7 +237,7 @@ export default function Privacy({ navigation, route }) {
         const q = query(collection(db, "AllUsers"), where("id", "==", auth.currentUser.email));
         const querySnapshot = await getDocs(q);
         querySnapshot.forEach(async (doc) => {
-        await deleteDoc(doc.ref).then(() => {
+          await deleteDoc(doc.ref).then(() => {
             console.log("Document successfully deleted!");
           }).catch((error) => {
             console.error("Error removing document: ", error);
@@ -318,12 +318,11 @@ export default function Privacy({ navigation, route }) {
   //save notifications in DB- for now only in userContext
   const updateNotifications = () => {
     let notificationsUpdate = {
-      userId: userContext.userId,
+      Email: userContext.Email,
       financeNotifications: Notifications.financeNotifications,
       chatNotifications: Notifications.chatNotifications,
       medNotifications: Notifications.medNotifications,
       tasksNotifications: Notifications.tasksNotifications,
-      allNotifications: Notifications.allNotifications,
     }
     try {
       updateuserNotifications(notificationsUpdate);

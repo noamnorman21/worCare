@@ -271,9 +271,9 @@ namespace WebApi.Controllers
         public IHttpActionResult InsertActualList([FromBody] dynamic list)
         {
             //this section is for update a drugForPatient
-            if (list.taskForDelete.taskId != null)
+            //check if the dynamic contain 2 objects 
+            if (list.taskForDelete != null)
             {
-
                 int listId = list.taskForDelete.listId;
                 int taskId = list.taskForDelete.taskId;
 
@@ -284,7 +284,6 @@ namespace WebApi.Controllers
                 foreach (tblActualTask actualT in actualTasks)
                 {
                     db.tblActualTask.Remove(actualT);
-                    
                 }
                 db.SaveChanges();
 
@@ -302,9 +301,7 @@ namespace WebApi.Controllers
                                             select sc;
                 foreach (tblScheduledNotifications item in scheduledNotification)
                 {
-                    db.tblScheduledNotifications.Remove(item);
-                  
-
+                    db.tblScheduledNotifications.Remove(item);                    
                 }
                 db.SaveChanges();
                 //remove all related DrugForPatient using the listId
@@ -314,7 +311,6 @@ namespace WebApi.Controllers
                 foreach (tblDrugForPatient drug in drugForPatient)
                 {
                     db.tblDrugForPatient.Remove(drug);
-                   
                 }
                 db.SaveChanges();
                 //remove all actualList using the listId
@@ -324,21 +320,10 @@ namespace WebApi.Controllers
                 foreach (tblActualList actual in actualList)
                 {
                     db.tblActualList.Remove(actual);
-             
                 }
                 db.SaveChanges();
-                list = list.newDrugForPatient;
-
-                //"30/07/2023" convert this format to DateTime
-                ///this is the formt 2023-05-16
-                ///
-                
-         
-
-
+                list = list.newDrugForPatient;              
             }
-
-
             // type = 1 - True -  drug list
             // type = 0 - False - product list
             // type = null - regular task
@@ -504,7 +489,7 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
+        
         [HttpPost]
         [Route("InsertProductsToList")]
         public IHttpActionResult InsertProductsToList([FromBody] ProductListDTO prodList)
@@ -675,13 +660,7 @@ namespace WebApi.Controllers
                 db.tblActualList.Remove(actual);
                 db.SaveChanges();
             }
-
-
-
-
-
             ///רק לבינתיים....
-
             return Ok("DrugForPatientDTO updated"); 
         }
     }
