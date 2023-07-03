@@ -84,7 +84,6 @@ namespace WebApi.Controllers
         {
             HttpResponseMessage response = await client.PostAsync("https://exp.host/--/api/v2/push/send", content);
             return;
-
         }
     }
 }

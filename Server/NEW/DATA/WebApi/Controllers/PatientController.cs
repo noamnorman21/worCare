@@ -29,7 +29,7 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        
+
         [HttpPost]
         [Route("IsPatientExist")]
         public IHttpActionResult IsPatientExist([FromBody] PatientDTO patient)
@@ -50,12 +50,8 @@ namespace WebApi.Controllers
             {
                 return BadRequest(ex.Message);
             }
-
-
         }
 
-
-       
         [HttpPost]
         [Route("GetAllPatients")]
         public IHttpActionResult GetAllPatients([FromBody] UserDTO user)
@@ -126,10 +122,10 @@ namespace WebApi.Controllers
                             FirstName = x.FirstName,
                             LastName = x.LastName,
                             workerId = user.userId,
-                            userId = x.userId, 
-                            DateOfBirth=x.DateOfBirth,
+                            userId = x.userId,
+                            DateOfBirth = x.DateOfBirth,
                             LanguageName_En = x.LanguageName_En,
-                            
+
                         }).FirstOrDefault();
                         var hobbies = from h in db.tblHobbies
                                       where h.patientId == patientDTO.patientId
@@ -270,9 +266,18 @@ namespace WebApi.Controllers
                     foreach (var act in actuall)
                     {
                         var noti = db.tblScheduledNotifications.Where(y => y.actualTaskId == act.actualId).FirstOrDefault();
+                        var request = db.tblPaymentRequest.Where(x => x.userId == task.workerId).ToList();
                         if (noti != null)
                         {
                             db.tblScheduledNotifications.Remove(noti);
+                        }
+                        foreach (var item in request)
+                        {
+                            var noti1 = db.tblScheduledNotifications.Where(y => y.paymentId == item.requestId).ToList();
+                            foreach (var item1 in noti1)
+                            {
+                                db.tblScheduledNotifications.Remove(item1);
+                            }
                         }
                         db.tblActualTask.Remove(act);
                     }
@@ -285,15 +290,13 @@ namespace WebApi.Controllers
                 {
                     db.tblCaresForPatient.Remove(cForp);
                 }
-
                 db.SaveChanges();
                 return Ok("Pairing sucssesfully removed");
 
             }
             catch (Exception ex)
-
             {
-                return BadRequest(ex.Message);
+                return BadRequest("Pairing: " + ex.Message);
             }
         }
     }
