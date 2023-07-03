@@ -130,7 +130,7 @@ export default function PatientProfile() {
         const updatedLimitations = [];
         limitationsArr.forEach((limitationObj) => {
             const limitationsData = hobbiesAndLimitations[0][limitationObj.key];
-            // console.log(limitationsData);
+            console.log("limitationsss",limitationObj.key,limitationsData);
             if (limitationsData) {
                 const limitationArr = limitationsData.split(', ');
                 limitationArr.forEach((limitation) => {
@@ -145,27 +145,29 @@ export default function PatientProfile() {
     useEffect(() => {
         const updatedHobbies = [];
 
-        hobbiesArr.forEach((hobbyObj) => {
-            const hobbiesData = hobbiesAndLimitations[0][hobbyObj.key];
-            //console.log(hobbiesData);
-            if (hobbiesData) {
-                const hobbyArr = hobbiesData.split(', ');
-                hobbyArr.forEach((hobby) => {
-                    const { icon, label } = hobbyObj;
-                    if (HobbiesJSON[hobbyObj.key]) {
-                        for (const h of HobbiesJSON[hobbyObj.key]) {
-                            if (h.name === hobby) {
-                                //console.log(h);
-                                // updatedHobbies.push({ name: hobby, icon, label, selected: true, ...h });
-                                break; // exit the loop once a match is found
-                            }
-                        }
-                    }
-                });
-            } else {
-                updatedHobbies.push({ name: hobbyObj.key, icon: hobbyObj.icon, label: hobbyObj.label, selected: false });
-            }
-        });
+        // hobbiesArr.forEach((hobbyObj) => {
+        //     const hobbiesData = hobbiesAndLimitations[0][hobbyObj.key];
+        //     if (hobbiesData) {
+        //         const hobbyArr = hobbiesData.split(', ');
+        //         hobbyArr.forEach((hobby) => {
+        //             const { icon, label } = hobbyObj;
+        //             if (HobbiesJSON[hobbyObj.key]) {
+        //                 for (const h of HobbiesJSON[hobbyObj.key]) {
+        //                     console.log(h.name)
+        //                     // console.log(h);
+        //                     if (hobbiesData.includes(h.name)) {
+        //                         console.log(true);
+        //                         hobbiesArr[hobbyObj.key].selected = true;
+        //                         // updatedHobbies.push({ name: hobby, icon, label, selected: true, ...h });
+        //                         break; // exit the loop once a match is found
+        //                     }
+        //                 }
+        //             }
+        //         });
+        //     } else {
+        //         updatedHobbies.push({ name: hobbyObj.key, icon: hobbyObj.icon, label: hobbyObj.label, selected: false });
+        //     }
+        // });
 
         setHobbies(updatedHobbies);
     }, [hobbiesAndLimitations, selectedCategory, selectedHobbies]);
@@ -212,12 +214,12 @@ export default function PatientProfile() {
                         HobbiesJSON[selectedCategory].map((hobby, index) => {
                             return (
                                 <TouchableOpacity
-                                    style={[styles.collageItemContainer, hobby.selected ? styles.selectedCollageBubble : null]}
-                                    onPress={() => handleHobbyToggle(hobby)}
+                                    style={[styles.collageItemContainer, hobbiesAndLimitations[0][selectedCategory].includes(hobby.name) ? styles.selectedCollageBubble : null]}
+                                    onPress={() =>{console.log("pressed") ;handleHobbyToggle(hobby)}}
                                     key={index}
                                 >
-                                    <View key={index} style={styles.collageBubble}>
-                                        <Text style={hobby.selected ? styles.selectedCollageText : styles.collageText}>{hobby.name}</Text>
+                                    <View key={index} style={hobbiesAndLimitations[0][selectedCategory].includes(hobby.name) ?styles.selectecollageBubble:styles.collageBubble}>
+                                        <Text style={hobbiesAndLimitations[0][selectedCategory].includes(hobby.name) ? styles.selectedCollageText : styles.collageText}>{hobby.name}</Text>
                                     </View>
                                 </TouchableOpacity>
                             )
@@ -229,10 +231,10 @@ export default function PatientProfile() {
     };
 
     const LimitationsScreen = () => {
-        const [selectedFilter, setSelectedFilter] = useState('All');
+        const [selectedFilter, setSelectedFilter] = useState('allergies');
 
         // Filter the limitations array based on the selected filter
-        const filteredLimitations = selectedFilter === 'All'
+        const filteredLimitations = selectedFilter === 'allergies'
             ? limitations
             : limitations.filter((l) => l.key === selectedFilter);
 
@@ -261,6 +263,24 @@ export default function PatientProfile() {
                             <Text style={styles.collageLabelText}>{l.limitation}</Text>
                         </View>
                     ))}
+                    {/*version without icon- render according to category */}
+                    {/* {
+                        LimitationsJSON[selectedFilter] && LimitationsJSON[selectedFilter].map((limitation, index) => {
+                            return (
+                                <TouchableOpacity
+                                    style={[styles.collageItemContainer, hobbiesAndLimitations[0][selectedFilter].includes(limitation.name) ? styles.selectedCollageBubble : null]}
+                                    onPress={() =>{console.log("pressed") ;handleHobbyToggle(limitation)}}
+                                    key={index}
+                                >
+                                    <View key={index} style={hobbiesAndLimitations[0][selectedFilter].includes(limitation.name) ?styles.selectedCollageBubble:styles.collageBubble}>
+                                        <Text style={hobbiesAndLimitations[0][selectedFilter].includes(limitation.name) ? styles.selectedCollageText : styles.collageText}>{limitation.name}</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            )
+                        })
+                        
+                    } */}
+                    
                 </ScrollView>
             </View>
         );
@@ -369,6 +389,17 @@ const styles = StyleSheet.create({
         margin: CONTAINER_PADDING / 4,
         borderRadius: BUBBLE_SIZE / 2,
         backgroundColor: '#D0DFFF',
+        borderColor: '#548DFF',
+        borderWidth: 1.5,
+    },
+    selectedCollageBubble: {
+        width: BUBBLE_SIZE,
+        height: BUBBLE_SIZE,
+        alignItems: 'center',
+        justifyContent: 'center',
+        margin: CONTAINER_PADDING / 4,
+        borderRadius: BUBBLE_SIZE / 2,
+        backgroundColor: '#548DFF',
         borderColor: '#548DFF',
         borderWidth: 1.5,
     },

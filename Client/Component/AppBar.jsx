@@ -51,6 +51,12 @@ function CustomHeader() {
         setIsModalVisible(!isModalVisible);
     };
 
+    const togllePatiemtDialog = () => {
+        if(patientList && patientList.length > 1){
+            setSwitchPatientDialogVisable(!switchPatientDialogVisable);
+        }
+    }
+
     if (!userContext) {
         return null;
     }
@@ -134,12 +140,13 @@ function CustomHeader() {
                                             <Text style={styles.name}>Hello, {FirstName}</Text>
                                             <TouchableOpacity
                                                 style={styles.switchUser}
+                                                disabled={patientList && patientList.length > 1 ? false : true}
                                                 onPress={() => {
                                                     toggleModal()
-                                                    setSwitchPatientDialogVisable(true)
+                                                    togllePatiemtDialog()
                                                 }}>
-                                                <AntDesign name="retweet" size={20} color="#216Bff" />
-                                                <Text style={styles.switchTxt}>
+                                                <AntDesign name="retweet" size={20} color={patientList && patientList.length > 1 ?"#216Bff":"#808080"} />
+                                                <Text style={patientList && patientList.length > 1 ?styles.switchTxt: styles.switchTxtDisabled}>
                                                     Switch Patient
                                                 </Text>
                                             </TouchableOpacity>
@@ -486,6 +493,12 @@ const styles = StyleSheet.create({
         fontSize: 16,
         marginHorizontal: 10,
         color: '#216Bff',
+    },
+    switchTxtDisabled: {
+        fontFamily: 'Urbanist-Bold',
+        fontSize: 16,
+        marginHorizontal: 10,
+        color: '#808080',
     },
     dialogStyle: {
         backgroundColor: '#87AFFF',
