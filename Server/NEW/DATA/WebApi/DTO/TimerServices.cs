@@ -50,7 +50,7 @@ namespace WebApi.DTO
                             var content = new StringContent(postData, Encoding.UTF8, "application/json");
                             HttpResponseMessage response = await client.PostAsync("https://exp.host/--/api/v2/push/send", content);
                             db.tblScheduledNotifications.Remove(item);
-                            await db.SaveChangesAsync();
+                            db.SaveChanges();
                         }
                     }
                     else if (nowWithoutSeconds == pushRequestTime)
@@ -68,14 +68,14 @@ namespace WebApi.DTO
                             var content = new StringContent(postData, Encoding.UTF8, "application/json");
                             HttpResponseMessage response = await client.PostAsync("https://exp.host/--/api/v2/push/send", content);
                             db.tblScheduledNotifications.Remove(item);
-                            await db.SaveChangesAsync();
+                            db.SaveChanges();
                         }
                     }
                     if (item.scheduledTime < nowWithoutSeconds)
                     {
                         db.tblScheduledNotifications.Remove(item);
                     }
-                    await db.SaveChangesAsync();
+                    db.SaveChanges();
                 }
             }
         }
