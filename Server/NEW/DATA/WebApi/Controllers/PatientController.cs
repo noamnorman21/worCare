@@ -266,11 +266,12 @@ namespace WebApi.Controllers
                     foreach (var act in actuall)
                     {
                         var noti = db.tblScheduledNotifications.Where(y => y.actualTaskId == act.actualId).FirstOrDefault();
-                        var request = db.tblPaymentRequest.Where(x => x.userId == task.workerId).ToList();
                         if (noti != null)
                         {
                             db.tblScheduledNotifications.Remove(noti);
                         }
+                        
+                        var request = db.tblPaymentRequest.Where(x => x.userId == task.workerId).ToList();
                         foreach (var item in request)
                         {
                             var noti1 = db.tblScheduledNotifications.Where(y => y.paymentId == item.requestId).ToList();
@@ -292,7 +293,6 @@ namespace WebApi.Controllers
                 }
                 db.SaveChanges();
                 return Ok("Pairing sucssesfully removed");
-
             }
             catch (Exception ex)
             {

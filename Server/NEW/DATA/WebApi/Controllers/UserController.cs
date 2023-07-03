@@ -329,12 +329,26 @@ namespace WebApi.Controllers
                 {
                     db.tblCalendarForUser.Remove(item);
                 }
-
                 if (userToDelete.userType == "User")
                 {
                     var Patients = db.tblPatient.Where(x => x.userId == userToDelete.userId);
                     foreach (var item in Patients)
                     {
+                        //remove PaymentRequest notifications
+                        var workerId = db.tblCaresForPatient.Where(x => x.patientId == item.patientId).ToList();
+                        foreach (var worker in workerId)
+                        {
+                            var requests = db.tblPaymentRequest.Where(y => y.userId == worker.workerId);
+                            foreach (var req in requests)
+                            {
+                                var notifications = db.tblScheduledNotifications.Where(z => z.paymentId == req.requestId);
+                                foreach (var noti in notifications)
+                                {
+                                    db.tblScheduledNotifications.Remove(noti);
+                                }
+                            }
+                        }
+                        
                         //Remove Contacts
                         var contacts = db.tblContacts.Where(x => x.patientId == item.patientId).ToList();
                         foreach (var con in contacts)

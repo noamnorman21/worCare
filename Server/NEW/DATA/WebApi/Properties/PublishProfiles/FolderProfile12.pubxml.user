@@ -5,7 +5,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <_PublishTargetUrl>C:\Users\oryan\Desktop\Worcare Publish</_PublishTargetUrl>
-    <History>True|2023-06-30T13:20:09.2934922Z;True|2023-06-30T13:00:26.4169612+03:00;</History>
+    <History>True|2023-07-03T12:21:43.3811828Z;True|2023-06-30T16:20:09.2934922+03:00;True|2023-06-30T13:00:26.4169612+03:00;</History>
     <LastFailureDetails />
   </PropertyGroup>
   <ItemGroup>
@@ -82,13 +82,13 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>06/24/2023 19:07:56</publishTime>
     </File>
     <File Include="bin/DATA.dll">
-      <publishTime>06/30/2023 10:36:44</publishTime>
+      <publishTime>07/02/2023 22:40:21</publishTime>
     </File>
     <File Include="bin/DATA.dll.config">
-      <publishTime>06/11/2023 22:50:22</publishTime>
+      <publishTime>07/02/2023 22:39:55</publishTime>
     </File>
     <File Include="bin/DATA.pdb">
-      <publishTime>06/30/2023 10:36:44</publishTime>
+      <publishTime>07/02/2023 22:40:21</publishTime>
     </File>
     <File Include="bin/EntityFramework.dll">
       <publishTime>06/11/2023 22:50:55</publishTime>
@@ -367,10 +367,10 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>06/11/2023 22:51:11</publishTime>
     </File>
     <File Include="bin/WebApi.dll">
-      <publishTime>06/30/2023 16:20:07</publishTime>
+      <publishTime>07/03/2023 15:21:40</publishTime>
     </File>
     <File Include="bin/WebApi.pdb">
-      <publishTime>06/30/2023 16:20:07</publishTime>
+      <publishTime>07/03/2023 15:21:40</publishTime>
     </File>
     <File Include="bin/WebGrease.dll">
       <publishTime>06/11/2023 22:51:44</publishTime>
@@ -553,7 +553,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>06/11/2023 22:50:34</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>06/30/2023 13:00:25</publishTime>
+      <publishTime>07/03/2023 15:21:41</publishTime>
     </File>
   </ItemGroup>
 </Project>
