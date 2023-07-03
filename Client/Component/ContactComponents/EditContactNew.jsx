@@ -22,7 +22,6 @@ export default function EditContact({ route, navigation }) {
     contactComment: route.params.contact.contactComment,
     patientId: route.params.contact.patientId
   })
-// Check if the user has changed the contact details
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
@@ -32,7 +31,7 @@ export default function EditContact({ route, navigation }) {
       ),
       headerLeft: () => (
         <TouchableOpacity style={styles.backBtn} onPress={() => setCancel(true)}>
-            <Ionicons name="chevron-back" size={28} color="black" />
+          <Ionicons name="chevron-back" size={28} color="black" />
         </TouchableOpacity>
       ),
     });
@@ -49,24 +48,24 @@ export default function EditContact({ route, navigation }) {
 
   const Cancel = () => {
     if (isChanged) {
-    Alert.alert(
-      'Cancel Changes',
-      'are you sure you want to Exit the Page? All changes will be lost',
-      [
-        { text: "Don't leave", style: 'cancel', onPress: () => {setCancel(false) } },
-        {
-          text: 'Leave',
-          style: 'destructive',
-          // If the user confirmed, then we dispatch the action we blocked earlier
-          // This will continue the action that had triggered the removal of the screen
-          onPress: () => navigation.goBack()
-        },
-      ]
-    );
-  }
-  else {
-    navigation.goBack()
-  }
+      Alert.alert(
+        'Cancel Changes',
+        'are you sure you want to Exit the Page? All changes will be lost',
+        [
+          { text: "Don't leave", style: 'cancel', onPress: () => { setCancel(false) } },
+          {
+            text: 'Leave',
+            style: 'destructive',
+            // If the user confirmed, then we dispatch the action we blocked earlier
+            // This will continue the action that had triggered the removal of the screen
+            onPress: () => navigation.goBack()
+          },
+        ]
+      );
+    }
+    else {
+      navigation.goBack()
+    }
   }
 
   const handleInputChange = (field, value) => {
@@ -146,7 +145,7 @@ export default function EditContact({ route, navigation }) {
                 keyboardType='ascii-capable'
                 onChangeText={(value) => handleInputChange('contactName', value)}
               />
-               <View>
+              <View>
                 <Text style={styles.contactheader}>Mobile number:</Text>
                 <TextInput
                   style={[styles.input, styles.numInput]}
