@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import AddNewContact from './ContactComponents/AddNewContact'
 import { useIsFocused } from '@react-navigation/native';
-import EditContact from './ContactComponents/EditContact'
+import EditContact from './ContactComponents/EditContactNew'
 import ContactDetails from './ContactComponents/ContactDetails'
 import { useUserContext } from '../UserContext'
 import { Octicons } from '@expo/vector-icons';

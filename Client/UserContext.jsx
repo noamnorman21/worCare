@@ -8,8 +8,6 @@ import moment from 'moment';
 import { query, updateDoc, collection, getDocs, where } from 'firebase/firestore';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
-import { set } from 'react-native-reanimated';
-
 
 // ---------------- All Server Urls ---------------- 
 
