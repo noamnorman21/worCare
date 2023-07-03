@@ -21,7 +21,7 @@ export default function LogIn({ navigation }) {
     const [userType, setUserType] = useState('User');
     const [isChecked, setChecked] = useState(false);
     const [showPassword, setShowPassword] = useState(false);//for password visibility
-    const { logInContext, logInFireBase } = useUserContext();
+    const { logInContext, logInFireBase,setRouteEmail } = useUserContext();
 
     // function to check from where the app was opened from a invintation link or not  
     const getInitialUrl = async () => {
@@ -38,6 +38,7 @@ export default function LogIn({ navigation }) {
             const patientId = decryptPatientId(route.split('/')[3]);
             const userName = route.split('/')[4];
             const routeEmail = route.split('/')[5]; // For Oryan Chat
+            setRouteEmail(routeEmail);
             if (routeName === 'InvitedFrom') {
                 setUserType('Caregiver');
                 navigation.navigate('Welcome', { patientId: patientId, userName: userName, userType: userType });

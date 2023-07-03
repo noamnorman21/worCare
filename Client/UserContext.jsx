@@ -104,6 +104,7 @@ export function UserProvider({ children }) {
     const [patientId, setPatientId] = useState(null)
     const [patientList, setPatientList] = useState(null)
     const [newMessages, setNewMessages] = useState(0); //new for chat logo
+    const [routeEmail, setRouteEmail] = useState(null);
 
     async function logInContext(userData) {
         setUserType(userData.userType);
@@ -953,7 +954,7 @@ export function UserProvider({ children }) {
         updateUserProfile, updateuserNotifications, appEmail, getAllPrivateTasks, getAllPublicTasks,
         allPublicTasks, allPrivateTasks, UpdateDrugForPatientDTO, holidays, GetAllDrugs, allDrugs, addPrivateTaskContext,
         newMessages, setNewMessages, logOutFireBase, registerForPushNotificationsAsync, sendPushNotification, UpdatePatient, userPaychecks,
-        fetchPatientList, patientList
+        fetchPatientList, patientList,setRouteEmail,routeEmail
     };
 
     return (

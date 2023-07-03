@@ -422,7 +422,8 @@ namespace WebApi.Controllers
                             {
                                 db.tblScheduledNotifications.Remove(noti);
                             }
-                        }
+                            db.tblActualTask.Remove(act);
+                        }                       
                         task.workerId = null;
                     }
 

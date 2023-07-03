@@ -1,9 +1,9 @@
-import { View, StyleSheet, Text, Image, TouchableOpacity, Dimensions, Modal, Alert } from 'react-native'
+import { View, StyleSheet, Text, Image, TouchableOpacity, Dimensions, Modal, Alert, Platform } from 'react-native'
 import { useState, useEffect } from 'react'
 import ContactsList from '../HelpComponents/ContactsList';
 import * as SMS from 'expo-sms';
 import * as Linking from 'expo-linking';
-import {auth, db} from '../../config/firebase'
+import { auth, db } from '../../config/firebase'
 import { collection, addDoc } from 'firebase/firestore';
 import { createUserWithEmailAndPassword, updateProfile, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -20,7 +20,7 @@ export default function NewPatientFinish({ navigation, route }) {
     const [message, setMessage] = useState('');
     const [link, setLink] = useState('');
     const [fromShare, setFromShare] = useState(false);
-    const {  userContext } = useUserContext();  
+    const { userContext } = useUserContext();
 
 
     // link to the specific screen in the app and send the patient id to the screen as a parameter
@@ -38,21 +38,32 @@ export default function NewPatientFinish({ navigation, route }) {
         if (isAvailable) {
             // do your SMS stuff here
             const { result } = await SMS.sendSMSAsync([contactNumber], message);
-            if (result === 'sent') {
-                // Alert.alert('Invitation sent \n\n We will notify you when your friend will join');
-                setFromShare(true);
+            if (Platform.OS === 'ios') {
+                if (result === 'sent') {
+                    // Alert.alert('Invitation sent \n\n We will notify you when your friend will join');
+                    setFromShare(true);
+                    Alert.alert('Invitation sent', 'We will notify you when your friend will join', [
+                        {
+                            text: "OK",
+                            onPress: () => { setModalVisible(false), createNewPatient() },
+                            style: "cancel"
+                        },
+                    ]);
+                }
+                else {
+                    Alert.alert('Invitation Failed', 'Please try again', [
+                        {
+                            text: "OK",
+                            style: "cancel"
+                        },
+                    ]);
+                }
+            }
+            else {
                 Alert.alert('Invitation sent', 'We will notify you when your friend will join', [
                     {
                         text: "OK",
                         onPress: () => { setModalVisible(false), createNewPatient() },
-                        style: "cancel"
-                    },
-                ]);
-            }
-            else {
-                Alert.alert('Invitation Failed', 'Please try again', [
-                    {
-                        text: "OK",
                         style: "cancel"
                     },
                 ]);
@@ -97,7 +108,7 @@ export default function NewPatientFinish({ navigation, route }) {
         );
     }
 
-  
+
     // InsertPatient
     const createNewPatient = () => {
         tblPatient.userId = userContext.userId;
@@ -136,11 +147,11 @@ export default function NewPatientFinish({ navigation, route }) {
                 if (!fromShare) {
                     Alert.alert(
                         "Great Job!",
-                        "You have successfully signed up to worCare!",
+                        "You have successfully Added a new patient!",
                         [
                             {
                                 text: "OK",
-                                onPress: () => navigation.navigate('LogIn', { tblUser: route.params.tblUser })
+                                onPress: () => navigation.navigate('CustomHeader', { tblUser: route.params.tblUser })
                             }
                         ],
                         { cancelable: false }
@@ -182,7 +193,7 @@ export default function NewPatientFinish({ navigation, route }) {
                         style={styles.button}
                         onPress={createNewPatient}
                     >
-                        <Text style={styles.buttonText}>Sign Up</Text>
+                        <Text style={styles.buttonText}>Add New Patient</Text>
                     </TouchableOpacity>
                     <View style={styles.legalTextContainer}>
                         <Text style={styles.legalText}>

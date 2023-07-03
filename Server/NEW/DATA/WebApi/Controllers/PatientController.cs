@@ -255,5 +255,46 @@ namespace WebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+
+        [HttpPut]
+        [Route("UnpairPatient")]
+        public IHttpActionResult UnpairPatient([FromBody] UserDTO user)
+        {
+            try
+            {
+                var patientTasks = db.tblPatientTask.Where(x => x.workerId == user.workerId).ToList();
+                foreach (var task in patientTasks)
+                {
+                    var actuall = db.tblActualTask.Where(y => y.taskId == task.taskId).ToList();
+                    foreach (var act in actuall)
+                    {
+                        var noti = db.tblScheduledNotifications.Where(y => y.actualTaskId == act.actualId).FirstOrDefault();
+                        if (noti != null)
+                        {
+                            db.tblScheduledNotifications.Remove(noti);
+                        }
+                        db.tblActualTask.Remove(act);
+                    }
+                    task.workerId = null;
+                }
+
+                //remove cares for patient
+                var cForp = db.tblCaresForPatient.Where(x => x.patientId == user.patientId && x.workerId == user.workerId).FirstOrDefault();
+                if (cForp != null)
+                {
+                    db.tblCaresForPatient.Remove(cForp);
+                }
+
+                db.SaveChanges();
+                return Ok("Pairing sucssesfully removed");
+
+            }
+            catch (Exception ex)
+
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

@@ -19,7 +19,7 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
   const newUser = route.params.newUser;
   const holidaysType = route.params.holidaysType;
   const [linkTo, setLinkTo] = useState("");
-  const { registerForPushNotificationsAsync } = useUserContext();
+  const { registerForPushNotificationsAsync, routeEmail } = useUserContext();
   const [expoPushToken, setExpoPushToken] = useState('');
 
   useEffect(() => {
@@ -29,6 +29,7 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
   const getInitialUrl = async () => {
     setLinkTo(await Linking.getInitialURL());
     console.log("link:", linkTo);
+    console.log("email:", routeEmail);
   }
 
   const getPush = async () => {
@@ -90,8 +91,18 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
                       });
                     });
                   }
-                  await addDoc(collection(db, auth.currentUser.email), { Name: newForeignUserData.CountryName_En, UserName: "", userEmail: "", image: groupImage, unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date(), type: "group" }).then(() => {
+                  await addDoc(collection(db, auth.currentUser.email), { Name: newForeignUserData.CountryName_En, UserName: "", userEmail: "", image: groupImage, unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date(), type: "group" }).then( async () => {
                     console.log("group added to user");
+                    let userQuery = query(collection(db, "AllUsers"), where("id", "==", routeEmail));
+                    let userQuerySnapshot = await getDocs(userQuery);
+                    let user={
+                      id: userQuerySnapshot.docs[0].data().id,
+                      name: userQuerySnapshot.docs[0].data().name,
+                      avatar: userQuerySnapshot.docs[0].data().avatar,
+                      userType: userQuerySnapshot.docs[0].data().userType
+                    }
+                    await addDoc(collection(db, auth.currentUser.email), { Name: auth.currentUser.displayName + "+" + user.name, UserName: user.name, userEmail: user.id, image: user.avatar, unread: false, unreadCount: 0, lastMessage: "New Convo!", lastMessageTime: new Date(), type: "private" });
+                    await addDoc(collection(db, user.id), { Name: auth.currentUser.displayName + "+" + user.name, UserName: auth.currentUser.displayName, userEmail: auth.currentUser.email, image: auth.currentUser.photoURL, unread: false, unreadCount: 0, lastMessage: "New Convo", lastMessageTime: new Date(), type: "private" });
                     //delete when published to filezila
                     signOut(auth).then(() => {
                       console.log("user signed out");

@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, TouchableOpacity, TextInput, Modal, Dimensions,
 import { Entypo } from '@expo/vector-icons';
 import { Dropdown } from 'react-native-element-dropdown';
 import LimitationsData from '../SignUpComponents/User/Limitations.json';
+import { useUserContext } from '../../UserContext';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function NewPatientLvl2({ navigation, route }) {
@@ -10,6 +11,7 @@ export default function NewPatientLvl2({ navigation, route }) {
   const [modal2Visible, setModal2Visible] = useState(false);
   const [modal3Visible, setModal3Visible] = useState(false);
   const [modal4Visible, setModal4Visible] = useState(false);
+  const {userContext} = useUserContext();
 
   const [comments, setComments] = useState('');
   const [allergies, setAllergies] = useState(LimitationsData.allergies);
@@ -58,7 +60,7 @@ export default function NewPatientLvl2({ navigation, route }) {
       sensitivityToNoise: noiseSensitive,
       otherL: comments,
     };    
-    navigation.navigate('NewPatientLvl3', { tblLimitations: tblLimitations, tblPatient : route.params.patientData, tblUser : route.params.tblUser }); // Navigate to next lvl
+    navigation.navigate('NewPatientLvl3', { tblLimitations: tblLimitations, tblPatient : route.params.tblPatient, tblUser : userContext }); // Navigate to next lvl
   };
   changebathRoutine = (value) => {
     if (value === 'All') { // if the user clicked on the "All" button

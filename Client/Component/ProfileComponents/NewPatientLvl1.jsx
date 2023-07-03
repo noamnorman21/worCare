@@ -114,6 +114,8 @@ export default function NewPatientLvl1({ navigation, route }) {
             DateOfBirth: date,
             LanguageName_En: valueLanguage
         }
+        navigation.navigate('NewPatientLvl2', { tblPatient : patientData }); // Navigate to next lvl
+
     }
 
     return (
