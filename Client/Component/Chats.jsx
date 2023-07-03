@@ -279,6 +279,7 @@ const ConvoCard = (props) => {
     // deleteDoc(doc(db, auth.currentUser.email),where("Name", "==", props.name.Name));
   }
 
+  // fix renderRightActions style- delete button!
   return (
     <>
       <Swipeable renderRightActions={() => <TouchableOpacity onPress={() => { deleteChat() }}><Text>Delete</Text></TouchableOpacity>} >
