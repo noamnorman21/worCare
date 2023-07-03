@@ -228,10 +228,13 @@ export default function Privacy({ navigation, route }) {
       })
       .then(
         (result) => {
-          console.log("fetch DELETE= ", result);
-          if (result == 1) {
+          console.log("fetch DELETE= ", result);        
+            Alert.alert('Profile Deleted Successfully');
             route.params.logout();
-          }
+            AsyncStorage.removeItem("user");
+            AsyncStorage.removeItem("userData");
+            logOutFireBase();
+          
         })
       .catch((error) => {
         console.log('Error:', error.message);

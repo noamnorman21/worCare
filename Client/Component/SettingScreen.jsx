@@ -268,7 +268,7 @@ export default function SettingScreen({ navigation }) {
                     headerShown: true,
                 }}>
                 <Stack.Screen name="Settings" component={HomeScreen} options={() => ({ headerTitle: 'Settings', headerShown: true, headerTitleAlign: 'center' })} initialParams={{ logout: () => { navigation.dispatch(StackActions.replace('LogIn')) }, Exit: () => navigation.navigate('AppBarDown') }} />
-                <Stack.Screen name="Privacy" component={Privacy} options={{ headerTitle: 'Privacy & My Account', headerTitleAlign: 'center', headerShown: true }} initialParams={{AddNewAccount: ()=>{navigation.navigate('LogIn');navigation.dispatch(StackActions.replace('SignUp', { userType: "User", patientId: undefined }))} }} />
+                <Stack.Screen name="Privacy" component={Privacy} options={{ headerTitle: 'Privacy & My Account', headerTitleAlign: 'center', headerShown: true }} initialParams={{AddNewAccount: ()=>{navigation.navigate('LogIn');navigation.dispatch(StackActions.replace('SignUp', { userType: "User", patientId: undefined }))}, logout: () => { navigation.dispatch(StackActions.replace('LogIn')) } }} />
             </Stack.Navigator>
         </NavigationContainer>
     )
