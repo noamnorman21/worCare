@@ -22,7 +22,7 @@ export default function EditContact({ route, navigation }) {
     contactComment: route.params.contact.contactComment,
     patientId: route.params.contact.patientId
   })
-
+// Check if the user has changed the contact details
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
