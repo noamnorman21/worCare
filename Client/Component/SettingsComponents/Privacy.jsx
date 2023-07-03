@@ -8,8 +8,9 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 import { Ionicons } from '@expo/vector-icons';
 import { Switch } from 'react-native-paper';
-import { updateEmail } from 'firebase/auth';
+import { updateEmail, deleteUser } from 'firebase/auth';
 import { auth, db } from '../../config/firebase';
+import { collection, query, where, getDocs, deleteDoc } from 'firebase/firestore';
 
 export default function Privacy({ navigation, route }) {
   const [Email, setEmail] = useState(null);
@@ -205,7 +206,7 @@ export default function Privacy({ navigation, route }) {
   }
 
   const deleteProfile = () => {
-    let user= {
+    let user = {
       userId: userContext.userId,
       Email: Email,
       userType: userContext.userType,
@@ -226,16 +227,34 @@ export default function Privacy({ navigation, route }) {
           console.log('error');
         }
       })
-      .then(
-        (result) => {
-          console.log("fetch DELETE= ", result);        
-            Alert.alert('Profile Deleted Successfully');
-            route.params.logout();
-            AsyncStorage.removeItem("user");
-            AsyncStorage.removeItem("userData");
-            logOutFireBase();
-          
-        })
+      .then(async (result) => {
+        console.log("fetch DELETE= ", result);
+        Alert.alert('Profile Deleted Successfully');
+        await route.params.logout();
+        AsyncStorage.removeItem("user");
+        AsyncStorage.removeItem("userData");
+        console.log(auth.currentUser.email)
+        const q = query(collection(db, "AllUsers"), where("id", "==", auth.currentUser.email));
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+          console.log(doc.id, " => ", doc.data());
+          deleteDoc(doc.ref).then(() => {
+            console.log("Document successfully deleted!");
+          }).catch((error) => {
+            console.error("Error removing document: ", error);
+          }
+          );
+        });
+
+        deleteUser(auth.currentUser).then(() => {
+          console.log('User account deleted successfully');
+        }).catch((error) => {
+          console.log('Error deleting user:', error);
+        }
+        );
+
+
+      })
       .catch((error) => {
         console.log('Error:', error.message);
       });
