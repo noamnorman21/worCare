@@ -237,7 +237,6 @@ export default function Privacy({ navigation, route }) {
         const q = query(collection(db, "AllUsers"), where("id", "==", auth.currentUser.email));
         const querySnapshot = await getDocs(q);
         querySnapshot.forEach((doc) => {
-          console.log(doc.id, " => ", doc.data());
           deleteDoc(doc.ref).then(() => {
             console.log("Document successfully deleted!");
           }).catch((error) => {
