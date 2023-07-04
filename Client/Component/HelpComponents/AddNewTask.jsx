@@ -664,7 +664,7 @@ function NewTaskModal(props) {
    const addPrivateTask = () => {
       //check if all the fields are filled
       if (taskFrequency == 'Once') {
-         taskToDate = taskFromDate;
+         setTaskToDate(taskFromDate);
       }
 
       if (taskName == '' || taskFromDate == '' || taskToDate == '' || taskTime == '' || taskFrequency == '') {
@@ -858,8 +858,8 @@ function NewTaskModal(props) {
       setTaskFromDate(currentDate);
    };
 
-   const onChangeTaskDate = (selectedDate) => {
-      console.log("onChangeTaskDate");
+   const onChangeTaskTime = (selectedDate) => {
+      console.log("onChangeTaskTime");
       console.log("selectedDate= ", selectedDate);
       const currentTime = new Date(selectedDate.nativeEvent.timestamp).toTimeString();
       console.log("currentDate= ", currentTime);
@@ -1075,7 +1075,7 @@ function NewTaskModal(props) {
                                  </View>
                                  {numberPerDay > 1 ?
                                     <View>
-                                       <TouchableOpacity onPress={() => { setModalTimesVisible(true) }}>
+                                 <TouchableOpacity onPress={() => { setModalTimesVisible(true) }}>
                                           <View style={[styles.doubleRowItem, taskTimeArr.length == numberPerDay && { borderColor: '#000' }]}>
                                              <Text style={[styles.inputNumber, { color: '#9E9E9E' }, taskTimeArr.length == numberPerDay && { color: '#000' }]}>
                                                 {numberPerDay == taskTimeArr.length ? 'Times Selected' : 'Add Times'}
@@ -1086,6 +1086,7 @@ function NewTaskModal(props) {
                                     </View>
                                     :
                                     <View >
+                                       {Platform.OS==='ios'?
                                        <DatePicker
                                           style={[styles.doubleRowItem, taskTime != '' && { borderColor: '#000' }]}
                                           date={taskTime}
@@ -1119,7 +1120,12 @@ function NewTaskModal(props) {
                                           onDateChange={(date) => {
                                              setTaskTime(date)
                                           }}
-                                       />
+                                       /> :
+                                       <TouchableOpacity onPress={showTimePicker} style={[styles.doubleRowItem, taskTime != '' && { borderColor: '#000' }]}>
+                                          <Text style={[styles.dateInputTxt,taskTime && {color:"#000"}]}>{taskTime? taskTime.substring(0,5):"Add Time"}</Text>
+                                          <MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />
+                                       </TouchableOpacity>
+}
                                     </View>
                                  }
                               </View>
@@ -1163,7 +1169,7 @@ function NewTaskModal(props) {
                                  value={taskTime ? new Date(taskTime) : new Date()}
                                  mode={"time"}
                                  is24Hour={true}
-                                 onChange={(value) => onChangeTaskDate(value)}
+                                 onChange={(value) => onChangeTaskTime(value)}
                                  display="default"
                               />
                            )}
