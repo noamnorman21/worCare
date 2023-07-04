@@ -663,11 +663,9 @@ function NewTaskModal(props) {
 
    const addPrivateTask = () => {
       //check if all the fields are filled
-      if (taskFrequency == 'Once') {
-         setTaskToDate(taskFromDate);
-      }
+    
 
-      if (taskName == '' || taskFromDate == '' || taskToDate == '' || taskTime == '' || taskFrequency == '') {
+      if (taskName == '' || taskFromDate == '' || taskTime == '' || taskFrequency == '') {
          Alert.alert('Please Fill all the fields');
          return;
       }
@@ -678,7 +676,7 @@ function NewTaskModal(props) {
       let taskData = {
          taskName: taskName,
          taskFromDate: taskFromDate,
-         taskToDate: taskToDate,
+         taskToDate: taskToDate? taskToDate: taskFromDate, //because it's once task so the date is the same
          taskComment: taskComment,
          status: 'P',
          workerId: userData.workerId,
