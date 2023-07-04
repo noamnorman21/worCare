@@ -255,16 +255,16 @@ export default function PatientProfile() {
                     ))}
                 </ScrollView>
                 <ScrollView contentContainerStyle={styles.collageContainer}>
-                    {filteredLimitations.map((l, index) => (
+                    {/* {filteredLimitations.map((l, index) => (
                         <View key={index} style={styles.collageItemContainer}>
                             <Chip key={index} style={styles.collageBubble} mode="outlined">
                                 {l.icon}
                             </Chip>
                             <Text style={styles.collageLabelText}>{l.limitation}</Text>
                         </View>
-                    ))}
+                    ))} */}
                     {/*version without icon- render according to category */}
-                    {/* {
+                    {
                         LimitationsJSON[selectedFilter] && LimitationsJSON[selectedFilter].map((limitation, index) => {
                             return (
                                 <TouchableOpacity
@@ -279,7 +279,7 @@ export default function PatientProfile() {
                             )
                         })
                         
-                    } */}
+                    }
                     
                 </ScrollView>
             </View>

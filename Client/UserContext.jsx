@@ -20,6 +20,7 @@ let GetAllPatients = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/GetAl
 // Log In
 let userForLoginUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUserForLogin';
 let getUserNoti = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUserNotificatoins';
+let updateNoti='https://proj.ruppin.ac.il/cgroup94/test1/api/User/UpdateUserNotificatoins';
 
 // Sign Up
 let insertUser = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/InsertUser';
@@ -165,12 +166,25 @@ export function UserProvider({ children }) {
 
     // ----------------------  Push Notifications  ----------------------
     function fetchUserNotifications(usertoSync) {
+        let user;
+        if (usertoSync == null) {
+            user = {
+                Email: userContext.Email,
+                userId: userContext.userId,
+            }
+        }
+        else {
+            user = {
+                Email: usertoSync.Email,
+                userId: usertoSync.userId,
+            }
+        }
         fetch(getUserNoti, {
             method: 'POST',
             headers: new Headers({
                 'Content-Type': 'application/json; charset=UTF-8',
             }),
-            body: JSON.stringify(usertoSync.Email),
+            body: JSON.stringify(user),
         }).then(res => {
             if (res.ok) {
                 return res.json()
@@ -178,7 +192,20 @@ export function UserProvider({ children }) {
         })
             .then(
                 (result) => {
-                    setUserNotifications(result);
+                    let notifications = {
+                        financeNotifications: result.financeNotifications,
+                        chatNotifications: result.chatNotifications,
+                        tasksNotifications: result.tasksNotifications,
+                        medNotifications: result.medNotifications,
+                        allNotifications: '',
+                      }
+                    if(notifications.chatNotifications && notifications.financeNotifications && notifications.tasksNotifications && notifications.medNotifications){
+                        notifications.allNotifications = true;
+                    }
+                    else{
+                        notifications.allNotifications = false;
+                    }
+                    setUserNotifications(notifications);
                 },
                 (error) => {
                     console.log("err post=", error);
@@ -368,10 +395,40 @@ export function UserProvider({ children }) {
     }
 
     function updateuserNotifications(notifications) {
-        console.log("updateUser", notifications)
-        setUserNotifications(notifications)
-        AsyncStorage.setItem('userNotifications', JSON.stringify(notifications));
+        console.log("updateUserNotifications", notifications)
+        console.log(notifications);
+        fetch(updateNoti, {
+            method: 'PUT',
+            headers: new Headers({
+                'Content-Type': 'application/json; charset=UTF-8',
+                'Accept': 'application/json; charset=UTF-8',
+            }),
+            body: JSON.stringify(notifications)
+        })
+            .then(res => {
+                if (res.ok) {
+                    return res.json()
+                        .then(
+                            async (result) => {
+                                console.log("fetch POST= ", result);
+                                // Alert.alert('Notifications Updated', 'Your Notifications have been Updated successfully');
+                                setUserNotifications(notifications);
+                            }
+                        )
+                }
+                else {
+                    console.log('err post=', res);
+                    Alert.alert('Error', 'Sorry, there was an error updating your notifications. Please try again later.');
+                }
+            }
+            )
+            .catch((error) => {
+                console.log('Error:', error.message);
+            }
+            );
     }
+
+
 
     async function updateRememberUserContext(userContext) {
         console.log("updateRememberUser", userContext);

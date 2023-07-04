@@ -45,14 +45,6 @@ export default function NavigateSignUp() {
         setIsSigned(true);
         const storageUser2 = await AsyncStorage.getItem("userData");
         await logInContext(JSON.parse(storageUser2))
-        let notifications = {
-          financeNotifications: true,
-          chatNotifications: true,
-          tasksNotifications: true,
-          medNotifications: true,
-          allNotifications: true,
-        }
-        updateuserNotifications(notifications)
         fetchUserContacts(JSON.parse(storageUser2));
         GetUserPending(JSON.parse(storageUser2));
         GetUserHistory(JSON.parse(storageUser2));

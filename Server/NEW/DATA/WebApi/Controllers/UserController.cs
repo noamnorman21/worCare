@@ -84,7 +84,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                var user = db.tblUser.Where(x => x.Email == userDTO.Email).FirstOrDefault();
+                var user = db.tblUser.Where(x => x.userId == userDTO.userId).FirstOrDefault();
                 if (user == null)
                     return NotFound();
 
@@ -107,7 +107,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                var user = db.tblUser.Where(x => x.Email == userDTO.Email).FirstOrDefault();
+                var user = db.tblUser.Where(x => x.userId == userDTO.userId).FirstOrDefault();
                 if (user == null)
                     return NotFound();
 

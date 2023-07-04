@@ -23,6 +23,7 @@ export default function Privacy({ navigation, route }) {
   const [saving, setSaving] = useState(false);
   const [cancel, setCancel] = useState(false);
   const [Notifications, setNotifications] = useState(userNotifications);
+  const [notificationChanged, setNotificationChanged] = useState(false);
 
   useEffect(() => {
     const getData = async () => {
@@ -318,15 +319,15 @@ export default function Privacy({ navigation, route }) {
   //save notifications in DB- for now only in userContext
   const updateNotifications = () => {
     let notificationsUpdate = {
-      Email: userContext.Email,
+      userId: userContext.userId,
       financeNotifications: Notifications.financeNotifications,
       chatNotifications: Notifications.chatNotifications,
       medNotifications: Notifications.medNotifications,
       tasksNotifications: Notifications.tasksNotifications,
+      allNotifications: Notifications.allNotifications,
     }
     try {
       updateuserNotifications(notificationsUpdate);
-      Alert.alert('Changes Updated Successfully');
     }
     catch (e) {
       console.log('error', e);
@@ -401,6 +402,7 @@ export default function Privacy({ navigation, route }) {
       }
     }
   }
+  
 
   return (
     <ScrollView alwaysBounceVertical={false} contentContainerStyle={styles.container}>
