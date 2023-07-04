@@ -33,8 +33,15 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
   }
 
   const getPush = async () => {
-    const currentToken = (await Notifications.getExpoPushTokenAsync()).data
-    setExpoPushToken(currentToken);
+    if (Platform.OS === 'android') {
+      console.log("android");
+      const currentToken = (await Notifications.getExpoPushTokenAsync()).data;
+      console.log(currentToken);
+      setExpoPushToken(currentToken);
+    }
+    else {
+      registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+    }
   }
 
   //updated for chat

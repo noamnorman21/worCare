@@ -30,15 +30,17 @@ export default function SignUpFinish({ navigation, route }) {
         return encodedId;
     };
 
-    useEffect(() => {
+    const getIdToken = async () => {
         if (Platform.OS === 'android') {
-            const currentToken = (Notifications.getExpoPushTokenAsync()).data;
+            console.log("android");
+            const currentToken = (await Notifications.getExpoPushTokenAsync()).data;
+            console.log(currentToken);
             setExpoPushToken(currentToken);
         }
         else {
             registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
         }
-    }, []);
+    }
 
     // link to the specific screen in the app and send the patient id to the screen as a parameter
     // link to screen "Welcome" and send the patient id to the screen as a parameter
@@ -118,6 +120,7 @@ export default function SignUpFinish({ navigation, route }) {
 
     // InsertUser
     const createNewUserInDB = () => {
+        getIdToken();
         let user = route.params.tblUser
         user.pushToken = expoPushToken;
         fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/InsertUser', { //send the user data to the DB
