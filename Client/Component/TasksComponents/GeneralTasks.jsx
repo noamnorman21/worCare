@@ -122,16 +122,6 @@ export default function GeneralTasks(props) {
           </View>
         </ScrollView>
       </View>
-
-      {/* <View style={{ width: SCREEN_WIDTH * 0.92, marginVertical: 20 }}>
-        <View>
-          <TouchableOpacity style={styles.headerForTasks} onPress={toggleHeaderCompleted}>
-            <Text style={styles.tasksTitle}>Completed</Text>
-            <Ionicons name={headerCompleted ? arrowIcon[0] : arrowIcon[1]} size={30} color="#548DFF" />
-          </TouchableOpacity>
-        </View>
-      </View> */}
-
       <View style={styles.addBtnView}>
         <AddBtn onPress={handleAddBtnPress} />
       </View>

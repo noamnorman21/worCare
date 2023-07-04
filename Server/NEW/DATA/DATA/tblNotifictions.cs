@@ -12,17 +12,15 @@ namespace DATA
     using System;
     using System.Collections.Generic;
     
-    public partial class tblScheduledNotifications
+    public partial class tblNotifictions
     {
         public int notificationID { get; set; }
-        public string pushToken { get; set; }
         public string title { get; set; }
         public string pushMessage { get; set; }
-        public System.DateTime scheduledTime { get; set; }
-        public string data { get; set; }
-        public Nullable<int> actualTaskId { get; set; }
-        public Nullable<int> paymentId { get; set; }
-        public Nullable<int> taskId { get; set; }
-        public Nullable<int> userId { get; set; }
+        public System.DateTime time { get; set; }
+        public int userId { get; set; }
+        public string status { get; set; }
+    
+        public virtual tblUser tblUser { get; set; }
     }
 }

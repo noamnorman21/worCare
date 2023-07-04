@@ -40,8 +40,15 @@ namespace DATA
         {
             try
             {
+                var user = from u in db.tblUser
+                           where u.pushToken == pushToken
+                           select u;
+                int userId = user.FirstOrDefault().userId;
+                DateTime pushTime = DateTime.Now;        
                 var list = db.tblActualList.Where(x => x.listId == listId).First();
-                string pushTitle = "Reminder: " + taskName;
+                string pushTitle = "Reminder: " + taskName + " is soon!";
+                string pushContent = "Don't forget, " + taskName + " is happening tomorrow. Be ready at " + pushTime.ToString() + " to get it done! You've got this!";
+                
                 DateTime tempDate = taskFromDate;
                 if (frequency == "Once")
                 {
@@ -57,8 +64,8 @@ namespace DATA
                                 var task = db.tblActualTask.Where(x => x.actualId == actualId).First();
                                 db.InsertList(taskName, list.listId, actualId, task.taskId);
                             }
-                            DateTime pushTime = new DateTime(taskToDate.Year, taskToDate.Month, taskToDate.Day, timesInDayArr[i].Hours, timesInDayArr[i].Minutes, timesInDayArr[i].Seconds);
-                            db.InsertScheduledNotification(pushToken, pushTitle, "bla bla", pushTime, null, actualId, null, taskId); // Change bla bla
+                            pushTime = new DateTime(taskToDate.Year, taskToDate.Month, taskToDate.Day, timesInDayArr[i].Hours, timesInDayArr[i].Minutes, timesInDayArr[i].Seconds);
+                            db.InsertScheduledNotification(pushToken, pushTitle,pushContent, pushTime, null, actualId, null, taskId, userId); // Change bla bla
                         }
                     }
                     else
@@ -70,8 +77,8 @@ namespace DATA
                             var task = db.tblActualTask.Where(x => x.actualId == actualId).First();
                             db.InsertList(taskName, list.listId, actualId, task.taskId);
                         }
-                        DateTime pushTime = new DateTime(taskToDate.Year, taskToDate.Month, taskToDate.Day, timesInDayArr[0].Hours, timesInDayArr[0].Minutes, timesInDayArr[0].Seconds);
-                        db.InsertScheduledNotification(pushToken, pushTitle, "bla bla", pushTime, null, actualId, null, taskId); // Change bla bla
+                        pushTime = new DateTime(taskToDate.Year, taskToDate.Month, taskToDate.Day, timesInDayArr[0].Hours, timesInDayArr[0].Minutes, timesInDayArr[0].Seconds);
+                        db.InsertScheduledNotification(pushToken, pushTitle,pushContent, pushTime, null, actualId, null, taskId, userId); // Change bla bla
                     }
                 }
                 else if (frequency == "Daily")
@@ -87,8 +94,8 @@ namespace DATA
                                 var task = db.tblActualTask.Where(x => x.actualId == actualId).First();
                                 db.InsertList(taskName, list.listId, actualId, task.taskId);
                             }
-                            DateTime pushTime = new DateTime(tempDate.Year, tempDate.Month, tempDate.Day, timesInDayArr[i].Hours, timesInDayArr[i].Minutes, timesInDayArr[i].Seconds);
-                            db.InsertScheduledNotification(pushToken, pushTitle, "bla bla", pushTime, null, actualId, null, taskId); // Change bla bla
+                            pushTime = new DateTime(tempDate.Year, tempDate.Month, tempDate.Day, timesInDayArr[i].Hours, timesInDayArr[i].Minutes, timesInDayArr[i].Seconds);
+                            db.InsertScheduledNotification(pushToken, pushTitle,pushContent, pushTime, null, actualId, null, taskId, userId); // Change bla bla
                         }
                         tempDate = tempDate.AddDays(1);
                     }
@@ -106,8 +113,8 @@ namespace DATA
                                 var task = db.tblActualTask.Where(x => x.actualId == actualId).First();
                                 db.InsertList(taskName, list.listId, actualId, task.taskId);
                             }
-                            DateTime pushTime = new DateTime(tempDate.Year, tempDate.Month, tempDate.Day, timesInDayArr[i].Hours, timesInDayArr[i].Minutes, timesInDayArr[i].Seconds);
-                            db.InsertScheduledNotification(pushToken, pushTitle, "bla bla", pushTime, null, actualId, null, taskId); // Change bla bla
+                            pushTime = new DateTime(tempDate.Year, tempDate.Month, tempDate.Day, timesInDayArr[i].Hours, timesInDayArr[i].Minutes, timesInDayArr[i].Seconds);
+                            db.InsertScheduledNotification(pushToken, pushTitle,pushContent, pushTime, null, actualId, null, taskId, userId); // Change bla bla
                         }
                         tempDate = tempDate.AddDays(7);
                     }
@@ -126,8 +133,8 @@ namespace DATA
                                 var task = db.tblActualTask.Where(x => x.actualId == actualId).First();
                                 db.InsertList(taskName, list.listId, task.actualId, task.taskId);
                             }
-                            DateTime pushTime = new DateTime(tempDate.Year, tempDate.Month, tempDate.Day, timesInDayArr[i].Hours, timesInDayArr[i].Minutes, timesInDayArr[i].Seconds);
-                            db.InsertScheduledNotification(pushToken, pushTitle, "bla bla", pushTime, null, actualId, null, taskId); // Change bla bla
+                            pushTime = new DateTime(tempDate.Year, tempDate.Month, tempDate.Day, timesInDayArr[i].Hours, timesInDayArr[i].Minutes, timesInDayArr[i].Seconds);
+                            db.InsertScheduledNotification(pushToken, pushTitle,pushContent, pushTime, null, actualId, null, taskId, userId); // Change bla bla
                         }
                         tempDate = tempDate.AddMonths(1);
                     }

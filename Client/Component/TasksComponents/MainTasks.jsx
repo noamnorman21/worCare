@@ -187,7 +187,6 @@ export default function MainTasks(props) {
           </View>
         </ScrollView>
       </View>
-
       <View style={styles.addBtnView}>
         <AddBtn onPress={handleAddBtnPress} />
       </View>

@@ -260,6 +260,23 @@ namespace WebApi.Controllers
                 }
                 patientDTO.hobbiesAndLimitationsDTO.Add(hlDTO);
                 newUser.patient = patientDTO;
+
+                //Get the user's Notifictions that already sent to him
+                var userNotifications = from n in db.tblNotifictions
+                                        where n.userId == newUser.userId
+                                        select n;
+                newUser.notification = new List<NotificationsThatSentDTO>();
+                foreach (var item in userNotifications)
+                {
+                    NotificationsThatSentDTO notification = new NotificationsThatSentDTO();
+                    notification.notificationID = item.notificationID;
+                    notification.title = item.title;
+                    notification.time = item.time;
+                    notification.status = item.status;
+                    notification.userId = newUser.userId;
+                    notification.pushMessage = item.pushMessage;
+                    newUser.notification.Add(notification);
+                }
                 return Ok(newUser);
             }
             catch (Exception ex)

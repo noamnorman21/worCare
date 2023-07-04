@@ -26,9 +26,11 @@ namespace WebApi.DTO
         public string pushToken { get; set; }
         public string lastToken { get; set; }
         public string pushTokenSecoundSide { get; set; }
+        public List<NotificationsThatSentDTO> notification { get; set; } //this is 
         public Nullable<bool> financeNotifications { get; set; }
         public Nullable<bool> chatNotifications { get; set; }
         public Nullable<bool> medNotifications { get; set; }
         public Nullable<bool> tasksNotifications { get; set; }
+        
     }
 }

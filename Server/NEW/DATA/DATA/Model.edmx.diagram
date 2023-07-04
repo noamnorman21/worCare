@@ -58,6 +58,8 @@
         <AssociationConnector Association="igroup194.FK__tblPayche__UserI__618671AF" ManuallyRouted="false" />
         <AssociationConnector Association="igroup194.FK__tblPrivat__taskI__01F34141" ManuallyRouted="false" />
         <AssociationConnector Association="igroup194.FK__tblProduc__produ__2354350C" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="igroup194.tblNotifictions" Width="1.5" PointX="0.75" PointY="4.75" />
+        <AssociationConnector Association="igroup194.FK_tblNotifictions_tblUser" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

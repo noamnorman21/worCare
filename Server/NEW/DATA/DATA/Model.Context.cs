@@ -52,6 +52,7 @@ namespace DATA
         public virtual DbSet<tblProductList> tblProductList { get; set; }
         public virtual DbSet<tblScheduledNotifications> tblScheduledNotifications { get; set; }
         public virtual DbSet<tblUser> tblUser { get; set; }
+        public virtual DbSet<tblNotifictions> tblNotifictions { get; set; }
     
         public virtual int InsertActualList(Nullable<bool> type)
         {
@@ -481,7 +482,7 @@ namespace DATA
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertProductList", productIdParameter, actualIdParameter, taskIdParameter, productStatusParameter, productQuantityParameter, commentForProductParameter);
         }
     
-        public virtual int InsertScheduledNotification(string pushToken, string title, string pushMessage, Nullable<System.DateTime> scheduledTime, string data, Nullable<int> actualTaskId, Nullable<int> paymentId, Nullable<int> taskId)
+        public virtual int InsertScheduledNotification(string pushToken, string title, string pushMessage, Nullable<System.DateTime> scheduledTime, string data, Nullable<int> actualTaskId, Nullable<int> paymentId, Nullable<int> taskId, Nullable<int> userId)
         {
             var pushTokenParameter = pushToken != null ?
                 new ObjectParameter("pushToken", pushToken) :
@@ -515,7 +516,11 @@ namespace DATA
                 new ObjectParameter("taskId", taskId) :
                 new ObjectParameter("taskId", typeof(int));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertScheduledNotification", pushTokenParameter, titleParameter, pushMessageParameter, scheduledTimeParameter, dataParameter, actualTaskIdParameter, paymentIdParameter, taskIdParameter);
+            var userIdParameter = userId.HasValue ?
+                new ObjectParameter("userId", userId) :
+                new ObjectParameter("userId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertScheduledNotification", pushTokenParameter, titleParameter, pushMessageParameter, scheduledTimeParameter, dataParameter, actualTaskIdParameter, paymentIdParameter, taskIdParameter, userIdParameter);
         }
     
         public virtual int InsertUser(string email, string password, string firstName, string lastName, string gender, string phoneNum, string userUri, string pushToken, Nullable<bool> tasksNotifications, Nullable<bool> financeNotifications, Nullable<bool> chatNotifications, Nullable<bool> medNotifications)
@@ -784,6 +789,31 @@ namespace DATA
                 new ObjectParameter("status", typeof(string));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("updateStatusCaresForPatient", patientIdParameter, workerIdParameter, statusParameter);
+        }
+    
+        public virtual int InsertNotification(string title, string pushMessage, Nullable<System.DateTime> time, Nullable<int> userId, string status)
+        {
+            var titleParameter = title != null ?
+                new ObjectParameter("title", title) :
+                new ObjectParameter("title", typeof(string));
+    
+            var pushMessageParameter = pushMessage != null ?
+                new ObjectParameter("pushMessage", pushMessage) :
+                new ObjectParameter("pushMessage", typeof(string));
+    
+            var timeParameter = time.HasValue ?
+                new ObjectParameter("time", time) :
+                new ObjectParameter("time", typeof(System.DateTime));
+    
+            var userIdParameter = userId.HasValue ?
+                new ObjectParameter("userId", userId) :
+                new ObjectParameter("userId", typeof(int));
+    
+            var statusParameter = status != null ?
+                new ObjectParameter("status", status) :
+                new ObjectParameter("status", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("InsertNotification", titleParameter, pushMessageParameter, timeParameter, userIdParameter, statusParameter);
         }
     }
 }

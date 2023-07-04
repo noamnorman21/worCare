@@ -21,6 +21,7 @@ namespace DATA
             this.tblPatient = new HashSet<tblPatient>();
             this.tblPatientTask = new HashSet<tblPatientTask>();
             this.tblPaycheck = new HashSet<tblPaycheck>();
+            this.tblNotifictions = new HashSet<tblNotifictions>();
         }
     
         public int userId { get; set; }
@@ -46,5 +47,7 @@ namespace DATA
         public virtual ICollection<tblPatientTask> tblPatientTask { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tblPaycheck> tblPaycheck { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<tblNotifictions> tblNotifictions { get; set; }
     }
 }
