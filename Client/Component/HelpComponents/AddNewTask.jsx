@@ -541,6 +541,8 @@ function NewTaskModal(props) {
    const [userType, setUserType] = useState(userData.userType);
 
    const { addPrivateTaskContext, getAllPrivateTasks, getAllPublicTasks } = useUserContext();
+   const [datePickerVisable, setDatePickerVisable] = useState(false);
+   const [timePickerVisable, setTimePickerVisable] = useState(false);
 
    const [taskName, setTaskName] = useState('')
    const [taskComment, setTaskComment] = useState('')
@@ -718,13 +720,12 @@ function NewTaskModal(props) {
          pushToken = userData.pushToken;
       }
 
-
       let newTaskForDb = {
          taskName: taskName,
          listName: taskName,
          timesInDayArr: taskTimeArr,
          fromDate: taskFromDate,
-         toDate: taskToDate,
+         toDate: taskToDate? taskToDate: taskFromDate, //because it's once task so the date is the same
          patientId: userData.patientId,
          workerId: userData.workerId,
          userId: userData.involvedInId,
@@ -746,6 +747,7 @@ function NewTaskModal(props) {
                return res.json()
             }
             else {
+               console.log(res)
                console.log("not found")
             }
          }
@@ -838,6 +840,33 @@ function NewTaskModal(props) {
       props.onClose()
    }
 
+   const showDatePicker = () => {
+      console.log("showDatePicker");
+      setDatePickerVisable(true);
+   }
+
+   const showTimePicker =()=>
+   {
+      console.log("showTimePicker");
+      setTimePickerVisable(true);
+   }
+
+   const onChangeDate = (selectedDate) => {
+      console.log("onChangeDate");
+      const currentDate = new Date(selectedDate.nativeEvent.timestamp).toISOString().substring(0, 10);
+      setDatePickerVisable(false);
+      setTaskFromDate(currentDate);
+   };
+
+   const onChangeTaskDate = (selectedDate) => {
+      console.log("onChangeTaskDate");
+      console.log("selectedDate= ", selectedDate);
+      const currentTime = new Date(selectedDate.nativeEvent.timestamp).toTimeString();
+      console.log("currentDate= ", currentTime);
+      setTimePickerVisable(false);
+      setTaskTime(currentTime);
+   };
+
    return (
       <SafeAreaView>
          <Modal visible={props.isVisible} presentationStyle='formSheet' animationType='slide' onRequestClose={props.onClose}>
@@ -918,7 +947,7 @@ function NewTaskModal(props) {
                            />
 
                            {/* If taskFrequency == 'Once' Show date picker - now date range */}
-                           {taskFrequency == 'Once' ?
+                           {taskFrequency == 'Once' ? Platform.OS == 'ios' ?
                               <DatePicker
                                  useNativeDriver={'true'}
                                  iconComponent={<MaterialCommunityIcons style={[styles.addIcon, { right: 0 }]} name="calendar-outline" size={24} color="#808080" />}
@@ -949,6 +978,8 @@ function NewTaskModal(props) {
                                  onDateChange={(date) => setTaskFromDate(date)}
                               />
                               :
+                              <TouchableOpacity style={[styles.datePicker, taskFromDate && { borderColor: "#000" }]} onPress={showDatePicker}><Text style={[styles.dateInputTxt, taskFromDate && { color: "#000" }]}>{taskFromDate ? taskFromDate : "Date"}</Text></TouchableOpacity>
+                              :
                               <TouchableOpacity onPress={() => { setModalVisibleDate(true); }}>
                                  {taskFromDate && taskToDate ?
                                     <View style={[styles.input, { borderColor: '#000' }]}>
@@ -963,6 +994,16 @@ function NewTaskModal(props) {
                                  }
                               </TouchableOpacity>
                            }
+                           {datePickerVisable && (
+                              <DateTimePicker
+                                 //testID="dateTimePicker"
+                                 value={taskFromDate ? new Date(taskFromDate) : new Date()}
+                                 // mode={"date"}
+                                 is24Hour={true}
+                                 onChange={(value) => onChangeDate(value)}
+                                 display="default"
+                              />
+                           )}
 
                            <Modal visible={modalVisibleDate} transparent={true} style={styles.modalDate} animationType='slide' onRequestClose={() => setModalVisibleDate(false)}>
                               <View style={styles.modalDateView}>
@@ -1083,35 +1124,49 @@ function NewTaskModal(props) {
                                  }
                               </View>
                               :
-                              <DatePicker
-                                 style={[styles.input, taskTime != '' && { borderColor: '#000' }]}
-                                 date={taskTime}
-                                 mode="time"
-                                 placeholder="Time"
-                                 format="HH:mm"
-                                 is24Hour={true}
-                                 confirmBtnText="Confirm"
-                                 cancelBtnText="Cancel"
-                                 showIcon={false}
-                                 customStyles={{
-                                    dateInput: {
-                                       borderWidth: 0,
-                                       alignItems: 'flex-start',
-                                    },
-                                    placeholderText: {
-                                       color: '#9E9E9E',
-                                       fontSize: 16,
-                                       fontFamily: 'Urbanist-Light',
-                                    },
-                                    dateText: {
-                                       color: '#000',
-                                       fontSize: 16,
-                                       fontFamily: 'Urbanist-SemiBold',
-                                    },
-                                 }}
-                                 onDateChange={(date) => { setTaskTime(date) }}
-                              />
+                              <>
+                                 {Platform.OS === "ios" ? <DatePicker
+                                    style={[styles.input, taskTime != '' && { borderColor: '#000' }]}
+                                    date={taskTime}
+                                    mode="time"
+                                    placeholder="Time"
+                                    format="HH:mm"
+                                    is24Hour={true}
+                                    confirmBtnText="Confirm"
+                                    cancelBtnText="Cancel"
+                                    showIcon={false}
+                                    customStyles={{
+                                       dateInput: {
+                                          borderWidth: 0,
+                                          alignItems: 'flex-start',
+                                       },
+                                       placeholderText: {
+                                          color: '#9E9E9E',
+                                          fontSize: 16,
+                                          fontFamily: 'Urbanist-Light',
+                                       },
+                                       dateText: {
+                                          color: '#000',
+                                          fontSize: 16,
+                                          fontFamily: 'Urbanist-SemiBold',
+                                       },
+                                    }}
+                                    onDateChange={(date) => { setTaskTime(date) }}
+                                 /> :
+                                    <TouchableOpacity style={[styles.datePicker, taskTime && { borderColor: "#000" }]} onPress={showTimePicker}><Text style={[styles.dateInputTxt, taskTime && { color: "#000" }]}>{taskTime ? taskTime : "Time"}</Text></TouchableOpacity>
+                                 }
+                              </>
                            }
+                           {timePickerVisable && ( 
+                              <DateTimePicker
+                                 //testID="dateTimePicker"
+                                 value={taskTime ? new Date(taskTime) : new Date()}
+                                 mode={"time"}
+                                 is24Hour={true}
+                                 onChange={(value) => onChangeTaskDate(value)}
+                                 display="default"
+                              />
+                           )}
                            {/* Modal Box For TIMES ARRAY */}
                            <View>
                               <Modal visible={modalTimesVisible} transparent={true} animationType='slide' onRequestClose={() => setModalTimesVisible(false)}>
@@ -1461,5 +1516,27 @@ const styles = StyleSheet.create({
       shadowOpacity: 0.5,
       shadowRadius: 5,
       elevation: 5,
-   }
+   },
+   datePicker: {
+      flexDirection: 'row',
+      // justifyContent: 'center',
+      width: Dimensions.get('window').width * 0.95,
+      // paddingLeft: 10,
+      marginVertical: 7,
+      alignItems: 'center',
+      borderRadius: 16,
+      borderWidth: 1.5,
+      borderColor: '#E6EBF2',
+      shadowColor: '#000',
+      height: 54,
+      fontFamily: 'Urbanist-Light',
+      fontSize: 16,
+   },
+   dateInputTxt: {
+      color: '#9E9E9E',
+      paddingHorizontal: 10,
+      fontSize: 16,
+      fontFamily: 'Urbanist-Regular',
+      paddingRight: 10,
+   },
 })

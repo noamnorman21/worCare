@@ -745,6 +745,7 @@ export function UserProvider({ children }) {
     }
 
     async function getAllPublicTasks(userData) {
+        console.log("getAllPublicTasks",userData.patientId)
         try {
             const response = await fetch(getAllPublicTasksUrl, {
                 method: 'POST',
