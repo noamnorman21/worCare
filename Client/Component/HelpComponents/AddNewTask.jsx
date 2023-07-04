@@ -781,7 +781,7 @@ function NewTaskModal(props) {
          taskName: taskName,
          timesInDayArr: taskTimeArr,
          fromDate: taskFromDate,
-         toDate: taskFromDate, //because it's once task so the date is the same
+         toDate: taskToDate? taskToDate: taskFromDate, //because it's once task so the date is the same
          patientId: userData.patientId,
          workerId: userData.workerId,
          userId: userData.involvedInId,

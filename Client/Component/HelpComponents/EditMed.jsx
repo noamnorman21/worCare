@@ -147,10 +147,6 @@ export default function EditMed(props) {
     };
 
     const handleDrugEdited = () => {
-        if (toDate == null || toDate < moment().format('YYYY-MM-DD')) {
-            Alert.alert('Please select a date');
-            return;
-        }
         if (quantity == null || quantity == 0) {
             Alert.alert('Please select a quantity');
             return;
@@ -163,7 +159,6 @@ export default function EditMed(props) {
             Alert.alert('Please select a time');
             return;
         }
-
         //check the type the user for the push notification
         let pushToken = '';
         if (userContext.userType == 'User') {
@@ -172,7 +167,6 @@ export default function EditMed(props) {
         else {
             pushToken = userContext.pushToken;
         }
-
         let newDrugForPatient = {
             drugNameEn: task.drug.drugNameEn,
             drugId: task.drug.drugId,
@@ -188,31 +182,40 @@ export default function EditMed(props) {
             userId: userData.involvedInId,
             pushToken: pushToken,
         }
-        console.log(newDrugForPatient);
         let taskForDelete = {
             taskId: task.taskId,
             listId: task.listId,
         }
-        console.log(taskForDelete);
-
         let objToSend = {
             newDrugForPatient: newDrugForPatient,
             taskForDelete: taskForDelete,
         }
+        console.log(objToSend);
+        let addTaskUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/InsertActualList';
+        fetch(addTaskUrl, {
+           method: 'POST',
+           body: JSON.stringify(objToSend),
+           headers: {
+              'Content-Type': 'application/json; charset=UTF-8',
+           },
+        })
+           .then(res => {
+              if (res.ok) {
+                console.log("success ")   
+                 setModalTimesVisible(false);
+                 props.onClose(); 
+                 return res.json();      
+              }
+              else {
+                 console.log("not found")
+              }
+           }
+           )         
+           .catch((error) => {
+              console.log("err=", error);
+           }
+           );
 
-        return;// for now until the backend is ready
-
-        if (toDate != originDate || quantity != task.drug.dosage || numberPerDay != medTimesArr.length || medTimesArr != medTimesArr) {
-            setIsEdited(true);
-            UpdateDrugForPatientDTO(newDrugForPatient);
-        }
-        else {
-            setIsEdited(false);
-        }
-        console.log('task', task);
-        console.log('newDrugForPatient', newDrugForPatient);
-        setModalTimesVisible(false);
-        props.onClose()
     }
 
     return (
