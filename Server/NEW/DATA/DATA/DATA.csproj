@@ -140,6 +140,9 @@
     <Compile Include="tblList.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="tblNotifictions.cs">
+      <DependentUpon>Model.tt</DependentUpon>
+    </Compile>
     <Compile Include="tblPatient.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
