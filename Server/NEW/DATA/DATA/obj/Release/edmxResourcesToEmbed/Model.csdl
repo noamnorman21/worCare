@@ -317,6 +317,7 @@
     <Property Name="actualTaskId" Type="Int32" />
     <Property Name="paymentId" Type="Int32" />
     <Property Name="taskId" Type="Int32" />
+    <Property Name="userId" Type="Int32" />
   </EntityType>
   <EntityType Name="tblUser">
     <Key>
@@ -340,6 +341,7 @@
     <NavigationProperty Name="tblPatient" Relationship="Self.FK__tblPatien__userI__55209ACA" FromRole="tblUser" ToRole="tblPatient" />
     <NavigationProperty Name="tblPatientTask" Relationship="Self.FK__tblPatien__userI__74994623" FromRole="tblUser" ToRole="tblPatientTask" />
     <NavigationProperty Name="tblPaycheck" Relationship="Self.FK__tblPayche__UserI__618671AF" FromRole="tblUser" ToRole="tblPaycheck" />
+    <NavigationProperty Name="tblNotifictions" Relationship="igroup194.FK_tblNotifictions_tblUser" FromRole="tblUser" ToRole="tblNotifictions" />
   </EntityType>
   <Association Name="FK__tblDrugFo__listI__131DCD43">
     <End Role="tblActualList" Type="Self.tblActualList" Multiplicity="1" />
@@ -963,6 +965,7 @@
       <Parameter Name="actualTaskId" Mode="In" Type="Int32" />
       <Parameter Name="paymentId" Mode="In" Type="Int32" />
       <Parameter Name="taskId" Mode="In" Type="Int32" />
+      <Parameter Name="userId" Mode="In" Type="Int32" />
     </FunctionImport>
     <FunctionImport Name="InsertUser">
       <Parameter Name="Email" Mode="In" Type="String" />
@@ -1039,6 +1042,18 @@
       <Parameter Name="workerId" Mode="In" Type="Int32" />
       <Parameter Name="status" Mode="In" Type="String" />
     </FunctionImport>
+    <EntitySet Name="tblNotifictions" EntityType="igroup194.tblNotifictions" />
+    <FunctionImport Name="InsertNotification">
+      <Parameter Name="title" Mode="In" Type="String" />
+      <Parameter Name="pushMessage" Mode="In" Type="String" />
+      <Parameter Name="time" Mode="In" Type="DateTime" />
+      <Parameter Name="userId" Mode="In" Type="Int32" />
+      <Parameter Name="status" Mode="In" Type="String" />
+    </FunctionImport>
+    <AssociationSet Name="FK_tblNotifictions_tblUser" Association="igroup194.FK_tblNotifictions_tblUser">
+      <End Role="tblUser" EntitySet="tblUser" />
+      <End Role="tblNotifictions" EntitySet="tblNotifictions" />
+    </AssociationSet>
   </EntityContainer>
   <ComplexType Name="sp_helpdiagramdefinition_Result">
     <Property Type="Int32" Name="version" Nullable="true" />
@@ -1051,4 +1066,28 @@
     <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
     <Property Type="Int32" Name="OwnerID" Nullable="false" />
   </ComplexType>
+  <EntityType Name="tblNotifictions">
+    <Key>
+      <PropertyRef Name="notificationID" />
+    </Key>
+    <Property Name="notificationID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="title" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="pushMessage" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
+    <Property Name="time" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="userId" Type="Int32" Nullable="false" />
+    <Property Name="status" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+    <NavigationProperty Name="tblUser" Relationship="igroup194.FK_tblNotifictions_tblUser" FromRole="tblNotifictions" ToRole="tblUser" />
+  </EntityType>
+  <Association Name="FK_tblNotifictions_tblUser">
+    <End Type="igroup194.tblUser" Role="tblUser" Multiplicity="1" />
+    <End Type="igroup194.tblNotifictions" Role="tblNotifictions" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblUser">
+        <PropertyRef Name="userId" />
+      </Principal>
+      <Dependent Role="tblNotifictions">
+        <PropertyRef Name="userId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
 </Schema>

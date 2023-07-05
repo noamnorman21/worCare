@@ -49,6 +49,7 @@ namespace WebApi.DTO
                             string postData = JsonConvert.SerializeObject(objectToSend);
                             var content = new StringContent(postData, Encoding.UTF8, "application/json");
                             HttpResponseMessage response = await client.PostAsync("https://exp.host/--/api/v2/push/send", content);
+                            db.InsertNotification(item.title, item.pushMessage, nowWithoutSeconds, item.userId, "P");// Add the push to the table of the sent push
                             db.tblScheduledNotifications.Remove(item);
                             db.SaveChanges();
                         }
@@ -67,6 +68,7 @@ namespace WebApi.DTO
                             string postData = JsonConvert.SerializeObject(objectToSend);
                             var content = new StringContent(postData, Encoding.UTF8, "application/json");
                             HttpResponseMessage response = await client.PostAsync("https://exp.host/--/api/v2/push/send", content);
+                            db.InsertNotification(item.title, item.pushMessage, nowWithoutSeconds, item.userId, "P");// Add the push to the table of the sent push
                             db.tblScheduledNotifications.Remove(item);
                             db.SaveChanges();
                         }

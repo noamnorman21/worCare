@@ -12,6 +12,7 @@ using Expo.Server.Models;
 using Newtonsoft.Json;
 using System.Text;
 using System.Web.Script.Serialization;
+using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 
 namespace WebApi.Controllers
 {
@@ -67,8 +68,10 @@ namespace WebApi.Controllers
                     string postData = JsonConvert.SerializeObject(objectToSend);
                     var content = new StringContent(postData, Encoding.UTF8, "application/json");
                     SendPushNotification(content);
-                    
-                                      
+                    DateTime now = DateTime.Now;
+                    DateTime nowWithoutSeconds = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, 0);
+                    db.InsertNotification("Pairing Confirmation", foreignName + " And You Are Now Paired", nowWithoutSeconds, involvedId, "P");
+                    db.SaveChanges();
                 }
                 return Ok("linked succesfuly");
             }

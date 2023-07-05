@@ -273,6 +273,7 @@
     <EntitySetMapping Name="tblScheduledNotifications">
       <EntityTypeMapping TypeName="igroup194.tblScheduledNotifications">
         <MappingFragment StoreEntitySet="tblScheduledNotifications">
+          <ScalarProperty Name="userId" ColumnName="userId" />
           <ScalarProperty Name="notificationID" ColumnName="notificationID" />
           <ScalarProperty Name="pushToken" ColumnName="pushToken" />
           <ScalarProperty Name="title" ColumnName="title" />
@@ -350,5 +351,18 @@
     <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="igroup194.Store.sp_renamediagram" />
     <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="igroup194.Store.sp_upgraddiagrams" />
     <FunctionImportMapping FunctionImportName="updateStatusCaresForPatient" FunctionName="igroup194.Store.updateStatusCaresForPatient" />
+    <EntitySetMapping Name="tblNotifictions">
+      <EntityTypeMapping TypeName="igroup194.tblNotifictions">
+        <MappingFragment StoreEntitySet="tblNotifictions">
+          <ScalarProperty Name="status" ColumnName="status" />
+          <ScalarProperty Name="userId" ColumnName="userId" />
+          <ScalarProperty Name="time" ColumnName="time" />
+          <ScalarProperty Name="pushMessage" ColumnName="pushMessage" />
+          <ScalarProperty Name="title" ColumnName="title" />
+          <ScalarProperty Name="notificationID" ColumnName="notificationID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <FunctionImportMapping FunctionImportName="InsertNotification" FunctionName="igroup194.Store.InsertNotification" />
   </EntityContainerMapping>
 </Mapping>

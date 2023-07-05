@@ -15,8 +15,9 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export default function NewPayment(props) {
-  const { userContext, GetUserPending, sendPushNotification } = useUserContext();
+  const { userContext, GetUserPending, sendPushNotification,notificationsThatSent } = useUserContext();
   const pushToken2 = userContext.pushToken2;
+  const involvedInId = userContext.involvedInId;
   const userName = userContext.FirstName;
 
   const [payment, setPayment] = useState({
@@ -168,9 +169,18 @@ export default function NewPayment(props) {
             expoPushToken: pushToken2,
             title: "New Payment Request",
             body: `You have a new payment request from ${userName}\n for ${payment.amountToPay}NIS`,
-            data: { data: 'goes here' },
+           // data: { data: 'goes here' },
+          }
+          let pushDataForDB = {
+            title: "New Payment Request",
+            pushMessage: `You have a new payment request from ${userName}\n for ${payment.amountToPay}NIS`,
+            //time will be now without seconds
+            time: new Date().toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }),
+            userId: involvedInId,        
           }
           sendPushNotification(PushNotificationsData); // This line sends the notification, the function is in UserContext
+          notificationsThatSent(PushNotificationsData); // This line saves the notification in the DB, the function is in UserContext
+
           GetUserPending()
           props.cancel();
           console.log('expoToken2', pushToken2);         

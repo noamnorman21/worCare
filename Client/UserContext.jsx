@@ -16,11 +16,12 @@ let updateProfileUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Settings/Up
 let getPairedProfile = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUser/'
 let getPatientData = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/GetPatientData';
 let GetAllPatients = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/GetAllPatients'
+let InsertNotificationsThatSent = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Notification/InsertNotificationThatSent'
 
 // Log In
 let userForLoginUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUserForLogin';
 let getUserNoti = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUserNotificatoins';
-let updateNoti='https://proj.ruppin.ac.il/cgroup94/test1/api/User/UpdateUserNotificatoins';
+let updateNoti = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/UpdateUserNotificatoins';
 
 // Sign Up
 let insertUser = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/InsertUser';
@@ -198,11 +199,11 @@ export function UserProvider({ children }) {
                         tasksNotifications: result.tasksNotifications,
                         medNotifications: result.medNotifications,
                         allNotifications: '',
-                      }
-                    if(notifications.chatNotifications && notifications.financeNotifications && notifications.tasksNotifications && notifications.medNotifications){
+                    }
+                    if (notifications.chatNotifications && notifications.financeNotifications && notifications.tasksNotifications && notifications.medNotifications) {
                         notifications.allNotifications = true;
                     }
-                    else{
+                    else {
                         notifications.allNotifications = false;
                     }
                     setUserNotifications(notifications);
@@ -263,7 +264,34 @@ export function UserProvider({ children }) {
             },
             body: JSON.stringify(message),
         });
+
+
     }
+    async function notificationsThatSent(notificationsThatSentDTO) {
+        await fetch(notificationsThatSent, {
+            method: 'POST',
+            headers: new Headers({
+                'Content-Type': 'application/json; charset=UTF-8',
+            }),
+            body: JSON.stringify(notificationsThatSentDTO),
+        }).then(res => {
+            if (res.ok) {
+                return res.json()
+            }
+        })
+            .then(
+                (result) => {
+                    console.log("result=", result);
+                },
+                (error) => {
+                    console.log("err post=", error);
+                });
+
+
+    }
+
+
+
 
     async function getHolidaysForUser(calendarCode) {
         setHolidays([]);
@@ -745,7 +773,7 @@ export function UserProvider({ children }) {
     }
 
     async function getAllPublicTasks(userData) {
-        console.log("getAllPublicTasks",userData.patientId)
+        console.log("getAllPublicTasks", userData.patientId)
         try {
             const response = await fetch(getAllPublicTasksUrl, {
                 method: 'POST',
@@ -1026,7 +1054,7 @@ export function UserProvider({ children }) {
         updateUserProfile, updateuserNotifications, appEmail, getAllPrivateTasks, getAllPublicTasks,
         allPublicTasks, allPrivateTasks, UpdateDrugForPatientDTO, holidays, GetAllDrugs, allDrugs, addPrivateTaskContext,
         newMessages, setNewMessages, logOutFireBase, registerForPushNotificationsAsync, sendPushNotification, UpdatePatient, userPaychecks,
-        fetchPatientList, patientList, setRouteEmail, routeEmail
+        fetchPatientList, patientList, setRouteEmail, routeEmail, notificationsThatSent
     };
 
     return (

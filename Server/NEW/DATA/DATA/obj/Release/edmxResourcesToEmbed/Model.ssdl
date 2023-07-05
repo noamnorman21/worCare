@@ -158,6 +158,17 @@
     <Property Name="actualId" Type="int" Nullable="false" />
     <Property Name="taskId" Type="int" Nullable="false" />
   </EntityType>
+  <EntityType Name="tblNotifictions">
+    <Key>
+      <PropertyRef Name="notificationID" />
+    </Key>
+    <Property Name="notificationID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="title" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="pushMessage" Type="nvarchar" MaxLength="4000" />
+    <Property Name="time" Type="datetime" Nullable="false" />
+    <Property Name="userId" Type="int" Nullable="false" />
+    <Property Name="status" Type="char" MaxLength="1" />
+  </EntityType>
   <EntityType Name="tblPatient">
     <Key>
       <PropertyRef Name="patientId" />
@@ -266,6 +277,7 @@
     <Property Name="actualTaskId" Type="int" />
     <Property Name="paymentId" Type="int" />
     <Property Name="taskId" Type="int" />
+    <Property Name="userId" Type="int" />
   </EntityType>
   <EntityType Name="tblUser">
     <Key>
@@ -641,6 +653,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK_tblNotifictions_tblUser">
+    <End Role="tblUser" Type="Self.tblUser" Multiplicity="1" />
+    <End Role="tblNotifictions" Type="Self.tblNotifictions" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblUser">
+        <PropertyRef Name="userId" />
+      </Principal>
+      <Dependent Role="tblNotifictions">
+        <PropertyRef Name="userId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Function Name="fn_diagramobjects" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int" />
   <Function Name="InsertActualList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="type" Type="bit" Mode="In" />
@@ -692,6 +716,13 @@
     <Parameter Name="drugUrlEn" Type="nvarchar" Mode="In" />
     <Parameter Name="modifyDate" Type="date" Mode="In" />
     <Parameter Name="Type" Type="varchar" Mode="In" />
+  </Function>
+  <Function Name="InsertNotification" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="title" Type="nvarchar" Mode="In" />
+    <Parameter Name="pushMessage" Type="nvarchar" Mode="In" />
+    <Parameter Name="time" Type="datetime" Mode="In" />
+    <Parameter Name="userId" Type="int" Mode="In" />
+    <Parameter Name="status" Type="char" Mode="In" />
   </Function>
   <Function Name="InsertPatient" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="patientId" Type="char" Mode="In" />
@@ -770,6 +801,7 @@
     <Parameter Name="actualTaskId" Type="int" Mode="In" />
     <Parameter Name="paymentId" Type="int" Mode="In" />
     <Parameter Name="taskId" Type="int" Mode="In" />
+    <Parameter Name="userId" Type="int" Mode="In" />
   </Function>
   <Function Name="InsertUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="Email" Type="varchar" Mode="In" />
@@ -862,6 +894,7 @@
     <EntitySet Name="tblLanguage" EntityType="Self.tblLanguage" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="tblLimitations" EntityType="Self.tblLimitations" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="tblList" EntityType="Self.tblList" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="tblNotifictions" EntityType="Self.tblNotifictions" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="tblPatient" EntityType="Self.tblPatient" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="tblPatientTask" EntityType="Self.tblPatientTask" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="tblPaycheck" EntityType="Self.tblPaycheck" Schema="dbo" store:Type="Tables" />
@@ -983,6 +1016,10 @@
     <AssociationSet Name="FK__tblProductList__226010D3" Association="Self.FK__tblProductList__226010D3">
       <End Role="tblList" EntitySet="tblList" />
       <End Role="tblProductList" EntitySet="tblProductList" />
+    </AssociationSet>
+    <AssociationSet Name="FK_tblNotifictions_tblUser" Association="Self.FK_tblNotifictions_tblUser">
+      <End Role="tblUser" EntitySet="tblUser" />
+      <End Role="tblNotifictions" EntitySet="tblNotifictions" />
     </AssociationSet>
   </EntityContainer>
 </Schema>
