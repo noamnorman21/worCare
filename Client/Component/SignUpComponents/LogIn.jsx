@@ -110,102 +110,108 @@ export default function LogIn({ navigation }) {
     const LoginUser = async (userData) => {
         console.log(userData);
         let userForLoginUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUserForLogin';
-        fetch(userForLoginUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(userData),
-        })
-            .then((response) => {
-                if (response.status === 200) {
-                    return response.json();
-                }
-                else {
-                    return null;
-                }
+        signInWithEmailAndPassword(auth, email, password).then((userCredential) => {
+            console.log('user signed in');
+            fetch(userForLoginUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(userData),
             })
-            .then(async (json) => {
-                if (json === null) {
-                    Alert.alert('Login Failed');
-                }
-                else {
-                    //save user email and password in async storage
-                    if (isChecked) {
-                        console.log('checked');
-                        _storeData();
+                .then((response) => {
+                    if (response.status === 200) {
+                        return response.json();
                     }
-                    //save user data in context
-                    const userContext = {
-                        userId: json.userId,
-                        FirstName: json.FirstName,
-                        LastName: json.LastName,
-                        Email: json.Email,
-                        gender: json.gender,
-                        phoneNum: json.phoneNum,
-                        userUri: json.userUri,
-                        userType: json.userType,
-                        workerId: json.workerId, // if user is a caregiver, this field will be same as userId
-                        involvedInId: json.involvedInId, // if user is a not caregiver, this field will be same as userId
-                        patientId: json.patientId,
-                        calendarCode: json.calendarCode,
-                        patientData: json.patient,
-                        patientHL: json.patient.hobbiesAndLimitationsDTO,
-                        pushToken: json.pushToken,
-                        pushTokenSecoundSide: json.pushTokenSecoundSide,
+                    else {
+                        return null;
                     }
-                    const currentToken = (await Notifications.getExpoPushTokenAsync()).data;
-                    if (currentToken !== userContext.pushToken) {
-                        const userToken = {
-                            userId: userContext.userId,
-                            pushToken: currentToken,
-                            lastToken: userContext.pushToken,
+                })
+                .then(async (json) => {
+                    if (json === null) {
+                        Alert.alert('Login Failed');
+                    }
+                    else {
+                        //save user email and password in async storage
+                        if (isChecked) {
+                            console.log('checked');
+                            _storeData();
                         }
-                        userContext.pushToken = currentToken;
-                        const updateTokenUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/UpdatePushToken';
-                        fetch(updateTokenUrl, {
-                            method: 'PUT',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify(userToken),
-                        })
-                            .then((response) => {
-                                if (response.status === 200) {
-                                    return response.json();
-                                }
-                                else {
-                                    return null;
-                                }
-                            })
-                            .then((json) => {
-                                if (json === null) {
-                                    console.log('update token failed');
-                                }
-                                else {
-                                    console.log('token updated');
-                                }
-                            })
-                            .catch((error) => {
-                                console.log(error);
+                        //save user data in context
+                        const userContext = {
+                            userId: json.userId,
+                            FirstName: json.FirstName,
+                            LastName: json.LastName,
+                            Email: json.Email,
+                            gender: json.gender,
+                            phoneNum: json.phoneNum,
+                            userUri: json.userUri,
+                            userType: json.userType,
+                            workerId: json.workerId, // if user is a caregiver, this field will be same as userId
+                            involvedInId: json.involvedInId, // if user is a not caregiver, this field will be same as userId
+                            patientId: json.patientId,
+                            calendarCode: json.calendarCode,
+                            patientData: json.patient,
+                            patientHL: json.patient.hobbiesAndLimitationsDTO,
+                            pushToken: json.pushToken,
+                            pushTokenSecoundSide: json.pushTokenSecoundSide,
+                        }
+                        const currentToken = (await Notifications.getExpoPushTokenAsync()).data;
+                        if (currentToken !== userContext.pushToken) {
+                            const userToken = {
+                                userId: userContext.userId,
+                                pushToken: currentToken,
+                                lastToken: userContext.pushToken,
                             }
-                            );
+                            userContext.pushToken = currentToken;
+                            const updateTokenUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/UpdatePushToken';
+                            fetch(updateTokenUrl, {
+                                method: 'PUT',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify(userToken),
+                            })
+                                .then((response) => {
+                                    if (response.status === 200) {
+                                        return response.json();
+                                    }
+                                    else {
+                                        return null;
+                                    }
+                                })
+                                .then((json) => {
+                                    if (json === null) {
+                                        console.log('update token failed');
+                                    }
+                                    else {
+                                        console.log('token updated');
+                                    }
+                                })
+                                .catch((error) => {
+                                    console.log(error);
+                                }
+                                );
+                        }
+                        const jsonValue = JSON.stringify(userContext)
+                        AsyncStorage.setItem('userData', jsonValue)
+                        await logInContext(userContext).then(() => {
+                            console.log('user saved in context');
+                        })
+                        navigation.navigate('CustomHeader', { screen: "AppBarDown" });//navigate to home screen, we will add a necessary call to get user data from the server                                         
                     }
-                    const jsonValue = JSON.stringify(userContext)
-                    AsyncStorage.setItem('userData', jsonValue)
-                    await logInContext(userContext).then(() => {
-                        console.log('user saved in context');
-                    })
-                    logInFireBase(email, password);
-                    navigation.navigate('CustomHeader', { screen: "AppBarDown" });//navigate to home screen, we will add a necessary call to get user data from the server                                         
                 }
-            }
-            )
-            .catch((error) => {
-                // Alert.alert('Login Failed');
-                console.log(error);
-            }
-            );
+                )
+                .catch((error) => {
+                    // Alert.alert('Login Failed');
+                    console.log(error);
+                }
+                );
+        }
+        ).catch((error) => {
+            Alert.alert('Login Failed');
+            console.log(error);
+        });
     }
 
     //function to check email format

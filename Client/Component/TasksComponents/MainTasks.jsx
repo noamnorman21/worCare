@@ -136,8 +136,8 @@ export default function MainTasks(props) {
 
   const handleModalClose = () => {
     setModalVisible(false);
-    props.refreshPublicTask();
-    props.refreshPrivateTask();
+    // props.refreshPublicTask();
+    // props.refreshPrivateTask();
   };
 
   return (
@@ -190,7 +190,7 @@ export default function MainTasks(props) {
       <View style={styles.addBtnView}>
         <AddBtn onPress={handleAddBtnPress} />
       </View>
-      <NewTaskModal isVisible={modalVisible} onClose={handleModalClose} />
+      <NewTaskModal isVisible={modalVisible} onClose={handleModalClose} cancel={()=>{ setModalVisible(false)}} />
     </View>
   );
 }

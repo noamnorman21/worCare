@@ -597,54 +597,96 @@ function NewTaskModal(props) {
    })
 
    function rowForEachTime() {
-      for (let i = 0; i < numberPerDay; i++) {
-         timePickers.push(
-            <View key={i} style={stylesForTimeModal.timePicker}>
-               <View>
-                  <Text style={{ fontFamily: 'Urbanist-Light', fontSize: 16, color: '#000' }}>Time {i + 1}</Text>
+      if (Platform.OS === 'ios') {
+         for (let i = 0; i < numberPerDay; i++) {
+            timePickers.push(
+               <View key={i} style={stylesForTimeModal.timePicker}>
+                  <View>
+                     <Text style={{ fontFamily: 'Urbanist-Light', fontSize: 16, color: '#000' }}>Time {i + 1}</Text>
+                  </View>
+                  <View>
+                     <DatePicker
+                        style={[stylesForTimeModal.doubleRowItem, taskTimeArr[i] != null && { borderColor: '#000' }]}
+                        date={taskTimeArr[i]}
+                        iconComponent={<MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />}
+                        placeholder="Add Time"
+                        mode="time"
+                        format="HH:mm"
+                        is24Hour={true}
+                        confirmBtnText="Confirm"
+                        cancelBtnText="Cancel"
+                        showIcon={true}
+                        customStyles={{
+                           dateInput: {
+                              borderWidth: 0,
+                              alignItems: 'flex-start',
+                              paddingLeft: 10,
+                           },
+                           placeholderText: {
+                              color: '#9E9E9E',
+                              fontSize: 16,
+                              textAlign: 'left',
+                              fontFamily: 'Urbanist-Light',
+                           },
+                           dateText: {
+                              color: '#000',
+                              fontSize: 16,
+                              fontFamily: 'Urbanist-SemiBold',
+                           },
+                        }}
+                        onDateChange={(date) => {
+                           let newArr = [...taskTimeArr];
+                           newArr[i] = date;
+                           setTaskTimeArr(newArr);
+                        }}
+                     />
+                  </View>
                </View>
-               <View>
-                  <DatePicker
-                     style={[stylesForTimeModal.doubleRowItem, taskTimeArr[i] != null && { borderColor: '#000' }]}
-                     date={taskTimeArr[i]}
-                     iconComponent={<MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />}
-                     placeholder="Add Time"
-                     mode="time"
-                     format="HH:mm"
-                     is24Hour={true}
-                     confirmBtnText="Confirm"
-                     cancelBtnText="Cancel"
-                     showIcon={true}
-                     customStyles={{
-                        dateInput: {
-                           borderWidth: 0,
-                           alignItems: 'flex-start',
-                           paddingLeft: 10,
-                        },
-                        placeholderText: {
-                           color: '#9E9E9E',
-                           fontSize: 16,
-                           textAlign: 'left',
-                           fontFamily: 'Urbanist-Light',
-                        },
-                        dateText: {
-                           color: '#000',
-                           fontSize: 16,
-                           fontFamily: 'Urbanist-SemiBold',
-                        },
-                     }}
-                     onDateChange={(date) => {
-                        let newArr = [...taskTimeArr];
-                        newArr[i] = date;
-                        setTaskTimeArr(newArr);
-                     }}
-                  />
-               </View>
-            </View>
-         )
+            )
+         }
+         return timePickers;
       }
-      return timePickers;
+      else {
+         for (let i=0; i < numberPerDay; i++) {
+            console.log("i= ", i);
+            timePickers.push(
+               <rowForAdnriod key={i} setTaskTimeArr={setTaskTimeArr} />
+            )
+         }
+         return timePickers;
+      }
    }
+
+
+   // const rowForAdnriod = (props) => {
+   //    const [show, setShow] = useState(false);
+   //    const [time, setTime] = useState(new Date());
+
+   //    return(
+   //       <View style={stylesForTimeModal.timePicker}>
+   //       <View>
+   //          <Text style={{ fontFamily: 'Urbanist-Light', fontSize: 16, color: '#000' }}>Time {i + 1}</Text>
+   //          </View>
+   //          <View>
+   //          <TouchableOpacity onPress={() => setShow(true)}>
+   //             <Text style={{ fontFamily: 'Urbanist-Light', fontSize: 16, color: '#000' }}>Time {i + 1}</Text>
+   //          </TouchableOpacity>
+   //          {show && (
+   //             <DateTimePicker
+   //                value={time}
+   //                mode={"time"}
+   //                is24Hour={true}
+   //                placeholder="Time"
+   //                minimumDate={new Date(2000, 0, 1)}
+   //                onDateChange={(date) => setTime(date)}
+   //                display="default"
+   //                maximumDate={new Date()}
+   //             />
+   //          )}
+   //          </View>
+   //       </View>          
+   //    )
+   // }
 
    const saveTimeArr = () => {
       for (let i = 0; i < timePickers.length; i++) {
@@ -809,7 +851,7 @@ function NewTaskModal(props) {
          .then(data => {
             if (data != null) {
                console.log(data);
-               clearInputs();
+               clearInputs("AddTask");
             }
          }
          )
@@ -820,7 +862,7 @@ function NewTaskModal(props) {
 
    }
 
-   const clearInputs = () => {
+   const clearInputs = (type) => {
       setTaskName('')
       setTaskNameBorder('')
       setTaskCategory('')
@@ -835,7 +877,13 @@ function NewTaskModal(props) {
       setIsPrivate(false)
       getAllPrivateTasks(userData)
       getAllPublicTasks(userData)
-      props.onClose()
+      if (type == "Cancel") {
+         console.log(type);
+         props.cancel();
+      }
+      else {
+         props.onClose();
+      }
    }
 
    const showDatePicker = () => {
@@ -1224,7 +1272,7 @@ function NewTaskModal(props) {
                               <Text style={styles.textStyle}>Create</Text>
                            </TouchableOpacity>
 
-                           <TouchableOpacity style={styles.closeBtn} onPress={clearInputs}>
+                           <TouchableOpacity style={styles.closeBtn} onPress={()=>clearInputs("Cancel")}>
                               <Text style={styles.closeTxt}>Cancel</Text>
                            </TouchableOpacity>
                         </View>

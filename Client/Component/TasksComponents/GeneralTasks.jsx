@@ -125,7 +125,7 @@ export default function GeneralTasks(props) {
       <View style={styles.addBtnView}>
         <AddBtn onPress={handleAddBtnPress} />
       </View>
-      <NewTaskModal isVisible={modalVisible} onClose={handleModalClose} />
+      <NewTaskModal isVisible={modalVisible} onClose={handleModalClose} cancel={()=>{ setModalVisible(false)}} />
     </SafeAreaView >
   )
 }

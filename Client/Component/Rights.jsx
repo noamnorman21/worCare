@@ -179,7 +179,7 @@ export default function Rights() {
         <AddBtn onPress={handleAddBtnPress} />
       </View>
 
-      <NewTaskModal isVisible={modalVisible} onClose={handleModalClose} />
+      <NewTaskModal isVisible={modalVisible} onClose={handleModalClose} cancel={handleModalClose} />
     </SafeAreaView>
   );
 }

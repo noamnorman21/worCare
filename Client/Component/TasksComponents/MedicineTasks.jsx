@@ -26,7 +26,7 @@ function MedTask({ navigation, route }) {
 
    const handleModalClose = () => {
       setModalVisible(false);
-      getAllPublicTasks(userData);
+      // getAllPublicTasks(userData);
    };
 
    const navigateToMed = (task, runlow, medTypeIcon, timeInDay) => {
