@@ -21,7 +21,7 @@ export default function Tasks() {
 
   useEffect(() => {
     filterTasks(allPublicTasks);
-    GetAllDrugs();
+    // GetAllDrugs();
   }, [allPublicTasks, allPrivateTasks]);
 
   const filterTasks = (tasks) => {

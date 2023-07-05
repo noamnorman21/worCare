@@ -24,7 +24,6 @@ function AddBtn(props) {
 
 function AddNewMedicine(props) {
    const PlatformType = Platform.OS;
-   const [show, setShow] = useState(false);
    const [userData, setUserData] = useState(useUserContext().userContext);
    const [userId, setUserId] = useState(useUserContext.userId);
    const [numberPerDay, setNumberPerDay] = useState(0)
@@ -44,6 +43,10 @@ function AddNewMedicine(props) {
    const [editMode, setEditMode] = useState(true);
    const timePickers = [];
    const { getAllPublicTasks, userContext, allDrugs } = useUserContext()
+   const [showDatePicker, setShowDatePicker] = useState(false);
+   const [datePickerVisable, setDatePickerVisable] = useState(false);
+   const [timePickerVisable, setTimePickerVisable] = useState(false);
+
 
    const [modalTimesVisible, setModalTimesVisible] = useState(false);
    const medFrequencies = [
@@ -53,8 +56,11 @@ function AddNewMedicine(props) {
       { id: 4, name: 'Monthly' },
    ]
 
+
+
    const addMed = () => {
       if (medTime != '' && medTimeArr.length == 0) {
+         console.log("medTime", medTime);
          medTimeArr.push(medTime);
       }
       console.log(selectedDrugName);
@@ -82,7 +88,7 @@ function AddNewMedicine(props) {
          frequency: selectedFrequency,
          pushToken: pushToken,
       }
-      console.log(newMedForDb);
+      console.log("newMed",newMedForDb);
 
       let addMedUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/InsertActualList';
       fetch(addMedUrl, {
@@ -104,7 +110,7 @@ function AddNewMedicine(props) {
          .then(data => {
             if (data != null) {
                console.log(data);
-               clearInputs();
+               clearInputs("Added");
             }
          }
          )
@@ -114,7 +120,7 @@ function AddNewMedicine(props) {
          );
    }
 
-   const clearInputs = async () => {
+   const clearInputs = async (type) => {
       setNumberPerDay(0);
       setQuantity(0);
       setCapacity(0);
@@ -127,8 +133,15 @@ function AddNewMedicine(props) {
       setMedDosage('');
       setMedDosageUnit('');
       setSelectedDrugName('');
-      await getAllPublicTasks(userData)
-      props.onClose();
+      if (type == "Cancel") {
+         console.log(type)
+         props.onClose();
+      }
+      else {
+         console.log(type)
+         await getAllPublicTasks(userData)
+         props.onClose();
+      }
    }
 
    const handeleDrugChange = (item) => {
@@ -205,26 +218,30 @@ function AddNewMedicine(props) {
       setMedTimeArr(medTimeArr);
       setModalTimesVisible(false);
    }
-
-   const showMode = (currentMode) => {
-      if (Platform.OS === 'android') {
-         setShow(true);
-         // for iOS, add a button that closes the picker
-      }
-      else {
-         setShow(true);
-      }
+   const showdatePicker = () => {
+      console.log("showDatePicker");
+      setDatePickerVisable(true);
    };
 
-   const showDatepicker = () => {
-      showMode('date');
+   const showTimePicker= () => {
+      console.log("showTimePicker");
+      setTimePickerVisable(true);
    };
+
 
    const onChangeDate = (selectedDate) => {
+      console.log("onChangeDate");
       const currentDate = new Date(selectedDate.nativeEvent.timestamp).toISOString().substring(0, 10);
-      setShow(false);
-      setDateSelected(true);
-      handleInputChange('paycheckDate', currentDate);
+      setDatePickerVisable(false);
+      setMedToDate(currentDate);
+   };
+
+   const onChangeTime = (selectedTime) => {
+      console.log("onChangeTime");
+      const currentTime = new Date(selectedTime.nativeEvent.timestamp).toTimeString().substring(0,5);
+      console.log(currentTime);
+      setTimePickerVisable(false);
+      setMedTime(currentTime);
    };
 
    const stylesForTimeModal = StyleSheet.create({
@@ -376,8 +393,7 @@ function AddNewMedicine(props) {
                         </Text>
                         {/* THIRD ROW */}
                         <View style={[styles.doubleRow, modalTimesVisible && { display: 'none' }]}>
-                           {PlatformType !== 'ios' ?
-                              <TouchableOpacity style={styles.datePicker} onPress={showDatepicker}></TouchableOpacity> :
+                           {PlatformType === 'ios' ?
                               <DatePicker
                                  useNativeDriver={'true'}
                                  iconComponent={<MaterialCommunityIcons style={styles.addIcon} name="calendar-outline" size={24} color="#808080" />}
@@ -407,62 +423,72 @@ function AddNewMedicine(props) {
                                  }}
                                  onDateChange={(date) => setMedToDate(date)}
                               />
+                              :
+                              <TouchableOpacity style={[styles.medDatePicker,medToDate && {borderColor:"#000"}]} onPress={showdatePicker}>
+                                 <Text style={styles.dateInputTxt}>{medToDate ? medToDate : "dd/mm/yyyy"}</Text>
+                              </TouchableOpacity>
                            }
-                           {show && (
+                           {datePickerVisable && (
                               <DateTimePicker
-                                 value={new Date(medToDate)}
+                                 //testID="dateTimePicker"
+                                 value={medToDate ? new Date(medToDate) : new Date()}
                                  // mode={"date"}
                                  is24Hour={true}
-                                 placeholder="Date"
-                                 minimumDate={new Date(2000, 0, 1)}
-                                 onDateChange={(date) => setMedToDate(date)}
+                                 onChange={(value) => onChangeDate(value)}
                                  display="default"
-                                 maximumDate={new Date()}
+                                 minimumDate={new Date()}
                               />
                            )}
+                           
 
                            {numberPerDay == 0 | numberPerDay == 1 ?
                               <View >
-                                 <DatePicker
-                                    style={[styles.doubleRowItem, medTime != '' && { borderColor: '#000' }]}
-                                    date={medTime}
-                                    iconComponent={<MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />}
-                                    placeholder="Add Time"
-                                    mode="time"
-                                    format="HH:mm"
-                                    is24Hour={true}
-                                    confirmBtnText="Confirm"
-                                    cancelBtnText="Cancel"
-                                    showIcon={true}
-                                    customStyles={{
-                                       dateInput: {
-                                          borderWidth: 0,
-                                          alignItems: 'flex-start',
-                                          paddingLeft: 10,
-                                       },
-                                       placeholderText: {
-                                          color: '#9E9E9E',
-                                          fontSize: 16,
-                                          textAlign: 'left',
-                                          fontFamily: 'Urbanist-Light',
-                                       },
-                                       dateText: {
-                                          color: '#000',
-                                          fontSize: 16,
-                                          fontFamily: 'Urbanist-Medium',
-                                       },
-                                    }}
-                                    onDateChange={(date) => {
-                                       setMedTime(date)
-                                    }}
-                                 />
+                                 {Platform.OS === 'ios' ?
+                                    <DatePicker
+                                       style={[styles.doubleRowItem, medTime != '' && { borderColor: '#000' }]}
+                                       date={medTime}
+                                       iconComponent={<MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />}
+                                       placeholder="Add Time"
+                                       mode="time"
+                                       format="HH:mm"
+                                       is24Hour={true}
+                                       confirmBtnText="Confirm"
+                                       cancelBtnText="Cancel"
+                                       showIcon={true}
+                                       customStyles={{
+                                          dateInput: {
+                                             borderWidth: 0,
+                                             alignItems: 'flex-start',
+                                             paddingLeft: 10,
+                                          },
+                                          placeholderText: {
+                                             color: '#9E9E9E',
+                                             fontSize: 16,
+                                             textAlign: 'left',
+                                             fontFamily: 'Urbanist-Light',
+                                          },
+                                          dateText: {
+                                             color: '#000',
+                                             fontSize: 16,
+                                             fontFamily: 'Urbanist-Medium',
+                                          },
+                                       }}
+                                       onDateChange={(date) => {
+                                          setMedTime(date)
+                                       }}
+                                    /> :
+                                    <TouchableOpacity style={[styles.medDatePicker,medTime&&{borderColor:"#000"}]} onPress={showTimePicker}>
+                                       <Text style={styles.dateInputTxt}>{medTime ? medTime : "Add Time"}</Text>
+                                       <MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />
+                                    </TouchableOpacity>
+                                 }
                               </View>
                               :
                               <View>
                                  <TouchableOpacity onPress={() => { setModalTimesVisible(true) }}>
                                     <View style={[styles.doubleRowItem, medTimeArr.length == numberPerDay && { borderColor: '#000' }]}>
                                        <Text style={[styles.inputNumber, { color: '#9E9E9E' }, medTimeArr.length == numberPerDay && { color: '#000' }]}>
-                                          {numberPerDay == medTimeArr.length ? 'Times Selected' : 'Add Times'}
+                                         Add Times
                                        </Text>
                                        <MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />
                                     </View>
@@ -470,6 +496,17 @@ function AddNewMedicine(props) {
                               </View>
                            }
                         </View>
+                        {timePickerVisable && (
+                              <DateTimePicker
+                                 //testID="dateTimePicker"
+                                 value={medToDate ? new Date(medToDate) : new Date()}
+                                 // mode={"date"}
+                                 mode='time'
+                                 is24Hour={true}
+                                 onChange={(value) => onChangeTime(value)}
+                                 display="default"
+                              />
+                           )}
 
                         {/* Modal Box For TIMES ARRAY */}
                         <View>
@@ -522,7 +559,7 @@ function AddNewMedicine(props) {
                         <TouchableOpacity style={styles.saveBtn} onPress={addMed}>
                            <Text style={styles.textStyle}>Save</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.closeBtn} onPress={clearInputs}>
+                        <TouchableOpacity style={styles.closeBtn} onPress={()=>clearInputs("Cancel")}>
                            <Text style={styles.closeTxt}>Cancel</Text>
                         </TouchableOpacity>
                      </View>
@@ -723,7 +760,7 @@ function NewTaskModal(props) {
          frequency: taskFrequency
       }
       addPrivateTaskContext(taskData)
-      clearInputs();
+      clearInputs("AddTask");
    }
 
 
@@ -872,13 +909,13 @@ function NewTaskModal(props) {
       setTaskTimeArr([])
       setNumberPerDay(0)
       setIsPrivate(false)
-      await getAllPrivateTasks(userData)
-      await getAllPublicTasks(userData)
       if (type == "Cancel") {
          console.log(type);
          props.cancel();
       }
       else {
+         await getAllPrivateTasks(userData)
+      await getAllPublicTasks(userData)
          props.onClose();
       }
    }
@@ -1587,5 +1624,20 @@ const styles = StyleSheet.create({
       fontSize: 16,
       fontFamily: 'Urbanist-Regular',
       paddingRight: 10,
+   },
+   medDatePicker: {
+      width: SCREEN_WIDTH * 0.45,
+      flexDirection: 'row',
+      // justifyContent: 'center',
+      // paddingLeft: 10,
+      marginVertical: 7,
+      alignItems: 'center',
+      borderRadius: 16,
+      borderWidth: 1.5,
+      borderColor: '#E6EBF2',
+      shadowColor: '#000',
+      height: 54,
+      fontFamily: 'Urbanist-Light',
+      fontSize: 16,
    },
 })

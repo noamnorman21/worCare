@@ -45,9 +45,6 @@ export default function NavigateSignUp() {
         setIsSigned(true);
         const storageUser2 = await AsyncStorage.getItem("userData");
         await logInContext(JSON.parse(storageUser2))
-        fetchUserContacts(JSON.parse(storageUser2));
-        GetUserPending(JSON.parse(storageUser2));
-        GetUserHistory(JSON.parse(storageUser2));
         let fireBaseUser = JSON.parse(storageUser)
         console.log(fireBaseUser)
         logInFireBase(fireBaseUser.Email, fireBaseUser.Password)

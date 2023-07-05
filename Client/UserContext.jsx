@@ -157,12 +157,7 @@ export function UserProvider({ children }) {
         await getAllPrivateTasks(usertoSync);
         await getAllPublicTasks(usertoSync);
         await getHolidaysForUser(usertoSync.calendarCode);
-        if (userData.userType == "User") {
-            getPairedEmail(userData.workerId);
-        }
-        else {
-            getPairedEmail(userData.involvedInId);
-        }
+        await GetAllDrugs();
     }
 
     // ----------------------  Push Notifications  ----------------------
@@ -209,7 +204,7 @@ export function UserProvider({ children }) {
                     setUserNotifications(notifications);
                 },
                 (error) => {
-                    console.log("err post=", error);
+                    console.log("erra post=", error);
                 });
     }
 
@@ -324,30 +319,6 @@ export function UserProvider({ children }) {
         // } catch (error) {
         //     console.error('Error fetching holidays:', error);
         // }
-    }
-
-    function getPairedEmail(id) {
-        console.log('getPairedEmail')
-        fetch(getPairedProfile + id, {
-            method: 'GET',
-            headers: new Headers({
-                'Content-Type': 'application/json; charset=UTF-8',
-            })
-        })
-            .then(res => {
-                if (!res.ok)
-                    return Promise.reject(res.statusText);
-                return res.json()
-            })
-            .then(
-                (result) => {
-                    let temp = result.split(":")
-                    temp = temp[1];
-                    setPairedEmail(temp)
-                },
-                (error) => {
-                    console.log("err post=", error);
-                });
     }
 
     function logOutContext() {
@@ -943,8 +914,6 @@ export function UserProvider({ children }) {
     // ---------------- Firebase ----------------
     async function logInFireBase(email, password) {
         console.log('logInFireBase')
-        console.log(email)
-        console.log(password)
         signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 console.log('user logged in');
