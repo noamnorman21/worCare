@@ -620,10 +620,10 @@ namespace WebApi.Controllers
 
         [HttpPut]
         [Route("UpdateDrugForPatientDTO")]
-        public IHttpActionResult UpdateDrugForPatientDTO([FromBody] dynamic list)
+        public IHttpActionResult UpdateDrugForPatientDTO([FromBody] DrugForPatientDTO list)
         {
-            int listId = list.taskForDelete.listId;
-            int taskId = list.taskForDelete.taskId;
+            int listId = list.listId;
+            int taskId = list.taskId;
 
             //first we will remove from the db all actacul tasks that from this taskId and also remove the push notification using the actaculId 
             var actualTasks = from a in db.tblActualTask
@@ -632,16 +632,13 @@ namespace WebApi.Controllers
             foreach (tblActualTask actualTask in actualTasks)
             {
                 db.tblActualTask.Remove(actualTask);
-                db.SaveChanges();
             }
             //remove the patientTask
             tblPatientTask tblPatientTask = db.tblPatientTask.Where(x => x.taskId == taskId).FirstOrDefault();
             if (tblPatientTask != null)
             {
                 db.tblPatientTask.Remove(tblPatientTask);
-                db.SaveChanges();
-            }
-            
+            }            
             //remove all related DrugForPatient using the listId
             var drugForPatient = from d in db.tblDrugForPatient
                                  where d.listId == listId
@@ -649,7 +646,6 @@ namespace WebApi.Controllers
             foreach (tblDrugForPatient drug in drugForPatient)
             {
                 db.tblDrugForPatient.Remove(drug);
-                db.SaveChanges();
             }
             //remove all actualList using the listId
             var actualList = from a in db.tblActualList
@@ -658,8 +654,8 @@ namespace WebApi.Controllers
             foreach (tblActualList actual in actualList)
             {
                 db.tblActualList.Remove(actual);
-                db.SaveChanges();
             }
+            db.SaveChanges();
             ///רק לבינתיים....
             return Ok("DrugForPatientDTO updated"); 
         }

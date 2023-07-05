@@ -193,29 +193,28 @@ export default function EditMed(props) {
         console.log(objToSend);
         let addTaskUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/InsertActualList';
         fetch(addTaskUrl, {
-           method: 'POST',
-           body: JSON.stringify(objToSend),
-           headers: {
-              'Content-Type': 'application/json; charset=UTF-8',
-           },
+            method: 'POST',
+            body: JSON.stringify(objToSend),
+            headers: {
+                'Content-Type': 'application/json; charset=UTF-8',
+            },
         })
-           .then(res => {
-              if (res.ok) {
-                console.log("success ")   
-                 setModalTimesVisible(false);
-                 props.onClose(); 
-                 return res.json();      
-              }
-              else {
-                 console.log("not found")
-              }
-           }
-           )         
-           .catch((error) => {
-              console.log("err=", error);
-           }
-           );
-
+            .then(res => {
+                if (res.ok) {
+                    setModalTimesVisible(false);
+                    getAllPublicTasks(userContext);
+                    props.onClose();
+                    return res.json();
+                }
+                else {
+                    console.log("not found")
+                }
+            }
+            )
+            .catch((error) => {
+                console.log("err=", error);
+            }
+            );
     }
 
     return (

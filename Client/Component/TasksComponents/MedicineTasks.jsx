@@ -18,7 +18,9 @@ function MedTask({ navigation, route }) {
    const { getAllPublicTasks, userContext, allMedicineTasks } = useUserContext()
    const [userData, setUserData] = useState(useUserContext().userContext);
 
-   useEffect(() => { }, [allMedicineTasks])
+   useEffect(() => { 
+      console.log("MedicineTasks: ", allMedicineTasks)
+   }, [allMedicineTasks])
 
    const handleAddBtnPress = () => {
       setModalVisible(true);
@@ -26,7 +28,7 @@ function MedTask({ navigation, route }) {
 
    const handleModalClose = () => {
       setModalVisible(false);
-      // getAllPublicTasks(userData);
+      getAllPublicTasks(userData);
    };
 
    const navigateToMed = (task, runlow, medTypeIcon, timeInDay) => {
@@ -44,7 +46,6 @@ function MedTask({ navigation, route }) {
             refreshPublicTask: () => getAllPublicTasks(userData),
          }),
       });
-
    }, []);
 
    return (
@@ -71,7 +72,7 @@ export default function MedicineTasks(props) {
       props.changeHeader(header)
    }
    const refreshPublicTask = () => {
-      props.refreshPublicTask()
+      getAllPublicTasks(userContext)
    }
    const { getAllPublicTasks, userContext, allMedicineTasks } = useUserContext();
 
@@ -83,11 +84,10 @@ export default function MedicineTasks(props) {
                initialParams={{ refreshPublicTask: refreshPublicTask, allMedicineTasks: allMedicineTasks, userData: userContext }}
                name="MedTask" component={MedTask} />
             <Stack.Screen
-               initialParams={{ changeHeader: changeHeader, refreshPublicTask: refreshPublicTask }}
+               initialParams={{ changeHeader: changeHeader }}
                options={{ headerShown: false }}
                name="MedDetail" component={MedDetail} />
             <Stack.Screen
-               initialParams={{ changeHeader: changeHeader, refreshPublicTask: refreshPublicTask }}
                options={{ headerShown: false }}
                name="EditMed" component={EditMed} />
          </Stack.Navigator>

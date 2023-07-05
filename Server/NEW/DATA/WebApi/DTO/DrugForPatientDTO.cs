@@ -17,6 +17,7 @@ namespace WebApi.DTO
         public string patientId { get; set; }
         public TimeSpan[] timesInDayArray { get; set; } //array of TimeSpan
         public Nullable<System.DateTime> lastTakenDate { get; set; }                                     //
+        public int taskId { get; set; }
 
         //will come from tbldrug
         public string drugName { get; set; }

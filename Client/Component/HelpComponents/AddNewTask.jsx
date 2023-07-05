@@ -94,7 +94,6 @@ function AddNewMedicine(props) {
       })
          .then(res => {
             if (res.ok) {
-               getAllPublicTasks(userContext)
                return res.json()
             }
             else {
@@ -115,7 +114,7 @@ function AddNewMedicine(props) {
          );
    }
 
-   const clearInputs = () => {
+   const clearInputs = async () => {
       setNumberPerDay(0);
       setQuantity(0);
       setCapacity(0);
@@ -128,6 +127,7 @@ function AddNewMedicine(props) {
       setMedDosage('');
       setMedDosageUnit('');
       setSelectedDrugName('');
+      await getAllPublicTasks(userData)
       props.onClose();
    }
 
@@ -657,7 +657,6 @@ function NewTaskModal(props) {
       }
    }
 
-
    // const rowForAdnriod = (props) => {
    //    const [show, setShow] = useState(false);
    //    const [time, setTime] = useState(new Date());
@@ -705,8 +704,6 @@ function NewTaskModal(props) {
 
    const addPrivateTask = () => {
       //check if all the fields are filled
-    
-
       if (taskName == '' || taskFromDate == '' || taskTime == '' || taskFrequency == '') {
          Alert.alert('Please Fill all the fields');
          return;
@@ -862,7 +859,7 @@ function NewTaskModal(props) {
 
    }
 
-   const clearInputs = (type) => {
+   const clearInputs = async (type) => {
       setTaskName('')
       setTaskNameBorder('')
       setTaskCategory('')
@@ -875,8 +872,8 @@ function NewTaskModal(props) {
       setTaskTimeArr([])
       setNumberPerDay(0)
       setIsPrivate(false)
-      getAllPrivateTasks(userData)
-      getAllPublicTasks(userData)
+      await getAllPrivateTasks(userData)
+      await getAllPublicTasks(userData)
       if (type == "Cancel") {
          console.log(type);
          props.cancel();

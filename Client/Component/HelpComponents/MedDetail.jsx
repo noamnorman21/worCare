@@ -34,7 +34,6 @@ export default function MedDetail({ navigation, route }) {
    const [userData, setUserData] = useState(useUserContext().userContext);
    const [differentEdit, setDifferentEdit] = useState(true);
    const [editValue, setEditValue] = useState(0);
-   const { refreshPublicTask } = route.params;
    const timeInDay = route.params.timeInDay;
    const taskDate = task.drug.toDate;
    const dateString = taskDate.split('T')[0];
@@ -71,9 +70,9 @@ export default function MedDetail({ navigation, route }) {
       }
    }
 
-   const toggleOverlayPause = () => {
-      setVisiblePause(!visiblePause);
-   };
+   // const toggleOverlayPause = () => {
+   //    setVisiblePause(!visiblePause);
+   // };
 
    const toggleOverlay = () => {
       setVisible(!visible);
@@ -96,25 +95,27 @@ export default function MedDetail({ navigation, route }) {
       let newDrugForPatient = {
          drugId: task.drug.drugId,
          listId: task.listId,
+         taskId: task.taskId,         
          patientId: task.patientId,
          //lastTakenDate will be now time in Israel
          toDate: new Date().toISOString().slice(0, 19).replace('T', ' '),
       }
-      UpdateDrugForPatientDTO(newDrugForPatient)
-      getAllPublicTasks(userData)
+      console.log(task)
+      console.log(newDrugForPatient)
+      //UpdateDrugForPatientDTO(newDrugForPatient)
       toggleOverlay()
    }
 
-   const pauseMed = () => {
-      setIsPause(!isPause)
-      if (isPause) {
-         console.log("Resume Medicine")
-      }
-      else {
-         console.log("Pause Medicine")
-      }
-      toggleOverlayPause()
-   }
+   // const pauseMed = () => {
+   //    setIsPause(!isPause)
+   //    if (isPause) {
+   //       console.log("Resume Medicine")
+   //    }
+   //    else {
+   //       console.log("Pause Medicine")
+   //    }
+   //    toggleOverlayPause()
+   // }
 
    const takeExtraMed = () => {
       if (differentDosage) {
@@ -134,8 +135,7 @@ export default function MedDetail({ navigation, route }) {
       }
       UpdateDrugForPatientDTO(newDrugForPatient)
       setVisibleTakeExtra(false)
-      // getAllPublicTask(userData)
-      // refreshPublicTask()
+      getAllPublicTask(userData)
    }
 
    const logRefill = () => {
@@ -253,7 +253,7 @@ export default function MedDetail({ navigation, route }) {
          </Overlay >
 
          {/* Pause Med */}
-         < Overlay isVisible={visiblePause} onBackdropPress={toggleOverlayPause} overlayStyle={{ width: 300, height: 250, borderRadius: 20 }}>
+         {/* < Overlay isVisible={visiblePause} onBackdropPress={toggleOverlayPause} overlayStyle={{ width: 300, height: 250, borderRadius: 20 }}>
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                <View style={{ flex: 0.85, justifyContent: 'center', alignItems: 'center' }}>
                   <Feather name='alert-triangle' size={30} color='#FF3C3C' />
@@ -269,7 +269,7 @@ export default function MedDetail({ navigation, route }) {
                   </TouchableOpacity>
                </View>
             </View>
-         </Overlay >
+         </Overlay > */}
 
          {/* Take Extra Med */}
          < Overlay isVisible={visibleTakeExtra} onBackdropPress={toggleOverlayTakeExtra} overlayStyle={{ width: 300, height: 300, borderRadius: 20 }}>
