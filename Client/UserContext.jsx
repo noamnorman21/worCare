@@ -266,8 +266,7 @@ export function UserProvider({ children }) {
     }
     async function notificationsThatSent(notificationsThatSentDTO) {
         console.log("notificationsThatSentDTO=", notificationsThatSentDTO);
-        alert("notificationsThatSentDTO=" + notificationsThatSentDTO);
-        await fetch(notificationsThatSentUrl, {
+        await fetch(InsertNotificationsThatSentUrl, {
             method: 'POST',
             headers: new Headers({
                 'Content-Type': 'application/json; charset=UTF-8',
@@ -288,9 +287,6 @@ export function UserProvider({ children }) {
 
 
     }
-
-
-
 
     async function getHolidaysForUser(calendarCode) {
         setHolidays([]);

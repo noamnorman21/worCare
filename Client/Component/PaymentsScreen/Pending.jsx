@@ -14,8 +14,9 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export default function Pending() {
-  const { userContext, userPendingPayments, sendPushNotification } = useUserContext()
+  const { userContext, userPendingPayments, sendPushNotification, notificationsThatSent } = useUserContext()
   const pushToken2 = userContext.pushToken2;
+  const involvedInId = userContext.involvedInId;
   const [modal1Visible, setModal1Visible] = useState(false);
   const [Pendings, setPendings] = useState()
   const isFocused = useIsFocused()
@@ -57,7 +58,10 @@ export default function Pending() {
       // how to send user to the request screen? 
       // maybe we can send the request id and then in the request screen we will fetch the request by id
     }
+
+  //  return;
     sendPushNotification(PushNotificationsData)
+    notificationsThatSent(pushDataForDB)
   }
 
   return (
@@ -86,9 +90,10 @@ function Request(props) {
   const dateString = day + "/" + month + "/" + newYear;
   const [valueChanged, setValueChanged] = useState(false);
   const [status, setStatus] = useState(false);
-  const { userContext, GetUserPending, GetUserHistory, sendPushNotification } = useUserContext();
+  const { userContext, GetUserPending, GetUserHistory, sendPushNotification,notificationsThatSent } = useUserContext();
   const [DownloadProgress, setDownloadProgress] = useState();
   const pushToken2 = userContext.pushToken2;
+  const involvedInId = userContext.involvedInId;
 
   const toggle = () => {
     const config = {
@@ -125,7 +130,17 @@ function Request(props) {
         // how to send user to the request screen? 
         // maybe we can send the request id and then in the request screen we will fetch the request by id
       }
+
+      let pushDataForDB = {
+        title: "Reminder: Pending Request",
+        pushMessage: `You have a payment request pending! \n Subject: ${props.subject} \n Amount: ${props.amountToPay} \n Date: ${dateString}`,
+        //time will be now without seconds
+        time: new Date().toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }),
+        userId: involvedInId,
+      }
+      console.log(pushDataForDB)
       sendPushNotification(PushNotificationsData)
+      notificationsThatSent(pushDataForDB)
     }
     else if (value == 2) {
       setModal1Visible(true)
