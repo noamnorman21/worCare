@@ -282,7 +282,23 @@ const ConvoCard = (props) => {
   // fix renderRightActions style- delete button!
   return (
     <>
-      <Swipeable renderRightActions={() => <TouchableOpacity onPress={() => { deleteChat() }}><Text>Delete</Text></TouchableOpacity>} >
+      <Swipeable
+        animationOptions={{
+          duration: 1000,
+          easing: 'ease-out-cubic',
+          delay: 0,
+        }}
+        dragAnimatedValue={{ x: 100, y: 100 }}
+        renderRightActions={() =>
+          <TouchableOpacity onPress={() => { deleteChat() }}>
+            <View style={styles.deleteIconView}>
+              <View style={{ paddingTop: 10 }}>
+                <Feather name="trash" size={24} color="#fff" />
+              </View>
+              <Text style={{ color: "#fff", fontFamily: 'Urbanist-SemiBold', fontSize: 14, marginTop: 5 }}>Trash</Text>
+            </View>
+          </TouchableOpacity>
+        }>
         <View key={props.name.Name} >
           <TouchableOpacity style={styles.conCard} key={props.name.Name} onPress={() => navigateToChatRoom(props.name)} onLongPress={() => { console.log("Long pressed") }}>
             <View style={styles.conLeft}>
@@ -334,6 +350,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 10,
+  },
+  deleteIconView: {
+    backgroundColor: '#FF3C3C',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: ScreenWidth * 0.2,
+    height: ScreenHeight * 0.105,
   },
   closeBtnContainer: {
     flexDirection: 'row',
