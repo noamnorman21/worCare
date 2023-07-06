@@ -633,6 +633,15 @@ function NewTaskModal(props) {
 
    })
 
+   const addTimeAndroid = (time, index) => {
+      console.log("time= ", time);
+      let newArr = [...taskTimeArr];
+      console.log("newArr= ", newArr);
+      newArr[index] = time;
+      console.log("newArr= ", newArr);
+      setTaskTimeArr(newArr);
+   }
+
    function rowForEachTime() {
       if (Platform.OS === 'ios') {
          for (let i = 0; i < numberPerDay; i++) {
@@ -685,44 +694,52 @@ function NewTaskModal(props) {
       }
       else {
          for (let i=0; i < numberPerDay; i++) {
-            console.log("i= ", i);
             timePickers.push(
-               <rowForAdnriod key={i} setTaskTimeArr={setTaskTimeArr} />
+               <RowForAdnriod key={i} index={i} setTaskTimeArr={setTaskTimeArr} addTimeAndroid={addTimeAndroid} />
             )
          }
          return timePickers;
       }
    }
 
-   // const rowForAdnriod = (props) => {
-   //    const [show, setShow] = useState(false);
-   //    const [time, setTime] = useState(new Date());
+   const RowForAdnriod = (props) => {
+      const [show, setShow] = useState(false);
+      const [time, setTime] = useState('');
 
-   //    return(
-   //       <View style={stylesForTimeModal.timePicker}>
-   //       <View>
-   //          <Text style={{ fontFamily: 'Urbanist-Light', fontSize: 16, color: '#000' }}>Time {i + 1}</Text>
-   //          </View>
-   //          <View>
-   //          <TouchableOpacity onPress={() => setShow(true)}>
-   //             <Text style={{ fontFamily: 'Urbanist-Light', fontSize: 16, color: '#000' }}>Time {i + 1}</Text>
-   //          </TouchableOpacity>
-   //          {show && (
-   //             <DateTimePicker
-   //                value={time}
-   //                mode={"time"}
-   //                is24Hour={true}
-   //                placeholder="Time"
-   //                minimumDate={new Date(2000, 0, 1)}
-   //                onDateChange={(date) => setTime(date)}
-   //                display="default"
-   //                maximumDate={new Date()}
-   //             />
-   //          )}
-   //          </View>
-   //       </View>          
-   //    )
-   // }
+   const onchangeTime = (date) => {
+         setShow(false);
+         const currentTime = new Date(date.nativeEvent.timestamp).toTimeString().substring(0,5);
+         console.log("currentDate= ", currentTime);
+         setTime(currentTime);
+         props.addTimeAndroid(currentTime, props.index);
+      }
+
+
+      return(
+         <View style={stylesForTimeModal.timePicker}>
+         <View>
+            <Text style={{ fontFamily: 'Urbanist-Light', fontSize: 16, color: '#000' }}>Time {props.index + 1}</Text>
+            </View>
+            <View>
+            <TouchableOpacity onPress={() => setShow(true)} style={[stylesForTimeModal.doubleRowItem, taskTimeArr[props.index] != null && { borderColor: '#000' }]}>
+               <Text style={{ fontFamily: 'Urbanist-Light', fontSize: 16, color: '#000' }}>{taskTimeArr[props.index] ? taskTimeArr[props.index]: "Add Time"}</Text>
+            </TouchableOpacity>
+            </View>
+            {show && (
+               <DateTimePicker
+                  value={time? new Date(time): new Date()}
+                  mode={"time"}
+                  is24Hour={true}
+                  placeholder="Time"
+                  minimumDate={new Date(2000, 0, 1)}
+                  onChange={(date) => onchangeTime(date)}
+                  display="default"
+                  maximumDate={new Date()}
+               />
+            )}
+         </View>          
+      )
+   }
 
    const saveTimeArr = () => {
       for (let i = 0; i < timePickers.length; i++) {
@@ -945,6 +962,7 @@ function NewTaskModal(props) {
       console.log("currentDate= ", currentTime);
       setTimePickerVisable(false);
       setTaskTime(currentTime);
+      console.log("taskTime= ", taskTime);
    };
 
    return (
