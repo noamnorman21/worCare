@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Dimensions, Image, Alert, Modal, TouchableOpacity, ScrollView, Platform, SafeAreaView } from 'react-native'
+import { View, Text, StyleSheet, Dimensions, Image, Alert, Modal, TouchableOpacity, ScrollView, Platform, SafeAreaView,ActivityIndicator } from 'react-native'
 import { useCallback, useState, useLayoutEffect } from 'react'
 import { auth, db } from '../config/firebase';
 import { GiftedChat, Bubble, Time, MessageImage } from 'react-native-gifted-chat';
@@ -52,6 +52,7 @@ function MainRoom({ navigation }) {
   const [addNewModalGroup, setAddNewModalGroup] = useState(false)
   const [publicGroupNames, setPublicGroupNames] = useState([])
   const [searchQuery, setSearchQuery] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const onChangeSearch = query => searchQuery(query);
 
@@ -116,6 +117,16 @@ function MainRoom({ navigation }) {
       setchatsToDisplay()
     }
   }, [userChats]);
+
+  useEffect(() => {
+    if(chatsToDisplay.length>0){
+      setIsLoading(false)
+    }
+    else{
+      setIsLoading(true)
+    }
+  }, [chatsToDisplay])
+
 
   const renderUsers = (users) => {
     const res = users.map((user) => {
@@ -203,9 +214,11 @@ function MainRoom({ navigation }) {
           <Feather name='edit' size={24} />
         </TouchableOpacity>
       </View>
+      {isLoading ? <View style={styles.indicatorView}><ActivityIndicator size="large" color="#548DFF" style={styles.loadIcon} /></View> : 
       <ScrollView alwaysBounceVertical={false}>
         {chatsToDisplay}
       </ScrollView>
+}
       <Modal presentationStyle="pageSheet" visible={addNewModal} animationType="slide">
         <SafeAreaView style={styles.modal}>
           <View style={styles.top}>
@@ -510,5 +523,16 @@ const styles = StyleSheet.create({
     height: 55,
     borderRadius: 54
   },
-
+  loadIcon: {
+    //scale transform: [{ scaleX: 1.5 }, 
+    transform: [{ scale: 2 }],
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: '#548DFF',
+  },
+  indicatorView: {
+    justifyContent:'center', 
+    alignContent:'center', 
+    flex:1
+  }
 })
