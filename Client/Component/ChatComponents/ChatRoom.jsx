@@ -693,14 +693,14 @@ export default function ChatRoom({ route, navigation }) {
             </KeyboardAvoidingView>
           </SafeAreaView>
         </Modal>
-        <Modal  visible={userModal} transparent={true} animationType='slide' onRequestClose={() => setUserModal(false)}>
+        <Modal style={{height:ScreenHeight * 0.35}}  visible={userModal} transparent={true} animationType='slide' onRequestClose={() => setUserModal(false)}>
           <SafeAreaView style={styles.profileModal}>
             <TouchableOpacity style={styles.profileModalCloseBtn} onPress={() => setUserModal(false)}>
               <View>
                 <Ionicons name='close' size={30} color='#000' />
               </View>
             </TouchableOpacity>
-            <View style={{height:ScreenHeight * 0.35}}>
+            <View style={{flex:1}}>
               {selectedUser}
             </View>
             </SafeAreaView>

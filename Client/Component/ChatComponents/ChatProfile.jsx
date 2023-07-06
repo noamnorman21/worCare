@@ -14,11 +14,6 @@ export default function ChatProfile(props) {
 
   const navigation = useNavigation();
 
-  useEffect(() => {
-    console.log("usereee", props.user)
-  }, [])
-
-
   const addNewPrivateChat = async (user) => {
     // check if convo already exists in firestore 
     // if yes, navigate to chat room
@@ -152,6 +147,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#87AFFF',
     flex: 1,
     justifyContent: 'flex-end',
+    borderRadius: 16,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
   },
   profile: {
     justifyContent: 'flex-end',

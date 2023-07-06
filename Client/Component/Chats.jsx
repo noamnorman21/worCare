@@ -214,7 +214,7 @@ function MainRoom({ navigation }) {
           <Feather name='edit' size={24} />
         </TouchableOpacity>
       </View>
-      {isLoading ? <View style={styles.indicatorView}><ActivityIndicator size="large" color="#548DFF" style={styles.loadIcon} /></View> : 
+      {isLoading ? <View style={styles.indicatorView}><ActivityIndicator size="large" color="#000" style={styles.loadIcon} /></View> : 
       <ScrollView alwaysBounceVertical={false}>
         {chatsToDisplay}
       </ScrollView>
