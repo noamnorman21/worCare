@@ -436,6 +436,7 @@ export default function ChatRoom({ route, navigation }) {
       });
     }
     else {
+      console.log("route.params.userEmail", route.params.userEmail)
       const docRef = query(collection(db, route.params.userEmail), where("Name", "==", route.params.name));
       const res = getDocs(docRef);
       res.then((querySnapshot) => {
@@ -550,7 +551,7 @@ export default function ChatRoom({ route, navigation }) {
               // navigation.navigate('ChatProfile', { user: user }); - romoved for now- switched to modal- maybe replace textinput in modal
               return(
                 console.log("user is not me"),
-                setSelectedUser(<ChatProfile user={user} />),
+                setSelectedUser(<ChatProfile user={user} closeModal={()=>{setUserModal(false);console.log("close")}} />),
                 setUserModal(true)
               )
             }

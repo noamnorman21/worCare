@@ -5,11 +5,19 @@ import { useUserContext } from '../../UserContext';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
 import { TextInput } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
 
 const ScreenWidth = Dimensions.get('window').width;
 const ScreenHeight = Dimensions.get('window').height;
 
 export default function ChatProfile(props) {
+
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    console.log("usereee", props.user)
+  }, [])
+
 
   const addNewPrivateChat = async (user) => {
     // check if convo already exists in firestore 
@@ -23,12 +31,16 @@ export default function ChatProfile(props) {
       checkifConvoExistsforContact(user)
       console.log("convo exists")
       if (querySnapshot.docs.length > 0) {
+        console.log(1)
+        props.closeModal()
         navigation.popToTop()
-        navigation.navigate('ChatRoom', { name: auth.currentUser.displayName + "+" + user.name, UserName: user.name, userEmail: user.id, unreadCount: querySnapshot.docs[0].data().unreadCount, type: "private" })
+        navigation.navigate('ChatRoom', { name: auth.currentUser.displayName + "+" + user.name, UserName: user.name, userEmail: user._id, unreadCount: querySnapshot.docs[0].data().unreadCount, type: "private" })
       }
       else {
+        console.log(2)
+        closeModal()
         navigation.popToTop()
-        navigation.navigate('ChatRoom', { name: user.name + "+" + auth.currentUser.displayName, UserName: user.name, userEmail: user.id, unreadCount: querySnapshot2.docs[0].data().unreadCount, type: "private" })
+        navigation.navigate('ChatRoom', { name: user.name + "+" + auth.currentUser.displayName, UserName: user.name, userEmail: user._id, unreadCount: querySnapshot2.docs[0].data().unreadCount, type: "private" })
       }
     } else {
       console.log("add new private chat")
@@ -37,7 +49,7 @@ export default function ChatProfile(props) {
       addDoc(collection(db, auth.currentUser.email), { Name: auth.currentUser.displayName + "+" + contact.name, UserName: contact.name, userEmail: contact._id, image: contact.avatar, unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date() });
       checkifConvoExistsforContact(user)
       navigation.popToTop()
-      navigation.navigate('ChatRoom', { name: auth.currentUser.displayName + "+" + contact.name, UserName: contact.name, userEmail: contact.id, unreadCount: 0, type: "private" })
+      navigation.navigate('ChatRoom', { name: auth.currentUser.displayName + "+" + contact.name, UserName: contact.name, userEmail: contact._id, unreadCount: 0, type: "private" })
     }
   }
 
