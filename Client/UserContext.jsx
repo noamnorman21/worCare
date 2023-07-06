@@ -110,6 +110,7 @@ export function UserProvider({ children }) {
     const [notifications, setNotifications] = useState(null);
 
     async function logInContext(userData) {
+        console.log("logInContext");
         setUserType(userData.userType);
         setUserLanguage(userData.Language);
         setUserCalendar(userData.Calendar);
@@ -148,6 +149,7 @@ export function UserProvider({ children }) {
             patientData: userData.patientData,
             pushToken: userData.pushToken,
             pushToken2: userData.pushTokenSecoundSide,
+            notification: userData.notification,
         }
         setUserContext(usertoSync);
         fetchUserNotifications(usertoSync);

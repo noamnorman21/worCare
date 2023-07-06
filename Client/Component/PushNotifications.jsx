@@ -5,25 +5,37 @@ import { Ionicons } from '@expo/vector-icons';
 import { useUserContext } from '../UserContext';
 
 export default function PushNotifications() {
-  const [notifications, setNotifications] = useState([]);
+
   const [showToday, setShowToday] = useState(false);
   const [showYesterday, setShowYesterday] = useState(false);
   const todayContentHeight = useRef(new Animated.Value(0)).current;
   const yesterdayContentHeight = useRef(new Animated.Value(0)).current;
   const [isRead, setIsRead] = useState(false);
 
-  //const {notifications} = useUserContext();
+  const { notifications } = useUserContext();  //now its one array of notifications, not sorted by date(but can be sorted by date if Noam will want it)
+  //came from context(from DB), example for notification object in the array:
+  //   {
+  //     "notificationID": 4,
+  //     "title": "New Payment Request",
+  //     "pushMessage": "You have a new payment request from Ofir for 500NIS",
+  //     "time": "2023-07-06T10:13:00",
+  //     "userId": 1104,
+  //     "status": "P"
+  // }
+  const [notificationsArr, setNotificationsArr] = useState(notifications);
+
 
   useEffect(() => {
+    console.log("notificationsArr", notificationsArr);
     const fetchNotifications = async () => {
       // Simulating API call delay
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      const data = [
-        { id: 1, title: 'Notification 1', message: 'This is notification 1.' },
-        { id: 2, title: 'Notification 2', message: 'This is notification 2.' },
-        { id: 3, title: 'Notification 3', message: 'This is notification 3.' },
-      ];
-      setNotifications(data);
+      // const data = [
+      //   { id: 1, title: 'Notification 1', message: 'This is notification 1.' },
+      //   { id: 2, title: 'Notification 2', message: 'This is notification 2.' },
+      //   { id: 3, title: 'Notification 3', message: 'This is notification 3.' },
+      // ];
+      // setNotifications(data);
     };
 
     fetchNotifications();
@@ -103,7 +115,7 @@ export default function PushNotifications() {
           <Text style={styles.notificationTitle}>
             {item.title}
           </Text>
-          <Text style={styles.notificationMessage}>{item.message}</Text>
+          <Text style={styles.notificationMessage}>{item.pushMessage}</Text>
         </View>
       </TouchableOpacity>
     );
@@ -119,8 +131,8 @@ export default function PushNotifications() {
       </TouchableOpacity>
       <Animated.View style={[styles.contentContainer, todayContentStyle]}>
         <FlatList
-          data={notifications}
-          keyExtractor={(item) => item.id.toString()}
+          data={notificationsArr}
+          keyExtractor={(item) => item.notificationID.toString()}
           renderItem={renderItem}
           contentContainerStyle={styles.listContent}
         />
@@ -134,8 +146,8 @@ export default function PushNotifications() {
       </TouchableOpacity>
       <Animated.View style={[styles.contentContainer, yesterdayContentStyle]}>
         <FlatList
-          data={notifications}
-          keyExtractor={(item) => item.id.toString()}
+          data={notificationsArr}
+          keyExtractor={(item) => item.notificationID.toString()}
           renderItem={renderItem}
           contentContainerStyle={styles.listContent}
         />
