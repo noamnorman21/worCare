@@ -9,29 +9,7 @@ import { TextInput } from 'react-native-paper';
 const ScreenWidth = Dimensions.get('window').width;
 const ScreenHeight = Dimensions.get('window').height;
 
-export default function ChatProfile({ route, navigation }) {
-
-  useEffect(() => {
-    navigation.setOptions({
-      headerTitle: route.params.user.name,
-      headerTitleAlign: 'center',
-      headerTitleStyle: {
-        fontSize: 20,
-        fontFamily: 'Urbanist-Bold',
-      },
-      headerStyle: {
-        shadowColor: '#fff',
-        elevation: 0,
-      },
-      headerTintColor: '#000',
-      headerBackTitleVisible: false,
-      headerLeft: () => (
-        <TouchableOpacity style={{ marginLeft: 10 }} onPress={() => navigation.goBack()}>
-          <Ionicons name="chevron-back" size={28} color="#58" />
-        </TouchableOpacity>
-      ),
-    });
-  }, []);
+export default function ChatProfile(props) {
 
   const addNewPrivateChat = async (user) => {
     // check if convo already exists in firestore 
@@ -130,25 +108,25 @@ export default function ChatProfile({ route, navigation }) {
     <View style={styles.container}>
       <View style={styles.profile}>
         <View style={styles.header}>
-          {/* <Text style={styles.headterTxt}>{route.params.user.name}</Text> */}
+          {/* <Text style={styles.headterTxt}>{props.user.name}</Text> */}
         </View>
         <View style={styles.imageView}>
-          <Image style={styles.avatar} source={{ uri: route.params.user.avatar }} />
+          <Image style={styles.avatar} source={{ uri: props.user.avatar }} />
         </View>
-        <TextInput
-          label="Email"
-          value={route.params.user._id}
+        {/* <TextInput
+          label={<Text style={{fontFamily:"Urbanist-Regular"}}>Email</Text>}
+          value={props.user._id}
           mode="outlined"
           disabled={true}
           style={styles.inputTxt}
           textColor='#000'
           outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
-          labelStyle={{ color: '#000', fontSize: 16, fontWeight: 'bold', }}
           theme={{ colors: { primary: '#548DFF', underlineColor: 'transparent', } }}
           contentStyle={{ fontFamily: 'Urbanist-Regular' }}
-        />
+        /> */}
+        <Text style={styles.name}>{props.user.name}</Text>
         <TouchableOpacity style={styles.button}
-          onPress={() => addNewPrivateChat(route.params.user)}>
+          onPress={() => addNewPrivateChat(props.user)}>
           <AntDesign name='message1' size={22} color={"#548DFF"} />
           <Text style={styles.BtnTxt}>Send Messsage</Text>
         </TouchableOpacity>
@@ -159,17 +137,20 @@ export default function ChatProfile({ route, navigation }) {
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: '#87AFFF',
     flex: 1,
-    backgroundColor: '#fff',
+    justifyContent: 'flex-end',
   },
   profile: {
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     alignItems: 'center',
     marginVertical: 20,
   },
   //chat user profile
   avatar: {
-    height: 75, width: 75, borderRadius: 75
+    height: 100, 
+    width: 100, 
+    borderRadius: 50
   },
   button: {
     backgroundColor: '#fff',
@@ -210,4 +191,8 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     width: ScreenWidth * 0.9,
   },
+  name: {
+    fontFamily:"Urbanist-SemiBold", 
+    fontSize:20
+  }
 })

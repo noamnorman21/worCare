@@ -12,6 +12,7 @@ import moment from 'moment';
 import { Audio } from 'expo-av';
 
 import { useUserContext } from '../../UserContext';
+import ChatProfile from './ChatProfile';
 
 const ScreenHeight = Dimensions.get("window").height;
 const ScreenWidth = Dimensions.get("window").width;
@@ -24,6 +25,9 @@ export default function ChatRoom({ route, navigation }) {
   const [GroupMembers, setGroupMembers] = useState(); //for group chat
   const { newMessages, setNewMessages, sendPushNotification } = useUserContext();
   const [userToken2, setUserToken2] = useState(''); //for push notification- temporary- will start as ''
+//profile modal
+  const [userModal, setUserModal] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
 
   const [recording, setRecording] = useState(null); // for audio recording
   const [audioPermission, setAudioPermission] = useState(false); // for audio recording
@@ -543,7 +547,12 @@ export default function ChatRoom({ route, navigation }) {
           }}
           onPressAvatar={(user) => {
             if (user._id !== auth.currentUser.email) {
-              navigation.navigate('ChatProfile', { user: user });
+              // navigation.navigate('ChatProfile', { user: user }); - romoved for now- switched to modal- maybe replace textinput in modal
+              return(
+                console.log("user is not me"),
+                setSelectedUser(<ChatProfile user={user} />),
+                setUserModal(true)
+              )
             }
             else {
               console.log("user is me")
@@ -683,6 +692,18 @@ export default function ChatRoom({ route, navigation }) {
             </KeyboardAvoidingView>
           </SafeAreaView>
         </Modal>
+        <Modal  visible={userModal} transparent={true} animationType='slide' onRequestClose={() => setUserModal(false)}>
+          <SafeAreaView style={styles.profileModal}>
+            <TouchableOpacity style={styles.profileModalCloseBtn} onPress={() => setUserModal(false)}>
+              <View>
+                <Ionicons name='close' size={30} color='#000' />
+              </View>
+            </TouchableOpacity>
+            <View style={{height:ScreenHeight * 0.35}}>
+              {selectedUser}
+            </View>
+            </SafeAreaView>
+        </Modal>
       </SafeAreaView>
     </>
   )
@@ -767,5 +788,27 @@ const styles = StyleSheet.create({
     borderTopStartRadius: 0,
     padding: 10,
     height: 54,
+  },
+  profileModal: {
+    justifyContent: 'flex-end', 
+    backgroundColor: "#fff", 
+    height: ScreenHeight * 0.35, 
+    width: ScreenWidth,
+    position: "absolute", 
+    bottom: 0,
+  },
+  profileModalCloseBtn:{
+    width: 50,
+    height: 50,
+    borderRadius: 50,
+    position: 'absolute',
+    top: 10,
+    right: 5,
+    backgroundColor: '#C0C0C0',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    zIndex: 1
   },
 })
