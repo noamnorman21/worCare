@@ -16,7 +16,7 @@ using WebApi.DTO;
 namespace WebApi.Controllers
 {
     [RoutePrefix("api/Notification")]
-    public class NotificationConroller : ApiController
+    public class NotificationController : ApiController
     {
         igroup194DB db = new igroup194DB();
 
@@ -27,8 +27,18 @@ namespace WebApi.Controllers
             db.InsertNotification(notification.title, notification.pushMessage, notification.time, notification.userId, "P");
             return Ok("Notification saved in the database");
         }
-
+        [HttpPost]
+        [Route("UpdateNotificationStatus")]
+        public IHttpActionResult UpdateNotificationStatus([FromBody] List<int> notificationIDs)
+        {
+            //get list of notifications id that the user saw in the client side and update the status to "S" (saw)
+            foreach (tblNotifictions item in db.tblNotifictions)
+            {
+                if (notificationIDs.Contains(item.notificationID))
+                    item.status = "S";
+            }
+            db.SaveChanges();
+            return Ok("Notification status updated");
+        }
     }
-
-    
 }

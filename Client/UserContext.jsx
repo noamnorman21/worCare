@@ -16,7 +16,7 @@ let updateProfileUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Settings/Up
 let getPairedProfile = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUser/'
 let getPatientData = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/GetPatientData';
 let GetAllPatients = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/GetAllPatients'
-let InsertNotificationsThatSent = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Notification/InsertNotificationThatSent'
+let InsertNotificationsThatSentUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Notification/InsertNotificationThatSent'
 
 // Log In
 let userForLoginUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUserForLogin';
@@ -107,6 +107,7 @@ export function UserProvider({ children }) {
     const [patientList, setPatientList] = useState(null)
     const [newMessages, setNewMessages] = useState(0); //new for chat logo
     const [routeEmail, setRouteEmail] = useState(null);
+    const [notifications, setNotifications] = useState(null);
 
     async function logInContext(userData) {
         setUserType(userData.userType);
@@ -128,6 +129,7 @@ export function UserProvider({ children }) {
         setPatientHL(userData.patientHL);
         setPatientData(userData.patientData);
         setPatientId(userData.patientId);
+        setNotifications(userData.notification);
         let usertoSync = {
             userId: userData.userId,
             userType: userData.userType,
@@ -263,7 +265,9 @@ export function UserProvider({ children }) {
 
     }
     async function notificationsThatSent(notificationsThatSentDTO) {
-        await fetch(notificationsThatSent, {
+        console.log("notificationsThatSentDTO=", notificationsThatSentDTO);
+        alert("notificationsThatSentDTO=" + notificationsThatSentDTO);
+        await fetch(notificationsThatSentUrl, {
             method: 'POST',
             headers: new Headers({
                 'Content-Type': 'application/json; charset=UTF-8',
@@ -1023,7 +1027,7 @@ export function UserProvider({ children }) {
         updateUserProfile, updateuserNotifications, appEmail, getAllPrivateTasks, getAllPublicTasks,
         allPublicTasks, allPrivateTasks, UpdateDrugForPatientDTO, holidays, GetAllDrugs, allDrugs, addPrivateTaskContext,
         newMessages, setNewMessages, logOutFireBase, registerForPushNotificationsAsync, sendPushNotification, UpdatePatient, userPaychecks,
-        fetchPatientList, patientList, setRouteEmail, routeEmail, notificationsThatSent
+        fetchPatientList, patientList, setRouteEmail, routeEmail, notificationsThatSent,notifications
     };
 
     return (

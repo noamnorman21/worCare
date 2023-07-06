@@ -150,7 +150,6 @@ export default function NewPayment(props) {
       userId: payment.userId,
       pushToken2: pushToken2
     }
-    console.log('NewPayment', NewPayment);
     fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/NewRequest', {
       method: 'POST',
       body: JSON.stringify(NewPayment),
@@ -179,7 +178,7 @@ export default function NewPayment(props) {
             userId: involvedInId,        
           }
           sendPushNotification(PushNotificationsData); // This line sends the notification, the function is in UserContext
-          notificationsThatSent(PushNotificationsData); // This line saves the notification in the DB, the function is in UserContext
+          notificationsThatSent(pushDataForDB); // This line saves the notification in the DB, the function is in UserContext
 
           GetUserPending()
           props.cancel();

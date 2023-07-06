@@ -307,6 +307,7 @@
     <Compile Include="Controllers\ForeignUserController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LanguageCountryController.cs" />
+    <Compile Include="Controllers\NotificationController.cs" />
     <Compile Include="Controllers\PatientController.cs" />
     <Compile Include="Controllers\PayChecksController.cs" />
     <Compile Include="Controllers\PaymentRequestController.cs" />

@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, FlatList, SafeAreaView, TouchableOpacity, StyleSheet, Animated } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
+import { useUserContext } from '../UserContext';
+
 export default function PushNotifications() {
   const [notifications, setNotifications] = useState([]);
   const [showToday, setShowToday] = useState(false);
@@ -9,6 +11,8 @@ export default function PushNotifications() {
   const todayContentHeight = useRef(new Animated.Value(0)).current;
   const yesterdayContentHeight = useRef(new Animated.Value(0)).current;
   const [isRead, setIsRead] = useState(false);
+
+  //const {notifications} = useUserContext();
 
   useEffect(() => {
     const fetchNotifications = async () => {

@@ -155,6 +155,7 @@ export default function LogIn({ navigation }) {
                             patientHL: json.patient.hobbiesAndLimitationsDTO,
                             pushToken: json.pushToken,
                             pushTokenSecoundSide: json.pushTokenSecoundSide,
+                            notification: json.notification,
                         }
                         const currentToken = (await Notifications.getExpoPushTokenAsync()).data;
                         if (currentToken !== userContext.pushToken) {
