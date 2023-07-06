@@ -168,7 +168,7 @@ export default function NewPaycheck(props) {
       .then(
         (result) => {
           console.log("fetch POST= ", result);
-
+          getPaychecks();
           props.cancel();
         },
         (error) => {

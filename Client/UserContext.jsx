@@ -157,7 +157,7 @@ export function UserProvider({ children }) {
         GetUserPending(usertoSync);
         GetUserHistory(usertoSync);
         fetchPatientList(usertoSync);
-        // getPaychecks(usertoSync);
+        getPaychecks(usertoSync);
         await getAllPrivateTasks(usertoSync);
         await getAllPublicTasks(usertoSync);
         await getHolidaysForUser(usertoSync.calendarCode);
@@ -469,18 +469,7 @@ export function UserProvider({ children }) {
         }
     }
 
-    useEffect(() => {
-        if (patientId != null && userContext != null) {
-            console.log(patientId)
-            console.log(userContext.patientId)
-            fetchUserContacts(userContext);
-            getAllPublicTasks(userContext);
-            getAllPrivateTasks(userContext);
-            GetUserPending(userContext);
-            GetUserHistory(userContext);
-            // getPaychecks(userContext);        
-        }
-    }, [patientId]);
+
 
     function updateUserContacts() {
         fetchUserContacts();
@@ -677,40 +666,40 @@ export function UserProvider({ children }) {
         }
     }
 
-    // async function getPaychecks(userData) {
-    //     console.log("getPaychecks")
-    //     let user;
-    //     if (userData === undefined) {
+    async function getPaychecks(userData) {
+        console.log("getPaychecks")
+        let user;
+        if (userData === undefined) {
 
-    //         user = {
-    //             userId: userContext.userId,
-    //             userType: userContext.userType,
-    //             patientId: userContext.patientId
-    //         }
-    //     }
-    //     else {
-    //         user = {
-    //             userId: userData.userId,
-    //             userType: userData.userType,
-    //             patientId: userData.patientId
-    //         }
-    //     }
-    //     try {
-    //       const response = await fetch(getPaychecksUrl, {
-    //         method: 'POST',
-    //         headers: {
-    //           'Content-Type': 'application/json',
-    //         },
-    //         body: JSON.stringify(user)
-    //       });
-    //       const data = await response.json();
-    //       if (data != null) {
-    //         setUserPaychecks(data);
-    //       }          
-    //     } catch (error) {
-    //       console.log(error)
-    //     }
-    //   }
+            user = {
+                userId: userContext.userId,
+                userType: userContext.userType,
+                patientId: userContext.patientId
+            }
+        }
+        else {
+            user = {
+                userId: userData.userId,
+                userType: userData.userType,
+                patientId: userData.patientId
+            }
+        }
+        try {
+          const response = await fetch(getPaychecksUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(user)
+          });
+          const data = await response.json();
+          if (data != null) {
+            setUserPaychecks(data);
+          }          
+        } catch (error) {
+          console.log(error)
+        }
+      }
 
     function updatePendings(pendings) {
         setUserPendingPayments(pendings);
@@ -945,6 +934,19 @@ export function UserProvider({ children }) {
         setUserContext(userData);
     }
 
+    useEffect(() => {
+        if (patientId != null && userContext != null) {
+            console.log("Patient id is ", patientId)
+            console.log(userContext.patientId)
+            fetchUserContacts(userContext);
+            getAllPublicTasks(userContext);
+            getAllPrivateTasks(userContext);
+            GetUserPending(userContext);
+            GetUserHistory(userContext);
+            getPaychecks(userContext);        
+        }
+    }, [patientId]);
+
     async function fetchPatientData(userData) {
         let patient;
         if (userData != null) {
@@ -970,19 +972,6 @@ export function UserProvider({ children }) {
             console.log('err post=', error);
         }
     }
-
-    useEffect(() => {
-        if (patientId != null && userContext != null) {
-            console.log("Patient id is ", patientId)
-            console.log(userContext.patientId)
-            fetchUserContacts(userContext);
-            getAllPublicTasks(userContext);
-            getAllPrivateTasks(userContext);
-            GetUserPending(userContext);
-            GetUserHistory(userContext);
-            // getPaychecks(userContext);        
-        }
-    }, [patientId]);
 
     // new for patient switch
     function fetchPatientList(userData) {
@@ -1025,7 +1014,7 @@ export function UserProvider({ children }) {
         updateUserProfile, updateuserNotifications, appEmail, getAllPrivateTasks, getAllPublicTasks,
         allPublicTasks, allPrivateTasks, UpdateDrugForPatientDTO, holidays, GetAllDrugs, allDrugs, addPrivateTaskContext,
         newMessages, setNewMessages, logOutFireBase, registerForPushNotificationsAsync, sendPushNotification, UpdatePatient, userPaychecks,
-        fetchPatientList, patientList, setRouteEmail, routeEmail, notificationsThatSent,notifications
+        fetchPatientList, patientList, setRouteEmail, routeEmail, notificationsThatSent,notifications, getPaychecks
     };
 
     return (

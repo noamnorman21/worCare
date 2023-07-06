@@ -16,47 +16,25 @@ const SCREEN_HEIGHT = Dimensions.get('window').height;
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function Paychecks() {
-  const { userContext } = useUserContext();
+  const { userContext, getPaychecks,userPaychecks} = useUserContext();
   const [History, setHistory] = useState()
   const [arr, setArr] = useState()
   const isFocused = useIsFocused()
   const [modal1Visible, setModal1Visible] = useState(false);
 
   useEffect(() => {
-    if (isFocused && modal1Visible == false) {
-      getPaychecks()
-    }
-  }, [isFocused, modal1Visible])
+   renderPaychecks()
+  }, [userPaychecks])
 
-  const getPaychecks = async () => {
-    const user = {
-      userId: userContext.userId,
-      userType: userContext.userType,
-      workerId: userContext.workerId,
-      involvedInId: userContext.involvedInId
-    }
-    try {
-      const response = await fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/PayChecks/GetPaychecks/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(user)
-      });
-      const data = await response.json();
-      setArr(data)
-      if (data != null && data.length != undefined) {
-        let arr = data.map((item) => {
+  const renderPaychecks = async () => {
+    
+        let arr = userPaychecks.map((item) => {
           return (
             <Paycheck key={item.payCheckNum} getPaychecks={getPaychecks} data={item} />
           )
         })
         setHistory(arr)
       }
-    } catch (error) {
-      console.log(error)
-    }
-  }
 
   return (
     <>
@@ -87,6 +65,7 @@ function Paycheck(props) {
     UserId: props.data.UserId,
     payCheckProofDocument: props.data.payCheckProofDocument,
   })
+  const {getPaychecks} = useUserContext();
 
   const [modal2Visible, setModal2Visible] = useState(false);
   const date = new Date(paycheck.paycheckDate);
@@ -144,7 +123,7 @@ function Paycheck(props) {
               .then(
                 (result) => {
                   console.log("fetch DELETE= ", result);
-                  props.getPaychecks()
+                  getPaychecks()
                 },
                 (error) => {
                   console.log("err post=", error);
@@ -300,7 +279,7 @@ function Paycheck(props) {
                 </View>
               </Modal>
               <Modal animationType='slide' transparent={true} visible={modal2Visible}>
-                <EditPaycheck cancel={(value) => { setModal2Visible(false); setExpanded(true); props.getPaychecks() }} save={(value) => { setModal2Visible(false); setExpanded(false); props.getPaychecks(); setPaycheck(value) }} data={props.data} />
+                <EditPaycheck cancel={(value) => { setModal2Visible(false); setExpanded(true); props.getPaychecks() }} save={(value) => { setModal2Visible(false); setExpanded(false); setPaycheck(value) }} data={props.data} />
               </Modal>
             </View>
           </View>

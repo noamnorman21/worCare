@@ -8,8 +8,10 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from '../../config/firebase';
 import DatePicker from 'react-native-datepicker';
 const SCREEN_WIDTH = Dimensions.get('window').width;
+import { useUserContext } from "../../UserContext";
 
 export default function EditPaycheck(props) {
+  const {getPaychecks} = useUserContext();
   const [imageChanged, setImageChanged] = useState(false);
   const [valueChanged, setValueChanged] = useState(false);
   const [Paycheck, setPaycheck] = useState({
@@ -188,6 +190,7 @@ export default function EditPaycheck(props) {
         (result) => {
           Alert.alert('Paycheck Updated', 'Your paycheck was updated successfully');
           console.log("fetch POST= ", result);
+          getPaychecks();
           props.save(temp);
         },
         (error) => {
