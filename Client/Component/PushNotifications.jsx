@@ -25,21 +25,21 @@ export default function PushNotifications() {
   const [notificationsArr, setNotificationsArr] = useState(notifications);
 
 
-  useEffect(() => {
-    console.log("notificationsArr", notificationsArr);
-    const fetchNotifications = async () => {
-      // Simulating API call delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      // const data = [
-      //   { id: 1, title: 'Notification 1', message: 'This is notification 1.' },
-      //   { id: 2, title: 'Notification 2', message: 'This is notification 2.' },
-      //   { id: 3, title: 'Notification 3', message: 'This is notification 3.' },
-      // ];
-      // setNotifications(data);
-    };
+  // useEffect(() => {
+  //   console.log("notificationsArr", notificationsArr);
+  //   const fetchNotifications = async () => {
+  //     // Simulating API call delay
+  //     await new Promise((resolve) => setTimeout(resolve, 1000));//////////////////////////////////// מה זה החרא זה, צריך אותו?
+  //     // const data = [
+  //     //   { id: 1, title: 'Notification 1', message: 'This is notification 1.' },
+  //     //   { id: 2, title: 'Notification 2', message: 'This is notification 2.' },
+  //     //   { id: 3, title: 'Notification 3', message: 'This is notification 3.' },
+  //     // ];
+  //     // setNotifications(data);
+  //   };
 
-    fetchNotifications();
-  }, []);
+  //   fetchNotifications();
+  // }, []);
 
   const toggleToday = () => {
     if (showToday) {
@@ -96,9 +96,18 @@ export default function PushNotifications() {
   };
 
   const renderItem = ({ item }) => {
+    
 
     const handlePress = () => {
-      setIsRead(true);
+      //toggle status
+      if (item.status == 'P') {
+        item.status = 'S';
+      }
+      else {
+        item.status = 'P';
+      }
+      console.log("item", item);
+   
     };
 
     return (
@@ -107,8 +116,8 @@ export default function PushNotifications() {
         onPress={handlePress}
       >
         <View style={styles.iconContainer}>
-          <View style={[styles.icon, isRead ? { backgroundColor: '#F2F8F2' } : { backgroundColor: '#FFF3F3' }]}>
-            <Ionicons name="calendar" size={24} color={isRead ? '#2CCDAC' : '#FF6077'} />
+          <View style={[styles.icon, item.status = "P" ? { backgroundColor: '#F2F8F2' } : { backgroundColor: 'green' }]}>
+            <Ionicons name="calendar" size={24} color={item.status = "P" ? 'red' : 'green'} />
           </View>
         </View>
         <View style={styles.notificationDetails}>

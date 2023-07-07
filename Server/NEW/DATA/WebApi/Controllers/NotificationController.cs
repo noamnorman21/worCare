@@ -22,7 +22,7 @@ namespace WebApi.Controllers
 
         [HttpPost]
         [Route("InsertNotificationThatSent")]
-        public IHttpActionResult GetPending([FromBody] NotificationsThatSentDTO notification)
+        public IHttpActionResult InsertNotificationThatSent([FromBody] NotificationsThatSentDTO notification)
         {
             db.InsertNotification(notification.title, notification.pushMessage, notification.time, notification.userId, "P");
             return Ok("Notification saved in the database");
