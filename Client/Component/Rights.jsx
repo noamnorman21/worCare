@@ -81,8 +81,8 @@ export default function Rights() {
 
   const startGptAnswer = async () => {
     if (question === '' || value === null) {
-        Alert.alert('Please fill in all fields');
-        return;
+      Alert.alert('Please fill in all fields');
+      return;
     }
     toggleOverlay();
     if (question.toLowerCase().includes("who") || question.toLowerCase().includes("whom") || question.toLowerCase().includes("whose") || question.toLowerCase().includes("person's")) {
@@ -90,130 +90,32 @@ export default function Rights() {
       return;
     }
     setIsLoading(true);
-
-    // Intermediate call to GPT-3 to check if the question is related to the topic and not about a specific person
-    const checkQuestionPrompt = `Question: ${question}\n\nDoes this question relate to the topic of foreign caregivers in Israel and not about a specific person?\nAnswer:`;
-    const checkQuestionResponse = await fetch('https://api.openai.com/v1/engines/text-davinci-003/completions', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${apiKeyGpt}`,
-        },
-        body: JSON.stringify({
-            'prompt': checkQuestionPrompt,
-            'max_tokens': 10, // Limit tokens since we're only expecting a short yes/no answer
-            'temperature': 0.5,
-            'top_p': 1,
-        }),
-    });
-
-    // Process the checkQuestion API response
-    const checkQuestionData = await checkQuestionResponse.json();
-    const related = checkQuestionData.choices[0].text.trim().toLowerCase();
-
-    // If the question is not related or about a specific person, set answer to 'cant answer' and return
-    if (related !== 'yes') {
-        setGpt3Answer('cant answer');
-        setIsLoading(false);
-        return;
-    }
-
-    // If the question is related and not about a specific person, proceed with the original API call
     const context = `Context: In Israel, foreign workers in the field of caregiver for the elderly have specific rights and regulations. It is important to provide accurate and reliable information. Please provide an answer that is specific to Israel's laws and guidelines.`;
-    const prompt = `Category: ${value}\nQuestion: ${question}\n\n${context}\n\nAnswer:`;
-
+    const prompt = `Question: ${question}\nCategory: ${value}\nContext: ${context}\n\nAnswer:`;
     const apiResponse = await fetch('https://api.openai.com/v1/engines/text-davinci-003/completions', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${apiKeyGpt}`,
-        },
-        body: JSON.stringify({
-            'prompt': prompt,
-            'max_tokens': 450, // Set this to the number of tokens you want the completion to be
-            'temperature': 0.5,
-            'top_p': 1,
-        }),
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKeyGpt}`,
+      },
+      body: JSON.stringify({
+        'prompt': prompt,
+        'max_tokens': 450,
+        'temperature': 0.3,
+        'top_p': 1,
+      }),
     });
 
-    // Process the API response and extract the answer
     const data = await apiResponse.json();
     const answer = data.choices[0].text.trim();
     console.log(answer);
-    
-    // Set the answer in the state
-    setGpt3Answer(answer);
+    if (answer.toLowerCase() === 'no') {
+      setGpt3Answer('The question does not seem to be related to the topic of foreign workers in Israel or their rights and regulations.');
+    } else {
+      setGpt3Answer(answer);
+    }
     setIsLoading(false);
-};
-// const startGptAnswer = async () => {
-//   if (question === '' || value === null) {
-//     Alert.alert('Please fill in all fields');
-//     return;
-//   }
-//   toggleOverlay();
-//   if (question.toLowerCase().includes("who") || question.toLowerCase().includes("whom") || question.toLowerCase().includes("whose") || question.toLowerCase().includes("person's")) {
-//     setGpt3Answer('We are not able to answer questions about specific individuals. Please ask a general question.');
-//     return;
-//   }
-//   setIsLoading(true);
-
-//   // Intermediate call to GPT-3 to check if the question is related to the topic and not about a specific person
-//   const checkQuestionPrompt = `Question: ${question}\n\nDoes this question relate to the topic of foreign caregivers in Israel and not about a specific person? provide answer in yes or not\nAnswer:`;
-//   const checkQuestionResponse = await fetch('https://api.openai.com/v1/engines/text-davinci-003/completions', {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json',
-//       'Authorization': `Bearer ${apiKeyGpt}`,
-//     },
-//     body: JSON.stringify({
-//       'prompt': checkQuestionPrompt,
-//       'max_tokens': 3, // Limit tokens since we're only expecting a short yes/no answer
-//       'temperature': 0.9,
-//       'top_p': 1,
-//     }),
-//   });
-
-//   // Process the checkQuestion API response
-//   const checkQuestionData = await checkQuestionResponse.json();
-//   const related = checkQuestionData.choices[0].text.trim().toLowerCase();
-//   console.log("related " +related);
-//   return;
-
-//   // If the question is not related or about a specific person, set answer to 'cant answer' and return
-//   if (related !== 'yes') {
-//     setGpt3Answer('cant answer');
-//     setIsLoading(false);
-//     return;
-//   }
-
-//   // If the question is related and not about a specific person, proceed with the original API call
-//   const context = `Context: In Israel, foreign workers in the field of caregiver for the elderly have specific rights and regulations. It is important to provide accurate and reliable information. Please provide an answer that is specific to Israel's laws and guidelines.`;
-//   const prompt = `Category: ${value}\nQuestion: ${question}\n\n${context}\n\nAnswer:`;
-
-//   const apiResponse = await fetch('https://api.openai.com/v1/engines/text-davinci-003/completions', {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json',
-//       'Authorization': `Bearer ${apiKeyGpt}`,
-//     },
-//     body: JSON.stringify({
-//       'prompt': prompt,
-//       'max_tokens': 450, // Set this to the number of tokens you want the completion to be
-//       'temperature': 0.5,
-//       'top_p': 1,
-//     }),
-//   });
-
-//   // Process the API response and extract the answer
-//   const data = await apiResponse.json();
-//   const answer = data.choices[0].text.trim();
-//   console.log(answer);
-
-//   // Set the answer in the state
-//   setGpt3Answer(answer);
-//   setIsLoading(false);
-// };
-
+  };
 
   const handleAddBtnPress = () => {
     setModalVisible(true);
