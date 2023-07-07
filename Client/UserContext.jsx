@@ -162,11 +162,7 @@ export function UserProvider({ children }) {
         GetUserHistory(usertoSync);
         fetchPatientList(usertoSync);
         getPaychecks(usertoSync);
-<<<<<<< HEAD
-        await GetNotificationsThatSentToUser(usertoSync.userId);
-=======
         GetNotificationsThatSent(usertoSync.userId);
->>>>>>> 4955e5fe00dc35d83cb5db1a7f15aec857f6ccbc
         await getAllPrivateTasks(usertoSync);
         await getAllPublicTasks(usertoSync);
         await getHolidaysForUser(usertoSync.calendarCode);

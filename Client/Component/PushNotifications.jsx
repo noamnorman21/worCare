@@ -113,21 +113,6 @@ export default function PushNotifications() {
           contentContainerStyle={styles.listContent}
         />
       </Animated.View>
-
-      <TouchableOpacity onPress={toggleYesterday}>
-        <View style={styles.headerContainer}>
-          <Text style={styles.header}>Previous</Text>
-          <Ionicons name={showYesterday ? 'chevron-up' : 'chevron-down'} size={30} color="#548DFF" />
-        </View>
-      </TouchableOpacity>
-      <Animated.View style={[styles.contentContainer, yesterdayContentStyle]}>
-        <FlatList
-          data={notificationsArr}
-          keyExtractor={(item) => item.notificationID.toString()}
-          renderItem={renderItem}
-          contentContainerStyle={styles.listContent}
-        />
-      </Animated.View>
     </SafeAreaView>
   );
 };
