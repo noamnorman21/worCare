@@ -162,13 +162,117 @@ export function UserProvider({ children }) {
         GetUserHistory(usertoSync);
         fetchPatientList(usertoSync);
         getPaychecks(usertoSync);
+<<<<<<< HEAD
         await GetNotificationsThatSentToUser(usertoSync.userId);
+=======
+        GetNotificationsThatSent(usertoSync.userId);
+>>>>>>> 4955e5fe00dc35d83cb5db1a7f15aec857f6ccbc
         await getAllPrivateTasks(usertoSync);
         await getAllPublicTasks(usertoSync);
         await getHolidaysForUser(usertoSync.calendarCode);
         await GetAllDrugs();
         
     }
+
+    async function logInRemember(userData) {
+            console.log(userData);
+            let userForLoginUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUserForLogin';           
+                console.log('user signed in');
+                fetch(userForLoginUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(userData),
+                })
+                    .then((response) => {
+                        if (response.status === 200) {
+                            return response.json();
+                        }
+                        else {
+                            return null;
+                        }
+                    })
+                    .then(async (json) => {
+                        if (json === null) {
+                            Alert.alert('Login Failed');
+                        }
+                        else {
+                            //save user email and password in async storage
+                            //save user data in context
+                            const userContext = {
+                                userId: json.userId,
+                                FirstName: json.FirstName,
+                                LastName: json.LastName,
+                                Email: json.Email,
+                                gender: json.gender,
+                                phoneNum: json.phoneNum,
+                                userUri: json.userUri,
+                                userType: json.userType,
+                                workerId: json.workerId, // if user is a caregiver, this field will be same as userId
+                                involvedInId: json.involvedInId, // if user is a not caregiver, this field will be same as userId
+                                patientId: json.patientId,
+                                calendarCode: json.calendarCode,
+                                patientData: json.patient,
+                                patientHL: json.patient.hobbiesAndLimitationsDTO,
+                                pushToken: json.pushToken,
+                                pushTokenSecoundSide: json.pushTokenSecoundSide,
+                                notification: json.notification,
+                            }
+                            const currentToken = (await Notifications.getExpoPushTokenAsync()).data;
+                            if (currentToken !== userContext.pushToken) {
+                                const userToken = {
+                                    userId: userContext.userId,
+                                    pushToken: currentToken,
+                                    lastToken: userContext.pushToken,
+                                }
+                                userContext.pushToken = currentToken;
+                                const updateTokenUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/UpdatePushToken';
+                                fetch(updateTokenUrl, {
+                                    method: 'PUT',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify(userToken),
+                                })
+                                    .then((response) => {
+                                        if (response.status === 200) {
+                                            return response.json();
+                                        }
+                                        else {
+                                            return null;
+                                        }
+                                    })
+                                    .then((json) => {
+                                        if (json === null) {
+                                            console.log('update token failed');
+                                        }
+                                        else {
+                                            console.log('token updated');
+                                        }
+                                    })
+                                    .catch((error) => {
+                                        console.log(error);
+                                    }
+                                    );
+                            }
+                            const jsonValue = JSON.stringify(userContext)
+                            AsyncStorage.setItem('userData', jsonValue)
+                            await logInContext(userContext).then(() => {
+                                console.log('user saved in context');
+                            })
+                            navigation.navigate('CustomHeader', { screen: "AppBarDown" });//navigate to home screen, we will add a necessary call to get user data from the server                                         
+                        }
+                    }
+                    )
+                    .catch((error) => {
+                        // Alert.alert('Login Failed');
+                        console.log(error);
+                    }
+                    );
+           
+        }
+    
 
     // ----------------------  Push Notifications  ----------------------
     async function UpdateNotificationStatus(notificationId) {
@@ -1067,7 +1171,7 @@ export function UserProvider({ children }) {
         updateUserProfile, updateuserNotifications, appEmail, getAllPrivateTasks, getAllPublicTasks,
         allPublicTasks, allPrivateTasks, UpdateDrugForPatientDTO, holidays, GetAllDrugs, allDrugs, addPrivateTaskContext,
         newMessages, setNewMessages, logOutFireBase, registerForPushNotificationsAsync, sendPushNotification, UpdatePatient, userPaychecks,
-        fetchPatientList, patientList, setRouteEmail, routeEmail, notificationsThatSent, notifications, getPaychecks, UpdateNotificationStatus,GetNotificationsThatSent
+        fetchPatientList, patientList, setRouteEmail, routeEmail, notificationsThatSent, notifications, getPaychecks, UpdateNotificationStatus,GetNotificationsThatSent, logInRemember
     };
 
     return (

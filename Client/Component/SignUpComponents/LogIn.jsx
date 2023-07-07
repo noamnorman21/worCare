@@ -11,6 +11,7 @@ import { auth } from '../../config/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import * as Notifications from 'expo-notifications';
 import { Buffer } from 'buffer';
+import { ActivityIndicator } from 'react-native-paper';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -21,8 +22,8 @@ export default function LogIn({ navigation }) {
     const [userType, setUserType] = useState('User');
     const [isChecked, setChecked] = useState(false);
     const [showPassword, setShowPassword] = useState(false);//for password visibility
-    const { logInContext, logInFireBase,setRouteEmail } = useUserContext();
-
+    const { logInContext, logInFireBase,setRouteEmail, logInRemember } = useUserContext();
+    const [isSigned, setIsSigned] = useState(false);
     // function to check from where the app was opened from a invintation link or not  
     const getInitialUrl = async () => {
         // check if the app was opened from a link
@@ -236,9 +237,28 @@ export default function LogIn({ navigation }) {
 
     useEffect(() => {
         getInitialUrl();
+        loadStorageData();
     }, []);
 
+    const loadStorageData = async () => {
+        try {
+          const storageUser = await AsyncStorage.getItem("user");
+          if (storageUser == null) {
+            setIsSigned(false);
+          } else { // if the user is signed in- if he is, update the context
+            setIsSigned(true)
+            await logInRemember(JSON.parse(storageUser))
+          }
+        }
+        catch (error) {
+          console.log(error)
+        }
+      }
+
     return (
+        <>
+        {isSigned? <>
+        <ActivityIndicator style={styles.container} size={60} color="#548DFF" /></> :
         <SafeAreaView style={styles.container}>
             <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
@@ -310,6 +330,8 @@ export default function LogIn({ navigation }) {
                 </TouchableWithoutFeedback>
             </KeyboardAvoidingView>
         </SafeAreaView >
+}
+        </>
     )
 }
 

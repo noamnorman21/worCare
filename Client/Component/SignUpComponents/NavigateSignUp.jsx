@@ -29,7 +29,7 @@ const Stack = createStackNavigator();
 
 export default function NavigateSignUp() {
   const { logInContext, updateuserNotifications, fetchUserContacts, GetUserPending, GetUserHistory, logInFireBase } = useUserContext();
-  const [isSigned, setIsSigned] = useState('bla');
+  const [isSigned, setIsSigned] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
@@ -42,12 +42,11 @@ export default function NavigateSignUp() {
       if (storageUser == null) {
         setIsSigned(false);
       } else { // if the user is signed in- if he is, update the context
-        setIsSigned(true);
         const storageUser2 = await AsyncStorage.getItem("userData");
-        await logInContext(JSON.parse(storageUser2))
-        let fireBaseUser = JSON.parse(storageUser)
-        console.log(fireBaseUser)
-        logInFireBase(fireBaseUser.Email, fireBaseUser.Password)
+        // await logInContext(JSON.parse(storageUser2))
+        // let fireBaseUser = JSON.parse(storageUser)
+        // console.log(fireBaseUser)
+        // logInFireBase(fireBaseUser.Email, fireBaseUser.Password)
       }
     }
     catch (error) {

@@ -764,7 +764,12 @@ function NewTaskModal(props) {
       }
 
       if (taskTime != '' && taskTimeArr.length == 0) {
+         if(Platform.OS === 'ios'){
          taskTimeArr.push(taskTime);
+         }
+         else{
+            taskTimeArr.push(taskTime.substring(0,5));
+         }
       }
       let taskData = {
          taskName: taskName,
@@ -776,6 +781,7 @@ function NewTaskModal(props) {
          timesInDayArr: taskTimeArr,
          frequency: taskFrequency
       }
+      console.log(taskData);
       addPrivateTaskContext(taskData)
       clearInputs("AddTask");
    }
