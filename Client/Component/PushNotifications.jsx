@@ -144,6 +144,7 @@ const styles = StyleSheet.create({
   listContent: {
     flexGrow: 1,
     marginLeft: 16,
+    marginBottom: 16,
   },
 
 });

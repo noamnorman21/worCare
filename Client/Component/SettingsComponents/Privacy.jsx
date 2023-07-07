@@ -160,6 +160,7 @@ export default function Privacy({ navigation, route }) {
       patientData: userContext.patientData,
       pushToken: userContext.pushToken,
       pushToken2: userContext.pushTokenSecoundSide,
+      notification: userContext.notification,
     }
 
     fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Settings/UpdateUserEmail', {

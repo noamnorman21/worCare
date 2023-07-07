@@ -17,7 +17,7 @@ let getPairedProfile = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUse
 let getPatientData = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/GetPatientData';
 let GetAllPatients = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/GetAllPatients'
 let InsertNotificationsThatSentUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Notification/InsertNotificationThatSent'
-
+let UpdateNotificationStatusUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Notification/UpdateNotificationStatus'
 // Log In
 let userForLoginUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUserForLogin';
 let getUserNoti = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUserNotificatoins';
@@ -165,6 +165,30 @@ export function UserProvider({ children }) {
     }
 
     // ----------------------  Push Notifications  ----------------------
+    async function UpdateNotificationStatus(notificationId) {
+
+        fetch(UpdateNotificationStatusUrl, {
+            method: 'POST',
+            headers: new Headers({
+                'Content-Type': 'application/json; charset=UTF-8',
+            }),
+            body: JSON.stringify(notificationId),
+        }).then(res => {
+            if (res.ok) {
+                return res.json()
+            }
+        })
+            .then(
+                (result) => {
+                    console.log("UpdateNotificationStatus", result);
+                }
+            )
+            .catch((error) => {
+                console.log("error", error);
+            }
+            )
+
+    }
     function fetchUserNotifications(usertoSync) {
         let user;
         if (usertoSync == null) {
@@ -685,21 +709,21 @@ export function UserProvider({ children }) {
             }
         }
         try {
-          const response = await fetch(getPaychecksUrl, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(user)
-          });
-          const data = await response.json();
-          if (data != null) {
-            setUserPaychecks(data);
-          }          
+            const response = await fetch(getPaychecksUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(user)
+            });
+            const data = await response.json();
+            if (data != null) {
+                setUserPaychecks(data);
+            }
         } catch (error) {
-          console.log(error)
+            console.log(error)
         }
-      }
+    }
 
     function updatePendings(pendings) {
         setUserPendingPayments(pendings);
@@ -943,7 +967,7 @@ export function UserProvider({ children }) {
             getAllPrivateTasks(userContext);
             GetUserPending(userContext);
             GetUserHistory(userContext);
-            getPaychecks(userContext);        
+            getPaychecks(userContext);
         }
     }, [patientId]);
 
@@ -1014,7 +1038,7 @@ export function UserProvider({ children }) {
         updateUserProfile, updateuserNotifications, appEmail, getAllPrivateTasks, getAllPublicTasks,
         allPublicTasks, allPrivateTasks, UpdateDrugForPatientDTO, holidays, GetAllDrugs, allDrugs, addPrivateTaskContext,
         newMessages, setNewMessages, logOutFireBase, registerForPushNotificationsAsync, sendPushNotification, UpdatePatient, userPaychecks,
-        fetchPatientList, patientList, setRouteEmail, routeEmail, notificationsThatSent,notifications, getPaychecks
+        fetchPatientList, patientList, setRouteEmail, routeEmail, notificationsThatSent, notifications, getPaychecks,UpdateNotificationStatus
     };
 
     return (

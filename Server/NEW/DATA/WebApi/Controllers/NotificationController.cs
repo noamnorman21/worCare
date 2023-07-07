@@ -29,16 +29,20 @@ namespace WebApi.Controllers
         }
         [HttpPost]
         [Route("UpdateNotificationStatus")]
-        public IHttpActionResult UpdateNotificationStatus([FromBody] List<int> notificationIDs)
+        public IHttpActionResult UpdateNotificationStatus([FromBody] int notificationIDs)
         {
-            //get list of notifications id that the user saw in the client side and update the status to "S" (saw)
-            foreach (tblNotifictions item in db.tblNotifictions)
+            var notification = db.tblNotifictions.FirstOrDefault(x => x.notificationID == notificationIDs);
+            if (notification != null)
             {
-                if (notificationIDs.Contains(item.notificationID))
-                    item.status = "S";
+                notification.status = "S";
+                db.SaveChanges();
+                return Ok("Notification status updated");
             }
-            db.SaveChanges();
-            return Ok("Notification status updated");
+            else
+            {
+                return BadRequest("Bibi the king");
+            }
+
         }
     }
 }

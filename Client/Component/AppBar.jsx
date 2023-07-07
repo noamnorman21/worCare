@@ -97,6 +97,7 @@ function CustomHeader() {
             patientData: userContext.patientData,
             pushToken: userContext.pushToken,
             pushToken2: userContext.pushTokenSecoundSide,
+            notification: userContext.notification,
         }
         usertoSync.patientId = patient.patientId;
         if (usertoSync.userType == "User") {
