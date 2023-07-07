@@ -3,6 +3,7 @@ import { Ionicons } from '@expo/vector-icons';
 import React, { useState,useEffect } from 'react';
 import { useUserContext } from '../../UserContext';
 
+
 export default function NotificationItem(props) {
     const [isRead, setIsRead] = useState(false);
     const { UpdateNotificationStatus } = useUserContext();
@@ -12,9 +13,6 @@ export default function NotificationItem(props) {
         }
     }, []);
     
-
-
-
     const handlePress = () => {
         setIsRead(true);
         //change status in DB to "S" for seen  

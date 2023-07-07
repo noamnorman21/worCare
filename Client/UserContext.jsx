@@ -16,8 +16,11 @@ let updateProfileUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Settings/Up
 let getPairedProfile = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUser/'
 let getPatientData = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/GetPatientData';
 let GetAllPatients = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/GetAllPatients'
+// Notifications
 let InsertNotificationsThatSentUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Notification/InsertNotificationThatSent'
 let UpdateNotificationStatusUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Notification/UpdateNotificationStatus'
+let GetNotificationsThatSentUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Notification/GetNotificationsThatSent'
+
 // Log In
 let userForLoginUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUserForLogin';
 let getUserNoti = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUserNotificatoins';
@@ -107,6 +110,7 @@ export function UserProvider({ children }) {
     const [patientList, setPatientList] = useState(null)
     const [newMessages, setNewMessages] = useState(0); //new for chat logo
     const [routeEmail, setRouteEmail] = useState(null);
+
     const [notifications, setNotifications] = useState(null);
 
     async function logInContext(userData) {
@@ -158,10 +162,12 @@ export function UserProvider({ children }) {
         GetUserHistory(usertoSync);
         fetchPatientList(usertoSync);
         getPaychecks(usertoSync);
+        GetNotificationsThatSentToUser(usertoSync.userId);
         await getAllPrivateTasks(usertoSync);
         await getAllPublicTasks(usertoSync);
         await getHolidaysForUser(usertoSync.calendarCode);
         await GetAllDrugs();
+        
     }
 
     // ----------------------  Push Notifications  ----------------------
@@ -234,6 +240,29 @@ export function UserProvider({ children }) {
                 (error) => {
                     console.log("erra post=", error);
                 });
+    }
+    async function GetNotificationsThatSent(userID) {  
+        fetch(GetNotificationsThatSentUrl, {
+            method: 'POST',
+            headers: new Headers({
+                'Content-Type': 'application/json; charset=UTF-8',
+            }),
+            body: JSON.stringify(userID),
+        }).then(res => {
+            if (res.ok) {
+                return res.json()
+            }
+        }
+        )
+            .then(
+                (result) => {
+                    setNotifications(result);
+                }
+            )
+            .catch((error) => {
+                console.log("error", error);
+            }
+            )
     }
 
     // For Push Notifications - Start
@@ -1038,7 +1067,7 @@ export function UserProvider({ children }) {
         updateUserProfile, updateuserNotifications, appEmail, getAllPrivateTasks, getAllPublicTasks,
         allPublicTasks, allPrivateTasks, UpdateDrugForPatientDTO, holidays, GetAllDrugs, allDrugs, addPrivateTaskContext,
         newMessages, setNewMessages, logOutFireBase, registerForPushNotificationsAsync, sendPushNotification, UpdatePatient, userPaychecks,
-        fetchPatientList, patientList, setRouteEmail, routeEmail, notificationsThatSent, notifications, getPaychecks,UpdateNotificationStatus
+        fetchPatientList, patientList, setRouteEmail, routeEmail, notificationsThatSent, notifications, getPaychecks, UpdateNotificationStatus,GetNotificationsThatSent
     };
 
     return (

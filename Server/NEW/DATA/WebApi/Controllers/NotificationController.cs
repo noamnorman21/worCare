@@ -44,5 +44,21 @@ namespace WebApi.Controllers
             }
 
         }
+        [HttpPost]
+        [Route("GetNotificationsThatSent")]
+        public IHttpActionResult GetNotificationsThatSent([FromBody] int userID)            
+        {
+            //list of NotificationsThatSentDTO          
+            var notifications = db.tblNotifictions.Where(x => x.userId == userID ).Select(x => new NotificationsThatSentDTO
+            {
+                notificationID = x.notificationID,
+                title = x.title,
+                pushMessage = x.pushMessage,
+                time = x.time,
+                userId = x.userId,
+                status = x.status
+            }).ToList();
+            return Ok(notifications);
+        }
     }
 }

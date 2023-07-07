@@ -4,6 +4,8 @@ import { Ionicons } from '@expo/vector-icons';
 
 import { useUserContext } from '../UserContext';
 import NotificationItem from './HelpComponents/NotificationItem';
+import { useCallback } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function PushNotifications() {
 
@@ -12,7 +14,8 @@ export default function PushNotifications() {
   const todayContentHeight = useRef(new Animated.Value(0)).current;
   const yesterdayContentHeight = useRef(new Animated.Value(0)).current;
 
-  const { notifications } = useUserContext();  //now its one array of notifications, not sorted by date(but can be sorted by date if Noam will want it)
+
+  const { notifications, userContext, GetNotificationsThatSent } = useUserContext();  //now its one array of notifications, not sorted by date(but can be sorted by date if Noam will want it)
   //came from context(from DB), example for notification object in the array:
   //   {
   //     "notificationID": 4,
@@ -23,6 +26,14 @@ export default function PushNotifications() {
   //     "status": "P"
   // }
   const [notificationsArr, setNotificationsArr] = useState(notifications);
+  const userId = userContext.userId;
+  useEffect(() => {
+    return () => {
+      console.log(userId);
+      GetNotificationsThatSent(userId)
+      setNotificationsArr([]);
+    };
+  }, []);
 
 
   const toggleToday = () => {
