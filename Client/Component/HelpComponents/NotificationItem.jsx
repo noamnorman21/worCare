@@ -1,52 +1,94 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
-import { Ionicons } from '@expo/vector-icons';
-import React, { useState,useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native'
+import { Ionicons, Feather } from '@expo/vector-icons';
+import React, { useState, useEffect } from 'react';
 import { useUserContext } from '../../UserContext';
+import moment from 'moment';
 
+const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function NotificationItem(props) {
     const [isRead, setIsRead] = useState(false);
     const { UpdateNotificationStatus } = useUserContext();
+    const pushTime = moment(props.item.time).format('DD/MM/YYYY HH:mm');
+    const iconColors = ['#2CCDAC', '#FF6077'];
+
     useEffect(() => {
-        if (props.item.status == "S") {
+        if (props.item.status === "S") {
             setIsRead(true);
         }
     }, []);
-    
+
     const handlePress = () => {
         setIsRead(true);
-        //change status in DB to "S" for seen  
         console.log(props.item.notificationID);
-        UpdateNotificationStatus(props.item.notificationID); 
+        UpdateNotificationStatus(props.item.notificationID);
     };
+
     return (
-        <TouchableOpacity
-            style={styles.notificationprops}
-            onPress={handlePress}
-        >
-            <View style={styles.iconContainer}>
-                <View style={[styles.icon, isRead ? { backgroundColor: '#F2F8F2' } : { backgroundColor: '#FFF3F3' }]}>
-                    <Ionicons name="calendar" size={24} color={isRead ? '#2CCDAC' : '#FF6077'} />
+        <>
+            <View style={styles.container}>
+                <View style={styles.iconContainer}>
+                    <View style={[styles.icon, isRead ? { backgroundColor: '#F2F8F2' } : { backgroundColor: '#FFF3F3' },]}>
+                        <Ionicons name="calendar" size={24} color={isRead ? iconColors[0] : iconColors[1]} />
+                    </View>
+                </View>
+                <View style={styles.notificationDetails}>
+                    <View style={styles.row}>
+                        <Text style={styles.titleTxt}>{props.item.title}</Text>
+                    </View>
+                    <View style={styles.row}>
+                        <Text style={styles.detailsTxt}>{props.item.pushMessage}
+                            {
+                                !isRead && (
+                                    <Text style={styles.timeTxt}> Recieved At: {<Text style={styles.timeTxt}>{pushTime}</Text>}</Text>
+                                )
+                            }
+                        </Text>
+                    </View>
+                </View>
+                <View style={styles.circleContainer}>
+                    {!isRead ? (
+                        <TouchableOpacity onPress={handlePress} style={{ width: '100%', height: '100%', alignItems: 'flex-start', justifyContent: 'center' }}>
+                            <Feather name="circle" size={22} color={iconColors[1]} />
+                        </TouchableOpacity>
+                    ) : (
+                        <Feather name="check-circle" size={22} color={iconColors[0]} />
+
+                    )}
                 </View>
             </View>
-            <View style={styles.notificationDetails}>
-                <Text style={styles.notificationTitle}>
-                    {props.item.title}
-                </Text>
-                <Text style={styles.notificationMessage}>{props.item.pushMessage}</Text>
-            </View>
-        </TouchableOpacity>
-    )
+            <View style={styles.line} />
+        </>
+    );
 }
+
 const styles = StyleSheet.create({
-    notificationItem: {
-        padding: 16,
-        marginBottom: 8,
+    container: {
+        flex: 1,
+        width: SCREEN_WIDTH * 0.975,
         flexDirection: 'row',
+        marginVertical: 10,
         alignItems: 'center',
     },
+    circleContainer: {
+        height: '100%',
+        alignItems: 'flex-start',
+        justifyContent: 'center',
+        flexDirection: 'column',
+        flex: 0.5,
+    },
+    circle: {
+        width: 15,
+        height: 15,
+        borderRadius: 8,
+        borderWidth: 2,
+        borderColor: '#808080',
+    },
     iconContainer: {
-        marginRight: 16,
+        marginRight: 10,
+        height: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     icon: {
         borderRadius: 54,
@@ -57,16 +99,37 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFF3F3',
     },
     notificationDetails: {
+        flex: 3,
+    },
+    row: {
         flex: 1,
     },
-    notificationTitle: {
-        fontSize: 18,
+    titleTxt: {
+        fontSize: 16,
         fontFamily: 'Urbanist-SemiBold',
         marginBottom: 5,
+        marginLeft: 5,
     },
-    notificationMessage: {
+    detailsTxt: {
         fontSize: 14,
         fontFamily: 'Urbanist-Regular',
         color: '#626262',
+        lineHeight: 20,
+        paddingHorizontal: 5,
     },
-})
+    timeTxt: {
+        fontSize: 12,
+        fontFamily: 'Urbanist-Bold',
+        color: '#626262',
+        alignSelf: 'flex-end',
+        marginTop: 5,
+    },
+    line: {
+        height: 0.5,
+        backgroundColor: '#808080',
+        opacity: 0.5,
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: SCREEN_WIDTH * 0.935,
+    },
+});

@@ -95,7 +95,7 @@ export default function MedDetail({ navigation, route }) {
       let newDrugForPatient = {
          drugId: task.drug.drugId,
          listId: task.listId,
-         taskId: task.taskId,         
+         taskId: task.taskId,
          patientId: task.patientId,
          //lastTakenDate will be now time in Israel
          toDate: new Date().toISOString().slice(0, 19).replace('T', ' '),

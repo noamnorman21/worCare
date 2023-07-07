@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Alert, Image } from 'react-native'
 import { useState, useEffect } from 'react'
-import { MaterialCommunityIcons, AntDesign, Feather, Ionicons, Octicons } from '@expo/vector-icons';
+import { Feather, Ionicons, Octicons } from '@expo/vector-icons';
 import { useUserContext } from '../../UserContext';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
