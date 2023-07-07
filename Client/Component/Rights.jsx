@@ -79,6 +79,68 @@ export default function Rights() {
     // Show the answer overlay
   };
 
+  // const startGptAnswer = async () => {
+  //   if (question === '' || value === null) {
+  //     Alert.alert('Please fill in all fields');
+  //     return;
+  //   }
+  //   toggleOverlay();
+  //   setIsLoading(true);
+  
+  //   // First API call to check if the question is related to "foreign workers in Israel"
+  //   const checkQuestionPrompt = `Question: ${question}\n\nIs this question related to the topic of foreign workers in Israel?\nAnswer:`;
+  //   const checkQuestionResponse = await fetch('https://api.openai.com/v1/engines/text-davinci-003/completions', {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //       'Authorization': `Bearer ${apiKeyGpt}`,
+  //     },
+  //     body: JSON.stringify({
+  //       'prompt': checkQuestionPrompt,
+  //       'max_tokens': 3, // Limit tokens since we're only expecting a short yes/no answer
+  //       'temperature': 0.5,
+  //       'top_p': 1,
+  //     }),
+  //   });
+    
+  //   // Process the checkQuestion API response
+  //   const checkQuestionData = await checkQuestionResponse.json();
+  //   const related = checkQuestionData.choices[0].text.trim().toLowerCase();
+  //   console.log(related);
+  
+  //   // If the question is not related to "foreign workers in Israel", set answer to 'cant answer'
+  //   if (related !== 'yes') {
+  //     setGpt3Answer('cant answer');
+  //     setIsLoading(false);
+  //     return;
+  //   }
+    
+  //   // If the question is related, proceed with the second API call
+  //   const context = `Context: In Israel, foreign workers in the field of caregiver for the elderly have specific rights and regulations. It is important to provide accurate and reliable information. Please provide an answer that is specific to Israel's laws and guidelines.`
+  //   const detailedPrompt = `Category: ${value}\nQuestion: ${question}\n\n${context}\n\nAnswer:`;
+  
+  //   const detailedResponse = await fetch('https://api.openai.com/v1/engines/text-davinci-003/completions', {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //       'Authorization': `Bearer ${apiKeyGpt}`,
+  //     },
+  //     body: JSON.stringify({
+  //       'prompt': detailedPrompt,
+  //       'max_tokens': 450,
+  //       'temperature': 0.5,
+  //       'top_p': 1,
+  //     }),
+  //   });
+  
+  //   const detailedData = await detailedResponse.json();
+  //   const detailedAnswer = detailedData.choices[0].text.trim();
+  //   console.log(detailedAnswer);
+  //   setGpt3Answer(detailedAnswer);
+  //   setIsLoading(false);
+  // };
+  
+
   const handleAddBtnPress = () => {
     setModalVisible(true);
   };
