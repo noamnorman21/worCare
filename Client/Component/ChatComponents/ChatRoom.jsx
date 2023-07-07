@@ -25,7 +25,7 @@ export default function ChatRoom({ route, navigation }) {
   const [GroupMembers, setGroupMembers] = useState(); //for group chat
   const { newMessages, setNewMessages, sendPushNotification } = useUserContext();
   const [userToken2, setUserToken2] = useState(''); //for push notification- temporary- will start as ''
-//profile modal
+  //profile modal
   const [userModal, setUserModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
 
@@ -549,9 +549,9 @@ export default function ChatRoom({ route, navigation }) {
           onPressAvatar={(user) => {
             if (user._id !== auth.currentUser.email) {
               // navigation.navigate('ChatProfile', { user: user }); - romoved for now- switched to modal- maybe replace textinput in modal
-              return(
+              return (
                 console.log("user is not me"),
-                setSelectedUser(<ChatProfile user={user} closeModal={()=>{setUserModal(false);console.log("close")}} />),
+                setSelectedUser(<ChatProfile user={user} closeModal={() => { setUserModal(false); console.log("close") }} />),
                 setUserModal(true)
               )
             }
@@ -693,17 +693,17 @@ export default function ChatRoom({ route, navigation }) {
             </KeyboardAvoidingView>
           </SafeAreaView>
         </Modal>
-        <Modal style={{height:ScreenHeight * 0.35}}  visible={userModal} transparent={true} animationType='slide' onRequestClose={() => setUserModal(false)}>
+        <Modal style={{ height: ScreenHeight * 0.35 }} visible={userModal} transparent={true} animationType='slide' onRequestClose={() => setUserModal(false)}>
           <SafeAreaView style={styles.profileModal}>
             <TouchableOpacity style={styles.profileModalCloseBtn} onPress={() => setUserModal(false)}>
               <View>
                 <Ionicons name='close' size={30} color='#000' />
               </View>
             </TouchableOpacity>
-            <View style={{flex:1}}>
+            <View style={{ flex: 1 }}>
               {selectedUser}
             </View>
-            </SafeAreaView>
+          </SafeAreaView>
         </Modal>
       </SafeAreaView>
     </>
@@ -791,21 +791,20 @@ const styles = StyleSheet.create({
     height: 54,
   },
   profileModal: {
-    justifyContent: 'flex-end', 
-    backgroundColor: "#fff", 
-    height: ScreenHeight * 0.35, 
+    justifyContent: 'flex-end',
+    backgroundColor: "#fff",
+    height: ScreenHeight * 0.35,
     width: ScreenWidth,
-    position: "absolute", 
+    position: "absolute",
     bottom: 0,
   },
-  profileModalCloseBtn:{
+  profileModalCloseBtn: {
     width: 50,
     height: 50,
     borderRadius: 50,
     position: 'absolute',
     top: 10,
     right: 5,
-    backgroundColor: '#C0C0C0',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
