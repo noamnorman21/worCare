@@ -21,9 +21,10 @@ export default function LogIn({ navigation }) {
     const [password, setPassword] = useState('');
     const [userType, setUserType] = useState('User');
     const [isChecked, setChecked] = useState(false);
-    const [showPassword, setShowPassword] = useState(false);//for password visibility
-    const { logInContext, logInFireBase,setRouteEmail, logInRemember } = useUserContext();
+    const [showPassword, setShowPassword] = useState(false); // For password visibility
+    const { logInContext, logInFireBase, setRouteEmail, logInRemember } = useUserContext();
     const [isSigned, setIsSigned] = useState(false);
+
     // function to check from where the app was opened from a invintation link or not  
     const getInitialUrl = async () => {
         // check if the app was opened from a link
@@ -52,7 +53,7 @@ export default function LogIn({ navigation }) {
         return decodedId;
     };
 
-    //login function
+    //Login function
     const logInBtn = () => {
         // check email is empty or not
         if (email === '') {
@@ -242,95 +243,98 @@ export default function LogIn({ navigation }) {
 
     const loadStorageData = async () => {
         try {
-          const storageUser = await AsyncStorage.getItem("user");
-          if (storageUser == null) {
-            setIsSigned(false);
-          } else { // if the user is signed in- if he is, update the context
-            setIsSigned(true)
-            await logInRemember(JSON.parse(storageUser))
-          }
+            const storageUser = await AsyncStorage.getItem("user");
+            if (storageUser == null) {
+                setIsSigned(false);
+            } else { // if the user is signed in- if he is, update the context
+                setIsSigned(true)
+                await logInRemember(JSON.parse(storageUser))
+            }
         }
         catch (error) {
-          console.log(error)
+            console.log(error)
         }
-      }
+    }
 
     return (
         <>
-        {isSigned? <>
-        <ActivityIndicator style={styles.container} size={60} color="#548DFF" /></> :
-        <SafeAreaView style={styles.container}>
-            <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-                <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
-                    <View>
-                        <View style={styles.imageContainer}>
-                            <Image style={styles.image} source={require('../../images/logo_New.png')} />
-                        </View>
-                        <View style={styles.inputContainer}>
-                            {/* userName */}
-                            <TextInput
-                                style={styles.input}
-                                placeholder="Email Address"
-                                placeholderTextColor={'#9E9E9E'}
-                                value={email}
-                                autoCapitalize='none'
+            {isSigned ?
+                <SafeAreaView style={styles.container}>
+                    <Image source={require('../../images/logo_New.png')} style={styles.imageWelcome} />                    
+                    <ActivityIndicator style={styles.container} size={60} color="#548DFF" />
+                </SafeAreaView> :
+                <SafeAreaView style={styles.container}>
+                    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+                        <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
+                            <View>
+                                <View style={styles.imageContainer}>
+                                    <Image style={styles.image} source={require('../../images/logo_New.png')} />
+                                </View>
+                                <View style={styles.inputContainer}>
+                                    {/* userName */}
+                                    <TextInput
+                                        style={styles.input}
+                                        placeholder="Email Address"
+                                        placeholderTextColor={'#9E9E9E'}
+                                        value={email}
+                                        autoCapitalize='none'
 
-                                onChangeText={text => setEmail(text)}
-                                keyboardType="email-address"
-                                autoCorrect={false}
-                            />
-                            <View style={styles.passwordContainer}>
-                                {/* password */}
-                                <TextInput
-                                    style={styles.input}
-                                    placeholder="Password"
-                                    placeholderTextColor={'#9E9E9E'}
-                                    secureTextEntry={!showPassword}
-                                    value={password}
-                                    autoCapitalize='none'
-                                    autoCorrect={false}
-                                    keyboardType='ascii-capable'
-                                    onChangeText={text => setPassword(text)}
-                                />
-                                {/* password visibility button */}
-                                <TouchableOpacity style={styles.passwordButton} onPress={() => setShowPassword(!showPassword)}>
-                                    {/* Icon button For changing password input visibility */}
-                                    <Icon name={showPassword ? 'visibility' : 'visibility-off'} size={20} color='#000' />
-                                </TouchableOpacity>
-                            </View>
-                            {/* remmeber me check box  in one line*/}
-                            <View style={styles.rememberMeContainer}>
-                                <TouchableOpacity style={{ flexDirection: 'row' }} onPress={toggeleRememberMe}>
-                                    {isChecked
-                                        ?
-                                        <MaterialCommunityIcons style={styles.rememberMeIcon} name="checkbox-intermediate" size={24} color="#979797" />
-                                        :
-                                        <MaterialCommunityIcons style={styles.rememberMeIcon} name="checkbox-blank-outline" size={24} color="#979797" />
-                                    }
-                                    <Text style={styles.rememberMe}>Remember Me</Text>
-                                </TouchableOpacity>
-                                {/* forgot password button */}
-                                <TouchableOpacity style={{ flexDirection: 'row', marginLeft: SCREEN_WIDTH * 0.235 }} onPress={NavigateToForgotPassword}>
-                                    <View style={styles.forgotPasswordContainer}>
-                                        <Text style={styles.btnForgotPassword}>Forgot Password?</Text>
+                                        onChangeText={text => setEmail(text)}
+                                        keyboardType="email-address"
+                                        autoCorrect={false}
+                                    />
+                                    <View style={styles.passwordContainer}>
+                                        {/* password */}
+                                        <TextInput
+                                            style={styles.input}
+                                            placeholder="Password"
+                                            placeholderTextColor={'#9E9E9E'}
+                                            secureTextEntry={!showPassword}
+                                            value={password}
+                                            autoCapitalize='none'
+                                            autoCorrect={false}
+                                            keyboardType='ascii-capable'
+                                            onChangeText={text => setPassword(text)}
+                                        />
+                                        {/* password visibility button */}
+                                        <TouchableOpacity style={styles.passwordButton} onPress={() => setShowPassword(!showPassword)}>
+                                            {/* Icon button For changing password input visibility */}
+                                            <Icon name={showPassword ? 'visibility' : 'visibility-off'} size={20} color='#000' />
+                                        </TouchableOpacity>
                                     </View>
-                                </TouchableOpacity>
+                                    {/* remmeber me check box  in one line*/}
+                                    <View style={styles.rememberMeContainer}>
+                                        <TouchableOpacity style={{ flexDirection: 'row' }} onPress={toggeleRememberMe}>
+                                            {isChecked
+                                                ?
+                                                <MaterialCommunityIcons style={styles.rememberMeIcon} name="checkbox-intermediate" size={24} color="#979797" />
+                                                :
+                                                <MaterialCommunityIcons style={styles.rememberMeIcon} name="checkbox-blank-outline" size={24} color="#979797" />
+                                            }
+                                            <Text style={styles.rememberMe}>Remember Me</Text>
+                                        </TouchableOpacity>
+                                        {/* forgot password button */}
+                                        <TouchableOpacity style={{ flexDirection: 'row', marginLeft: SCREEN_WIDTH * 0.235 }} onPress={NavigateToForgotPassword}>
+                                            <View style={styles.forgotPasswordContainer}>
+                                                <Text style={styles.btnForgotPassword}>Forgot Password?</Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                    </View>
+                                    {/* login button */}
+                                    <TouchableOpacity onPress={logInBtn} style={styles.button}>
+                                        <Text style={styles.buttonText}>Log In</Text>
+                                    </TouchableOpacity>
+                                    <View style={styles.footerContainer}>
+                                        {/* footer line */}
+                                        <OrLine />
+                                        <NeedAccount NavigateToSignUp={NavigateToSignUp} />
+                                    </View>
+                                </View>
                             </View>
-                            {/* login button */}
-                            <TouchableOpacity onPress={logInBtn} style={styles.button}>
-                                <Text style={styles.buttonText}>Log In</Text>
-                            </TouchableOpacity>
-                            <View style={styles.footerContainer}>
-                                {/* footer line */}
-                                <OrLine />
-                                <NeedAccount NavigateToSignUp={NavigateToSignUp} />
-                            </View>
-                        </View>
-                    </View>
-                </TouchableWithoutFeedback>
-            </KeyboardAvoidingView>
-        </SafeAreaView >
-}
+                        </TouchableWithoutFeedback>
+                    </KeyboardAvoidingView>
+                </SafeAreaView >
+            }
         </>
     )
 }

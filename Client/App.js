@@ -60,6 +60,7 @@ export default function App() {
   if (!isReady) {
     return null;
   }
+  
   return (
     <NavigationContainer independent={true} >
       <UserProvider>
