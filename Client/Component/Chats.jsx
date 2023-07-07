@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Dimensions, Image, Alert, Modal, TouchableOpacity, ScrollView, Platform, SafeAreaView,ActivityIndicator } from 'react-native'
+import { View, Text, StyleSheet, Dimensions, Image, Alert, Modal, TouchableOpacity, ScrollView, Platform, SafeAreaView, ActivityIndicator } from 'react-native'
 import { useCallback, useState, useLayoutEffect } from 'react'
 import { auth, db } from '../config/firebase';
 import { GiftedChat, Bubble, Time, MessageImage } from 'react-native-gifted-chat';
@@ -119,10 +119,10 @@ function MainRoom({ navigation }) {
   }, [userChats]);
 
   useEffect(() => {
-    if(chatsToDisplay.length>0){
+    if (chatsToDisplay.length > 0) {
       setIsLoading(false)
     }
-    else{
+    else {
       setIsLoading(true)
     }
   }, [chatsToDisplay])
@@ -158,7 +158,6 @@ function MainRoom({ navigation }) {
     });
     renderUsers(searchedUsers);
   }, [searchQuery]);
-
 
   const addNewPrivateChat = async (user) => {
     // check if convo already exists in firestore 
@@ -214,11 +213,11 @@ function MainRoom({ navigation }) {
           <Feather name='edit' size={24} />
         </TouchableOpacity>
       </View>
-      {isLoading ? <View style={styles.indicatorView}><ActivityIndicator size="large" color="#000" style={styles.loadIcon} /></View> : 
-      <ScrollView alwaysBounceVertical={false}>
-        {chatsToDisplay}
-      </ScrollView>
-}
+      {isLoading ? <View style={styles.indicatorView}><ActivityIndicator size="small" color="#548DFF" style={styles.loadIcon} /></View> :
+        <ScrollView alwaysBounceVertical={false}>
+          {chatsToDisplay}
+        </ScrollView>
+      }
       <Modal presentationStyle="pageSheet" visible={addNewModal} animationType="slide">
         <SafeAreaView style={styles.modal}>
           <View style={styles.top}>
@@ -531,8 +530,8 @@ const styles = StyleSheet.create({
     color: '#548DFF',
   },
   indicatorView: {
-    justifyContent:'center', 
-    alignContent:'center', 
-    flex:1
+    justifyContent: 'center',
+    alignContent: 'center',
+    flex: 1
   }
 })

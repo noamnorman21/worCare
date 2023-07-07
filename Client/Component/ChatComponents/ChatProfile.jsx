@@ -3,12 +3,10 @@ import { auth, db } from '../../config/firebase';
 import { collection, addDoc, getDocs, getDoc, query, orderBy, onSnapshot, updateDoc, where, limit, doc, increment } from 'firebase/firestore';
 import { useUserContext } from '../../UserContext';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
-import { useEffect, useState } from 'react';
 import { TextInput } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 
 const ScreenWidth = Dimensions.get('window').width;
-const ScreenHeight = Dimensions.get('window').height;
 
 export default function ChatProfile(props) {
 
@@ -63,79 +61,17 @@ export default function ChatProfile(props) {
     }
   }
 
-  // const addNewPrivateChat = async (user) => {
-  //   // check if convo already exists in firestore 
-  //   // if yes, navigate to chat room
-  //   // if no, add new convo to firestore and navigate to chat room
-  //   const q1 = query(collection(db, auth.currentUser.email), where("Name", "==", auth.currentUser.displayName + "+" + user.name));
-  //   const q2 = query(collection(db, auth.currentUser.email), where("Name", "==", user.name + "+" + auth.currentUser.displayName));
-  //   const querySnapshot = await getDocs(q1);
-  //   const querySnapshot2 = await getDocs(q2);
-  //   if (querySnapshot.docs.length > 0 || querySnapshot2.docs.length > 0) {
-  //     checkifConvoExistsforContact(user)
-  //     console.log("convo exists")
-  //     if (querySnapshot.docs.length > 0) {
-  //       console.log(querySnapshot.docs[0].data())
-  //       navigation.navigate('ChatRoom', { name: auth.currentUser.displayName + "+" + user.name, UserName: user.name, userEmail: user.id, unreadCount: querySnapshot.docs[0].data().unreadCount, type: "private" })
-  //     }
-  //     else {
-  //       console.log(querySnapshot2.docs[0].data())
-  //       navigation.navigate('ChatRoom', { name: user.name + "+" + auth.currentUser.displayName, UserName: user.name, userEmail: user.id, unreadCount: querySnapshot2.docs[0].data().unreadCount, type: "private" })
-  //     }
-  //     setAddNewModal(false)
-  //     // const editRef= collection(db, auth.currentUser.email, where("Name", "==", auth.currentUser.displayName+"+"+user.name));
-  //     // const doc= await getDocs(editRef);
-  //     // await updateDoc(editRef, { unread: false, unreadCount: 0 });
-  //   } else {
-  //     console.log("add new private chat")
-  //     let contact = user
-  //     console.log("Userrrrr", contact)
-  //     addDoc(collection(db, auth.currentUser.email), { Name: auth.currentUser.displayName + "+" + contact.name, UserName: contact.name, userEmail: contact.id, image: contact.avatar, unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date(), type: "private" });
-  //     checkifConvoExistsforContact(user)
-  //     setAddNewModal(false)
-  //     navigation.navigate('ChatRoom', { name: auth.currentUser.displayName + "+" + contact.name, UserName: contact.name, userEmail: contact.id, unreadCount: 0, type: "private" })
-  //   }
-  // }
-
-  // const checkifConvoExistsforContact = async (contact) => {
-  //   console.log(contact)
-  //   const q1 = query(collection(db, contact.id), where("Name", "==", auth.currentUser.displayName + "+" + contact.name));
-  //   const q2 = query(collection(db, contact.id), where("Name", "==", contact.name + "+" + auth.currentUser.displayName));
-  //   const query1 = await getDocs(q1);
-  //   const query2 = await getDocs(q2);
-  //   if (query1.docs.length > 0 || query2.docs.length > 0) {
-  //     console.log("convo exists for contact")
-  //   } else {
-  //     console.log("add new private chat")
-  //     addDoc(collection(db, contact.id), { Name: auth.currentUser.displayName + "+" + contact.name, UserName: auth.currentUser.displayName, image: auth.currentUser.photoURL, userEmail: auth.currentUser.email, unread: true, unreadCount: 0, lastMessage: "", lastMessageTime: new Date(), type: "private" });
-  //   }
-  // }
-
   return (
     <View style={styles.container}>
       <View style={styles.profile}>
-        <View style={styles.header}>
-          {/* <Text style={styles.headterTxt}>{props.user.name}</Text> */}
-        </View>
         <View style={styles.imageView}>
           <Image style={styles.avatar} source={{ uri: props.user.avatar }} />
+          <Text style={styles.name}>{props.user.name}</Text>
         </View>
-        {/* <TextInput
-          label={<Text style={{fontFamily:"Urbanist-Regular"}}>Email</Text>}
-          value={props.user._id}
-          mode="outlined"
-          disabled={true}
-          style={styles.inputTxt}
-          textColor='#000'
-          outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
-          theme={{ colors: { primary: '#548DFF', underlineColor: 'transparent', } }}
-          contentStyle={{ fontFamily: 'Urbanist-Regular' }}
-        /> */}
-        <Text style={styles.name}>{props.user.name}</Text>
         <TouchableOpacity style={styles.button}
           onPress={() => addNewPrivateChat(props.user)}>
-          <AntDesign name='message1' size={22} color={"#548DFF"} />
-          <Text style={styles.BtnTxt}>Send Messsage</Text>
+          <Text style={styles.BtnTxt}>Chat</Text>
+          <AntDesign style={styles.chatIcon} name='message1' size={18} color={"#548DFF"} />
         </TouchableOpacity>
       </View>
     </View>
@@ -144,10 +80,14 @@ export default function ChatProfile(props) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#87AFFF',
+    backgroundColor: '#fff',
     flex: 1,
     justifyContent: 'flex-end',
     borderRadius: 16,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 1,
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
   },
@@ -158,27 +98,28 @@ const styles = StyleSheet.create({
   },
   //chat user profile
   avatar: {
-    height: 100, 
-    width: 100, 
-    borderRadius: 50
+    height: 75,
+    width: 75,
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 10,
   },
   button: {
     backgroundColor: '#fff',
-    borderRadius: 16,
-    height: 54,
-    width: ScreenWidth * 0.9,
-    borderColor: '#548DFF',
     justifyContent: 'center',
     alignItems: 'center',
+    marginVertical: 10,
+    width: ScreenWidth * 0.5,
+    height: 54,
+    borderRadius: 16,
+    borderColor: '#548DFF',
     borderWidth: 1.5,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 1,
-    marginTop: 20,
+    flexDirection: 'row',
   },
   imageView: {
-    margin: 20,
+    alignItems: 'center',
+    width: ScreenWidth * 0.9,
   },
   header: {
     alignItems: 'center',
@@ -189,20 +130,18 @@ const styles = StyleSheet.create({
     fontFamily: 'Urbanist-Bold',
   },
   BtnTxt: {
-    fontSize: 16,
+    fontSize: 18,
     fontFamily: 'Urbanist-Bold',
     color: '#548DFF',
   },
-  inputTxt: {
-    fontFamily: 'Urbanist-Light',
-    fontSize: 16,
-    color: '#000',
-    backgroundColor: '#fff',
-    marginVertical: 10,
-    width: ScreenWidth * 0.9,
+  chatIcon: {
+    marginLeft: 10,
   },
   name: {
-    fontFamily:"Urbanist-SemiBold", 
-    fontSize:20
+    fontFamily: "Urbanist-SemiBold",
+    fontSize: 20,
+    color: '#000',
+    textAlign: 'center',
+    marginBottom: 10,
   }
 })
