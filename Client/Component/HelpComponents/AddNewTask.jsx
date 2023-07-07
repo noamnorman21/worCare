@@ -46,8 +46,6 @@ function AddNewMedicine(props) {
    const [showDatePicker, setShowDatePicker] = useState(false);
    const [datePickerVisable, setDatePickerVisable] = useState(false);
    const [timePickerVisable, setTimePickerVisable] = useState(false);
-
-
    const [modalTimesVisible, setModalTimesVisible] = useState(false);
    const medFrequencies = [
       { id: 0, name: 'Once' },
@@ -55,8 +53,6 @@ function AddNewMedicine(props) {
       { id: 3, name: 'Weekly' },
       { id: 4, name: 'Monthly' },
    ]
-
-
 
    const addMed = () => {
       if (medTime != '' && medTimeArr.length == 0) {

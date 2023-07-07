@@ -36,14 +36,6 @@ export default function Rights() {
   const [gpt3Answer, setGpt3Answer] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
-  const toggleOverlay = () => {
-    setVisible(!visible);
-    if (visible === false) {
-      setQuestion('');
-      setValue(null);
-    }
-  };
-
   // Function to send the question to GPT-3 API and get an answer
   // const startGptAnswer = async () => {
   //   if (question === '' || value === null) {
@@ -117,6 +109,14 @@ export default function Rights() {
     setIsLoading(false);
   };
 
+  const toggleOverlay = () => {
+    setVisible(!visible);
+    if (visible === false) {
+      setQuestion('');
+      setValue(null);
+    }
+  };
+
   const handleAddBtnPress = () => {
     setModalVisible(true);
   };
@@ -131,11 +131,11 @@ export default function Rights() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <LinearGradient
-        colors={['#E6EBF2', '#548DFF']}
-        style={styles.background}
-      />
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <LinearGradient colors={['#E6EBF2', '#548DFF']} style={styles.background} />
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{ flex: 1 }}
+      >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={{ flex: 1 }}>
             <View style={{ flex: 1 }}>
@@ -155,11 +155,12 @@ export default function Rights() {
                   setOpen={setOpen}
                   setValue={setValue}
                   setItems={setItems}
-                  containerStyle={{ height: 40, width: SCREEN_WIDTH * 0.85, marginVertical: 10 }}
-                  placeholderStyle={{ fontFamily: 'Urbanist-Light', fontSize: 16, color: '#000' }}
-                  style={{ backgroundColor: '#fff', borderRadius: 16, borderWidth: 1.5, borderColor: '#E6EBF2', height: 54 }}
-                  itemStyle={{ justifyContent: 'flex-start' }}
-                  dropDownContainerStyle={{ backgroundColor: '#fff', borderRadius: 16, borderWidth: 1.5, borderColor: '#E6EBF2' }}
+                  containerStyle={styles.dropdownContainer}
+                  placeholderStyle={value == null ? styles.dropdownPlaceholder : [styles.dropdownPlaceholder, { fontFamily: 'Urbanist-SemiBold' }]}
+                  style={styles.dropdownStyle}
+                  itemStyle={styles.dropdownItem}
+                  dropDownContainerStyle={styles.dropdownDropContainer}
+                  listItemLabelStyle={{ fontFamily: 'Urbanist-Light' }}
                   onChangeItem={item => console.log(item.label, item.value)}
                 />
 
@@ -175,37 +176,35 @@ export default function Rights() {
                 />
               </View>
 
-              <View style={[styles.btnAskContainer, open === true ? { display: 'none' } : { display: 'flex' }]}>
-                <TouchableOpacity style={styles.btnAsk} onPress={startGptAnswer}>
-                  <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 16, color: '#fff' }}>Ask Now</Text>
-                </TouchableOpacity>
-              </View>
+              {!open && (
+                <View style={styles.btnAskContainer}>
+                  <TouchableOpacity style={styles.btnAsk} onPress={startGptAnswer}>
+                    <Text style={styles.btnAskText}>Ask Now</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
             </View>
 
             <Overlay
               isVisible={visible}
               onBackdropPress={toggleOverlay}
-              overlayStyle={{ width: SCREEN_WIDTH * 0.85, height: SCREEN_HEIGHT * 0.5, borderRadius: 16, padding: 20 }}
+              overlayStyle={styles.overlay}
             >
               <View>
-                <Text style={[styles.smHeader, { textAlign: 'center', fontSize: 22 }]}>Answer</Text>
+                <Text style={[styles.smHeader, styles.answerHeader]}>Answer</Text>
               </View>
-              <View>
-                {
-                  isLoading ? (
-                    <View style={{ height: SCREEN_HEIGHT * 0.3, justifyContent: 'center', alignItems: 'center' }}>
-                      <ActivityIndicator size="large" color="#548DFF" style={styles.loadIcon} />
-                    </View>
-                  ) : (
-                    <ScrollView alwaysBounceVertical={false} style={styles.answerScrollView}>
-                      <Text style={{ fontFamily: 'Urbanist-Light', fontSize: 16, marginTop: 15 }}>{gpt3Answer}</Text>
-                    </ScrollView>
-                  )
-                }
+              <View style={styles.answerContainer}>
+                {isLoading ? (
+                  <ActivityIndicator size="large" color="#548DFF" style={styles.loadIcon} />
+                ) : (
+                  <ScrollView style={styles.answerScrollView}>
+                    <Text style={styles.answerText}>{gpt3Answer}</Text>
+                  </ScrollView>
+                )}
               </View>
-              <View style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'center' }}>
-                <TouchableOpacity style={[styles.btnAsk, { width: '100%' }]} onPress={toggleOverlay}>
-                  <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 16, color: '#fff' }}>Close</Text>
+              <View style={styles.closeBtnContainer}>
+                <TouchableOpacity style={styles.closeBtn} onPress={toggleOverlay}>
+                  <Text style={styles.closeBtnText}>Close</Text>
                 </TouchableOpacity>
               </View>
             </Overlay>
@@ -216,8 +215,6 @@ export default function Rights() {
       <View style={styles.addBtnView}>
         <AddBtn onPress={handleAddBtnPress} />
       </View>
-
-      <NewTaskModal isVisible={modalVisible} onClose={handleModalClose} cancel={handleModalClose} />
     </SafeAreaView>
   );
 }
@@ -234,13 +231,11 @@ const styles = StyleSheet.create({
     right: 10,
   },
   loadIcon: {
-    //scale transform: [{ scaleX: 1.5 }, 
     transform: [{ scale: 2 }],
     alignItems: 'center',
   },
-
   answerScrollView: {
-    maxHeight: SCREEN_HEIGHT * 0.3,  // Adjust this value based on your requirements.
+    maxHeight: SCREEN_HEIGHT * 0.3,
     width: '100%',
     marginTop: 10,
     marginBottom: 10,
@@ -291,8 +286,246 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH * 0.85,
     height: 54,
   },
+  btnAskText: {
+    fontFamily: 'Urbanist-Bold',
+    fontSize: 16,
+    color: '#fff',
+  },
   btnAskContainer: {
     justifyContent: 'center',
     alignItems: 'center',
   },
+  overlay: {
+    width: SCREEN_WIDTH * 0.85,
+    height: SCREEN_HEIGHT * 0.5,
+    borderRadius: 16,
+    padding: 20,
+  },
+  answerHeader: {
+    textAlign: 'center',
+    fontSize: 22,
+  },
+  answerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  answerText: {
+    fontFamily: 'Urbanist-Light',
+    fontSize: 16,
+    marginTop: 15,
+  },
+  closeBtnContainer: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  closeBtn: {
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#548DFF',
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: '#548DFF',
+    height: 54,
+  },
+  closeBtnText: {
+    fontFamily: 'Urbanist-Bold',
+    fontSize: 16,
+    color: '#fff',
+  },
+  dropdownContainer: {
+    height: 40,
+    width: SCREEN_WIDTH * 0.85,
+    marginVertical: 10,
+  },
+  dropdownPlaceholder: {
+    fontFamily: 'Urbanist-Light',
+    fontSize: 16,
+    color: '#000',
+  },
+  dropdownStyle: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: '#E6EBF2',
+    height: 54,
+  },
+  dropdownItem: {
+    justifyContent: 'flex-start',
+  },
+  dropdownDropContainer: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: '#E6EBF2',
+  },
 });
+//   return (
+//     <SafeAreaView style={styles.container}>
+//       <LinearGradient
+//         colors={['#E6EBF2', '#548DFF']}
+//         style={styles.background}
+//       />
+//       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+//         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+//           <View style={{ flex: 1 }}>
+//             <View style={{ flex: 1 }}>
+//               <Text style={styles.headerTxt}>Rights</Text>
+//             </View>
+
+//             <View style={{ flex: 1.5 }}>
+//               <View>
+//                 <Text style={styles.smHeader}>Categories</Text>
+//                 <DropDownPicker
+//                   placeholder="Select a category"
+//                   open={open}
+//                   onOpen={onOpenDropdown}
+//                   listMode="SCROLLVIEW"
+//                   value={value}
+//                   items={items}
+//                   setOpen={setOpen}
+//                   setValue={setValue}
+//                   setItems={setItems}
+//                   containerStyle={{ height: 40, width: SCREEN_WIDTH * 0.85, marginVertical: 10 }}
+//                   placeholderStyle={{ fontFamily: 'Urbanist-Light', fontSize: 16, color: '#000' }}
+//                   style={{ backgroundColor: '#fff', borderRadius: 16, borderWidth: 1.5, borderColor: '#E6EBF2', height: 54 }}
+//                   itemStyle={{ justifyContent: 'flex-start' }}
+//                   dropDownContainerStyle={{ backgroundColor: '#fff', borderRadius: 16, borderWidth: 1.5, borderColor: '#E6EBF2' }}
+//                   onChangeItem={item => console.log(item.label, item.value)}
+//                 />
+
+//                 <Text style={styles.smHeader}>Question</Text>
+//                 <TextInput
+//                   style={styles.inputTxt}
+//                   placeholder="What do you want to ask?"
+//                   numberOfLines={4}
+//                   placeholderTextColor="#000"
+//                   returnKeyType="done"
+//                   onChangeText={text => setQuestion(text)}
+//                   value={question}
+//                 />
+//               </View>
+
+//               <View style={[styles.btnAskContainer, open === true ? { display: 'none' } : { display: 'flex' }]}>
+//                 <TouchableOpacity style={styles.btnAsk} onPress={startGptAnswer}>
+//                   <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 16, color: '#fff' }}>Ask Now</Text>
+//                 </TouchableOpacity>
+//               </View>
+//             </View>
+
+//             <Overlay
+//               isVisible={visible}
+//               onBackdropPress={toggleOverlay}
+//               overlayStyle={{ width: SCREEN_WIDTH * 0.85, height: SCREEN_HEIGHT * 0.5, borderRadius: 16, padding: 20 }}
+//             >
+//               <View>
+//                 <Text style={[styles.smHeader, { textAlign: 'center', fontSize: 22 }]}>Answer</Text>
+//               </View>
+//               <View>
+//                 {
+//                   isLoading ? (
+//                     <View style={{ height: SCREEN_HEIGHT * 0.3, justifyContent: 'center', alignItems: 'center' }}>
+//                       <ActivityIndicator size="large" color="#548DFF" style={styles.loadIcon} />
+//                     </View>
+//                   ) : (
+//                     <ScrollView alwaysBounceVertical={false} style={styles.answerScrollView}>
+//                       <Text style={{ fontFamily: 'Urbanist-Light', fontSize: 16, marginTop: 15 }}>{gpt3Answer}</Text>
+//                     </ScrollView>
+//                   )
+//                 }
+//               </View>
+//               <View style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'center' }}>
+//                 <TouchableOpacity style={[styles.btnAsk, { width: '100%' }]} onPress={toggleOverlay}>
+//                   <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 16, color: '#fff' }}>Close</Text>
+//                 </TouchableOpacity>
+//               </View>
+//             </Overlay>
+//           </View>
+//         </TouchableWithoutFeedback>
+//       </KeyboardAvoidingView>
+
+//       <View style={styles.addBtnView}>
+//         <AddBtn onPress={handleAddBtnPress} />
+//       </View>
+
+//       <NewTaskModal isVisible={modalVisible} onClose={handleModalClose} cancel={handleModalClose} />
+//     </SafeAreaView>
+//   );
+// }
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     alignItems: 'center',
+//     backgroundColor: '#fff',
+//   },
+//   addBtnView: {
+//     position: 'absolute',
+//     bottom: 20,
+//     right: 10,
+//   },
+//   loadIcon: {
+//     //scale transform: [{ scaleX: 1.5 },
+//     transform: [{ scale: 2 }],
+//     alignItems: 'center',
+//   },
+
+//   answerScrollView: {
+//     maxHeight: SCREEN_HEIGHT * 0.3,  // Adjust this value based on your requirements.
+//     width: '100%',
+//     marginTop: 10,
+//     marginBottom: 10,
+//   },
+//   inputTxt: {
+//     fontFamily: 'Urbanist-Light',
+//     fontSize: 16,
+//     color: '#000',
+//     backgroundColor: '#fff',
+//     marginVertical: 10,
+//     width: SCREEN_WIDTH * 0.85,
+//     height: 54,
+//     maxHeight: 100,
+//     borderRadius: 16,
+//     borderWidth: 1.5,
+//     borderColor: '#E6EBF2',
+//     padding: 10,
+//   },
+//   smHeader: {
+//     fontSize: 18,
+//     fontFamily: 'Urbanist-SemiBold',
+//     marginTop: 10,
+//   },
+//   headerTxt: {
+//     fontSize: 24,
+//     textAlign: 'center',
+//     marginTop: SCREEN_HEIGHT * 0.125,
+//     fontFamily: 'Urbanist-Bold',
+//     color: '#fff1e6',
+//   },
+//   background: {
+//     position: 'absolute',
+//     left: 0,
+//     right: 0,
+//     top: 0,
+//     height: SCREEN_HEIGHT * 0.25,
+//     borderBottomLeftRadius: 30,
+//     borderBottomRightRadius: 30,
+//   },
+//   btnAsk: {
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     marginTop: 10,
+//     borderColor: '#548DFF',
+//     backgroundColor: '#548DFF',
+//     borderRadius: 16,
+//     borderWidth: 1.5,
+//     width: SCREEN_WIDTH * 0.85,
+//     height: 54,
+//   },
+//   btnAskContainer: {
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//   },
+// });
