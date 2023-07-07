@@ -1,36 +1,32 @@
-import { View, Text,StyleSheet } from 'react-native'
-import React from 'react'
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { Ionicons } from '@expo/vector-icons';
+import React, { useState } from 'react';
 
-export default function PoshNotificationprops(props) {
+export default function NotificationItem(props) {
+ const [isRead, setIsRead] = useState(props.item.status = "P" ? false : true);
+
     const handlePress = () => {
-        //toggle status
-        if (props.status == 'P') {
-          props.status = 'S';
-        }
-        else {
-          props.status = 'P';
-        }
-        console.log("props", props);
-     
-      };
+        setIsRead(!isRead);
+        //change status in DB later   
+    };
     return (
         <TouchableOpacity
             style={styles.notificationprops}
             onPress={handlePress}
         >
             <View style={styles.iconContainer}>
-                <View style={[styles.icon, props.status = "P" ? { backgroundColor: '#F2F8F2' } : { backgroundColor: 'green' }]}>
-                    <Ionicons name="calendar" size={24} color={props.status = "P" ? 'red' : 'green'} />
+                <View style={[styles.icon, isRead  ? { backgroundColor: '#F2F8F2' } : { backgroundColor: 'green' }]}>
+                    <Ionicons name="calendar" size={24} color={isRead ? 'red' : 'green'} />
                 </View>
             </View>
             <View style={styles.notificationDetails}>
                 <Text style={styles.notificationTitle}>
-                    {props.title}
+                    {props.item.title}
                 </Text>
-                <Text style={styles.notificationMessage}>{props.pushMessage}</Text>
+                <Text style={styles.notificationMessage}>{props.item.pushMessage}</Text>
             </View>
         </TouchableOpacity>
-    )
+  )
 }
 const styles = StyleSheet.create({
     notificationItem: {
@@ -38,33 +34,29 @@ const styles = StyleSheet.create({
         marginBottom: 8,
         flexDirection: 'row',
         alignItems: 'center',
-      },
-      iconContainer: {
+    },
+    iconContainer: {
         marginRight: 16,
-      },
-      icon: {
+    },
+    icon: {
         borderRadius: 54,
         height: 54,
         width: 54,
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#FFF3F3',
-      },
-      notificationDetails: {
+    },
+    notificationDetails: {
         flex: 1,
-      },
-      notificationTitle: {
+    },
+    notificationTitle: {
         fontSize: 18,
         fontFamily: 'Urbanist-SemiBold',
         marginBottom: 5,
-      },
-      notificationMessage: {
+    },
+    notificationMessage: {
         fontSize: 14,
         fontFamily: 'Urbanist-Regular',
         color: '#626262',
-      },
+    },
 })
-
-
-
-

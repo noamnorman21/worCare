@@ -3,6 +3,7 @@ import { View, Text, FlatList, SafeAreaView, TouchableOpacity, StyleSheet, Anima
 import { Ionicons } from '@expo/vector-icons';
 
 import { useUserContext } from '../UserContext';
+import NotificationItem from './HelpComponents/NotificationItem';
 
 export default function PushNotifications() {
 
@@ -10,7 +11,6 @@ export default function PushNotifications() {
   const [showYesterday, setShowYesterday] = useState(false);
   const todayContentHeight = useRef(new Animated.Value(0)).current;
   const yesterdayContentHeight = useRef(new Animated.Value(0)).current;
-  const [isRead, setIsRead] = useState(false);
 
   const { notifications } = useUserContext();  //now its one array of notifications, not sorted by date(but can be sorted by date if Noam will want it)
   //came from context(from DB), example for notification object in the array:
@@ -24,22 +24,6 @@ export default function PushNotifications() {
   // }
   const [notificationsArr, setNotificationsArr] = useState(notifications);
 
-
-  // useEffect(() => {
-  //   console.log("notificationsArr", notificationsArr);
-  //   const fetchNotifications = async () => {
-  //     // Simulating API call delay
-  //     await new Promise((resolve) => setTimeout(resolve, 1000));//////////////////////////////////// מה זה החרא זה, צריך אותו?
-  //     // const data = [
-  //     //   { id: 1, title: 'Notification 1', message: 'This is notification 1.' },
-  //     //   { id: 2, title: 'Notification 2', message: 'This is notification 2.' },
-  //     //   { id: 3, title: 'Notification 3', message: 'This is notification 3.' },
-  //     // ];
-  //     // setNotifications(data);
-  //   };
-
-  //   fetchNotifications();
-  // }, []);
 
   const toggleToday = () => {
     if (showToday) {
@@ -96,37 +80,9 @@ export default function PushNotifications() {
   };
 
   const renderItem = ({ item }) => {
-    
-
-    const handlePress = () => {
-      //toggle status
-      if (item.status == 'P') {
-        item.status = 'S';
-      }
-      else {
-        item.status = 'P';
-      }
-      console.log("item", item);
-   
-    };
-
     return (
-      <TouchableOpacity
-        style={styles.notificationItem}
-        onPress={handlePress}
-      >
-        <View style={styles.iconContainer}>
-          <View style={[styles.icon, item.status = "P" ? { backgroundColor: '#F2F8F2' } : { backgroundColor: 'green' }]}>
-            <Ionicons name="calendar" size={24} color={item.status = "P" ? 'red' : 'green'} />
-          </View>
-        </View>
-        <View style={styles.notificationDetails}>
-          <Text style={styles.notificationTitle}>
-            {item.title}
-          </Text>
-          <Text style={styles.notificationMessage}>{item.pushMessage}</Text>
-        </View>
-      </TouchableOpacity>
+      //its in HelpComponents folder
+      <NotificationItem item={item} />
     );
   };
 
@@ -187,35 +143,7 @@ const styles = StyleSheet.create({
   },
   listContent: {
     flexGrow: 1,
+    marginLeft: 16,
   },
-  notificationItem: {
-    padding: 16,
-    marginBottom: 8,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  iconContainer: {
-    marginRight: 16,
-  },
-  icon: {
-    borderRadius: 54,
-    height: 54,
-    width: 54,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#FFF3F3',
-  },
-  notificationDetails: {
-    flex: 1,
-  },
-  notificationTitle: {
-    fontSize: 18,
-    fontFamily: 'Urbanist-SemiBold',
-    marginBottom: 5,
-  },
-  notificationMessage: {
-    fontSize: 14,
-    fontFamily: 'Urbanist-Regular',
-    color: '#626262',
-  },
+
 });
