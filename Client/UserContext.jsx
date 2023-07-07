@@ -167,7 +167,6 @@ export function UserProvider({ children }) {
         await getAllPublicTasks(usertoSync);
         await getHolidaysForUser(usertoSync.calendarCode);
         await GetAllDrugs();
-
     }
 
     async function logInRemember(userData) {
