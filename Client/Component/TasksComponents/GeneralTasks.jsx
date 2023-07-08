@@ -5,14 +5,17 @@ import { AddBtn, NewTaskModal } from '../HelpComponents/AddNewTask'
 import TaskCheckBox from '../HelpComponents/TaskCheckBox';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native'; // Import useNavigation from @react-navigation/native
+import { useUserContext } from '../../UserContext';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function GeneralTasks(props) {
+  const { allPublicTasks,allPrivateTasks } = useUserContext();
+
   const navigation = useNavigation(); // Access the navigation object
   const [modalVisible, setModalVisible] = useState(false)
-  const [publicTasks, setPublicTasks] = useState(props.allPublicTasks)
-  const [privateTasks, setPrivateTasks] = useState(props.allPrivateTasks)
+  //const [publicTasks, setPublicTasks] = useState(props.allPublicTasks)
+  //const [privateTasks, setPrivateTasks] = useState(props.allPrivateTasks)
   const [allTasks, setAllTasks] = useState([])
   const checkIcon = ["check-circle", "circle"];
   const arrowIcon = ["chevron-down-outline", "chevron-up-outline"];
@@ -21,10 +24,10 @@ export default function GeneralTasks(props) {
   const isFocused = useIsFocused();
 
   useEffect(() => {
-    setPublicTasks(props.allPublicTasks)
-    setPrivateTasks(props.allPrivateTasks)
-    combineTasks(props.allPrivateTasks, props.allPublicTasks)
-  }, [props.allPublicTasks, props.allPrivateTasks])
+   // setPublicTasks(props.allPublicTasks)
+   // setPrivateTasks(props.allPrivateTasks)
+    combineTasks(allPrivateTasks,allPublicTasks)
+  }, [allPublicTasks, allPrivateTasks])
 
   const handleAddBtnPress = () => {
     setModalVisible(true);

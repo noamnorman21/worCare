@@ -542,7 +542,7 @@ function AddNewMedicine(props) {
                                  <TouchableOpacity onPress={() => { setModalTimesVisible(true) }}>
                                     <View style={[styles.doubleRowItem, medTimeArr.length == numberPerDay && { borderColor: '#000' }]}>
                                        <Text style={[styles.inputNumber, { color: '#9E9E9E' }, medTimeArr.length == numberPerDay && { color: '#000' }]}>
-                                          {medTimeArr.length==numberPerDay?"Times Selected":"Add Times"}
+                                          {medTimeArr.length == numberPerDay ? "Times Selected" : "Add Times"}
                                        </Text>
                                        <MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />
                                     </View>
@@ -812,17 +812,20 @@ function NewTaskModal(props) {
 
    const addPrivateTask = () => {
       //check if all the fields are filled
-      if (taskName == '' || taskFromDate == '' || taskTime == '' || taskFrequency == '') {
+      if (taskName == '' || taskFromDate == '' || taskFrequency == '') {
          Alert.alert('Please Fill all the fields');
          return;
       }
-
+      if (taskTimeArr.length == 0 && taskTime == '') {
+         Alert.alert('Please Fill all the fields');
+         return;
+      }
       if (taskTime != '' && taskTimeArr.length == 0) {
-         if(Platform.OS === 'ios'){
-         taskTimeArr.push(taskTime);
+         if (Platform.OS === 'ios') {
+            taskTimeArr.push(taskTime);
          }
-         else{
-            taskTimeArr.push(taskTime.substring(0,5));
+         else {
+            taskTimeArr.push(taskTime.substring(0, 5));
          }
       }
       let taskData = {

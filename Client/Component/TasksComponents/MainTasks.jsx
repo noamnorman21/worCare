@@ -4,15 +4,17 @@ import { Ionicons } from '@expo/vector-icons';
 import TaskView from '../HelpComponents/TaskView';
 import { AddBtn, NewTaskModal } from '../HelpComponents/AddNewTask';
 import { useRoute, useIsFocused, useFocusEffect } from '@react-navigation/native';
+import { useUserContext } from '../../UserContext';
 
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export default function MainTasks(props) {
+  const { allPublicTasks,allPrivateTasks } = useUserContext();
+
   const [modalVisible, setModalVisible] = useState(false);
-  const [publicTasks, setPublicTasks] = useState(props.allPublicTasks);
-  const [privateTasks, setPrivateTasks] = useState(props.allPrivateTasks);
+
   const [allTasks, setAllTasks] = useState([]);
   const [todayTasks, setTodayTasks] = useState([]);
   const [tommorowTasks, setTommorowTasks] = useState([]);
@@ -26,10 +28,8 @@ export default function MainTasks(props) {
   const [isFirstFocus, setIsFirstFocus] = useState(true);
 
   useEffect(() => {
-    setPublicTasks(props.allPublicTasks);
-    setPrivateTasks(props.allPrivateTasks);
-    filterTasks(props.allPrivateTasks, props.allPublicTasks);
-  }, [props.allPublicTasks, props.allPrivateTasks, isFocused]);
+    filterTasks(allPublicTasks, allPrivateTasks);
+  }, [allPublicTasks, allPrivateTasks, isFocused]);
 
   useEffect(() => {
     if (isFocused && route.params) {
@@ -190,7 +190,7 @@ export default function MainTasks(props) {
       <View style={styles.addBtnView}>
         <AddBtn onPress={handleAddBtnPress} />
       </View>
-      <NewTaskModal isVisible={modalVisible} onClose={handleModalClose} cancel={()=>{ setModalVisible(false)}} />
+      <NewTaskModal isVisible={modalVisible} onClose={handleModalClose} cancel={() => { setModalVisible(false) }} />
     </View>
   );
 }
