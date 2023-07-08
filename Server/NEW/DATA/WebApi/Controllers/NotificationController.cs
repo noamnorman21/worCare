@@ -39,16 +39,12 @@ namespace WebApi.Controllers
                 return Ok("Notification status updated");
             }
             else
-            {
-                return BadRequest("Bibi the king");
-            }
-
+                return BadRequest("Bibi the king");           
         }
         [HttpPost]
         [Route("GetNotificationsThatSent")]
         public IHttpActionResult GetNotificationsThatSent([FromBody] int userID)            
-        {
-            //list of NotificationsThatSentDTO          
+        {    
             var notifications = db.tblNotifictions.Where(x => x.userId == userID ).Select(x => new NotificationsThatSentDTO
             {
                 notificationID = x.notificationID,
@@ -58,6 +54,7 @@ namespace WebApi.Controllers
                 userId = x.userId,
                 status = x.status
             }).ToList();
+            notifications = notifications.OrderByDescending(x => x.time).ToList();
             return Ok(notifications);
         }
     }

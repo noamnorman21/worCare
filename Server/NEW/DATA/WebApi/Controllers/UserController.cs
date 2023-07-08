@@ -277,6 +277,7 @@ namespace WebApi.Controllers
                     notification.pushMessage = item.pushMessage;
                     newUser.notification.Add(notification);
                 }
+                newUser.notification = newUser.notification.OrderByDescending(x => x.time).ToList();
                 return Ok(newUser);
             }
             catch (Exception ex)

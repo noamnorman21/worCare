@@ -20,7 +20,6 @@ export default function NotificationItem(props) {
 
     const handlePress = () => {
         setIsRead(true);
-        console.log(props.item.notificationID);
         UpdateNotificationStatus(props.item.notificationID);
     };
 
@@ -40,7 +39,10 @@ export default function NotificationItem(props) {
                         <Text style={styles.detailsTxt}>{props.item.pushMessage}
                             {
                                 !isRead && (
-                                    <Text style={styles.timeTxt}> Recieved At: {<Text style={styles.timeTxt}>{pushTime}</Text>}</Text>
+                                    <>
+                                        {"\n"}
+                                        <Text style={styles.timeTxt}> Recieved At: {<Text style={styles.timeTxt}>{pushTime}</Text>}</Text>
+                                    </>
                                 )
                             }
                         </Text>
@@ -53,7 +55,6 @@ export default function NotificationItem(props) {
                         </TouchableOpacity>
                     ) : (
                         <Feather name="check-circle" size={22} color={iconColors[0]} />
-
                     )}
                 </View>
             </View>
