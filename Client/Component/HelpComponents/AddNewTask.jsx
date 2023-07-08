@@ -155,53 +155,111 @@ function AddNewMedicine(props) {
    }
 
    function rowForEachTime() {
-      for (let i = 0; i < numberPerDay; i++) {
-         timePickers.push(
-            <View key={i} style={stylesForTimeModal.timePicker}>
-               <View>
-                  <Text style={{ fontFamily: 'Urbanist-Light', fontSize: 16, color: '#000' }}>Time {i + 1}</Text>
+      if (Platform.OS === 'ios') {
+         for (let i = 0; i < numberPerDay; i++) {
+            timePickers.push(
+               <View key={i} style={stylesForTimeModal.timePicker}>
+                  <View>
+                     <Text style={{ fontFamily: 'Urbanist-Light', fontSize: 16, color: '#000' }}>Time {i + 1}</Text>
+                  </View>
+                  <View>
+                     <DatePicker
+                        style={[stylesForTimeModal.doubleRowItem, medTimeArr[i] != null && { borderColor: '#000' }]}
+                        date={medTimeArr[i]}
+                        iconComponent={<MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />}
+                        placeholder="Add Time"
+                        mode="time"
+                        format="HH:mm"
+                        is24Hour={true}
+                        confirmBtnText="Confirm"
+                        cancelBtnText="Cancel"
+                        showIcon={true}
+                        customStyles={{
+                           dateInput: {
+                              borderWidth: 0,
+                              alignItems: 'flex-start',
+                              paddingLeft: 10,
+                           },
+                           placeholderText: {
+                              color: '#9E9E9E',
+                              fontSize: 16,
+                              textAlign: 'left',
+                              fontFamily: 'Urbanist-Light',
+                           },
+                           dateText: {
+                              color: '#000',
+                              fontSize: 16,
+                              fontFamily: 'Urbanist-SemiBold',
+                           },
+                        }}
+                        onDateChange={(date) => {
+                           let newArr = [...medTimeArr];
+                           newArr[i] = date;
+                           setMedTimeArr(newArr);
+                        }}
+                     />
+                  </View>
                </View>
-               <View>
-                  <DatePicker
-                     style={[stylesForTimeModal.doubleRowItem, medTimeArr[i] != null && { borderColor: '#000' }]}
-                     date={medTimeArr[i]}
-                     iconComponent={<MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />}
-                     placeholder="Add Time"
-                     mode="time"
-                     format="HH:mm"
-                     is24Hour={true}
-                     confirmBtnText="Confirm"
-                     cancelBtnText="Cancel"
-                     showIcon={true}
-                     customStyles={{
-                        dateInput: {
-                           borderWidth: 0,
-                           alignItems: 'flex-start',
-                           paddingLeft: 10,
-                        },
-                        placeholderText: {
-                           color: '#9E9E9E',
-                           fontSize: 16,
-                           textAlign: 'left',
-                           fontFamily: 'Urbanist-Light',
-                        },
-                        dateText: {
-                           color: '#000',
-                           fontSize: 16,
-                           fontFamily: 'Urbanist-SemiBold',
-                        },
-                     }}
-                     onDateChange={(date) => {
-                        let newArr = [...medTimeArr];
-                        newArr[i] = date;
-                        setMedTimeArr(newArr);
-                     }}
-                  />
-               </View>
-            </View>
-         )
+            )
+         }
+         return timePickers;
       }
-      return timePickers;
+      else {
+         for (let i = 0; i < numberPerDay; i++) {
+            timePickers.push(
+               <RowForAdnriod key={i} index={i} addTimeAndroid={addTimeAndroid} />
+            )
+         }
+         return timePickers;
+      }
+   }
+
+   const addTimeAndroid = (time, index) => {
+      console.log("time= ", time);
+      let newArr = [...medTimeArr];
+      console.log("newArr= ", newArr);
+      newArr[index] = time;
+      console.log("newArr= ", newArr);
+      setMedTimeArr(newArr);
+   }
+
+   const RowForAdnriod = (props) => {
+      const [show, setShow] = useState(false);
+      const [time, setTime] = useState('');
+
+      const onchangeTime = (date) => {
+         setShow(false);
+         const currentTime = new Date(date.nativeEvent.timestamp).toTimeString().substring(0, 5);
+         console.log("currentDate= ", currentTime);
+         setTime(currentTime);
+         props.addTimeAndroid(currentTime, props.index);
+      }
+
+
+      return (
+         <View style={stylesForTimeModal.timePicker}>
+            <View>
+               <Text style={{ fontFamily: 'Urbanist-Light', fontSize: 16, color: '#000' }}>Time {props.index + 1}</Text>
+            </View>
+            <View>
+               <TouchableOpacity onPress={() => setShow(true)} style={[stylesForTimeModal.doubleRowItem, medTimeArr[props.index] != null && { borderColor: '#000' }]}>
+                  <Text style={{ fontFamily: 'Urbanist-Light', fontSize: 16, color: '#000' }}>{medTimeArr[props.index] ? medTimeArr[props.index] : "Add Time"}</Text>
+               </TouchableOpacity>
+            </View>
+            {show && (
+               <DateTimePicker
+                  value={time ? new Date(time) : new Date()}
+                  mode={"time"}
+                  is24Hour={true}
+                  placeholder="Time"
+                  minimumDate={new Date(2000, 0, 1)}
+                  onChange={(date) => onchangeTime(date)}
+                  display="default"
+                  maximumDate={new Date()}
+               />
+            )}
+         </View>
+      )
    }
 
    const saveTimeArr = () => {
