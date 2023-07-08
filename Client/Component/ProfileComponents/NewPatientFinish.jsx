@@ -159,7 +159,7 @@ export default function NewPatientFinish({ navigation, route }) {
                     console.log(json)
                 }
                 else {
-                    navigation.navigate('LogIn', { tblUser: route.params.tblUser })
+                    navigation.navigate('CustomHeader')
                 }
             })
             .catch((error) => {

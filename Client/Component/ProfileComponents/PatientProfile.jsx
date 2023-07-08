@@ -117,6 +117,18 @@ export default function PatientProfile() {
 
     const HobbiesScreen = () => {
         const [selectedHobbies, setSelectedHobby] = useState('TVShow');
+        const [arr, setArr] = useState([]);
+
+        useEffect(() => {
+            if (hobbiesAndLimitations[0][selectedHobbies]) {
+                let arr= hobbiesAndLimitations[0][selectedHobbies].split(",");
+                let arr2=[];
+                arr.map((item,index)=>{
+                    arr2.push(item.trim());
+                })
+                setArr(arr2);
+            }
+        }, [selectedHobbies]);
 
         return (
             <View>
@@ -145,20 +157,62 @@ export default function PatientProfile() {
                 </ScrollView >
                 <ScrollView contentContainerStyle={styles.collageContainer}>
                     {
-                        selectedHobbies && HobbiesJSON[selectedHobbies] &&
-                        HobbiesJSON[selectedHobbies].map((hobby, index) => {
-                            return (
-                                <TouchableOpacity
-                                    style={[styles.collageItemContainer, hobbiesAndLimitations[0][selectedHobbies].includes(hobby.name) ? styles.selectedCollageBubble : null]}
-                                    onPress={() => { console.log("pressed"); handleHobbyToggle(hobby) }}
-                                    key={index}
-                                >
-                                    <View key={index} style={hobbiesAndLimitations[0][selectedHobbies].includes(hobby.name) ? styles.selectecollageBubble : styles.collageBubble}>
-                                        <Text style={hobbiesAndLimitations[0][selectedHobbies].includes(hobby.name) ? styles.selectedCollageText : styles.collageText}>{hobby.name}</Text>
-                                    </View>
-                                </TouchableOpacity>
-                            )
-                        })
+                        HobbiesJSON[selectedHobbies] ?
+                        <View style={styles.collageContainer}>
+{HobbiesJSON[selectedHobbies].map((hobby, index) => {
+                                return (
+                                    <TouchableOpacity
+                                        style={[styles.collageItemContainer, hobbiesAndLimitations[0][selectedHobbies].includes(hobby.name) ? styles.selectedCollageBubble : null]}
+                                        onPress={() => { console.log("pressed"); handleHobbyToggle(hobby) }}
+                                        key={index}
+                                    >
+                                        <View key={index} style={hobbiesAndLimitations[0][selectedHobbies].includes(hobby.name) ? styles.selectecollageBubble : styles.collageBubble}>
+                                            <Text style={hobbiesAndLimitations[0][selectedHobbies].includes(hobby.name) ? styles.selectedCollageText : styles.collageText}>{hobby.name}</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                )
+                            })
+                            }
+                            {/*render additional attrubutes that were not in the json*/}
+                            {hobbiesAndLimitations[0][selectedHobbies] &&
+                                arr.map((hobby, index) => {
+                                    if (!HobbiesJSON[selectedHobbies].some(item => item.name === hobby)) {
+                                        return (
+                                            <TouchableOpacity
+                                                style={[styles.collageItemContainer, styles.selectedCollageBubble]}
+                                                onPress={() => { console.log("pressed"); handleHobbyToggle(hobby) }}
+                                                key={index}
+                                            >
+                                                <View key={index} style={styles.selectedCollageBubble}>
+                                                    <Text style={styles.selectedCollageText}>{hobby}</Text>
+                                                </View>
+                                            </TouchableOpacity>
+                                        )
+                                    }
+                                }
+                                )
+                            }
+                            </View>
+                            : <View>
+                                {hobbiesAndLimitations[0][selectedHobbies] ?
+                                    arr.map((hobby, index) => {
+                                        return (
+                                            <TouchableOpacity
+                                                style={[styles.collageItemContainer,styles.selectedCollageBubble ]}
+                                                onPress={() => {console.log("pressed"); handleHobbyToggle(hobby) }}
+                                                key={index}
+                                            >
+                                                <View key={index} style={styles.selectedCollageBubble }>
+                                                    <Text style={styles.selectedCollageText}>{hobby}</Text>
+                                                </View>
+                                            </TouchableOpacity>
+                                        )
+                                    })
+                                    :
+                                    <Text style={{ fontSize: 20, fontFamily: 'Urbanist-Medium', color: '#548DFF', textAlign: 'center', marginTop: 20 }}>No Hobbies Selected</Text>
+                                }
+                            </View>
+
                     }
                 </ScrollView>
             </View>
@@ -167,6 +221,18 @@ export default function PatientProfile() {
 
     const LimitationsScreen = () => {
         const [selectedFilter, setSelectedFilter] = useState('allergies');
+        const [arr, setArr] = useState([]);
+
+        useEffect(() => {
+            if (hobbiesAndLimitations[0][selectedFilter]) {
+                let arr= hobbiesAndLimitations[0][selectedFilter].split(",");
+                let arr2=[];
+                arr.map((item,index)=>{
+                    arr2.push(item.trim());
+                })
+                setArr(arr2);
+            }
+        }, [selectedFilter]);
 
         return (
             <View>
@@ -187,7 +253,9 @@ export default function PatientProfile() {
                 <ScrollView contentContainerStyle={styles.collageContainer}>
                     {/*version without icon- render according to category */}
                     {
-                        LimitationsJSON[selectedFilter] && LimitationsJSON[selectedFilter].map((limitation, index) => {
+                        LimitationsJSON[selectedFilter]?
+                        <View style={styles.collageContainer}>
+                        {LimitationsJSON[selectedFilter].map((limitation, index) => {
                             return (
                                 <TouchableOpacity
                                     style={[styles.collageItemContainer, hobbiesAndLimitations[0][selectedFilter].includes(limitation.name) ? styles.selectedCollageBubble : null]}
@@ -199,8 +267,47 @@ export default function PatientProfile() {
                                     </View>
                                 </TouchableOpacity>
                             )
-                        })
-
+                        })}
+                                {/*render additional attrubutes that were not in the json*/}
+                                {hobbiesAndLimitations[0][selectedFilter] &&
+                                    arr.map((limitation, index) => {
+                                        if (!LimitationsJSON[selectedFilter].some(item => item.name === limitation)) {
+                                            return (
+                                                <TouchableOpacity
+                                                    style={[styles.collageItemContainer, styles.selectedCollageBubble]}
+                                                    onPress={() => { console.log("pressed"); handleHobbyToggle(limitation) }}
+                                                    key={index}
+                                                >
+                                                    <View key={index} style={styles.selectedCollageBubble}>
+                                                        <Text style={styles.selectedCollageText}>{limitation}</Text>
+                                                    </View>
+                                                </TouchableOpacity>
+                                            )
+                                        }
+                                    }
+                                    )
+                                }
+                            </View>
+                        :<View>
+                            {hobbiesAndLimitations[0][selectedFilter] ?
+                                arr.map((limitation, index) => {
+                                    return (
+                                        <TouchableOpacity
+                                            style={[styles.collageItemContainer,styles.selectedCollageBubble ]}
+                                            onPress={() => {console.log("pressed"); handleHobbyToggle(limitation) }}
+                                            key={index}
+                                        >
+                                            <View key={index} style={styles.selectedCollageBubble }>
+                                                <Text style={styles.selectedCollageText}>{limitation}</Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                    )
+                                }
+                                )
+                                :
+                                <Text style={{ fontSize: 20, fontFamily: 'Urbanist-Medium', color: '#548DFF', textAlign: 'center', marginTop: 20 }}>No Limitations Selected</Text>
+                            }
+                        </View>
                     }
 
                 </ScrollView>
@@ -302,6 +409,7 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
         justifyContent: 'center',
         alignItems: 'center',
+        paddingBottom: Platform.OS==="android" && CONTAINER_PADDING*3,
     },
     collageBubble: {
         width: BUBBLE_SIZE,
