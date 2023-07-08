@@ -104,17 +104,16 @@ namespace WebApi.Controllers
         public IHttpActionResult GetAllPrivateTasks([FromBody] ForeignUserDTO userDTO)
         {
             List<PrivateActualTaskDTO> tasks = new List<PrivateActualTaskDTO>();
-
             try
             {
                 TimeSpan dateTime = DateTime.Now.TimeOfDay;
                 var tasksArr = from t in db.tblPrivateTask
-                               where t.workerId == userDTO.Id && t.taskToDate >= DateTime.Now
+                               where t.workerId == userDTO.Id && t.taskToDate >= DateTime.Today
                                select t;
                 foreach (var item in tasksArr)
                 {
                     var task = from ta in db.tblPrivateActualTask
-                               where ta.taskId == item.taskId && ta.taskDate >= DateTime.Today && ta.TimeInDay >= dateTime && ta.taskStatus == "P" && ta.taskDate <= SqlFunctions.DateAdd("d", 7, DateTime.Now)
+                               where ta.taskId == item.taskId && ta.taskDate >= DateTime.Today &&  ta.taskStatus == "P" && ta.taskDate <= SqlFunctions.DateAdd("d", 7, DateTime.Now)
                                select ta;
                     foreach (var item2 in task)
                     {
@@ -127,7 +126,6 @@ namespace WebApi.Controllers
                         taskDTO.TimeInDay = item2.TimeInDay;
                         taskDTO.taskStatus = item2.taskStatus;
                         tasks.Add(taskDTO);
-
                     }
                 }
                 return Ok(tasks);
