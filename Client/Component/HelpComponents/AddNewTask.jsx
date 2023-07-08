@@ -542,7 +542,7 @@ function AddNewMedicine(props) {
                                  <TouchableOpacity onPress={() => { setModalTimesVisible(true) }}>
                                     <View style={[styles.doubleRowItem, medTimeArr.length == numberPerDay && { borderColor: '#000' }]}>
                                        <Text style={[styles.inputNumber, { color: '#9E9E9E' }, medTimeArr.length == numberPerDay && { color: '#000' }]}>
-                                          Add Times
+                                          {medTimeArr.length==numberPerDay?"Times Selected":"Add Times"}
                                        </Text>
                                        <MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />
                                     </View>
