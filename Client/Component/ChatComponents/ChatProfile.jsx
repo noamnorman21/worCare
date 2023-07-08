@@ -31,7 +31,7 @@ export default function ChatProfile(props) {
       }
       else {
         console.log(2)
-        closeModal()
+        props.closeModal()
         navigation.popToTop()
         navigation.navigate('ChatRoom', { name: user.name + "+" + auth.currentUser.displayName, UserName: user.name, userEmail: user._id, unreadCount: querySnapshot2.docs[0].data().unreadCount, type: "private" })
       }
@@ -41,6 +41,7 @@ export default function ChatProfile(props) {
       console.log("Userrrrr", contact)
       addDoc(collection(db, auth.currentUser.email), { Name: auth.currentUser.displayName + "+" + contact.name, UserName: contact.name, userEmail: contact._id, image: contact.avatar, unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date() });
       checkifConvoExistsforContact(user)
+      props.closeModal()
       navigation.popToTop()
       navigation.navigate('ChatRoom', { name: auth.currentUser.displayName + "+" + contact.name, UserName: contact.name, userEmail: contact._id, unreadCount: 0, type: "private" })
     }
