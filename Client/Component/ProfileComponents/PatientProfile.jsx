@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { View, Text, SafeAreaView, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Alert } from 'react-native';
 import { Chip, TextInput } from 'react-native-paper';
 import { useUserContext } from '../../UserContext';
@@ -7,6 +7,7 @@ import moment from 'moment';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import HobbiesJSON from '../SignUpComponents/User/Hobbies.json';
 import LimitationsJSON from '../SignUpComponents/User/Limitations.json';
+import { useFocusEffect } from '@react-navigation/native';
 const Tab = createMaterialTopTabNavigator();
 const BUBBLE_SIZE = 100;
 const CONTAINER_PADDING = 10;
@@ -18,7 +19,13 @@ export default function PatientProfile({navigation}) {
     const [saving, setSaving] = useState(false);
     const patientData = userContext.patientData;
     const [hobbiesAndLimitations, setHobbiesAndLimitations] = useState(userContext.patientHL);
+    const [newData, setNewData] = useState(userContext.patientHL);
     const birthDate = moment(patientData.DateOfBirth).format('DD/MM/YYYY');
+    
+    // maybe we can use this to save the hobbies and limitations.
+    //the page re-renders when we save the hobbies and limitations beacuse it saves in the PatiientProfile component 
+    const [hobbies, setHobbies] = useState([]);
+    const [limitations, setLimitations] = useState([]);
 
     useEffect(() => {
         navigation.setOptions({
@@ -28,7 +35,30 @@ export default function PatientProfile({navigation}) {
                 </TouchableOpacity>
             ),
         });
+
+        if (hobbiesAndLimitations.length > 0) {
+            let hobArr = [];
+            let limitArr = [];
+            for (let key in hobbiesArr) {
+                console.log(hobbiesAndLimitations[0][`${hobbiesArr[key].key}`]);
+                if (hobbiesAndLimitations[0][`${hobbiesArr[key].key}`]) {
+                    hobArr.push({[`${hobbiesArr[key].key}`] : hobbiesAndLimitations[0][`${hobbiesArr[key].key}`]});
+                }
+            }
+            for (let key in limitationsArr) {
+                if (hobbiesAndLimitations[0][`${limitationsArr[key].key}`]) {
+                    limitArr.push({[`${limitationsArr[key].key}`]:hobbiesAndLimitations[0][`${limitationsArr[key].key}`]});
+                }
+            }
+            setHobbies(hobArr);
+            setLimitations(limitArr);
+            }
+        
     }, []);
+
+    useEffect(() => {
+        console.log(hobbiesAndLimitations);
+    }, [hobbiesAndLimitations]);
 
     useEffect(() => {
         if (saving) {
@@ -151,11 +181,12 @@ export default function PatientProfile({navigation}) {
     const HobbiesScreen = () => {
         const [selectedHobbies, setSelectedHobby] = useState('TVShow');
         const [arr, setArr] = useState([]);
-        const [neWarr, setNewArr] = useState([]);
-
+        const [newHobbiesAndLimitations, setNewHobbiesAndLimitations] = useState(userContext.patientHL);
+                
+        
         useEffect(() => {
-            if (hobbiesAndLimitations[0][selectedHobbies]) {
-                let arr = hobbiesAndLimitations[0][selectedHobbies].split(",");
+            if (newHobbiesAndLimitations[0][selectedHobbies]) {
+                let arr = newHobbiesAndLimitations[0][selectedHobbies].split(",");
                 let arr2 = [];
                 arr.map((item, index) => {
                     arr2.push(item.trim());
@@ -164,19 +195,19 @@ export default function PatientProfile({navigation}) {
             }
         }, [selectedHobbies]);
 
-        
+
         //partially works- its sets it and asves it, but re-renders the entier screen including the TopScroolView
         const handleHobbyToggle = (limitation) => {
             let name=limitation.name || limitation
-            if (hobbiesAndLimitations[0][selectedHobbies]) {
-                let userArr= hobbiesAndLimitations[0][selectedHobbies].split(",");
+            if (newHobbiesAndLimitations[0][selectedHobbies]) {
+                let userArr= newHobbiesAndLimitations[0][selectedHobbies].split(",");
                 let userArr2 = [];
                 userArr.map((item, index) => {
                     userArr2.push(item.trim());
                 })
                 console.log(userArr2);
-                if (hobbiesAndLimitations[0][selectedHobbies].includes(name) || userArr2.includes(name)) {
-                    let arr = hobbiesAndLimitations[0][selectedHobbies].split(",");
+                if (newHobbiesAndLimitations[0][selectedHobbies].includes(name) || userArr2.includes(name)) {
+                    let arr = newHobbiesAndLimitations[0][selectedHobbies].split(",");
                     let arr2 = [];
                     arr.map((item, index) => {
                         arr2.push(item.trim());
@@ -184,23 +215,16 @@ export default function PatientProfile({navigation}) {
                     let index = arr2.indexOf(name);
                     arr2.splice(index, 1);
                     let str = arr2.join(", ");
-                    setHobbiesAndLimitations([{ ...hobbiesAndLimitations[0], [selectedHobbies]: str }]);
+                    setNewHobbiesAndLimitations([{ ...newHobbiesAndLimitations[0], [selectedHobbies]: str }]);
                 }
                 else {
-                    console.log("else");
-                    let arr= hobbiesAndLimitations[0][selectedHobbies].split(",");
-                    let arr2 = [];
-                    arr.map((item, index) => {
-                        arr2.push(item.trim());
-                    })
-
-                    console.log(name);
-                    setHobbiesAndLimitations([{ ...hobbiesAndLimitations[0], [selectedHobbies]: hobbiesAndLimitations[0][selectedHobbies] + ", " + name }]);
+                    let arr= newHobbiesAndLimitations[0][selectedHobbies];
+                    arr+= ", " + name;
+                    setNewHobbiesAndLimitations([{ ...newHobbiesAndLimitations[0], [selectedHobbies]: arr }]);
                 }
             }
             else {
-                console.log("else 2");
-                setHobbiesAndLimitations([{ ...hobbiesAndLimitations[0], [selectedHobbies]: name }]);
+                setNewHobbiesAndLimitations([{ ...hobbiesAndLimitations[0], [selectedHobbies]: limitation.name || limitation }]);
             }
         };
 
@@ -236,19 +260,19 @@ export default function PatientProfile({navigation}) {
                                 {HobbiesJSON[selectedHobbies].map((hobby, index) => {
                                     return (
                                         <TouchableOpacity
-                                            style={[styles.collageItemContainer, hobbiesAndLimitations[0][selectedHobbies].includes(hobby.name) ? styles.selectedCollageBubble : null]}
+                                            style={[styles.collageItemContainer, newHobbiesAndLimitations[0][selectedHobbies].includes(hobby.name) ? styles.selectedCollageBubble : null]}
                                             onPress={() => { console.log("pressed"); handleHobbyToggle(hobby) }}
                                             key={index}
                                         >
-                                            <View key={index} style={hobbiesAndLimitations[0][selectedHobbies].includes(hobby.name) ? styles.selectecollageBubble : styles.collageBubble}>
-                                                <Text style={hobbiesAndLimitations[0][selectedHobbies].includes(hobby.name) ? styles.selectedCollageText : styles.collageText}>{hobby.name}</Text>
+                                            <View key={index} style={newHobbiesAndLimitations[0][selectedHobbies].includes(hobby.name) ? styles.selectecollageBubble : styles.collageBubble}>
+                                                <Text style={newHobbiesAndLimitations[0][selectedHobbies].includes(hobby.name) ? styles.selectedCollageText : styles.collageText}>{hobby.name}</Text>
                                             </View>
                                         </TouchableOpacity>
                                     )
                                 })
                                 }
                                 {/*render additional attrubutes that were not in the json*/}
-                                {hobbiesAndLimitations[0][selectedHobbies] &&
+                                {newHobbiesAndLimitations[0][selectedHobbies] &&
                                     arr.map((hobby, index) => {
                                         if (!HobbiesJSON[selectedHobbies].some(item => item.name === hobby)) {
                                             return (
@@ -268,7 +292,7 @@ export default function PatientProfile({navigation}) {
                                 }
                             </View>
                             : <View>
-                                {hobbiesAndLimitations[0][selectedHobbies] ?
+                                {newHobbiesAndLimitations[0][selectedHobbies] ?
                                     arr.map((hobby, index) => {
                                         return (
                                             <TouchableOpacity
@@ -310,57 +334,49 @@ export default function PatientProfile({navigation}) {
     const LimitationsScreen = () => {
         const [selectedFilter, setSelectedFilter] = useState('allergies');
         const [arr, setArr] = useState([]);
+        const [newHobbiesAndLimitations, setNewHobbiesAndLimitations] = useState(userContext.patientHL);
 
         const handleHobbyToggle = (limitation) => {
-            console.log(limitation.name);
-            console.log(limitation)
             let name=limitation.name || limitation
-            if (hobbiesAndLimitations[0][selectedFilter]) {
-                let userArr= hobbiesAndLimitations[0][selectedFilter].split(",");
+            if (newHobbiesAndLimitations[0][selectedFilter]) {
+                let userArr= newHobbiesAndLimitations[0][selectedFilter].split(",");
                 let userArr2 = [];
                 userArr.map((item, index) => {
                     userArr2.push(item.trim());
                 })
                 console.log(userArr2);
-                if (hobbiesAndLimitations[0][selectedFilter].includes(name) || userArr2.includes(name)) {
-                    let arr = hobbiesAndLimitations[0][selectedFilter].split(",");
+                if (newHobbiesAndLimitations[0][selectedFilter].includes(name) || userArr2.includes(name)) {
+                    let arr = newHobbiesAndLimitations[0][selectedFilter].split(",");
                     let arr2 = [];
                     arr.map((item, index) => {
                         arr2.push(item.trim());
                     })
-                    let index = arr2.indexOf(limitation.name);
+                    let index = arr2.indexOf(name);
                     arr2.splice(index, 1);
                     let str = arr2.join(", ");
-                    setHobbiesAndLimitations([{ ...hobbiesAndLimitations[0], [selectedFilter]: str }]);
+                    setNewHobbiesAndLimitations([{ ...newHobbiesAndLimitations[0], [selectedFilter]: str }]);
                 }
                 else {
-                    console.log("else");
-                    let arr= hobbiesAndLimitations[0][selectedFilter].split(",");
-                    let arr2 = [];
-                    arr.map((item, index) => {
-                        arr2.push(item.trim());
-                    })
-
-                    console.log(name);
-                    setHobbiesAndLimitations([{ ...hobbiesAndLimitations[0], [selectedFilter]: hobbiesAndLimitations[0][selectedFilter] + ", " + name }]);
+                    let arr= newHobbiesAndLimitations[0][selectedFilter];
+                    arr+= ", " + name;
+                    setNewHobbiesAndLimitations([{ ...newHobbiesAndLimitations[0], [selectedFilter]: arr }]);
                 }
             }
             else {
-                console.log("else 2");
-                setHobbiesAndLimitations([{ ...hobbiesAndLimitations[0], [selectedFilter]: limitation.name || limitation }]);
+                setNewHobbiesAndLimitations([{ ...hobbiesAndLimitations[0], [selectedFilter]: limitation.name || limitation }]);
             }
         };
 
         useEffect(() => {
-            if (hobbiesAndLimitations[0][selectedFilter]) {
-                let arr = hobbiesAndLimitations[0][selectedFilter].split(",");
+            if (newHobbiesAndLimitations[0][selectedFilter]) {
+                let arr = newHobbiesAndLimitations[0][selectedFilter].split(",");
                 let arr2 = [];
                 arr.map((item, index) => {
                     arr2.push(item.trim());
                 })
                 setArr(arr2);
             }
-        }, [selectedFilter]);
+        }, [selectedFilter, newHobbiesAndLimitations]);
 
         return (
             <View>
@@ -386,18 +402,18 @@ export default function PatientProfile({navigation}) {
                                 {LimitationsJSON[selectedFilter].map((limitation, index) => {
                                     return (
                                         <TouchableOpacity
-                                            style={[styles.collageItemContainer, hobbiesAndLimitations[0][selectedFilter].includes(limitation.name) ? styles.selectedCollageBubble : null]}
+                                            style={[styles.collageItemContainer, newHobbiesAndLimitations[0][selectedFilter].includes(limitation.name) ? styles.selectedCollageBubble : null]}
                                             onPress={() => { console.log("pressed"); handleHobbyToggle(limitation) }}
                                             key={index}
                                         >
-                                            <View key={index} style={hobbiesAndLimitations[0][selectedFilter].includes(limitation.name) ? styles.selectedCollageBubble : styles.collageBubble}>
-                                                <Text style={hobbiesAndLimitations[0][selectedFilter].includes(limitation.name) ? styles.selectedCollageText : styles.collageText}>{limitation.name}</Text>
+                                            <View key={index} style={newHobbiesAndLimitations[0][selectedFilter].includes(limitation.name) ? styles.selectedCollageBubble : styles.collageBubble}>
+                                                <Text style={newHobbiesAndLimitations[0][selectedFilter].includes(limitation.name) ? styles.selectedCollageText : styles.collageText}>{limitation.name}</Text>
                                             </View>
                                         </TouchableOpacity>
                                     )
                                 })}
                                 {/*render additional attrubutes that were not in the json*/}
-                                {hobbiesAndLimitations[0][selectedFilter] &&
+                                {newHobbiesAndLimitations[0][selectedFilter] &&
                                     arr.map((limitation, index) => {
                                         if (!LimitationsJSON[selectedFilter].some(item => item.name === limitation)) {
                                             return (
@@ -417,7 +433,7 @@ export default function PatientProfile({navigation}) {
                                 }
                             </View>
                             : <View>
-                                {hobbiesAndLimitations[0][selectedFilter] ?
+                                {newHobbiesAndLimitations[0][selectedFilter] ?
                                     arr.map((limitation, index) => {
                                         return (
                                             <TouchableOpacity
