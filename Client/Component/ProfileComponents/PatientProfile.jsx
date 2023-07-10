@@ -18,7 +18,8 @@ export default function PatientProfile({navigation}) {
     const { userContext, updateHobbiesAndLimitations, patientHL } = useUserContext();
     const [saving, setSaving] = useState(false);
     const patientData = userContext.patientData;
-    const [hobbiesAndLimitations, setHobbiesAndLimitations] = useState(patientHL);
+    const [hobbiesAndLimitations, setHobbiesAndLimitations] = useState(userContext.patientHL);
+    const [newData, setNewData] = useState(userContext.patientHL);
     const birthDate = moment(patientData.DateOfBirth).format('DD/MM/YYYY');
     const [hobbieFilter, setHobbieFilter] = useState('TVShow');
     const [limitFilter, setLimitFilter] = useState('allergies');
@@ -79,6 +80,7 @@ export default function PatientProfile({navigation}) {
                             hobbiesAndLimitationsArr.patientId = patientData.patientId;
                             updateHobbiesAndLimitations(hobbiesAndLimitationsArr)
                             setSaving(false);
+                            navigation.goBack();
                         }
                     }
                 ],
@@ -339,8 +341,8 @@ export default function PatientProfile({navigation}) {
                                             onChangeText={(text) => setText(text)}
                                         />
                                         <TouchableOpacity onPress={()=> handleHobbyToggle(text)}
-                                        style={{backgroundColor:"#000"}}>
-                                            <Text>Save</Text>
+                                        style={{backgroundColor:"#548DFF", height:54, justifyContent:'center',alignItems:'center', borderRadius:16}}>
+                                            <Text style={{color:'#fff', fontFamily:'Urbanist-Bold'}}>Save Hobbie</Text>
                                         </TouchableOpacity>
                                     </View>
                                 }
@@ -356,6 +358,7 @@ export default function PatientProfile({navigation}) {
         const [selectedFilter, setSelectedFilter] = useState(limitFilter);
         const [arr, setArr] = useState([]);
         const [newHobbiesAndLimitations, setNewHobbiesAndLimitations] = useState(hobbiesAndLimitations);
+        const [text, setText] = useState('');
 
         const handleHobbyToggle = (limitation) => {
             let name=limitation.name || limitation
@@ -487,8 +490,12 @@ export default function PatientProfile({navigation}) {
                                             placeholder="Type Something..."
                                             contentStyle={{ fontFamily: 'Urbanist-Regular' }}
                                             outlineColor='#E6EBF2'
-                                            onChange={(text) => {}}
+                                            onChangeText={(text) => {setText(text)}}
                                         />
+                                         <TouchableOpacity onPress={()=> handleHobbyToggle(text)}
+                                        style={{backgroundColor:"#548DFF", height:54, justifyContent:'center',alignItems:'center', borderRadius:16}}>
+                                            <Text style={{color:'#fff', fontFamily:'Urbanist-Bold'}}>Save Limitation</Text>
+                                        </TouchableOpacity>
                                     </View>
                                 }
                             </View>

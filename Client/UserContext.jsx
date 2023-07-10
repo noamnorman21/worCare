@@ -1148,7 +1148,7 @@ export function UserProvider({ children }) {
 
                     // set userContext.patientHL
 
-                    setPatientHL(result.hobbiesAndLimitationsDTO)
+                    setUserContext({ ...userContext, ["patinetHl"]: result })
                 }
             )
             .catch((error) => {
@@ -1158,7 +1158,6 @@ export function UserProvider({ children }) {
     }
 
     function updateHobbiesAndLimitations (hobbiesAndLimitationsDTO) {
-        console.log("updateHobbiesAndLimitations", hobbiesAndLimitationsDTO)
         fetch(updateHobbiesAndLimitationsUrl, {
             method: 'PUT',
             headers: new Headers({ 'Content-Type': 'application/json; charset=UTF-8', }),
@@ -1169,10 +1168,8 @@ export function UserProvider({ children }) {
             })
             .then(
                 (result) => {
-                    
-                        console.log("fetch updateHobbiesAndLimitations= ", result);
                         // set userContext patientHL
-                        getSpecificPatientData(userContext.patientId)              
+                        setUserContext({ ...userContext, ["patientHL"]: [hobbiesAndLimitationsDTO] })                 
                 }
             )
             .catch((error) => {
@@ -1180,14 +1177,7 @@ export function UserProvider({ children }) {
             }
             );
     }
-
-    useEffect(() => {
-        if (patientHL != null) {
-            console.log("patientHL", patientHL)
-        }
-    }, [patientHL]);
-
-    
+ 
 
 
     const value = {
@@ -1199,7 +1189,7 @@ export function UserProvider({ children }) {
         allPublicTasks, allPrivateTasks, UpdateDrugForPatientDTO, holidays, GetAllDrugs, allDrugs, addPrivateTaskContext,
         newMessages, setNewMessages, logOutFireBase, registerForPushNotificationsAsync, sendPushNotification, UpdatePatient, userPaychecks,
         fetchPatientList, patientList, setRouteEmail, routeEmail, notificationsThatSent, notifications, getPaychecks, UpdateNotificationStatus, GetNotificationsThatSent, logInRemember, userNewHobbiesAndLimitations,
-         setUserNewHobbiesAndLimitations,getSpecificPatientData,updateHobbiesAndLimitations,patientHL
+         setUserNewHobbiesAndLimitations,getSpecificPatientData,updateHobbiesAndLimitations
     };
 
     return (
