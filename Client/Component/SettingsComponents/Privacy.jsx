@@ -8,7 +8,7 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 import { Ionicons } from '@expo/vector-icons';
 import { Switch } from 'react-native-paper';
-import { updateEmail, deleteUser } from 'firebase/auth';
+import { updateEmail, deleteUser, updatePassword } from 'firebase/auth';
 import { auth, db } from '../../config/firebase';
 import { collection, query, where, getDocs, deleteDoc } from 'firebase/firestore';
 
@@ -181,6 +181,18 @@ export default function Privacy({ navigation, route }) {
                 updateUserContext(userToUpdate);
                 const jsonValue = JSON.stringify(userToUpdate)
                 AsyncStorage.setItem('userData', jsonValue);
+                  try {
+                      const storageUser = await AsyncStorage.getItem("user");
+                      if (storageUser !== null) {
+                          const storageUserJson = JSON.parse(storageUser);
+                          storageUserJson.Email = Email;
+                          const jsonValue = JSON.stringify(storageUserJson)
+                          await AsyncStorage.setItem("user", jsonValue);
+                      }
+                  }
+                  catch (error) {
+                      console.log(error)
+                  }              
                 route.params.updateuserEmail(Email);
                 if (passwordChanged) {
                   checkPassowrd();
@@ -281,6 +293,14 @@ export default function Privacy({ navigation, route }) {
             return res.json()
               .then(
                 async (result) => {
+                  let storageUser = await AsyncStorage.getItem("user");
+                  if (storageUser !== null) {
+                    const storageUserJson = JSON.parse(storageUser);
+                    storageUserJson.Password = password1;
+                    const jsonValue = JSON.stringify(storageUserJson)
+                    await AsyncStorage.setItem("user", jsonValue);
+                    console.log('user saved');
+                  }
                   await updatePassword(auth.currentUser, password1);
                   console.log("fetch POST= ", result);
                   Alert.alert('Password Updated', 'Your Password has been changed successfully');
