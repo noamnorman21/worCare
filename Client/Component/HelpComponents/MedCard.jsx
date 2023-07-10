@@ -40,8 +40,7 @@ export default function MedCard(props) {
         let doneTask = props.task;
         doneTask.userId = userData.involvedInId;
         doneTask.taskStatus = 'F';
-        updateActualTask(doneTask, false);
-        getAllPublicTasks(userData);
+        updateActualTask(doneTask, false); //includes get all private tasks
         setIsDone(false);
     }
 
