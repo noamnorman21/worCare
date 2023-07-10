@@ -1,7 +1,7 @@
 import { SafeAreaView, Dimensions, View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Alert } from 'react-native'
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useState, useContext, useCallback } from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { OrLine, NeedAccount } from './FooterLine'
@@ -12,6 +12,7 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import * as Notifications from 'expo-notifications';
 import { Buffer } from 'buffer';
 import { ActivityIndicator } from 'react-native-paper';
+import { useFocusEffect } from '@react-navigation/native';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -27,6 +28,7 @@ export default function LogIn({ navigation }) {
 
     // function to check from where the app was opened from a invintation link or not  
     const getInitialUrl = async () => {
+        console.log('getInitialUrl');
         // check if the app was opened from a link
         const initialUrl = await Linking.getInitialURL();
         //example of the url: exp://l4rfr8w.anonymous.19000.exp.direct/--/InvitedFrom/123456789/Noam
@@ -236,10 +238,19 @@ export default function LogIn({ navigation }) {
         navigation.navigate('ForgotPassword')
     }
 
-    useEffect(() => {
-        getInitialUrl();
-        loadStorageData();
-    }, []);
+    // useEffect(() => {
+    //     getInitialUrl();
+    //     loadStorageData();
+    // }, []);
+
+    useFocusEffect(
+        useCallback(() => {
+            getInitialUrl();
+            loadStorageData();
+        }, []),
+    );
+
+
 
     const loadStorageData = async () => {
         try {
