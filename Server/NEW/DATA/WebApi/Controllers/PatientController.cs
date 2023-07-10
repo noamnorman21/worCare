@@ -186,6 +186,38 @@ namespace WebApi.Controllers
                 patientDTO.DateOfBirth = patient.DateOfBirth;
                 patientDTO.patientId = patientId;
                 patientDTO.LanguageName_En = patient.tblLanguage.LanguageName_En;
+                patientDTO.hobbiesAndLimitationsDTO = new List<HobbiesAndLimitationsDTO>();
+                HobbiesAndLimitationsDTO hlDTO = new HobbiesAndLimitationsDTO();
+                var hobbies = from h in db.tblHobbies
+                              where h.patientId == patientId
+                              select h;
+                var limitations = from l in db.tblLimitations
+                                  where l.patientId == patientId
+                                  select l;
+                foreach (var item in hobbies)
+                {
+                    hlDTO.food = item.food;
+                    hlDTO.music = item.music;
+                    hlDTO.movie = item.movie;
+                    hlDTO.books = item.books;
+                    hlDTO.drink = item.drink;
+                    hlDTO.radioChannel = item.radioChannel;
+                    hlDTO.TVShow = item.TVShow;
+                    hlDTO.specialHabits = item.specialHabits;
+                    hlDTO.afternoonNap = item.afternoonNap;
+                    hlDTO.nightSleep = item.nightSleep;
+                    hlDTO.otherH = item.other;
+                }
+                foreach (var item in limitations)
+                {
+                    hlDTO.allergies = item.allergies;
+                    hlDTO.sensitivities = item.sensitivities;
+                    hlDTO.physicalAbilities = item.physicalAbilities;
+                    hlDTO.bathRoutine = item.bathRoutine;
+                    hlDTO.sensitivityToNoise = item.sensitivityToNoise;
+                    hlDTO.otherL = item.other;
+                }
+                patientDTO.hobbiesAndLimitationsDTO.Add(hlDTO);
                 return Ok(patientDTO);
             }
             catch (Exception ex)
@@ -249,6 +281,45 @@ namespace WebApi.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut]
+        [Route("UpdatePatientHobbiesAndLimitations")]
+        public IHttpActionResult UpdatePatientHobbiesAndLimitations([FromBody] HobbiesAndLimitationsDTO hobbiesAndLimitationsDTO)
+        {
+            try
+            {
+                var patient = db.tblPatient.Where(x => x.patientId == hobbiesAndLimitationsDTO.patientId).FirstOrDefault();
+                // update patient hobbiies and limitations
+                if (patient == null)
+                    return BadRequest("no Patient");
+
+                patient.tblHobbies.food = hobbiesAndLimitationsDTO.food;
+                patient.tblHobbies.movie = hobbiesAndLimitationsDTO.movie;
+                patient.tblHobbies.books = hobbiesAndLimitationsDTO.books;
+                patient.tblHobbies.other = hobbiesAndLimitationsDTO.otherH;
+                patient.tblHobbies.music = hobbiesAndLimitationsDTO.music;
+                patient.tblHobbies.TVShow = hobbiesAndLimitationsDTO.TVShow;
+                patient.tblHobbies.radioChannel = hobbiesAndLimitationsDTO.radioChannel;
+                patient.tblHobbies.drink = hobbiesAndLimitationsDTO.drink;
+                patient.tblHobbies.specialHabits = hobbiesAndLimitationsDTO.specialHabits;
+                patient.tblHobbies.afternoonNap = hobbiesAndLimitationsDTO.afternoonNap;
+                patient.tblHobbies.nightSleep = hobbiesAndLimitationsDTO.nightSleep;
+
+                patient.tblLimitations.other = hobbiesAndLimitationsDTO.otherL;
+                patient.tblLimitations.allergies = hobbiesAndLimitationsDTO.allergies;
+                patient.tblLimitations.sensitivities = hobbiesAndLimitationsDTO.sensitivities;
+                patient.tblLimitations.physicalAbilities = hobbiesAndLimitationsDTO.physicalAbilities;
+                patient.tblLimitations.bathRoutine = hobbiesAndLimitationsDTO.bathRoutine;
+                patient.tblLimitations.sensitivityToNoise = hobbiesAndLimitationsDTO.sensitivityToNoise;
+
+                db.SaveChanges();
+                return Ok("Patient Updated");
+            }
+            catch
+            {
+                return BadRequest("Patient Not Updated");
             }
         }
 

@@ -242,7 +242,7 @@ function CustomHeader() {
                                                 toggleModal()
                                                 AsyncStorage.removeItem("user");
                                                 AsyncStorage.removeItem("userData");
-                                                await navigation.dispatch(StackActions.replace('LogIn'));
+                                                navigation.popToTop()
                                                 logOutFireBase()
                                             }
                                         }>

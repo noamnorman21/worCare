@@ -15,13 +15,14 @@ const ScreenWidth = Dimensions.get('window').width;
 const ScreenHeight = Dimensions.get('window').height;
 
 export default function PatientProfile({navigation}) {
-    const { userContext } = useUserContext();
+    const { userContext, updateHobbiesAndLimitations, patientHL } = useUserContext();
     const [saving, setSaving] = useState(false);
     const patientData = userContext.patientData;
-    const [hobbiesAndLimitations, setHobbiesAndLimitations] = useState(userContext.patientHL);
-    const [newData, setNewData] = useState(userContext.patientHL);
+    const [hobbiesAndLimitations, setHobbiesAndLimitations] = useState(patientHL);
     const birthDate = moment(patientData.DateOfBirth).format('DD/MM/YYYY');
-    
+    const [hobbieFilter, setHobbieFilter] = useState('TVShow');
+    const [limitFilter, setLimitFilter] = useState('allergies');
+
     // maybe we can use this to save the hobbies and limitations.
     //the page re-renders when we save the hobbies and limitations beacuse it saves in the PatiientProfile component 
     const [hobbies, setHobbies] = useState([]);
@@ -40,7 +41,6 @@ export default function PatientProfile({navigation}) {
             let hobArr = [];
             let limitArr = [];
             for (let key in hobbiesArr) {
-                console.log(hobbiesAndLimitations[0][`${hobbiesArr[key].key}`]);
                 if (hobbiesAndLimitations[0][`${hobbiesArr[key].key}`]) {
                     hobArr.push({[`${hobbiesArr[key].key}`] : hobbiesAndLimitations[0][`${hobbiesArr[key].key}`]});
                 }
@@ -56,9 +56,8 @@ export default function PatientProfile({navigation}) {
         
     }, []);
 
-    useEffect(() => {
-        console.log(hobbiesAndLimitations);
-    }, [hobbiesAndLimitations]);
+
+
 
     useEffect(() => {
         if (saving) {
@@ -75,7 +74,10 @@ export default function PatientProfile({navigation}) {
                     {
                         text: "OK", onPress: () => {
                             console.log("saving...");
-                            // save to db
+                            let hobbiesAndLimitationsArr = hobbiesAndLimitations[0];
+                            // add patient id to the object
+                            hobbiesAndLimitationsArr.patientId = patientData.patientId;
+                            updateHobbiesAndLimitations(hobbiesAndLimitationsArr)
                             setSaving(false);
                         }
                     }
@@ -179,10 +181,11 @@ export default function PatientProfile({navigation}) {
 
 
     const HobbiesScreen = () => {
-        const [selectedHobbies, setSelectedHobby] = useState('TVShow');
+        const [selectedHobbies, setSelectedHobby] = useState(hobbieFilter);
         const [arr, setArr] = useState([]);
-        const [newHobbiesAndLimitations, setNewHobbiesAndLimitations] = useState(userContext.patientHL);
-                
+        const [newHobbiesAndLimitations, setNewHobbiesAndLimitations] = useState(hobbiesAndLimitations);
+        const [text, setText] = useState('');
+        const {userNewHobbiesAndLimitations, setUserNewHobbiesAndLimitations} = useUserContext();
         
         useEffect(() => {
             if (newHobbiesAndLimitations[0][selectedHobbies]) {
@@ -193,20 +196,26 @@ export default function PatientProfile({navigation}) {
                 })
                 setArr(arr2);
             }
-        }, [selectedHobbies]);
+        }, [selectedHobbies, newHobbiesAndLimitations]);
+
+        useEffect(() => {
+            setHobbiesAndLimitations(newHobbiesAndLimitations);
+            setHobbieFilter(selectedHobbies);
+        }, [newHobbiesAndLimitations]);
 
 
         //partially works- its sets it and asves it, but re-renders the entier screen including the TopScroolView
         const handleHobbyToggle = (limitation) => {
             let name=limitation.name || limitation
+            console.log("name",name)
             if (newHobbiesAndLimitations[0][selectedHobbies]) {
                 let userArr= newHobbiesAndLimitations[0][selectedHobbies].split(",");
                 let userArr2 = [];
                 userArr.map((item, index) => {
                     userArr2.push(item.trim());
                 })
-                console.log(userArr2);
                 if (newHobbiesAndLimitations[0][selectedHobbies].includes(name) || userArr2.includes(name)) {
+                    console.log("if 1")
                     let arr = newHobbiesAndLimitations[0][selectedHobbies].split(",");
                     let arr2 = [];
                     arr.map((item, index) => {
@@ -218,15 +227,22 @@ export default function PatientProfile({navigation}) {
                     setNewHobbiesAndLimitations([{ ...newHobbiesAndLimitations[0], [selectedHobbies]: str }]);
                 }
                 else {
+                    console.log("if 2")
                     let arr= newHobbiesAndLimitations[0][selectedHobbies];
                     arr+= ", " + name;
                     setNewHobbiesAndLimitations([{ ...newHobbiesAndLimitations[0], [selectedHobbies]: arr }]);
                 }
             }
             else {
-                setNewHobbiesAndLimitations([{ ...hobbiesAndLimitations[0], [selectedHobbies]: limitation.name || limitation }]);
+                console.log("else")
+                setNewHobbiesAndLimitations([{ ...newHobbiesAndLimitations[0], [selectedHobbies]: name }]);
             }
         };
+
+        // now when we exit the screen it saves the hobbies and limitations in the main component of the patient profile
+        //plese check if it works for you
+        //get the current new hobbies and limitations from the userContext and update it with the new hobbies and limitations
+
 
         return (
             <View>
@@ -295,6 +311,7 @@ export default function PatientProfile({navigation}) {
                                 {newHobbiesAndLimitations[0][selectedHobbies] ?
                                     arr.map((hobby, index) => {
                                         return (
+                                            console.log("hobby", hobby),
                                             <TouchableOpacity
                                                 style={[styles.collageItemContainer, styles.selectedCollageBubble]}
                                                 onPress={() => { console.log("pressed"); handleHobbyToggle(hobby) }}
@@ -319,8 +336,12 @@ export default function PatientProfile({navigation}) {
                                             placeholder="Type Something..."
                                             contentStyle={{ fontFamily: 'Urbanist-Regular' }}
                                             outlineColor='#E6EBF2'
-                                            onChange={(text) => { }}
+                                            onChangeText={(text) => setText(text)}
                                         />
+                                        <TouchableOpacity onPress={()=> handleHobbyToggle(text)}
+                                        style={{backgroundColor:"#000"}}>
+                                            <Text>Save</Text>
+                                        </TouchableOpacity>
                                     </View>
                                 }
                             </View>
@@ -332,9 +353,9 @@ export default function PatientProfile({navigation}) {
     };
 
     const LimitationsScreen = () => {
-        const [selectedFilter, setSelectedFilter] = useState('allergies');
+        const [selectedFilter, setSelectedFilter] = useState(limitFilter);
         const [arr, setArr] = useState([]);
-        const [newHobbiesAndLimitations, setNewHobbiesAndLimitations] = useState(userContext.patientHL);
+        const [newHobbiesAndLimitations, setNewHobbiesAndLimitations] = useState(hobbiesAndLimitations);
 
         const handleHobbyToggle = (limitation) => {
             let name=limitation.name || limitation
@@ -366,6 +387,11 @@ export default function PatientProfile({navigation}) {
                 setNewHobbiesAndLimitations([{ ...hobbiesAndLimitations[0], [selectedFilter]: limitation.name || limitation }]);
             }
         };
+
+        useEffect(() => {
+            setHobbiesAndLimitations(newHobbiesAndLimitations);
+            setLimitFilter(selectedFilter);
+        }, [newHobbiesAndLimitations]);
 
         useEffect(() => {
             if (newHobbiesAndLimitations[0][selectedFilter]) {

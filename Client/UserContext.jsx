@@ -14,8 +14,9 @@ import * as Notifications from 'expo-notifications';
 // General
 let updateProfileUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Settings/UpdateUserProfile'
 let getPairedProfile = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUser/'
-let getPatientData = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/GetPatientData';
-let GetAllPatients = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/GetAllPatients'
+let getspecificPatientDataUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/GetPatientData';
+let GetAllPatients = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/GetAllPatients';
+let updateHobbiesAndLimitationsUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/UpdatePatientHobbiesAndLimitations';
 // Notifications
 let InsertNotificationsThatSentUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Notification/InsertNotificationThatSent'
 let UpdateNotificationStatusUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Notification/UpdateNotificationStatus'
@@ -110,6 +111,7 @@ export function UserProvider({ children }) {
     const [patientList, setPatientList] = useState(null)
     const [newMessages, setNewMessages] = useState(0); //new for chat logo
     const [routeEmail, setRouteEmail] = useState(null);
+    const [userNewHobbiesAndLimitations, setUserNewHobbiesAndLimitations] = useState(null);
 
     const [notifications, setNotifications] = useState(null);
 
@@ -253,6 +255,7 @@ export function UserProvider({ children }) {
                     }
                     const jsonValue = JSON.stringify(userContext)
                     AsyncStorage.setItem('userData', jsonValue)
+                    await logInFireBase(json.Email, userData.Password);
                     await logInContext(userContext).then(() => {
                         console.log('user saved in context');
                     })
@@ -1099,32 +1102,6 @@ export function UserProvider({ children }) {
         }
     }, [patientId]);
 
-    async function fetchPatientData(userData) {
-        let patient;
-        if (userData != null) {
-            patient = {
-                patientId: userData.patientId
-            }
-        }
-        else {
-            patient = {
-                patientId: patientId
-            }
-        }
-        try {
-            const response = await fetch(getPatientData, {
-                method: 'POST',
-                headers: new Headers({ 'Content-Type': 'application/json; charset=UTF-8', }),
-                body: JSON.stringify(patient),
-            });
-            const result = await response.json();
-            console.log("fetchPatientData", result)
-            return result;
-        } catch (error) {
-            console.log('err post=', error);
-        }
-    }
-
     // new for patient switch
     function fetchPatientList(userData) {
         let user;
@@ -1158,6 +1135,61 @@ export function UserProvider({ children }) {
             );
     }
 
+    function getSpecificPatientData(patientId) {
+        fetch(getspecificPatientDataUrl, {
+            method: 'POST',
+            headers: new Headers({ 'Content-Type': 'application/json; charset=UTF-8', }),
+            body: JSON.stringify(patientId),
+        })
+            .then(res => { return res.json() })
+            .then(
+                (result) => {
+                    console.log("fetch getspecificPatientData= ", result);
+
+                    // set userContext.patientHL
+
+                    setPatientHL(result.hobbiesAndLimitationsDTO)
+                }
+            )
+            .catch((error) => {
+                console.log('Error=', error);
+            }
+            );
+    }
+
+    function updateHobbiesAndLimitations (hobbiesAndLimitationsDTO) {
+        console.log("updateHobbiesAndLimitations", hobbiesAndLimitationsDTO)
+        fetch(updateHobbiesAndLimitationsUrl, {
+            method: 'PUT',
+            headers: new Headers({ 'Content-Type': 'application/json; charset=UTF-8', }),
+            body: JSON.stringify(hobbiesAndLimitationsDTO),
+        })
+            .then(res =>{
+                if (res.ok){ return res.json() }
+            })
+            .then(
+                (result) => {
+                    
+                        console.log("fetch updateHobbiesAndLimitations= ", result);
+                        // set userContext patientHL
+                        getSpecificPatientData(userContext.patientId)              
+                }
+            )
+            .catch((error) => {
+                console.log('Error=', error);
+            }
+            );
+    }
+
+    useEffect(() => {
+        if (patientHL != null) {
+            console.log("patientHL", patientHL)
+        }
+    }, [patientHL]);
+
+    
+
+
     const value = {
         userContext, allShopTasks, allMedicineTasks, userContacts, userNotifications, userPendingPayments,
         userHistoryPayments, userChats, setUserChats, logInFireBase, GetUserHistory, GetUserPending,
@@ -1166,7 +1198,8 @@ export function UserProvider({ children }) {
         updateUserProfile, updateuserNotifications, appEmail, getAllPrivateTasks, getAllPublicTasks,
         allPublicTasks, allPrivateTasks, UpdateDrugForPatientDTO, holidays, GetAllDrugs, allDrugs, addPrivateTaskContext,
         newMessages, setNewMessages, logOutFireBase, registerForPushNotificationsAsync, sendPushNotification, UpdatePatient, userPaychecks,
-        fetchPatientList, patientList, setRouteEmail, routeEmail, notificationsThatSent, notifications, getPaychecks, UpdateNotificationStatus, GetNotificationsThatSent, logInRemember
+        fetchPatientList, patientList, setRouteEmail, routeEmail, notificationsThatSent, notifications, getPaychecks, UpdateNotificationStatus, GetNotificationsThatSent, logInRemember, userNewHobbiesAndLimitations,
+         setUserNewHobbiesAndLimitations,getSpecificPatientData,updateHobbiesAndLimitations,patientHL
     };
 
     return (
