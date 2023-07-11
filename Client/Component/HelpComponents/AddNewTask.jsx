@@ -846,6 +846,30 @@ function NewTaskModal(props) {
 
    const addTask = () => {
       //if it caregiver than check if the task is private or public
+      if (!taskName) {
+         return Alert.alert("Please select Name")
+      }
+      if (!taskAssignee) {
+         return Alert.alert("Please select asignee")
+      }
+      if (!taskCategory) {
+         return Alert.alert("Please select category")
+      }
+      if (!taskFrequency) {
+         return Alert.alert("Please select frequency")
+      }
+      if(taskFrequency==="Once" && !taskFromDate){
+         return Alert.alert("Please select Date")
+      }
+      if (taskFrequency == "Once" && !taskTime) {
+         return Alert.alert("Please select task time")
+      }
+      if (taskCategory == "General" && numberPerDay == 1 && !taskTime) {
+         return Alert.alert("Please select task time")
+      }
+
+
+
       if (userType == "Caregiver") {
          if (isPrivate) {
             addPrivateTask();
@@ -858,6 +882,7 @@ function NewTaskModal(props) {
       else {
          addShopTask();
       }
+
    }
 
    const addShopTask = () => {
@@ -901,7 +926,6 @@ function NewTaskModal(props) {
                return res.json()
             }
             else {
-               console.log(res)
                console.log("not found")
             }
          }
