@@ -1,4 +1,4 @@
-import { View, Text, Dimensions, TouchableOpacity, Image, Alert, StyleSheet, TextInput, Modal } from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, Image, Alert, StyleSheet, TextInput, Modal,LogBox } from 'react-native';
 import { useState, useEffect } from 'react';
 import { useUserContext } from '../../UserContext';
 import { useIsFocused } from '@react-navigation/native';
@@ -8,6 +8,8 @@ import { Overlay } from '@rneui/themed';
 import * as WebBrowser from 'expo-web-browser';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 import EditMed from './EditMed';
+LogBox.ignoreLogs(["Deprecation warning: value provided is not in a recognized RFC2822 or ISO format."]);
+
 
 export default function MedDetail({ navigation, route }) {
    const medTypeIcon = route.params.medTypeIcon;
@@ -34,8 +36,10 @@ export default function MedDetail({ navigation, route }) {
    const [userData, setUserData] = useState(useUserContext().userContext);
    const [differentEdit, setDifferentEdit] = useState(true);
    const [editValue, setEditValue] = useState(0);
-   const timeInDay = route.params.timeInDay;
-   const taskDate = task.drug.toDate;
+   const [timeInDay,setTimeInDay] = useState(task.TimeInDay.substring(0, 5));
+   const [frequency,setFrequency] = useState(task.frequency);
+   const [Quantity,setQuantity] = useState(task.drug.dosage);
+   const [taskDate,setTaskDate] = useState(task.drug.toDate);
    const dateString = taskDate.split('T')[0];
 
    useEffect(() => {
@@ -135,7 +139,7 @@ export default function MedDetail({ navigation, route }) {
       }
       UpdateDrugForPatientDTO(newDrugForPatient)
       setVisibleTakeExtra(false)
-      getAllPublicTask(userData)
+      getAllPublicTasks(userData)
    }
 
    const logRefill = () => {
@@ -159,6 +163,14 @@ export default function MedDetail({ navigation, route }) {
       }
       UpdateDrugForPatientDTO(newDrugForPatient)
       setVisibleLogRefill(false)
+   }
+
+   const updateValues = (frequency,Quantity,Time,EndDate) => {
+      setTimeInDay(Time)
+      setFrequency(frequency)
+      setQuantity(Quantity)
+      // setEndDate(EndDate)      
+      getAllPublicTasks(userData)
    }
 
    return (
@@ -207,8 +219,8 @@ export default function MedDetail({ navigation, route }) {
 
          <View style={styles.middleContainer}>
             <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 16, marginBottom: 7 }}>Schedule</Text>
-            <Text style={styles.detailsTxt}>Frequency : {task.frequency}</Text>
-            <Text style={styles.detailsTxt}>Quantity : {task.drug.dosage}</Text>
+            <Text style={styles.detailsTxt}>Frequency : {frequency}</Text>
+            <Text style={styles.detailsTxt}>Quantity : {Quantity}</Text>
             <Text style={styles.detailsTxt}>Time : {timeInDay}</Text>
             <Text style={styles.detailsTxt}>End Date : {dateString}</Text>
             {/* {
@@ -220,7 +232,7 @@ export default function MedDetail({ navigation, route }) {
             </View> */}
          </View>
 
-         <EditMed task={task} visibleEditMed={visibleEditMed} onClose={toggleOverlayEdit} />
+         <EditMed task={task} visibleEditMed={visibleEditMed} onClose={toggleOverlayEdit} updateValues={updateValues} />
 
          <View style={styles.bottomContainer}>
             <TouchableOpacity style={styles.bottomBtn} onPress={toggleOverlayRefill}>

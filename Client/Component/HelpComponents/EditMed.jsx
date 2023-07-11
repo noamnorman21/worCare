@@ -7,11 +7,13 @@ import DateRangePicker from "rn-select-date-range";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Feather, FontAwesome5, Ionicons, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { useUserContext } from '../../UserContext';
+import { useNavigation } from '@react-navigation/native';
 import moment from 'moment';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export default function EditMed(props) {
+    const navigation = useNavigation();
     const [show, setShow] = useState(false);
     const [timePickerVisable,setTimePickerVisable]=useState();
     const PlatformType = Platform.OS;
@@ -169,7 +171,7 @@ export default function EditMed(props) {
             medTimesArr[0]=medTime
             }
             else{
-                medTimesArr[0]= moment(medTime).format("HH:MM:SS")
+                medTimesArr[0]= new Date(medTime).toTimeString().substring(0,5)+":00"
             }
         }
         if (medTimesArr == null || medTimesArr == '') {
@@ -216,11 +218,12 @@ export default function EditMed(props) {
                 'Content-Type': 'application/json; charset=UTF-8',
             },
         })
-            .then(res => {
+            .then(async res => {
                 if (res.ok) {
                     setModalTimesVisible(false);
-                    getAllPublicTasks(userContext);
-                    props.onClose();
+                    await getAllPublicTasks(userContext);
+                    await props.onClose();
+                    navigation.goBack();
                     return res.json();
                 }
                 else {

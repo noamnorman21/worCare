@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Alert, Image } from 'react-native'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useLayoutEffect } from 'react'
 import { Feather, Ionicons, Octicons } from '@expo/vector-icons';
 import { useUserContext } from '../../UserContext';
 
@@ -17,7 +17,7 @@ export default function MedCard(props) {
     const iconColors = ["#548DFF", "#FF3C32"]
     const [runlow, setRunlow] = useState(false);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         findType()
         sparateTimeStemp()
         findRunningLow()
@@ -67,6 +67,11 @@ export default function MedCard(props) {
         }
     }
 
+    useEffect(() => {
+        let timeInDay = props.task.TimeInDay.split(":")
+        setTimeInDay(timeInDay[0] + ":" + timeInDay[1])
+    }, [props.task.TimeInDay])
+
     const sparateTimeStemp = async () => {
         if (props.task.drug.lastTakenDate == null) {
             setLastTakenDate('never taken yet')
@@ -79,8 +84,6 @@ export default function MedCard(props) {
             setLastTakenDate(date[2] + "/" + date[1] + "/" + date[0])
             setLastTakenTime(hour[0] + ":" + hour[1])
         }
-        let timeInDay = props.task.TimeInDay.split(":")
-        setTimeInDay(timeInDay[0] + ":" + timeInDay[1])
     }
 
     const toggleIsDone = () => {
