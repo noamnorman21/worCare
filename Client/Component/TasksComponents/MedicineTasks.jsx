@@ -40,13 +40,13 @@ function MedTask({ navigation, route }) {
       });
    };
 
-   useEffect(() => {
-      navigation.setOptions({
-         tabBar: ({ state }) => ({
-            refreshPublicTask: () => getAllPublicTasks(userData),
-         }),
-      });
-   }, []);
+   // useEffect(() => {
+   //    navigation.setOptions({
+   //       tabBar: ({ state }) => ({
+   //          refreshPublicTask: () => getAllPublicTasks(userData),
+   //       }),
+   //    });
+   // }, []);
 
    return (
       <SafeAreaView style={styles.container}>
@@ -81,7 +81,7 @@ export default function MedicineTasks(props) {
          <Stack.Navigator>
             <Stack.Screen
                options={{ headerShown: false }}
-               initialParams={{ refreshPublicTask: refreshPublicTask, allMedicineTasks: allMedicineTasks, userData: userContext }}
+               initialParams={{ allMedicineTasks: allMedicineTasks, userData: userContext }}
                name="MedTask" component={MedTask} />
             <Stack.Screen
                initialParams={{ changeHeader: changeHeader }}

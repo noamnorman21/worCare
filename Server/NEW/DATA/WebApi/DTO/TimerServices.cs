@@ -73,7 +73,7 @@ namespace WebApi.DTO
                             db.SaveChanges();
                         }
                     }
-                    if (item.scheduledTime < nowWithoutSeconds)
+                    else if (item.scheduledTime < nowWithoutSeconds)
                     {
                         db.tblScheduledNotifications.Remove(item);
                     }

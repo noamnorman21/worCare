@@ -573,9 +573,12 @@ namespace WebApi.Controllers
                                 string foreignToken = db.tblUser.Where(x => x.userId == actualTask.workerId).Select(x => x.pushToken).FirstOrDefault();
                                 if (userToken != null && foreignToken != null)
                                 {
+                                    DateTime d= DateTime.Now.AddMinutes(+32);
                                     string title = "Drug is Running Low";
                                     string body = actualTask.drug.drugNameEn + " - Running low!";
-                                    SendPushNotification(foreignToken, userToken, title, body);
+                                    //SendPushNotification(foreignToken, userToken, title, body);
+                                    db.InsertScheduledNotification(foreignToken, title, body,d,null, actualTask.actualId, null,null,actualTask.workerId);
+                                    db.InsertScheduledNotification(userToken, title, body,d,null, actualTask.actualId, null,null,actualTask.userId);
                                 }
                             }
                         }

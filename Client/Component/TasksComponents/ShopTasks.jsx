@@ -70,8 +70,9 @@ function RenderShopTasks(props) {
 export default function ShopTasks(props) {
   const [modalVisible, setModalVisible] = useState(false)
   const [userData, setUserData] = useState(useUserContext().userContext);
+  const {allShopTasks}= useUserContext()
   const [tasks, setTasks] = useState([])
-  const [shopTasks, setShopTasks] = useState(props.allShopTasks)
+  const [shopTasks, setShopTasks] = useState(allShopTasks)
   const [productsForUpdateInDB, setProductsForUpdateInDB] = useState([])
   const checkIcon = ["check-circle", "circle"]
 
@@ -80,8 +81,8 @@ export default function ShopTasks(props) {
   const { task } = route.params || {};
 
   useEffect(() => {
-    setShopTasks(props.allShopTasks)
-  }, [props.allShopTasks])
+    setShopTasks(allShopTasks)
+  }, [allShopTasks])
 
 
   useFocusEffect( //we need to update the products in the db when we leave the screen
@@ -116,8 +117,8 @@ export default function ShopTasks(props) {
 
   const handleModalClose = () => {
     setModalVisible(false);
-    props.refreshPublicTask()
-    props.refreshPrivateTask()
+    //props.refreshPublicTask()
+    //props.refreshPrivateTask()
   };
 
   const isProductChecked = (prod, actualTask) => {
@@ -224,7 +225,7 @@ export default function ShopTasks(props) {
       <View style={{ width: SCREEN_WIDTH * 0.92 }}>
         <List.Section>
           <ScrollView alwaysBounceVertical={false}>
-            {shopTasks.map((task, index) => {
+            {allShopTasks.map((task, index) => {
               return (
                 <List.Accordion
                   key={task.actualId}

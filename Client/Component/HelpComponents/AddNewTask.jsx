@@ -56,7 +56,6 @@ function AddNewMedicine(props) {
 
    const addMed = () => {
       if (medTime != '' && medTimeArr.length == 0) {
-         console.log("medTime", medTime);
          medTimeArr.push(medTime);
       }
       console.log(selectedDrugName);
@@ -84,7 +83,6 @@ function AddNewMedicine(props) {
          frequency: selectedFrequency,
          pushToken: pushToken,
       }
-      console.log("newMed", newMedForDb);
 
       let addMedUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Task/InsertActualList';
       fetch(addMedUrl, {
@@ -105,7 +103,6 @@ function AddNewMedicine(props) {
          )
          .then(data => {
             if (data != null) {
-               console.log(data);
                clearInputs("Added");
             }
          }

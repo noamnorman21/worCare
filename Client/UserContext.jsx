@@ -976,6 +976,7 @@ export function UserProvider({ children }) {
                 );
         }
         else {
+            return console.log("updateActualTask", task)
             fetch(updateActualTaskUrL, {
                 method: 'PUT',
                 headers: new Headers({

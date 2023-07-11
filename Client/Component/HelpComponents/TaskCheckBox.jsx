@@ -12,6 +12,12 @@ export default function TaskCheckBox(props) {
     const checkIcon = ["check-circle", "circle"]
     const { updateActualTask } = useUserContext();
     const [taskName, setTaskName] = useState(props.task.taskName);
+
+    // to make sure the name changes and not stay the same even if task wash checked
+    useEffect(() => {
+        setTaskName(props.task.taskName);
+    }, [props.task.taskName]);
+
     useEffect(() => {
         if (isDone) {
             const timer = setTimeout(() => {
