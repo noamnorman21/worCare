@@ -64,54 +64,107 @@ export default function EditMed(props) {
     function rowForEachTime() {
         const timePickers = [];
         for (let i = 0; i < numberPerDay; i++) {
-            timePickers.push(
-                <View key={i} style={stylesForTimeModal.timePicker}>
-                    <View>
-                        <Text style={{ fontFamily: 'Urbanist-Light', fontSize: 16, color: '#000' }}>Time {i + 1}</Text>
+            {
+                Platform.OS === "ios" ?
+                timePickers.push(
+                    <View key={i} style={stylesForTimeModal.timePicker}>
+                        <View>
+                            <Text style={{ fontFamily: 'Urbanist-Light', fontSize: 16, color: '#000' }}>Time {i + 1}</Text>
+                        </View>
+                        <View>
+                            <DatePicker
+                                style={[stylesForTimeModal.doubleRowItem, medTimesArr[i] != null && { borderColor: '#000' }]}
+                                date={medTimesArr[i]}
+                                iconComponent={<MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />}
+                                placeholder="Add Time"
+                                mode="time"
+                                format="HH:mm"
+                                is24Hour={true}
+                                confirmBtnText="Confirm"
+                                cancelBtnText="Cancel"
+                                showIcon={true}
+                                customStyles={{
+                                    dateInput: {
+                                        borderWidth: 0,
+                                        alignItems: 'flex-start',
+                                        paddingLeft: 10,
+                                    },
+                                    placeholderText: {
+                                        color: '#9E9E9E',
+                                        fontSize: 16,
+                                        textAlign: 'left',
+                                        fontFamily: 'Urbanist-Light',
+                                    },
+                                    dateText: {
+                                        color: '#000',
+                                        fontSize: 16,
+                                        fontFamily: 'Urbanist-SemiBold',
+                                    },
+                                }}
+                                onDateChange={(date) => {
+                                    let newArr = [...medTimesArr];
+                                    newArr[i] = date;
+                                    console.log(newArr);
+                                    setMedTimesArr(newArr);
+                                }}
+                            />
+                        </View>
                     </View>
-                    <View>
-                        <DatePicker
-                            style={[stylesForTimeModal.doubleRowItem, medTimesArr[i] != null && { borderColor: '#000' }]}
-                            date={medTimesArr[i]}
-                            iconComponent={<MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />}
-                            placeholder="Add Time"
-                            mode="time"
-                            format="HH:mm"
-                            is24Hour={true}
-                            confirmBtnText="Confirm"
-                            cancelBtnText="Cancel"
-                            showIcon={true}
-                            customStyles={{
-                                dateInput: {
-                                    borderWidth: 0,
-                                    alignItems: 'flex-start',
-                                    paddingLeft: 10,
-                                },
-                                placeholderText: {
-                                    color: '#9E9E9E',
-                                    fontSize: 16,
-                                    textAlign: 'left',
-                                    fontFamily: 'Urbanist-Light',
-                                },
-                                dateText: {
-                                    color: '#000',
-                                    fontSize: 16,
-                                    fontFamily: 'Urbanist-SemiBold',
-                                },
-                            }}
-                            onDateChange={(date) => {
-                                let newArr = [...medTimesArr];
-                                newArr[i] = date;
-                                console.log(newArr);
-                                setMedTimesArr(newArr);
-                            }}
-                        />
-                    </View>
-                </View>
-            );
+                ) :
+                timePickers.push(
+                    <RowForAdnriod key={i} index={i} addTimeAndroid={addTimeAndroid} />
+                 )
+            }
         }
         return timePickers;
     }
+
+    const RowForAdnriod = (props) => {
+        const [show, setShow] = useState(false);
+        const [time, setTime] = useState('');
+  
+        const onchangeTime = (date) => {
+           setShow(false);
+           const currentTime = new Date(date.nativeEvent.timestamp).toTimeString().substring(0, 5);
+           console.log("currentDate= ", currentTime);
+           setTime(currentTime);
+           props.addTimeAndroid(currentTime, props.index);
+        }
+  
+        return (
+           <View style={stylesForTimeModal.timePicker}>
+              <View>
+                 <Text style={{ fontFamily: 'Urbanist-Light', fontSize: 16, color: '#000' }}>Time {props.index + 1}</Text>
+              </View>
+              <View>
+                 <TouchableOpacity onPress={() => setShow(true)} style={[stylesForTimeModal.doubleRowItem, medTimesArr[props.index] != null && { borderColor: '#000' }]}>
+                    <Text style={{ fontFamily: 'Urbanist-Light', fontSize: 16, color: '#000' }}>{medTimesArr[props.index] ? medTimesArr[props.index] : "Add Time"}</Text>
+                 </TouchableOpacity>
+              </View>
+              {show && (
+                 <DateTimePicker
+                    value={time ? new Date(time) : new Date()}
+                    mode={"time"}
+                    is24Hour={true}
+                    placeholder="Time"
+                    minimumDate={new Date(2000, 0, 1)}
+                    onChange={(date) => onchangeTime(date)}
+                    display="default"
+                    maximumDate={new Date()}
+                 />
+              )}
+           </View>
+        )
+     }
+
+     const addTimeAndroid = (time, index) => {
+        console.log("time= ", time);
+        let newArr = [...medTimesArr];
+        console.log("newArr= ", newArr);
+        newArr[index] = time;
+        console.log("newArr= ", newArr);
+        setMedTimesArr(newArr);
+     }
 
     const saveTimeArr = () => {
         for (let i = 0; i < medTimesArr.length; i++) {
