@@ -13,6 +13,7 @@ const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export default function EditMed(props) {
     const [show, setShow] = useState(false);
+    const [timePickerVisable,setTimePickerVisable]=useState();
     const PlatformType = Platform.OS;
     const task = props.task;
     const [editMode, setEditMode] = useState(true);
@@ -126,25 +127,28 @@ export default function EditMed(props) {
         setFrequency(task.frequency);
         setNumberPerDay(medTimesArr.length);
         setQuantity(task.drug.dosage);
+        if(Platform.OS==='ios'){
         setToDate(originDate);
+        }
+        else{
+            let day= originDate.substring(0, 2);
+            let month= originDate.substring(3, 5);
+            let year= originDate.substring(6, 10);
+            let temp= year + '-' + month + '-' + day;
+            let date= moment(temp).format('YYYY-MM-DD');
+            setToDate(date);
+        }
         setMedTimesArr(medTimesArr);
         setModalTimesVisible(false);
         props.onClose();
     };
 
-    const showMode = (currentMode) => {
-        if (Platform.OS === 'android') {
-            setShow(true);
-            // for iOS, add a button that closes the picker
-        }
-        else {
-            setShow(true);
-        }
-    };
+
 
     const showDatepicker = () => {
-        showMode('date');
+        setShow(true);
     };
+    
 
     const handleDrugEdited = () => {
         if (quantity == null || quantity == 0) {
@@ -154,6 +158,19 @@ export default function EditMed(props) {
         if (numberPerDay == null || numberPerDay == 0) {
             Alert.alert('Please select a number of times per day');
             return;
+        }
+
+        if (numberPerDay==null && medTime==''){
+            Alert.alert("please select Time")
+            return;
+        }
+        if (numberPerDay==1 && medTime){
+            if(Platform.OS==="ios"){
+            medTimesArr[0]=medTime
+            }
+            else{
+                medTimesArr[0]= moment(medTime).format("HH:MM:SS")
+            }
         }
         if (medTimesArr == null || medTimesArr == '') {
             Alert.alert('Please select a time');
@@ -217,6 +234,38 @@ export default function EditMed(props) {
             );
     }
 
+useEffect(() => {
+    let day= toDate.substring(0, 2);
+    let month= toDate.substring(3, 5);
+    let year= toDate.substring(6, 10);
+    let temp= year + '-' + month + '-' + day;
+    let date= moment(temp).format('YYYY-MM-DD');
+    setToDate(date);
+}, [])
+
+useEffect(() => {
+    console.log("toDate", toDate);
+}, [toDate])
+
+    const onChangeDate = (selectedDate) => {
+        const currentDate= new Date(selectedDate.nativeEvent.timestamp).toISOString().substring(0, 10);
+        setShow(false);
+      if (selectedDate.type == 'set') {
+        setToDate(currentDate);
+    }
+    };
+
+    const onChangeTime = (selectedDate) =>{
+        const currentTime= new Date(selectedDate.nativeEvent.timestamp).toISOString();
+        setTimePickerVisable(false);
+        if(selectedDate.type==="set")
+            setMedTime(currentTime)
+    }
+
+    const showTimePicker = () => {
+        setTimePickerVisable(true);
+    };
+
     return (
         <KeyboardAvoidingView style={[styles.container, modalTimesVisible && { backgroundColor: 'rgba(0, 0, 0, 0.75)' }]} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
             {/* Edit Med */}
@@ -232,7 +281,12 @@ export default function EditMed(props) {
                             <View style={[styles.doubleRow]}>
                                 <Text style={styles.txtLabel}>End Date: </Text>
                                 {PlatformType !== 'ios' ?
-                                    <TouchableOpacity style={styles.datePicker} onPress={showDatepicker}></TouchableOpacity>
+                                    <TouchableOpacity style={[styles.doubleRowItem, originDate && { borderColor: '#000' }]} onPress={showDatepicker}>
+                                        <Text style={{  color: "#000",
+                                                fontFamily: 'Urbanist-Medium',
+                                                paddingLeft: 8,
+                                                fontSize: 16,}}>{moment(toDate).format("DD/MM/YYYY")}</Text>
+                                    </TouchableOpacity>
                                     :
                                     <DatePicker
                                         useNativeDriver={'true'}
@@ -265,14 +319,13 @@ export default function EditMed(props) {
                                 }
                                 {show && (
                                     <DateTimePicker
-                                        value={new Date(originDate)}
+                                        value={new Date(toDate)}
                                         // mode={"date"}
                                         is24Hour={true}
                                         placeholder="Date"
-                                        minimumDate={new Date(2000, 0, 1)}
-                                        onDateChange={(date) => setToDate(date)}
+                                        minimumDate={new Date()}
+                                        onChange={(date) => onChangeDate(date)}
                                         display="default"
-                                        maximumDate={new Date()}
                                     />
                                 )}
                             </View>
@@ -353,6 +406,7 @@ export default function EditMed(props) {
                             {numberPerDay == 0 | numberPerDay == 1 ?
                                 <View style={styles.doubleRow}>
                                     <View><Text style={styles.txtLabel}>Intakes Time:</Text></View>
+                                    {Platform.OS==="ios"?
                                     <DatePicker
                                         style={[styles.doubleRowItem, medTime != '' && { borderColor: '#000' }]}
                                         date={medTime}
@@ -384,6 +438,27 @@ export default function EditMed(props) {
                                         }}
                                         onDateChange={(date) => { setMedTime(date) }}
                                     />
+                                    :
+                                    <TouchableOpacity style={[styles.doubleRowItem, originDate && { borderColor: '#000' }]} onPress={showTimePicker}>
+                                    <Text style={{  color: "#000",
+                                            fontFamily: 'Urbanist-Medium',
+                                            paddingLeft: 8,
+                                            fontSize: 16,}}>{medTime? new Date(medTime).toTimeString().substring(0,5):"Add Time"}
+                                    </Text>
+                                    {!medTime && <MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />}
+                                </TouchableOpacity>
+                                    }
+                                    {timePickerVisable && (
+                                    <DateTimePicker
+                                        value={medTime?new Date(medTime):new Date()}
+                                        mode={"time"}
+                                        is24Hour={true}
+                                        placeholder="Date"
+                                        minimumDate={new Date()}
+                                        onChange={(date) => onChangeTime(date)}
+                                        display="default"
+                                    />
+                                )}
                                 </View>
                                 :
                                 <View style={styles.doubleRow}>
