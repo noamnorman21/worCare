@@ -410,7 +410,7 @@ let translatedText = imageDescription;
   
 
   // send text message to firebase
-  const onSend = useCallback( async (messages = [], GroupMembers, userToken2) => {
+  const onSend = useCallback( async (messages = [], GroupMembers, userToken2, userLanguage) => {
     const { _id, createdAt, text, user } = messages[0]
     // change to user language- second side
     let targetLanguage = userLanguage;
@@ -482,9 +482,6 @@ let translatedText = imageDescription;
   }, []);
 
   const translateText = async (text, targetLanguage) => {
-    console.log("translateText")
-    console.log("text", text)
-    console.log("targetLanguage", targetLanguage)
     try {
       const response = await axios.post(`https://translation.googleapis.com/language/translate/v2`, {}, {
         params: {
@@ -527,7 +524,7 @@ let translatedText = imageDescription;
               </Send>
             )
           }}
-          onSend={messages => onSend(messages, GroupMembers, userToken2)}
+          onSend={messages => onSend(messages, GroupMembers, userToken2, userLanguage)}
           user={{
             _id: auth?.currentUser?.email,
             name: auth?.currentUser?.displayName,
