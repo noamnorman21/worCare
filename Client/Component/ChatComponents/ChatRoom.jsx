@@ -37,6 +37,7 @@ export default function ChatRoom({ route, navigation }) {
 
   // get messages from firebase
   useLayoutEffect(() => {
+    console.log("route.params", route.params)
     const tempMessages = query(collection(db, route.params.name), orderBy('createdAt', 'desc'));
     const unsubscribe = onSnapshot(tempMessages, (snapshot) => {
       setMessages(
@@ -66,6 +67,7 @@ export default function ChatRoom({ route, navigation }) {
       ),
     })
     if (route.params.type === "private") {
+      console.log(route.params.type)
       getUserToken();
     }
     return () => { console.log("unsub"); unsubscribe() };
@@ -387,10 +389,15 @@ let translatedText = imageDescription;
       const docRef = query(collection(db, route.params.userEmail), where("Name", "==", route.params.name));
       const res = getDocs(docRef);
       res.then((querySnapshot) => {
+        if(!querySnapshot.empty){
         querySnapshot.forEach((doc) => {
           updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: text || "Image", lastMessageTime: createdAt });
           console.log("updated for user")
         });
+      }
+      else{
+        addDoc(collection(db, route.params.userEmail), { Name: auth.currentUser.displayName + "+" + route.params.UserName, UserName: auth.currentUser.displayName, image: auth.currentUser.photoURL, userEmail: auth.currentUser.email, unread: true, unreadCount: 1, lastMessage: text || "Image", lastMessageTime: createdAt, type: "private" });
+      }
       });
       if (userToken2 != '') {
         let PushNotificationsData =
@@ -457,11 +464,11 @@ let translatedText = imageDescription;
       res.then((querySnapshot) => {
         if (!querySnapshot.empty) {
           querySnapshot.forEach((doc) => {
-            updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: text, lastMessageTime: createdAt });
+            updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: translate, lastMessageTime: createdAt });
           });
         }
         else {
-          addDoc(collection(db, route.params.userEmail), { Name: auth.currentUser.displayName + "+" + route.params.UserName, UserName: auth.currentUser.displayName, image: auth.currentUser.photoURL, userEmail: auth.currentUser.email, unread: true, unreadCount: 1, lastMessage: text, lastMessageTime: createdAt });
+          addDoc(collection(db, route.params.userEmail), { Name: auth.currentUser.displayName + "+" + route.params.UserName, UserName: auth.currentUser.displayName, image: auth.currentUser.photoURL, userEmail: auth.currentUser.email, unread: true, unreadCount: 1, lastMessage: translate, lastMessageTime: createdAt, type: "private" });
         }
       });
       if (userToken2 != '') {

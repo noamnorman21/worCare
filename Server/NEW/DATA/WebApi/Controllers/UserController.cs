@@ -72,7 +72,8 @@ namespace WebApi.Controllers
                 UserDTO userToReturn = new UserDTO();
                 var user = db.tblUser.Where(x => x.Email == userDTO.Email).FirstOrDefault();
                 userToReturn.pushToken = user.pushToken;
-                if (userDTO.userType == "Caregiver")
+                var forigenUser = db.tblForeignUser.Where(y => y.Id == user.userId).FirstOrDefault();
+                if (forigenUser!=null)
                 {
                     userToReturn.lagnuagecode = db.tblForeignUser.Where(y => y.Id == user.userId).Select(y => y.tblLanguage.LanguageName_Encode).FirstOrDefault();
                 }

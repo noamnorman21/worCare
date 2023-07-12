@@ -5,7 +5,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
 <Project>
   <PropertyGroup>
     <_PublishTargetUrl>C:\Users\User\Desktop\worCare Publish</_PublishTargetUrl>
-    <History>True|2023-07-12T13:23:40.0673155Z;True|2023-07-11T18:50:40.6021751+03:00;True|2023-07-10T22:38:32.6462698+03:00;True|2023-07-10T21:38:39.0636204+03:00;</History>
+    <History>True|2023-07-12T14:04:41.6157251Z;True|2023-07-12T16:23:40.0673155+03:00;True|2023-07-11T18:50:40.6021751+03:00;True|2023-07-10T22:38:32.6462698+03:00;True|2023-07-10T21:38:39.0636204+03:00;</History>
     <LastFailureDetails />
   </PropertyGroup>
   <ItemGroup>
@@ -367,10 +367,10 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>07/09/2023 18:02:18</publishTime>
     </File>
     <File Include="bin/WebApi.dll">
-      <publishTime>07/12/2023 16:23:39</publishTime>
+      <publishTime>07/12/2023 17:04:41</publishTime>
     </File>
     <File Include="bin/WebApi.pdb">
-      <publishTime>07/12/2023 16:23:39</publishTime>
+      <publishTime>07/12/2023 17:04:41</publishTime>
     </File>
     <File Include="bin/WebGrease.dll">
       <publishTime>07/09/2023 18:02:19</publishTime>
