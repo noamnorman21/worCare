@@ -69,8 +69,18 @@ namespace WebApi.Controllers
         {
             try
             {
-                var user = db.tblUser.Where(x => x.Email == userDTO.Email).Select(x => x.pushToken).FirstOrDefault();
-                return Ok(user);
+                UserDTO userToReturn = new UserDTO();
+                var user = db.tblUser.Where(x => x.Email == userDTO.Email).FirstOrDefault();
+                userToReturn.pushToken = user.pushToken;
+                if (userDTO.userType == "Caregiver")
+                {
+                    userToReturn.lagnuagecode = db.tblForeignUser.Where(y => y.Id == user.userId).Select(y => y.tblLanguage.LanguageName_Encode).FirstOrDefault();
+                }
+                else
+                {
+                    userToReturn.lagnuagecode = "HE";
+                }
+                return Ok(userToReturn);
             }
             catch (Exception ex)
             {
