@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect, useLayoutEffect } from 'react';
 import { View, Text, StyleSheet, Dimensions, Image, Alert, Modal, TouchableOpacity, ScrollView, Platform, SafeAreaView, KeyboardAvoidingView } from 'react-native'
-import { GiftedChat, Bubble, Actions, InputToolbar, Time, MessageImage, LoadEarlier, Composer, Send } from 'react-native-gifted-chat';
+import { GiftedChat, Bubble, Actions, InputToolbar, Time, MessageImage, LoadEarlier, Composer, Send, MessageText } from 'react-native-gifted-chat';
 import { Ionicons, FontAwesome, Feather } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import { collection, query, where, getDocs, addDoc, updateDoc, orderBy, onSnapshot } from "firebase/firestore";
@@ -10,6 +10,7 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { TextInput } from 'react-native-paper';
 import moment from 'moment';
 import { Audio } from 'expo-av';
+import axios from 'axios';
 
 import { useUserContext } from '../../UserContext';
 import ChatProfile from './ChatProfile';
@@ -25,6 +26,7 @@ export default function ChatRoom({ route, navigation }) {
   const [GroupMembers, setGroupMembers] = useState(); //for group chat
   const { newMessages, setNewMessages, sendPushNotification } = useUserContext();
   const [userToken2, setUserToken2] = useState(''); //for push notification- temporary- will start as ''
+  const [userLanguage, setUserLanguage] = useState(''); //for push notification- temporary- will start as ''
   //profile modal
   const [userModal, setUserModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -43,7 +45,8 @@ export default function ChatRoom({ route, navigation }) {
           createdAt: doc.data().createdAt.toDate(),
           text: doc.data().text,
           user: doc.data().user,
-          image: doc.data().image
+          image: doc.data().image,
+          translatedText: doc.data().translatedText,
         }))
       )
     });
@@ -94,7 +97,10 @@ export default function ChatRoom({ route, navigation }) {
       )
       .then(
         (result) => {
-          setUserToken2(result)
+          console.log("result", result)
+          setUserToken2(result.pushToken)
+          console.log(result.lagnuagecode)
+          setUserLanguage(result.lagnuagecode)
           // sendPushNotification(result.Token, result.Name)
         }
       )
@@ -320,6 +326,10 @@ export default function ChatRoom({ route, navigation }) {
 
   //send image to firebase
   const onSendImage = async (downloadUrl) => {
+let translatedText = imageDescription;
+    if(imageDescription){
+      translatedText = await translateText(imageDescription, userLanguage);
+    }
     //add new message to db
     const newMessage = {
       _id: Math.random().toString(36).substring(7),
@@ -330,7 +340,8 @@ export default function ChatRoom({ route, navigation }) {
         avatar: auth.currentUser.photoURL
       },
       image: downloadUrl,
-      text: imageDescription
+      text: imageDescription,
+      translatedText: translatedText,
     }
     setMessages(previousMessages => GiftedChat.append(previousMessages, [newMessage]));
     const { _id, createdAt, text, user, image } = newMessage
@@ -396,11 +407,15 @@ export default function ChatRoom({ route, navigation }) {
       }
     }
   }
+  
 
   // send text message to firebase
-  const onSend = useCallback((messages = [], GroupMembers, userToken2) => {
+  const onSend = useCallback( async (messages = [], GroupMembers, userToken2) => {
     const { _id, createdAt, text, user } = messages[0]
-    addDoc(collection(db, route.params.name), { _id, createdAt, text, user });
+    // change to user language- second side
+    let targetLanguage = userLanguage;
+    let translate = await translateText(text, targetLanguage);
+    addDoc(collection(db, route.params.name), { _id, createdAt, text, user, translatedText: translate });
     const docRef = query(collection(db, auth.currentUser.email), where("Name", "==", route.params.name));
     const res = getDocs(docRef);
     res.then((querySnapshot) => {
@@ -466,6 +481,25 @@ export default function ChatRoom({ route, navigation }) {
     }
   }, []);
 
+  const translateText = async (text, targetLanguage) => {
+    console.log("translateText")
+    console.log("text", text)
+    console.log("targetLanguage", targetLanguage)
+    try {
+      const response = await axios.post(`https://translation.googleapis.com/language/translate/v2`, {}, {
+        params: {
+          q: text,
+          target: targetLanguage,
+          key: 'AIzaSyBuJMig6uWp36DYloOdaOkY89-hjc4TK40',
+        },
+      });
+      return response.data.data.translations[0].translatedText;
+    } catch (error) {
+      console.error("There was an error with the translation: ", error);
+      return text;
+    }
+  };
+
   return (
     <>
       <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
@@ -510,6 +544,7 @@ export default function ChatRoom({ route, navigation }) {
                     borderColor: "#808080",
                     borderWidth: 1.5,
                     borderRadius: 20,
+                    margin:Platform.OS==='android'&& 2,
                   },
                   right: {
                     backgroundColor: "#7DA9FF",
@@ -543,6 +578,13 @@ export default function ChatRoom({ route, navigation }) {
                   }
                 }
                 }
+                renderMessageText={(props) => {                                  
+                  return (
+                    <Text style={[props.textStyle[props.position], {padding:5, paddingLeft:10, paddingRight:10}]}>
+                      { props.currentMessage.user._id==auth.currentUser.email ?props.currentMessage.text:props.currentMessage.translatedText}
+                    </Text>
+                  );
+                }}
               />
             )
           }}
