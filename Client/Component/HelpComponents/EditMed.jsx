@@ -20,12 +20,6 @@ export default function EditMed(props) {
     const task = props.task;
     const [editMode, setEditMode] = useState(true);
     const [frequency, setFrequency] = useState(task.frequency);
-    const medFrequencies = [
-        { id: 0, name: 'Once' },
-        { id: 1, name: 'Daily' },
-        { id: 3, name: 'Weekly' },
-        { id: 4, name: 'Monthly' },
-    ];
     const [medTime, setMedTime] = useState('');
     const medTimes = task.timesInDayArray;
     const [medTimesArr, setMedTimesArr] = useState(medTimes.split(','));
@@ -34,6 +28,13 @@ export default function EditMed(props) {
     const [modalTimesVisible, setModalTimesVisible] = useState(false);
     const { UpdateDrugForPatientDTO, getAllPublicTasks, userContext } = useUserContext();
     const [visibleEditMed, setVisibleEditMed] = useState(false);
+
+    const medFrequencies = [
+        { id: 0, name: 'Once' },
+        { id: 1, name: 'Daily' },
+        { id: 3, name: 'Weekly' },
+        { id: 4, name: 'Monthly' },
+    ];
     const stylesForTimeModal = StyleSheet.create({
         timePicker: {
             flexDirection: 'row',
