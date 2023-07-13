@@ -46,7 +46,6 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
 
   //updated for chat
   const createUserInDB = async () => {
-
     let res= await getPush();
     if (res == null||res==""||res==undefined||res=='') {
       newUser.pushToken = expoPushToken;

@@ -52,7 +52,7 @@ function CustomHeader() {
     };
 
     const togllePatiemtDialog = () => {
-        if(patientList && patientList.length > 1){
+        if (patientList && patientList.length > 1) {
             setSwitchPatientDialogVisable(!switchPatientDialogVisable);
         }
     }
@@ -146,8 +146,8 @@ function CustomHeader() {
                                                     toggleModal()
                                                     togllePatiemtDialog()
                                                 }}>
-                                                <AntDesign name="retweet" size={20} color={patientList && patientList.length > 1 ?"#216Bff":"#808080"} />
-                                                <Text style={patientList && patientList.length > 1 ?styles.switchTxt: styles.switchTxtDisabled}>
+                                                <AntDesign name="retweet" size={20} color={patientList && patientList.length > 1 ? "#216Bff" : "#808080"} />
+                                                <Text style={patientList && patientList.length > 1 ? styles.switchTxt : styles.switchTxtDisabled}>
                                                     Switch Patient
                                                 </Text>
                                             </TouchableOpacity>
@@ -208,18 +208,20 @@ function CustomHeader() {
                                             </View>
                                         </TouchableOpacity>
                                         <View style={styles.line} />
+                                        
 
                                         <TouchableOpacity onPress={
                                             () => {
                                                 userContext.userType === 'User' ?
                                                     setNewUserDialogVisable(true) :
-                                                    navigateToSignUp()
+                                                    setNewUserDialogVisable(false)
                                                 toggleModal()
                                             }
                                         }>
+                                            
                                             <View style={styles.menuItem}>
                                                 <AntDesign name="adduser" size={30} color="#fff1e6" />
-                                                <Text style={styles.menuItemText}>Add New User</Text>
+                                                <Text style={styles.menuItemText}>Add New Patient</Text>
                                             </View>
                                         </TouchableOpacity>
                                         <View style={styles.line} />
@@ -319,18 +321,17 @@ function CustomHeader() {
                 style={styles.dialogStyle}>
                 <Dialog.Title style={styles.dialogTitle}>Choose User Type</Dialog.Title>
                 <Dialog.Content>
-                    <Paragraph style={{ fontFamily: 'Urbanist-Medium', fontSize: 18 }}>Do you want to create an new User or New Patient Profile?</Paragraph>
+                    <Paragraph style={{ fontFamily: 'Urbanist-Medium', fontSize: 18 }}>Do you want to create New Patient Profile?</Paragraph>
                 </Dialog.Content>
                 <Dialog.Actions>
-                    <Button labelStyle={styles.dialogTxt} onPress={() => {
-                        setNewUserDialogVisable(false)
-                        navigateToSignUp()
-                    }}>New User</Button>
                     <Button labelStyle={styles.dialogTxt} onPress={() => {
                         setNewUserDialogVisable(false)
                         console.log('new patient')
                         navigation.navigate('NewPatientLvl1')
                     }}>New Patient</Button>
+                    <Button labelStyle={styles.dialogTxt} onPress={() => {
+                        setNewUserDialogVisable(false)
+                    }}>Cancel</Button>
                 </Dialog.Actions>
             </Dialog>
             <Dialog visible={switchPatientDialogVisable} onDismiss={() => setSwitchPatientDialogVisable(false)}
@@ -342,7 +343,6 @@ function CustomHeader() {
                 <Dialog.Actions>
                     {patientArr}
                 </Dialog.Actions>
-
             </Dialog>
         </>
     );
