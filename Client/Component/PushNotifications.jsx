@@ -29,6 +29,7 @@ export default function PushNotifications() {
     <SafeAreaView style={styles.container}>
       <View style={[styles.contentContainer]}>
         <FlatList
+          alwaysBounceVertical={false}
           data={notificationsArr}
           keyExtractor={(item) => item.notificationID.toString()}
           renderItem={renderItem}

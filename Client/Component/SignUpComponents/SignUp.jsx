@@ -308,17 +308,16 @@ const styles = StyleSheet.create({
   },
   nameContainer: {
     flexDirection: 'row',
-    width: '100%',
+    width: SCREEN_WIDTH * 0.92,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
   },
   firstNameInput: {
-    marginRight: 10,
-    width: SCREEN_WIDTH * 0.425,
+    // marginRight: 10,
+    width: SCREEN_WIDTH * 0.45,
   },
   lastNameInput: {
-    marginLeft: 10,
-    width: SCREEN_WIDTH * 0.425,
+    width: SCREEN_WIDTH * 0.45,
   },
   title: {
     fontSize: 24,
