@@ -31,16 +31,16 @@ export default function SignUpFinish({ navigation, route }) {
     };
 
     const getIdToken = async () => {
-        if (Platform.OS === 'android') {
-            console.log("android");
+        // if (Platform.OS === 'android') 
             const currentToken = (await Notifications.getExpoPushTokenAsync()).data;
             console.log(currentToken);
             setExpoPushToken(currentToken);
-            return token;
-        }
-        else {
-            registerForPushNotificationsAsync().then(token => {setExpoPushToken(token);return token;});
-        }
+            return currentToken;
+        // }
+        // else {
+        //     registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+        //     return expoPushToken;
+        // }
     }
 
     // link to the specific screen in the app and send the patient id to the screen as a parameter
@@ -121,8 +121,14 @@ export default function SignUpFinish({ navigation, route }) {
 
     // InsertUser
     const createNewUserInDB = async () => {
-        user.pushToken= await getIdToken();
         let user = route.params.tblUser
+        let res= await getIdToken();
+        if (res == null||res==""||res==undefined||res=='') {
+            user.pushToken = expoPushToken;
+        }
+        else {
+            user.pushToken = res;
+        }
         // user.pushToken = expoPushToken;
         fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/InsertUser', { //send the user data to the DB
             method: 'POST',

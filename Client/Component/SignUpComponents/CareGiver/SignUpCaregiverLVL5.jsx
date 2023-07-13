@@ -37,21 +37,23 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
   }, [routeEmail]);
 
   const getPush = async () => {
-    if (Platform.OS === 'android') {
-      console.log("android");
+ 
       const currentToken = (await Notifications.getExpoPushTokenAsync()).data;
       console.log(currentToken);
       setExpoPushToken(currentToken);
-    }
-    else {
-      registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
-    }
+      return currentToken;
   }
 
   //updated for chat
-  const createUserInDB = () => {
-    getPush();
-    newUser.pushToken = expoPushToken;
+  const createUserInDB = async () => {
+
+    let res= await getPush();
+    if (res == null||res==""||res==undefined||res=='') {
+      newUser.pushToken = expoPushToken;
+    }
+    else {
+      newUser.pushToken = res;
+    }
     newUser.Calendars = selectedHolidays;
     console.log("new user:", newUser);
 

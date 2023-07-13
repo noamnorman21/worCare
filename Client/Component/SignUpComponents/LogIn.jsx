@@ -239,19 +239,15 @@ export default function LogIn({ navigation }) {
         navigation.navigate('ForgotPassword')
     }
 
-    // useEffect(() => {
-    //     getInitialUrl();
-    //     loadStorageData();
-    // }, []);
-
     useFocusEffect(
         useCallback(() => {
-            getInitialUrl();
+           
             loadStorageData();
         }, []),
     );
-
-
+    useEffect(() => {
+        getInitialUrl();
+    }, []);
 
     const loadStorageData = async () => {
         try {
