@@ -24,16 +24,14 @@ export default function ChatRoom({ route, navigation }) {
   const [selectedPic, setSelectedPic] = useState(null); //to send image to firebase
   const [imageDescription, setImageDescription] = useState('')//to send image with description
   const [GroupMembers, setGroupMembers] = useState(); //for group chat
-  const { newMessages, setNewMessages, sendPushNotification } = useUserContext();
+  const { newMessages, setNewMessages, sendPushNotification, notificationsThatSent } = useUserContext();
   const [userToken2, setUserToken2] = useState(''); //for push notification- temporary- will start as ''
   const [userLanguage, setUserLanguage] = useState(''); //for push notification- temporary- will start as ''
+  const [userIdThatGetThePush, setUserIdThatGetThePush] = useState(''); //for push notification- temporary- will start as ''
   //profile modal
   const [userModal, setUserModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
 
-  const [recording, setRecording] = useState(null); // for audio recording
-  const [audioPermission, setAudioPermission] = useState(false); // for audio recording
-  const [recordingStatus, setRecordingStatus] = useState('not recording'); // for audio recording
 
   // get messages from firebase
   useLayoutEffect(() => {
@@ -99,6 +97,7 @@ export default function ChatRoom({ route, navigation }) {
           setUserToken2(result.pushToken)
           console.log(result.lagnuagecode)
           setUserLanguage(result.lagnuagecode)
+          setUserIdThatGetThePush(result.userId)//CHECK IF user.id is the right name of the field  
         }
       )
   }
@@ -272,6 +271,8 @@ export default function ChatRoom({ route, navigation }) {
         }
         console.log("PushNotificationsData", PushNotificationsData)
         sendPushNotification(PushNotificationsData)
+
+
       }
     }
   }
@@ -345,6 +346,15 @@ export default function ChatRoom({ route, navigation }) {
         }
         console.log("PushNotificationsData", PushNotificationsData)
         sendPushNotification(PushNotificationsData)
+        let notification = {
+          title: "New Message",
+          pushMessage: `You have a New Message from ${auth.currentUser.displayName}`,
+          //time is now 
+          time: new Date().toLocaleString(),
+          userId: userIdThatGetThePush
+        }
+        notificationsThatSent(notification)
+
       }
     }
   }, []);
