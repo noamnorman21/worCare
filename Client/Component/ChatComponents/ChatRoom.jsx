@@ -73,10 +73,6 @@ export default function ChatRoom({ route, navigation }) {
     return () => { console.log("unsub"); unsubscribe() };
   }, [navigation]);
 
-  useEffect(() => {
-    console.log("userToken2", userToken2)
-  }, [userToken2])
-
   //delete return when pubished
   const getUserToken = async () => {
     console.log("getUserToken")
@@ -103,7 +99,6 @@ export default function ChatRoom({ route, navigation }) {
           setUserToken2(result.pushToken)
           console.log(result.lagnuagecode)
           setUserLanguage(result.lagnuagecode)
-          // sendPushNotification(result.Token, result.Name)
         }
       )
   }
@@ -191,145 +186,11 @@ export default function ChatRoom({ route, navigation }) {
     }
   };
 
-  useEffect(() => {
-    async function getAudioPermission() {
-      await Audio.requestPermissionsAsync().then((premission) => {
-        setAudioPermission(premission.granted)
-
-      }).catch((error) => {
-        console.log("error", error)
-      })
-    }
-    getAudioPermission();
-    return () => {
-      if (recording) {
-        stopRecording();
-      }
-    };
-
-  }, []);
-
-  async function startRecording() {
-    try {
-      // Set the audio mode
-      await Audio.setAudioModeAsync({
-        allowsRecordingIOS: true,
-        interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_MIX_WITH_OTHERS,
-        playsInSilentModeIOS: true,
-      });
-
-      if (audioPermission) {
-        await Audio.requestPermissionsAsync();
-      }
-
-      const newRecording = new Audio.Recording();
-      console.log("Start recording");
-      await newRecording.prepareToRecordAsync(Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY);
-      await newRecording.startAsync();
-      setRecording(newRecording);
-      setRecordingStatus('recording');
-    } catch (err) {
-      console.log('Failed to start recording', err);
-    }
-  }
-
-  async function stopRecording() {
-    try {
-      if (recordingStatus === 'recording') {
-        console.log("Stop recording")
-        await recording.stopAndUnloadAsync();
-        const recordingUri = recording.getURI();
-
-        const fileName = `recording-${Date.now()}.caf`;
-        await FileSystem.makeDirectoryAsync(FileSystem.documentDirectory + 'recordings/', { intermediates: true });
-        await FileSystem.moveAsync({
-          from: recordingUri,
-          to: `${FileSystem.documentDirectory}recordings/${fileName}`,
-        });
-
-        const playbackObject = new Audio.Sound();
-        await playbackObject.loadAsync({ uri: `${FileSystem.documentDirectory}recordings/${fileName}` });
-        await playbackObject.playAsync();
-
-        setRecording(null);
-        setRecordingStatus('not recording');
-      }
-    }
-    catch (error) {
-      console.error(error);
-    }
-  }
-
-  async function handleRecordButtonPress() {
-    if (recording) {
-      const audioUri = await stopRecording(recording);
-      if (audioUri) {
-        console.log("audioUri", audioUri)
-      }
-    } else {
-      await startRecording();
-    }
-  }
-
-  //handle audio recording
-  const onSendAudio = async (recording) => {
-    //add new message to db
-    const newMessage = {
-      _id: Math.random().toString(36).substring(7),
-      createdAt: new Date(),
-      user: {
-        _id: auth.currentUser.email,
-        name: auth.currentUser.displayName,
-        avatar: auth.currentUser.photoURL
-      },
-      audio: recording,
-    }
-    setMessages(previousMessages => GiftedChat.append(previousMessages, [newMessage]));
-    const { _id, createdAt, user, audio } = newMessage
-    addDoc(collection(db, route.params.name), { _id, createdAt, user, audio });
-    console.log("new message added to db")
-    //update last message and last message time in db
-    const docRef = query(collection(db, auth.currentUser.email), where("Name", "==", route.params.name));
-    const res = getDocs(docRef);
-    res.then((querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-        updateDoc(doc.ref, { lastMessage: "audio", lastMessageTime: createdAt });
-      });
-    });
-    if (GroupMembers) {
-      GroupMembers.forEach(arr => {
-        arr.forEach(user => {
-          console.log("usera", user)
-          if (user !== auth.currentUser.email) {
-            const docRef = query(collection(db, user), where("Name", "==", route.params.name));
-            const res = getDocs(docRef);
-            console.log("res", res)
-            res.then((querySnapshot) => {
-              querySnapshot.forEach((doc) => {
-                updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: "audio", lastMessageTime: createdAt });
-                console.log("updated")
-              });
-            });
-          }
-        }
-        )
-      });
-    }
-    else if (route.params.userEmail) {
-      const docRef = query(collection(db, route.params.userEmail), where("Name", "==", route.params.name));
-      const res = getDocs(docRef);
-      res.then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-          updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: "audio", lastMessageTime: createdAt });
-        });
-      });
-    }
-  }
 
   //send image to firebase
   const onSendImage = async (downloadUrl) => {
-let translatedText = imageDescription;
-    if(imageDescription){
+    let translatedText = imageDescription;
+    if (imageDescription) {
       translatedText = await translateText(imageDescription, userLanguage);
     }
     //add new message to db
@@ -389,15 +250,15 @@ let translatedText = imageDescription;
       const docRef = query(collection(db, route.params.userEmail), where("Name", "==", route.params.name));
       const res = getDocs(docRef);
       res.then((querySnapshot) => {
-        if(!querySnapshot.empty){
-        querySnapshot.forEach((doc) => {
-          updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: text || "Image", lastMessageTime: createdAt });
-          console.log("updated for user")
-        });
-      }
-      else{
-        addDoc(collection(db, route.params.userEmail), { Name: auth.currentUser.displayName + "+" + route.params.UserName, UserName: auth.currentUser.displayName, image: auth.currentUser.photoURL, userEmail: auth.currentUser.email, unread: true, unreadCount: 1, lastMessage: text || "Image", lastMessageTime: createdAt, type: "private" });
-      }
+        if (!querySnapshot.empty) {
+          querySnapshot.forEach((doc) => {
+            updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: text || "Image", lastMessageTime: createdAt });
+            console.log("updated for user")
+          });
+        }
+        else {
+          addDoc(collection(db, route.params.userEmail), { Name: auth.currentUser.displayName + "+" + route.params.UserName, UserName: auth.currentUser.displayName, image: auth.currentUser.photoURL, userEmail: auth.currentUser.email, unread: true, unreadCount: 1, lastMessage: text || "Image", lastMessageTime: createdAt, type: "private" });
+        }
       });
       if (userToken2 != '') {
         let PushNotificationsData =
@@ -414,10 +275,10 @@ let translatedText = imageDescription;
       }
     }
   }
-  
+
 
   // send text message to firebase
-  const onSend = useCallback( async (messages = [], GroupMembers, userToken2, userLanguage) => {
+  const onSend = useCallback(async (messages = [], GroupMembers, userToken2, userLanguage) => {
     const { _id, createdAt, text, user } = messages[0]
     // change to user language- second side
     let targetLanguage = userLanguage;
@@ -548,7 +409,7 @@ let translatedText = imageDescription;
                     borderColor: "#808080",
                     borderWidth: 1.5,
                     borderRadius: 20,
-                    margin:Platform.OS==='android'&& 2,
+                    margin: Platform.OS === 'android' && 2,
                   },
                   right: {
                     backgroundColor: "#7DA9FF",
@@ -582,10 +443,10 @@ let translatedText = imageDescription;
                   }
                 }
                 }
-                renderMessageText={(props) => {                                  
+                renderMessageText={(props) => {
                   return (
-                    <Text style={[props.textStyle[props.position], {padding:5, paddingLeft:10, paddingRight:10}]}>
-                      { props.currentMessage.user._id==auth.currentUser.email ?props.currentMessage.text:props.currentMessage.translatedText}
+                    <Text style={[props.textStyle[props.position], { padding: 5, paddingLeft: 10, paddingRight: 10 }]}>
+                      {props.currentMessage.user._id == auth.currentUser.email ? props.currentMessage.text : props.currentMessage.translatedText}
                     </Text>
                   );
                 }}
