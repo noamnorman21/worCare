@@ -72,6 +72,7 @@ namespace WebApi.Controllers
                 UserDTO userToReturn = new UserDTO();
                 var user = db.tblUser.Where(x => x.Email == userDTO.Email).FirstOrDefault();
                 userToReturn.pushToken = user.pushToken;
+                userToReturn.userId = user.userId;
                 var forigenUser = db.tblForeignUser.Where(y => y.Id == user.userId).FirstOrDefault();
                 if (forigenUser!=null)
                 {

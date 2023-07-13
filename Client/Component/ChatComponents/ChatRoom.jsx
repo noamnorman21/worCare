@@ -188,10 +188,7 @@ export default function ChatRoom({ route, navigation }) {
 
   //send image to firebase
   const onSendImage = async (downloadUrl) => {
-    let translatedText = imageDescription;
-    if (imageDescription) {
-      translatedText = await translateText(imageDescription, userLanguage);
-    }
+    let translatedText = await translateText(imageDescription, userLanguage);
     //add new message to db
     const newMessage = {
       _id: Math.random().toString(36).substring(7),
@@ -203,11 +200,11 @@ export default function ChatRoom({ route, navigation }) {
       },
       image: downloadUrl,
       text: imageDescription,
-      translatedText: translatedText,
+      translatedText: await translateText(imageDescription, userLanguage)
     }
     setMessages(previousMessages => GiftedChat.append(previousMessages, [newMessage]));
     const { _id, createdAt, text, user, image } = newMessage
-    addDoc(collection(db, route.params.name), { _id, createdAt, text, user, image });
+    addDoc(collection(db, route.params.name), { _id, createdAt, text, user, image, translatedText });
     console.log("new message added to db")
     setPicPreviewModal(false);
     //update last message and last message time in db
@@ -251,12 +248,12 @@ export default function ChatRoom({ route, navigation }) {
       res.then((querySnapshot) => {
         if (!querySnapshot.empty) {
           querySnapshot.forEach((doc) => {
-            updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: text || "Image", lastMessageTime: createdAt });
+            updateDoc(doc.ref, { unread: false, unreadCount: querySnapshot.docs[0].data().unreadCount + 1, lastMessage: translatedText || "Image", lastMessageTime: createdAt });
             console.log("updated for user")
           });
         }
         else {
-          addDoc(collection(db, route.params.userEmail), { Name: auth.currentUser.displayName + "+" + route.params.UserName, UserName: auth.currentUser.displayName, image: auth.currentUser.photoURL, userEmail: auth.currentUser.email, unread: true, unreadCount: 1, lastMessage: text || "Image", lastMessageTime: createdAt, type: "private" });
+          addDoc(collection(db, route.params.userEmail), { Name: auth.currentUser.displayName + "+" + route.params.UserName, UserName: auth.currentUser.displayName, image: auth.currentUser.photoURL, userEmail: auth.currentUser.email, unread: true, unreadCount: 1, lastMessage: translatedText || "Image", lastMessageTime: createdAt, type: "private" });
         }
       });
       if (userToken2 != '') {
