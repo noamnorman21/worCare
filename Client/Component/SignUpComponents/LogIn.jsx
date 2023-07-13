@@ -42,6 +42,7 @@ export default function LogIn({ navigation }) {
             const patientId = decryptPatientId(route.split('/')[3]);
             const userName = route.split('/')[4];
             const routeEmail = route.split('/')[5]; // For Oryan Chat
+            console.log(routeEmail);
             setRouteEmail(routeEmail);
             if (routeName === 'InvitedFrom') {
                 setUserType('Caregiver');

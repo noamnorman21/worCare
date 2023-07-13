@@ -32,6 +32,10 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
     console.log("email:", routeEmail);
   }
 
+  useEffect(() => {
+    console.log(routeEmail);
+  }, [routeEmail]);
+
   const getPush = async () => {
     if (Platform.OS === 'android') {
       console.log("android");

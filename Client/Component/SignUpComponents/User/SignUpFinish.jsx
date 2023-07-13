@@ -36,9 +36,10 @@ export default function SignUpFinish({ navigation, route }) {
             const currentToken = (await Notifications.getExpoPushTokenAsync()).data;
             console.log(currentToken);
             setExpoPushToken(currentToken);
+            return token;
         }
         else {
-            registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+            registerForPushNotificationsAsync().then(token => {setExpoPushToken(token);return token;});
         }
     }
 
@@ -119,10 +120,10 @@ export default function SignUpFinish({ navigation, route }) {
     }
 
     // InsertUser
-    const createNewUserInDB = () => {
-        getIdToken();
+    const createNewUserInDB = async () => {
+        user.pushToken= await getIdToken();
         let user = route.params.tblUser
-        user.pushToken = expoPushToken;
+        // user.pushToken = expoPushToken;
         fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/InsertUser', { //send the user data to the DB
             method: 'POST',
             headers: {
