@@ -114,7 +114,8 @@ export default function SignUpHobbies({ navigation, route }) {
     <KeyboardAwareScrollView
       style={styles.container}
       resetScrollToCoords={{ x: 0, y: 0 }}
-      contentContainerStyle={{ flexGrow: 1 }}
+      contentContainerStyle={{ flexGrow: 1,justifyContent: 'center',
+      alignItems: 'center', }}
       scrollEnabled={true}
       extraScrollHeight={20}
     >
@@ -572,8 +573,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: '#fff',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   flatList: {
     alignItems: 'center',
