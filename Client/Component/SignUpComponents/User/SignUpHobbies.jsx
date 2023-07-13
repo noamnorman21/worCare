@@ -117,7 +117,7 @@ export default function SignUpHobbies({ navigation, route }) {
       contentContainerStyle={{ flexGrow: 1,justifyContent: 'center',
       alignItems: 'center', }}
       scrollEnabled={true}
-      extraScrollHeight={20}
+      extraScrollHeight={10}
     >
       <View style={styles.headerContainer}>
         <Text style={styles.header}>Add Patient’s Hobbies</Text>

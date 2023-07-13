@@ -99,9 +99,12 @@ export default function SignUpLimitations({ navigation, route }) {
     <KeyboardAwareScrollView
       style={styles.container}
       resetScrollToCoords={{ x: 0, y: 0 }}
-      contentContainerStyle={{ flexGrow: 1 }}
+      contentContainerStyle={{
+        flexGrow: 1, justifyContent: 'center',
+        alignItems: 'center',
+      }}
       scrollEnabled={true}
-      extraScrollHeight={20}
+      extraScrollHeight={10}
     >
       <View style={styles.headerContainer}>
         <Text style={styles.header}>Add Patient limitation's</Text>
@@ -379,8 +382,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     padding: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   headerContainer: {
     width: SCREEN_WIDTH * 1,
