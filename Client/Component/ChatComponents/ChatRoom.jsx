@@ -101,6 +101,7 @@ export default function ChatRoom({ route, navigation }) {
         }
       )
   }
+  
 
   useFocusEffect( //update convo in db that user has read the messages when leaving page
     useCallback(() => {
@@ -276,7 +277,7 @@ export default function ChatRoom({ route, navigation }) {
 
 
   // send text message to firebase
-  const onSend = useCallback(async (messages = [], GroupMembers, userToken2, userLanguage) => {
+  const onSend = useCallback(async (messages = [], GroupMembers, userToken2, userLanguage, userIdThatGetThePush) => {
     const { _id, createdAt, text, user } = messages[0]
     // change to user language- second side
     let targetLanguage = userLanguage;
@@ -347,9 +348,10 @@ export default function ChatRoom({ route, navigation }) {
           title: "New Message",
           pushMessage: `You have a New Message from ${auth.currentUser.displayName}`,
           //time is now 
-          time: new Date().toLocaleString(),
+          time: Platform.OS==="ios"? new Date().toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }):moment(new Date()).format('LT'), //changed for android from locatstring, so it can add in db. need to check if it works on ios),
           userId: userIdThatGetThePush
         }
+        console.log(notification)
         notificationsThatSent(notification)
 
       }
@@ -399,7 +401,7 @@ export default function ChatRoom({ route, navigation }) {
               </Send>
             )
           }}
-          onSend={messages => onSend(messages, GroupMembers, userToken2, userLanguage)}
+          onSend={messages => onSend(messages, GroupMembers, userToken2, userLanguage,userIdThatGetThePush)}
           user={{
             _id: auth?.currentUser?.email,
             name: auth?.currentUser?.displayName,

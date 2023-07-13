@@ -174,7 +174,7 @@ export default function NewPayment(props) {
             title: "New Payment Request",
             pushMessage: `You have a new payment request from ${userName}\n for ${payment.amountToPay}NIS`,
             //time will be now without seconds
-            time: Platform.OS==="ios"? new Date().toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }):new Date().toISOString(), //changed for android from locatstring, so it can add in db. need to check if it works on ios),
+            time: Platform.OS==="ios"? new Date().toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }):moment(new Date()).format('LT'), //changed for android from locatstring, so it can add in db. need to check if it works on ios),
             userId: involvedInId,        
           }
           sendPushNotification(PushNotificationsData); // This line sends the notification, the function is in UserContext
