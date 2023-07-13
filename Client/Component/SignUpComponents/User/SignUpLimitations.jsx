@@ -4,6 +4,7 @@ import { Entypo } from '@expo/vector-icons';
 import { Dropdown } from 'react-native-element-dropdown';
 import LimitationsData from './Limitations.json';
 const SCREEN_WIDTH = Dimensions.get('window').width;
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 export default function SignUpLimitations({ navigation, route }) {
   const [modal1Visible, setModal1Visible] = useState(false);
@@ -95,7 +96,13 @@ export default function SignUpLimitations({ navigation, route }) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <KeyboardAwareScrollView
+      style={styles.container}
+      resetScrollToCoords={{ x: 0, y: 0 }}
+      contentContainerStyle={{ flexGrow: 1 }}
+      scrollEnabled={true}
+      extraScrollHeight={20}
+    >
       <View style={styles.headerContainer}>
         <Text style={styles.header}>Add Patient limitation's</Text>
         <View style={styles.line} />
@@ -363,7 +370,7 @@ export default function SignUpLimitations({ navigation, route }) {
         </TouchableOpacity>
       </View>
 
-    </SafeAreaView>
+    </KeyboardAwareScrollView>
   )
 }
 

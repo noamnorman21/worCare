@@ -8,6 +8,7 @@ import DatePicker from 'react-native-datepicker';
 import DateRangePicker from "rn-select-date-range";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from "moment";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -279,7 +280,6 @@ function AddNewMedicine(props) {
       setTimePickerVisable(true);
    };
 
-
    const onChangeDate = (selectedDate) => {
       console.log("onChangeDate");
       const currentDate = new Date(selectedDate.nativeEvent.timestamp).toISOString().substring(0, 10);
@@ -317,8 +317,13 @@ function AddNewMedicine(props) {
    })
 
    return (
-      <KeyboardAvoidingView style={[styles.container, modalTimesVisible && { backgroundColor: 'rgba(0, 0, 0, 0.75)' }]} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-         <Modal visible={props.isVisible} presentationStyle='formSheet' animationType='slide' onRequestClose={props.onClose}>
+      <Modal visible={props.isVisible} presentationStyle='formSheet' animationType='slide' onRequestClose={props.onClose}>
+         <KeyboardAwareScrollView
+            style={{ flex: 1 }}
+            resetScrollToCoords={{ x: 0, y: 0 }}
+            contentContainerStyle={{ flex: 1 }}
+            scrollEnabled={false}
+         >
             <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
                <View style={styles.centeredView}>
                   <View style={styles.modalView}>
@@ -490,8 +495,6 @@ function AddNewMedicine(props) {
                                  minimumDate={new Date()}
                               />
                            )}
-
-
                            {numberPerDay == 0 | numberPerDay == 1 ?
                               <View >
                                  {Platform.OS === 'ios' ?
@@ -600,10 +603,11 @@ function AddNewMedicine(props) {
                         placeholder="Custom Instruction ( Optional )"
                         placeholderTextColor="#9E9E9E"
                         value={medComment}
-                        multiline={true}
+                        multiline={false}
                         returnKeyType='done'
                         keyboardType='default'
                         numberOfLines={4}
+                        onSubmitEditing={() => Keyboard.dismiss()}
                         onChangeText={text => setMedComment(text)}
                      />
                      <View style={[styles.btnModal, modalTimesVisible && { display: 'none' }]}>
@@ -616,10 +620,9 @@ function AddNewMedicine(props) {
                      </View>
                   </View>
                </View>
-
             </TouchableWithoutFeedback>
-         </Modal >
-      </KeyboardAvoidingView>
+         </KeyboardAwareScrollView>
+      </Modal >
    )
 }
 
@@ -634,6 +637,7 @@ function NewTaskModal(props) {
 
    const [taskName, setTaskName] = useState('')
    const [taskComment, setTaskComment] = useState('')
+   const [taskCommentBorder, setTaskCommentBorder] = useState('')
    const [taskFromDate, setTaskFromDate] = useState('')
    const [taskToDate, setTaskToDate] = useState('')
    const [taskFrequency, setTaskFrequency] = useState('')
@@ -855,7 +859,7 @@ function NewTaskModal(props) {
       if (!taskFrequency) {
          return Alert.alert("Please select frequency")
       }
-      if(taskFrequency==="Once" && !taskFromDate){
+      if (taskFrequency === "Once" && !taskFromDate) {
          return Alert.alert("Please select Date")
       }
       if (taskFrequency == "Once" && !taskTime) {
@@ -1050,181 +1054,340 @@ function NewTaskModal(props) {
    };
 
    return (
-      <SafeAreaView>
-         <Modal visible={props.isVisible} presentationStyle='formSheet' animationType='slide' onRequestClose={props.onClose}>
-            <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-               <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                  <View style={styles.centeredView}>
-                     <Text style={styles.modalText}>Add New task </Text>
-                     <View style={styles.modalView}>
-                        <View style={styles.inputView}>
-                           <TextInput
-                              style={[styles.input, taskNameBorder && { borderColor: '#000' }]}
-                              placeholder='Task Name'
-                              placeholderTextColor='#9E9E9E'
-                              value={taskName}
-                              returnKeyType='done'
-                              onChangeText={text => setTaskName(text)}
-                              onEndEditing={() => { setTaskNameBorder(true) }}
-                           />
-                           { // if the user is a caregiver than display the assignee
-                              userType == "Caregiver" ?
-                                 <Dropdown
-                                    data={privateOrPublic}
-                                    labelField="name"
-                                    valueField="name"
-                                    placeholder="Assignees"
-                                    itemTextStyle={styles.itemStyle}
-                                    placeholderStyle={styles.placeholderStyle}
-                                    containerStyle={styles.containerStyle}
-                                    style={[styles.input, taskAssignee && { borderColor: '#000' }]}
-                                    value={taskAssignee}
-                                    maxHeight={300}
-                                    onChange={item => {
-                                       setTaskAssignee(item.name)
-                                       if (item.name == 'Private') {
-                                          setTaskCategory(taskCategorys[0].name)
-                                          setIsPrivate(true)
-                                       } else {
-                                          setIsPrivate(false)
-                                       }
-                                    }}
-                                 />
-                                 : null
-                           }
-                           {!isPrivate ?
+      <Modal visible={props.isVisible} presentationStyle='formSheet' animationType='slide' onRequestClose={props.onClose}>
+         <KeyboardAwareScrollView
+            style={{ flex: 1 }}
+            resetScrollToCoords={{ x: 0, y: 0 }}
+            contentContainerStyle={{ flex: 1 }}
+            scrollEnabled={false}
+         >
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+               <View style={styles.centeredView}>
+                  <Text style={styles.modalText}>Add New task </Text>
+                  <View style={styles.modalView}>
+                     <View style={styles.inputView}>
+                        <TextInput
+                           style={[styles.input, taskNameBorder && { borderColor: '#000' }]}
+                           placeholder='Task Name'
+                           placeholderTextColor='#9E9E9E'
+                           value={taskName}
+                           returnKeyType='done'
+                           onChangeText={text => setTaskName(text)}
+                           onEndEditing={() => { taskName != '' && setTaskNameBorder(true) }}
+                        />
+                        { // if the user is a caregiver than display the assignee
+                           userType == "Caregiver" ?
                               <Dropdown
-                                 data={taskCategorys}
+                                 data={privateOrPublic}
                                  labelField="name"
                                  valueField="name"
+                                 placeholder="Assignees"
                                  itemTextStyle={styles.itemStyle}
-                                 placeholder="Category"
                                  placeholderStyle={styles.placeholderStyle}
-                                 style={[styles.input, taskCategory && { borderColor: '#000' }]}
                                  containerStyle={styles.containerStyle}
+                                 style={[styles.input, taskAssignee && { borderColor: '#000' }]}
+                                 value={taskAssignee}
                                  maxHeight={300}
-                                 value={taskCategory}
-                                 onChange={item => { setTaskCategory(item.name) }}
-                              /> :
-                              <TextInput
-                                 style={[styles.input, { borderColor: '#000' }]}
-                                 placeholder='Category'
-                                 placeholderTextColor='#9E9E9E'
-                                 value='General'
-                                 editable={false}
+                                 onChange={item => {
+                                    setTaskAssignee(item.name)
+                                    if (item.name == 'Private') {
+                                       setTaskCategory(taskCategorys[0].name)
+                                       setIsPrivate(true)
+                                    } else {
+                                       setIsPrivate(false)
+                                    }
+                                 }}
                               />
-                           }
+                              : null
+                        }
+                        {!isPrivate ?
                            <Dropdown
-                              data={taskFrequencies}
+                              data={taskCategorys}
                               labelField="name"
                               valueField="name"
                               itemTextStyle={styles.itemStyle}
-                              placeholder="Frequency"
+                              placeholder="Category"
                               placeholderStyle={styles.placeholderStyle}
-                              style={[styles.input, taskFrequency && { borderColor: '#000', fontFamily: 'Urbanist-Medium' }]}
-                              maxHeight={200}
-                              value={taskFrequency}
+                              style={[styles.input, taskCategory && { borderColor: '#000' }]}
                               containerStyle={styles.containerStyle}
-                              onChange={item => { setTaskFrequency(item.name) }}
+                              maxHeight={300}
+                              value={taskCategory}
+                              onChange={item => { setTaskCategory(item.name) }}
+                           /> :
+                           <TextInput
+                              style={[styles.input, { borderColor: '#000' }]}
+                              placeholder='Category'
+                              placeholderTextColor='#9E9E9E'
+                              value='General'
+                              editable={false}
                            />
+                        }
+                        <Dropdown
+                           data={taskFrequencies}
+                           labelField="name"
+                           valueField="name"
+                           itemTextStyle={styles.itemStyle}
+                           placeholder="Frequency"
+                           placeholderStyle={styles.placeholderStyle}
+                           style={[styles.input, taskFrequency && { borderColor: '#000', fontFamily: 'Urbanist-Medium' }]}
+                           maxHeight={200}
+                           value={taskFrequency}
+                           containerStyle={styles.containerStyle}
+                           onChange={item => { setTaskFrequency(item.name) }}
+                        />
 
-                           {/* If taskFrequency == 'Once' Show date picker - now date range */}
-                           {taskFrequency == 'Once' ? Platform.OS == 'ios' ?
-                              <DatePicker
-                                 useNativeDriver={'true'}
-                                 iconComponent={<MaterialCommunityIcons style={[styles.addIcon, { right: 0 }]} name="calendar-outline" size={24} color="#808080" />}
-                                 style={[styles.input, taskFromDate && { borderColor: '#000' }]}
-                                 date={taskFromDate}
-                                 mode="date"
-                                 placeholder="dd/mm/yyyy"
-                                 format="YYYY-MM-DD"
-                                 minDate={new Date()}
+                        {/* If taskFrequency == 'Once' Show date picker - now date range */}
+                        {taskFrequency == 'Once' ? Platform.OS == 'ios' ?
+                           <DatePicker
+                              useNativeDriver={'true'}
+                              iconComponent={<MaterialCommunityIcons style={[styles.addIcon, { right: 0 }]} name="calendar-outline" size={24} color="#808080" />}
+                              style={[styles.input, taskFromDate && { borderColor: '#000' }]}
+                              date={taskFromDate}
+                              mode="date"
+                              placeholder="dd/mm/yyyy"
+                              format="YYYY-MM-DD"
+                              minDate={new Date()}
+                              confirmBtnText="Confirm"
+                              cancelBtnText="Cancel"
+                              customStyles={{
+                                 dateInput: {
+                                    marginLeft: 0,
+                                    alignItems: 'flex-start', //change to center for android
+                                    borderWidth: 0,
+                                 },
+                                 placeholderText: {
+                                    color: "#9E9E9E",
+                                    fontFamily: 'Urbanist-Light',
+                                    fontSize: 16,
+                                    textAlign: 'left',
+                                 },
+                                 dateText: [styles.inputNumber, taskFromDate && { fontFamily: 'Urbanist-Medium' }]
+                              }}
+                              onDateChange={(date) => setTaskFromDate(date)}
+                           />
+                           :
+                           <TouchableOpacity style={[styles.datePicker, taskFromDate && { borderColor: "#000" }]} onPress={showDatePicker}><Text style={[styles.dateInputTxt, taskFromDate && { color: "#000" }]}>{taskFromDate ? taskFromDate : "Date"}</Text></TouchableOpacity>
+                           :
+                           <TouchableOpacity onPress={() => { setModalVisibleDate(true); }}>
+                              {taskFromDate && taskToDate ?
+                                 <View style={[styles.input, { borderColor: '#000' }]}>
+                                    <Text style={[styles.regularTxt, { color: '#000', fontFamily: 'Urbanist-SemiBold' }]}>
+                                       {changeDateFormat(taskFromDate)} - {changeDateFormat(taskToDate)}
+                                    </Text>
+                                 </View>
+                                 :
+                                 <View style={styles.input}>
+                                    <Text style={[styles.regularTxt, { color: '#9E9E9E' }]}>Start Date - End Date</Text>
+                                 </View>
+                              }
+                           </TouchableOpacity>
+                        }
+                        {datePickerVisable && (
+                           <DateTimePicker
+                              //testID="dateTimePicker"
+                              value={taskFromDate ? new Date(taskFromDate) : new Date()}
+                              // mode={"date"}
+                              is24Hour={true}
+                              onChange={(value) => onChangeDate(value)}
+                              display="default"
+                           />
+                        )}
+
+                        <Modal visible={modalVisibleDate} transparent={true} style={styles.modalDate} animationType='slide' onRequestClose={() => setModalVisibleDate(false)}>
+                           <View style={styles.modalDateView}>
+                              <DateRangePicker
+                                 onSelectDateRange={(range) => { setRange(range); }}
+                                 blockSingleDateSelection={true}
+                                 responseFormat="YYYY-MM-DD"
+                                 maxDate={moment().add(3, "year")}
+                                 minDate={moment()}
+                                 confirmBtnTitle=""
+                                 clearBtnTitle=""
+                                 selectedDateContainerStyle={styles.selectedDateContainerStyle}
+                                 selectedDateStyle={styles.selectedDateStyle}
+                                 selectedDateTextStyle={styles.selectedDateTextStyle}
+                                 font='Urbanist-SemiBold'
+                              />
+
+                              <View style={{ height: 30 }}>
+                                 {selectedRange.firstDate && selectedRange.secondDate && (
+                                    <Text style={styles.textStyleDate}>Selected Date: {changeDateFormat(selectedRange.firstDate)} - {changeDateFormat(selectedRange.secondDate)}</Text>
+                                 )}
+                              </View>
+
+                              <View style={styles.btnModalDate}>
+                                 <TouchableOpacity
+                                    style={styles.saveBtnDate}
+                                    onPress={() => {
+                                       setTaskFromDate(selectedRange.firstDate)
+                                       setTaskToDate(selectedRange.secondDate)
+                                       setModalVisibleDate(false);
+                                    }}
+                                 >
+                                    <Text style={styles.textStyle}>Save</Text>
+                                 </TouchableOpacity>
+                                 <TouchableOpacity
+                                    style={styles.closeBtnDate}
+                                    onPress={() => {
+                                       setRange({});
+                                       setModalVisibleDate(false);
+                                    }}
+                                 >
+                                    <Text style={styles.closeTxt}>Cancel</Text>
+                                 </TouchableOpacity>
+                              </View>
+                           </View>
+                        </Modal>
+                        {taskCategory == 'General' ?
+                           <View style={styles.doubleRow}>
+                              <View style={[styles.doubleRowItem, numberPerDay >= 1 && { borderColor: "black" }]}>
+                                 <TouchableOpacity onPress={() =>
+                                    setNumberPerDay(parseInt(numberPerDay + 1))
+                                 } style={styles.arrowUp}>
+                                    {/* Change icon color only onPress to #548DFF  */}
+                                    <Ionicons name="md-caret-up-outline" size={17} color="#808080" />
+                                 </TouchableOpacity>
+                                 <TextInput
+                                    style={[styles.inputNumber, numberPerDay && { textAlign: 'center' }]}
+                                    placeholder="Number per day"
+                                    placeholderTextColor="#9E9E9E"
+                                    keyboardType='numeric'
+                                    returnKeyType='done'
+                                    value={numberPerDay == 0 ? '' : numberPerDay.toString()}
+                                    onChangeText={text => text == '' ? setNumberPerDay(0) && setMedTime('') : setNumberPerDay(parseInt(text))}
+                                 />
+                                 {/* Change icon color only onPress to #548DFF  */}
+                                 <TouchableOpacity style={styles.arrowDown} onPress={() => numberPerDay == 0 ? setNumberPerDay(0) : setNumberPerDay(parseInt(numberPerDay - 1))}>
+                                    <Ionicons name="md-caret-down-outline" size={17} color="#808080" />
+                                 </TouchableOpacity>
+                              </View>
+                              {numberPerDay > 1 ?
+                                 <View>
+                                    <TouchableOpacity onPress={() => { setModalTimesVisible(true) }}>
+                                       <View style={[styles.doubleRowItem, taskTimeArr.length == numberPerDay && { borderColor: '#000' }]}>
+                                          <Text style={[styles.inputNumber, { color: '#9E9E9E' }, taskTimeArr.length == numberPerDay && { color: '#000' }]}>
+                                             {numberPerDay == taskTimeArr.length ? 'Times Selected' : 'Add Times'}
+                                          </Text>
+                                          <MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />
+                                       </View>
+                                    </TouchableOpacity>
+                                 </View>
+                                 :
+                                 <View >
+                                    {Platform.OS === 'ios' ?
+                                       <DatePicker
+                                          style={[styles.doubleRowItem, taskTime != '' && { borderColor: '#000' }]}
+                                          date={taskTime}
+                                          iconComponent={<MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />}
+                                          placeholder="Add Time"
+                                          mode="time"
+                                          format="HH:mm"
+                                          is24Hour={true}
+                                          confirmBtnText="Confirm"
+                                          cancelBtnText="Cancel"
+                                          showIcon={true}
+                                          customStyles={{
+                                             dateInput: {
+                                                borderWidth: 0,
+                                                alignItems: 'flex-start',
+                                                paddingLeft: 10,
+                                             },
+                                             placeholderText: {
+                                                color: '#9E9E9E',
+                                                fontSize: 16,
+                                                textAlign: 'left',
+                                                fontFamily: 'Urbanist-Light',
+                                             },
+                                             dateText: {
+                                                color: '#000',
+                                                fontSize: 16,
+                                                fontFamily: 'Urbanist-Medium',
+                                                textAlign: 'center',
+                                             },
+                                          }}
+                                          onDateChange={(date) => {
+                                             setTaskTime(date)
+                                          }}
+                                       /> :
+                                       <TouchableOpacity onPress={showTimePicker} style={[styles.doubleRowItem, taskTime != '' && { borderColor: '#000' }]}>
+                                          <Text style={[styles.dateInputTxt, taskTime && { color: "#000" }]}>{taskTime ? taskTime.substring(0, 5) : "Add Time"}</Text>
+                                          <MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />
+                                       </TouchableOpacity>
+                                    }
+                                 </View>
+                              }
+                           </View>
+                           :
+                           <>
+                              {Platform.OS === "ios" ? <DatePicker
+                                 style={[styles.input, taskTime != '' && { borderColor: '#000' }]}
+                                 date={taskTime}
+                                 mode="time"
+                                 placeholder="Time"
+                                 format="HH:mm"
+                                 is24Hour={true}
                                  confirmBtnText="Confirm"
                                  cancelBtnText="Cancel"
+                                 showIcon={false}
                                  customStyles={{
                                     dateInput: {
-                                       marginLeft: 0,
-                                       alignItems: 'flex-start', //change to center for android
                                        borderWidth: 0,
+                                       alignItems: 'flex-start',
                                     },
                                     placeholderText: {
-                                       color: "#9E9E9E",
-                                       fontFamily: 'Urbanist-Light',
+                                       color: '#9E9E9E',
                                        fontSize: 16,
-                                       textAlign: 'left',
+                                       fontFamily: 'Urbanist-Light',
                                     },
-                                    dateText:
-                                       [styles.inputNumber, taskFromDate && { fontFamily: 'Urbanist-Medium' }]
-
+                                    dateText: {
+                                       color: '#000',
+                                       fontSize: 16,
+                                       fontFamily: 'Urbanist-SemiBold',
+                                    },
                                  }}
-                                 onDateChange={(date) => setTaskFromDate(date)}
-                              />
-                              :
-                              <TouchableOpacity style={[styles.datePicker, taskFromDate && { borderColor: "#000" }]} onPress={showDatePicker}><Text style={[styles.dateInputTxt, taskFromDate && { color: "#000" }]}>{taskFromDate ? taskFromDate : "Date"}</Text></TouchableOpacity>
-                              :
-                              <TouchableOpacity onPress={() => { setModalVisibleDate(true); }}>
-                                 {taskFromDate && taskToDate ?
-                                    <View style={[styles.input, { borderColor: '#000' }]}>
-                                       <Text style={[styles.regularTxt, { color: '#000', fontFamily: 'Urbanist-SemiBold' }]}>
-                                          {changeDateFormat(taskFromDate)} - {changeDateFormat(taskToDate)}
-                                       </Text>
+                                 onDateChange={(date) => { setTaskTime(date) }}
+                              /> :
+                                 <TouchableOpacity style={[styles.datePicker, taskTime && { borderColor: "#000" }]} onPress={showTimePicker}><Text style={[styles.dateInputTxt, taskTime && { color: "#000" }]}>{taskTime ? taskTime : "Time"}</Text></TouchableOpacity>
+                              }
+                           </>
+                        }
+                        {timePickerVisable && (
+                           <DateTimePicker
+                              //testID="dateTimePicker"
+                              value={taskTime ? new Date(taskTime) : new Date()}
+                              mode={"time"}
+                              is24Hour={true}
+                              onChange={(value) => onChangeTaskTime(value)}
+                              display="default"
+                           />
+                        )}
+                        {/* Modal Box For TIMES ARRAY */}
+                        <View>
+                           <Modal visible={modalTimesVisible} transparent={true} animationType='slide' onRequestClose={() => setModalTimesVisible(false)}>
+                              <View style={styles.modalTimesView}>
+                                 {/* Header for add times*/}
+                                 <View style={styles.modalTimesHeader}>
+                                    <Text style={styles.modalText}>Select Med Times</Text>
+                                 </View>
+                                 {/* Body */}
+                                 <View style={styles.modalTimesBody}>
+                                    <View style={styles.modalTimesBodyContent}>
+                                       {rowForEachTime()}
                                     </View>
-                                    :
-                                    <View style={styles.input}>
-                                       <Text style={[styles.regularTxt, { color: '#9E9E9E' }]}>Start Date - End Date</Text>
-                                    </View>
-                                 }
-                              </TouchableOpacity>
-                           }
-                           {datePickerVisable && (
-                              <DateTimePicker
-                                 //testID="dateTimePicker"
-                                 value={taskFromDate ? new Date(taskFromDate) : new Date()}
-                                 // mode={"date"}
-                                 is24Hour={true}
-                                 onChange={(value) => onChangeDate(value)}
-                                 display="default"
-                              />
-                           )}
-
-                           <Modal visible={modalVisibleDate} transparent={true} style={styles.modalDate} animationType='slide' onRequestClose={() => setModalVisibleDate(false)}>
-                              <View style={styles.modalDateView}>
-                                 <DateRangePicker
-                                    onSelectDateRange={(range) => { setRange(range); }}
-                                    blockSingleDateSelection={true}
-                                    responseFormat="YYYY-MM-DD"
-                                    maxDate={moment().add(3, "year")}
-                                    minDate={moment()}
-                                    confirmBtnTitle=""
-                                    clearBtnTitle=""
-                                    selectedDateContainerStyle={styles.selectedDateContainerStyle}
-                                    selectedDateStyle={styles.selectedDateStyle}
-                                    selectedDateTextStyle={styles.selectedDateTextStyle}
-                                    font='Urbanist-SemiBold'
-                                 />
-
-                                 <View style={{ height: 30 }}>
-                                    {selectedRange.firstDate && selectedRange.secondDate && (
-                                       <Text style={styles.textStyleDate}>Selected Date: {changeDateFormat(selectedRange.firstDate)} - {changeDateFormat(selectedRange.secondDate)}</Text>
-                                    )}
                                  </View>
 
                                  <View style={styles.btnModalDate}>
                                     <TouchableOpacity
                                        style={styles.saveBtnDate}
-                                       onPress={() => {
-                                          setTaskFromDate(selectedRange.firstDate)
-                                          setTaskToDate(selectedRange.secondDate)
-                                          setModalVisibleDate(false);
-                                       }}
+                                       onPress={saveTimeArr}
                                     >
                                        <Text style={styles.textStyle}>Save</Text>
                                     </TouchableOpacity>
                                     <TouchableOpacity
                                        style={styles.closeBtnDate}
                                        onPress={() => {
-                                          setRange({});
-                                          setModalVisibleDate(false);
+                                          setTaskTime('');
+                                          setModalTimesVisible(false);
                                        }}
                                     >
                                        <Text style={styles.closeTxt}>Cancel</Text>
@@ -1232,192 +1395,34 @@ function NewTaskModal(props) {
                                  </View>
                               </View>
                            </Modal>
-                           {taskCategory == 'General' ?
-                              <View style={styles.doubleRow}>
-                                 <View style={[styles.doubleRowItem, numberPerDay >= 1 && { borderColor: "black" }]}>
-                                    <TouchableOpacity onPress={() =>
-                                       setNumberPerDay(parseInt(numberPerDay + 1))
-                                    } style={styles.arrowUp}>
-                                       {/* Change icon color only onPress to #548DFF  */}
-                                       <Ionicons name="md-caret-up-outline" size={17} color="#808080" />
-                                    </TouchableOpacity>
-                                    <TextInput
-                                       style={[styles.inputNumber, numberPerDay && { textAlign: 'center' }]}
-                                       placeholder="Number per day"
-                                       placeholderTextColor="#9E9E9E"
-                                       keyboardType='numeric'
-                                       returnKeyType='done'
-                                       value={numberPerDay == 0 ? '' : numberPerDay.toString()}
-                                       onChangeText={text => text == '' ? setNumberPerDay(0) && setMedTime('') : setNumberPerDay(parseInt(text))}
-                                    />
-                                    {/* Change icon color only onPress to #548DFF  */}
-                                    <TouchableOpacity style={styles.arrowDown} onPress={() => numberPerDay == 0 ? setNumberPerDay(0) : setNumberPerDay(parseInt(numberPerDay - 1))}>
-                                       <Ionicons name="md-caret-down-outline" size={17} color="#808080" />
-                                    </TouchableOpacity>
-                                 </View>
-                                 {numberPerDay > 1 ?
-                                    <View>
-                                       <TouchableOpacity onPress={() => { setModalTimesVisible(true) }}>
-                                          <View style={[styles.doubleRowItem, taskTimeArr.length == numberPerDay && { borderColor: '#000' }]}>
-                                             <Text style={[styles.inputNumber, { color: '#9E9E9E' }, taskTimeArr.length == numberPerDay && { color: '#000' }]}>
-                                                {numberPerDay == taskTimeArr.length ? 'Times Selected' : 'Add Times'}
-                                             </Text>
-                                             <MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />
-                                          </View>
-                                       </TouchableOpacity>
-                                    </View>
-                                    :
-                                    <View >
-                                       {Platform.OS === 'ios' ?
-                                          <DatePicker
-                                             style={[styles.doubleRowItem, taskTime != '' && { borderColor: '#000' }]}
-                                             date={taskTime}
-                                             iconComponent={<MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />}
-                                             placeholder="Add Time"
-                                             mode="time"
-                                             format="HH:mm"
-                                             is24Hour={true}
-                                             confirmBtnText="Confirm"
-                                             cancelBtnText="Cancel"
-                                             showIcon={true}
-                                             customStyles={{
-                                                dateInput: {
-                                                   borderWidth: 0,
-                                                   alignItems: 'flex-start',
-                                                   paddingLeft: 10,
-                                                },
-                                                placeholderText: {
-                                                   color: '#9E9E9E',
-                                                   fontSize: 16,
-                                                   textAlign: 'left',
-                                                   fontFamily: 'Urbanist-Light',
-                                                },
-                                                dateText: {
-                                                   color: '#000',
-                                                   fontSize: 16,
-                                                   fontFamily: 'Urbanist-Medium',
-                                                   textAlign: 'center',
-                                                },
-                                             }}
-                                             onDateChange={(date) => {
-                                                setTaskTime(date)
-                                             }}
-                                          /> :
-                                          <TouchableOpacity onPress={showTimePicker} style={[styles.doubleRowItem, taskTime != '' && { borderColor: '#000' }]}>
-                                             <Text style={[styles.dateInputTxt, taskTime && { color: "#000" }]}>{taskTime ? taskTime.substring(0, 5) : "Add Time"}</Text>
-                                             <MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />
-                                          </TouchableOpacity>
-                                       }
-                                    </View>
-                                 }
-                              </View>
-                              :
-                              <>
-                                 {Platform.OS === "ios" ? <DatePicker
-                                    style={[styles.input, taskTime != '' && { borderColor: '#000' }]}
-                                    date={taskTime}
-                                    mode="time"
-                                    placeholder="Time"
-                                    format="HH:mm"
-                                    is24Hour={true}
-                                    confirmBtnText="Confirm"
-                                    cancelBtnText="Cancel"
-                                    showIcon={false}
-                                    customStyles={{
-                                       dateInput: {
-                                          borderWidth: 0,
-                                          alignItems: 'flex-start',
-                                       },
-                                       placeholderText: {
-                                          color: '#9E9E9E',
-                                          fontSize: 16,
-                                          fontFamily: 'Urbanist-Light',
-                                       },
-                                       dateText: {
-                                          color: '#000',
-                                          fontSize: 16,
-                                          fontFamily: 'Urbanist-SemiBold',
-                                       },
-                                    }}
-                                    onDateChange={(date) => { setTaskTime(date) }}
-                                 /> :
-                                    <TouchableOpacity style={[styles.datePicker, taskTime && { borderColor: "#000" }]} onPress={showTimePicker}><Text style={[styles.dateInputTxt, taskTime && { color: "#000" }]}>{taskTime ? taskTime : "Time"}</Text></TouchableOpacity>
-                                 }
-                              </>
-                           }
-                           {timePickerVisable && (
-                              <DateTimePicker
-                                 //testID="dateTimePicker"
-                                 value={taskTime ? new Date(taskTime) : new Date()}
-                                 mode={"time"}
-                                 is24Hour={true}
-                                 onChange={(value) => onChangeTaskTime(value)}
-                                 display="default"
-                              />
-                           )}
-                           {/* Modal Box For TIMES ARRAY */}
-                           <View>
-                              <Modal visible={modalTimesVisible} transparent={true} animationType='slide' onRequestClose={() => setModalTimesVisible(false)}>
-                                 <View style={styles.modalTimesView}>
-                                    {/* Header for add times*/}
-                                    <View style={styles.modalTimesHeader}>
-                                       <Text style={styles.modalText}>Select Med Times</Text>
-                                    </View>
-                                    {/* Body */}
-                                    <View style={styles.modalTimesBody}>
-                                       <View style={styles.modalTimesBodyContent}>
-                                          {rowForEachTime()}
-                                       </View>
-                                    </View>
-
-                                    <View style={styles.btnModalDate}>
-                                       <TouchableOpacity
-                                          style={styles.saveBtnDate}
-                                          onPress={saveTimeArr}
-                                       >
-                                          <Text style={styles.textStyle}>Save</Text>
-                                       </TouchableOpacity>
-                                       <TouchableOpacity
-                                          style={styles.closeBtnDate}
-                                          onPress={() => {
-                                             setTaskTime('');
-                                             setModalTimesVisible(false);
-                                          }}
-                                       >
-                                          <Text style={styles.closeTxt}>Cancel</Text>
-                                       </TouchableOpacity>
-                                    </View>
-                                 </View>
-                              </Modal>
-                           </View>
-                           <TextInput
-                              style={[styles.commentInput, { padding: 0 }, taskComment && { borderColor: '#000' }, modalTimesVisible && { display: 'none' }]}
-                              placeholder="Comment ( Optional )"
-                              placeholderTextColor="#9E9E9E"
-                              value={taskComment}
-                              multiline={true}
-                              returnKeyType='done'
-                              onSubmitEditing={Keyboard.dismiss}
-                              keyboardType='default'
-                              numberOfLines={4}
-                              onChangeText={text => setTaskComment(text)}
-                           />
                         </View>
-                        <View style={styles.btnModal}>
-                           <TouchableOpacity style={styles.saveBtn} onPress={addTask}>
-                              <Text style={styles.textStyle}>Create</Text>
-                           </TouchableOpacity>
+                        <TextInput
+                           style={[styles.commentInput, { padding: 0 }, taskComment !== '' && { borderColor: '#000' }, modalTimesVisible && { display: 'none' }]}
+                           placeholder="Comment (Optional)"
+                           placeholderTextColor="#9E9E9E"
+                           value={taskComment}
+                           multiline={true}
+                           returnKeyType='default'
+                           onSubmitEditing={Keyboard.dismiss}
+                           keyboardType='default'
+                           numberOfLines={4}
+                           onChangeText={text => setTaskComment(text)}
+                        />
+                     </View>
+                     <View style={styles.btnModal}>
+                        <TouchableOpacity style={styles.saveBtn} onPress={addTask}>
+                           <Text style={styles.textStyle}>Create</Text>
+                        </TouchableOpacity>
 
-                           <TouchableOpacity style={styles.closeBtn} onPress={() => clearInputs("Cancel")}>
-                              <Text style={styles.closeTxt}>Cancel</Text>
-                           </TouchableOpacity>
-                        </View>
+                        <TouchableOpacity style={styles.closeBtn} onPress={() => clearInputs("Cancel")}>
+                           <Text style={styles.closeTxt}>Cancel</Text>
+                        </TouchableOpacity>
                      </View>
                   </View>
-               </TouchableWithoutFeedback>
-            </KeyboardAvoidingView>
-         </Modal>
-      </SafeAreaView>
+               </View>
+            </TouchableWithoutFeedback>
+         </KeyboardAwareScrollView >
+      </Modal >
    )
 }
 

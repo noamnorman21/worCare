@@ -5,6 +5,7 @@ import { Picker } from '@react-native-picker/picker';
 import HobbiesData from './Hobbies.json';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 export default function SignUpHobbies({ navigation, route }) {
   const [holidaysType, setHolidaysType] = useState([]);
@@ -110,7 +111,13 @@ export default function SignUpHobbies({ navigation, route }) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <KeyboardAwareScrollView
+      style={styles.container}
+      resetScrollToCoords={{ x: 0, y: 0 }}
+      contentContainerStyle={{ flexGrow: 1 }}
+      scrollEnabled={true}
+      extraScrollHeight={20}
+    >
       <View style={styles.headerContainer}>
         <Text style={styles.header}>Add Patient’s Hobbies</Text>
         <View style={styles.line} />
@@ -291,7 +298,6 @@ export default function SignUpHobbies({ navigation, route }) {
               keyExtractor={(item, index) => index.toString()}
               numColumns={3}
             />
-
 
             <TextInput
               style={styles.inputOther}
@@ -557,7 +563,7 @@ export default function SignUpHobbies({ navigation, route }) {
           <Text style={styles.button}>Continue</Text>
         </TouchableOpacity>
       </View>
-    </SafeAreaView >
+    </KeyboardAwareScrollView >
   );
 }
 

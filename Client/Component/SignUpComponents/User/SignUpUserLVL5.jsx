@@ -5,7 +5,8 @@ import DatePicker from 'react-native-datepicker';
 import { Dropdown } from 'react-native-element-dropdown';
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
-
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback } from 'react-native';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 export default function SignUpUserLVL5({ navigation, route }) {
@@ -86,133 +87,140 @@ export default function SignUpUserLVL5({ navigation, route }) {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.headerContainer}>
-        <Text style={styles.headerTxt}>Create Patient Profile</Text>
-        <Text style={styles.headerSmallTxt}> We love to know details about the patient </Text>
-        {/* Line */}
-        <View style={styles.line} />
-      </View>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.container}>
+          <View style={styles.headerContainer}>
+            <Text style={styles.headerTxt}>Create Patient Profile</Text>
+            <Text style={styles.headerSmallTxt}> We love to know details about the patient </Text>
+            {/* Line */}
+            <View style={styles.line} />
+          </View>
 
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="First Name"
-          placeholderTextColor="gray"
-          value={patientFirstName}
-          onChangeText={(patientFirstName) => setPatientFirstName(patientFirstName)}
-        />
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder="First Name"
+              placeholderTextColor="gray"
+              value={patientFirstName}
+              onChangeText={(patientFirstName) => setPatientFirstName(patientFirstName)}
+            />
 
-        <TextInput
-          style={styles.input}
-          placeholder="Last Name"
-          placeholderTextColor="gray"
-          value={patientLastName}
-          onChangeText={(patientLastName) => setPatientLastName(patientLastName)}
-        />
-        <TextInput
-          style={styles.inputFull}
-          placeholder="Patient ID (9 Digits)"
-          placeholderTextColor="gray"
-          returnKeyType="done"
-          keyboardType="numeric"
-          value={patientID}
-          onChangeText={(patientID) => setPatientID(patientID)}
-          onBlur={() => IsPatientIdUniqueFunc()}
+            <TextInput
+              style={styles.input}
+              placeholder="Last Name"
+              placeholderTextColor="gray"
+              value={patientLastName}
+              onChangeText={(patientLastName) => setPatientLastName(patientLastName)}
+            />
+            <TextInput
+              style={styles.inputFull}
+              placeholder="Patient ID (9 Digits)"
+              placeholderTextColor="gray"
+              returnKeyType="done"
+              keyboardType="numeric"
+              value={patientID}
+              onChangeText={(patientID) => setPatientID(patientID)}
+              onBlur={() => IsPatientIdUniqueFunc()}
 
-        />
-        {/* Date Picker for birth-date */}
-        {platfr !== 'ios' ? <TouchableOpacity style={styles.datePicker} onPress={showDatepicker}>
-          <Text style={styles.dateInputTxt}>
-            {date === '' ? 'Date Of Birth' : date}
+            />
+            {/* Date Picker for birth-date */}
+            {platfr !== 'ios' ? <TouchableOpacity style={styles.datePicker} onPress={showDatepicker}>
+              <Text style={styles.dateInputTxt}>
+                {date === '' ? 'Date Of Birth' : date}
 
-          </Text>
-          {!date && <FontAwesome name="calendar-check-o" size={24} color="gray" />}
-          {/* <Octicons style={{ textAlign: 'right' }} name="calendar" size={22} /> */}
-        </TouchableOpacity> :
-          <DatePicker
-            useNativeDriver={'true'}
-            iconComponent={<FontAwesome name="calendar-check-o" size={24} color="gray" />}
-            style={styles.inputFull}
-            date={date}
-            mode="date"
-            placeholder="Date Of Birth"
-            format="YYYY-MM-DD"
-            minDate="1900-01-01"
-            maxDate="2002-01-01"
-            confirmBtnText="Confirm"
-            cancelBtnText="Cancel"
-            customStyles={{
-              dateIcon: {
-                position: 'absolute',
-                right: 0,
-                top: 0,
-                marginLeft: 0.2
-              },
-              dateInput: {
-                marginLeft: 0,
-                alignItems: 'flex-start',
-                borderWidth: 0,
-              },
-              placeholderText: {
-                color: 'gray',
-                fontFamily: 'Urbanist',
-                fontSize: 16,
-                // textAlign: 'left',
-              }
-            }}
-            onDateChange={(date) => { setDate(date) }}
-          />}
-        {showPickerAndroid && (
-          <DateTimePicker
-            //testID="dateTimePicker"
-            value={new Date('1980-01-01')}
-            // mode={"date"}
-            is24Hour={true}
-            onChange={(date) => onChangeDate(date)}
-            display="default"
-            maximumDate={new Date()}
-            minimumDate={new Date('1920-01-01')}
-          />
-        )}
+              </Text>
+              {!date && <FontAwesome name="calendar-check-o" size={24} color="gray" />}
+              {/* <Octicons style={{ textAlign: 'right' }} name="calendar" size={22} /> */}
+            </TouchableOpacity> :
+              <DatePicker
+                useNativeDriver={'true'}
+                iconComponent={<FontAwesome name="calendar-check-o" size={24} color="gray" />}
+                style={styles.inputFull}
+                date={date}
+                mode="date"
+                placeholder="Date Of Birth"
+                format="YYYY-MM-DD"
+                minDate="1900-01-01"
+                maxDate="2002-01-01"
+                confirmBtnText="Confirm"
+                cancelBtnText="Cancel"
+                customStyles={{
+                  dateIcon: {
+                    position: 'absolute',
+                    right: 0,
+                    top: 0,
+                    marginLeft: 0.2
+                  },
+                  dateInput: {
+                    marginLeft: 0,
+                    alignItems: 'flex-start',
+                    borderWidth: 0,
+                  },
+                  placeholderText: {
+                    color: 'gray',
+                    fontFamily: 'Urbanist',
+                    fontSize: 16,
+                    // textAlign: 'left',
+                  }
+                }}
+                onDateChange={(date) => { setDate(date) }}
+              />}
+            {showPickerAndroid && (
+              <DateTimePicker
+                //testID="dateTimePicker"
+                value={new Date('1980-01-01')}
+                // mode={"date"}
+                is24Hour={true}
+                onChange={(date) => onChangeDate(date)}
+                display="default"
+                maximumDate={new Date()}
+                minimumDate={new Date('1920-01-01')}
+              />
+            )}
 
-      </View>
+          </View>
 
-      <View style={styles.listContainer}>
-        <Dropdown
-          style={styles.dropdown}
-          placeholder="Select Language"
-          placeholderStyle={styles.placeholderStyle}
-          selectedTextStyle={styles.selectedTextStyle}
-          inputSearchStyle={styles.inputSearchStyle}
-          data={language}
-          search={true}
-          maxHeight={300}
-          labelField="label"
-          valueField="value"
-          searchPlaceholder="Search..."
-          value={valueLanguage}
-          onChange={item => {
-            setValueLanguage(item.value);
-          }}
-          renderRightIcon={() => (
-            <MaterialIcons name="translate" size={24} color="gray" />
-          )}
-          containerStyle={styles.containerStyle}
-        />
-      </View>
+          <View style={styles.listContainer}>
+            <Dropdown
+              style={styles.dropdown}
+              placeholder="Select Language"
+              placeholderStyle={styles.placeholderStyle}
+              selectedTextStyle={styles.selectedTextStyle}
+              inputSearchStyle={styles.inputSearchStyle}
+              data={language}
+              search={true}
+              maxHeight={300}
+              labelField="label"
+              valueField="value"
+              searchPlaceholder="Search..."
+              value={valueLanguage}
+              onChange={item => {
+                setValueLanguage(item.value);
+              }}
+              renderRightIcon={() => (
+                <MaterialIcons name="translate" size={24} color="gray" />
+              )}
+              containerStyle={styles.containerStyle}
+            />
+          </View>
 
-      <TouchableOpacity
-        style={styles.btnContainer}
-        onPress={handleInputAndContinue}
-      >
-        <View style={styles.button}>
-          <Text style={styles.buttonText}>Continue</Text>
+          <TouchableOpacity
+            style={styles.btnContainer}
+            onPress={handleInputAndContinue}
+          >
+            <View style={styles.button}>
+              <Text style={styles.buttonText}>Continue</Text>
+            </View>
+          </TouchableOpacity>
+          <OrLine />
+          <HaveAccount />
         </View>
-      </TouchableOpacity>
-      <OrLine />
-      <HaveAccount />
-    </SafeAreaView >
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   )
 };
 
@@ -308,7 +316,6 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderRadius: 16,
     width: SCREEN_WIDTH * 0.925,
-    marginTop: 20,
   },
   placeholderStyle: {
     fontSize: 16,
@@ -336,7 +343,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    width: Dimensions.get('window').width * 0.92,
+    width: Dimensions.get('window').width * 0.925,
     marginBottom: 10,
     paddingLeft: 10,
     paddingRight: 15,
