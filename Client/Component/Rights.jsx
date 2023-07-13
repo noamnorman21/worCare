@@ -79,6 +79,7 @@ export default function Rights() {
     toggleOverlay();
     if (question.toLowerCase().includes("who") || question.toLowerCase().includes("whom") || question.toLowerCase().includes("whose") || question.toLowerCase().includes("person's")) {
       setGpt3Answer('We are not able to answer questions about specific individuals. Please ask a general question.');
+      setIsLoading(false);
       return;
     }
     setIsLoading(true);
@@ -141,7 +142,6 @@ export default function Rights() {
             <View style={{ flex: 1 }}>
               <Text style={styles.headerTxt}>Rights</Text>
             </View>
-
             <View style={{ flex: 1.5 }}>
               <View>
                 <Text style={styles.smHeader}>Categories</Text>
