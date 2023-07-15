@@ -113,8 +113,8 @@ export default function SignUpCaregiverLVL5({ navigation, route }) {
                       avatar: userQuerySnapshot.docs[0].data().avatar,
                       userType: userQuerySnapshot.docs[0].data().userType
                     }
-                    await addDoc(collection(db, auth.currentUser.email), { Name: auth.currentUser.displayName + "+" + user.name, UserName: user.name, userEmail: user.id, image: user.avatar, unread: false, unreadCount: 0, lastMessage: "New Convo!", lastMessageTime: new Date(), type: "private" });
-                    await addDoc(collection(db, user.id), { Name: auth.currentUser.displayName + "+" + user.name, UserName: auth.currentUser.displayName, userEmail: auth.currentUser.email, image: auth.currentUser.photoURL, unread: false, unreadCount: 0, lastMessage: "New Convo", lastMessageTime: new Date(), type: "private" });
+                    await addDoc(collection(db, auth.currentUser.email), { Name: auth.currentUser.displayName + "+" + user.name, UserName: user.name, userEmail: user.id, image: user.avatar, unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date(), type: "private" });
+                    await addDoc(collection(db, user.id), { Name: auth.currentUser.displayName + "+" + user.name, UserName: auth.currentUser.displayName, userEmail: auth.currentUser.email, image: auth.currentUser.photoURL, unread: false, unreadCount: 0, lastMessage: "", lastMessageTime: new Date(), type: "private" });
                     //delete when published to filezila
                     signOut(auth).then(() => {
                       console.log("user signed out");
