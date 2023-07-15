@@ -1157,19 +1157,19 @@ export function UserProvider({ children }) {
             );
     }
 
-    function updateHobbiesAndLimitations (hobbiesAndLimitationsDTO) {
+    function updateHobbiesAndLimitations(hobbiesAndLimitationsDTO) {
         fetch(updateHobbiesAndLimitationsUrl, {
             method: 'PUT',
             headers: new Headers({ 'Content-Type': 'application/json; charset=UTF-8', }),
             body: JSON.stringify(hobbiesAndLimitationsDTO),
         })
-            .then(res =>{
-                if (res.ok){ return res.json() }
+            .then(res => {
+                if (res.ok) { return res.json() }
             })
             .then(
                 (result) => {
-                        // set userContext patientHL
-                        setUserContext({ ...userContext, ["patientHL"]: [hobbiesAndLimitationsDTO] })                 
+                    // set userContext patientHL
+                    setUserContext({ ...userContext, ["patientHL"]: [hobbiesAndLimitationsDTO] })
                 }
             )
             .catch((error) => {
@@ -1177,8 +1177,21 @@ export function UserProvider({ children }) {
             }
             );
     }
- 
-
+    async function translateText(text, targetLanguage) {
+        try {
+            const response = await axios.post(`https://translation.googleapis.com/language/translate/v2`, {}, {
+                params: {
+                    q: text,
+                    target: targetLanguage,
+                    key: 'AIzaSyBuJMig6uWp36DYloOdaOkY89-hjc4TK40',
+                },
+            });
+            return response.data.data.translations[0].translatedText;
+        } catch (error) {
+            console.error("There was an error with the translation: ", error);
+            return text;
+        }
+    };
 
     const value = {
         userContext, allShopTasks, allMedicineTasks, userContacts, userNotifications, userPendingPayments,
@@ -1189,7 +1202,7 @@ export function UserProvider({ children }) {
         allPublicTasks, allPrivateTasks, UpdateDrugForPatientDTO, holidays, GetAllDrugs, allDrugs, addPrivateTaskContext,
         newMessages, setNewMessages, logOutFireBase, registerForPushNotificationsAsync, sendPushNotification, UpdatePatient, userPaychecks,
         fetchPatientList, patientList, setRouteEmail, routeEmail, notificationsThatSent, notifications, getPaychecks, UpdateNotificationStatus, GetNotificationsThatSent, logInRemember, userNewHobbiesAndLimitations,
-         setUserNewHobbiesAndLimitations,getSpecificPatientData,updateHobbiesAndLimitations
+        setUserNewHobbiesAndLimitations, getSpecificPatientData, updateHobbiesAndLimitations,translateText
     };
 
     return (

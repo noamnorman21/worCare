@@ -24,7 +24,7 @@ export default function ChatRoom({ route, navigation }) {
   const [selectedPic, setSelectedPic] = useState(null); //to send image to firebase
   const [imageDescription, setImageDescription] = useState('')//to send image with description
   const [GroupMembers, setGroupMembers] = useState(); //for group chat
-  const { newMessages, setNewMessages, sendPushNotification, notificationsThatSent } = useUserContext();
+  const { newMessages, setNewMessages, sendPushNotification, notificationsThatSent,translateText } = useUserContext();
   const [userToken2, setUserToken2] = useState(''); //for push notification- temporary- will start as ''
   const [userLanguage, setUserLanguage] = useState(''); //for push notification- temporary- will start as ''
   const [userIdThatGetThePush, setUserIdThatGetThePush] = useState(''); //for push notification- temporary- will start as ''
@@ -357,22 +357,6 @@ export default function ChatRoom({ route, navigation }) {
       }
     }
   }, []);
-
-  const translateText = async (text, targetLanguage) => {
-    try {
-      const response = await axios.post(`https://translation.googleapis.com/language/translate/v2`, {}, {
-        params: {
-          q: text,
-          target: targetLanguage,
-          key: 'AIzaSyBuJMig6uWp36DYloOdaOkY89-hjc4TK40',
-        },
-      });
-      return response.data.data.translations[0].translatedText;
-    } catch (error) {
-      console.error("There was an error with the translation: ", error);
-      return text;
-    }
-  };
 
   return (
     <>
