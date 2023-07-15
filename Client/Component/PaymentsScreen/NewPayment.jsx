@@ -200,6 +200,7 @@ export default function NewPayment(props) {
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
+          
           <View style={styles.centeredView}>
             <TouchableOpacity style={styles.cancelbutton} onPress={props.cancel}>
               <AntDesign name="close" size={24} color="black" />
@@ -222,13 +223,13 @@ export default function NewPayment(props) {
               />
               <TextInput
                 style={[styles.input, { height: 150, textAlignVertical: 'top' }]}
-                editable
-                multiline
+                editable             
                 numberOfLines={4}
                 maxLength={300}
                 placeholder='Add comment ( Optional )'
                 keyboardType='ascii-capable'
                 onChangeText={(value) => handleInputChange('requestComment', value)}
+                onSubmitEditing={Keyboard.dismiss}
               />
               <View style={styles.footerContainer}>
                 <TouchableOpacity style={styles.uploadButton} onPress={pickOrTakeImage}>
