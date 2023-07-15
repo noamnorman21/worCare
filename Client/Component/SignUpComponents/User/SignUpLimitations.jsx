@@ -178,7 +178,13 @@ export default function SignUpLimitations({ navigation, route }) {
 
       {/* Sensitivities Modal */}
       <Modal animationType="slide" visible={modal2Visible}>
-        <View style={styles.modal}>
+        <KeyboardAwareScrollView
+          style={styles.container}
+          resetScrollToCoords={{ x: 0, y: 0 }}
+          contentContainerStyle={styles.modal}
+          scrollEnabled={true}
+          extraScrollHeight={10}
+        >
           <Text style={styles.modalText}>Pick Sensitivities</Text>
           <View style={styles.sensitivityContainer}>
             {sensitivities.map((sensitivity) => (
@@ -222,7 +228,7 @@ export default function SignUpLimitations({ navigation, route }) {
               <Text style={styles.cancelBtnTxt}>Cancel</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </KeyboardAwareScrollView>
       </Modal>
 
       {/* Physicial Abilities */}
@@ -235,7 +241,13 @@ export default function SignUpLimitations({ navigation, route }) {
 
       {/* Physicial Abilities Modal*/}
       <Modal animationType="slide" visible={modal3Visible}>
-        <View style={styles.modal}>
+        <KeyboardAwareScrollView
+          style={styles.container}
+          resetScrollToCoords={{ x: 0, y: 0 }}
+          contentContainerStyle={styles.modal}
+          scrollEnabled={true}
+          extraScrollHeight={10}
+        >
           <Text style={styles.modalTextSecondRow}>Pick Physicial</Text>
           <Text style={[styles.modalTextSecondRow, { marginBottom: 20 }]}>Abilities</Text>
           <View style={styles.physicialContainer}>
@@ -279,7 +291,7 @@ export default function SignUpLimitations({ navigation, route }) {
               <Text style={styles.cancelBtnTxt}>Cancel</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </KeyboardAwareScrollView>
       </Modal>
 
       {/* Bath Routine */}
@@ -292,7 +304,13 @@ export default function SignUpLimitations({ navigation, route }) {
 
       {/* Bath Routine Modal */}
       <Modal animationType="slide" visible={modal4Visible}>
-        <View style={styles.modal}>
+        <KeyboardAwareScrollView
+          style={styles.container}
+          resetScrollToCoords={{ x: 0, y: 0 }}
+          contentContainerStyle={styles.modal}
+          scrollEnabled={true}
+          extraScrollHeight={10}
+        >
           <Text style={styles.modalText}>Pick Bath Routine</Text>
           <View style={styles.bathContainer}>
             {bathRoutine.map((bath) => (
@@ -325,7 +343,7 @@ export default function SignUpLimitations({ navigation, route }) {
               <Text style={styles.cancelBtnTxt}>Cancel</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </KeyboardAwareScrollView>
       </Modal>
 
       {/* Sensitivity To Noises */}

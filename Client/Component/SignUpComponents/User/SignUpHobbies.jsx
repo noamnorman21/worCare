@@ -114,8 +114,10 @@ export default function SignUpHobbies({ navigation, route }) {
     <KeyboardAwareScrollView
       style={styles.container}
       resetScrollToCoords={{ x: 0, y: 0 }}
-      contentContainerStyle={{ flexGrow: 1,justifyContent: 'center',
-      alignItems: 'center', }}
+      contentContainerStyle={{
+        flexGrow: 1, justifyContent: 'center',
+        alignItems: 'center',
+      }}
       scrollEnabled={true}
       extraScrollHeight={10}
     >
@@ -134,7 +136,13 @@ export default function SignUpHobbies({ navigation, route }) {
 
       {/* Books Modal */}
       <Modal animationType="slide" visible={modal1Visible}>
-        <View style={styles.modal}>
+        <KeyboardAwareScrollView
+          style={styles.container}
+          resetScrollToCoords={{ x: 0, y: 0 }}
+          contentContainerStyle={styles.modal}
+          scrollEnabled={true}
+          extraScrollHeight={10}
+        >
           <Text style={styles.modalText}>Pick Books</Text>
           <View style={styles.booksContainer}>
             {books.map((book, index) => (
@@ -175,7 +183,7 @@ export default function SignUpHobbies({ navigation, route }) {
               <Text style={styles.cancelBtnTxt}>Cancel</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </KeyboardAwareScrollView>
       </Modal>
 
       {/* Radio Channel & Music */}
@@ -188,7 +196,13 @@ export default function SignUpHobbies({ navigation, route }) {
 
       {/* Radio Channel & Music - Modal */}
       <Modal animationType="slide" visible={modal2Visible}>
-        <SafeAreaView style={styles.modal}>
+        <KeyboardAwareScrollView
+          style={styles.container}
+          resetScrollToCoords={{ x: 0, y: 0 }}
+          contentContainerStyle={styles.modal}
+          scrollEnabled={true}
+          extraScrollHeight={10}
+        >
           <Text style={styles.modalXSText}>Pick Radio Channel</Text>
           <View style={styles.doubleContainer}>
             <FlatList
@@ -264,7 +278,7 @@ export default function SignUpHobbies({ navigation, route }) {
               <Text style={styles.cancelBtnTxt}>Cancel</Text>
             </TouchableOpacity>
           </View>
-        </SafeAreaView>
+        </KeyboardAwareScrollView>
       </Modal>
 
       {/* Tv Shows & Movies */}
@@ -277,7 +291,13 @@ export default function SignUpHobbies({ navigation, route }) {
 
       {/* Tv Shows & Movies Modal*/}
       <Modal animationType="slide" visible={modal3Visible}>
-        <View style={styles.modal}>
+        <KeyboardAwareScrollView
+          style={styles.container}
+          resetScrollToCoords={{ x: 0, y: 0 }}
+          contentContainerStyle={styles.modal}
+          scrollEnabled={true}
+          extraScrollHeight={10}
+        >
           <Text style={styles.modalXSText}>Pick Tv Shows </Text>
           <View style={styles.doubleContainer}>
             <FlatList
@@ -348,7 +368,7 @@ export default function SignUpHobbies({ navigation, route }) {
               <Text style={styles.cancelBtnTxt}>Cancel</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </KeyboardAwareScrollView>
       </Modal>
 
       {/* Food & Drink */}
@@ -361,7 +381,13 @@ export default function SignUpHobbies({ navigation, route }) {
 
       {/* Food & Drink Modal */}
       <Modal animationType="slide" visible={modal4Visible}>
-        <View style={styles.modal}>
+        <KeyboardAwareScrollView
+          style={styles.container}
+          resetScrollToCoords={{ x: 0, y: 0 }}
+          contentContainerStyle={styles.modal}
+          scrollEnabled={true}
+          extraScrollHeight={10}
+        >
           <Text style={styles.modalText}>Pick Food</Text>
           <View style={styles.doubleContainer}>
             <FlatList
@@ -435,7 +461,7 @@ export default function SignUpHobbies({ navigation, route }) {
               <Text style={styles.cancelBtnTxt}>Cancel</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </KeyboardAwareScrollView>
       </Modal>
 
       {/* Bed Time Routine */}
@@ -448,7 +474,13 @@ export default function SignUpHobbies({ navigation, route }) {
 
       {/* Bed Time Routine Modal */}
       <Modal animationType="slide" visible={modal5Visible}>
-        <View style={styles.modal}>
+        <KeyboardAwareScrollView
+          style={styles.container}
+          resetScrollToCoords={{ x: 0, y: 0 }}
+          contentContainerStyle={styles.modal}
+          scrollEnabled={true}
+          extraScrollHeight={10}
+        >
           <Text style={styles.modalText}>Bed Night Routine</Text>
           <View style={styles.pickerContainer}>
             <Picker
@@ -490,7 +522,7 @@ export default function SignUpHobbies({ navigation, route }) {
               <Text style={styles.cancelBtnTxt}>Cancel</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </KeyboardAwareScrollView>
       </Modal>
 
       {/* Special Hobbies */}
@@ -503,7 +535,13 @@ export default function SignUpHobbies({ navigation, route }) {
 
       {/* Special Hobbies Modal */}
       <Modal animationType="slide" visible={modal6Visible}>
-        <View style={styles.modal}>
+        <KeyboardAwareScrollView
+          style={styles.container}
+          resetScrollToCoords={{ x: 0, y: 0 }}
+          contentContainerStyle={styles.modal}
+          scrollEnabled={true}
+          extraScrollHeight={10}
+        >
           <Text style={styles.modalText}>Pick Hobbies</Text>
           <View style={styles.FoodContainer}>
             {specialHabits.map((special, index) => (
@@ -540,7 +578,7 @@ export default function SignUpHobbies({ navigation, route }) {
               <Text style={styles.cancelBtnTxt}>Cancel</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </KeyboardAwareScrollView>
       </Modal>
 
       {/* Other info */}
