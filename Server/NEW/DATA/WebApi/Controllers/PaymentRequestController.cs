@@ -128,7 +128,9 @@ namespace WebApi.Controllers
                 var p = db.tblPaymentRequest.Where(x => x.requestId == req.requestId).FirstOrDefault();
                 if (p != null)
                 {
-                    p.requestSubject = req.requestSubject;
+                    p.requestCommentHeb = req.requestCommentHeb;
+                    p.requestSubjectHeb = req.requestSubjectHeb;               
+                    p.requestSubject = req.requestSubject;              
                     p.amountToPay = req.amountToPay;
                     p.requestDate = req.requestDate;
                     DateTime endDate = req.requestDate.AddDays(14); // requestEndDate should be requestDate + 14 days

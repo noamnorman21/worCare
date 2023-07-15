@@ -30,7 +30,7 @@ export default function EditPaymentScreen(props) {
   })
   const [valueChanged, setValueChanged] = useState(false);
   const [PlatformType, setPlatformType] = useState(Platform.OS);
-  const {GetUserPending } = useUserContext();
+  const {GetUserPending,translateText } = useUserContext();
 
   const openCamera = async () => {
     // Ask the user for the permission to access the camera
@@ -88,8 +88,6 @@ export default function EditPaymentScreen(props) {
     );
   }
 
-
-
   const showDatepicker = () => {
     // showMode('date');
     setShow(true);
@@ -129,32 +127,6 @@ export default function EditPaymentScreen(props) {
     }
   }
 
-  //removed from page
-  // const Delete = () => {
-  //   Alert.alert(
-  //     'Delete request',
-  //     'are you sure you want to Delete? All changes will be lost',
-  //     [
-  //       { text: "Don't leave", style: 'cancel', onPress: () => { } },
-  //       {
-  //         text: 'Leave',
-  //         style: 'destructive',
-  //         // If the user confirmed, then we dispatch the action we blocked earlier
-  //         // This will continue the action that had triggered the removal of the screen
-  //         onPress: () => {
-  //           let res = fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/DeletePayment/' + Payment.requestId, {
-  //             method: 'DELETE',
-  //             headers: {
-  //               'Content-Type': 'application/json',
-  //             },
-  //           });
-  //           console.log(res);
-  //           props.cancel();
-  //         }
-  //       },
-  //     ]
-  //   );
-  // }
 
   const sendToFirebase = async (image) => {
     // if the user didn't upload an image, we will use the default image
@@ -197,6 +169,8 @@ export default function EditPaymentScreen(props) {
       Alert.alert('Error', 'Subject must be less than 20 characters');
       return;
     }
+    let requestCommentHeb= await translateText(Payment.requestComment,'he');
+    let requestSubjectHeb= await translateText(Payment.requestSubject,'he');
     const temp = {
       requestId: Payment.requestId,
       amountToPay: Payment.amountToPay,
@@ -205,7 +179,9 @@ export default function EditPaymentScreen(props) {
       requestProofDocument: downloadURL,
       requestComment: Payment.requestComment,
       requestStatus: Payment.requestStatus,
-      userId: Payment.userId
+      userId: Payment.userId,
+      requestCommentHeb: requestCommentHeb,
+      requestSubjectHeb: requestSubjectHeb
     }
     console.log(temp);
     fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/UpdateRequest', {
