@@ -15,7 +15,7 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export default function NewPayment(props) {
-  const { userContext, GetUserPending, sendPushNotification,notificationsThatSent } = useUserContext();
+  const { userContext, GetUserPending, sendPushNotification,notificationsThatSent,translateText } = useUserContext();
   const pushToken2 = userContext.pushToken2;
   const involvedInId = userContext.involvedInId;
   const userName = userContext.FirstName;
@@ -140,6 +140,8 @@ export default function NewPayment(props) {
   };
 
   const savePayment = async (downloadURL) => {
+    let requestCommentHeb= await translateText(payment.requestComment,'he');
+    let requestSubjectHeb= await translateText(payment.requestSubject,'he');
     const NewPayment = {
       amountToPay: payment.amountToPay,
       requestSubject: payment.requestSubject,
@@ -148,8 +150,13 @@ export default function NewPayment(props) {
       requestComment: payment.requestComment,
       requestStatus: payment.requestStatus,
       userId: payment.userId,
-      pushToken2: pushToken2
+      pushToken2: pushToken2,
+      requestCommentHeb: requestCommentHeb,
+      requestSubjectHeb: requestSubjectHeb,
     }
+
+    console.log("NewPayment");
+    console.log( NewPayment);
     fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/NewRequest', {
       method: 'POST',
       body: JSON.stringify(NewPayment),

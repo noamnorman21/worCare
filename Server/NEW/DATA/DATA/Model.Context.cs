@@ -634,7 +634,7 @@ namespace DATA
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("NewPaycheck", paycheckDateParameter, paycheckSummaryParameter, paycheckCommentParameter, userIdParameter, payCheckProofDocumentParameter);
         }
     
-        public virtual int NewPaymentRequest(string requestSubject, Nullable<double> amountToPay, Nullable<System.DateTime> requestDate, string requestProofDocument, string requestComment, string requestStatus, Nullable<int> userId, Nullable<System.DateTime> requestEndDate)
+        public virtual int NewPaymentRequest(string requestSubject, Nullable<double> amountToPay, Nullable<System.DateTime> requestDate, string requestProofDocument, string requestComment, string requestStatus, Nullable<int> userId, Nullable<System.DateTime> requestEndDate, string requestCommentHeb, string requestSubjectHeb)
         {
             var requestSubjectParameter = requestSubject != null ?
                 new ObjectParameter("requestSubject", requestSubject) :
@@ -668,7 +668,15 @@ namespace DATA
                 new ObjectParameter("requestEndDate", requestEndDate) :
                 new ObjectParameter("requestEndDate", typeof(System.DateTime));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("NewPaymentRequest", requestSubjectParameter, amountToPayParameter, requestDateParameter, requestProofDocumentParameter, requestCommentParameter, requestStatusParameter, userIdParameter, requestEndDateParameter);
+            var requestCommentHebParameter = requestCommentHeb != null ?
+                new ObjectParameter("requestCommentHeb", requestCommentHeb) :
+                new ObjectParameter("requestCommentHeb", typeof(string));
+    
+            var requestSubjectHebParameter = requestSubjectHeb != null ?
+                new ObjectParameter("requestSubjectHeb", requestSubjectHeb) :
+                new ObjectParameter("requestSubjectHeb", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("NewPaymentRequest", requestSubjectParameter, amountToPayParameter, requestDateParameter, requestProofDocumentParameter, requestCommentParameter, requestStatusParameter, userIdParameter, requestEndDateParameter, requestCommentHebParameter, requestSubjectHebParameter);
         }
     
         public virtual int sp_alterdiagram(string diagramname, Nullable<int> owner_id, Nullable<int> version, byte[] definition)

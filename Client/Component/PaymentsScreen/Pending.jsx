@@ -59,7 +59,7 @@ export default function Pending() {
       // maybe we can send the request id and then in the request screen we will fetch the request by id
     }
 
-  //  return;
+    //  return;
     sendPushNotification(PushNotificationsData)
     notificationsThatSent(pushDataForDB)
   }
@@ -90,10 +90,11 @@ function Request(props) {
   const dateString = day + "/" + month + "/" + newYear;
   const [valueChanged, setValueChanged] = useState(false);
   const [status, setStatus] = useState(false);
-  const { userContext, GetUserPending, GetUserHistory, sendPushNotification,notificationsThatSent } = useUserContext();
+  const { userContext, GetUserPending, GetUserHistory, sendPushNotification, notificationsThatSent } = useUserContext();
   const [DownloadProgress, setDownloadProgress] = useState();
   const pushToken2 = userContext.pushToken2;
   const involvedInId = userContext.involvedInId;
+  const [subjectLength, setSubjectLength] = useState(0);
 
   const toggle = () => {
     const config = {
@@ -206,6 +207,22 @@ function Request(props) {
       return () => clearTimeout(timer);
     }
   }, [status])
+  useEffect(() => {
+    if(userContext.userType == "Caregiver"){
+      setSubjectLength(props.subject.length)
+    }
+    //else it mean that the subject is in Hebrew so we need to count un diffrent way not .length
+    else{
+      //convert the subject to utf8
+      let utf8 = unescape(encodeURIComponent(props.subject))
+      //count the length of the subject
+      setSubjectLength(utf8.length)
+      console.log(utf8.length)
+
+    }
+
+  }
+    , [])
 
   const saveStatus = async (id) => {
     if (status) {
@@ -306,7 +323,7 @@ function Request(props) {
                   <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} value={1} children={<View style={userContext.userId == props.data.userId ? styles.options : styles.disabledoptions}><MaterialCommunityIcons name='bell-ring-outline' size={20} /><Text style={styles.optionsText}> Send Notification</Text></View>} />
                   <MenuOption value={2} children={<View style={styles.options}><Feather name='eye' size={20} /><Text style={styles.optionsText}> View Document</Text></View>} />
                   <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} value={3} children={<View style={userContext.userId == props.data.userId ? styles.options : styles.disabledoptions}><Feather name='edit' size={20} /><Text style={styles.optionsText}> Edit Request</Text></View>} />
-                  <MenuOption style={[styles.deleteTxt]} value={4} children={<View style={userContext.userId == props.data.userId ? styles.options : styles.disabledoptions}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={styles.deleteTxt}> Delete Request</Text></View>} />
+                  <MenuOption style={[styles.deleteTxt]} value={4} children={<View style={styles.options}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={styles.deleteTxt}> Delete Request</Text></View>} />
                 </MenuOptions>
               </Menu>
               <Modal animationType='slide' transparent={false} visible={modal1Visible} onRequestClose={() => setModal1Visible(false)}>
@@ -353,7 +370,7 @@ function Request(props) {
             </TouchableOpacity>
             <TouchableOpacity onPress={toggle} style={styles.requestItemMiddleClose}>
               <View>
-                <Text style={[styles.requestItemText, status ? { textDecorationLine: 'line-through' } : {}]}>{dateString} - {props.subject.length > 15 ? props.subject.slice(0, 12) + "..." : props.subject}</Text>
+                <Text style={[styles.requestItemText, status ? { textDecorationLine: 'line-through' } : {}]}>{dateString} - {subjectLength > 15 ? props.subject.slice(0, 12) + "..." : props.subject}</Text>
               </View>
             </TouchableOpacity>
             <Menu style={{ flexDirection: 'column', marginVertical: 0, position: 'relative' }} onSelect={value => openModal(value)} >

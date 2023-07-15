@@ -220,6 +220,8 @@
     <Property Name="requestStatus" Type="char" MaxLength="1" Nullable="false" />
     <Property Name="userId" Type="int" Nullable="false" />
     <Property Name="requestEndDate" Type="date" />
+    <Property Name="requestCommentHeb" Type="nvarchar(max)" />
+    <Property Name="requestSubjectHeb" Type="nvarchar" MaxLength="20" />
   </EntityType>
   <EntityType Name="tblPrivateActualTask">
     <Key>
@@ -842,6 +844,8 @@
     <Parameter Name="requestStatus" Type="char" Mode="In" />
     <Parameter Name="userId" Type="int" Mode="In" />
     <Parameter Name="requestEndDate" Type="date" Mode="In" />
+    <Parameter Name="requestCommentHeb" Type="nvarchar(max)" Mode="In" />
+    <Parameter Name="requestSubjectHeb" Type="nvarchar" Mode="In" />
   </Function>
   <Function Name="sp_alterdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="diagramname" Type="nvarchar" Mode="In" />

@@ -24,22 +24,37 @@ namespace WebApi.Controllers
                 if (user.userType == "User")
                 {
                     id = user.workerId;
+                    var Pendings = db.tblPaymentRequest.Where(x => x.userId == id && x.requestStatus == "P").Select(y => new PaymentsRequestDTO
+                    {
+                        requestId = y.requestId,
+                        requestSubject = y.requestSubjectHeb,
+                        amountToPay = y.amountToPay,
+                        requestDate = y.requestDate,
+                        requestProofDocument = y.requestProofDocument,
+                        requestComment = y.requestCommentHeb,
+                        requestStatus = y.requestStatus,
+                        userId = y.userId,
+                        requestEndDate = y.requestEndDate,
+                    }).ToList();
+                    return Ok(Pendings);
                 }
                 else
-                    id = user.userId;
-                var Pendings = db.tblPaymentRequest.Where(x => x.userId == id && x.requestStatus == "P").Select(y => new PaymentsRequestDTO
                 {
-                    requestId = y.requestId,
-                    requestSubject = y.requestSubject,
-                    amountToPay = y.amountToPay,
-                    requestDate = y.requestDate,
-                    requestProofDocument = y.requestProofDocument,
-                    requestComment = y.requestComment,
-                    requestStatus = y.requestStatus,
-                    userId = y.userId,
-                    requestEndDate = y.requestEndDate,
-                }).ToList();
-                return Ok(Pendings);
+                    id = user.userId;
+                    var Pendings = db.tblPaymentRequest.Where(x => x.userId == id && x.requestStatus == "P").Select(y => new PaymentsRequestDTO
+                    {
+                        requestId = y.requestId,
+                        requestSubject = y.requestSubject,
+                        amountToPay = y.amountToPay,
+                        requestDate = y.requestDate,
+                        requestProofDocument = y.requestProofDocument,
+                        requestComment = y.requestComment,
+                        requestStatus = y.requestStatus,
+                        userId = y.userId,
+                        requestEndDate = y.requestEndDate,
+                    }).ToList();
+                    return Ok(Pendings);
+                }           
             }
             catch (Exception ex)
             {
@@ -88,7 +103,7 @@ namespace WebApi.Controllers
             try
             {
                 DateTime endDate = req.requestDate.AddDays(14); // requestEndDate should be requestDate + 14 days
-                db.NewPaymentRequest(req.requestSubject, req.amountToPay, req.requestDate, req.requestProofDocument, req.requestComment, req.requestStatus, req.userId, endDate);
+                db.NewPaymentRequest(req.requestSubject, req.amountToPay, req.requestDate, req.requestProofDocument, req.requestComment, req.requestStatus, req.userId, endDate, req.requestCommentHeb,req.requestSubjectHeb);
                 int requestId = db.tblPaymentRequest.Max(x => x.requestId);
                 var user = from u in db.tblUser
                              where u.pushToken == req.pushToken2

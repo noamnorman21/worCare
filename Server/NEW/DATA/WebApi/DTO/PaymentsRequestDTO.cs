@@ -18,6 +18,8 @@ namespace WebApi.DTO
         public int fId { get; set; }
         public Nullable<System.DateTime> requestEndDate { get; set; }
         public string pushToken2 { get; set; }
+        public string requestCommentHeb { get; set; }
+        public string requestSubjectHeb { get; set; }
 
     }
 }

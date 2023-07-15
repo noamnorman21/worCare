@@ -8,6 +8,7 @@ import moment from 'moment';
 import { query, updateDoc, collection, getDocs, where } from 'firebase/firestore';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
+import axios from 'axios';
 
 // ---------------- All Server Urls ---------------- 
 
@@ -1178,6 +1179,7 @@ export function UserProvider({ children }) {
             );
     }
     async function translateText(text, targetLanguage) {
+        console.log("translateText", text, targetLanguage)
         try {
             const response = await axios.post(`https://translation.googleapis.com/language/translate/v2`, {}, {
                 params: {

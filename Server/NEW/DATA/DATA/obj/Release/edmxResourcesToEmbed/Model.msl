@@ -214,6 +214,8 @@
     <EntitySetMapping Name="tblPaymentRequest">
       <EntityTypeMapping TypeName="igroup194.tblPaymentRequest">
         <MappingFragment StoreEntitySet="tblPaymentRequest">
+          <ScalarProperty Name="requestSubjectHeb" ColumnName="requestSubjectHeb" />
+          <ScalarProperty Name="requestCommentHeb" ColumnName="requestCommentHeb" />
           <ScalarProperty Name="requestId" ColumnName="requestId" />
           <ScalarProperty Name="requestSubject" ColumnName="requestSubject" />
           <ScalarProperty Name="amountToPay" ColumnName="amountToPay" />
