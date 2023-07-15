@@ -319,10 +319,10 @@ export default function MedDetail({ navigation, route }) {
                   </View>
                </View>
                <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: SCREEN_WIDTH * 0.70, marginVertical: 10 }}>
-                  <TouchableOpacity style={styles.cancelBtn} onPress={toggleOverlayTakeExtra}>
+                  <TouchableOpacity style={[styles.cancelBtn,{width : SCREEN_WIDTH * 0.34}]} onPress={toggleOverlayTakeExtra}>
                      <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 16, color: '#fff' }}>Cancel</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.okBtn} onPress={takeExtraMed}>
+                  <TouchableOpacity style={[styles.okBtn,{width : SCREEN_WIDTH * 0.34}]} onPress={takeExtraMed}>
                      <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 16, color: '#7DA9FF' }}>Okay</Text>
                   </TouchableOpacity>
                </View>
@@ -365,7 +365,7 @@ export default function MedDetail({ navigation, route }) {
                   </View>
                </View>
                <View style={{flexDirection: 'row', justifyContent: 'space-between', width: SCREEN_WIDTH * 0.70, marginVertical: 10 }}>
-                  <TouchableOpacity style={[styles.cancelBtn,{width : SCREEN_WIDTH * 0.34},]} onPress={toggleOverlayRefill}>
+                  <TouchableOpacity style={[styles.cancelBtn,{width : SCREEN_WIDTH * 0.34}]} onPress={toggleOverlayRefill}>
                      <Text style={{ fontFamily: 'Urbanist-Bold', fontSize: 16, color: '#fff' }}>Cancel</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={[styles.okBtn,{width : SCREEN_WIDTH * 0.34}]} onPress={logRefill}>

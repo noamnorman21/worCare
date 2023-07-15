@@ -199,13 +199,10 @@ export default function EditMed(props) {
         props.onClose();
     };
 
-
-
     const showDatepicker = () => {
         setShow(true);
     };
     
-
     const handleDrugEdited = () => {
         if (quantity == null || quantity == 0) {
             Alert.alert('Please select a quantity');

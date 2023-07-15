@@ -353,7 +353,6 @@ export default function ChatRoom({ route, navigation }) {
         }
         console.log(notification)
         notificationsThatSent(notification)
-
       }
     }
   }, []);
