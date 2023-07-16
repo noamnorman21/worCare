@@ -24,7 +24,7 @@ export default function ChatRoom({ route, navigation }) {
   const [selectedPic, setSelectedPic] = useState(null); //to send image to firebase
   const [imageDescription, setImageDescription] = useState('')//to send image with description
   const [GroupMembers, setGroupMembers] = useState(); //for group chat
-  const { newMessages, setNewMessages, sendPushNotification, notificationsThatSent,translateText } = useUserContext();
+  const { newMessages, setNewMessages, sendPushNotification, notificationsThatSent, translateText } = useUserContext();
   const [userToken2, setUserToken2] = useState(''); //for push notification- temporary- will start as ''
   const [userLanguage, setUserLanguage] = useState(''); //for push notification- temporary- will start as ''
   const [userIdThatGetThePush, setUserIdThatGetThePush] = useState(''); //for push notification- temporary- will start as ''
@@ -101,7 +101,7 @@ export default function ChatRoom({ route, navigation }) {
         }
       )
   }
-  
+
 
   useFocusEffect( //update convo in db that user has read the messages when leaving page
     useCallback(() => {
@@ -189,7 +189,14 @@ export default function ChatRoom({ route, navigation }) {
 
   //send image to firebase
   const onSendImage = async (downloadUrl) => {
-    let translatedText = await translateText(imageDescription, userLanguage);
+    let translatedText = '';
+    if (GroupMembers) {
+      console.log("group")
+      translatedText = imageDescription;
+    }
+    else {
+      translatedText = await translateText(imageDescription, targetLanguage);
+    }
     //add new message to db
     const newMessage = {
       _id: Math.random().toString(36).substring(7),
@@ -201,10 +208,10 @@ export default function ChatRoom({ route, navigation }) {
       },
       image: downloadUrl,
       text: imageDescription,
-      translatedText: await translateText(imageDescription, userLanguage)
+      translatedText: translatedText
     }
     setMessages(previousMessages => GiftedChat.append(previousMessages, [newMessage]));
-    const { _id, createdAt, text, user, image } = newMessage
+    const { _id, createdAt, text, user, image} = newMessage
     addDoc(collection(db, route.params.name), { _id, createdAt, text, user, image, translatedText });
     console.log("new message added to db")
     setPicPreviewModal(false);
@@ -281,7 +288,13 @@ export default function ChatRoom({ route, navigation }) {
     const { _id, createdAt, text, user } = messages[0]
     // change to user language- second side
     let targetLanguage = userLanguage;
-    let translate = await translateText(text, targetLanguage);
+    let translate = '';
+    if (GroupMembers) {
+      translate = text;
+    }
+    else {
+      translate = await translateText(text, targetLanguage);
+    }
     addDoc(collection(db, route.params.name), { _id, createdAt, text, user, translatedText: translate });
     const docRef = query(collection(db, auth.currentUser.email), where("Name", "==", route.params.name));
     const res = getDocs(docRef);
@@ -348,7 +361,7 @@ export default function ChatRoom({ route, navigation }) {
           title: "New Message",
           pushMessage: `You have a New Message from ${auth.currentUser.displayName}`,
           //time is now 
-          time: Platform.OS==="ios"? new Date().toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }):moment(new Date()).format('LT'), //changed for android from locatstring, so it can add in db. need to check if it works on ios),
+          time: Platform.OS === "ios" ? new Date().toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }) : moment(new Date()).format('LT'), //changed for android from locatstring, so it can add in db. need to check if it works on ios),
           userId: userIdThatGetThePush
         }
         console.log(notification)
@@ -384,7 +397,7 @@ export default function ChatRoom({ route, navigation }) {
               </Send>
             )
           }}
-          onSend={messages => onSend(messages, GroupMembers, userToken2, userLanguage,userIdThatGetThePush)}
+          onSend={messages => onSend(messages, GroupMembers, userToken2, userLanguage, userIdThatGetThePush)}
           user={{
             _id: auth?.currentUser?.email,
             name: auth?.currentUser?.displayName,
@@ -401,7 +414,6 @@ export default function ChatRoom({ route, navigation }) {
                     borderColor: "#808080",
                     borderWidth: 1.5,
                     borderRadius: 20,
-                    margin: Platform.OS === 'android' && 2,
                   },
                   right: {
                     backgroundColor: "#7DA9FF",
