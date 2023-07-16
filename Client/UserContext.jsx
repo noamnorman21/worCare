@@ -829,14 +829,18 @@ export function UserProvider({ children }) {
             user = {
                 userId: userContext.userId,
                 userType: userContext.userType,
-                patientId: userContext.patientId
+                patientId: userContext.patientId,
+                workerId: userContext.workerId,
+                involvedInId: userContext.involvedInId
             }
         }
         else {
             user = {
                 userId: userData.userId,
                 userType: userData.userType,
-                patientId: userData.patientId
+                patientId: userData.patientId,
+                workerId: userData.workerId,
+                involvedInId: userData.involvedInId
             }
         }
         try {

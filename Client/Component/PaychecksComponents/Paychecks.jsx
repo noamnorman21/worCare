@@ -234,9 +234,9 @@ function Paycheck(props) {
 
               </View>
               <View style={styles.requestItemBodyRight}>
-                <Text style={styles.requestItemText}>{dateString}</Text>
-                <Text style={styles.requestItemText}>{paycheck.paycheckSummary}</Text>
-                <Text style={[styles.requestItemText, paycheck.paycheckComment == null || paycheck.paycheckComment == "" && { display: 'none' }]}>{paycheck.paycheckComment}</Text>
+                <Text style={styles.requestItemSmallText}>{dateString}</Text>
+                <Text style={styles.requestItemSmallText}>{paycheck.paycheckSummary}</Text>
+                <Text style={[styles.requestItemSmallText, paycheck.paycheckComment == null || paycheck.paycheckComment == "" && { display: 'none' }]}>{paycheck.paycheckComment}</Text>
 
               </View>
             </View>
@@ -425,11 +425,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   requestItemBodyLeft: {
-    flex: 2,
+    flex: 2.2,
   },
   requestItemBodyRight: {
-    flex: 3,
+    flex: 5,
     alignItems: 'flex-start',
+  },
+  requestItemSmallText: {
+    fontSize: 18,
+    color: '#000000',
+    fontFamily: 'Urbanist-Regular',
   },
   documentview: {
     alignItems: 'center',
