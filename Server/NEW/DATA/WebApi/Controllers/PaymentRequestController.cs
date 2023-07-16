@@ -71,24 +71,41 @@ namespace WebApi.Controllers
                 int id;
                 if (user.userType == "User")
                 {
+                    
                     string patient = user.patientId;
                     id = user.workerId;
+                    var Payments = db.tblPaymentRequest.Where(x => x.userId == id && x.requestStatus != "P").Select(y => new PaymentsRequestDTO
+                    {
+                        requestId = y.requestId,
+                        requestSubject = y.requestSubjectHeb,//for user we will return the subject in hebrew 
+                        amountToPay = y.amountToPay,
+                        requestDate = y.requestDate,
+                        requestProofDocument = y.requestProofDocument,
+                        requestComment = y.requestCommentHeb,// for user we will return the comment in hebrew
+                        requestStatus = y.requestStatus,
+                        userId = y.userId,
+                        requestEndDate = y.requestEndDate,
+                    }).ToList();
+                    return Ok(Payments);
                 }
                 else
-                    id = user.userId;
-                var Payments = db.tblPaymentRequest.Where(x => x.userId == id && x.requestStatus != "P").Select(y => new PaymentsRequestDTO
                 {
-                    requestId = y.requestId,
-                    requestSubject = y.requestSubject,
-                    amountToPay = y.amountToPay,
-                    requestDate = y.requestDate,
-                    requestProofDocument = y.requestProofDocument,
-                    requestComment = y.requestComment,
-                    requestStatus = y.requestStatus,
-                    userId = y.userId,
-                    requestEndDate = y.requestEndDate,
-                }).ToList();
-                return Ok(Payments);
+                    id = user.userId;
+                    var Payments = db.tblPaymentRequest.Where(x => x.userId == id && x.requestStatus != "P").Select(y => new PaymentsRequestDTO
+                    {
+                        requestId = y.requestId,
+                        requestSubject = y.requestSubject,
+                        amountToPay = y.amountToPay,
+                        requestDate = y.requestDate,
+                        requestProofDocument = y.requestProofDocument,
+                        requestComment = y.requestComment,
+                        requestStatus = y.requestStatus,
+                        userId = y.userId,
+                        requestEndDate = y.requestEndDate,
+                    }).ToList();
+                    return Ok(Payments);
+                }
+
             }
             catch (Exception ex)
             {
