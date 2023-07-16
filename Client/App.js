@@ -8,6 +8,7 @@ import { UserProvider } from './UserContext';
 import * as Notifications from 'expo-notifications';
 
 // Ignore specific warning logs
+LogBox.ignoreLogs(["Clipboard has been extracted from react-native core and will be removed in a future release. It can now be installed and imported from '@react-native-clipboar"]);
 LogBox.ignoreLogs(["AsyncStorage has been extracted from react-native core and will be removed in a future release."]);
 LogBox.ignoreLogs(['Sending `onAnimatedValueUpdate` with no listeners registered.']);
 LogBox.ignoreLogs(['Animated: `useNativeDriver` was not specified. This is a required option and must be explicitly set to `true` or `false`']);

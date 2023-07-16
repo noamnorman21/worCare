@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useLayoutEffect } from 'react';
-import { View, Text, StyleSheet, Dimensions, Image, Alert, Modal, TouchableOpacity, ScrollView, Platform, SafeAreaView, KeyboardAvoidingView } from 'react-native'
+import { View, Text, StyleSheet, Dimensions, Image, Alert, Modal, TouchableOpacity,Clipboard, ScrollView, Platform, SafeAreaView, KeyboardAvoidingView } from 'react-native'
 import { GiftedChat, Bubble, Actions, InputToolbar, Time, MessageImage, LoadEarlier, Composer, Send, MessageText } from 'react-native-gifted-chat';
 import { Ionicons, FontAwesome, Feather } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
@@ -380,6 +380,31 @@ export default function ChatRoom({ route, navigation }) {
           showAvatarForEveryMessage={false}
           alwaysShowSend={true}
           renderAvatarOnTop={true}
+          onLongPress={(context, message) => {
+            Alert.alert(
+              "Message",
+              "What do you want to do?",
+              [
+                {
+                  text: "Copy Text",
+                  onPress: () => {
+                    if (message.user._id == auth.currentUser.email) {
+                      Clipboard.setString(message.text);
+                    }
+                    else {
+                      Clipboard.setString(message.translatedText);
+                    }
+                  },
+                },
+                {
+                  text: "Cancel",
+                  onPress: () => console.log("Cancel Pressed"),
+                  style: "cancel"
+                },
+              ],
+              { cancelable: false }
+            );
+          }}
           renderSend={(props) => {
             return (
               <Send {...props}>
