@@ -19,8 +19,16 @@ export default function Paychecks() {
   const { userContext, getPaychecks,userPaychecks} = useUserContext();
   const [History, setHistory] = useState()
   const [arr, setArr] = useState()
-  const isFocused = useIsFocused()
   const [modal1Visible, setModal1Visible] = useState(false);
+  const [isAtBottom, setIsAtBottom] = useState(false);
+
+  const onScroll = (event) => {
+    const offsetY = event.nativeEvent.contentOffset.y;
+    const contentHeight = event.nativeEvent.contentSize.height;
+    const layoutHeight = event.nativeEvent.layoutMeasurement.height;
+    const isBottom = offsetY + layoutHeight >= contentHeight - 45;
+    setIsAtBottom(isBottom);
+  };
 
   useEffect(() => {
    renderPaychecks()
@@ -42,13 +50,13 @@ export default function Paychecks() {
         <Text style={styles.header}>Paychecks History</Text>
         <View style={styles.line}></View>
       </View>
-      <ScrollView contentContainerStyle={styles.pending}>
+      <ScrollView contentContainerStyle={styles.pending} onScroll={onScroll}>
         {History}
         <Modal animationType='slide' transparent={true} visible={modal1Visible}>
           <NewPaycheck cancel={() => { setModal1Visible(false); }} getPaychecks={()=> getPaychecks()} userId={userContext.userId} />
         </Modal>
       </ScrollView>
-      <View style={styles.addBtnView}><AddBtn onPress={() => setModal1Visible(true)} /></View>
+      {!isAtBottom &&<View style={styles.addBtnView}><AddBtn onPress={() => setModal1Visible(true)} /></View>}
     </>
   );
 }

@@ -244,7 +244,7 @@ function CustomHeader() {
                                                 toggleModal()
                                                 AsyncStorage.removeItem("user");
                                                 AsyncStorage.removeItem("userData");
-                                                navigation.popToTop()
+                                                await navigation.popToTop()
                                                 logOutFireBase()
                                             }
                                         }>

@@ -19,7 +19,17 @@ export default function Pending() {
   const involvedInId = userContext.involvedInId;
   const [modal1Visible, setModal1Visible] = useState(false);
   const [Pendings, setPendings] = useState()
-  const isFocused = useIsFocused()
+  const [isAtBottom, setIsAtBottom] = useState(false);
+
+  const onScroll = (event) => {
+    const offsetY = event.nativeEvent.contentOffset.y;
+    const contentHeight = event.nativeEvent.contentSize.height;
+    const layoutHeight = event.nativeEvent.layoutMeasurement.height;
+    const isBottom = offsetY + layoutHeight >= contentHeight - 45;
+    setIsAtBottom(isBottom);
+  };
+  
+
 
   useEffect(() => {
     {
@@ -84,14 +94,18 @@ export default function Pending() {
 
   return (
     <>
-      <ScrollView contentContainerStyle={styles.pending}>
+      <ScrollView contentContainerStyle={styles.pending} onScroll={onScroll}>
         {Pendings}
         <Modal animationType='slide' transparent={true} visible={modal1Visible}>
           <NewPayment cancel={() => { setModal1Visible(false); renderPendings() }} />
         </Modal>
       </ScrollView>
-      {userContext.userType == "Caregiver" ? <View style={styles.addBtnView}><AddBtn onPress={() => setModal1Visible(true)} /></View> : null}
-    </>
+      {userContext.userType == "Caregiver" && !isAtBottom && (
+        <View style={styles.addBtnView}>
+          <AddBtn onPress={() => setModal1Visible(true)} />
+        </View>
+      )}
+    </>  
   );
 }
 
@@ -951,8 +965,6 @@ const styles = StyleSheet.create({
     fontFamily: 'Urbanist-Bold',
     alignItems: 'center',
   },
-
-
   requestItemBodyLeftHeb: {
     flex: 2,
     alignItems: 'flex-end',
