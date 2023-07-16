@@ -74,6 +74,7 @@ export default function History({ navigation, route }) {
         onScroll={onScroll}
         onContentSizeChange={onContentSizeChange}
         scrollEventThrottle={16}
+        alwaysBounceVertical={false}
       >
         {History}
         <Modal animationType='slide' transparent={true} visible={modal1Visible}>

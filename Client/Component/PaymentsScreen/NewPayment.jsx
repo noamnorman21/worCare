@@ -140,8 +140,8 @@ export default function NewPayment(props) {
   };
 
   const savePayment = async (downloadURL) => {
-    let requestCommentHeb= await translateText(payment.requestComment,'he');
-    let requestSubjectHeb= await translateText(payment.requestSubject,'he');
+    let requestCommentHeb= await translateText(payment.requestComment,'he');// send to translate function in user context
+    let requestSubjectHeb= await translateText(payment.requestSubject,'he');// send to translate function in user context
     const NewPayment = {
       amountToPay: payment.amountToPay,
       requestSubject: payment.requestSubject,
@@ -186,7 +186,6 @@ export default function NewPayment(props) {
           }
           sendPushNotification(PushNotificationsData); // This line sends the notification, the function is in UserContext
           notificationsThatSent(pushDataForDB); // This line saves the notification in the DB, the function is in UserContext
-
           GetUserPending()
           props.cancel();
           console.log('expoToken2', pushToken2);         

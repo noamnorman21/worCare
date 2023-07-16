@@ -571,10 +571,7 @@ function RequestHeb(props) {
       let utf8 = unescape(encodeURIComponent(props.subject))
       //count the length of the subject
       setSubjectLength(utf8.length)
-      console.log(utf8.length)
-
     }
-
   }
     , [])
 
