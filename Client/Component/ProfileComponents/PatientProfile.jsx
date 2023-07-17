@@ -202,10 +202,13 @@ export default function PatientProfile({ navigation }) {
         }, [newHobbiesAndLimitations]);
 
         const ChangeDateAndroid= (date) =>{
+            setDatepickervisable(false);
+            console.log(date)
+            if(date.type=="set"){
             let currentTime = new Date(date.nativeEvent.timestamp).toTimeString().substring(0,5);
             console.log(currentTime)
             handleHobbyToggle(currentTime)
-            setDatepickervisable(false);
+            }
         }
 
 
@@ -341,7 +344,7 @@ export default function PatientProfile({ navigation }) {
                                                 placeholder="time"
                                                 minimumDate={new Date(2000, 0, 1)}
                                                 onChange={(date) => ChangeDateAndroid(date)}
-                                                display="spinner"
+                                                display="default"
                                             />
                                         )}
                                     </>
