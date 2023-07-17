@@ -185,6 +185,22 @@ function CustomHeader() {
 
                                         <TouchableOpacity onPress={
                                             () => {
+                                                userContext.userType === 'User' ?
+                                                    setNewUserDialogVisable(true) :
+                                                    setNewUserDialogVisable(false)
+                                                toggleModal()
+                                            }
+                                        }>
+
+                                            <View style={styles.menuItem}>
+                                                <AntDesign name="adduser" size={30} color="#fff1e6" />
+                                                <Text style={styles.menuItemText}>Add New Patient</Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                        <View style={styles.line} />
+
+                                        <TouchableOpacity onPress={
+                                            () => {
                                                 navigation.navigate('Contacts')
                                                 toggleModal()
                                             }
@@ -196,7 +212,7 @@ function CustomHeader() {
                                         </TouchableOpacity>
                                         <View style={styles.line} />
 
-                                        <TouchableOpacity onPress={
+                                        {/* <TouchableOpacity onPress={
                                             () => {
                                                 navigation.navigate('PushNotifications')
                                                 toggleModal()
@@ -207,24 +223,7 @@ function CustomHeader() {
                                                 <Text style={styles.menuItemText}>Notifications</Text>
                                             </View>
                                         </TouchableOpacity>
-                                        <View style={styles.line} />
-                                        
-
-                                        <TouchableOpacity onPress={
-                                            () => {
-                                                userContext.userType === 'User' ?
-                                                    setNewUserDialogVisable(true) :
-                                                    setNewUserDialogVisable(false)
-                                                toggleModal()
-                                            }
-                                        }>
-                                            
-                                            <View style={styles.menuItem}>
-                                                <AntDesign name="adduser" size={30} color="#fff1e6" />
-                                                <Text style={styles.menuItemText}>Add New Patient</Text>
-                                            </View>
-                                        </TouchableOpacity>
-                                        <View style={styles.line} />
+                                        <View style={styles.line} /> */}
 
                                         <TouchableOpacity onPress={
                                             () => {
@@ -446,7 +445,7 @@ const styles = StyleSheet.create({
     menuItem: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginVertical: 10,
+        marginVertical: 15,
         paddingLeft: 20,
     },
     menuItemText: {

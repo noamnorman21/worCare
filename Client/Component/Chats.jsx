@@ -1,21 +1,21 @@
 import { View, Text, StyleSheet, Dimensions, Image, Alert, Modal, TouchableOpacity, ScrollView, Platform, SafeAreaView, ActivityIndicator } from 'react-native'
 import { useCallback, useState, useLayoutEffect } from 'react'
 import { auth, db } from '../config/firebase';
-import { GiftedChat, Bubble, Time, MessageImage } from 'react-native-gifted-chat';
+// import { GiftedChat, Bubble, Time, MessageImage } from 'react-native-gifted-chat';
 import { collection, addDoc, getDocs, getDoc, query, orderBy, onSnapshot, updateDoc, where, limit, doc, increment, deleteDoc } from 'firebase/firestore';
 import { useEffect } from 'react';
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import { useUserContext } from '../UserContext';
 import { Feather, Entypo, EvilIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import AddNewGroupChat from './ChatComponents/AddNewGroupChat';
-import { useFocusEffect } from '@react-navigation/native';
-import { InputToolbar, Actions } from 'react-native-gifted-chat';
-import * as ImagePicker from 'expo-image-picker';
+// import AddNewGroupChat from './ChatComponents/AddNewGroupChat';
+// import { useFocusEffect } from '@react-navigation/native';
+// import { InputToolbar, Actions } from 'react-native-gifted-chat';
+// import * as ImagePicker from 'expo-image-picker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { storage } from '../config/firebase';
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { TextInput } from 'react-native-paper';
+// import { storage } from '../config/firebase';
+// import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+// import { TextInput } from 'react-native-paper';
 import moment from 'moment';
 import { Searchbar } from 'react-native-paper';
 

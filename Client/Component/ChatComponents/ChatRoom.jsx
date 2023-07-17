@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useLayoutEffect } from 'react';
-import { View, Text, StyleSheet, Dimensions, Image, Alert, Modal, TouchableOpacity,Clipboard, ScrollView, Platform, SafeAreaView, KeyboardAvoidingView } from 'react-native'
+import { View, Text, StyleSheet, Dimensions, Image, Alert, Modal, TouchableOpacity, Clipboard, ScrollView, Platform, SafeAreaView, KeyboardAvoidingView } from 'react-native'
 import { GiftedChat, Bubble, Actions, InputToolbar, Time, MessageImage, LoadEarlier, Composer, Send, MessageText } from 'react-native-gifted-chat';
 import { Ionicons, FontAwesome, Feather } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
@@ -211,7 +211,7 @@ export default function ChatRoom({ route, navigation }) {
       translatedText: translatedText
     }
     setMessages(previousMessages => GiftedChat.append(previousMessages, [newMessage]));
-    const { _id, createdAt, text, user, image} = newMessage
+    const { _id, createdAt, text, user, image } = newMessage
     addDoc(collection(db, route.params.name), { _id, createdAt, text, user, image, translatedText });
     console.log("new message added to db")
     setPicPreviewModal(false);

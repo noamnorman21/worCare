@@ -6,29 +6,32 @@ import { AddBtn, NewTaskModal } from './HelpComponents/AddNewTask';
 import { Fontisto, FontAwesome5 } from '@expo/vector-icons';
 import { Agenda, CalendarProvider } from 'react-native-calendars';
 import moment from 'moment';
-import { useFocusEffect, useIsFocused,StackActions } from '@react-navigation/native';
+import { useFocusEffect, useIsFocused, StackActions } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
-export default function Home({navigation}) {
+export default function Home({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
-  const { allPublicTasks, allPrivateTasks, holidays, logOutFireBase} = useUserContext();
+  const { allPublicTasks, allPrivateTasks, holidays, logOutFireBase, userContext } = useUserContext();
   const isFocused = useIsFocused();
+  const firstName = userContext.FirstName;
   useEffect(() => {
   }, [allPrivateTasks, allPublicTasks, holidays]);
 
   useFocusEffect(
     useCallback(() => {
       const onBackPress = () => {
-        Alert.alert( 'Exit App', 'Do you want to exit?', [
+        Alert.alert('Exit App', 'Do you want to exit?', [
           { text: 'No', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
-          { text: 'Yes', onPress: () => {
-          AsyncStorage.removeItem("user");
-          AsyncStorage.removeItem("userData");
-          logOutFireBase()
-          navigation.popToTop()}},
+          {
+            text: 'Yes', onPress: () => {
+              AsyncStorage.removeItem("user");
+              AsyncStorage.removeItem("userData");
+              logOutFireBase()
+              navigation.popToTop()
+            }
+          },
         ], { cancelable: false });
         return true;
       };
@@ -97,6 +100,10 @@ export default function Home({navigation}) {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.calendarContainer}>
+        {/* <View>
+          <Text style={styles.title}>Hey, {firstName}!</Text>
+          <Text style={styles.subtitle}>Welcome Back</Text>
+        </View> */}
         <CalendarProvider>
           <Agenda
             futureScrollRange={12}
@@ -154,7 +161,7 @@ export default function Home({navigation}) {
       <View style={styles.addBtnView}>
         <AddBtn onPress={handleAddBtnPress} />
       </View>
-      <NewTaskModal isVisible={modalVisible} onClose={handleModalClose}  cancel={()=>{ setModalVisible(false)}} />
+      <NewTaskModal isVisible={modalVisible} onClose={handleModalClose} cancel={() => { setModalVisible(false) }} />
     </SafeAreaView >
   );
 }
@@ -212,6 +219,21 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     width: 'auto',
   },
+  // title: {
+  //   fontSize: 24,
+  //   fontFamily: 'Urbanist-SemiBold',
+  //   textAlign: 'center',
+  //   color: '#000',
+  //   marginLeft: 20,
+  //   marginVertical: 5,
+  // },
+  // subtitle: {
+  //   fontSize: 18,
+  //   fontFamily: 'Urbanist-Regular',
+  //   textAlign: 'center',
+  //   color: '#000',
+  //   marginLeft: 20,
+  // },
   itemTitleTxt: {
     fontSize: 18,
     fontFamily: 'Urbanist-SemiBold',

@@ -7,19 +7,17 @@ import moment from 'moment';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import HobbiesJSON from '../SignUpComponents/User/Hobbies.json';
 import LimitationsJSON from '../SignUpComponents/User/Limitations.json';
-import { useFocusEffect } from '@react-navigation/native';
 const Tab = createMaterialTopTabNavigator();
-const BUBBLE_SIZE = 100;
+const BUBBLE_SIZE = 125;
 const CONTAINER_PADDING = 10;
 const ScreenWidth = Dimensions.get('window').width;
 const ScreenHeight = Dimensions.get('window').height;
 
-export default function PatientProfile({navigation}) {
+export default function PatientProfile({ navigation }) {
     const { userContext, updateHobbiesAndLimitations, patientHL } = useUserContext();
     const [saving, setSaving] = useState(false);
     const patientData = userContext.patientData;
     const [hobbiesAndLimitations, setHobbiesAndLimitations] = useState(userContext.patientHL);
-    const [newData, setNewData] = useState(userContext.patientHL);
     const birthDate = moment(patientData.DateOfBirth).format('DD/MM/YYYY');
     const [hobbieFilter, setHobbieFilter] = useState('TVShow');
     const [limitFilter, setLimitFilter] = useState('allergies');
@@ -43,22 +41,19 @@ export default function PatientProfile({navigation}) {
             let limitArr = [];
             for (let key in hobbiesArr) {
                 if (hobbiesAndLimitations[0][`${hobbiesArr[key].key}`]) {
-                    hobArr.push({[`${hobbiesArr[key].key}`] : hobbiesAndLimitations[0][`${hobbiesArr[key].key}`]});
+                    hobArr.push({ [`${hobbiesArr[key].key}`]: hobbiesAndLimitations[0][`${hobbiesArr[key].key}`] });
                 }
             }
             for (let key in limitationsArr) {
                 if (hobbiesAndLimitations[0][`${limitationsArr[key].key}`]) {
-                    limitArr.push({[`${limitationsArr[key].key}`]:hobbiesAndLimitations[0][`${limitationsArr[key].key}`]});
+                    limitArr.push({ [`${limitationsArr[key].key}`]: hobbiesAndLimitations[0][`${limitationsArr[key].key}`] });
                 }
             }
             setHobbies(hobArr);
             setLimitations(limitArr);
-            }
-        
+        }
+
     }, []);
-
-
-
 
     useEffect(() => {
         if (saving) {
@@ -101,6 +96,11 @@ export default function PatientProfile({navigation}) {
             label: 'Afternoon Nap',
         },
         {
+            key: 'nightSleep',
+            icon: <MaterialCommunityIcons name="sleep" size={16} color="#548Dff" />,
+            label: 'Night Sleep',
+        },
+        {
             key: 'books',
             icon: <Feather name="book-open" size={16} color="#548Dff" />,
             label: 'Books',
@@ -126,11 +126,6 @@ export default function PatientProfile({navigation}) {
             label: 'Music',
         },
         {
-            key: 'otherH',
-            icon: <MaterialCommunityIcons name="human-handsup" size={16} color="#548Dff" />,
-            label: 'Other Hobbies',
-        },
-        {
             key: 'radioChannel',
             icon: <Feather name="radio" size={16} color="#548Dff" />,
             label: 'Radio Channel',
@@ -139,6 +134,11 @@ export default function PatientProfile({navigation}) {
             key: 'specialHabits',
             icon: <MaterialCommunityIcons name="human-handsup" size={16} color="#548Dff" />,
             label: 'Special Habits',
+        },
+        {
+            key: 'otherH',
+            icon: <MaterialCommunityIcons name="human-handsup" size={16} color="#548Dff" />,
+            label: 'Other Hobbies',
         },
     ];
 
@@ -152,11 +152,6 @@ export default function PatientProfile({navigation}) {
             key: 'bathRoutine',
             icon: <MaterialCommunityIcons name="bathtub" size={16} color="#548Dff" />,
             label: 'Bath Routine',
-        },
-        {
-            key: 'nightSleep',
-            icon: <MaterialCommunityIcons name="sleep" size={16} color="#548Dff" />,
-            label: 'Night Sleep',
         },
         {
             key: 'physicalAbilities',
@@ -180,15 +175,13 @@ export default function PatientProfile({navigation}) {
         },
     ];
 
-
-
     const HobbiesScreen = () => {
         const [selectedHobbies, setSelectedHobby] = useState(hobbieFilter);
         const [arr, setArr] = useState([]);
         const [newHobbiesAndLimitations, setNewHobbiesAndLimitations] = useState(hobbiesAndLimitations);
         const [text, setText] = useState('');
-        const {userNewHobbiesAndLimitations, setUserNewHobbiesAndLimitations} = useUserContext();
-        
+        const { userNewHobbiesAndLimitations, setUserNewHobbiesAndLimitations } = useUserContext();
+
         useEffect(() => {
             if (newHobbiesAndLimitations[0][selectedHobbies]) {
                 let arr = newHobbiesAndLimitations[0][selectedHobbies].split(",");
@@ -208,16 +201,14 @@ export default function PatientProfile({navigation}) {
 
         //partially works- its sets it and asves it, but re-renders the entier screen including the TopScroolView
         const handleHobbyToggle = (limitation) => {
-            let name=limitation.name || limitation
-            console.log("name",name)
+            let name = limitation.name || limitation
             if (newHobbiesAndLimitations[0][selectedHobbies]) {
-                let userArr= newHobbiesAndLimitations[0][selectedHobbies].split(",");
+                let userArr = newHobbiesAndLimitations[0][selectedHobbies].split(",");
                 let userArr2 = [];
                 userArr.map((item, index) => {
                     userArr2.push(item.trim());
                 })
                 if (newHobbiesAndLimitations[0][selectedHobbies].includes(name) || userArr2.includes(name)) {
-                    console.log("if 1")
                     let arr = newHobbiesAndLimitations[0][selectedHobbies].split(",");
                     let arr2 = [];
                     arr.map((item, index) => {
@@ -229,22 +220,15 @@ export default function PatientProfile({navigation}) {
                     setNewHobbiesAndLimitations([{ ...newHobbiesAndLimitations[0], [selectedHobbies]: str }]);
                 }
                 else {
-                    console.log("if 2")
-                    let arr= newHobbiesAndLimitations[0][selectedHobbies];
-                    arr+= ", " + name;
+                    let arr = newHobbiesAndLimitations[0][selectedHobbies];
+                    arr += ", " + name;
                     setNewHobbiesAndLimitations([{ ...newHobbiesAndLimitations[0], [selectedHobbies]: arr }]);
                 }
             }
             else {
-                console.log("else")
                 setNewHobbiesAndLimitations([{ ...newHobbiesAndLimitations[0], [selectedHobbies]: name }]);
             }
         };
-
-        // now when we exit the screen it saves the hobbies and limitations in the main component of the patient profile
-        //plese check if it works for you
-        //get the current new hobbies and limitations from the userContext and update it with the new hobbies and limitations
-
 
         return (
             <View>
@@ -265,7 +249,13 @@ export default function PatientProfile({navigation}) {
                                     selectedHobbies === category.key && styles.selectedFilterButton,
                                 ]}
                             >
-                                <Text style={styles.filterText}>{category.label}</Text>
+                                <Text
+                                    style={[styles.filterText,
+                                    selectedHobbies === category.key && styles.selectedTxt
+                                    ]}
+                                >
+                                    {category.label}
+                                </Text>
                             </View>
                         </TouchableOpacity>
                     ))
@@ -300,7 +290,7 @@ export default function PatientProfile({navigation}) {
                                                     key={index}
                                                 >
                                                     <View key={index} style={styles.selectedCollageBubble}>
-                                                        <Text style={styles.selectedCollageText}>{hobby}</Text>
+                                                        <Text style={styles.selectedCollageText}>test:{hobby}</Text>
                                                     </View>
                                                 </TouchableOpacity>
                                             )
@@ -340,9 +330,9 @@ export default function PatientProfile({navigation}) {
                                             outlineColor='#E6EBF2'
                                             onChangeText={(text) => setText(text)}
                                         />
-                                        <TouchableOpacity onPress={()=> handleHobbyToggle(text)}
-                                        style={{backgroundColor:"#548DFF", height:54, justifyContent:'center',alignItems:'center', borderRadius:16}}>
-                                            <Text style={{color:'#fff', fontFamily:'Urbanist-Bold'}}>Save Hobbie</Text>
+                                        <TouchableOpacity onPress={() => handleHobbyToggle(text)}
+                                            style={{ backgroundColor: "#548DFF", height: 54, justifyContent: 'center', alignItems: 'center', borderRadius: 16 }}>
+                                            <Text style={{ color: '#fff', fontFamily: 'Urbanist-Bold' }}>Save Hobbie</Text>
                                         </TouchableOpacity>
                                     </View>
                                 }
@@ -361,9 +351,9 @@ export default function PatientProfile({navigation}) {
         const [text, setText] = useState('');
 
         const handleHobbyToggle = (limitation) => {
-            let name=limitation.name || limitation
+            let name = limitation.name || limitation
             if (newHobbiesAndLimitations[0][selectedFilter]) {
-                let userArr= newHobbiesAndLimitations[0][selectedFilter].split(",");
+                let userArr = newHobbiesAndLimitations[0][selectedFilter].split(",");
                 let userArr2 = [];
                 userArr.map((item, index) => {
                     userArr2.push(item.trim());
@@ -381,8 +371,8 @@ export default function PatientProfile({navigation}) {
                     setNewHobbiesAndLimitations([{ ...newHobbiesAndLimitations[0], [selectedFilter]: str }]);
                 }
                 else {
-                    let arr= newHobbiesAndLimitations[0][selectedFilter];
-                    arr+= ", " + name;
+                    let arr = newHobbiesAndLimitations[0][selectedFilter];
+                    arr += ", " + name;
                     setNewHobbiesAndLimitations([{ ...newHobbiesAndLimitations[0], [selectedFilter]: arr }]);
                 }
             }
@@ -419,7 +409,21 @@ export default function PatientProfile({navigation}) {
                             ]}
                             onPress={() => setSelectedFilter(filter.key)}
                         >
-                            <Text style={styles.filterButtonText}>{filter.key}</Text>
+                            <View
+                                key={index}
+                                style={[
+                                    styles.filterButton,
+                                    selectedFilter === filter.key && styles.selectedFilterButton,
+                                ]}
+                            >
+                                <Text
+                                    style={[
+                                        styles.filterText,
+                                        selectedFilter === filter.key && styles.selectedTxt,
+                                    ]}>
+                                    {filter.label}
+                                </Text>
+                            </View>
                         </TouchableOpacity>
                     ))}
                 </ScrollView>
@@ -490,11 +494,11 @@ export default function PatientProfile({navigation}) {
                                             placeholder="Type Something..."
                                             contentStyle={{ fontFamily: 'Urbanist-Regular' }}
                                             outlineColor='#E6EBF2'
-                                            onChangeText={(text) => {setText(text)}}
+                                            onChangeText={(text) => { setText(text) }}
                                         />
-                                         <TouchableOpacity onPress={()=> handleHobbyToggle(text)}
-                                        style={{backgroundColor:"#548DFF", height:54, justifyContent:'center',alignItems:'center', borderRadius:16}}>
-                                            <Text style={{color:'#fff', fontFamily:'Urbanist-Bold'}}>Save Limitation</Text>
+                                        <TouchableOpacity onPress={() => handleHobbyToggle(text)}
+                                            style={{ backgroundColor: "#548DFF", height: 54, justifyContent: 'center', alignItems: 'center', borderRadius: 16 }}>
+                                            <Text style={{ color: '#fff', fontFamily: 'Urbanist-Bold' }}>Save Limitation</Text>
                                         </TouchableOpacity>
                                     </View>
                                 }
@@ -525,6 +529,10 @@ export default function PatientProfile({navigation}) {
             <View style={styles.hobbiesAndLimitationsContainer}>
                 <Tab.Navigator
                     screenOptions={{
+                        tabBarStyle: {
+                            backgroundColor: '#fff',
+                            height: 60,
+                        },
                         tabBarPressColor: '#548DFF',
                         tabBarPressOpacity: 0.5,
                         tabBarLabelStyle: {
@@ -557,6 +565,7 @@ export default function PatientProfile({navigation}) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: '#FFF',
     },
     headerBlock: {
         justifyContent: 'center',
@@ -576,6 +585,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginVertical: 10,
         flex: 1,
+        backgroundColor: '#FFF',
     },
     headerTxtSM: {
         fontSize: 16,
@@ -593,34 +603,33 @@ const styles = StyleSheet.create({
     hobbiesAndLimitationsContainer: {
         flex: 4,
         backgroundColor: '#D0DFFF',
-        marginVertical: 10,
     },
     collageContainer: {
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'center',
         alignItems: 'center',
-        paddingBottom: Platform.OS === "android" && CONTAINER_PADDING * 3,
+        paddingBottom: CONTAINER_PADDING * 3,
+        backgroundColor: '#FFF',
     },
     collageBubble: {
         width: BUBBLE_SIZE,
-        height: BUBBLE_SIZE,
+        height: 54,
         alignItems: 'center',
         justifyContent: 'center',
-        margin: CONTAINER_PADDING / 4,
-        borderRadius: BUBBLE_SIZE / 2,
-        //backgroundColor: '#D0DFFF',
+        margin: CONTAINER_PADDING,
+        borderRadius: 16,
         backgroundColor: '#F5F8FF',
         borderColor: '#548DFF',
         borderWidth: 1.5,
     },
     selectedCollageBubble: {
         width: BUBBLE_SIZE,
-        height: BUBBLE_SIZE,
+        height: 54,
         alignItems: 'center',
         justifyContent: 'center',
-        margin: CONTAINER_PADDING / 4,
-        borderRadius: BUBBLE_SIZE / 2,
+        margin: CONTAINER_PADDING,
+        borderRadius: 16,
         backgroundColor: '#548DFF',
         borderColor: '#D0DFFF',
         borderWidth: 1.5,
@@ -642,37 +651,49 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         flexDirection: 'column',
+        backgroundColor: '#FFF',
     },
     collageItemContainer: {
         alignItems: 'center',
         justifyContent: 'center',
-        margin: 5,
+        // margin: 5,
     },
     filterContainer: {
         alignItems: 'center',
         paddingVertical: 10,
+        backgroundColor: '#D0DFFF',
     },
     filterButton: {
         paddingHorizontal: 15,
         height: 40,
-        marginHorizontal: 4,
+        marginHorizontal: 7,
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 20,
         backgroundColor: '#D0DFFF',
+        borderColor: '#548DFF',
+        borderBottomWidth: 0.75,
+        borderTopWidth: 0.75,
     },
     selectedFilterButton: {
-        backgroundColor: '#548DFF',
+        // backgroundColor: '#548DFF',
+ borderColor: '#fff',
+        // borderRadius: 16,
+        // borderWidth: 0.5,
     },
-    filterButtonText: {
+    filterText: {
         fontSize: 14,
         fontFamily: 'Urbanist-Medium',
-        color: '#fff',
+        color: '#548DFF',
     },
     selectedFilterTxt: {
         fontSize: 14,
         fontFamily: 'Urbanist-Medium',
-        color: '#D0DFFF',
+        color: '#548DFF',
+    },
+    selectedTxt: {
+        fontSize: 14,
+        fontFamily: 'Urbanist-SemiBold',
+        color: '#fff',
     },
     inputTxt: {
         fontFamily: 'Urbanist-Light',
