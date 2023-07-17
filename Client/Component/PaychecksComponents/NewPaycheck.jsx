@@ -8,6 +8,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { useUserContext } from '../../UserContext';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import DatePicker from 'react-native-datepicker';
+import { ActivityIndicator, Dialog } from 'react-native-paper';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
@@ -23,6 +24,7 @@ export default function NewPaycheck(props) {
     userId: userContext.userId,
     payCheckProofDocument: null,
   })
+  const [uploading, setUploading] = useState(false);
 
   const showMode = (currentMode) => {
     if (Platform.OS === 'android') {
@@ -103,6 +105,7 @@ export default function NewPaycheck(props) {
   };
 
   const sendToFirebase = async (image) => {
+    setUploading(true);
     // if the user didn't upload an image, we will use the default image
     if (PayCheck.payCheckProofDocument === null) {
       Alert.alert('Please select an image');
@@ -168,11 +171,14 @@ export default function NewPaycheck(props) {
       .then(
         (result) => {
           console.log("fetch POST= ", result);
+          setUploading(false);
           getPaychecks();
           props.cancel();
         },
         (error) => {
           console.log("err post=", error);
+          Alert.alert('Something went wrong', 'Sorry, there was an error uploading your paycheck. Please try again later.');
+          setUploading(false);
         });
   }
 
@@ -278,6 +284,12 @@ export default function NewPaycheck(props) {
           </View>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
+      <Dialog visible={uploading} style={styles.dialogStyle}>
+        <Dialog.Title style={{ backgroundColor: 'transparent', fontFamily:"Urbanist-Medium", fontSize:18 }}>This will only take a few seconds</Dialog.Title>
+        <Dialog.Content>
+          <ActivityIndicator size="large" color="#548DFF" />
+        </Dialog.Content>
+      </Dialog>
     </SafeAreaView>
   );
 }

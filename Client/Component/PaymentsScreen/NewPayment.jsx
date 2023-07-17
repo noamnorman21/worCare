@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, SafeAreaView, Alert, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, TextInput, SafeAreaView, Alert, StyleSheet, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native';
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { storage } from '../../config/firebase';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useUserContext } from '../../UserContext';
 import moment from "moment";
 import { AntDesign } from '@expo/vector-icons';
+import {Dialog} from 'react-native-paper';
 
 import * as Notifications from 'expo-notifications';
 
@@ -30,6 +31,8 @@ export default function NewPayment(props) {
     requestStatus: 'P',
     userId: userContext.userId // will be changed to current user id,
   })
+  const [uploading, setUploading] = useState(false);
+
 
 
   const openCamera = async () => {
@@ -94,6 +97,7 @@ export default function NewPayment(props) {
   };
 
   const sendToFirebase = async (image) => {
+    setUploading(true);
     // if the user didn't upload an image, we will use the default image
     if (payment.requestProofDocument === '' || payment.requestProofDocument === undefined) {
       return Alert.alert('Please upload an image');
@@ -186,12 +190,15 @@ export default function NewPayment(props) {
           }
           sendPushNotification(PushNotificationsData); // This line sends the notification, the function is in UserContext
           notificationsThatSent(pushDataForDB); // This line saves the notification in the DB, the function is in UserContext
+          setUploading(false);
           GetUserPending()
           props.cancel();
           console.log('expoToken2', pushToken2);         
         },
         (error) => {
           console.log("err post=", error);
+          Alert.alert('Error', 'Sorry, there was an error uploading your image. Please try again later.');
+          setUploading(false);
         });
   }
 
@@ -242,6 +249,12 @@ export default function NewPayment(props) {
           </View>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
+      <Dialog visible={uploading} style={styles.dialogStyle}>
+        <Dialog.Title style={{ backgroundColor: 'transparent', fontFamily:"Urbanist-Medium", fontSize:18 }}>This will only take a few seconds</Dialog.Title>
+        <Dialog.Content>
+          <ActivityIndicator size="large" color="#548DFF" />
+        </Dialog.Content>
+      </Dialog>
     </SafeAreaView>
   );
 }
