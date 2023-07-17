@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, Text, SafeAreaView, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Alert } from 'react-native';
+import { View, Text, SafeAreaView, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Alert, Platform } from 'react-native';
 import { Chip, TextInput } from 'react-native-paper';
 import { useUserContext } from '../../UserContext';
 import { Feather, Fontisto, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
@@ -7,6 +7,8 @@ import moment from 'moment';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import HobbiesJSON from '../SignUpComponents/User/Hobbies.json';
 import LimitationsJSON from '../SignUpComponents/User/Limitations.json';
+import DateTimePicker from '@react-native-community/datetimepicker';
+
 const Tab = createMaterialTopTabNavigator();
 const BUBBLE_SIZE = 125;
 const CONTAINER_PADDING = 10;
@@ -181,6 +183,7 @@ export default function PatientProfile({ navigation }) {
         const [newHobbiesAndLimitations, setNewHobbiesAndLimitations] = useState(hobbiesAndLimitations);
         const [text, setText] = useState('');
         const { userNewHobbiesAndLimitations, setUserNewHobbiesAndLimitations } = useUserContext();
+        const [datepickervisable, setDatepickervisable]= useState(false);
 
         useEffect(() => {
             if (newHobbiesAndLimitations[0][selectedHobbies]) {
@@ -197,6 +200,13 @@ export default function PatientProfile({ navigation }) {
             setHobbiesAndLimitations(newHobbiesAndLimitations);
             setHobbieFilter(selectedHobbies);
         }, [newHobbiesAndLimitations]);
+
+        const ChangeDateAndroid= (date) =>{
+            let currentTime = new Date(date.nativeEvent.timestamp).toTimeString().substring(0,5);
+            console.log(currentTime)
+            handleHobbyToggle(currentTime)
+            setDatepickervisable(false);
+        }
 
 
         //partially works- its sets it and asves it, but re-renders the entier screen including the TopScroolView
@@ -301,20 +311,40 @@ export default function PatientProfile({ navigation }) {
                             </View>
                             : <View>
                                 {newHobbiesAndLimitations[0][selectedHobbies] ?
-                                    arr.map((hobby, index) => {
-                                        return (
-                                            console.log("hobby", hobby),
-                                            <TouchableOpacity
-                                                style={[styles.collageItemContainer, styles.selectedCollageBubble]}
-                                                onPress={() => { console.log("pressed"); handleHobbyToggle(hobby) }}
-                                                key={index}
-                                            >
-                                                <View key={index} style={styles.selectedCollageBubble}>
-                                                    <Text style={styles.selectedCollageText}>{hobby}</Text>
-                                                </View>
-                                            </TouchableOpacity>
-                                        )
-                                    })
+                                <>
+                                        <View style={styles.collageContainer}>
+                                            {arr.map((hobby, index) => {
+                                                return (
+                                                    <TouchableOpacity
+                                                        style={[styles.collageItemContainer, styles.selectedCollageBubble]}
+                                                        onPress={() => { console.log("pressed"); handleHobbyToggle(hobby) }}
+                                                        key={index}
+                                                    >
+                                                        <View key={index} style={styles.selectedCollageBubble}>
+                                                            <Text style={styles.selectedCollageText}>{hobby}</Text>
+                                                        </View>
+                                                    </TouchableOpacity>
+                                                )
+                                            })}
+                                        </View>
+                                        {Platform.OS == "android" ?
+                                            <TouchableOpacity onPress={() => setDatepickervisable(true)}
+                                                style={{ backgroundColor: "#548DFF", height: 54, justifyContent: 'center', alignItems: 'center', borderRadius: 16 }}>
+                                                <Text style={{ color: '#fff', fontFamily: 'Urbanist-Bold' }}>Add Time</Text>
+                                            </TouchableOpacity> :
+                                            null}
+                                        {datepickervisable && (
+                                            <DateTimePicker
+                                                value={new Date()}
+                                                mode={"time"}
+                                                is24Hour={true}
+                                                placeholder="time"
+                                                minimumDate={new Date(2000, 0, 1)}
+                                                onChange={(date) => ChangeDateAndroid(date)}
+                                                display="spinner"
+                                            />
+                                        )}
+                                    </>
                                     :
                                     <View>
                                         <Text style={{ fontSize: 20, fontFamily: 'Urbanist-Medium', color: '#548DFF', textAlign: 'center', marginTop: 20 }}>No Hobbies Selected</Text>
