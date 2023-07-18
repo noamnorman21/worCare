@@ -767,7 +767,7 @@ const styles = StyleSheet.create({
   booksText: {
     fontSize: 15,
     color: '#000',
-    fontFamily: 'Urbanist',
+    fontFamily: 'Urbanist-Regular',
     justifyContent: 'center',
     alignItems: 'center',
   },
