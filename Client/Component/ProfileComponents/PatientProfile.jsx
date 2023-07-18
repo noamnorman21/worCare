@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { View, Text, SafeAreaView, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Alert, Platform } from 'react-native';
-import { Chip, TextInput } from 'react-native-paper';
+import { Chip, Dialog, TextInput,Paragraph,Button } from 'react-native-paper';
 import { useUserContext } from '../../UserContext';
-import { Feather, Fontisto, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import { Feather, Fontisto, MaterialCommunityIcons, MaterialIcons,Ionicons } from '@expo/vector-icons';
 import moment from 'moment';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import HobbiesJSON from '../SignUpComponents/User/Hobbies.json';
@@ -25,6 +25,7 @@ export default function PatientProfile({ navigation }) {
     const birthDate = moment(patientData.DateOfBirth).format('DD/MM/YYYY');
     const [hobbieFilter, setHobbieFilter] = useState('TVShow');
     const [limitFilter, setLimitFilter] = useState('allergies');
+    const [dialogVisable, setDialogVisable] = useState(false);
 
     // maybe we can use this to save the hobbies and limitations.
     //the page re-renders when we save the hobbies and limitations beacuse it saves in the PatiientProfile component 
@@ -34,9 +35,17 @@ export default function PatientProfile({ navigation }) {
     useEffect(() => {
         navigation.setOptions({
             headerRight: () => (
-                <TouchableOpacity onPress={() => { setSaving(true); setTimeout(() => { setSaving(false); }, 1000); }}>
-                    <Text style={{ fontSize: 16, fontFamily: 'Urbanist-Medium', color: '#548DFF', marginRight: 10 }}>Save</Text>
+                <TouchableOpacity onPress={() => { setDialogVisable(true) }} style={{marginRight:15}}>
+                {/*icon of three dots- more options */}
+                    <MaterialCommunityIcons name="dots-vertical" size={28} color="black" />
                 </TouchableOpacity>
+            ),
+            headerLeft: () => (
+                <View style={styles.headerLeft}>
+                <TouchableOpacity onPress={()=>setSaving(true)}>
+                    <Ionicons name="chevron-back" size={28} color="black" />
+                </TouchableOpacity>
+            </View>
             ),
         });
 
@@ -68,12 +77,11 @@ export default function PatientProfile({ navigation }) {
                 [
                     {
                         text: "Cancel",
-                        onPress: () => { setSaving(false); },
+                        onPress: () => { setSaving(false); navigation.goBack()},
                         style: "cancel"
                     },
                     {
                         text: "OK", onPress: () => {
-                            console.log("saving...");
                             let hobbiesAndLimitationsArr = hobbiesAndLimitations[0];
                             // add patient id to the object
                             hobbiesAndLimitationsArr.patientId = patientData.patientId;
@@ -205,19 +213,15 @@ export default function PatientProfile({ navigation }) {
 
         const onTimeChangeAndroid = (date) => {
             setDatepickervisable(false);
-            console.log(date)
             if (date.type == "set") {
                 let currentTime = new Date(date.nativeEvent.timestamp).toTimeString().substring(0, 5);
-                console.log(currentTime)
                 setNewHobbiesAndLimitations([{ ...newHobbiesAndLimitations[0], [selectedHobbies]: currentTime }]);
             }
         }
 
         const onTimeChangeIos = (value) => {
-            console.log(value)
             if (value) {
                 let currentTime = new Date(value).toTimeString().substring(0, 5);
-                console.log(currentTime)
                 setNewHobbiesAndLimitations([{ ...newHobbiesAndLimitations[0], [selectedHobbies]: currentTime }]);
             }
         }
@@ -291,7 +295,7 @@ export default function PatientProfile({ navigation }) {
                                     return (
                                         <TouchableOpacity
                                             style={[styles.collageItemContainer, newHobbiesAndLimitations[0][selectedHobbies].includes(hobby.name) ? styles.selectedCollageBubble : null]}
-                                            onPress={() => { console.log("pressed"); handleHobbyToggle(hobby) }}
+                                            onPress={() => { handleHobbyToggle(hobby) }}
                                             key={index}
                                         >
                                             <View key={index} style={newHobbiesAndLimitations[0][selectedHobbies].includes(hobby.name) ? styles.selectecollageBubble : styles.collageBubble}>
@@ -308,7 +312,7 @@ export default function PatientProfile({ navigation }) {
                                             return (
                                                 <TouchableOpacity
                                                     style={[styles.collageItemContainer, styles.selectedCollageBubble]}
-                                                    onPress={() => { console.log("pressed"); handleHobbyToggle(hobby) }}
+                                                    onPress={() => { handleHobbyToggle(hobby) }}
                                                     key={index}
                                                 >
                                                     <View key={index} style={styles.selectedCollageBubble}>
@@ -326,10 +330,9 @@ export default function PatientProfile({ navigation }) {
                                     <>
                                         <View style={styles.collageContainer}>
                                             {selectedHobbies === 'nightSleep' || selectedHobbies === 'afternoonNap' ?
-
                                                 arr.map((hobby, index) => {
                                                     return (
-                                                        <View>
+                                                        <View key={index}>
                                                             {Platform.OS === 'android' ?
                                                                 <TouchableOpacity onPress={() => setDatepickervisable(true)}
                                                                     style={styles.TimePickerbubble}>
@@ -377,7 +380,7 @@ export default function PatientProfile({ navigation }) {
                                                     return (
                                                         <TouchableOpacity
                                                             style={[styles.collageItemContainer, styles.selectedCollageBubble]}
-                                                            onPress={() => { console.log("pressed"); handleHobbyToggle(hobby) }}
+                                                            onPress={() => { handleHobbyToggle(hobby) }}
                                                             key={index}
                                                         >
                                                             <View key={index} style={styles.selectedCollageBubble}>
@@ -496,7 +499,6 @@ export default function PatientProfile({ navigation }) {
                 userArr.map((item, index) => {
                     userArr2.push(item.trim());
                 })
-                console.log(userArr2);
                 if (newHobbiesAndLimitations[0][selectedFilter].includes(name) || userArr2.includes(name)) {
                     let arr = newHobbiesAndLimitations[0][selectedFilter].split(",");
                     let arr2 = [];
@@ -629,7 +631,7 @@ export default function PatientProfile({ navigation }) {
                             {newHobbiesAndLimitations[0][selectedFilter] ? (
                                 <View style={styles.collageContainer}>
                                 {arr.map((limitation, index) => (
-                                    <View>
+                                    <View key={index}>
                                         {selectedFilter === 'sensitivityToNoise' ?
                                     <TouchableOpacity
                                         style={[styles.collageItemContainer, styles.selectedCollageBubble]}
@@ -766,6 +768,27 @@ export default function PatientProfile({ navigation }) {
                     <Tab.Screen name="Limitations" component={LimitationsScreen} />
                 </Tab.Navigator>
             </View>
+            {/*dialog for unpair options */}
+            <Dialog visible={dialogVisable} onDismiss={()=>setDialogVisable(false)} style={styles.dialogStyle}>
+               <Dialog.Title style={styles.dialogTitle}>Pairing Options</Dialog.Title>
+                <Dialog.Content>
+                    <Paragraph style={styles.dialpgParagraph}>Do you want to add new Pairing or cancel pairing??</Paragraph>
+                </Dialog.Content>
+                <Dialog.Actions>
+                <Button labelStyle={styles.dialogTxt} onPress={() => {
+                    console.log("New pairing")        
+                    // will send to new pairing screen, send caregiver link and go back to main              
+                    }}>New Pairing</Button>
+                     <Button labelStyle={styles.dialogTxt} onPress={() => {
+                       console.log("cancel Pairing")          
+                       // will cancel pairing and go back to main, re-activate loginMethod/remove caregiver link(workerId in user Context)            
+                   }}>Cancel Pairing</Button>
+                   {/* <Button labelStyle={styles.dialogTxt} onPress={() => {                       
+                       console.log("Cancel actions")         
+
+                   }}>Cancel Actions</Button> */}
+                </Dialog.Actions>
+                </Dialog>
         </SafeAreaView>
     );
 }
@@ -930,5 +953,35 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 16
+    },
+    headerLeft: {
+        marginLeft: 15,
+    },
+    dialogStyle: {
+        backgroundColor: '#87AFFF',
+        alignContent: 'center',
+        alignItems: 'center',
+        borderRadius: 16,
+        borderColor: '#000',
+        borderWidth: 1.5,
+        padding: 10,
+    },
+    dialogTxt: {
+        fontFamily: 'Urbanist-SemiBold',
+        color: '#000',
+        borderRadius: 16,
+        borderColor: '#000',
+        borderWidth: 1.5,
+        padding: 10,
+    },
+    dialogTitle: {
+        fontFamily: 'Urbanist-SemiBold',
+        color: '#000',
+        fontSize: 24,
+    },
+    dialpgParagraph: {
+        color: "#000",
+        fontFamily: "Urbanist-Regular",
+        fontSize: 16
     },
 });
