@@ -8,6 +8,8 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import HobbiesJSON from '../SignUpComponents/User/Hobbies.json';
 import LimitationsJSON from '../SignUpComponents/User/Limitations.json';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import DatePicker from 'react-native-datepicker';
+
 
 const Tab = createMaterialTopTabNavigator();
 const BUBBLE_SIZE = 125;
@@ -201,18 +203,25 @@ export default function PatientProfile({ navigation }) {
             setHobbieFilter(selectedHobbies);
         }, [newHobbiesAndLimitations]);
 
-        const ChangeDateAndroid = (date) => {
+        const onTimeChangeAndroid = (date) => {
             setDatepickervisable(false);
             console.log(date)
             if (date.type == "set") {
                 let currentTime = new Date(date.nativeEvent.timestamp).toTimeString().substring(0, 5);
                 console.log(currentTime)
-                handleHobbyToggle(currentTime)
+                setNewHobbiesAndLimitations([{ ...newHobbiesAndLimitations[0], [selectedHobbies]: currentTime }]);
             }
         }
 
+        const onTimeChangeIos = (value) => {
+            console.log(value)
+            if (value) {
+                let currentTime = new Date(value).toTimeString().substring(0, 5);
+                console.log(currentTime)
+                setNewHobbiesAndLimitations([{ ...newHobbiesAndLimitations[0], [selectedHobbies]: currentTime }]);
+            }
+        }
 
-        //partially works- its sets it and asves it, but re-renders the entier screen including the TopScroolView
         const handleHobbyToggle = (limitation) => {
             let name = limitation.name || limitation
             if (newHobbiesAndLimitations[0][selectedHobbies]) {
@@ -316,26 +325,69 @@ export default function PatientProfile({ navigation }) {
                                 {newHobbiesAndLimitations[0][selectedHobbies] ?
                                     <>
                                         <View style={styles.collageContainer}>
-                                            {arr.map((hobby, index) => {
-                                                return (
-                                                    <TouchableOpacity
-                                                        style={[styles.collageItemContainer, styles.selectedCollageBubble]}
-                                                        onPress={() => { console.log("pressed"); handleHobbyToggle(hobby) }}
-                                                        key={index}
-                                                    >
-                                                        <View key={index} style={styles.selectedCollageBubble}>
-                                                            <Text style={styles.selectedCollageText}>{hobby}</Text>
+                                            {selectedHobbies === 'nightSleep' || selectedHobbies === 'afternoonNap' ?
+
+                                                arr.map((hobby, index) => {
+                                                    return (
+                                                        <View>
+                                                            {Platform.OS === 'android' ?
+                                                                <TouchableOpacity onPress={() => setDatepickervisable(true)}
+                                                                    style={styles.TimePickerbubble}>
+                                                                    <Text style={{ color: '#fff', fontFamily: 'Urbanist-Bold' }}>{hobby}</Text>
+                                                                </TouchableOpacity>
+                                                                :
+                                                                <DatePicker
+                                                                    useNativeDriver={'true'}
+                                                                    style={[styles.collageItemContainer, styles.TimePickerbubble]}
+                                                                    date={hobby}
+                                                                    mode="time"
+                                                                    placeholder="Add Time"
+                                                                    format="HH:mm"
+                                                                    is24Hour={true}
+                                                                    confirmBtnText="Confirm"
+                                                                    cancelBtnText="Cancel"
+                                                                    iconComponent={<MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#000" />}
+                                                                    showIcon={true}
+                                                                    customStyles={{
+                                                                        dateInput: {
+                                                                            borderWidth: 0,
+                                                                            alignItems: 'flex-start',
+                                                                            paddingLeft: 10,
+                                                                        },
+                                                                        placeholderText: {
+                                                                            color: '#9E9E9E',
+                                                                            fontSize: 16,
+                                                                            textAlign: 'left',
+                                                                            fontFamily: 'Urbanist-Light',
+                                                                        },
+                                                                        dateText: {
+                                                                            color: '#000',
+                                                                            fontSize: 16,
+                                                                            fontFamily: 'Urbanist-SemiBold',
+                                                                        },
+                                                                    }}
+                                                                    onDateChange={(value) => onTimeChangeIos(value)}
+                                                                />}
                                                         </View>
-                                                    </TouchableOpacity>
+                                                    )
+                                                })
+                                                :
+                                                arr.map((hobby, index) => {
+                                                    return (
+                                                        <TouchableOpacity
+                                                            style={[styles.collageItemContainer, styles.selectedCollageBubble]}
+                                                            onPress={() => { console.log("pressed"); handleHobbyToggle(hobby) }}
+                                                            key={index}
+                                                        >
+                                                            <View key={index} style={styles.selectedCollageBubble}>
+                                                                <Text style={styles.selectedCollageText}>{hobby}</Text>
+                                                            </View>
+                                                        </TouchableOpacity>
+                                                    )
+                                                }
                                                 )
-                                            })}
+                                            }
                                         </View>
-                                        {Platform.OS == "android" ?
-                                            <TouchableOpacity onPress={() => setDatepickervisable(true)}
-                                                style={{ backgroundColor: "#548DFF", height: 54, justifyContent: 'center', alignItems: 'center', borderRadius: 16 }}>
-                                                <Text style={{ color: '#fff', fontFamily: 'Urbanist-Bold' }}>Add Time</Text>
-                                            </TouchableOpacity> :
-                                            null}
                                         {datepickervisable && (
                                             <DateTimePicker
                                                 value={new Date()}
@@ -343,30 +395,81 @@ export default function PatientProfile({ navigation }) {
                                                 is24Hour={true}
                                                 placeholder="time"
                                                 minimumDate={new Date(2000, 0, 1)}
-                                                onChange={(date) => ChangeDateAndroid(date)}
+                                                onChange={(date) => onTimeChangeAndroid(date)}
                                                 display="default"
                                             />
                                         )}
                                     </>
                                     :
                                     <View>
-                                        <Text style={{ fontSize: 20, fontFamily: 'Urbanist-Medium', color: '#548DFF', textAlign: 'center', marginTop: 20 }}>No Hobbies Selected</Text>
-                                        <TextInput
-                                            mode='outlined'
-                                            label={selectedHobbies}
-                                            placeholderTextColor='#548DFF'
-                                            style={styles.inputTxt}
-                                            outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
-                                            activeOutlineColor="#548DFF"
-                                            placeholder="Type Something..."
-                                            contentStyle={{ fontFamily: 'Urbanist-Regular' }}
-                                            outlineColor='#E6EBF2'
-                                            onChangeText={(text) => setText(text)}
-                                        />
-                                        <TouchableOpacity onPress={() => handleHobbyToggle(text)}
-                                            style={{ backgroundColor: "#548DFF", height: 54, justifyContent: 'center', alignItems: 'center', borderRadius: 16 }}>
-                                            <Text style={{ color: '#fff', fontFamily: 'Urbanist-Bold' }}>Save Hobbie</Text>
-                                        </TouchableOpacity>
+                                        {selectedHobbies === 'nightSleep' || selectedHobbies === 'afternoonNap' ?
+                                            <>
+                                                {Platform.OS === 'android' ?
+                                                    <>
+                                                        <Text style={{ fontSize: 20, fontFamily: 'Urbanist-Medium', color: '#548DFF', textAlign: 'center', marginTop: 20 }}>No Time Selected</Text>
+                                                        <TouchableOpacity onPress={() => setDatepickervisable(true)}
+                                                            style={styles.TimePickerbubble}>
+                                                            <Text style={{ color: '#fff', fontFamily: 'Urbanist-Bold' }}>Add Time</Text>
+                                                        </TouchableOpacity>
+
+                                                    </>
+                                                    :
+                                                    <>
+                                                        <DatePicker
+                                                            useNativeDriver={'true'}
+                                                            style={[styles.collageItemContainer, styles.TimePickerbubble]}
+                                                            date={hobby}
+                                                            mode="time"
+                                                            placeholder="Add Time"
+                                                            format="HH:mm"
+                                                            is24Hour={true}
+                                                            confirmBtnText="Confirm"
+                                                            cancelBtnText="Cancel"
+                                                            iconComponent={<MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#000" />}
+                                                            showIcon={true}
+                                                            customStyles={{
+                                                                dateInput: {
+                                                                    borderWidth: 0,
+                                                                    alignItems: 'flex-start',
+                                                                    paddingLeft: 10,
+                                                                },
+                                                                placeholderText: {
+                                                                    color: '#9E9E9E',
+                                                                    fontSize: 16,
+                                                                    textAlign: 'left',
+                                                                    fontFamily: 'Urbanist-Light',
+                                                                },
+                                                                dateText: {
+                                                                    color: '#000',
+                                                                    fontSize: 16,
+                                                                    fontFamily: 'Urbanist-SemiBold',
+                                                                },
+                                                            }}
+                                                            onDateChange={(value) => onTimeChangeIos(value)}
+                                                        />
+
+                                                    </>}
+                                            </>
+                                            :
+                                            <>
+                                                <Text style={styles.noLimitationsText}>No Hobbies Selected</Text>
+                                                <TextInput
+                                                    mode='outlined'
+                                                    label={selectedHobbies}
+                                                    placeholderTextColor='#548DFF'
+                                                    style={styles.inputTxt}
+                                                    outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                                                    activeOutlineColor="#548DFF"
+                                                    placeholder="Type Something..."
+                                                    contentStyle={{ fontFamily: 'Urbanist-Regular' }}
+                                                    outlineColor='#E6EBF2'
+                                                    onChangeText={(text) => setText(text)}
+                                                />
+                                                <TouchableOpacity onPress={() => handleHobbyToggle(text)}
+                                                    style={styles.saveButton}>
+                                                    <Text style={styles.saveButtonText}>Save Hobbie</Text>
+                                                </TouchableOpacity></>
+                                        }
                                     </View>
                                 }
                             </View>
@@ -749,5 +852,35 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         width: ScreenWidth * 0.95,
         marginVertical: 10,
+    },
+    TimePickerbubble: {
+        marginTop: 10,
+        width: ScreenWidth * 0.5,
+        marginVertical: 7,
+        height: 55,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 16,
+        backgroundColor: '#548DFF',
+        borderColor: '#D0DFFF',
+        borderWidth: 1.5,
+    },
+    noLimitationsText: {
+        fontSize: 20,
+        fontFamily: 'Urbanist-Medium',
+        color: '#548DFF',
+        textAlign: 'center',
+        marginTop: 20
+    },
+    saveButtonText: {
+        color: '#fff',
+        fontFamily: 'Urbanist-Bold'
+    },
+    saveButton: {
+        backgroundColor: "#548DFF",
+        height: 54,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 16
     },
 });
