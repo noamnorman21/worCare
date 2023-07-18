@@ -336,6 +336,7 @@ export default function PatientProfile({ navigation }) {
                                                                     <Text style={{ color: '#fff', fontFamily: 'Urbanist-Bold' }}>{hobby}</Text>
                                                                 </TouchableOpacity>
                                                                 :
+                                                                // need to check for ios
                                                                 <DatePicker
                                                                     useNativeDriver={'true'}
                                                                     style={[styles.collageItemContainer, styles.TimePickerbubble]}
@@ -415,6 +416,7 @@ export default function PatientProfile({ navigation }) {
                                                     </>
                                                     :
                                                     <>
+                                                    {/*need to check for ios*/}
                                                         <DatePicker
                                                             useNativeDriver={'true'}
                                                             style={[styles.collageItemContainer, styles.TimePickerbubble]}
