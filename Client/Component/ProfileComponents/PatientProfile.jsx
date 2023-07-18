@@ -627,7 +627,30 @@ export default function PatientProfile({ navigation }) {
                     ) : (
                         <View>
                             {newHobbiesAndLimitations[0][selectedFilter] ? (
-                                arr.map((limitation, index) => (
+                                <View style={styles.collageContainer}>
+                                {arr.map((limitation, index) => (
+                                    <View>
+                                        {selectedFilter === 'sensitivityToNoise' ?
+                                    <TouchableOpacity
+                                        style={[styles.collageItemContainer, styles.selectedCollageBubble]}
+                                        onPress={() => {
+                                            let str=''
+                                            if (newHobbiesAndLimitations[0][selectedFilter]=="Yes") {
+                                                str="No"
+                                            }
+                                            else{
+                                                str="Yes"
+                                            }
+                                            console.log("pressed sensitivityToNoise");
+                                            setNewHobbiesAndLimitations([{ ...newHobbiesAndLimitations[0], [selectedFilter]: str }]);
+                                        }}
+                                        key={index}
+                                    >
+                                        <View style={styles.selectedCollageBubble}>
+                                            <Text style={styles.selectedCollageText}>{limitation}</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                    :
                                     <TouchableOpacity
                                         style={[styles.collageItemContainer, styles.selectedCollageBubble]}
                                         onPress={() => {
@@ -638,9 +661,32 @@ export default function PatientProfile({ navigation }) {
                                     >
                                         <View style={styles.selectedCollageBubble}>
                                             <Text style={styles.selectedCollageText}>{limitation}</Text>
-                                        </View>
+                                            </View>
                                     </TouchableOpacity>
-                                ))
+                                    }
+                                    </View>
+                                ))}
+                                {selectedFilter=='otherL'&& <View>
+                                 <TextInput
+                                        mode="outlined"
+                                        label={selectedFilter}
+                                        placeholderTextColor="#548DFF"
+                                        style={styles.inputTxt}
+                                        outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                                        activeOutlineColor="#548DFF"
+                                        placeholder="Type Something..."
+                                        contentStyle={{ fontFamily: 'Urbanist-Regular' }}
+                                        outlineColor="#E6EBF2"
+                                        onChangeText={text => setText(text)}
+                                    />
+                                    <TouchableOpacity
+                                        onPress={() => handleHobbyToggle(text)}
+                                        style={styles.saveButton}
+                                    >
+                                        <Text style={styles.saveButtonText}>Save Limitation</Text>
+                                    </TouchableOpacity>
+                                </View>}
+                                </View>
                             ) : (
                                 <View>
                                     <Text style={styles.noLimitationsText}>No Limitations Selected</Text>
