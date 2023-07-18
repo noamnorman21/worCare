@@ -195,7 +195,7 @@ export default function ChatRoom({ route, navigation }) {
       translatedText = imageDescription;
     }
     else {
-      translatedText = await translateText(imageDescription, targetLanguage);
+      translatedText = await translateText(imageDescription, userLanguage);
     }
     //add new message to db
     const newMessage = {

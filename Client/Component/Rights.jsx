@@ -100,6 +100,7 @@ export default function Rights() {
     });
 
     const data = await apiResponse.json();
+    // gives error- undefined is not an object
     const answer = data.choices[0].text.trim();
     console.log(answer);
     if (answer.toLowerCase() === 'no') {
