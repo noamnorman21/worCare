@@ -326,6 +326,7 @@ export default function PatientProfile({ navigation }) {
                                 }
                             </View>
                             : <View>
+                                {/*if not in json, render from user array */}
                                 {newHobbiesAndLimitations[0][selectedHobbies] ?
                                     <>
                                         <View style={styles.collageContainer}>
@@ -405,6 +406,7 @@ export default function PatientProfile({ navigation }) {
                                         )}
                                     </>
                                     :
+                                    //if not in json and not in user array, render text input ir timepicker- based on the hobbie
                                     <View>
                                         {selectedHobbies === 'nightSleep' || selectedHobbies === 'afternoonNap' ?
                                             <>
