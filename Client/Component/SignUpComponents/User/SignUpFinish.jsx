@@ -32,10 +32,10 @@ export default function SignUpFinish({ navigation, route }) {
 
     const getIdToken = async () => {
         // if (Platform.OS === 'android') 
-            const currentToken = (await Notifications.getExpoPushTokenAsync()).data;
-            console.log(currentToken);
-            setExpoPushToken(currentToken);
-            return currentToken;
+        const currentToken = (await Notifications.getExpoPushTokenAsync()).data;
+        console.log(currentToken);
+        setExpoPushToken(currentToken);
+        return currentToken;
         // }
         // else {
         //     registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
@@ -54,7 +54,6 @@ export default function SignUpFinish({ navigation, route }) {
         }
         )();
     }, []);
-
 
     const btnSendSMS = async () => {
         if (isAvailable) {
@@ -122,8 +121,8 @@ export default function SignUpFinish({ navigation, route }) {
     // InsertUser
     const createNewUserInDB = async () => {
         let user = route.params.tblUser
-        let res= await getIdToken();
-        if (res == null||res==""||res==undefined||res=='') {
+        let res = await getIdToken();
+        if (res == null || res == "" || res == undefined || res == '') {
             user.pushToken = expoPushToken;
         }
         else {
@@ -205,10 +204,6 @@ export default function SignUpFinish({ navigation, route }) {
 
     // InsertPatientHobbiesAndLimitations
     const addHobbiesAndLimitations = async () => {
-
-        console.log(route.params.HobbiesAndLimitationsData)
-        console.log("from share: ", fromShare)
-
         fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/InsertPatientHobbiesAndLimitations', { //send the user data to the DB
             method: 'POST',
             headers: {
@@ -307,7 +302,6 @@ export default function SignUpFinish({ navigation, route }) {
                                 </TouchableOpacity>
                                 <TouchableOpacity
                                     disabled={contactUser == '' ? true : false}
-
                                     onPress={btnSendSMS}
                                     style={[styles.modalBtn2, contactUser == '' && styles.modalBtn2disabled]}>
                                     <Text style={styles.modalBtnText2}>Send Invitation</Text>

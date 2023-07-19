@@ -1,51 +1,77 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, Text, SafeAreaView, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Alert, Platform } from 'react-native';
-import { Chip, Dialog, TextInput,Paragraph,Button } from 'react-native-paper';
+import { View, Text, SafeAreaView, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Alert, Platform, Modal, Image } from 'react-native';
+import { Dialog, TextInput, Paragraph } from 'react-native-paper';
 import { useUserContext } from '../../UserContext';
-import { Feather, Fontisto, MaterialCommunityIcons, MaterialIcons,Ionicons } from '@expo/vector-icons';
+import { Feather, Fontisto, MaterialCommunityIcons, MaterialIcons, Ionicons } from '@expo/vector-icons';
 import moment from 'moment';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import HobbiesJSON from '../SignUpComponents/User/Hobbies.json';
 import LimitationsJSON from '../SignUpComponents/User/Limitations.json';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import DatePicker from 'react-native-datepicker';
-
-
+import { Overlay } from '@rneui/themed';
+import { Buffer } from 'buffer';
+import * as SMS from 'expo-sms';
+import * as Linking from 'expo-linking';
 const Tab = createMaterialTopTabNavigator();
-const BUBBLE_SIZE = 125;
-const CONTAINER_PADDING = 10;
 const ScreenWidth = Dimensions.get('window').width;
 const ScreenHeight = Dimensions.get('window').height;
 
 export default function PatientProfile({ navigation }) {
-    const { userContext, updateHobbiesAndLimitations, patientHL,unpair } = useUserContext();
+    const { userContext, updateHobbiesAndLimitations, patientHL, unpair } = useUserContext();
     const [saving, setSaving] = useState(false);
     const patientData = userContext.patientData;
     const [hobbiesAndLimitations, setHobbiesAndLimitations] = useState(userContext.patientHL);
     const birthDate = moment(patientData.DateOfBirth).format('DD/MM/YYYY');
     const [hobbieFilter, setHobbieFilter] = useState('TVShow');
     const [limitFilter, setLimitFilter] = useState('allergies');
-    const [dialogVisable, setDialogVisable] = useState(false);
-
-    // maybe we can use this to save the hobbies and limitations.
-    //the page re-renders when we save the hobbies and limitations beacuse it saves in the PatiientProfile component 
     const [hobbies, setHobbies] = useState([]);
     const [limitations, setLimitations] = useState([]);
+    const [menuVisible, setMenuVisible] = useState(false);
+    const [pairCode, setPairCode] = useState('');
+    const [contactUser, setContactUser] = useState('');
+    const [modalVisible, setModalVisible] = useState(false);
+    const [contactVisible, setContactVisible] = useState(false);
+    const [contactNumber, setContactNumber] = useState('');
+    const [isAvailable, setIsAvailable] = useState(false);
+    const [link, setLink] = useState('');
+    const [fromShare, setFromShare] = useState(false);
+    const [message, setMessage] = useState('');
+
+    const encryptPatientId = (patientId) => {
+        const encodedId = Buffer.from(patientId).toString('base64');
+        return encodedId;
+    };
+
+    const showDialog = () => {
+        setMenuVisible(true);
+    };
+
+    const hideDialog = () => {
+        setMenuVisible(false);
+    };
+
+    const showPair = () => {
+        setModalVisible(true);
+        hideDialog();
+    };
+    const hidePair = () => {
+        setModalVisible(false);
+    };
 
     useEffect(() => {
         navigation.setOptions({
             headerRight: () => (
-                <TouchableOpacity onPress={() => { setDialogVisable(true) }} style={{marginRight:15}}>
-                {/*icon of three dots- more options */}
-                    <MaterialCommunityIcons name="dots-vertical" size={28} color="black" />
+                <TouchableOpacity onPress={showDialog} style={{ marginRight: 15 }}>
+                    <MaterialCommunityIcons name="dots-vertical" size={28} color="gray" />
                 </TouchableOpacity>
             ),
             headerLeft: () => (
                 <View style={styles.headerLeft}>
-                <TouchableOpacity onPress={()=>setSaving(true)}>
-                    <Ionicons name="chevron-back" size={28} color="black" />
-                </TouchableOpacity>
-            </View>
+                    <TouchableOpacity onPress={() => setSaving(true)}>
+                        <Ionicons name="chevron-back" size={28} color="black" />
+                    </TouchableOpacity>
+                </View>
             ),
         });
 
@@ -77,7 +103,7 @@ export default function PatientProfile({ navigation }) {
                 [
                     {
                         text: "Cancel",
-                        onPress: () => { setSaving(false); navigation.goBack()},
+                        onPress: () => { setSaving(false); navigation.goBack() },
                         style: "cancel"
                     },
                     {
@@ -421,7 +447,7 @@ export default function PatientProfile({ navigation }) {
                                                     </>
                                                     :
                                                     <>
-                                                    {/*need to check for ios*/}
+                                                        {/*need to check for ios*/}
                                                         <DatePicker
                                                             useNativeDriver={'true'}
                                                             style={[styles.collageItemContainer, styles.TimePickerbubble]}
@@ -632,64 +658,64 @@ export default function PatientProfile({ navigation }) {
                         <View>
                             {newHobbiesAndLimitations[0][selectedFilter] ? (
                                 <View style={styles.collageContainer}>
-                                {arr.map((limitation, index) => (
-                                    <View key={index}>
-                                        {selectedFilter === 'sensitivityToNoise' ?
-                                    <TouchableOpacity
-                                        style={[styles.collageItemContainer, styles.selectedCollageBubble]}
-                                        onPress={() => {
-                                            let str=''
-                                            if (newHobbiesAndLimitations[0][selectedFilter]=="Yes") {
-                                                str="No"
+                                    {arr.map((limitation, index) => (
+                                        <View key={index}>
+                                            {selectedFilter === 'sensitivityToNoise' ?
+                                                <TouchableOpacity
+                                                    style={[styles.collageItemContainer, styles.selectedCollageBubble]}
+                                                    onPress={() => {
+                                                        let str = ''
+                                                        if (newHobbiesAndLimitations[0][selectedFilter] == "Yes") {
+                                                            str = "No"
+                                                        }
+                                                        else {
+                                                            str = "Yes"
+                                                        }
+                                                        console.log("pressed sensitivityToNoise");
+                                                        setNewHobbiesAndLimitations([{ ...newHobbiesAndLimitations[0], [selectedFilter]: str }]);
+                                                    }}
+                                                    key={index}
+                                                >
+                                                    <View style={styles.selectedCollageBubble}>
+                                                        <Text style={styles.selectedCollageText}>{limitation}</Text>
+                                                    </View>
+                                                </TouchableOpacity>
+                                                :
+                                                <TouchableOpacity
+                                                    style={[styles.collageItemContainer, styles.selectedCollageBubble]}
+                                                    onPress={() => {
+                                                        console.log("pressed");
+                                                        handleHobbyToggle(limitation);
+                                                    }}
+                                                    key={index}
+                                                >
+                                                    <View style={styles.selectedCollageBubble}>
+                                                        <Text style={styles.selectedCollageText}>{limitation}</Text>
+                                                    </View>
+                                                </TouchableOpacity>
                                             }
-                                            else{
-                                                str="Yes"
-                                            }
-                                            console.log("pressed sensitivityToNoise");
-                                            setNewHobbiesAndLimitations([{ ...newHobbiesAndLimitations[0], [selectedFilter]: str }]);
-                                        }}
-                                        key={index}
-                                    >
-                                        <View style={styles.selectedCollageBubble}>
-                                            <Text style={styles.selectedCollageText}>{limitation}</Text>
                                         </View>
-                                    </TouchableOpacity>
-                                    :
-                                    <TouchableOpacity
-                                        style={[styles.collageItemContainer, styles.selectedCollageBubble]}
-                                        onPress={() => {
-                                            console.log("pressed");
-                                            handleHobbyToggle(limitation);
-                                        }}
-                                        key={index}
-                                    >
-                                        <View style={styles.selectedCollageBubble}>
-                                            <Text style={styles.selectedCollageText}>{limitation}</Text>
-                                            </View>
-                                    </TouchableOpacity>
-                                    }
-                                    </View>
-                                ))}
-                                {selectedFilter=='otherL'&& <View>
-                                 <TextInput
-                                        mode="outlined"
-                                        label={selectedFilter}
-                                        placeholderTextColor="#548DFF"
-                                        style={styles.inputTxt}
-                                        outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
-                                        activeOutlineColor="#548DFF"
-                                        placeholder="Type Something..."
-                                        contentStyle={{ fontFamily: 'Urbanist-Regular' }}
-                                        outlineColor="#E6EBF2"
-                                        onChangeText={text => setText(text)}
-                                    />
-                                    <TouchableOpacity
-                                        onPress={() => handleHobbyToggle(text)}
-                                        style={styles.saveButton}
-                                    >
-                                        <Text style={styles.saveButtonText}>Save Limitation</Text>
-                                    </TouchableOpacity>
-                                </View>}
+                                    ))}
+                                    {selectedFilter == 'otherL' && <View>
+                                        <TextInput
+                                            mode="outlined"
+                                            label={selectedFilter}
+                                            placeholderTextColor="#548DFF"
+                                            style={styles.inputTxt}
+                                            outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                                            activeOutlineColor="#548DFF"
+                                            placeholder="Type Something..."
+                                            contentStyle={{ fontFamily: 'Urbanist-Regular' }}
+                                            outlineColor="#E6EBF2"
+                                            onChangeText={text => setText(text)}
+                                        />
+                                        <TouchableOpacity
+                                            onPress={() => handleHobbyToggle(text)}
+                                            style={styles.saveButton}
+                                        >
+                                            <Text style={styles.saveButtonText}>Save Limitation</Text>
+                                        </TouchableOpacity>
+                                    </View>}
                                 </View>
                             ) : (
                                 <View>
@@ -721,6 +747,69 @@ export default function PatientProfile({ navigation }) {
             </View >
         );
     };
+
+    const changeVisible = () => {
+        setModalVisible(false);
+        setContactVisible(true);
+    }
+
+    const sendVisible = () => {
+        setContactVisible(false);
+        setModalVisible(true);
+    }
+
+    const sendContact = (name, number) => {
+        if (name === '' || number === '') {
+            Alert.alert('Please fill all the fields');
+        }
+        // if name is only one word without space
+        if (name.indexOf(' ') === -1) {
+            console.log("1:", name);
+            setContactUser(name);
+        }
+        else {
+            console.log("2:", name.substring(0, name.indexOf(' ')));
+            name = name.substring(0, name.indexOf(' '));
+            setContactUser(name);
+        }
+        setContactNumber(number);
+        setMessage("Hello " + name + ",\n\n" +
+            "I would like to invite you to join worCare app.\n" +
+            "Please click on the link below to download the app and join worCare.\n\n" +
+            link +
+            "\n\n" + "Thank you,\n" + "worCare Team."
+        );
+    }
+
+    const btnSendSMS = async () => {
+        if (isAvailable) {
+            // do your SMS stuff here
+            const { result } = await SMS.sendSMSAsync([contactNumber], message);
+            if (result === 'sent') {
+                // Alert.alert('Invitation sent \n\n We will notify you when your friend will join');
+                setFromShare(true);
+                Alert.alert('Invitation sent', 'We will notify you when your friend will join', [
+                    {
+                        text: "OK",
+                        onPress: () => { setModalVisible(false), createNewUserInDB() },
+                        style: "cancel"
+                    },
+                ]);
+            }
+            else {
+                Alert.alert('Invitation Failed', 'Please try again', [
+                    {
+                        text: "OK",
+                        style: "cancel"
+                    },
+                ]);
+            }
+            // Alert.alert(result);
+        } else {
+            // misfortune... there's no SMS available on this device
+            Alert.alert('SMS is not available on this device');
+        }
+    }
 
     return (
         <SafeAreaView style={styles.container}>
@@ -770,33 +859,75 @@ export default function PatientProfile({ navigation }) {
                     <Tab.Screen name="Limitations" component={LimitationsScreen} />
                 </Tab.Navigator>
             </View>
-            {/*dialog for unpair options */}
-            <Dialog visible={dialogVisable} onDismiss={()=>setDialogVisable(false)} style={styles.dialogStyle}>
-               <Dialog.Title style={styles.dialogTitle}>Pairing Options</Dialog.Title>
-                <Dialog.Content>
-                    <Paragraph style={styles.dialpgParagraph}>Do you want to add new Pairing or cancel pairing??</Paragraph>
-                </Dialog.Content>
-                <Dialog.Actions style={{ justifyContent:'center'}}>
-                <Button labelStyle={styles.dialogTxt} onPress={() => {
-                    console.log("New pairing")        
-                    // will send to new pairing screen, send caregiver link and go back to main              
-                    }}>New Pair</Button>
-                     <Button style={{width:60}} labelStyle={styles.dialogTxt} onPress={() => {
-                       console.log("Delete Pairing") 
-                       unpair();  
-                       setDialogVisable(false);
-                       navigation.goBack();   
-                       // will cancel pairing and go back to main, re-activate loginMethod/remove caregiver link(workerId in user Context)            
-                   }}>Delete Pair</Button>
-                   {/* <Button labelStyle={styles.dialogTxt} onPress={() => {                       
-                       console.log("Cancel actions")         
 
-                   }}>Cancel Actions</Button> */}
-                </Dialog.Actions>
-                </Dialog>
-        </SafeAreaView>
+            <Modal visible={menuVisible} transparent={true} animationType="fade">
+                <TouchableOpacity style={styles.menuOverlay} onPress={hideDialog}>
+                    <View style={styles.menuContent}>
+                        <TouchableOpacity style={styles.menuOption} onPress={showPair}>
+                            <Text style={styles.menuOptionText}>Add New Pairing</Text>
+                        </TouchableOpacity>
+                        <View style={styles.line} />
+                        <TouchableOpacity
+                            style={styles.menuOption}
+                            onPress={() => {
+                                unpair();
+                                hideDialog;
+                            }}>
+                            <Text style={[styles.menuOptionText, { color: '#FF3C3C' }]}>
+                                Unpair This Patient
+                            </Text>
+                        </TouchableOpacity>
+                        <View style={styles.line} />
+                        <TouchableOpacity style={styles.menuOption} onPress={hideDialog}>
+                            <Text style={[styles.menuOptionText, { color: '#548DFF' }]}>No Thanks</Text>
+                        </TouchableOpacity>
+                    </View>
+                </TouchableOpacity>
+            </Modal>
+
+            <Overlay
+                isVisible={modalVisible}
+                onBackdropPress={hidePair}
+                overlayStyle={styles.modalOverlay}>
+                <View style={styles.modalContent}>
+                    {/* <View style={styles.modalContainer}> */}
+                    <View style={styles.modalHeader}>
+                        <Image source={require('../../images/logo_New_Small.png')} style={styles.image} />
+                        <Text style={styles.modalText}>Invite a Caregiver</Text>
+                        <Text style={styles.modalSmallText}>
+                            Please invite a caregiver.
+                        </Text>
+                        <Text style={styles.modalSmallText}>
+                            Once they have joined, you will both be connected.
+                        </Text>
+                    </View>
+                    <View style={styles.modalHeader}>
+                        <TouchableOpacity style={styles.modalBtn1}
+                            onPress={changeVisible}
+                        >
+                            <Text style={styles.modalBtnText}>
+                                {/* if contactUser different then '' write Choose Caregiver Contact */}
+                                {contactUser == '' ? 'Choose Caregiver Contact' : contactUser}
+                            </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            disabled={contactUser == '' ? true : false}
+                            onPress={btnSendSMS}
+                            style={[styles.modalBtn2, contactUser == '' && styles.modalBtn2disabled]}>
+                            <Text style={styles.modalBtnText2}>Send Invitation</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => setModalVisible(false)}>
+                            <Text style={styles.modalBtnText3}>Done</Text>
+                        </TouchableOpacity>
+                    </View>
+                    {/* </View> */}
+                </View>
+            </Overlay>
+
+        </SafeAreaView >
     );
 }
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -889,13 +1020,15 @@ const styles = StyleSheet.create({
     filterContainer: {
         alignItems: 'center',
         justifyContent: 'center',
-        height: 60,
+        height: 70,
+        paddingTop: 5,
+        paddingBottom: 10,
         backgroundColor: '#D0DFFF',
     },
     filterButton: {
-        paddingHorizontal: 15,
-        height: 40,
-        marginHorizontal: 7,
+        height: 35,
+        width: 100,
+        marginHorizontal: 10,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#D0DFFF',
@@ -962,32 +1095,113 @@ const styles = StyleSheet.create({
     headerLeft: {
         marginLeft: 15,
     },
-    dialogStyle: {
-        backgroundColor: '#87AFFF',
-        alignContent: 'center',
+    menuOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+    },
+    menuContent: {
+        backgroundColor: '#fff',
+        borderTopRightRadius: 25,
+        borderTopLeftRadius: 25,
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '30%',
+    },
+    menuOption: {
+        paddingVertical: 10,
+        marginVertical: 10,
+        width: '100%',
+    },
+    menuOptionText: {
+        fontSize: 20,
+        color: '#707070',
+        fontFamily: 'Urbanist-SemiBold',
+        textAlign: 'center',
+    },
+    line: {
+        borderBottomWidth: 1.5,
+        borderBottomColor: '#E6EBF2',
+        width: '100%',
+    },
+    imgContainer: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    modalOverlay: {
+        flex: 0.55,
         alignItems: 'center',
         borderRadius: 16,
-        borderColor: '#000',
-        borderWidth: 1.5,
-        padding: 10,
+        justifyContent: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.75)', // semi-transparent black color
     },
-    dialogTxt: {
-        fontFamily: 'Urbanist-SemiBold',
-        color: '#000',
-        borderRadius: 16,
-        borderColor: '#000',
-        borderWidth: 1.5,
-        padding: 10,
-        width: 100,
-    },
-    dialogTitle: {
-        fontFamily: 'Urbanist-SemiBold',
-        color: '#000',
+    modalText: {
+        color: '#fff',
+        fontFamily: 'Urbanist-Bold',
         fontSize: 24,
+        textAlign: 'center',
+        paddingTop: 20,
     },
-    dialpgParagraph: {
-        color: "#000",
-        fontFamily: "Urbanist-Regular",
-        fontSize: 16
+    modalSmallText: {
+        color: '#9E9E9E',
+        fontFamily: 'Urbanist',
+        fontSize: 13,
+        textAlign: 'center',
+        marginTop: 7,
     },
+    image: {
+        width: 70,
+        height: 70,
+        resizeMode: 'contain',
+    },
+    modalBtn1: {
+        width: ScreenWidth * 0.75,
+        height: 54,
+        backgroundColor: '#000000B2',
+        alignItems: 'center',
+        borderColor: '#548DFF',
+        borderWidth: 1.5,
+        justifyContent: 'center',
+        borderRadius: 16,
+        marginVertical: 20,
+    },
+    modalBtn2: {
+        width: ScreenWidth * 0.75,
+        height: 54,
+        backgroundColor: '#F5F8FF',
+        borderColor: '#548DFF',
+        borderWidth: 1.5,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 16,
+        marginVertical: 10,
+    },
+    modalBtn2disabled: {
+        opacity: 0.2,
+    },
+    modalBtnText2: {
+        color: '#000',
+        fontFamily: 'Urbanist-Bold',
+        fontSize: 17,
+    },
+    modalBtnText: {
+        color: '#548DFF',
+        fontFamily: 'Urbanist-Bold',
+        fontSize: 17,
+    },
+    modalHeader: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    modalBtnText3: {
+        color: '#548DFF',
+        fontFamily: 'Urbanist-Bold',
+        fontSize: 17,
+        marginTop: 10,
+        textDecorationLine: 'underline',
+    }
 });

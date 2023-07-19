@@ -15,7 +15,7 @@ const SCREEN_HEIGHT = Dimensions.get('window').height;
 export default function EditMed(props) {
     const navigation = useNavigation();
     const [show, setShow] = useState(false);
-    const [timePickerVisable,setTimePickerVisable]=useState();
+    const [timePickerVisable, setTimePickerVisable] = useState();
     const PlatformType = Platform.OS;
     const task = props.task;
     const [editMode, setEditMode] = useState(true);
@@ -67,54 +67,54 @@ export default function EditMed(props) {
         for (let i = 0; i < numberPerDay; i++) {
             {
                 Platform.OS === "ios" ?
-                timePickers.push(
-                    <View key={i} style={stylesForTimeModal.timePicker}>
-                        <View>
-                            <Text style={{ fontFamily: 'Urbanist-Light', fontSize: 16, color: '#000' }}>Time {i + 1}</Text>
+                    timePickers.push(
+                        <View key={i} style={stylesForTimeModal.timePicker}>
+                            <View>
+                                <Text style={{ fontFamily: 'Urbanist-Light', fontSize: 16, color: '#000' }}>Time {i + 1}</Text>
+                            </View>
+                            <View>
+                                <DatePicker
+                                    style={[stylesForTimeModal.doubleRowItem, medTimesArr[i] != null && { borderColor: '#000' }]}
+                                    date={medTimesArr[i]}
+                                    iconComponent={<MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />}
+                                    placeholder="Add Time"
+                                    mode="time"
+                                    format="HH:mm"
+                                    is24Hour={true}
+                                    confirmBtnText="Confirm"
+                                    cancelBtnText="Cancel"
+                                    showIcon={true}
+                                    customStyles={{
+                                        dateInput: {
+                                            borderWidth: 0,
+                                            alignItems: 'flex-start',
+                                            paddingLeft: 10,
+                                        },
+                                        placeholderText: {
+                                            color: '#9E9E9E',
+                                            fontSize: 16,
+                                            textAlign: 'left',
+                                            fontFamily: 'Urbanist-Light',
+                                        },
+                                        dateText: {
+                                            color: '#000',
+                                            fontSize: 16,
+                                            fontFamily: 'Urbanist-SemiBold',
+                                        },
+                                    }}
+                                    onDateChange={(date) => {
+                                        let newArr = [...medTimesArr];
+                                        newArr[i] = date;
+                                        console.log(newArr);
+                                        setMedTimesArr(newArr);
+                                    }}
+                                />
+                            </View>
                         </View>
-                        <View>
-                            <DatePicker
-                                style={[stylesForTimeModal.doubleRowItem, medTimesArr[i] != null && { borderColor: '#000' }]}
-                                date={medTimesArr[i]}
-                                iconComponent={<MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />}
-                                placeholder="Add Time"
-                                mode="time"
-                                format="HH:mm"
-                                is24Hour={true}
-                                confirmBtnText="Confirm"
-                                cancelBtnText="Cancel"
-                                showIcon={true}
-                                customStyles={{
-                                    dateInput: {
-                                        borderWidth: 0,
-                                        alignItems: 'flex-start',
-                                        paddingLeft: 10,
-                                    },
-                                    placeholderText: {
-                                        color: '#9E9E9E',
-                                        fontSize: 16,
-                                        textAlign: 'left',
-                                        fontFamily: 'Urbanist-Light',
-                                    },
-                                    dateText: {
-                                        color: '#000',
-                                        fontSize: 16,
-                                        fontFamily: 'Urbanist-SemiBold',
-                                    },
-                                }}
-                                onDateChange={(date) => {
-                                    let newArr = [...medTimesArr];
-                                    newArr[i] = date;
-                                    console.log(newArr);
-                                    setMedTimesArr(newArr);
-                                }}
-                            />
-                        </View>
-                    </View>
-                ) :
-                timePickers.push(
-                    <RowForAdnriod key={i} index={i} addTimeAndroid={addTimeAndroid} />
-                 )
+                    ) :
+                    timePickers.push(
+                        <RowForAdnriod key={i} index={i} addTimeAndroid={addTimeAndroid} />
+                    )
             }
         }
         return timePickers;
@@ -123,49 +123,49 @@ export default function EditMed(props) {
     const RowForAdnriod = (props) => {
         const [show, setShow] = useState(false);
         const [time, setTime] = useState('');
-  
-        const onchangeTime = (date) => {
-           setShow(false);
-           const currentTime = new Date(date.nativeEvent.timestamp).toTimeString().substring(0, 5);
-           console.log("currentDate= ", currentTime);
-           setTime(currentTime);
-           props.addTimeAndroid(currentTime, props.index);
-        }
-  
-        return (
-           <View style={stylesForTimeModal.timePicker}>
-              <View>
-                 <Text style={{ fontFamily: 'Urbanist-Light', fontSize: 16, color: '#000' }}>Time {props.index + 1}</Text>
-              </View>
-              <View>
-                 <TouchableOpacity onPress={() => setShow(true)} style={[stylesForTimeModal.doubleRowItem, medTimesArr[props.index] != null && { borderColor: '#000' }]}>
-                    <Text style={{ fontFamily: 'Urbanist-Light', fontSize: 16, color: '#000' }}>{medTimesArr[props.index] ? medTimesArr[props.index] : "Add Time"}</Text>
-                 </TouchableOpacity>
-              </View>
-              {show && (
-                 <DateTimePicker
-                    value={time ? new Date(time) : new Date()}
-                    mode={"time"}
-                    is24Hour={true}
-                    placeholder="Time"
-                    minimumDate={new Date(2000, 0, 1)}
-                    onChange={(date) => onchangeTime(date)}
-                    display="default"
-                    maximumDate={new Date()}
-                 />
-              )}
-           </View>
-        )
-     }
 
-     const addTimeAndroid = (time, index) => {
+        const onchangeTime = (date) => {
+            setShow(false);
+            const currentTime = new Date(date.nativeEvent.timestamp).toTimeString().substring(0, 5);
+            console.log("currentDate= ", currentTime);
+            setTime(currentTime);
+            props.addTimeAndroid(currentTime, props.index);
+        }
+
+        return (
+            <View style={stylesForTimeModal.timePicker}>
+                <View>
+                    <Text style={{ fontFamily: 'Urbanist-Light', fontSize: 16, color: '#000' }}>Time {props.index + 1}</Text>
+                </View>
+                <View>
+                    <TouchableOpacity onPress={() => setShow(true)} style={[stylesForTimeModal.doubleRowItem, medTimesArr[props.index] != null && { borderColor: '#000' }]}>
+                        <Text style={{ fontFamily: 'Urbanist-Light', fontSize: 16, color: '#000' }}>{medTimesArr[props.index] ? medTimesArr[props.index] : "Add Time"}</Text>
+                    </TouchableOpacity>
+                </View>
+                {show && (
+                    <DateTimePicker
+                        value={time ? new Date(time) : new Date()}
+                        mode={"time"}
+                        is24Hour={true}
+                        placeholder="Time"
+                        minimumDate={new Date(2000, 0, 1)}
+                        onChange={(date) => onchangeTime(date)}
+                        display="default"
+                        maximumDate={new Date()}
+                    />
+                )}
+            </View>
+        )
+    }
+
+    const addTimeAndroid = (time, index) => {
         console.log("time= ", time);
         let newArr = [...medTimesArr];
         console.log("newArr= ", newArr);
         newArr[index] = time;
         console.log("newArr= ", newArr);
         setMedTimesArr(newArr);
-     }
+    }
 
     const saveTimeArr = () => {
         for (let i = 0; i < medTimesArr.length; i++) {
@@ -183,15 +183,15 @@ export default function EditMed(props) {
         setFrequency(task.frequency);
         setNumberPerDay(medTimesArr.length);
         setQuantity(task.drug.dosage);
-        if(Platform.OS==='ios'){
-        setToDate(originDate);
+        if (Platform.OS === 'ios') {
+            setToDate(originDate);
         }
-        else{
-            let day= originDate.substring(0, 2);
-            let month= originDate.substring(3, 5);
-            let year= originDate.substring(6, 10);
-            let temp= year + '-' + month + '-' + day;
-            let date= moment(temp).format('YYYY-MM-DD');
+        else {
+            let day = originDate.substring(0, 2);
+            let month = originDate.substring(3, 5);
+            let year = originDate.substring(6, 10);
+            let temp = year + '-' + month + '-' + day;
+            let date = moment(temp).format('YYYY-MM-DD');
             setToDate(date);
         }
         setMedTimesArr(medTimesArr);
@@ -202,7 +202,7 @@ export default function EditMed(props) {
     const showDatepicker = () => {
         setShow(true);
     };
-    
+
     const handleDrugEdited = () => {
         if (quantity == null || quantity == 0) {
             Alert.alert('Please select a quantity');
@@ -213,16 +213,16 @@ export default function EditMed(props) {
             return;
         }
 
-        if (numberPerDay==null && medTime==''){
+        if (numberPerDay == null && medTime == '') {
             Alert.alert("please select Time")
             return;
         }
-        if (numberPerDay==1 && medTime){
-            if(Platform.OS==="ios"){
-            medTimesArr[0]=medTime
+        if (numberPerDay == 1 && medTime) {
+            if (Platform.OS === "ios") {
+                medTimesArr[0] = medTime
             }
-            else{
-                medTimesArr[0]= new Date(medTime).toTimeString().substring(0,5)+":00"
+            else {
+                medTimesArr[0] = new Date(medTime).toTimeString().substring(0, 5) + ":00"
             }
         }
         if (medTimesArr == null || medTimesArr == '') {
@@ -288,31 +288,31 @@ export default function EditMed(props) {
             );
     }
 
-useEffect(() => {
-    let day= toDate.substring(0, 2);
-    let month= toDate.substring(3, 5);
-    let year= toDate.substring(6, 10);
-    let temp= year + '-' + month + '-' + day;
-    let date= moment(temp).format('YYYY-MM-DD');
-    setToDate(date);
-}, [])
+    useEffect(() => {
+        let day = toDate.substring(0, 2);
+        let month = toDate.substring(3, 5);
+        let year = toDate.substring(6, 10);
+        let temp = year + '-' + month + '-' + day;
+        let date = moment(temp).format('YYYY-MM-DD');
+        setToDate(date);
+    }, [])
 
-useEffect(() => {
-    console.log("toDate", toDate);
-}, [toDate])
+    useEffect(() => {
+        console.log("toDate", toDate);
+    }, [toDate])
 
     const onChangeDate = (selectedDate) => {
-        const currentDate= new Date(selectedDate.nativeEvent.timestamp).toISOString().substring(0, 10);
+        const currentDate = new Date(selectedDate.nativeEvent.timestamp).toISOString().substring(0, 10);
         setShow(false);
-      if (selectedDate.type == 'set') {
-        setToDate(currentDate);
-    }
+        if (selectedDate.type == 'set') {
+            setToDate(currentDate);
+        }
     };
 
-    const onChangeTime = (selectedDate) =>{
-        const currentTime= new Date(selectedDate.nativeEvent.timestamp).toISOString();
+    const onChangeTime = (selectedDate) => {
+        const currentTime = new Date(selectedDate.nativeEvent.timestamp).toISOString();
         setTimePickerVisable(false);
-        if(selectedDate.type==="set")
+        if (selectedDate.type === "set")
             setMedTime(currentTime)
     }
 
@@ -336,10 +336,12 @@ useEffect(() => {
                                 <Text style={styles.txtLabel}>End Date: </Text>
                                 {PlatformType !== 'ios' ?
                                     <TouchableOpacity style={[styles.doubleRowItem, originDate && { borderColor: '#000' }]} onPress={showDatepicker}>
-                                        <Text style={{  color: "#000",
-                                                fontFamily: 'Urbanist-Medium',
-                                                paddingLeft: 8,
-                                                fontSize: 16,}}>{moment(toDate).format("DD/MM/YYYY")}</Text>
+                                        <Text style={{
+                                            color: "#000",
+                                            fontFamily: 'Urbanist-Medium',
+                                            paddingLeft: 8,
+                                            fontSize: 16,
+                                        }}>{moment(toDate).format("DD/MM/YYYY")}</Text>
                                     </TouchableOpacity>
                                     :
                                     <DatePicker
@@ -460,59 +462,61 @@ useEffect(() => {
                             {numberPerDay == 0 | numberPerDay == 1 ?
                                 <View style={styles.doubleRow}>
                                     <View><Text style={styles.txtLabel}>Intakes Time:</Text></View>
-                                    {Platform.OS==="ios"?
-                                    <DatePicker
-                                        style={[styles.doubleRowItem, medTime != '' && { borderColor: '#000' }]}
-                                        date={medTime}
-                                        iconComponent={<MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />}
-                                        placeholder="Add Time"
-                                        mode="time"
-                                        format="HH:mm"
-                                        is24Hour={true}
-                                        confirmBtnText="Confirm"
-                                        cancelBtnText="Cancel"
-                                        showIcon={true}
-                                        customStyles={{
-                                            dateInput: {
-                                                borderWidth: 0,
-                                                alignItems: 'flex-start',
-                                                paddingLeft: 10,
-                                            },
-                                            placeholderText: {
-                                                color: '#000',
-                                                fontSize: 16,
-                                                textAlign: 'left',
+                                    {Platform.OS === "ios" ?
+                                        <DatePicker
+                                            style={[styles.doubleRowItem, medTime != '' && { borderColor: '#000' }]}
+                                            date={medTime}
+                                            iconComponent={<MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />}
+                                            placeholder="Add Time"
+                                            mode="time"
+                                            format="HH:mm"
+                                            is24Hour={true}
+                                            confirmBtnText="Confirm"
+                                            cancelBtnText="Cancel"
+                                            showIcon={true}
+                                            customStyles={{
+                                                dateInput: {
+                                                    borderWidth: 0,
+                                                    alignItems: 'flex-start',
+                                                    paddingLeft: 10,
+                                                },
+                                                placeholderText: {
+                                                    color: '#000',
+                                                    fontSize: 16,
+                                                    textAlign: 'left',
+                                                    fontFamily: 'Urbanist-Medium',
+                                                },
+                                                dateText: {
+                                                    color: '#000',
+                                                    fontSize: 16,
+                                                    fontFamily: 'Urbanist-Medium',
+                                                },
+                                            }}
+                                            onDateChange={(date) => { setMedTime(date) }}
+                                        />
+                                        :
+                                        <TouchableOpacity style={[styles.doubleRowItem, originDate && { borderColor: '#000' }]} onPress={showTimePicker}>
+                                            <Text style={{
+                                                color: "#000",
                                                 fontFamily: 'Urbanist-Medium',
-                                            },
-                                            dateText: {
-                                                color: '#000',
+                                                paddingLeft: 8,
                                                 fontSize: 16,
-                                                fontFamily: 'Urbanist-Medium',
-                                            },
-                                        }}
-                                        onDateChange={(date) => { setMedTime(date) }}
-                                    />
-                                    :
-                                    <TouchableOpacity style={[styles.doubleRowItem, originDate && { borderColor: '#000' }]} onPress={showTimePicker}>
-                                    <Text style={{  color: "#000",
-                                            fontFamily: 'Urbanist-Medium',
-                                            paddingLeft: 8,
-                                            fontSize: 16,}}>{medTime? new Date(medTime).toTimeString().substring(0,5):"Add Time"}
-                                    </Text>
-                                    {!medTime && <MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />}
-                                </TouchableOpacity>
+                                            }}>{medTime ? new Date(medTime).toTimeString().substring(0, 5) : "Add Time"}
+                                            </Text>
+                                            {!medTime && <MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />}
+                                        </TouchableOpacity>
                                     }
                                     {timePickerVisable && (
-                                    <DateTimePicker
-                                        value={medTime?new Date(medTime):new Date()}
-                                        mode={"time"}
-                                        is24Hour={true}
-                                        placeholder="Date"
-                                        minimumDate={new Date()}
-                                        onChange={(date) => onChangeTime(date)}
-                                        display="default"
-                                    />
-                                )}
+                                        <DateTimePicker
+                                            value={medTime ? new Date(medTime) : new Date()}
+                                            mode={"time"}
+                                            is24Hour={true}
+                                            placeholder="Date"
+                                            minimumDate={new Date()}
+                                            onChange={(date) => onChangeTime(date)}
+                                            display="default"
+                                        />
+                                    )}
                                 </View>
                                 :
                                 <View style={styles.doubleRow}>

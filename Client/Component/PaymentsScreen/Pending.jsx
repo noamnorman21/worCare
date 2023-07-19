@@ -28,16 +28,14 @@ export default function Pending() {
     const isBottom = offsetY + layoutHeight >= contentHeight - 45;
     setIsAtBottom(isBottom);
   };
-  
-
 
   useEffect(() => {
     {
-      userContext.userType == "Caregiver" ?   renderPendings() :   renderPendingsHeb()
+      userContext.userType == "Caregiver" ? renderPendings() : renderPendingsHeb()
     }
   }, [userPendingPayments])
 
-  const renderPendings = async () => {  
+  const renderPendings = async () => {
     let arr = userPendingPayments.map((item) => {
       return (
         <Request
@@ -52,7 +50,7 @@ export default function Pending() {
     )
     setPendings(arr)
   }
-  const renderPendingsHeb = async () => {  
+  const renderPendingsHeb = async () => {
     let arr = userPendingPayments.map((item) => {
       return (
         <RequestHeb
@@ -105,7 +103,7 @@ export default function Pending() {
           <AddBtn onPress={() => setModal1Visible(true)} />
         </View>
       )}
-    </>  
+    </>
   );
 }
 
@@ -240,11 +238,11 @@ function Request(props) {
     }
   }, [status])
   useEffect(() => {
-    if(userContext.userType == "Caregiver"){
+    if (userContext.userType == "Caregiver") {
       setSubjectLength(props.subject.length)
     }
     //else it mean that the subject is in Hebrew so we need to count un diffrent way not .length
-    else{
+    else {
       //convert the subject to utf8
       let utf8 = unescape(encodeURIComponent(props.subject))
       //count the length of the subject
@@ -252,9 +250,7 @@ function Request(props) {
       console.log(utf8.length)
 
     }
-
-  }
-    , [])
+  }, [])
 
   const saveStatus = async (id) => {
     if (status) {
@@ -576,11 +572,11 @@ function RequestHeb(props) {
     }
   }, [status])
   useEffect(() => {
-    if(userContext.userType == "Caregiver"){
+    if (userContext.userType == "Caregiver") {
       setSubjectLength(props.subject.length)
     }
     //else it mean that the subject is in Hebrew so we need to count un diffrent way not .length
-    else{
+    else {
       //convert the subject to utf8
       let utf8 = unescape(encodeURIComponent(props.subject))
       //count the length of the subject
@@ -675,7 +671,7 @@ function RequestHeb(props) {
             <View style={styles.requestItemHeaderOpen}>
               <TouchableOpacity onPress={toggle} style={styles.request}>
                 <View style={styles.requestItemMiddle}>
-                  <Text style={[styles.requestItemText, { textAlign:'center', width:'100%'}]}>{props.subject}</Text>
+                  <Text style={[styles.requestItemText, { textAlign: 'center', width: '100%' }]}>{props.subject}</Text>
                 </View>
               </TouchableOpacity>
               <Menu style={{ flexDirection: 'column', marginVertical: 0 }} onSelect={value => openModal(value)} >
