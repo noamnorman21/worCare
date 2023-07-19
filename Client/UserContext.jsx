@@ -18,6 +18,7 @@ let getPairedProfile = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUse
 let getspecificPatientDataUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/GetPatientData';
 let GetAllPatients = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/GetAllPatients';
 let updateHobbiesAndLimitationsUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/UpdatePatientHobbiesAndLimitations';
+let unpairUrl='https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/UnpairPatient'
 // Notifications
 let InsertNotificationsThatSentUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Notification/InsertNotificationThatSent'
 let UpdateNotificationStatusUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Notification/UpdateNotificationStatus'
@@ -1199,6 +1200,33 @@ export function UserProvider({ children }) {
         }
     };
 
+    async function unpair () {
+        console.log("unpair")
+
+        fetch(unpairUrl, 
+            {
+                method: 'PUT',
+                headers: new Headers({ 'Content-Type': 'application/json; charset=UTF-8', }),
+                body: JSON.stringify(userContext),
+            })
+            .then(res => {
+                if (res.ok) { return res.json() }
+            }
+            )
+            .then(
+                (result) => {
+                    console.log("fetch unpair= ", result);
+                   if(userContext.userType=='Caregiver'){
+                    setUserContext({ ...userContext, ["involvedInId"]: '' })
+                    setUserContext({ ...userContext, ["patientId"]: '' })
+                   }
+                     else{
+                        setUserContext({ ...userContext, ["workerId"]: '' })
+                     }
+                }
+            )
+    }
+
     const value = {
         userContext, allShopTasks, allMedicineTasks, userContacts, userNotifications, userPendingPayments,
         userHistoryPayments, userChats, setUserChats, logInFireBase, GetUserHistory, GetUserPending,
@@ -1208,7 +1236,7 @@ export function UserProvider({ children }) {
         allPublicTasks, allPrivateTasks, UpdateDrugForPatientDTO, holidays, GetAllDrugs, allDrugs, addPrivateTaskContext,
         newMessages, setNewMessages, logOutFireBase, registerForPushNotificationsAsync, sendPushNotification, UpdatePatient, userPaychecks,
         fetchPatientList, patientList, setRouteEmail, routeEmail, notificationsThatSent, notifications, getPaychecks, UpdateNotificationStatus, GetNotificationsThatSent, logInRemember, userNewHobbiesAndLimitations,
-        setUserNewHobbiesAndLimitations, getSpecificPatientData, updateHobbiesAndLimitations,translateText
+        setUserNewHobbiesAndLimitations, getSpecificPatientData, updateHobbiesAndLimitations,translateText,unpair
     };
 
     return (

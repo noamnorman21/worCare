@@ -18,7 +18,7 @@ const ScreenWidth = Dimensions.get('window').width;
 const ScreenHeight = Dimensions.get('window').height;
 
 export default function PatientProfile({ navigation }) {
-    const { userContext, updateHobbiesAndLimitations, patientHL } = useUserContext();
+    const { userContext, updateHobbiesAndLimitations, patientHL,unpair } = useUserContext();
     const [saving, setSaving] = useState(false);
     const patientData = userContext.patientData;
     const [hobbiesAndLimitations, setHobbiesAndLimitations] = useState(userContext.patientHL);
@@ -776,15 +776,18 @@ export default function PatientProfile({ navigation }) {
                 <Dialog.Content>
                     <Paragraph style={styles.dialpgParagraph}>Do you want to add new Pairing or cancel pairing??</Paragraph>
                 </Dialog.Content>
-                <Dialog.Actions>
+                <Dialog.Actions style={{ justifyContent:'center'}}>
                 <Button labelStyle={styles.dialogTxt} onPress={() => {
                     console.log("New pairing")        
                     // will send to new pairing screen, send caregiver link and go back to main              
-                    }}>New Pairing</Button>
-                     <Button labelStyle={styles.dialogTxt} onPress={() => {
-                       console.log("cancel Pairing")          
+                    }}>New Pair</Button>
+                     <Button style={{width:60}} labelStyle={styles.dialogTxt} onPress={() => {
+                       console.log("Delete Pairing") 
+                       unpair();  
+                       setDialogVisable(false);
+                       navigation.goBack();   
                        // will cancel pairing and go back to main, re-activate loginMethod/remove caregiver link(workerId in user Context)            
-                   }}>Cancel Pairing</Button>
+                   }}>Delete Pair</Button>
                    {/* <Button labelStyle={styles.dialogTxt} onPress={() => {                       
                        console.log("Cancel actions")         
 
@@ -975,6 +978,7 @@ const styles = StyleSheet.create({
         borderColor: '#000',
         borderWidth: 1.5,
         padding: 10,
+        width: 100,
     },
     dialogTitle: {
         fontFamily: 'Urbanist-SemiBold',
