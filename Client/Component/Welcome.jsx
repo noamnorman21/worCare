@@ -1,9 +1,12 @@
 import { StyleSheet, View, Text, SafeAreaView, Image, Dimensions, Alert, ActivityIndicator } from 'react-native'
 import { useEffect, useState } from 'react'
+import { useUserContext } from '../UserContext'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const { width, height } = Dimensions.get('window')
 // This is Splash Screen Component which will be display for 2 seconds before the app will be loaded 
 export default function Welcome({ navigation, route }) {
+    const {setAddNewPairing} = useUserContext();
     useEffect(() => {
         showOptions()
     }, [])
@@ -15,7 +18,11 @@ export default function Welcome({ navigation, route }) {
             [
                 {
                     text: 'Log In',
-                    onPress: () => navigation.navigate('LogIn', { patientId: route.params.patientId }),
+                    onPress: () => {
+                        setAddNewPairing(true);
+                        AsyncStorage.removeItem("user");
+                        AsyncStorage.removeItem("userData");
+                        navigation.navigate('LogIn', { patientId: route.params.patientId })},
                 },
                 {
                     text: 'Sign Up',

@@ -114,6 +114,7 @@ export function UserProvider({ children }) {
     const [newMessages, setNewMessages] = useState(0); //new for chat logo
     const [routeEmail, setRouteEmail] = useState(null);
     const [userNewHobbiesAndLimitations, setUserNewHobbiesAndLimitations] = useState(null);
+    const [addNewPairing, setAddNewPairing] = useState(false);
 
     const [notifications, setNotifications] = useState(null);
 
@@ -1236,7 +1237,7 @@ export function UserProvider({ children }) {
         allPublicTasks, allPrivateTasks, UpdateDrugForPatientDTO, holidays, GetAllDrugs, allDrugs, addPrivateTaskContext,
         newMessages, setNewMessages, logOutFireBase, registerForPushNotificationsAsync, sendPushNotification, UpdatePatient, userPaychecks,
         fetchPatientList, patientList, setRouteEmail, routeEmail, notificationsThatSent, notifications, getPaychecks, UpdateNotificationStatus, GetNotificationsThatSent, logInRemember, userNewHobbiesAndLimitations,
-        setUserNewHobbiesAndLimitations, getSpecificPatientData, updateHobbiesAndLimitations,translateText,unpair
+        setUserNewHobbiesAndLimitations, getSpecificPatientData, updateHobbiesAndLimitations,translateText,unpair,addNewPairing, setAddNewPairing
     };
 
     return (

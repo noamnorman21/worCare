@@ -351,6 +351,23 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
+        [Route("GetUserByEmail")] // POST - Because The FromBody
+        public IHttpActionResult GetUserByEmail([FromBody] UserDTO user)
+        {
+            try
+            {
+                var userToReturn = db.tblUser.Where(x => x.Email == user.Email).Select(x=> x.userId).FirstOrDefault();
+                if (userToReturn == null)
+                    return NotFound();
+                return Ok(userToReturn);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost]
         [Route("InsertUser")] // POST - Because The FromBody - insert user to db by calling Stored Prodecdure InsertUser
         public IHttpActionResult InsertUser([FromBody] UserDTO user)
         {

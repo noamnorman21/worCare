@@ -795,6 +795,7 @@ export default function PatientProfile({ navigation }) {
         if (isAvailable) {
             // do your SMS stuff here
             const { result } = await SMS.sendSMSAsync([contactNumber], message);
+            if(Platform.OS==='ios'){
             if (result === 'sent') {
                 // Alert.alert('Invitation sent \n\n We will notify you when your friend will join');
                 setFromShare(true);
@@ -814,7 +815,7 @@ export default function PatientProfile({ navigation }) {
                     },
                 ]);
             }
-            // Alert.alert(result);
+        }// Alert.alert(result);
         } else {
             // misfortune... there's no SMS available on this device
             Alert.alert('SMS is not available on this device');
@@ -894,7 +895,6 @@ export default function PatientProfile({ navigation }) {
                     </View>
                 </TouchableOpacity>
             </Modal>
-
             <Overlay
                 isVisible={modalVisible}
                 onBackdropPress={hidePair}

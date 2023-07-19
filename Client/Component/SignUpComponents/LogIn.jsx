@@ -14,6 +14,7 @@ import { Buffer } from 'buffer';
 import { ActivityIndicator } from 'react-native-paper';
 import { useFocusEffect } from '@react-navigation/native';
 
+
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
@@ -23,8 +24,74 @@ export default function LogIn({ navigation }) {
     const [userType, setUserType] = useState('User');
     const [isChecked, setChecked] = useState(false);
     const [showPassword, setShowPassword] = useState(false); // For password visibility
-    const { logInContext, logInFireBase, setRouteEmail, logInRemember } = useUserContext();
+    const { logInContext, logInFireBase, setRouteEmail, logInRemember, addNewPairing } = useUserContext();
     const [isSigned, setIsSigned] = useState(false);
+    const [patientId, setPatientId] = useState('');
+
+
+    const pairUsers = async () => {
+        console.log('pairUsers');
+        let user =
+        {
+            Email: email,
+        }
+        console.log(user);
+        fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUserByEmail', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(user),
+        })
+            .then(async (response) => {
+                    return response.json();
+            })
+            .then(async (json) => {
+                if (json === null) {
+                    return Alert.alert('Pairing Failed');
+                }
+                else {
+                    console.log(json);
+                    const caresForPatient = {
+                        patientId: patientId,
+                        workerId: json,
+                        linkTo: await Linking.getInitialURL(),
+                        status: "P"
+                    };
+                    fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/ForeignUser/InsertCaresForPatient', {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(caresForPatient),
+                    })
+                        .then((response) => {
+                            if (response.status === 200) {
+                                return response.json();
+                            }
+                            else {
+                                return null;
+                            }
+                        })
+                        .then((json) => {
+                            if (json === null) {
+                                Alert.alert('Pairing Failed');
+                            }
+                            else {
+                                console.log(json);
+                            }
+                        })
+                        .catch((error) => {
+                            console.error("error from cares for patient:");
+                            console.error(error.message);
+                        });
+                }
+            })
+
+
+    }
+
+   
 
     // function to check from where the app was opened from a invintation link or not  
     const getInitialUrl = async () => {
@@ -47,6 +114,7 @@ export default function LogIn({ navigation }) {
             if (routeName === 'InvitedFrom') {
                 setUserType('Caregiver');
                 navigation.navigate('Welcome', { patientId: patientId, userName: userName, userType: userType });
+                setPatientId(patientId);
             }
         }
     }
@@ -57,7 +125,7 @@ export default function LogIn({ navigation }) {
     };
 
     //Login function
-    const logInBtn = () => {
+    const logInBtn = async () => {
         // check email is empty or not
         if (email === '') {
             Alert.alert('Email is required');
@@ -80,6 +148,10 @@ export default function LogIn({ navigation }) {
         const userData = {
             Email: email,
             Password: password,
+        }
+
+        if(addNewPairing){
+            await pairUsers();
         }
 
         //call api to login user
@@ -240,8 +312,7 @@ export default function LogIn({ navigation }) {
     }
 
     useFocusEffect(
-        useCallback(() => {
-           
+        useCallback(() => {           
             loadStorageData();
         }, []),
     );
