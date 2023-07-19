@@ -25,7 +25,7 @@ export default function PatientProfile({ navigation }) {
     const patientId = patientData.patientId;
     const [hobbiesAndLimitations, setHobbiesAndLimitations] = useState(userContext.patientHL);
     const birthDate = moment(patientData.DateOfBirth).format('DD/MM/YYYY');
-    const [hobbieFilter, setHobbieFilter] = useState('TVShow');
+    const [hobbieFilter, setHobbieFilter] = useState('books');
     const [limitFilter, setLimitFilter] = useState('allergies');
     const [hobbies, setHobbies] = useState([]);
     const [limitations, setLimitations] = useState([]);
@@ -427,18 +427,19 @@ export default function PatientProfile({ navigation }) {
                                                         )
                                                     })
                                                 }
+                                                {datepickervisable && (
+                                                    <DateTimePicker
+                                                        value={new Date()}
+                                                        mode={"time"}
+                                                        is24Hour={true}
+                                                        placeholder="time"
+                                                        minimumDate={new Date(2000, 0, 1)}
+                                                        onChange={(date) => onTimeChangeAndroid(date)}
+                                                        display="default"
+                                                    />
+                                                )}
                                             </View>
-                                            {datepickervisable && (
-                                                <DateTimePicker
-                                                    value={new Date()}
-                                                    mode={"time"}
-                                                    is24Hour={true}
-                                                    placeholder="time"
-                                                    minimumDate={new Date(2000, 0, 1)}
-                                                    onChange={(date) => onTimeChangeAndroid(date)}
-                                                    display="default"
-                                                />
-                                            )}
+
                                         </>
                                         :
                                         //if not in json and not in user array, render text input ir timepicker- based on the hobbie
@@ -490,6 +491,17 @@ export default function PatientProfile({ navigation }) {
                                                                 onDateChange={(value) => onTimeChangeIos(value)}
                                                             />
                                                         </>}
+                                                    {datepickervisable && (
+                                                        <DateTimePicker
+                                                            value={new Date()}
+                                                            mode={"time"}
+                                                            is24Hour={true}
+                                                            placeholder="time"
+                                                            minimumDate={new Date(2000, 0, 1)}
+                                                            onChange={(date) => onTimeChangeAndroid(date)}
+                                                            display="default"
+                                                        />
+                                                    )}
                                                 </>
                                                 :
                                                 <>
@@ -795,27 +807,27 @@ export default function PatientProfile({ navigation }) {
         if (isAvailable) {
             // do your SMS stuff here
             const { result } = await SMS.sendSMSAsync([contactNumber], message);
-            if(Platform.OS==='ios'){
-            if (result === 'sent') {
-                // Alert.alert('Invitation sent \n\n We will notify you when your friend will join');
-                setFromShare(true);
-                Alert.alert('Invitation sent', 'We will notify you when your friend will join', [
-                    {
-                        text: "OK",
-                        onPress: () => { setModalVisible(false), createNewUserInDB() },
-                        style: "cancel"
-                    },
-                ]);
-            }
-            else {
-                Alert.alert('Invitation Failed', 'Please try again', [
-                    {
-                        text: "OK",
-                        style: "cancel"
-                    },
-                ]);
-            }
-        }// Alert.alert(result);
+            if (Platform.OS === 'ios') {
+                if (result === 'sent') {
+                    // Alert.alert('Invitation sent \n\n We will notify you when your friend will join');
+                    setFromShare(true);
+                    Alert.alert('Invitation sent', 'We will notify you when your friend will join', [
+                        {
+                            text: "OK",
+                            onPress: () => { setModalVisible(false), createNewUserInDB() },
+                            style: "cancel"
+                        },
+                    ]);
+                }
+                else {
+                    Alert.alert('Invitation Failed', 'Please try again', [
+                        {
+                            text: "OK",
+                            style: "cancel"
+                        },
+                    ]);
+                }
+            }// Alert.alert(result);
         } else {
             // misfortune... there's no SMS available on this device
             Alert.alert('SMS is not available on this device');

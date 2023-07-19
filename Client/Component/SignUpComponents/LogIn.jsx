@@ -74,11 +74,7 @@ export default function LogIn({ navigation }) {
                             console.error(error.message);
                         });                
             })
-
-
-    }
-
-   
+    }   
 
     // function to check from where the app was opened from a invintation link or not  
     const getInitialUrl = async () => {

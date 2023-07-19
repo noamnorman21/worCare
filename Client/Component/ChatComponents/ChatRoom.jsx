@@ -307,10 +307,8 @@ export default function ChatRoom({ route, navigation }) {
       GroupMembers.forEach(arr => {
         arr.forEach(user => {
           if (user !== auth.currentUser.email) {
-            console.log("user", user)
             const docRef = query(collection(db, user), where("Name", "==", route.params.name));
             const res = getDocs(docRef);
-            console.log("res", res)
             res.then((querySnapshot) => {
               // if user has no documentation in db of chat
               if (!querySnapshot.empty) {
