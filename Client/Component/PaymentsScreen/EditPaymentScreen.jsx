@@ -1,4 +1,4 @@
-import { TextInput, View, Text, StyleSheet, Alert, SafeAreaView, TouchableOpacity, Dimensions } from "react-native";
+import {  View, Text, StyleSheet, Alert, SafeAreaView, TouchableOpacity, Dimensions, ActivityIndicator } from "react-native";
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { useState } from "react";
 import { AntDesign, Octicons } from '@expo/vector-icons';
@@ -10,6 +10,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from '../../config/firebase';
 import { useUserContext } from '../../UserContext';
+import { TextInput, Dialog } from "react-native-paper";
 
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -31,6 +32,8 @@ export default function EditPaymentScreen(props) {
   const [valueChanged, setValueChanged] = useState(false);
   const [PlatformType, setPlatformType] = useState(Platform.OS);
   const {GetUserPending,translateText } = useUserContext();
+  const [uploading, setUploading] = useState(false);
+
 
   const openCamera = async () => {
     // Ask the user for the permission to access the camera
@@ -129,6 +132,28 @@ export default function EditPaymentScreen(props) {
 
 
   const sendToFirebase = async (image) => {
+    console.log(Payment.amountToPay)
+    if (Payment.requestProofDocument === '' || Payment.requestProofDocument === undefined) {  
+      Alert.alert('Please upload an image');
+      setUploading(false);
+      return;
+    }
+    if (Payment.amountToPay === '' || Payment.amountToPay===0) {
+      console.log(Payment.amountToPay);
+      Alert.alert('Please enter amount');
+      setUploading(false);
+      return;
+    }
+    if (Payment.requestSubject === '') {
+      Alert.alert('Please enter subject');
+      setUploading(false);
+      return;
+    }
+    if (Payment.requestSubject.length > 20) {
+      Alert.alert('Subject is too long, please enter up to 20 characters');
+      setUploading(false);
+      return;
+    }
     // if the user didn't upload an image, we will use the default image
     if (imageChanged) {
       console.log('image', image);
@@ -217,13 +242,18 @@ export default function EditPaymentScreen(props) {
               <Text style={styles.title}>Edit Payment #{Payment.requestId}</Text>
               {/* close btn icon */}
               <View style={styles.inputContainer}>
-                <TextInput
-                  style={styles.input}
-                  value={Payment.requestSubject}
-                  placeholder='Reason'
-                  keyboardType='ascii-capable'
-                  onChangeText={(value) => handleInputChange('requestSubject', value)}
-                />
+              <TextInput
+                style={[styles.inputTxt]}
+                placeholder='Subject'
+                value={Payment.requestSubject}
+                mode='outlined'
+                label={<Text style={{fontFamily:"Urbanist-Medium"}}>Subject</Text>}
+                outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                onChangeText={(value) => handleInputChange('requestSubject', value)}
+                contentStyle={{ fontFamily: 'Urbanist-Regular' }}
+                activeOutlineColor="#548DFF"
+                outlineColor='#E6EBF2'
+              />
                 {PlatformType !== 'ios' ? <TouchableOpacity style={styles.datePicker} onPress={showDatepicker}>
                   <Text style={styles.dateInputTxt}>
                     {Payment.requestDate.substring(0, 10)}
@@ -274,7 +304,39 @@ export default function EditPaymentScreen(props) {
                     maximumDate={new Date()}
                   />
                 )}
-                <TextInput
+
+              <TextInput
+                style={[styles.inputTxt]}
+                placeholder='Amount'
+                value={`${Payment.amountToPay}`}
+                mode='outlined'
+                label={<Text style={{fontFamily:"Urbanist-Medium"}}>Amount</Text>}
+                keyboardType='decimal-pad'
+                outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                onChangeText={(value) => handleInputChange('amountToPay', value)}
+                inputMode='decimal'
+                contentStyle={{ fontFamily: 'Urbanist-Regular' }}
+                activeOutlineColor="#548DFF"
+                outlineColor='#E6EBF2'
+              />
+              <TextInput
+                style={[styles.inputTxt, {height: 150, textAlignVertical: 'top'}]}
+                placeholder='Add comment ( Optional )'
+                value={Payment.requestComment}
+                mode='outlined'
+                label={<Text style={{fontFamily:"Urbanist-Medium"}}>Add comment ( Optional )</Text>}
+                outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                contentStyle={{ fontFamily: 'Urbanist-Regular' }}
+                activeOutlineColor="#548DFF"
+                outlineColor='#E6EBF2'
+                onChangeText={(value) => handleInputChange('requestComment', value)}
+                onSubmitEditing={Keyboard.dismiss}
+                maxLength={300}
+                multiline
+                numberOfLines={4}
+              />
+              {/*old version- without react native paper */}
+                {/* <TextInput
                   style={[styles.input]}
                   placeholder='Amount'
                   value={`${Payment.amountToPay}`}
@@ -292,7 +354,7 @@ export default function EditPaymentScreen(props) {
                   value={Payment.requestComment}
                   keyboardType='ascii-capable'
                   onChangeText={(value) => handleInputChange('requestComment', value)}
-                />
+                /> */}
                 <View style={styles.bottom}>
                   <TouchableOpacity style={styles.cancelbutton} onPress={pickOrTakeImage}>
                     <Text style={styles.cancelbuttonText}>Pick Document</Text>
@@ -306,6 +368,12 @@ export default function EditPaymentScreen(props) {
           </View>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
+      <Dialog visible={uploading} style={styles.dialogStyle}>
+        <Dialog.Title style={{ backgroundColor: 'transparent', fontFamily:"Urbanist-Medium", fontSize:18 }}>This will only take a few seconds</Dialog.Title>
+        <Dialog.Content>
+          <ActivityIndicator size="large" color="#548DFF" />
+        </Dialog.Content>
+      </Dialog>
     </SafeAreaView>
   );
 }
@@ -468,5 +536,14 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontFamily: 'Urbanist-SemiBold',
+  },
+  inputTxt: {
+    fontSize: 16,
+    color: '#000',
+    backgroundColor: '#fff',
+    marginVertical: 10,
+    textAlign:'left',
+    width: Dimensions.get('window').width * 0.95,
+    height: 54,
   },
 });

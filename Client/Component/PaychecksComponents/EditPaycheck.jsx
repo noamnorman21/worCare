@@ -1,4 +1,4 @@
-import { TextInput, View, Text, StyleSheet, Alert, SafeAreaView, TouchableOpacity, Dimensions } from "react-native";
+import { View, Text, StyleSheet, Alert, SafeAreaView, TouchableOpacity, Dimensions } from "react-native";
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { useState } from "react";
 import * as ImagePicker from 'expo-image-picker';
@@ -9,6 +9,7 @@ import { storage } from '../../config/firebase';
 import DatePicker from 'react-native-datepicker';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 import { useUserContext } from "../../UserContext";
+import { TextInput } from "react-native-paper";
 
 export default function EditPaycheck(props) {
   const {getPaychecks} = useUserContext();
@@ -267,6 +268,34 @@ export default function EditPaycheck(props) {
             <TextInput
               style={styles.input}
               value={Paycheck.paycheckSummary}
+              label={<Text style={{fontFamily:"Urbanist-Medium"}}>Summary</Text>}
+              mode="outlined"
+              keyboardType='decimal-pad'
+              onChangeText={(value) => handleInputChange('paycheckSummary', value)}
+              outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+              inputMode='decimal'
+              contentStyle={{ fontFamily: 'Urbanist-Regular' }}
+              activeOutlineColor="#548DFF"
+              outlineColor='#E6EBF2'
+            />
+            <TextInput
+                style={[styles.input, { height: 150}]}
+                placeholder='Add comment ( Optional )'
+                value={Paycheck.paycheckComment}
+                mode='outlined'
+                label={<Text style={{fontFamily:"Urbanist-Medium"}}>Add comment ( Optional )</Text>}
+                labelStyle={{ fontFamily: 'Urbanist-Regular' }}
+                outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                onChangeText={(value) => handleInputChange('paycheckComment', value)}
+                contentStyle={{ fontFamily: 'Urbanist-Regular' }}
+                activeOutlineColor="#548DFF"
+                outlineColor='#E6EBF2'
+                multiline
+              />
+            {/*old version- not react-native-paper */} 
+            {/* <TextInput
+              style={styles.input}
+              value={Paycheck.paycheckSummary}
               keyboardType='decimal-pad'
               onChangeText={(value) => handleInputChange('paycheckSummary', value)}
             />
@@ -280,7 +309,7 @@ export default function EditPaycheck(props) {
               placeholder='Add comment ( Optional )'
               keyboardType='ascii-capable'
               onChangeText={(value) => handleInputChange('paycheckComment', value)}
-            />
+            /> */}
           </View>
           <View style={styles.bottom}>
             <TouchableOpacity style={styles.cancelbutton} onPress={pickOrTakeImage}>
@@ -315,17 +344,14 @@ const styles = StyleSheet.create({
     marginRight: 30,
   },
   input: {
-    width: Dimensions.get('window').width * 0.95,
-    marginBottom: 10,
-    paddingLeft: 10,
-    alignItems: 'center',
-    borderRadius: 16,
-    borderWidth: 1.5,
-    borderColor: '#E6EBF2',
-    shadowColor: '#000',
-    height: 54,
-    fontFamily: 'Urbanist-Medium',
+    fontFamily: 'Urbanist-Light',
     fontSize: 16,
+    color: '#000',
+    backgroundColor: '#fff',
+    marginVertical: 10,
+    textAlign:'left',
+    width: Dimensions.get('window').width * 0.95,
+    height: 54,
   },
   inputFull: {
     width: Dimensions.get('window').width * 0.95,

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, SafeAreaView, Alert, StyleSheet, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native';
+import { View, Text, SafeAreaView, Alert, StyleSheet, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native';
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { storage } from '../../config/firebase';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
@@ -8,7 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useUserContext } from '../../UserContext';
 import moment from "moment";
 import { AntDesign } from '@expo/vector-icons';
-import {Dialog} from 'react-native-paper';
+import {Dialog, TextInput} from 'react-native-paper';
 
 import * as Notifications from 'expo-notifications';
 
@@ -99,19 +99,24 @@ export default function NewPayment(props) {
   const sendToFirebase = async (image) => {
     setUploading(true);
     // if the user didn't upload an image, we will use the default image
-    if (payment.requestProofDocument === '' || payment.requestProofDocument === undefined) {
-      return Alert.alert('Please upload an image');
+    if (payment.requestProofDocument === '' || payment.requestProofDocument === undefined) {  
+      Alert.alert('Please upload an image');
+      setUploading(false);
+      return;
     }
     if (payment.amountToPay === '') {
       Alert.alert('Please enter amount');
+      setUploading(false);
       return;
     }
     if (payment.requestSubject === '') {
       Alert.alert('Please enter subject');
+      setUploading(false);
       return;
     }
     if (payment.requestSubject.length > 20) {
       Alert.alert('Subject is too long, please enter up to 20 characters');
+      setUploading(false);
       return;
     }
     const filename = image.substring(image.lastIndexOf('/') + 1);
@@ -214,7 +219,47 @@ export default function NewPayment(props) {
 
             <Text style={styles.title}>Add New Request</Text>
             <View style={styles.inputContainer}>
+            <TextInput
+                style={[styles.inputTxt]}
+                placeholder='Subject'
+                mode='outlined'
+                label={<Text style={{fontFamily:"Urbanist-Medium"}}>Subject</Text>}
+                outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                onChangeText={(value) => handleInputChange('requestSubject', value)}
+                contentStyle={{ fontFamily: 'Urbanist-Regular' }}
+                activeOutlineColor="#548DFF"
+                outlineColor='#E6EBF2'
+              />
               <TextInput
+                style={[styles.inputTxt]}
+                placeholder='Amount'
+                mode='outlined'
+                label={<Text style={{fontFamily:"Urbanist-Medium"}}>Amount</Text>}
+                keyboardType='decimal-pad'
+                outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                onChangeText={(value) => handleInputChange('amountToPay', value)}
+                inputMode='decimal'
+                contentStyle={{ fontFamily: 'Urbanist-Regular' }}
+                activeOutlineColor="#548DFF"
+                outlineColor='#E6EBF2'
+              />
+              <TextInput
+                style={[styles.inputTxt, {height: 150, textAlignVertical: 'top'}]}
+                placeholder='Add comment ( Optional )'
+                mode='outlined'
+                label={<Text style={{fontFamily:"Urbanist-Medium"}}>Add comment ( Optional )</Text>}
+                outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                contentStyle={{ fontFamily: 'Urbanist-Regular' }}
+                activeOutlineColor="#548DFF"
+                outlineColor='#E6EBF2'
+                onChangeText={(value) => handleInputChange('requestComment', value)}
+                onSubmitEditing={Keyboard.dismiss}
+                maxLength={300}
+                multiline
+                numberOfLines={4}
+              />
+              {/*old version- not react-native-paper */}
+              {/* <TextInput
                 style={styles.input}
                 placeholder='Subject'
                 keyboardType='ascii-capable'
@@ -236,7 +281,7 @@ export default function NewPayment(props) {
                 keyboardType='ascii-capable'
                 onChangeText={(value) => handleInputChange('requestComment', value)}
                 onSubmitEditing={Keyboard.dismiss}
-              />
+              /> */}
               <View style={styles.footerContainer}>
                 <TouchableOpacity style={styles.uploadButton} onPress={pickOrTakeImage}>
                   <Text style={styles.buttonText}>Upload document</Text>
@@ -339,5 +384,14 @@ const styles = StyleSheet.create({
     fontFamily: 'Urbanist-SemiBold',
     fontSize: 16,
     color: '#fff',
+  },
+  inputTxt: {
+    fontSize: 16,
+    color: '#000',
+    backgroundColor: '#fff',
+    marginVertical: 10,
+    textAlign:'left',
+    width: Dimensions.get('window').width * 0.95,
+    height: 54,
   },
 });

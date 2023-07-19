@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, SafeAreaView, Alert, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, SafeAreaView, Alert, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { AntDesign, Octicons, FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import { storage } from '../../config/firebase';
@@ -8,7 +8,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { useUserContext } from '../../UserContext';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import DatePicker from 'react-native-datepicker';
-import { ActivityIndicator, Dialog } from 'react-native-paper';
+import { ActivityIndicator, Dialog, TextInput } from 'react-native-paper';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
@@ -109,6 +109,7 @@ export default function NewPaycheck(props) {
     // if the user didn't upload an image, we will use the default image
     if (PayCheck.payCheckProofDocument === null) {
       Alert.alert('Please select an image');
+      setUploading(false);
       return;
     }
     console.log('image', image);
@@ -151,10 +152,12 @@ export default function NewPaycheck(props) {
     console.log("Newcheck", Newcheck);
     if (Newcheck.paycheckDate === null) {
       Alert.alert('Please Choose a date');
+      setUploading(false);
       return;
     }
     if (Newcheck.paycheckSummary === '') {
       Alert.alert('Please enter paycheck Summary');
+      setUploading(false);
       return;
     }
     console.log("Newcheck", Newcheck);
@@ -194,7 +197,7 @@ export default function NewPaycheck(props) {
               <Text style={styles.title}>Add New Paycheck</Text>
             </View>
             {PlatformType !== 'ios' ? <TouchableOpacity style={styles.datePicker} onPress={showDatepicker}>
-              {!dateSelected ? <Text style={styles.dateInputTxt}>
+              {!dateSelected ? <Text style={styles.dateInputTxtSelected}>
                 {PayCheck.paycheckDate ? PayCheck.paycheckDate : 'Date'}
               </Text> :
                 <Text style={styles.dateInputTxtSelected}>
@@ -256,6 +259,34 @@ export default function NewPaycheck(props) {
             )}
             <View style={styles.inputContainer}>
               <TextInput
+                style={[styles.inputTxt]}
+                placeholder='Summary'
+                mode='outlined'
+                label={<Text style={{fontFamily:"Urbanist-Medium"}}>Summary</Text>}
+                labelStyle={{ fontFamily: 'Urbanist-Regular' }}
+                keyboardType='decimal-pad'
+                outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                onChangeText={(value) => handleInputChange('paycheckSummary', value)}
+                inputMode='decimal'
+                contentStyle={{ fontFamily: 'Urbanist-Regular' }}
+                activeOutlineColor="#548DFF"
+                outlineColor='#E6EBF2'
+              />
+              <TextInput
+                style={[styles.inputTxt, { height: 150}]}
+                placeholder='Add comment ( Optional )'
+                mode='outlined'
+                label={<Text style={{fontFamily:"Urbanist-Medium"}}>Add comment ( Optional )</Text>}
+                labelStyle={{ fontFamily: 'Urbanist-Regular' }}
+                outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                onChangeText={(value) => handleInputChange('paycheckComment', value)}
+                contentStyle={{ fontFamily: 'Urbanist-Regular' }}
+                activeOutlineColor="#548DFF"
+                outlineColor='#E6EBF2'
+                multiline
+              />
+              {/*old version- not react-native-paper */} 
+              {/* <TextInput
                 style={[styles.input]}
                 placeholder='Summary'
                 keyboardType='decimal-pad'
@@ -271,7 +302,7 @@ export default function NewPaycheck(props) {
                 placeholder='Add comment ( Optional )'
                 keyboardType='ascii-capable'
                 onChangeText={(value) => handleInputChange('paycheckComment', value)}
-              />
+              /> */}
               <View style={styles.footerContainer}>
                 <TouchableOpacity style={styles.uploadButton} onPress={pickOrTakeImage}>
                   <Text style={styles.buttonText}>Upload document</Text>
@@ -414,5 +445,13 @@ const styles = StyleSheet.create({
     color: '#000',
     fontSize: 16,
     fontFamily: 'Urbanist-Medium',
+  },
+  inputTxt: {
+    fontSize: 16,
+    color: '#000',
+    backgroundColor: '#fff',
+    marginVertical: 10,
+    textAlign:'left',
+    width: Dimensions.get('window').width * 0.95,
   },
 });
