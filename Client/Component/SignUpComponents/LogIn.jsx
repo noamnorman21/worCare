@@ -46,11 +46,7 @@ export default function LogIn({ navigation }) {
             .then(async (response) => {
                     return response.json();
             })
-            .then(async (json) => {
-                if (json === null) {
-                    return Alert.alert('Pairing Failed');
-                }
-                else {
+            .then(async (json) => {                
                     console.log(json);
                     const caresForPatient = {
                         patientId: patientId,
@@ -73,19 +69,10 @@ export default function LogIn({ navigation }) {
                                 return null;
                             }
                         })
-                        .then((json) => {
-                            if (json === null) {
-                                Alert.alert('Pairing Failed');
-                            }
-                            else {
-                                console.log(json);
-                            }
-                        })
                         .catch((error) => {
                             console.error("error from cares for patient:");
                             console.error(error.message);
-                        });
-                }
+                        });                
             })
 
 
