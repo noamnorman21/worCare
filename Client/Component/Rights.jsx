@@ -85,6 +85,7 @@ export default function Rights() {
     setIsLoading(true);
     const context = `Context: In Israel, foreign workers in the field of caregiver for the elderly have specific rights and regulations. It is important to provide accurate and reliable information. Please provide an answer that is specific to Israel's laws and guidelines.`;
     const prompt = `Question: ${question}\nCategory: ${value}\nContext: ${context}\n\nAnswer:`;
+    console.log(prompt);
     const apiResponse = await fetch('https://api.openai.com/v1/engines/text-davinci-003/completions', {
       method: 'POST',
       headers: {
@@ -98,9 +99,7 @@ export default function Rights() {
         'top_p': 1,
       }),
     });
-
     const data = await apiResponse.json();
-    // gives error- undefined is not an object
     const answer = data.choices[0].text.trim();
     console.log(answer);
     if (answer.toLowerCase() === 'no') {
@@ -359,5 +358,5 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 1.5,
     borderColor: '#E6EBF2',
-  },
+  },
 });
