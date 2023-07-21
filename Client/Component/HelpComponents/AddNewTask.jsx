@@ -1,4 +1,4 @@
-import { Alert, View, Text, StyleSheet, SafeAreaView, Modal, TouchableOpacity, Dimensions, TextInput } from 'react-native'
+import { Alert, View, Text, StyleSheet, SafeAreaView, Modal, TouchableOpacity, Dimensions } from 'react-native'
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { useState, useEffect } from 'react'
 import { MaterialCommunityIcons, MaterialIcons, Octicons, Ionicons } from '@expo/vector-icons';
@@ -9,6 +9,7 @@ import DateRangePicker from "rn-select-date-range";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from "moment";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { TextInput } from 'react-native-paper';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -363,8 +364,12 @@ function AddNewMedicine(props) {
                                  <Ionicons name="md-caret-up-outline" size={17} color="#808080" />
                               </TouchableOpacity>
                               <TextInput
-                                 // mode="outlined"
-                                 // label={numberPerDay == 0 ? 'Number per day' : ''}
+                                 outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                                 contentStyle={{ fontFamily: 'Urbanist-Regular' }}
+                                 activeOutlineColor="#548DFF"
+                                 outlineColor='#E6EBF2'
+                                 mode='outlined'
+                                 label={<Text style={{ fontFamily: "Urbanist-Medium" }}>Number of intakes</Text>}
                                  style={[styles.inputNumber, numberPerDay && { textAlign: 'center' }]}
                                  placeholderTextColor="#9E9E9E"
                                  placeholder="Number of intakes"
@@ -407,6 +412,12 @@ function AddNewMedicine(props) {
                                  <Ionicons name="md-caret-up-outline" size={17} color="#808080" />
                               </TouchableOpacity>
                               <TextInput
+                                 outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                                 contentStyle={{ fontFamily: 'Urbanist-Regular' }}
+                                 activeOutlineColor="#548DFF"
+                                 outlineColor='#E6EBF2'
+                                 mode='outlined'
+                                 label={<Text style={{ fontFamily: "Urbanist-Medium" }}>Qty taken</Text>}
                                  style={[styles.inputNumber, quantity && { textAlign: 'center' }]}
                                  placeholder="Qty taken"
                                  placeholderTextColor="#9E9E9E"
@@ -430,9 +441,15 @@ function AddNewMedicine(props) {
                               <TextInput
                                  style={[styles.inputNumber, capacity && { textAlign: 'center' }]}
                                  placeholder="Capacity In box"
+                                 label={<Text style={{ fontFamily: "Urbanist-Medium" }}>Capacity In box</Text>}
                                  pointerEvents='box-none'
                                  placeholderTextColor="#9E9E9E"
                                  keyboardType='numeric'
+                                 outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                                 contentStyle={{ fontFamily: 'Urbanist-Regular' }}
+                                 activeOutlineColor="#548DFF"
+                                 outlineColor='#E6EBF2'
+                                 mode='outlined'
                                  returnKeyType='done'
                                  value={capacity == 0 ? '' : capacity.toString()}
                                  onChangeText={text => text == '' ? setCapacity(0) : setCapacity(parseInt(text))}
@@ -603,7 +620,13 @@ function AddNewMedicine(props) {
                         placeholder="Custom Instruction ( Optional )"
                         placeholderTextColor="#9E9E9E"
                         value={medComment}
+                        outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                        contentStyle={{ fontFamily: 'Urbanist-Regular' }}
+                        activeOutlineColor="#548DFF"
+                        outlineColor='#E6EBF2'
+                        mode='outlined'
                         multiline={false}
+                        label={<Text style={{ fontFamily: "Urbanist-Medium" }}>Custom Instruction ( Optional )</Text>}
                         returnKeyType='done'
                         keyboardType='default'
                         numberOfLines={4}
@@ -1069,7 +1092,13 @@ function NewTaskModal(props) {
                         <TextInput
                            style={[styles.input, taskNameBorder && { borderColor: '#000' }]}
                            placeholder='Task Name'
+                           outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                           contentStyle={{ fontFamily: 'Urbanist-Regular' }}
+                           activeOutlineColor="#548DFF"
+                           outlineColor='#E6EBF2'
+                           mode='outlined'
                            placeholderTextColor='#9E9E9E'
+                           label={<Text style={{ fontFamily: "Urbanist-Medium" }}>Task Name</Text>}
                            value={taskName}
                            returnKeyType='done'
                            onChangeText={text => setTaskName(text)}
@@ -1085,7 +1114,7 @@ function NewTaskModal(props) {
                                  itemTextStyle={styles.itemStyle}
                                  placeholderStyle={styles.placeholderStyle}
                                  containerStyle={styles.containerStyle}
-                                 style={[styles.input, taskAssignee && { borderColor: '#000' }]}
+                                 style={[styles.input, styles.regInput, taskAssignee && { borderColor: '#000' }]}
                                  value={taskAssignee}
                                  maxHeight={300}
                                  onChange={item => {
@@ -1108,7 +1137,7 @@ function NewTaskModal(props) {
                               itemTextStyle={styles.itemStyle}
                               placeholder="Category"
                               placeholderStyle={styles.placeholderStyle}
-                              style={[styles.input, taskCategory && { borderColor: '#000' }]}
+                              style={[styles.input, styles.regInput, taskCategory && { borderColor: '#000' }]}
                               containerStyle={styles.containerStyle}
                               maxHeight={300}
                               value={taskCategory}
@@ -1117,8 +1146,14 @@ function NewTaskModal(props) {
                            <TextInput
                               style={[styles.input, { borderColor: '#000' }]}
                               placeholder='Category'
+                              label={<Text style={{ fontFamily: "Urbanist-Medium" }}>Category</Text>}
                               placeholderTextColor='#9E9E9E'
                               value='General'
+                              outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                              contentStyle={{ fontFamily: 'Urbanist-Regular' }}
+                              activeOutlineColor="#548DFF"
+                              outlineColor='#E6EBF2'
+                              mode='outlined'
                               editable={false}
                            />
                         }
@@ -1129,7 +1164,7 @@ function NewTaskModal(props) {
                            itemTextStyle={styles.itemStyle}
                            placeholder="Frequency"
                            placeholderStyle={styles.placeholderStyle}
-                           style={[styles.input, taskFrequency && { borderColor: '#000', fontFamily: 'Urbanist-Medium' }]}
+                           style={[styles.input, styles.regInput, taskFrequency && { borderColor: '#000', fontFamily: 'Urbanist-Medium' }]}
                            maxHeight={200}
                            value={taskFrequency}
                            containerStyle={styles.containerStyle}
@@ -1170,13 +1205,13 @@ function NewTaskModal(props) {
                            :
                            <TouchableOpacity onPress={() => { setModalVisibleDate(true); }}>
                               {taskFromDate && taskToDate ?
-                                 <View style={[styles.input, { borderColor: '#000' }]}>
+                                 <View style={[styles.input, styles.regInput, { borderColor: '#000' }]}>
                                     <Text style={[styles.regularTxt, { color: '#000', fontFamily: 'Urbanist-SemiBold' }]}>
                                        {changeDateFormat(taskFromDate)} - {changeDateFormat(taskToDate)}
                                     </Text>
                                  </View>
                                  :
-                                 <View style={styles.input}>
+                                 <View style={[styles.input, styles.regInput]}>
                                     <Text style={[styles.regularTxt, { color: '#9E9E9E' }]}>Start Date - End Date</Text>
                                  </View>
                               }
@@ -1250,8 +1285,14 @@ function NewTaskModal(props) {
                                  <TextInput
                                     style={[styles.inputNumber, numberPerDay && { textAlign: 'center' }]}
                                     placeholder="Number per day"
+                                    label={<Text style={{ fontFamily: "Urbanist-Medium" }}>Number per day</Text>}
                                     placeholderTextColor="#9E9E9E"
                                     keyboardType='numeric'
+                                    outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                                    contentStyle={{ fontFamily: 'Urbanist-Regular' }}
+                                    activeOutlineColor="#548DFF"
+                                    outlineColor='#E6EBF2'
+                                    mode='outlined'
                                     returnKeyType='done'
                                     value={numberPerDay == 0 ? '' : numberPerDay.toString()}
                                     onChangeText={text => text == '' ? setNumberPerDay(0) && setMedTime('') : setNumberPerDay(parseInt(text))}
@@ -1309,7 +1350,7 @@ function NewTaskModal(props) {
                                              setTaskTime(date)
                                           }}
                                        /> :
-                                       <TouchableOpacity onPress={showTimePicker} style={[styles.doubleRowItem, taskTime != '' && { borderColor: '#000' }]}>
+                                       <TouchableOpacity onPress={showTimePicker} style={[styles.doubleRowItem, styles.regInput, taskTime != '' && { borderColor: '#000' }]}>
                                           <Text style={[styles.dateInputTxt, taskTime && { color: "#000" }]}>{taskTime ? taskTime.substring(0, 5) : "Add Time"}</Text>
                                           <MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />
                                        </TouchableOpacity>
@@ -1320,7 +1361,7 @@ function NewTaskModal(props) {
                            :
                            <>
                               {Platform.OS === "ios" ? <DatePicker
-                                 style={[styles.input, taskTime != '' && { borderColor: '#000' }]}
+                                 style={[styles.input, styles.regInput, taskTime != '' && { borderColor: '#000' }]}
                                  date={taskTime}
                                  mode="time"
                                  placeholder="Time"
@@ -1347,7 +1388,9 @@ function NewTaskModal(props) {
                                  }}
                                  onDateChange={(date) => { setTaskTime(date) }}
                               /> :
-                                 <TouchableOpacity style={[styles.datePicker, taskTime && { borderColor: "#000" }]} onPress={showTimePicker}><Text style={[styles.dateInputTxt, taskTime && { color: "#000" }]}>{taskTime ? taskTime : "Time"}</Text></TouchableOpacity>
+                                 <TouchableOpacity style={[styles.datePicker, taskTime && { borderColor: "#000" }]} onPress={showTimePicker}>
+                                    <Text style={[styles.dateInputTxt, taskTime && { color: "#000" }]}>{taskTime ? taskTime : "Time"}</Text>
+                                 </TouchableOpacity>
                               }
                            </>
                         }
@@ -1401,7 +1444,12 @@ function NewTaskModal(props) {
                            placeholder="Comment (Optional)"
                            placeholderTextColor="#9E9E9E"
                            value={taskComment}
-                           multiline={true}
+                           label={<Text style={{ fontFamily: "Urbanist-Medium" }}>Comment (Optional)</Text>}
+                           outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                           contentStyle={{ fontFamily: 'Urbanist-Regular' }}
+                           activeOutlineColor="#548DFF"
+                           outlineColor='#E6EBF2'
+                           mode='outlined'
                            returnKeyType='default'
                            onSubmitEditing={Keyboard.dismiss}
                            keyboardType='default'
@@ -1442,9 +1490,6 @@ const styles = StyleSheet.create({
    doubleRowItem: {
       fontSize: 16,
       width: SCREEN_WIDTH * 0.45,
-      borderWidth: 1.5,
-      borderColor: '#E6EBF2',
-      borderRadius: 16,
       justifyContent: 'center',
       alignItems: 'flex-start',
       height: 50,
@@ -1526,7 +1571,7 @@ const styles = StyleSheet.create({
    closeBtn: {
       backgroundColor: '#F5F8FF',
       borderRadius: 16,
-      height: 44,
+      height: 54,
       width: SCREEN_WIDTH * 0.45,
       justifyContent: 'center',
       alignItems: 'center',
@@ -1538,7 +1583,7 @@ const styles = StyleSheet.create({
       borderRadius: 16,
       justifyContent: 'center',
       alignItems: 'center',
-      height: 44,
+      height: 54,
       width: SCREEN_WIDTH * 0.45,
    },
    saveBtnDate: {
@@ -1571,9 +1616,6 @@ const styles = StyleSheet.create({
       width: SCREEN_WIDTH * 0.95,
    },
    input: {
-      borderRadius: 16,
-      borderWidth: 1.5,
-      borderColor: '#E6EBF2',
       height: 54,
       width: SCREEN_WIDTH * 0.95,
       marginVertical: 7,
@@ -1581,17 +1623,21 @@ const styles = StyleSheet.create({
       fontFamily: 'Urbanist-Light',
       fontSize: 16,
       justifyContent: 'center',
+      backgroundColor: '#fff',
    },
-   commentInput: {
-      borderRadius: 16,
+   regInput: {
       borderWidth: 1.5,
       borderColor: '#E6EBF2',
+      borderRadius: 16,
+   },
+   commentInput: {
       height: 90,
       width: SCREEN_WIDTH * 0.95,
       marginVertical: 7,
       paddingHorizontal: 10,
       fontFamily: 'Urbanist-Light',
       fontSize: 16,
+      backgroundColor: '#fff',
       justifyContent: 'center',
    },
    modalDateView: {
@@ -1692,6 +1738,7 @@ const styles = StyleSheet.create({
       fontFamily: 'Urbanist-Light',
       fontSize: 16,
       paddingLeft: 10,
+      backgroundColor: '#fff',
    },
    iconDropDown: {
       paddingTop: 7

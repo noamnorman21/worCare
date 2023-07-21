@@ -14,7 +14,8 @@ LogBox.ignoreLogs(['Sending `onAnimatedValueUpdate` with no listeners registered
 LogBox.ignoreLogs(['Animated: `useNativeDriver` was not specified. This is a required option and must be explicitly set to `true` or `false`']);
 LogBox.ignoreLogs(['Warning: componentWillReceiveProps has been renamed, and is not recommended for use. See https://reactjs.org/link/unsafe-component-lifecycles for details.']);
 LogBox.ignoreLogs([`Key "cancelled" in the image picker result is deprecated and will be removed in SDK 48, use "canceled" instead`]);
-LogBox.ignoreLogs([` DatePickerIOS has been merged with DatePickerAndroid and will be removed in a future release. It can now be installed and imported from '@react-native-community/datetimepicker' instead of 'react-native'. See https://github.com/react-native-datetimepicker/datetimepicker`]);
+LogBox.ignoreLogs([`DatePickerIOS has been merged with DatePickerAndroid and will be removed in a future release. It can now be installed and imported from '@react-native-community/datetimepicker' instead of 'react-native'. See https://github.com/react-native-datetimepicker/datetimepicker`])
+LogBox.ignoreLogs([`SyntaxError: JSON Parse error: Unexpected EOF`]);
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,

@@ -8,7 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useUserContext } from '../../UserContext';
 import moment from "moment";
 import { AntDesign } from '@expo/vector-icons';
-import {Dialog, TextInput} from 'react-native-paper';
+import { Dialog, TextInput } from 'react-native-paper';
 
 import * as Notifications from 'expo-notifications';
 
@@ -16,7 +16,7 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export default function NewPayment(props) {
-  const { userContext, GetUserPending, sendPushNotification,notificationsThatSent,translateText } = useUserContext();
+  const { userContext, GetUserPending, sendPushNotification, notificationsThatSent, translateText } = useUserContext();
   const pushToken2 = userContext.pushToken2;
   const involvedInId = userContext.involvedInId;
   const userName = userContext.FirstName;
@@ -99,7 +99,7 @@ export default function NewPayment(props) {
   const sendToFirebase = async (image) => {
     setUploading(true);
     // if the user didn't upload an image, we will use the default image
-    if (payment.requestProofDocument === '' || payment.requestProofDocument === undefined) {  
+    if (payment.requestProofDocument === '' || payment.requestProofDocument === undefined) {
       Alert.alert('Please upload an image');
       setUploading(false);
       return;
@@ -149,8 +149,8 @@ export default function NewPayment(props) {
   };
 
   const savePayment = async (downloadURL) => {
-    let requestCommentHeb= await translateText(payment.requestComment,'he');// send to translate function in user context
-    let requestSubjectHeb= await translateText(payment.requestSubject,'he');// send to translate function in user context
+    let requestCommentHeb = await translateText(payment.requestComment, 'he');// send to translate function in user context
+    let requestSubjectHeb = await translateText(payment.requestSubject, 'he');// send to translate function in user context
     const NewPayment = {
       amountToPay: payment.amountToPay,
       requestSubject: payment.requestSubject,
@@ -165,7 +165,7 @@ export default function NewPayment(props) {
     }
 
     console.log("NewPayment");
-    console.log( NewPayment);
+    console.log(NewPayment);
     fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/NewRequest', {
       method: 'POST',
       body: JSON.stringify(NewPayment),
@@ -184,21 +184,21 @@ export default function NewPayment(props) {
             expoPushToken: pushToken2,
             title: "New Payment Request",
             body: `You have a new payment request from ${userName}\n for ${payment.amountToPay}NIS`,
-           // data: { data: 'goes here' },
+            // data: { data: 'goes here' },
           }
           let pushDataForDB = {
             title: "New Payment Request",
             pushMessage: `You have a new payment request from ${userName}\n for ${payment.amountToPay}NIS`,
             //time will be now without seconds
-            time: Platform.OS==="ios"? new Date().toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }):moment(new Date()).format('LT'), //changed for android from locatstring, so it can add in db. need to check if it works on ios),
-            userId: involvedInId,        
+            time: Platform.OS === "ios" ? new Date().toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }) : moment(new Date()).format('LT'), //changed for android from locatstring, so it can add in db. need to check if it works on ios),
+            userId: involvedInId,
           }
           sendPushNotification(PushNotificationsData); // This line sends the notification, the function is in UserContext
           notificationsThatSent(pushDataForDB); // This line saves the notification in the DB, the function is in UserContext
           setUploading(false);
           GetUserPending()
           props.cancel();
-          console.log('expoToken2', pushToken2);         
+          console.log('expoToken2', pushToken2);
         },
         (error) => {
           console.log("err post=", error);
@@ -211,7 +211,7 @@ export default function NewPayment(props) {
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
-          
+
           <View style={styles.centeredView}>
             <TouchableOpacity style={styles.cancelbutton} onPress={props.cancel}>
               <AntDesign name="close" size={24} color="black" />
@@ -219,22 +219,22 @@ export default function NewPayment(props) {
 
             <Text style={styles.title}>Add New Request</Text>
             <View style={styles.inputContainer}>
-            <TextInput
+              <TextInput
                 style={[styles.inputTxt]}
                 placeholder='Subject'
                 mode='outlined'
-                label={<Text style={{fontFamily:"Urbanist-Medium"}}>Subject</Text>}
+                label={<Text style={{ fontFamily: "Urbanist-Medium" }}>Subject</Text>}
                 outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
-                onChangeText={(value) => handleInputChange('requestSubject', value)}
                 contentStyle={{ fontFamily: 'Urbanist-Regular' }}
                 activeOutlineColor="#548DFF"
                 outlineColor='#E6EBF2'
+                onChangeText={(value) => handleInputChange('requestSubject', value)}
               />
               <TextInput
                 style={[styles.inputTxt]}
                 placeholder='Amount'
                 mode='outlined'
-                label={<Text style={{fontFamily:"Urbanist-Medium"}}>Amount</Text>}
+                label={<Text style={{ fontFamily: "Urbanist-Medium" }}>Amount</Text>}
                 keyboardType='decimal-pad'
                 outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
                 onChangeText={(value) => handleInputChange('amountToPay', value)}
@@ -244,10 +244,10 @@ export default function NewPayment(props) {
                 outlineColor='#E6EBF2'
               />
               <TextInput
-                style={[styles.inputTxt, {height: 150, textAlignVertical: 'top'}]}
+                style={[styles.inputTxt, { height: 150, textAlignVertical: 'top' }]}
                 placeholder='Add comment ( Optional )'
                 mode='outlined'
-                label={<Text style={{fontFamily:"Urbanist-Medium"}}>Add comment ( Optional )</Text>}
+                label={<Text style={{ fontFamily: "Urbanist-Medium" }}>Add comment ( Optional )</Text>}
                 outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
                 contentStyle={{ fontFamily: 'Urbanist-Regular' }}
                 activeOutlineColor="#548DFF"
@@ -295,7 +295,7 @@ export default function NewPayment(props) {
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
       <Dialog visible={uploading} style={styles.dialogStyle}>
-        <Dialog.Title style={{ backgroundColor: 'transparent', fontFamily:"Urbanist-Medium", fontSize:18 }}>This will only take a few seconds</Dialog.Title>
+        <Dialog.Title style={{ backgroundColor: 'transparent', fontFamily: "Urbanist-Medium", fontSize: 18 }}>This will only take a few seconds</Dialog.Title>
         <Dialog.Content>
           <ActivityIndicator size="large" color="#548DFF" />
         </Dialog.Content>
@@ -390,7 +390,7 @@ const styles = StyleSheet.create({
     color: '#000',
     backgroundColor: '#fff',
     marginVertical: 10,
-    textAlign:'left',
+    textAlign: 'left',
     width: Dimensions.get('window').width * 0.95,
     height: 54,
   },

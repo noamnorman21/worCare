@@ -40,14 +40,6 @@ function MedTask({ navigation, route }) {
       });
    };
 
-   // useEffect(() => {
-   //    navigation.setOptions({
-   //       tabBar: ({ state }) => ({
-   //          refreshPublicTask: () => getAllPublicTasks(userData),
-   //       }),
-   //    });
-   // }, []);
-
    return (
       <SafeAreaView style={styles.container}>
          <View>
