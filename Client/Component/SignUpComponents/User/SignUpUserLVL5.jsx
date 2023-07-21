@@ -1,13 +1,15 @@
-import { View, Text, SafeAreaView, StyleSheet, Dimensions, TextInput, TouchableOpacity, Alert, Platform } from 'react-native'
+import { View, Text, SafeAreaView, StyleSheet, Dimensions, TouchableOpacity, Alert, Platform } from 'react-native'
 import { useState, useEffect } from 'react'
 import { OrLine, HaveAccount } from '../FooterLine'
 import DatePicker from 'react-native-datepicker';
 import { Dropdown } from 'react-native-element-dropdown';
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
-
+import { TextInput } from 'react-native-paper';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
+const SCREEN_HEIGHT = Dimensions.get('window').height;
+
 export default function SignUpUserLVL5({ navigation, route }) {
   const [language, setLanguage] = useState(route.params.language);
   const [valueLanguage, setValueLanguage] = useState(null);
@@ -99,6 +101,12 @@ export default function SignUpUserLVL5({ navigation, route }) {
           style={styles.input}
           placeholder="First Name"
           placeholderTextColor="gray"
+          mode='outlined'
+          label={<Text style={{ fontFamily: "Urbanist-Medium" }}>First Name</Text>}
+          outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+          contentStyle={{ fontFamily: 'Urbanist-Regular' }}
+          activeOutlineColor="#548DFF"
+          outlineColor='#E6EBF2'
           value={patientFirstName}
           onChangeText={(patientFirstName) => setPatientFirstName(patientFirstName)}
         />
@@ -106,6 +114,12 @@ export default function SignUpUserLVL5({ navigation, route }) {
         <TextInput
           style={styles.input}
           placeholder="Last Name"
+          mode='outlined'
+          label={<Text style={{ fontFamily: "Urbanist-Medium" }}>Last Name</Text>}
+          outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+          contentStyle={{ fontFamily: 'Urbanist-Regular' }}
+          activeOutlineColor="#548DFF"
+          outlineColor='#E6EBF2'
           placeholderTextColor="gray"
           value={patientLastName}
           onChangeText={(patientLastName) => setPatientLastName(patientLastName)}
@@ -119,50 +133,57 @@ export default function SignUpUserLVL5({ navigation, route }) {
           value={patientID}
           onChangeText={(patientID) => setPatientID(patientID)}
           onBlur={() => IsPatientIdUniqueFunc()}
-
+          mode='outlined'
+          label={<Text style={{ fontFamily: "Urbanist-Medium" }}>Patient ID ( 9 Digits )</Text>}
+          outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+          contentStyle={{ fontFamily: 'Urbanist-Regular' }}
+          activeOutlineColor="#548DFF"
+          outlineColor='#E6EBF2'
         />
         {/* Date Picker for birth-date */}
-        {platfr !== 'ios' ? <TouchableOpacity style={styles.datePicker} onPress={showDatepicker}>
-          <Text style={styles.dateInputTxt}>
-            {date === '' ? 'Date Of Birth' : date}
-
-          </Text>
-          {!date && <FontAwesome name="calendar-check-o" size={24} color="gray" />}
-          {/* <Octicons style={{ textAlign: 'right' }} name="calendar" size={22} /> */}
-        </TouchableOpacity> :
-          <DatePicker
-            useNativeDriver={'true'}
-            iconComponent={<FontAwesome name="calendar-check-o" size={24} color="gray" />}
-            style={styles.inputFull}
-            date={date}
-            mode="date"
-            placeholder="Date Of Birth"
-            format="YYYY-MM-DD"
-            minDate="1900-01-01"
-            maxDate="2002-01-01"
-            confirmBtnText="Confirm"
-            cancelBtnText="Cancel"
-            customStyles={{
-              dateIcon: {
-                position: 'absolute',
-                right: 0,
-                top: 0,
-                marginLeft: 0.2
-              },
-              dateInput: {
-                marginLeft: 0,
-                alignItems: 'flex-start',
-                borderWidth: 0,
-              },
-              placeholderText: {
-                color: 'gray',
-                fontFamily: 'Urbanist',
-                fontSize: 16,
-                // textAlign: 'left',
-              }
-            }}
-            onDateChange={(date) => { setDate(date) }}
-          />}
+        {platfr !== 'ios' ?
+          <TouchableOpacity style={styles.datePicker} onPress={showDatepicker}>
+            <Text style={[styles.dateInputTxt]}>
+              {date === '' ? 'Date Of Birth' : date}
+            </Text>
+            {!date && <FontAwesome name="calendar-check-o" size={24} color="gray" />}
+          </TouchableOpacity>
+          :
+          <View style={styles.datePickerIos}>
+            <DatePicker
+              useNativeDriver={false}
+              iconComponent={<FontAwesome name="calendar-check-o" size={24} color="gray" />}
+              style={[styles.inputFull, { paddingHorizontal: 10, borderWidth: 1.5, borderColor: '#E6EBF2', borderRadius: 16 }]}
+              date={date}
+              mode="date"
+              placeholder="Date Of Birth"
+              format="YYYY-MM-DD"
+              minDate="1900-01-01"
+              maxDate="2002-01-01"
+              confirmBtnText="Confirm"
+              cancelBtnText="Cancel"
+              customStyles={{
+                dateIcon: {
+                  position: 'absolute',
+                  right: 0,
+                  top: 0,
+                  marginLeft: 0.2
+                },
+                dateInput: {
+                  marginLeft: 0,
+                  alignItems: 'flex-start',
+                  borderWidth: 0,
+                },
+                placeholderText: {
+                  color: 'gray',
+                  fontFamily: 'Urbanist',
+                  fontSize: 16,
+                  // textAlign: 'left',
+                }
+              }}
+              onDateChange={(date) => { setDate(date) }}
+            />
+          </View>}
         {showPickerAndroid && (
           <DateTimePicker
             //testID="dateTimePicker"
@@ -269,20 +290,29 @@ const styles = StyleSheet.create({
     fontFamily: 'Urbanist-Regular',
     fontSize: 16,
     color: '#808080',
-    borderColor: '#E6EBF2',
-    borderWidth: 1.5,
-    borderRadius: 16,
-    paddingHorizontal: 16,
+    backgroundColor: '#fff',
     marginVertical: 10,
     justifyContent: 'center',
+  },
+  datePicker: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: SCREEN_WIDTH * 0.925,
+    marginBottom: 10,
+    paddingHorizontal: 10,
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: '#E6EBF2',
+    shadowColor: '#000',
+    height: 54,
+    fontFamily: 'Urbanist-Light',
+    fontSize: 16,
   },
   input: {
     width: SCREEN_WIDTH * 0.45,
     height: 54,
-    borderColor: '#E6EBF2',
-    borderWidth: 1.5,
-    borderRadius: 16,
-    paddingHorizontal: 16,
+    backgroundColor: '#fff',
     marginVertical: 10,
     fontFamily: 'Urbanist-Regular',
     fontSize: 16,
@@ -302,7 +332,7 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   dropdown: {
-    padding: 16,
+    paddingHorizontal: 10,
     height: 54,
     borderColor: '#E6EBF2',
     borderWidth: 1.5,
@@ -318,6 +348,7 @@ const styles = StyleSheet.create({
   },
   selectedTextStyle: {
     fontSize: 16,
+    fontFamily: 'Urbanist-Regular',
     color: 'gray',
   },
   inputSearchStyle: {
@@ -332,25 +363,9 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     borderRadius: 16,
   },
-  datePicker: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: Dimensions.get('window').width * 0.92,
-    marginBottom: 10,
-    paddingLeft: 10,
-    paddingRight: 15,
-    borderRadius: 16,
-    borderWidth: 1.5,
-    borderColor: '#E6EBF2',
-    shadowColor: '#000',
-    height: 54,
-    fontFamily: 'Urbanist-Light',
-    fontSize: 16,
-  },
   dateInputTxt: {
     color: '#000',
-    paddingHorizontal: 5,
+    paddingHorizontal: 10,
     fontSize: 16,
     fontFamily: 'Urbanist-Regular',
     fontSize: 16,
@@ -362,4 +377,9 @@ const styles = StyleSheet.create({
     top: 10,
     marginLeft: 0.2
   },
+  datePickerIos: {
+    flexDirection: 'row',
+    width: SCREEN_WIDTH * 0.925,
+
+  }
 })

@@ -392,7 +392,7 @@ export default function SignUpHobbies({ navigation, route }) {
           <View style={styles.doubleContainer}>
             <FlatList
               data={food}
-              keyExtractor={(item) => item.id - 1}
+              keyExtractor={(item) => item.id.toString()}
               numColumns={3}
               contentContainerStyle={styles.flatList}
               renderItem={({ item }) => (
@@ -403,7 +403,8 @@ export default function SignUpHobbies({ navigation, route }) {
                       const newFood = [...food];
                       newFood[item.id - 1].selected = !newFood[item.id - 1].selected;
                       setFood(newFood);
-                    }}>
+                    }}
+                  >
                     <Text style={styles.booksText}>{item.name}</Text>
                   </TouchableOpacity>
                 </View>
@@ -418,11 +419,11 @@ export default function SignUpHobbies({ navigation, route }) {
             />
           </View>
 
-          <Text style={styles.modalText}>Pick Drink</Text>
+          <Text style={styles.modalText}>Pick Drinks</Text>
           <View style={styles.doubleContainer}>
             <FlatList
               data={drink}
-              keyExtractor={(item) => item.id - 1}
+              keyExtractor={(item) => item.id.toString()}
               numColumns={3}
               contentContainerStyle={styles.flatList}
               renderItem={({ item }) => (
@@ -433,7 +434,8 @@ export default function SignUpHobbies({ navigation, route }) {
                       const newDrink = [...drink];
                       newDrink[item.id - 1].selected = !newDrink[item.id - 1].selected;
                       setDrink(newDrink);
-                    }}>
+                    }}
+                  >
                     <Text style={styles.booksText}>{item.name}</Text>
                   </TouchableOpacity>
                 </View>
@@ -451,13 +453,12 @@ export default function SignUpHobbies({ navigation, route }) {
             <TouchableOpacity
               style={styles.saveButton}
               onPress={() => {
-                setModal4Visible(false)
+                setModal4Visible(false);
               }}
             >
               <Text style={styles.saveBtnTxt}>Save</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.cancelButton}
-              onPress={() => setModal4Visible(false)}>
+            <TouchableOpacity style={styles.cancelButton} onPress={() => setModal4Visible(false)}>
               <Text style={styles.cancelBtnTxt}>Cancel</Text>
             </TouchableOpacity>
           </View>

@@ -31,17 +31,17 @@ export default function SignUpUserLVL4({ navigation, route }, props) {
       <View style={styles.holidaysContainer}>
         <Holidays holidaysType={holidaysType} sendHolidays={isItemSelected} />
       </View>
-      <View style={styles.btnContainer}>
-        <TouchableOpacity
-          onPress={NavigateToNextLVL}
-          style={styles.button}>
+      <TouchableOpacity
+        onPress={NavigateToNextLVL}
+        style={styles.btnContainer}>
+        <View style={styles.button}>
           <Text style={styles.buttonText}>Continue</Text>
-        </TouchableOpacity>
-      </View>
+        </View>
+      </TouchableOpacity>
 
       <OrLine />
       <HaveAccount />
-    </SafeAreaView>
+    </SafeAreaView >
   )
 }
 
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   button: {
-    width: SCREEN_WIDTH * 0.9,
+    width: SCREEN_WIDTH * 0.95,
     height: 54,
     backgroundColor: '#548DFF',
     alignItems: 'center',

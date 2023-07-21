@@ -121,7 +121,6 @@ export default function NewPaycheck(props) {
       uploadTask.on('state_changed',
         snapshot => {
           const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log(`Upload is ${progress}% complete`);
         },
         error => {
           console.error(error);
@@ -129,7 +128,6 @@ export default function NewPaycheck(props) {
         },
         () => {
           getDownloadURL(storageRef).then(downloadURL => {
-            console.log('File available at', downloadURL);
             setPayCheck({ ...PayCheck, payCheckProofDocument: downloadURL });
             savePaycheck(downloadURL);
           });
@@ -196,17 +194,18 @@ export default function NewPaycheck(props) {
             <View style={styles.header}>
               <Text style={styles.title}>Add New Paycheck</Text>
             </View>
-            {PlatformType !== 'ios' ? <TouchableOpacity style={styles.datePicker} onPress={showDatepicker}>
-              {!dateSelected ? <Text style={styles.dateInputTxtSelected}>
-                {PayCheck.paycheckDate ? PayCheck.paycheckDate : 'Date'}
-              </Text> :
-                <Text style={styles.dateInputTxtSelected}>
+            {PlatformType !== 'ios' ?
+              <TouchableOpacity style={styles.datePicker} onPress={showDatepicker}>
+                {!dateSelected ? <Text style={styles.dateInputTxtSelected}>
                   {PayCheck.paycheckDate ? PayCheck.paycheckDate : 'Date'}
-                </Text>}
-              {/* <Octicons style={{ textAlign: 'right' }} name="calendar" size={22} /> */}
-            </TouchableOpacity> :
+                </Text> :
+                  <Text style={styles.dateInputTxtSelected}>
+                    {PayCheck.paycheckDate ? PayCheck.paycheckDate : 'Date'}
+                  </Text>}
+                {/* <Octicons style={{ textAlign: 'right' }} name="calendar" size={22} /> */}
+              </TouchableOpacity> :
               <DatePicker
-                useNativeDriver={'true'}
+                useNativeDriver={true}
                 showIcon={false}
                 style={styles.inputFull}
                 date={PayCheck.paycheckDate}
@@ -262,7 +261,7 @@ export default function NewPaycheck(props) {
                 style={[styles.inputTxt]}
                 placeholder='Summary'
                 mode='outlined'
-                label={<Text style={{fontFamily:"Urbanist-Medium"}}>Summary</Text>}
+                label={<Text style={{ fontFamily: "Urbanist-Medium" }}>Summary</Text>}
                 labelStyle={{ fontFamily: 'Urbanist-Regular' }}
                 keyboardType='decimal-pad'
                 outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
@@ -273,36 +272,17 @@ export default function NewPaycheck(props) {
                 outlineColor='#E6EBF2'
               />
               <TextInput
-                style={[styles.inputTxt, { height: 150}]}
+                style={[styles.inputTxt, { height: 150 }]}
                 placeholder='Add comment ( Optional )'
                 mode='outlined'
-                label={<Text style={{fontFamily:"Urbanist-Medium"}}>Add comment ( Optional )</Text>}
+                label={<Text style={{ fontFamily: "Urbanist-Medium" }}>Add comment ( Optional )</Text>}
                 labelStyle={{ fontFamily: 'Urbanist-Regular' }}
                 outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
                 onChangeText={(value) => handleInputChange('paycheckComment', value)}
                 contentStyle={{ fontFamily: 'Urbanist-Regular' }}
                 activeOutlineColor="#548DFF"
                 outlineColor='#E6EBF2'
-                multiline
               />
-              {/*old version- not react-native-paper */} 
-              {/* <TextInput
-                style={[styles.input]}
-                placeholder='Summary'
-                keyboardType='decimal-pad'
-                onChangeText={(value) => handleInputChange('paycheckSummary', value)}
-                inputMode='decimal'
-              />
-              <TextInput
-                style={[styles.input, { height: 150, textAlignVertical: 'top' }]}
-                editable
-                multiline
-                numberOfLines={4}
-                maxLength={300}
-                placeholder='Add comment ( Optional )'
-                keyboardType='ascii-capable'
-                onChangeText={(value) => handleInputChange('paycheckComment', value)}
-              /> */}
               <View style={styles.footerContainer}>
                 <TouchableOpacity style={styles.uploadButton} onPress={pickOrTakeImage}>
                   <Text style={styles.buttonText}>Upload document</Text>
@@ -316,7 +296,7 @@ export default function NewPaycheck(props) {
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
       <Dialog visible={uploading} style={styles.dialogStyle}>
-        <Dialog.Title style={{ backgroundColor: 'transparent', fontFamily:"Urbanist-Medium", fontSize:18 }}>This will only take a few seconds</Dialog.Title>
+        <Dialog.Title style={{ backgroundColor: 'transparent', fontFamily: "Urbanist-Medium", fontSize: 18 }}>This will only take a few seconds</Dialog.Title>
         <Dialog.Content>
           <ActivityIndicator size="large" color="#548DFF" />
         </Dialog.Content>
@@ -451,7 +431,7 @@ const styles = StyleSheet.create({
     color: '#000',
     backgroundColor: '#fff',
     marginVertical: 10,
-    textAlign:'left',
+    textAlign: 'left',
     width: Dimensions.get('window').width * 0.95,
   },
 });

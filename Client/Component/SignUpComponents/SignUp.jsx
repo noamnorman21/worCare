@@ -1,4 +1,4 @@
-import { View, Text, TextInput, Dimensions, SafeAreaView, Alert, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, Dimensions, SafeAreaView, Alert, StyleSheet, TouchableOpacity } from 'react-native'
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import React, { useState, useEffect } from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons'
@@ -6,7 +6,7 @@ import ImagePickerExample from '../HelpComponents/ImagePickerExample'
 import { OrLine, HaveAccount } from './FooterLine'
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
-
+import { TextInput } from 'react-native-paper';
 export default function CreateUser({ navigation, route }) {
   const [showPassword, setShowPassword] = useState(false);//for password visibility
   const [userImage, setUserImage] = useState(null)
@@ -163,6 +163,12 @@ export default function CreateUser({ navigation, route }) {
                 <TextInput
                   style={[styles.input, styles.firstNameInput]}
                   placeholder="First Name"
+                  mode='outlined'
+                  label={<Text style={{ fontFamily: "Urbanist-Medium" }}>First Name</Text>}
+                  outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                  contentStyle={{ fontFamily: 'Urbanist-Regular' }}
+                  activeOutlineColor="#548DFF"
+                  outlineColor='#E6EBF2'
                   placeholderTextColor={'#9E9E9E'}
                   keyboardType='ascii-capable'
                   autoCorrect={false}
@@ -170,6 +176,12 @@ export default function CreateUser({ navigation, route }) {
                 />
                 <TextInput
                   style={[styles.input, styles.lastNameInput]}
+                  mode='outlined'
+                  label={<Text style={{ fontFamily: "Urbanist-Medium" }}>Last Name</Text>}
+                  outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                  contentStyle={{ fontFamily: 'Urbanist-Regular' }}
+                  activeOutlineColor="#548DFF"
+                  outlineColor='#E6EBF2'
                   placeholder="Last Name"
                   placeholderTextColor={'#9E9E9E'}
                   keyboardType='ascii-capable'
@@ -184,9 +196,13 @@ export default function CreateUser({ navigation, route }) {
                 onChangeText={(value) => handleInputChange('email', value.trim())}
                 autoCapitalize='none'
                 autoCorrect={false}
-                onBlur={() => {
-                  CheckEmailInDB()
-                }}
+                mode='outlined'
+                label={<Text style={{ fontFamily: "Urbanist-Medium" }}>Email Address</Text>}
+                outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                contentStyle={{ fontFamily: 'Urbanist-Regular' }}
+                activeOutlineColor="#548DFF"
+                outlineColor='#E6EBF2'
+                onBlur={() => { CheckEmailInDB() }}
               />
 
               <View style={styles.phoneContainer}>
@@ -195,12 +211,15 @@ export default function CreateUser({ navigation, route }) {
                   placeholderTextColor={'#9E9E9E'}
                   placeholder="Phone Number"
                   keyboardType='phone-pad'
-                  // return button type in keyboard for ios devices
                   returnKeyType='done'
                   onChangeText={(value) => handleInputChange('phoneNum', value)}
-                  onBlur={() => {
-                    CheckPhoneInDB()
-                  }}
+                  onBlur={() => { CheckPhoneInDB() }}
+                  mode='outlined'
+                  label={<Text style={{ fontFamily: "Urbanist-Medium" }}>Phone Number</Text>}
+                  outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                  contentStyle={{ fontFamily: 'Urbanist-Regular' }}
+                  activeOutlineColor="#548DFF"
+                  outlineColor='#E6EBF2'
                 />
               </View>
               <View style={styles.passwordContainer}>
@@ -214,15 +233,17 @@ export default function CreateUser({ navigation, route }) {
                   autoCorrect={false}
                   keyboardType='ascii-capable'
                   onChangeText={(value) => handleInputChange('password', value)}
+                  mode='outlined'
+                  label={<Text style={{ fontFamily: "Urbanist-Medium" }}>Password  (8+ characters)</Text>}
+                  outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
+                  contentStyle={{ fontFamily: 'Urbanist-Regular' }}
+                  activeOutlineColor="#548DFF"
+                  outlineColor='#E6EBF2'
                 />
-                <TouchableOpacity
-                  style={styles.passwordButton}
-                  onPress={() => setShowPassword(!showPassword)}
-                >
-                  {/* Icon button For changing password input visibility */}
+                <TouchableOpacity style={styles.passwordButton} onPress={() => setShowPassword(!showPassword)} >
                   <Icon
                     name={showPassword ? 'visibility' : 'visibility-off'}
-                    size={20}
+                    size={24}
                     color='#000000'
                   />
                 </TouchableOpacity>
@@ -248,9 +269,10 @@ const styles = StyleSheet.create({
   passwordButton: {
     position: 'absolute',
     right: SCREEN_WIDTH * 0.1,
-    padding: 5,
-    borderRadius: 5,
     marginLeft: 5,
+    top: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   container: {
     flex: 1,
@@ -261,7 +283,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     width: SCREEN_WIDTH * 1,
-    height: Dimensions.get('window').height * 1,
+    height: SCREEN_HEIGHT * 1,
     alignItems: 'center',
     flex: 4.5,
   },
@@ -282,23 +304,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   input: {
-    width: SCREEN_WIDTH * 0.92,
-    padding: 10,
-    marginVertical: 10,
-    alignItems: 'center',
-    borderRadius: 16,
-    borderWidth: 1.5,
-    borderColor: '#E6EBF2',
-    fontFamily: 'Urbanist-Medium',
+    width: SCREEN_WIDTH * 0.925,
     height: 54,
+    fontFamily: 'Urbanist-Regular',
+    fontSize: 16,
+    color: '#808080',
+    backgroundColor: '#fff',
+    marginVertical: 7,
+    justifyContent: 'center',
   },
   button: {
-    width: SCREEN_WIDTH * 0.92,
+    width: SCREEN_WIDTH * 0.925,
     backgroundColor: '#548DFF',
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 16,
-    marginVertical: 7,
+    marginTop: 7,
     height: 54,
   },
   buttonText: {
@@ -308,7 +329,7 @@ const styles = StyleSheet.create({
   },
   nameContainer: {
     flexDirection: 'row',
-    width: SCREEN_WIDTH * 0.92,
+    width: SCREEN_WIDTH * 0.925,
     alignItems: 'center',
     justifyContent: 'space-between',
   },

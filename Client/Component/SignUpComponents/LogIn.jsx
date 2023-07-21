@@ -44,37 +44,37 @@ export default function LogIn({ navigation }) {
             body: JSON.stringify(user),
         })
             .then(async (response) => {
-                    return response.json();
+                return response.json();
             })
-            .then(async (json) => {                
-                    console.log(json);
-                    const caresForPatient = {
-                        patientId: patientId,
-                        workerId: json,
-                        linkTo: await Linking.getInitialURL(),
-                        status: "P"
-                    };
-                    fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/ForeignUser/InsertCaresForPatient', {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify(caresForPatient),
+            .then(async (json) => {
+                console.log(json);
+                const caresForPatient = {
+                    patientId: patientId,
+                    workerId: json,
+                    linkTo: await Linking.getInitialURL(),
+                    status: "P"
+                };
+                fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/ForeignUser/InsertCaresForPatient', {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(caresForPatient),
+                })
+                    .then((response) => {
+                        if (response.status === 200) {
+                            return response.json();
+                        }
+                        else {
+                            return null;
+                        }
                     })
-                        .then((response) => {
-                            if (response.status === 200) {
-                                return response.json();
-                            }
-                            else {
-                                return null;
-                            }
-                        })
-                        .catch((error) => {
-                            console.error("error from cares for patient:");
-                            console.error(error.message);
-                        });                
+                    .catch((error) => {
+                        console.error("error from cares for patient:");
+                        console.error(error.message);
+                    });
             })
-    }   
+    }
 
     // function to check from where the app was opened from a invintation link or not  
     const getInitialUrl = async () => {
@@ -133,7 +133,7 @@ export default function LogIn({ navigation }) {
             Password: password,
         }
 
-        if(addNewPairing){
+        if (addNewPairing) {
             await pairUsers();
         }
 
@@ -295,7 +295,7 @@ export default function LogIn({ navigation }) {
     }
 
     useFocusEffect(
-        useCallback(() => {           
+        useCallback(() => {
             loadStorageData();
         }, []),
     );
@@ -322,7 +322,7 @@ export default function LogIn({ navigation }) {
         <>
             {isSigned ?
                 <SafeAreaView style={styles.container}>
-                    <Image source={require('../../images/logo_New.png')} style={styles.imageWelcome} />                    
+                    <Image source={require('../../images/logo_New.png')} style={styles.imageWelcome} />
                     <ActivityIndicator style={styles.container} size={60} color="#548DFF" />
                 </SafeAreaView> :
                 <SafeAreaView style={styles.container}>

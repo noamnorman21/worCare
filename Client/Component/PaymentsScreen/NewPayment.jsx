@@ -33,8 +33,6 @@ export default function NewPayment(props) {
   })
   const [uploading, setUploading] = useState(false);
 
-
-
   const openCamera = async () => {
     // Ask the user for the permission to access the camera
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
@@ -163,9 +161,6 @@ export default function NewPayment(props) {
       requestCommentHeb: requestCommentHeb,
       requestSubjectHeb: requestSubjectHeb,
     }
-
-    console.log("NewPayment");
-    console.log(NewPayment);
     fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/Payments/NewRequest', {
       method: 'POST',
       body: JSON.stringify(NewPayment),
@@ -198,7 +193,6 @@ export default function NewPayment(props) {
           setUploading(false);
           GetUserPending()
           props.cancel();
-          console.log('expoToken2', pushToken2);
         },
         (error) => {
           console.log("err post=", error);
@@ -258,30 +252,6 @@ export default function NewPayment(props) {
                 multiline
                 numberOfLines={4}
               />
-              {/*old version- not react-native-paper */}
-              {/* <TextInput
-                style={styles.input}
-                placeholder='Subject'
-                keyboardType='ascii-capable'
-                onChangeText={(value) => handleInputChange('requestSubject', value)}
-              />
-              <TextInput
-                style={[styles.input]}
-                placeholder='Amount'
-                keyboardType='decimal-pad'
-                onChangeText={(value) => handleInputChange('amountToPay', value)}
-                inputMode='decimal'
-              />
-              <TextInput
-                style={[styles.input, { height: 150, textAlignVertical: 'top' }]}
-                editable             
-                numberOfLines={4}
-                maxLength={300}
-                placeholder='Add comment ( Optional )'
-                keyboardType='ascii-capable'
-                onChangeText={(value) => handleInputChange('requestComment', value)}
-                onSubmitEditing={Keyboard.dismiss}
-              /> */}
               <View style={styles.footerContainer}>
                 <TouchableOpacity style={styles.uploadButton} onPress={pickOrTakeImage}>
                   <Text style={styles.buttonText}>Upload document</Text>
