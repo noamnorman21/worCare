@@ -35,7 +35,6 @@ export default function ChatRoom({ route, navigation }) {
 
   // get messages from firebase
   useLayoutEffect(() => {
-    console.log("route.params", route.params)
     const tempMessages = query(collection(db, route.params.name), orderBy('createdAt', 'desc'));
     const unsubscribe = onSnapshot(tempMessages, (snapshot) => {
       setMessages(
@@ -65,7 +64,6 @@ export default function ChatRoom({ route, navigation }) {
       ),
     })
     if (route.params.type === "private") {
-      console.log(route.params.type)
       getUserToken();
     }
     return () => { console.log("unsub"); unsubscribe() };
@@ -77,7 +75,6 @@ export default function ChatRoom({ route, navigation }) {
     let user = {
       Email: route.params.userEmail
     }
-    console.log("user", user)
     fetch('https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUserToken', {
       method: 'POST',
       headers: new Headers({
@@ -93,7 +90,6 @@ export default function ChatRoom({ route, navigation }) {
       )
       .then(
         (result) => {
-          console.log("result", result)
           setUserToken2(result.pushToken)
           console.log(result.lagnuagecode)
           setUserLanguage(result.lagnuagecode)
@@ -136,7 +132,6 @@ export default function ChatRoom({ route, navigation }) {
     // Explore the result
     if (!result.canceled) {
       setPicPreviewModal(true);
-      console.log("result.uri", result.assets[0].uri)
       setSelectedPic(result.assets[0].uri);
     }
   }
@@ -150,7 +145,6 @@ export default function ChatRoom({ route, navigation }) {
     // Explore the result
     if (!result.canceled) {
       setPicPreviewModal(true);
-      console.log("result.uri", result.assets[0].uri)
       setSelectedPic(result.assets[0].uri);
       // sendToFirebase(result.assets[0].uri);     
     }
@@ -227,11 +221,9 @@ export default function ChatRoom({ route, navigation }) {
     if (GroupMembers) {
       GroupMembers.forEach(arr => {
         arr.forEach(user => {
-          console.log("useraa", user)
           if (user !== auth.currentUser.email) {
             const docRef = query(collection(db, user), where("Name", "==", route.params.name));
             const res = getDocs(docRef);
-            console.log("res", res)
             res.then((querySnapshot) => {
               if (!querySnapshot.empty) {
                 querySnapshot.forEach((doc) => {
@@ -362,7 +354,6 @@ export default function ChatRoom({ route, navigation }) {
           time: Platform.OS === "ios" ? new Date().toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }) : moment(new Date()).format('LT'), //changed for android from locatstring, so it can add in db. need to check if it works on ios),
           userId: userIdThatGetThePush
         }
-        console.log(notification)
         notificationsThatSent(notification)
       }
     }

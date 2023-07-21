@@ -183,12 +183,11 @@ function CustomHeader() {
                                         </TouchableOpacity>
                                         <View style={styles.line} />
 
-                                        <TouchableOpacity onPress={
+                                        {userContext.userType==="User" &&<><TouchableOpacity onPress={
                                             () => {
-                                                userContext.userType === 'User' ?
-                                                    setNewUserDialogVisable(true) :
-                                                    setNewUserDialogVisable(false)
-                                                toggleModal()
+                                               
+                                                    setNewUserDialogVisable(true)
+                                                    toggleModal()
                                             }
                                         }>
 
@@ -197,7 +196,7 @@ function CustomHeader() {
                                                 <Text style={styles.menuItemText}>Add New Patient</Text>
                                             </View>
                                         </TouchableOpacity>
-                                        <View style={styles.line} />
+                                        <View style={styles.line} /></>}
 
                                         <TouchableOpacity onPress={
                                             () => {
@@ -318,7 +317,7 @@ function CustomHeader() {
             </Stack.Navigator>
             <Dialog visible={newUserDialogVisable} onDismiss={() => setNewUserDialogVisable(false)}
                 style={styles.dialogStyle}>
-                <Dialog.Title style={styles.dialogTitle}>Choose User Type</Dialog.Title>
+                <Dialog.Title style={styles.dialogTitle}>Add New Patient</Dialog.Title>
                 <Dialog.Content>
                     <Paragraph style={{ fontFamily: 'Urbanist-Medium', fontSize: 18 }}>Do you want to create New Patient Profile?</Paragraph>
                 </Dialog.Content>

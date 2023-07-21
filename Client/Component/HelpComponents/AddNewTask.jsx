@@ -10,6 +10,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from "moment";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { TextInput } from 'react-native-paper';
+import { ScreenWidth } from '@rneui/base';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -343,12 +344,13 @@ function AddNewMedicine(props) {
                            maxHeight={300}
                            fontFamily='Urbanist-Light'
                            // style={[styles.input, taskAssignee && { borderColor: '#000' }]}
-                           style={[styles.input, { textAlign: 'center', backgroundColor: '#EEEEEE' }, selectedDrugName && { borderColor: '#000' }]}
+                           style={[styles.input, { textAlign: 'center', backgroundColor: '#EEEEEE', borderRadius:16, } ]}
                            itemTextStyle={styles.itemStyle}
                            placeholderStyle={styles.placeholderStyle}
                            containerStyle={styles.containerStyle}
                            value={selectedDrugName}
                            onChange={(item) => handeleDrugChange(item)}
+                           selectedTextStyle={{ fontFamily: 'Urbanist-Medium' }}
                         />
                      </View>
 
@@ -369,8 +371,8 @@ function AddNewMedicine(props) {
                                  activeOutlineColor="#548DFF"
                                  outlineColor='#E6EBF2'
                                  mode='outlined'
-                                 label={<Text style={{ fontFamily: "Urbanist-Medium" }}>Number of intakes</Text>}
-                                 style={[styles.inputNumber, numberPerDay && { textAlign: 'center' }]}
+                                 label={<Text style={{ fontFamily: "Urbanist-Medium" }}>Num of intakes</Text>}
+                                 style={[styles.inputNumber,{width:ScreenWidth*0.45}, numberPerDay && { textAlign: 'center' }]}
                                  placeholderTextColor="#9E9E9E"
                                  placeholder="Number of intakes"
                                  keyboardType='numeric'
@@ -390,9 +392,9 @@ function AddNewMedicine(props) {
                               placeholder="Frequency"
                               fontFamily='Urbanist-Light'
                               // style={[styles.input, taskAssignee && { borderColor: '#000' }]}
-                              style={[styles.doubleRowItem, { paddingRight: 10, paddingLeft: 10 }, selectedFrequency && { borderColor: '#000' }]}
+                              style={[styles.doubleRowItem, { paddingRight: 10, paddingLeft: 10, marginTop:7 },styles.regInput]}
                               itemTextStyle={styles.itemStyle}
-                              placeholderStyle={{
+                              placeholderStyle={{  
                                  color: '#9E9E9E',
                                  fontSize: 16,
                                  fontFamily: 'Urbanist-Light',
@@ -401,6 +403,7 @@ function AddNewMedicine(props) {
                               inputSearchStyle={styles.inputSearchStyle}
                               value={selectedFrequency}
                               onChange={item => { setSelectedFrequency(item.name) }}
+                              selectedTextStyle={{ fontFamily: 'Urbanist-Medium' }}
                            />
                         </View>
                         {/* SECOND ROW */}
@@ -418,7 +421,7 @@ function AddNewMedicine(props) {
                                  outlineColor='#E6EBF2'
                                  mode='outlined'
                                  label={<Text style={{ fontFamily: "Urbanist-Medium" }}>Qty taken</Text>}
-                                 style={[styles.inputNumber, quantity && { textAlign: 'center' }]}
+                                 style={[styles.inputNumber,{width:ScreenWidth*0.45}, quantity && { textAlign: 'center' }]}
                                  placeholder="Qty taken"
                                  placeholderTextColor="#9E9E9E"
                                  keyboardType='numeric'
@@ -439,7 +442,7 @@ function AddNewMedicine(props) {
                                  <Ionicons name="md-caret-up-outline" size={17} color="#808080" />
                               </TouchableOpacity>
                               <TextInput
-                                 style={[styles.inputNumber, capacity && { textAlign: 'center' }]}
+                                 style={[styles.inputNumber,{width:ScreenWidth*0.45}, capacity && { textAlign: 'center' }]}
                                  placeholder="Capacity In box"
                                  label={<Text style={{ fontFamily: "Urbanist-Medium" }}>Capacity In box</Text>}
                                  pointerEvents='box-none'
@@ -470,7 +473,7 @@ function AddNewMedicine(props) {
                               <DatePicker
                                  useNativeDriver={'true'}
                                  iconComponent={<MaterialCommunityIcons style={styles.addIcon} name="calendar-outline" size={24} color="#808080" />}
-                                 style={[styles.doubleRowItem, medToDate && { borderColor: '#000' }]}
+                                 style={[styles.doubleRowItem]}
                                  date={medToDate}
                                  mode="date"
                                  placeholder="dd/mm/yyyy"
@@ -497,7 +500,7 @@ function AddNewMedicine(props) {
                                  onDateChange={(date) => setMedToDate(date)}
                               />
                               :
-                              <TouchableOpacity style={[styles.medDatePicker, medToDate && { borderColor: "#000" }]} onPress={showdatePicker}>
+                              <TouchableOpacity style={[styles.medDatePicker]} onPress={showdatePicker}>
                                  <Text style={styles.dateInputTxt}>{medToDate ? medToDate : "dd/mm/yyyy"}</Text>
                               </TouchableOpacity>
                            }
@@ -516,7 +519,7 @@ function AddNewMedicine(props) {
                               <View >
                                  {Platform.OS === 'ios' ?
                                     <DatePicker
-                                       style={[styles.doubleRowItem, medTime != '' && { borderColor: '#000' }]}
+                                       style={[styles.doubleRowItem,styles.regInput, medTime != '' && { borderColor: '#000' }]}
                                        date={medTime}
                                        iconComponent={<MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />}
                                        placeholder="Add Time"
@@ -1093,7 +1096,7 @@ function NewTaskModal(props) {
                            style={[styles.input, taskNameBorder && { borderColor: '#000' }]}
                            placeholder='Task Name'
                            outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
-                           contentStyle={{ fontFamily: 'Urbanist-Regular' }}
+                           contentStyle={{ fontFamily: 'Urbanist-Regular', paddingLeft:2 }}
                            activeOutlineColor="#548DFF"
                            outlineColor='#E6EBF2'
                            mode='outlined'
@@ -1114,7 +1117,7 @@ function NewTaskModal(props) {
                                  itemTextStyle={styles.itemStyle}
                                  placeholderStyle={styles.placeholderStyle}
                                  containerStyle={styles.containerStyle}
-                                 style={[styles.input, styles.regInput, taskAssignee && { borderColor: '#000' }]}
+                                 style={[styles.input, styles.regInput]}
                                  value={taskAssignee}
                                  maxHeight={300}
                                  onChange={item => {
@@ -1126,6 +1129,8 @@ function NewTaskModal(props) {
                                        setIsPrivate(false)
                                     }
                                  }}
+                                 selectedTextStyle={{ fontFamily: 'Urbanist-Medium' }}
+
                               />
                               : null
                         }
@@ -1137,11 +1142,12 @@ function NewTaskModal(props) {
                               itemTextStyle={styles.itemStyle}
                               placeholder="Category"
                               placeholderStyle={styles.placeholderStyle}
-                              style={[styles.input, styles.regInput, taskCategory && { borderColor: '#000' }]}
+                              style={[styles.input, styles.regInput]}
                               containerStyle={styles.containerStyle}
                               maxHeight={300}
                               value={taskCategory}
                               onChange={item => { setTaskCategory(item.name) }}
+                              selectedTextStyle={{ fontFamily: 'Urbanist-Medium' }}
                            /> :
                            <TextInput
                               style={[styles.input, { borderColor: '#000' }]}
@@ -1150,7 +1156,7 @@ function NewTaskModal(props) {
                               placeholderTextColor='#9E9E9E'
                               value='General'
                               outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
-                              contentStyle={{ fontFamily: 'Urbanist-Regular' }}
+                              contentStyle={{ fontFamily: 'Urbanist-Regular', paddingLeft:2 }}
                               activeOutlineColor="#548DFF"
                               outlineColor='#E6EBF2'
                               mode='outlined'
@@ -1164,11 +1170,12 @@ function NewTaskModal(props) {
                            itemTextStyle={styles.itemStyle}
                            placeholder="Frequency"
                            placeholderStyle={styles.placeholderStyle}
-                           style={[styles.input, styles.regInput, taskFrequency && { borderColor: '#000', fontFamily: 'Urbanist-Medium' }]}
+                           style={[styles.input, styles.regInput]}
                            maxHeight={200}
                            value={taskFrequency}
                            containerStyle={styles.containerStyle}
                            onChange={item => { setTaskFrequency(item.name) }}
+                           selectedTextStyle={{ fontFamily: 'Urbanist-Medium' }}
                         />
 
                         {/* If taskFrequency == 'Once' Show date picker - now date range */}
@@ -1176,7 +1183,7 @@ function NewTaskModal(props) {
                            <DatePicker
                               useNativeDriver={'true'}
                               iconComponent={<MaterialCommunityIcons style={[styles.addIcon, { right: 0 }]} name="calendar-outline" size={24} color="#808080" />}
-                              style={[styles.input, taskFromDate && { borderColor: '#000' }]}
+                              style={[styles.input,styles.regInput]}
                               date={taskFromDate}
                               mode="date"
                               placeholder="dd/mm/yyyy"
@@ -1201,7 +1208,7 @@ function NewTaskModal(props) {
                               onDateChange={(date) => setTaskFromDate(date)}
                            />
                            :
-                           <TouchableOpacity style={[styles.datePicker, taskFromDate && { borderColor: "#000" }]} onPress={showDatePicker}><Text style={[styles.dateInputTxt, taskFromDate && { color: "#000" }]}>{taskFromDate ? taskFromDate : "Date"}</Text></TouchableOpacity>
+                           <TouchableOpacity style={[styles.datePicker]} onPress={showDatePicker}><Text style={[styles.dateInputTxt, taskFromDate && { color: "#000" }]}>{taskFromDate ? taskFromDate : "Date"}</Text></TouchableOpacity>
                            :
                            <TouchableOpacity onPress={() => { setModalVisibleDate(true); }}>
                               {taskFromDate && taskToDate ?
@@ -1283,13 +1290,13 @@ function NewTaskModal(props) {
                                     <Ionicons name="md-caret-up-outline" size={17} color="#808080" />
                                  </TouchableOpacity>
                                  <TextInput
-                                    style={[styles.inputNumber, numberPerDay && { textAlign: 'center' }]}
+                                    style={[styles.inputNumber, numberPerDay && { textAlign: 'center' }, {width: SCREEN_WIDTH * 0.45}]}
                                     placeholder="Number per day"
                                     label={<Text style={{ fontFamily: "Urbanist-Medium" }}>Number per day</Text>}
                                     placeholderTextColor="#9E9E9E"
                                     keyboardType='numeric'
                                     outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
-                                    contentStyle={{ fontFamily: 'Urbanist-Regular' }}
+                                    contentStyle={{ fontFamily: 'Urbanist-Regular', paddingLeft:2 }}
                                     activeOutlineColor="#548DFF"
                                     outlineColor='#E6EBF2'
                                     mode='outlined'
@@ -1305,8 +1312,8 @@ function NewTaskModal(props) {
                               {numberPerDay > 1 ?
                                  <View>
                                     <TouchableOpacity onPress={() => { setModalTimesVisible(true) }}>
-                                       <View style={[styles.doubleRowItem, taskTimeArr.length == numberPerDay && { borderColor: '#000' }]}>
-                                          <Text style={[styles.inputNumber, { color: '#9E9E9E' }, taskTimeArr.length == numberPerDay && { color: '#000' }]}>
+                                       <View style={[styles.doubleRowItem,styles.regInput,{ marginTop:7 }]}>
+                                          <Text style={[styles.inputNumber, { color: '#9E9E9E'}, taskTimeArr.length == numberPerDay && { color: '#000' }]}>
                                              {numberPerDay == taskTimeArr.length ? 'Times Selected' : 'Add Times'}
                                           </Text>
                                           <MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />
@@ -1317,7 +1324,7 @@ function NewTaskModal(props) {
                                  <View >
                                     {Platform.OS === 'ios' ?
                                        <DatePicker
-                                          style={[styles.doubleRowItem, taskTime != '' && { borderColor: '#000' }]}
+                                          style={[styles.doubleRowItem,styles.regInput,{marginTop:7}, taskTime != '' && { borderColor: '#000' }]}
                                           date={taskTime}
                                           iconComponent={<MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />}
                                           placeholder="Add Time"
@@ -1350,7 +1357,7 @@ function NewTaskModal(props) {
                                              setTaskTime(date)
                                           }}
                                        /> :
-                                       <TouchableOpacity onPress={showTimePicker} style={[styles.doubleRowItem, styles.regInput, taskTime != '' && { borderColor: '#000' }]}>
+                                       <TouchableOpacity onPress={showTimePicker} style={[styles.doubleRowItem, {marginTop:7},styles.regInput]}>
                                           <Text style={[styles.dateInputTxt, taskTime && { color: "#000" }]}>{taskTime ? taskTime.substring(0, 5) : "Add Time"}</Text>
                                           <MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />
                                        </TouchableOpacity>
@@ -1446,7 +1453,7 @@ function NewTaskModal(props) {
                            value={taskComment}
                            label={<Text style={{ fontFamily: "Urbanist-Medium" }}>Comment (Optional)</Text>}
                            outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
-                           contentStyle={{ fontFamily: 'Urbanist-Regular' }}
+                           contentStyle={{ fontFamily: 'Urbanist-Medium', paddingLeft:2 }}
                            activeOutlineColor="#548DFF"
                            outlineColor='#E6EBF2'
                            mode='outlined'
@@ -1722,6 +1729,7 @@ const styles = StyleSheet.create({
       justifyContent: 'flex-end',
       height: 26,
       width: 28,
+      zIndex: 1,
    },
    arrowDown: {
       marginLeft: 10,
