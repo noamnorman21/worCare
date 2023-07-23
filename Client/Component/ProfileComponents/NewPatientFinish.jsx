@@ -69,15 +69,6 @@ export default function NewPatientFinish({ navigation, route }) {
                     ]);
                 }
             }
-            else {
-                Alert.alert('Invitation sent', 'We will notify you when your friend will join', [
-                    {
-                        text: "OK",
-                        onPress: () => { setModalVisible(false), createNewPatient() },
-                        style: "cancel"
-                    },
-                ]);
-            }
             // Alert.alert(result);
         } else {
             // misfortune... there's no SMS available on this device
