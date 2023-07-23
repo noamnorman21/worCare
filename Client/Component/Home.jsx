@@ -8,16 +8,41 @@ import { Agenda, CalendarProvider } from 'react-native-calendars';
 import moment from 'moment';
 import { useFocusEffect, useIsFocused, StackActions } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Notifications from 'expo-notifications';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function Home({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
-  const { allPublicTasks, allPrivateTasks, holidays, logOutFireBase, userContext } = useUserContext();
+  const { allPublicTasks, allPrivateTasks, holidays, logOutFireBase, userContext,GetUserHistory, GetUserPending,GetNotificationsThatSent } = useUserContext();
   const isFocused = useIsFocused();
   const firstName = userContext.FirstName;
-  useEffect(() => {
-  }, [allPrivateTasks, allPublicTasks, holidays]);
+
+useEffect(() => {
+  let listener= Notifications.addNotificationReceivedListener((notification) => {
+    let notiBody= notification.request.content.body
+    if (notiBody.includes("message")) {
+      console.log("message");
+      setNewMessages(newMessages + 1);
+    }
+    else if (notiBody.includes("task")) {
+      console.log("task")
+    }
+    else if (notiBody.includes("payment")) {
+      console.log("payment")
+      GetUserPending()
+      GetUserHistory()
+    }
+    GetNotificationsThatSent(userContext.userId);
+});
+
+listener;
+    return () => {
+      console.log("remove listener")
+        Notifications.removeNotificationSubscription(listener);
+    };
+}, []);
+
 
   useFocusEffect(
     useCallback(() => {

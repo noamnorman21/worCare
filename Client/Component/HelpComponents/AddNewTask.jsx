@@ -657,7 +657,7 @@ function NewTaskModal(props) {
    const [userId, setUserId] = useState(useUserContext.userId);
    const [userType, setUserType] = useState(userData.userType);
 
-   const { addPrivateTaskContext, getAllPrivateTasks, getAllPublicTasks } = useUserContext();
+   const { addPrivateTaskContext, getAllPrivateTasks, getAllPublicTasks, userContext } = useUserContext();
    const [datePickerVisable, setDatePickerVisable] = useState(false);
    const [timePickerVisable, setTimePickerVisable] = useState(false);
 
@@ -876,7 +876,7 @@ function NewTaskModal(props) {
       if (!taskName) {
          return Alert.alert("Please select Name")
       }
-      if (!taskAssignee) {
+      if (userContext.userType=="Caregiver" && !taskAssignee) {
          return Alert.alert("Please select asignee")
       }
       if (!taskCategory) {
