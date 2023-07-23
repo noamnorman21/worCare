@@ -70,8 +70,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         width: '100%',
-        alignSelf: 'center',
         marginVertical: 30,
+        justifyContent: 'center',
     },
     line: {
         flex: 0.5,

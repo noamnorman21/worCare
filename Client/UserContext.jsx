@@ -32,7 +32,7 @@ let updateNoti = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/UpdateUserNo
 
 // Sign Up
 let insertUser = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/InsertUser';
-let getAllCountries = 'https://proj.ruppin.ac.il/cgroup94/test1/api/LanguageCountry/GetAllCountries';
+let getAllLanguages = 'https://proj.ruppin.ac.il/cgroup94/test1/api/LanguageCountry/GetAllLanguages';
 
 // Sign Up Patient
 let insertPatient = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/InsertPatient';

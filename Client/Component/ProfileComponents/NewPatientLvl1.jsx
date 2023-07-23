@@ -7,6 +7,7 @@ import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useUserContext } from '../../UserContext';
 import { TextInput } from 'react-native-paper';
+import Home from '../Home';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 export default function NewPatientLvl1({ navigation, route }) {
@@ -84,7 +85,7 @@ export default function NewPatientLvl1({ navigation, route }) {
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.headerContainer}>
-                <Text style={styles.headerTxt}>Create Patient Profile</Text>
+                <Text style={styles.headerTxt}>Create Patient Profile </Text>
                 <Text style={styles.headerSmallTxt}> We love to know details about the patient </Text>
                 {/* Line */}
                 <View style={styles.line} />
@@ -224,15 +225,10 @@ export default function NewPatientLvl1({ navigation, route }) {
                     <Text style={styles.buttonText}>Continue</Text>
                 </View>
             </TouchableOpacity>
-            <View style={styles.footer}>
-                <OrLine />
-                <View>
-                    <Text style={styles.headerSmallTxt}>{useUserContext().languageArr.length}Don't need another patient profile?</Text>
-                    <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-                        <HaveAccount text="Back to Tasks" />
-                    </TouchableOpacity>
-                </View>
-            </View>
+            <OrLine />
+            <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+                <Text style={styles.footerSM}>Go back to home page</Text>
+            </TouchableOpacity>
         </SafeAreaView >
     )
 };
@@ -242,8 +238,12 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
     },
-    footer: {
-
+    footerSM: {
+        color: '#548DFF',
+        justifyContent: 'center',
+        textAlign: 'center',
+        fontSize: 18,
+        fontFamily: 'Urbanist-Bold',
     },
     headerContainer: {
         flex: 1.5,
