@@ -24,8 +24,7 @@ export default function LogIn({ navigation }) {
     const [userType, setUserType] = useState('User');
     const [isChecked, setChecked] = useState(false);
     const [showPassword, setShowPassword] = useState(false); // For password visibility
-    const { logInContext, logInFireBase, setRouteEmail, logInRemember, addNewPairing } = useUserContext();
-    const [isSigned, setIsSigned] = useState(false);
+    const { logInContext, logInFireBase, setRouteEmail, logInRemember, addNewPairing,isSigned, setIsSigned } = useUserContext();
     const [patientId, setPatientId] = useState('');
 
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, TouchableOpacity, Image, Dimensions, StyleSheet, Modal, Text, Alert, Linking, ActivityIndicator} from 'react-native';
+import { View, TouchableOpacity, Image, Dimensions, StyleSheet, Modal, Text, Alert, Linking, ActivityIndicator } from 'react-native';
 import { Octicons, Ionicons, AntDesign, Feather } from '@expo/vector-icons';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -33,7 +33,7 @@ const SCREEN_WIDTH = Dimensions.get('screen').width;
 
 function CustomHeader() {
     const [isModalVisible, setIsModalVisible] = useState(false);
-    const { userContext, appEmail, logOutFireBase, UpdatePatient, patientList,patientId } = useUserContext();
+    const { userContext, appEmail, logOutFireBase, UpdatePatient, patientList, patientId } = useUserContext();
     const { userUri, FirstName } = userContext;
     const [newUserDialogVisable, setNewUserDialogVisable] = useState(false);
     const [switchPatientDialogVisable, setSwitchPatientDialogVisable] = useState(false);
@@ -53,10 +53,8 @@ function CustomHeader() {
         setIsModalVisible(!isModalVisible);
     };
 
-    const togllePatiemtDialog = () => {
-        if (patientList && patientList.length > 1) {
+    const togllePatientDialog = () => {
             setSwitchPatientDialogVisable(!switchPatientDialogVisable);
-        }
     }
 
     if (!userContext) {
@@ -65,15 +63,13 @@ function CustomHeader() {
 
     //updates 
     useEffect(() => {
-        if (patientList && patientList.length > 1) {
             let arr = patientList.map(element => {
                 return (
                     <View key={element.patientId} style={styles.menuOption}>
-                    <TouchableOpacity key={element.patientId} style={styles.patientView} onPress={() => {
-                        setSwitchPatientDialogVisable(false)                        
-                        console.log(`patient: ${element.patientId}`)
-                        switchPatient(element)
-                            // navigation.navigate('NewPatientLvl1')
+                        <TouchableOpacity key={element.patientId} style={styles.patientView} onPress={() => {
+                            setSwitchPatientDialogVisable(false)
+                            console.log(`patient: ${element.patientId}`)
+                            switchPatient(element)
                         }}><Text style={styles.menuOptionText}>{element.FirstName} {element.LastName}</Text>
                             {userContext.patientId == element.patientId ? <Feather name="check-circle" size={30} color="#548DFF" />
                                 : <Feather name="circle" size={30} color="#548DFF" />}
@@ -82,7 +78,6 @@ function CustomHeader() {
                 )
             });
             setPatientArr(arr)
-        }
     }, [patientList, patientId])
 
     async function switchPatient(patient) {
@@ -152,13 +147,12 @@ function CustomHeader() {
                                             <Text style={styles.name}>Hello, {FirstName}</Text>
                                             <TouchableOpacity
                                                 style={styles.switchUser}
-                                                disabled={patientList && patientList.length > 1 ? false : true}
                                                 onPress={() => {
                                                     toggleModal()
-                                                    togllePatiemtDialog()
+                                                    togllePatientDialog()
                                                 }}>
-                                                <AntDesign name="retweet" size={20} color={patientList && patientList.length > 1 ? "#216Bff" : "#808080"} />
-                                                <Text style={patientList && patientList.length > 1 ? styles.switchTxt : styles.switchTxtDisabled}>
+                                                <AntDesign name="retweet" size={20} color={"#216Bff"} />
+                                                <Text style={styles.switchTxt}>
                                                     Switch Patient
                                                 </Text>
                                             </TouchableOpacity>
@@ -353,33 +347,33 @@ function CustomHeader() {
                 </Dialog.Actions>
             </Dialog> */}
             <Modal visible={switchPatientDialogVisable} transparent={true} animationType="fade">
-                <TouchableOpacity style={styles.menuOverlay} onPress={togllePatiemtDialog}>
+                <TouchableOpacity style={styles.menuOverlay} onPress={togllePatientDialog}>
                     <View style={styles.menuContent}>
                         {patientArr}
-                      
+
                         {userContext.userType === "User" && <TouchableOpacity style={styles.addNewPatient} onPress={
                             () => {
-                                togllePatiemtDialog()
+                                togllePatientDialog()
                                 navigation.navigate('NewPatientLvl1')
                             }
                         }>
                             <View style={styles.addNewPatient}>
-                                <Text style={[styles.menuOptionText,{color:"#000",fontSize:24}]}>Add New Patient</Text>
-                                <Ionicons name="add-circle-outline" size={30} color="#000" />
+                                <Ionicons name="add-circle" size={28} color="#707070" />
+                                <Text style={[styles.menuOptionText, { paddingLeft: 10 }]}>Add New Patient</Text>
                             </View>
                         </TouchableOpacity>}
-                        <TouchableOpacity style={styles.menuOption} onPress={togllePatiemtDialog}>
-                            <Text style={[styles.menuOptionText, { color: '#548DFF', fontSize:16 }]}>No Thanks</Text>
-                        </TouchableOpacity>                        
+                        <TouchableOpacity style={[styles.noThankBtn]} onPress={togllePatientDialog}>
+                            <Text style={[styles.menuOptionText,{ color: '#548DFF', fontSize: 16, textAlign: 'left' }]}>No Thanks</Text>
+                        </TouchableOpacity>
                     </View>
                 </TouchableOpacity>
             </Modal>
             <Dialog visible={isLoadingDialogVisable} style={styles.dialogStyle}>
-        <Dialog.Title style={{ fontFamily: "Urbanist-Medium", fontSize: 18, marginBottom: 15 }}>This will take a few seconds...</Dialog.Title>
-        <Dialog.Content>
-          <ActivityIndicator size="large" color="#548DFF" />
-        </Dialog.Content>
-      </Dialog>
+                <Dialog.Title style={{ fontFamily: "Urbanist-Medium", fontSize: 18, marginBottom: 15 }}>This will take a few seconds...</Dialog.Title>
+                <Dialog.Content>
+                    <ActivityIndicator size="large" color="#548DFF" />
+                </Dialog.Content>
+            </Dialog>
         </>
     );
 }
@@ -544,7 +538,7 @@ const styles = StyleSheet.create({
         height: SCREEN_HEIGHT * 0.25,
         alignSelf: 'center',
         justifyContent: 'center',
-      },
+    },
     dialogTxt: {
         fontFamily: 'Urbanist-SemiBold',
         color: '#000',
@@ -583,7 +577,7 @@ const styles = StyleSheet.create({
     },
     menuOptionText: {
         fontSize: 20,
-        color: '#707070',
+        color: '#000',
         fontFamily: 'Urbanist-SemiBold',
         textAlign: 'center',
     },
@@ -604,15 +598,22 @@ const styles = StyleSheet.create({
         width: '95%',
         height: 54,
         flexDirection: 'row',
-        justifyContent:'space-between',
+        justifyContent: 'space-between',
         paddingHorizontal: 10,
     },
     addNewPatient: {
-        width: '95%',
-        height: 54,
+        width: '100%',
         flexDirection: 'row',
-        justifyContent:'center',
-        paddingHorizontal: 10,    },
+        paddingHorizontal: 10,
+        alignItems: 'center',
+    },
+    noThankBtn: {
+        paddingVertical: 10,
+        width: '100%',
+        height: 54,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
 });
 
 export { AppBarDown, CustomHeader };

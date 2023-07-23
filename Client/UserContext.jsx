@@ -115,6 +115,8 @@ export function UserProvider({ children }) {
     const [routeEmail, setRouteEmail] = useState(null);
     const [userNewHobbiesAndLimitations, setUserNewHobbiesAndLimitations] = useState(null);
     const [addNewPairing, setAddNewPairing] = useState(false);
+    const [isSigned, setIsSigned] = useState(false);
+
 
     const [notifications, setNotifications] = useState(null);
 
@@ -175,7 +177,6 @@ export function UserProvider({ children }) {
     }
 
     async function logInRemember(userData) {
-        console.log(userData);
         let userForLoginUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUserForLogin';
         fetch(userForLoginUrl, {
             method: 'POST',
@@ -195,6 +196,9 @@ export function UserProvider({ children }) {
             .then(async (json) => {
                 if (json === null) {
                     Alert.alert('Login Failed');
+                    setIsSigned(false);
+                    AsyncStorage.removeItem('userData');
+                    AsyncStorage.removeItem('user');
                 }
                 else {
                     const userContext = {
@@ -1236,7 +1240,8 @@ export function UserProvider({ children }) {
         allPublicTasks, allPrivateTasks, UpdateDrugForPatientDTO, holidays, GetAllDrugs, allDrugs, addPrivateTaskContext,
         newMessages, setNewMessages, logOutFireBase, registerForPushNotificationsAsync, sendPushNotification, UpdatePatient, userPaychecks,
         fetchPatientList, patientList, setRouteEmail, routeEmail, notificationsThatSent, notifications, getPaychecks, UpdateNotificationStatus, GetNotificationsThatSent, logInRemember, userNewHobbiesAndLimitations,
-        setUserNewHobbiesAndLimitations, getSpecificPatientData, updateHobbiesAndLimitations, translateText, unpair, addNewPairing, setAddNewPairing, languageArr, patientId
+        setUserNewHobbiesAndLimitations, getSpecificPatientData, updateHobbiesAndLimitations, translateText, unpair, addNewPairing, setAddNewPairing, languageArr, patientId,
+        isSigned, setIsSigned
     };
 
     return (
