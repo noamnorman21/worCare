@@ -876,7 +876,7 @@ function NewTaskModal(props) {
       if (!taskName) {
          return Alert.alert("Please select Name")
       }
-      if (userContext.userType=="Caregiver" && !taskAssignee) {
+      if (userContext.userType == "Caregiver" && !taskAssignee) {
          return Alert.alert("Please select asignee")
       }
       if (!taskCategory) {
@@ -1053,30 +1053,23 @@ function NewTaskModal(props) {
    }
 
    const showDatePicker = () => {
-      console.log("showDatePicker");
       setDatePickerVisable(true);
    }
 
    const showTimePicker = () => {
-      console.log("showTimePicker");
       setTimePickerVisable(true);
    }
 
    const onChangeDate = (selectedDate) => {
-      console.log("onChangeDate");
       const currentDate = new Date(selectedDate.nativeEvent.timestamp).toISOString().substring(0, 10);
       setDatePickerVisable(false);
       setTaskFromDate(currentDate);
    };
 
    const onChangeTaskTime = (selectedDate) => {
-      console.log("onChangeTaskTime");
-      console.log("selectedDate= ", selectedDate);
       const currentTime = new Date(selectedDate.nativeEvent.timestamp).toTimeString();
-      console.log("currentDate= ", currentTime);
       setTimePickerVisable(false);
       setTaskTime(currentTime);
-      console.log("taskTime= ", taskTime);
    };
 
    return (
@@ -1093,10 +1086,10 @@ function NewTaskModal(props) {
                   <View style={styles.modalView}>
                      <View style={styles.inputView}>
                         <TextInput
-                           style={[styles.input]}
+                           style={[styles.input, { paddingLeft: 0 }]}
                            placeholder='Task Name'
                            outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
-                           contentStyle={{ fontFamily: 'Urbanist-Regular', paddingLeft: 2 }}
+                           contentStyle={{ fontFamily: 'Urbanist-Regular', paddingLeft: 10 }}
                            activeOutlineColor="#548DFF"
                            outlineColor='#E6EBF2'
                            mode='outlined'
@@ -1150,13 +1143,13 @@ function NewTaskModal(props) {
                               selectedTextStyle={{ fontFamily: 'Urbanist-Medium' }}
                            /> :
                            <TextInput
-                              style={[styles.input]}
+                              style={[styles.input, { paddingLeft: 0 }]}
                               placeholder='Category'
                               label={<Text style={{ fontFamily: "Urbanist-Medium" }}>Category</Text>}
                               placeholderTextColor='#9E9E9E'
                               value='General'
                               outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
-                              contentStyle={{ fontFamily: 'Urbanist-Regular', paddingLeft: 2 }}
+                              contentStyle={{ fontFamily: 'Urbanist-Regular', paddingLeft: 10 }}
                               activeOutlineColor="#548DFF"
                               outlineColor='#E6EBF2'
                               mode='outlined'
@@ -1417,7 +1410,7 @@ function NewTaskModal(props) {
                               <View style={styles.modalTimesView}>
                                  {/* Header for add times*/}
                                  <View style={styles.modalTimesHeader}>
-                                    <Text style={styles.modalText}>Select Med Times</Text>
+                                    <Text style={styles.modalText}>Select Task Times</Text>
                                  </View>
                                  {/* Body */}
                                  <View style={styles.modalTimesBody}>
@@ -1448,7 +1441,7 @@ function NewTaskModal(props) {
                         </View>
                         <TextInput
                            style={[styles.commentInput, { padding: 0 }, modalTimesVisible && { display: 'none' }]}
-                           placeholder="Comment (Optional)"
+                           placeholder="Comment ( Optional )"
                            placeholderTextColor="#9E9E9E"
                            value={taskComment}
                            label={<Text style={{ fontFamily: "Urbanist-Medium" }}>Comment (Optional)</Text>}
@@ -1464,7 +1457,7 @@ function NewTaskModal(props) {
                            onChangeText={text => setTaskComment(text)}
                         />
                      </View>
-                     <View style={styles.btnModal}>
+                     <View style={[styles.btnModal, modalTimesVisible && { display: 'none' }]}>
                         <TouchableOpacity style={styles.saveBtn} onPress={addTask}>
                            <Text style={styles.textStyle}>Create</Text>
                         </TouchableOpacity>
@@ -1598,13 +1591,13 @@ const styles = StyleSheet.create({
       borderRadius: 16,
       justifyContent: 'center',
       alignItems: 'center',
-      height: 44,
+      height: 54,
       width: SCREEN_WIDTH * 0.4,
    },
    closeBtnDate: {
       backgroundColor: '#F5F8FF',
       borderRadius: 16,
-      height: 44,
+      height: 54,
       width: SCREEN_WIDTH * 0.4,
       justifyContent: 'center',
       alignItems: 'center',
@@ -1785,7 +1778,8 @@ const styles = StyleSheet.create({
       paddingHorizontal: 10,
       fontSize: 16,
       fontFamily: 'Urbanist-Regular',
-      paddingRight: 10,
+      textAlign: 'right',
+      backgroundColor: '#f00',
    },
    medDatePicker: {
       width: SCREEN_WIDTH * 0.45,

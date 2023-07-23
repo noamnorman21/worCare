@@ -12,7 +12,7 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export default function SignUpUserLVL5({ navigation, route }) {
-  // const [language, setLanguage] = useState(route.params.language);
+  const [language, setLanguage] = useState(route.params.language);
   const [valueLanguage, setValueLanguage] = useState(null);
   const [date, setDate] = useState('');
   const [patientID, setPatientID] = useState('');
