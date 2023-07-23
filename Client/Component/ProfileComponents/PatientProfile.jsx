@@ -38,6 +38,7 @@ export default function PatientProfile({ navigation }) {
     const [link, setLink] = useState('');
     const [fromShare, setFromShare] = useState(false);
     const [message, setMessage] = useState('');
+    const [isChanged, setIsChanged] = useState(false);
 
     const encryptPatientId = (patientId) => {
         const encodedId = Buffer.from(patientId).toString('base64');
@@ -105,7 +106,7 @@ export default function PatientProfile({ navigation }) {
     }, []);
 
     useEffect(() => {
-        if (saving) {
+        if (saving && isChanged) {
             console.log("saving");
             Alert.alert(
                 "Saving...",
@@ -129,6 +130,10 @@ export default function PatientProfile({ navigation }) {
                 ],
                 { cancelable: false }
             );
+        }
+        else if (saving && !isChanged) {
+            setSaving(false);
+            navigation.goBack();
         }
     }, [saving]);
 
@@ -243,8 +248,13 @@ export default function PatientProfile({ navigation }) {
         }, [selectedHobbies, newHobbiesAndLimitations]);
 
         useEffect(() => {
+            
             setHobbiesAndLimitations(newHobbiesAndLimitations);
             setHobbieFilter(selectedHobbies);
+            if(newHobbiesAndLimitations!==hobbiesAndLimitations){
+                console.log("changed");
+            setIsChanged(true);
+            }
         }, [newHobbiesAndLimitations]);
 
         const onTimeChangeAndroid = (date) => {
@@ -572,6 +582,10 @@ export default function PatientProfile({ navigation }) {
         useEffect(() => {
             setHobbiesAndLimitations(newHobbiesAndLimitations);
             setLimitFilter(selectedFilter);
+            if(newHobbiesAndLimitations!==hobbiesAndLimitations){
+                console.log("changed");
+            setIsChanged(true);
+            }
         }, [newHobbiesAndLimitations]);
 
         useEffect(() => {

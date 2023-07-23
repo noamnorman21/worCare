@@ -9,6 +9,8 @@ import { createUserWithEmailAndPassword, updateProfile, signInWithEmailAndPasswo
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 import { useUserContext } from '../../UserContext';
+import { Buffer } from 'buffer';
+
 
 export default function NewPatientFinish({ navigation, route }) {
     const tblPatient = route.params.tblPatient;
@@ -23,11 +25,17 @@ export default function NewPatientFinish({ navigation, route }) {
     const { userContext } = useUserContext();
 
 
+    const encryptPatientId = (patientId) => {
+        const encodedId = Buffer.from(patientId).toString('base64');
+        return encodedId;
+    };
+
     // link to the specific screen in the app and send the patient id to the screen as a parameter
     // link to screen "Welcome" and send the patient id to the screen as a parameter
     useEffect(() => {
         (async () => {
-            setLink(Linking.createURL(`InvitedFrom/${tblPatient.patientId}/${route.params.tblUser.FirstName}`));
+            const encryptedPatientId = await encryptPatientId(tblPatient.patientId);
+            setLink(Linking.createURL(`InvitedFrom/${encryptedPatientId}/${route.params.tblUser.FirstName}/${route.params.tblUser.Email}`));
             const isAvailable = await SMS.isAvailableAsync();
             setIsAvailable(isAvailable);
         }

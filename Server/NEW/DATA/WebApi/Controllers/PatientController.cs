@@ -66,6 +66,8 @@ namespace WebApi.Controllers
                         FirstName = x.FirstName,
                         LastName = x.LastName,
                         userId = x.userId,
+                        LanguageName_En = x.tblLanguage.LanguageName_En,
+                        DateOfBirth = x.DateOfBirth,
                         workerId = db.tblCaresForPatient.Where(y => y.patientId == x.patientId).Select(y => y.workerId).FirstOrDefault()
                     }).ToList();
                     if (patients != null)
