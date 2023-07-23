@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, Modal, Dimensions, SafeAreaView,Keyboard } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, Modal, Dimensions, SafeAreaView, Keyboard } from 'react-native';
 import { Entypo } from '@expo/vector-icons';
 import { Dropdown } from 'react-native-element-dropdown';
 import LimitationsData from '../SignUpComponents/User/Limitations.json';
@@ -11,7 +11,7 @@ export default function NewPatientLvl2({ navigation, route }) {
   const [modal2Visible, setModal2Visible] = useState(false);
   const [modal3Visible, setModal3Visible] = useState(false);
   const [modal4Visible, setModal4Visible] = useState(false);
-  const {userContext} = useUserContext();
+  const { userContext } = useUserContext();
 
   const [comments, setComments] = useState('');
   const [allergies, setAllergies] = useState(LimitationsData.allergies);
@@ -50,7 +50,7 @@ export default function NewPatientLvl2({ navigation, route }) {
     const sensitivitiesString = activeSensitivities.join(', ');
     const physicalAbilitiesString = activePhysicalAbilities.join(', ');
     const bathRoutineString = activeBathRoutine.join(', ');
-    
+
     // creates a table with the data
     const tblLimitations = {
       allergies: allergiesString,
@@ -59,14 +59,14 @@ export default function NewPatientLvl2({ navigation, route }) {
       bathRoutine: bathRoutineString,
       sensitivityToNoise: noiseSensitive,
       otherL: comments,
-    };    
-    navigation.navigate('NewPatientLvl3', { tblLimitations: tblLimitations, tblPatient : route.params.tblPatient, tblUser : userContext }); // Navigate to next lvl
+    };
+    navigation.navigate('NewPatientLvl3', { tblLimitations: tblLimitations, tblPatient: route.params.tblPatient, tblUser: userContext }); // Navigate to next lvl
   };
   changebathRoutine = (value) => {
     if (value === 'All') { // if the user clicked on the "All" button
       // change the state of all the checkboxes with inverse value
       if (bathRoutine.filter((item) => item.selected === true).length === bathRoutine.length - 1) {
-        bathRoutine[bathRoutine.length - 1].selected = true;        
+        bathRoutine[bathRoutine.length - 1].selected = true;
       }
       // if all the checkboxes are checked, uncheck all of them
       if (bathRoutine.filter((item) => item.selected === true).length === bathRoutine.length) {
@@ -350,10 +350,10 @@ export default function NewPatientLvl2({ navigation, route }) {
         onChangeText={setComments}
         value={comments}
         multiline={true}
-      //  keyboardType="default"
+        //  keyboardType="default"
         returnKeyType='done'
         //close keyboard when pressing done
-        onSubmitEditing={Keyboard.dismiss}     
+        onSubmitEditing={Keyboard.dismiss}
       />
 
       {/* Continue Button */}

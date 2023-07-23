@@ -12,9 +12,7 @@ const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export default function MainTasks(props) {
   const { allPublicTasks, allPrivateTasks } = useUserContext();
-
   const [modalVisible, setModalVisible] = useState(false);
-
   const [allTasks, setAllTasks] = useState([]);
   const [todayTasks, setTodayTasks] = useState([]);
   const [tommorowTasks, setTommorowTasks] = useState([]);

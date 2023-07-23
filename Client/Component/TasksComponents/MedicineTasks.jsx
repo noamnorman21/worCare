@@ -18,9 +18,6 @@ function MedTask({ navigation, route }) {
    const { getAllPublicTasks, userContext, allMedicineTasks } = useUserContext()
    const [userData, setUserData] = useState(useUserContext().userContext);
 
-   // useEffect(() => { 
-   //    console.log("MedicineTasks: ", allMedicineTasks)
-   // }, [allMedicineTasks])
 
    const handleAddBtnPress = () => {
       setModalVisible(true);
@@ -28,7 +25,6 @@ function MedTask({ navigation, route }) {
 
    const handleModalClose = () => {
       setModalVisible(false);
-      //getAllPublicTasks(userData);
    };
 
    const navigateToMed = (task, runlow, medTypeIcon, timeInDay) => {

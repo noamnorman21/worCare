@@ -6,12 +6,13 @@ import { Dropdown } from 'react-native-element-dropdown';
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { TextInput } from 'react-native-paper';
+import { useUserContext } from '../../../UserContext';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export default function SignUpUserLVL5({ navigation, route }) {
-  const [language, setLanguage] = useState(route.params.language);
+  // const [language, setLanguage] = useState(route.params.language);
   const [valueLanguage, setValueLanguage] = useState(null);
   const [date, setDate] = useState('');
   const [patientID, setPatientID] = useState('');
@@ -20,17 +21,14 @@ export default function SignUpUserLVL5({ navigation, route }) {
   const [platfr, setPlatfr] = useState(Platform.OS);
   const [showPickerAndroid, setShowPickerAndroid] = useState(false);
   const [IsPatientIdUnique, setIsPatientIdUnique] = useState(true);
-
+  const { userContext, languageArr } = useUserContext();
   //for date picker android
   const showDatepicker = () => {
     setShowPickerAndroid(!showPickerAndroid);
   };
 
   const onChangeDate = (selectedDate) => {
-    console.log('date changed');
     const birthDate = new Date(selectedDate.nativeEvent.timestamp).toISOString().substring(0, 10);
-    console.log(birthDate, "birthDate");
-    console.log(date, "date");
     if (birthDate !== '1980-01-01') { setDate(birthDate); }
     setShowPickerAndroid(!showPickerAndroid);
   };
@@ -206,7 +204,7 @@ export default function SignUpUserLVL5({ navigation, route }) {
           placeholderStyle={styles.placeholderStyle}
           selectedTextStyle={styles.selectedTextStyle}
           inputSearchStyle={styles.inputSearchStyle}
-          data={language}
+          data={languageArr}
           search={true}
           maxHeight={300}
           labelField="label"

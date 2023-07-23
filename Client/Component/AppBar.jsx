@@ -23,6 +23,7 @@ import Finance from './Finance';
 import Chats from './Chats';
 import Tasks from './Tasks';
 import Rights from './Rights';
+import { Overlay } from '@rneui/themed';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -183,11 +184,11 @@ function CustomHeader() {
                                         </TouchableOpacity>
                                         <View style={styles.line} />
 
-                                        {userContext.userType==="User" &&<><TouchableOpacity onPress={
+                                        {userContext.userType === "User" && <><TouchableOpacity onPress={
                                             () => {
-                                               
-                                                    setNewUserDialogVisable(true)
-                                                    toggleModal()
+
+                                                setNewUserDialogVisable(true)
+                                                toggleModal()
                                             }
                                         }>
 
@@ -196,7 +197,7 @@ function CustomHeader() {
                                                 <Text style={styles.menuItemText}>Add New Patient</Text>
                                             </View>
                                         </TouchableOpacity>
-                                        <View style={styles.line} /></>}
+                                            <View style={styles.line} /></>}
 
                                         <TouchableOpacity onPress={
                                             () => {
@@ -315,6 +316,13 @@ function CustomHeader() {
                     options={{ unmountOnBlur: true, headerShown: false }}
                 />
             </Stack.Navigator>
+
+            {/* <Overlay visible={true} style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', height: '50%', width: '50%' }}>
+                    <Text>Loading...</Text>
+                </View>
+            </Overlay> */}
+
             <Dialog visible={newUserDialogVisable} onDismiss={() => setNewUserDialogVisable(false)}
                 style={styles.dialogStyle}>
                 <Dialog.Title style={styles.dialogTitle}>Add New Patient</Dialog.Title>

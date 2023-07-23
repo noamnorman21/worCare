@@ -43,10 +43,6 @@ export default function NavigateSignUp() {
         setIsSigned(false);
       } else { // if the user is signed in- if he is, update the context
         const storageUser2 = await AsyncStorage.getItem("userData");
-        // await logInContext(JSON.parse(storageUser2))
-        // let fireBaseUser = JSON.parse(storageUser)
-        // console.log(fireBaseUser)
-        // logInFireBase(fireBaseUser.Email, fireBaseUser.Password)
       }
     }
     catch (error) {

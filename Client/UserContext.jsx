@@ -18,7 +18,8 @@ let getPairedProfile = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUse
 let getspecificPatientDataUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/GetPatientData';
 let GetAllPatients = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/GetAllPatients';
 let updateHobbiesAndLimitationsUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/UpdatePatientHobbiesAndLimitations';
-let unpairUrl='https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/UnpairPatient'
+let unpairUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/UnpairPatient'
+
 // Notifications
 let InsertNotificationsThatSentUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Notification/InsertNotificationThatSent'
 let UpdateNotificationStatusUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Notification/UpdateNotificationStatus'
@@ -31,9 +32,7 @@ let updateNoti = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/UpdateUserNo
 
 // Sign Up
 let insertUser = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/InsertUser';
-let getAllLanguages = 'https://proj.ruppin.ac.il/cgroup94/test1/api/LanguageCountry/GetAllLanguages';
 let getAllCountries = 'https://proj.ruppin.ac.il/cgroup94/test1/api/LanguageCountry/GetAllCountries';
-let getAllCalendars = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Calendars/GetAllCalendars';
 
 // Sign Up Patient
 let insertPatient = 'https://proj.ruppin.ac.il/cgroup94/test1/api/Patient/InsertPatient';
@@ -101,6 +100,7 @@ export function UserProvider({ children }) {
     const [userCalendar, setUserCalendar] = useState(null)
     const [calendarCode, setCalendarCode] = useState(null)
     const [allDrugs, setAllDrugs] = useState([]);
+    const [languageArr, setLanguageArr] = useState([]);
 
     // New
     const [pairedEmail, setPairedEmail] = useState(null)
@@ -119,7 +119,6 @@ export function UserProvider({ children }) {
     const [notifications, setNotifications] = useState(null);
 
     async function logInContext(userData) {
-        console.log("logInContext");
         setUserType(userData.userType);
         setUserLanguage(userData.Language);
         setUserCalendar(userData.Calendar);
@@ -172,12 +171,12 @@ export function UserProvider({ children }) {
         await getAllPublicTasks(usertoSync);
         await getHolidaysForUser(usertoSync.calendarCode);
         await GetAllDrugs();
+        await getLanguages();
     }
 
     async function logInRemember(userData) {
         console.log(userData);
         let userForLoginUrl = 'https://proj.ruppin.ac.il/cgroup94/test1/api/User/GetUserForLogin';
-        console.log('user signed in');
         fetch(userForLoginUrl, {
             method: 'POST',
             headers: {
@@ -198,8 +197,6 @@ export function UserProvider({ children }) {
                     Alert.alert('Login Failed');
                 }
                 else {
-                    //save user email and password in async storage
-                    //save user data in context
                     const userContext = {
                         userId: json.userId,
                         FirstName: json.FirstName,
@@ -273,10 +270,8 @@ export function UserProvider({ children }) {
             );
     }
 
-
     // ----------------------  Push Notifications  ----------------------
     async function UpdateNotificationStatus(notificationId) {
-
         fetch(UpdateNotificationStatusUrl, {
             method: 'POST',
             headers: new Headers({
@@ -299,6 +294,7 @@ export function UserProvider({ children }) {
             )
 
     }
+
     function fetchUserNotifications(usertoSync) {
         let user;
         if (usertoSync == null) {
@@ -345,6 +341,7 @@ export function UserProvider({ children }) {
                     console.log("erra post=", error);
                 });
     }
+
     async function GetNotificationsThatSent(userID) {
         fetch(GetNotificationsThatSentUrl, {
             method: 'POST',
@@ -420,11 +417,9 @@ export function UserProvider({ children }) {
             },
             body: JSON.stringify(message),
         });
-
-
     }
+
     async function notificationsThatSent(notificationsThatSentDTO) {
-        console.log("notificationsThatSentDTO=", notificationsThatSentDTO);
         await fetch(InsertNotificationsThatSentUrl, {
             method: 'POST',
             headers: new Headers({
@@ -443,8 +438,6 @@ export function UserProvider({ children }) {
                 (error) => {
                     console.log("err post=", error);
                 });
-
-
     }
 
     async function getHolidaysForUser(calendarCode) {
@@ -458,6 +451,7 @@ export function UserProvider({ children }) {
         }
     }
 
+    // IMPORTANT!!!
     async function getHolidays(country) {
         const apiHolidaysKey = '1269df65cf0081dab91555b4d1bd5171de6dc403'
         const year = moment().year();
@@ -478,6 +472,36 @@ export function UserProvider({ children }) {
         // } catch (error) {
         //     console.error('Error fetching holidays:', error);
         // }
+    }
+
+    async function getLanguages() {
+        fetch(getAllLanguages, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json; charset=UTF-8',
+            },
+        })
+            .then(res => {
+                if (res.ok) {
+                    return res.json()
+                }
+                else {
+                    console.log("not found")
+                }
+            })
+            .then(data => {
+                if (data != null) {
+                    for (let i = 0; i < data.length; i++) {
+                        languageArr.push({
+                            label: data[i].LanguageName_Origin,
+                            value: data[i].LanguageName_En,
+                        })
+                    }
+                }
+            })
+            .catch((error) => {
+                console.log("err=", error);
+            });
     }
 
     function logOutContext() {
@@ -586,8 +610,6 @@ export function UserProvider({ children }) {
             );
     }
 
-
-
     async function updateRememberUserContext(userContext) {
         console.log("updateRememberUser", userContext);
         setUserContext(userContext);
@@ -595,7 +617,6 @@ export function UserProvider({ children }) {
 
     // ---------------- Contacts ----------------
     async function fetchUserContacts(temp) {
-        console.log("FetchUserContacts")
         let user = {}
         if (temp != undefined) {
             user = {
@@ -625,8 +646,6 @@ export function UserProvider({ children }) {
             return data;
         }
     }
-
-
 
     function updateUserContacts() {
         fetchUserContacts();
@@ -727,7 +746,6 @@ export function UserProvider({ children }) {
 
     // ---------------- Finance ----------------
     async function GetUserPending(userData) {
-        console.log("GetUserPending")
         try {
             let user;
             if (userData === undefined) {
@@ -776,7 +794,6 @@ export function UserProvider({ children }) {
     }
 
     async function GetUserHistory(userData) {
-        console.log("GetUserHistory")
         try {
             let user;
             if (userData === undefined) {
@@ -824,7 +841,6 @@ export function UserProvider({ children }) {
     }
 
     async function getPaychecks(userData) {
-        console.log("getPaychecks")
         let user;
         if (userData === undefined) {
 
@@ -868,7 +884,6 @@ export function UserProvider({ children }) {
 
     // ---------------- Tasks ----------------
     async function GetAllDrugs() {
-        console.log("GetAllDrugs")
         fetch(allDrugsUrl, {
             method: 'GET',
             headers: {
@@ -892,11 +907,9 @@ export function UserProvider({ children }) {
             .catch((error) => {
                 console.log("err=", error);
             });
-
     }
 
     async function getAllPublicTasks(userData) {
-        console.log("getAllPublicTasks", userData.patientId)
         try {
             const response = await fetch(getAllPublicTasksUrl, {
                 method: 'POST',
@@ -1044,7 +1057,6 @@ export function UserProvider({ children }) {
     }
 
     function addPrivateTaskContext(taskData) {
-        console.log("addPrivateTask");
         fetch(InsertPrivateTaskUrl, {
             method: 'POST',
             body: JSON.stringify(taskData),
@@ -1066,7 +1078,6 @@ export function UserProvider({ children }) {
 
     // ---------------- Firebase ----------------
     async function logInFireBase(email, password) {
-        console.log('logInFireBase')
         signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 console.log('user logged in');
@@ -1089,17 +1100,12 @@ export function UserProvider({ children }) {
 
     // ---------------- Patient ----------------
     function UpdatePatient(userData) {
-        console.log("UpdatePatient", "as", userContext.patientId)
-        // console.log("UpdatePatient","as",userContext)
-        console.log("user", userData.patientId)
         setPatientId(userData.patientId);
         setUserContext(userData);
     }
 
     useEffect(() => {
         if (patientId != null && userContext != null) {
-            console.log("Patient id is ", patientId)
-            console.log(userContext.patientId)
             fetchUserContacts(userContext);
             getAllPublicTasks(userContext);
             getAllPrivateTasks(userContext);
@@ -1124,7 +1130,6 @@ export function UserProvider({ children }) {
                 userType: userContext.userType
             }
         }
-        console.log("fetchPatientList", user)
         fetch(GetAllPatients, {
             method: 'POST',
             headers: new Headers({ 'Content-Type': 'application/json; charset=UTF-8', }),
@@ -1151,10 +1156,6 @@ export function UserProvider({ children }) {
             .then(res => { return res.json() })
             .then(
                 (result) => {
-                    console.log("fetch getspecificPatientData= ", result);
-
-                    // set userContext.patientHL
-
                     setUserContext({ ...userContext, ["patinetHl"]: result })
                 }
             )
@@ -1184,8 +1185,8 @@ export function UserProvider({ children }) {
             }
             );
     }
+
     async function translateText(text, targetLanguage) {
-        console.log("translateText", text, targetLanguage)
         try {
             const response = await axios.post(`https://translation.googleapis.com/language/translate/v2`, {}, {
                 params: {
@@ -1201,10 +1202,8 @@ export function UserProvider({ children }) {
         }
     };
 
-    async function unpair () {
-        console.log("unpair")
-
-        fetch(unpairUrl, 
+    async function unpair() {
+        fetch(unpairUrl,
             {
                 method: 'PUT',
                 headers: new Headers({ 'Content-Type': 'application/json; charset=UTF-8', }),
@@ -1217,13 +1216,13 @@ export function UserProvider({ children }) {
             .then(
                 (result) => {
                     console.log("fetch unpair= ", result);
-                   if(userContext.userType=='Caregiver'){
-                    setUserContext({ ...userContext, ["involvedInId"]: '' })
-                    setUserContext({ ...userContext, ["patientId"]: '' })
-                   }
-                     else{
+                    if (userContext.userType == 'Caregiver') {
+                        setUserContext({ ...userContext, ["involvedInId"]: '' })
+                        setUserContext({ ...userContext, ["patientId"]: '' })
+                    }
+                    else {
                         setUserContext({ ...userContext, ["workerId"]: '' })
-                     }
+                    }
                 }
             )
     }
@@ -1237,7 +1236,7 @@ export function UserProvider({ children }) {
         allPublicTasks, allPrivateTasks, UpdateDrugForPatientDTO, holidays, GetAllDrugs, allDrugs, addPrivateTaskContext,
         newMessages, setNewMessages, logOutFireBase, registerForPushNotificationsAsync, sendPushNotification, UpdatePatient, userPaychecks,
         fetchPatientList, patientList, setRouteEmail, routeEmail, notificationsThatSent, notifications, getPaychecks, UpdateNotificationStatus, GetNotificationsThatSent, logInRemember, userNewHobbiesAndLimitations,
-        setUserNewHobbiesAndLimitations, getSpecificPatientData, updateHobbiesAndLimitations,translateText,unpair,addNewPairing, setAddNewPairing
+        setUserNewHobbiesAndLimitations, getSpecificPatientData, updateHobbiesAndLimitations, translateText, unpair, addNewPairing, setAddNewPairing, languageArr
     };
 
     return (

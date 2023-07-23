@@ -54,7 +54,6 @@ export default function ImagePickerExample(props) {
       aspect: [4, 3],
       quality: 0.075,
     });
-    // const { canceled, assets } = result;
     if (!result.canceled) {
       setImage(result.assets[0].uri);
       props.onImgChange(result.assets[0].uri)
@@ -81,15 +80,16 @@ export default function ImagePickerExample(props) {
   return (
     <View style={styles.imgContainer}>
       <TouchableOpacity onPress={pickOrTakeImage} >
-        {!image && <Image source={require('../../images/Avatar.png')} style={styles.imgUser} />}
+        {!image && <Image source={require('../../images/userAvatar.png')} style={styles.imgUser} />}
         {image && <Image source={{ uri: image }} style={styles.imgUser} />}
       </TouchableOpacity>
-      <View style={styles.iconContainer}>
+      <View style={[styles.iconContainer, image && { backgroundColor: '#fff' }]}>
         {image && <Icon name="edit" size={23} color="#548DFF" style={styles.icon} />}
       </View>
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   imgUser: {
     width: 100,
@@ -101,16 +101,20 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     position: 'absolute',
-    right: '22%',
+    right: '27.5%',
     top: '75%',
-    backgroundColor: '#fff',
-    borderRadius: 50,
-    width: 50,
-    height: 50,
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+    borderBottomLeftRadius: 5,
+    borderBottomRightRadius: 5,
+    width: 45,
+    height: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   icon: {
     position: 'absolute',
-    right: 12,
-    top: 3
+    right: 10,
+    top: 2
   },
 });

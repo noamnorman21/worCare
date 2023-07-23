@@ -77,6 +77,7 @@ export default function CreateUser({ navigation, route }) {
         console.log("err=", error);
       });
   }
+
   const handleCreateUser = () => {
     const { email, password, firstName, lastName, phoneNum } = user
     if (!email || !password || !firstName || !lastName || !phoneNum) {
@@ -121,9 +122,11 @@ export default function CreateUser({ navigation, route }) {
       navigation.navigate('SignUpLvl2', { user: userData, userType: route.params.userType, patientId: patientId })
     }
   }
+
   const changeIMG = (imageFromUser) => {
     setUserImage(imageFromUser)
   }
+
   const validatePhoneNum = (phoneNum) => {
     //only numbers allowed in phone number input - no spaces or dashes - 10 digits - starts with 0
     const phoneNumRegex = /^(0)[0-9]{9}$/
@@ -312,6 +315,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     marginVertical: 7,
     justifyContent: 'center',
+    padding: 0,
   },
   button: {
     width: SCREEN_WIDTH * 0.925,
