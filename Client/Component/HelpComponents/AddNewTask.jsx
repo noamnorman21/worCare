@@ -164,7 +164,7 @@ function AddNewMedicine(props) {
                   </View>
                   <View>
                      <DatePicker
-                        style={[stylesForTimeModal.doubleRowItem, medTimeArr[i] != null && { borderColor: '#000' }]}
+                        style={[stylesForTimeModal.doubleRowItem]}
                         date={medTimeArr[i]}
                         iconComponent={<MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />}
                         placeholder="Add Time"
@@ -242,7 +242,7 @@ function AddNewMedicine(props) {
                <Text style={{ fontFamily: 'Urbanist-Light', fontSize: 16, color: '#000' }}>Time {props.index + 1}</Text>
             </View>
             <View>
-               <TouchableOpacity onPress={() => setShow(true)} style={[stylesForTimeModal.doubleRowItem, medTimeArr[props.index] != null && { borderColor: '#000' }]}>
+               <TouchableOpacity onPress={() => setShow(true)} style={[stylesForTimeModal.doubleRowItem]}>
                   <Text style={{ fontFamily: 'Urbanist-Light', fontSize: 16, color: '#000' }}>{medTimeArr[props.index] ? medTimeArr[props.index] : "Add Time"}</Text>
                </TouchableOpacity>
             </View>
@@ -408,7 +408,7 @@ function AddNewMedicine(props) {
                         </View>
                         {/* SECOND ROW */}
                         <View style={styles.doubleRow}>
-                           <View style={[styles.doubleRowItem, quantity && { borderColor: '#000' }]}>
+                           <View style={[styles.doubleRowItem]}>
                               <TouchableOpacity style={styles.arrowUp} disabled={!editMode} onPress={() => setQuantity(parseInt(quantity + 1))}>
                                  {/* //setNumberPerDay using the function handleIncrement */}
                                  {/* Change icon color only onPress to #548DFF  */}
@@ -435,7 +435,7 @@ function AddNewMedicine(props) {
                                  <Ionicons name="md-caret-down-outline" size={17} color="#808080" />
                               </TouchableOpacity>
                            </View>
-                           <View style={[styles.doubleRowItem, capacity && { borderColor: '#000' }]}>
+                           <View style={[styles.doubleRowItem]}>
                               <TouchableOpacity style={styles.arrowUp} onPress={() => setCapacity(parseInt(capacity + 1))}>
                                  {/* setNumberPerDay using the function handleIncrement */}
                                  {/* Change icon color only onPress to #548DFF  */}
@@ -519,7 +519,7 @@ function AddNewMedicine(props) {
                               <View >
                                  {Platform.OS === 'ios' ?
                                     <DatePicker
-                                       style={[styles.doubleRowItem, styles.regInput, medTime != '' && { borderColor: '#000' }]}
+                                       style={[styles.doubleRowItem, styles.regInput]}
                                        date={medTime}
                                        iconComponent={<MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />}
                                        placeholder="Add Time"
@@ -551,7 +551,7 @@ function AddNewMedicine(props) {
                                           setMedTime(date)
                                        }}
                                     /> :
-                                    <TouchableOpacity style={[styles.medDatePicker, medTime && { borderColor: "#000" }]} onPress={showTimePicker}>
+                                    <TouchableOpacity style={[styles.medDatePicker]} onPress={showTimePicker}>
                                        <Text style={styles.dateInputTxt}>{medTime ? medTime : "Add Time"}</Text>
                                        <MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />
                                     </TouchableOpacity>
@@ -560,7 +560,7 @@ function AddNewMedicine(props) {
                               :
                               <View>
                                  <TouchableOpacity onPress={() => { setModalTimesVisible(true) }}>
-                                    <View style={[styles.doubleRowItem, medTimeArr.length == numberPerDay && { borderColor: '#000' }]}>
+                                    <View style={[styles.doubleRowItem]}>
                                        <Text style={[styles.inputNumber, { color: '#9E9E9E' }, medTimeArr.length == numberPerDay && { color: '#000' }]}>
                                           {medTimeArr.length == numberPerDay ? "Times Selected" : "Add Times"}
                                        </Text>
@@ -619,7 +619,7 @@ function AddNewMedicine(props) {
                         </View>
                      </View>
                      <TextInput
-                        style={[styles.commentInput, { padding: 0 }, medComment && { borderColor: '#000' }, modalTimesVisible && { display: 'none' }]}
+                        style={[styles.commentInput, { padding: 0 }, modalTimesVisible && { display: 'none' }]}
                         placeholder="Custom Instruction ( Optional )"
                         placeholderTextColor="#9E9E9E"
                         value={medComment}
@@ -733,7 +733,7 @@ function NewTaskModal(props) {
                   </View>
                   <View>
                      <DatePicker
-                        style={[stylesForTimeModal.doubleRowItem, taskTimeArr[i] != null && { borderColor: '#000' }]}
+                        style={[stylesForTimeModal.doubleRowItem]}
                         date={taskTimeArr[i]}
                         iconComponent={<MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />}
                         placeholder="Add Time"
@@ -802,7 +802,7 @@ function NewTaskModal(props) {
                <Text style={{ fontFamily: 'Urbanist-Light', fontSize: 16, color: '#000' }}>Time {props.index + 1}</Text>
             </View>
             <View>
-               <TouchableOpacity onPress={() => setShow(true)} style={[stylesForTimeModal.doubleRowItem, taskTimeArr[props.index] != null && { borderColor: '#000' }]}>
+               <TouchableOpacity onPress={() => setShow(true)} style={[stylesForTimeModal.doubleRowItem]}>
                   <Text style={{ fontFamily: 'Urbanist-Light', fontSize: 16, color: '#000' }}>{taskTimeArr[props.index] ? taskTimeArr[props.index] : "Add Time"}</Text>
                </TouchableOpacity>
             </View>
@@ -1093,7 +1093,7 @@ function NewTaskModal(props) {
                   <View style={styles.modalView}>
                      <View style={styles.inputView}>
                         <TextInput
-                           style={[styles.input, taskNameBorder && { borderColor: '#000' }]}
+                           style={[styles.input]}
                            placeholder='Task Name'
                            outlineStyle={{ borderRadius: 16, borderWidth: 1.5 }}
                            contentStyle={{ fontFamily: 'Urbanist-Regular', paddingLeft: 2 }}
@@ -1150,7 +1150,7 @@ function NewTaskModal(props) {
                               selectedTextStyle={{ fontFamily: 'Urbanist-Medium' }}
                            /> :
                            <TextInput
-                              style={[styles.input, { borderColor: '#000' }]}
+                              style={[styles.input]}
                               placeholder='Category'
                               label={<Text style={{ fontFamily: "Urbanist-Medium" }}>Category</Text>}
                               placeholderTextColor='#9E9E9E'
@@ -1212,8 +1212,8 @@ function NewTaskModal(props) {
                            :
                            <TouchableOpacity onPress={() => { setModalVisibleDate(true); }}>
                               {taskFromDate && taskToDate ?
-                                 <View style={[styles.input, styles.regInput, { borderColor: '#000' }]}>
-                                    <Text style={[styles.regularTxt, { color: '#000', fontFamily: 'Urbanist-SemiBold' }]}>
+                                 <View style={[styles.input, styles.regInput]}>
+                                    <Text style={[styles.regularTxt, { color: '#000', fontFamily: 'Urbanist-Medium' }]}>
                                        {changeDateFormat(taskFromDate)} - {changeDateFormat(taskToDate)}
                                     </Text>
                                  </View>
@@ -1282,7 +1282,7 @@ function NewTaskModal(props) {
                         </Modal>
                         {taskCategory == 'General' ?
                            <View style={styles.doubleRow}>
-                              <View style={[styles.doubleRowItem, numberPerDay >= 1 && { borderColor: "black" }]}>
+                              <View style={[styles.doubleRowItem]}>
                                  <TouchableOpacity onPress={() =>
                                     setNumberPerDay(parseInt(numberPerDay + 1))
                                  } style={styles.arrowUp}>
@@ -1324,7 +1324,7 @@ function NewTaskModal(props) {
                                  <View >
                                     {Platform.OS === 'ios' ?
                                        <DatePicker
-                                          style={[styles.doubleRowItem, styles.regInput, { marginTop: 7 }, taskTime != '' && { borderColor: '#000' }]}
+                                          style={[styles.doubleRowItem, styles.regInput, { marginTop: 7 }]}
                                           date={taskTime}
                                           iconComponent={<MaterialCommunityIcons style={styles.addIcon} name="timer-outline" size={24} color="#808080" />}
                                           placeholder="Add Time"
@@ -1368,7 +1368,7 @@ function NewTaskModal(props) {
                            :
                            <>
                               {Platform.OS === "ios" ? <DatePicker
-                                 style={[styles.input, styles.regInput, taskTime != '' && { borderColor: '#000' }]}
+                                 style={[styles.input, styles.regInput]}
                                  date={taskTime}
                                  mode="time"
                                  placeholder="Time"
@@ -1395,7 +1395,7 @@ function NewTaskModal(props) {
                                  }}
                                  onDateChange={(date) => { setTaskTime(date) }}
                               /> :
-                                 <TouchableOpacity style={[styles.datePicker, taskTime && { borderColor: "#000" }]} onPress={showTimePicker}>
+                                 <TouchableOpacity style={[styles.datePicker]} onPress={showTimePicker}>
                                     <Text style={[styles.dateInputTxt, taskTime && { color: "#000" }]}>{taskTime ? taskTime : "Time"}</Text>
                                  </TouchableOpacity>
                               }
@@ -1447,7 +1447,7 @@ function NewTaskModal(props) {
                            </Modal>
                         </View>
                         <TextInput
-                           style={[styles.commentInput, { padding: 0 }, taskComment !== '' && { borderColor: '#000' }, modalTimesVisible && { display: 'none' }]}
+                           style={[styles.commentInput, { padding: 0 }, modalTimesVisible && { display: 'none' }]}
                            placeholder="Comment (Optional)"
                            placeholderTextColor="#9E9E9E"
                            value={taskComment}

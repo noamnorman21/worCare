@@ -22,7 +22,7 @@ export default function NewPatientFinish({ navigation, route }) {
     const [message, setMessage] = useState('');
     const [link, setLink] = useState('');
     const [fromShare, setFromShare] = useState(false);
-    const { userContext } = useUserContext();
+    const { userContext, fetchPatientList } = useUserContext();
 
 
     const encryptPatientId = (patientId) => {
@@ -159,7 +159,7 @@ export default function NewPatientFinish({ navigation, route }) {
                         [
                             {
                                 text: "OK",
-                                onPress: () => navigation.navigate('CustomHeader', { tblUser: route.params.tblUser })
+                                onPress: () => {navigation.navigate('CustomHeader', { tblUser: route.params.tblUser }); fetchPatientList()}
                             }
                         ],
                         { cancelable: false }

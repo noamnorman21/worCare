@@ -1236,7 +1236,7 @@ export function UserProvider({ children }) {
         allPublicTasks, allPrivateTasks, UpdateDrugForPatientDTO, holidays, GetAllDrugs, allDrugs, addPrivateTaskContext,
         newMessages, setNewMessages, logOutFireBase, registerForPushNotificationsAsync, sendPushNotification, UpdatePatient, userPaychecks,
         fetchPatientList, patientList, setRouteEmail, routeEmail, notificationsThatSent, notifications, getPaychecks, UpdateNotificationStatus, GetNotificationsThatSent, logInRemember, userNewHobbiesAndLimitations,
-        setUserNewHobbiesAndLimitations, getSpecificPatientData, updateHobbiesAndLimitations, translateText, unpair, addNewPairing, setAddNewPairing, languageArr
+        setUserNewHobbiesAndLimitations, getSpecificPatientData, updateHobbiesAndLimitations, translateText, unpair, addNewPairing, setAddNewPairing, languageArr, patientId
     };
 
     return (
