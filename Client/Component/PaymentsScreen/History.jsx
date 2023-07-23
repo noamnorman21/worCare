@@ -28,11 +28,6 @@ export default function History({ navigation, route }) {
     setIsAtBottom(isBottom);
   };
 
-  const onContentSizeChange = () => {
-    // Call scrollTo with y offset of 0 to trigger onScroll.
-    // scrollRef.current.scrollTo({ x: 0, y: 0, animated: true });
-  };
-
   const Edit = (id, data) => {
     Alert.alert(
       "Edit",
@@ -55,22 +50,22 @@ export default function History({ navigation, route }) {
 
   const renderHistory = async () => {
     try {
-      if(userContext.userType == "Caregiver"){
-      let arr = userHistoryPayments.map((item) => {
-        return (
-          <Request key={item.requestId} renderHistory={renderHistory} data={item} id={item.requestId} View={View} Edit={Edit} subject={item.requestSubject} amountToPay={item.amountToPay} date={item.requestDate} requestComment={item.requestComment} />
-        )
-      })
-      setHistory(arr)
-    }
-    else{
-      let arr = userHistoryPayments.map((item) => {
-        return (
-          <RequestHeb key={item.requestId} renderHistory={renderHistory} data={item} id={item.requestId} View={View} Edit={Edit} subject={item.requestSubject} amountToPay={item.amountToPay} date={item.requestDate} requestComment={item.requestComment} />
-        )
-      })
-      setHistory(arr)
-    }
+      if (userContext.userType == "Caregiver") {
+        let arr = userHistoryPayments.map((item) => {
+          return (
+            <Request key={item.requestId} renderHistory={renderHistory} data={item} id={item.requestId} View={View} Edit={Edit} subject={item.requestSubject} amountToPay={item.amountToPay} date={item.requestDate} requestComment={item.requestComment} />
+          )
+        })
+        setHistory(arr)
+      }
+      else {
+        let arr = userHistoryPayments.map((item) => {
+          return (
+            <RequestHeb key={item.requestId} renderHistory={renderHistory} data={item} id={item.requestId} View={View} Edit={Edit} subject={item.requestSubject} amountToPay={item.amountToPay} date={item.requestDate} requestComment={item.requestComment} />
+          )
+        })
+        setHistory(arr)
+      }
     } catch (error) {
       console.log("error", error)
     }
@@ -82,7 +77,6 @@ export default function History({ navigation, route }) {
         contentContainerStyle={styles.pending}
         ref={scrollRef}
         onScroll={onScroll}
-        onContentSizeChange={onContentSizeChange}
         scrollEventThrottle={16}
       >
         {History}
@@ -185,28 +179,28 @@ function Request(props) {
 
   const displayStatus = () => {
     if (userContext.userType == "Caregiver") {
-    if (props.data.requestStatus == "F") {
-      return "Finished"
+      if (props.data.requestStatus == "F") {
+        return "Finished"
+      }
+      else if (props.data.requestStatus == "C") {
+        return "Canceled"
+      }
+      else if (props.data.requestStatus == "R") {
+        return "Rejected"
+      }
     }
-    else if (props.data.requestStatus == "C") {
-      return "Canceled"
-    }
-    else if (props.data.requestStatus == "R") {
-      return "Rejected"
+    else {
+      if (props.data.requestStatus == "F") {
+        return "הושלם"
+      }
+      else if (props.data.requestStatus == "C") {
+        return "בוטל"
+      }
+      else if (props.data.requestStatus == "R") {
+        return "נדחה"
+      }
     }
   }
-  else {
-    if (props.data.requestStatus == "F") {
-      return "הושלם"
-    }
-    else if (props.data.requestStatus == "C") {
-      return "בוטל"
-    }
-    else if (props.data.requestStatus == "R") {
-      return "נדחה"
-    }
-  }
-}
 
   return (
     <SafeAreaView>
@@ -252,10 +246,10 @@ function Request(props) {
                 <Text style={[styles.requestItemText, props.requestComment == null || props.requestComment == '' && { display: 'none' }]}>Comment: </Text>
               </View>
               <View style={styles.requestItemBodyRight}>
-                <Text style={[styles.requestItemText, { fontFamily: 'Urbanist-Regular' }]}>{dateString}</Text>
-                <Text style={[styles.requestItemText, { fontFamily: 'Urbanist-Regular' }]}>{props.data.amountToPay}</Text>
-                <Text style={[styles.requestItemText, { fontFamily: 'Urbanist-Regular' }]}>{displayStatus()}</Text>
-                <Text style={[styles.requestItemText, { fontFamily: 'Urbanist-Regular' }, props.data.requestComment == null || props.data.requestComment == '' && { display: 'none' }]}>{props.requestComment}</Text>
+                <Text style={[styles.requestExtraTxt]}>{dateString}</Text>
+                <Text style={[styles.requestExtraTxt]}>{props.data.amountToPay}</Text>
+                <Text style={[styles.requestExtraTxt]}>{displayStatus()}</Text>
+                <Text style={[styles.requestExtraTxt, props.data.requestComment == null || props.data.requestComment == '' && { display: 'none' }]}>{props.requestComment}</Text>
               </View>
             </View>
           </View>
@@ -395,7 +389,7 @@ function RequestHeb(props) {
     else if (props.data.requestStatus == "R") {
       return "נדחה"
     }
-}
+  }
 
   return (
     <SafeAreaView>
@@ -405,7 +399,7 @@ function RequestHeb(props) {
             <View style={styles.requestItemHeaderOpen}>
               <TouchableOpacity onPress={toggle} style={styles.request}>
                 <View style={styles.requestItemMiddle}>
-                  <Text style={[styles.requestItemText,{ textAlign:'center', width:'100%'}]}><Text style={styles.requestItemText}>{props.subject}</Text></Text>
+                  <Text style={[styles.requestItemText, { textAlign: 'center', width: '100%' }]}><Text style={styles.requestItemText}>{props.subject}</Text></Text>
                 </View>
               </TouchableOpacity>
               <Menu style={{ flexDirection: 'column', marginVertical: 0 }} onSelect={value => openModal(value)} >
@@ -435,10 +429,10 @@ function RequestHeb(props) {
             </View>
             <View style={styles.requestItemBody}>
               <View style={styles.requestItemBodyRightHeb}>
-                <Text style={[styles.requestItemText, { fontFamily: 'Urbanist-Regular' }]}>{dateString}</Text>
-                <Text style={[styles.requestItemText, { fontFamily: 'Urbanist-Regular' }]}>{props.data.amountToPay}</Text>
-                <Text style={[styles.requestItemText, { fontFamily: 'Urbanist-Regular' }]}>{displayStatus()}</Text>
-                <Text style={[styles.requestItemText, { fontFamily: 'Urbanist-Regular' }, props.data.requestComment == null || props.data.requestComment == '' && { display: 'none' }]}>{props.requestComment}</Text>
+                <Text style={[styles.requestExtraTxt]}>{dateString}</Text>
+                <Text style={[styles.requestExtraTxt]}>{props.data.amountToPay}</Text>
+                <Text style={[styles.requestExtraTxt]}>{displayStatus()}</Text>
+                <Text style={[styles.requestExtraTxt, props.data.requestComment == null || props.data.requestComment == '' && { display: 'none' }]}>{props.requestComment}</Text>
               </View>
               <View style={styles.requestItemBodyLeftHeb}>
                 <Text style={styles.requestItemText}>תאריך: </Text>
@@ -509,8 +503,13 @@ const styles = StyleSheet.create({
     marginTop: Platform.OS === 'ios' ? -10 : 10,
     marginBottom: Platform.OS === 'ios' ? 10 : 10,
   },
+  requestExtraTxt: {
+    fontSize: 18,
+    color: '#000000',
+    fontFamily: 'Urbanist-Regular',
+    paddingLeft: 10
+  },
   requestItemHeaderOpen: {
-    // justifyContent: 'flex-start',
     width: SCREEN_WIDTH * 0.9,
     height: 55,
     alignItems: 'center',
@@ -526,7 +525,6 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 1.5,
     borderColor: '#7DA9FF',
-    marginVertical: 10,
     backgroundColor: '#F5F8FF',
     padding: 5,
   },
@@ -558,7 +556,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'flex-start',
     flex: 2.25,
-    // paddingRight: 5,    
   },
   requestItemText: {
     fontSize: 18,
@@ -685,6 +682,6 @@ const styles = StyleSheet.create({
   requestItemBodyRightHeb: {
     flex: 7,
     alignItems: 'flex-end',
-    marginTop:3
+    marginTop: 3
   },
 })

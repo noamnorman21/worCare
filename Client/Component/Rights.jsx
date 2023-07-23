@@ -2,13 +2,13 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Dimensions, TextInput, ScrollView, Alert } from 'react-native';
 import { KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, ActivityIndicator } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import DropDownPicker from 'react-native-dropdown-picker';
 import { Overlay } from '@rneui/themed';
 import { useUserContext } from '../UserContext';
 import { useIsFocused } from '@react-navigation/native';
 import { AddBtn, NewTaskModal } from './HelpComponents/AddNewTask';
 import { OpenAiKey } from '@env'
-
+import { Dropdown } from 'react-native-element-dropdown';
+import { Ionicons } from '@expo/vector-icons';
 const apiKeyGpt = OpenAiKey;
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -35,41 +35,6 @@ export default function Rights() {
   const [question, setQuestion] = useState('');
   const [gpt3Answer, setGpt3Answer] = useState('');
   const [isLoading, setIsLoading] = useState(true);
-
-  // Function to send the question to GPT-3 API and get an answer
-  // const startGptAnswer = async () => {
-  //   if (question === '' || value === null) {
-  //     Alert.alert('Please fill in all fields');
-  //   }
-  //   toggleOverlay();
-  //   setIsLoading(true);
-  //   // return; 
-  //   // Adjust the prompt to include the selected category and the question
-  //   const context = `Context: In Israel, foreign workers in the field of caregiver for the elderly have specific rights and regulations. It is important to provide accurate and reliable information. Please provide an answer that is specific to Israel's laws and guidelines.`
-  //   const prompt = `Category: ${value}\nQuestion: ${question}\n\n${context}\n\nAnswer:`;
-  //   // Make the API call and handle the response
-  //   const apiResponse = await fetch('https://api.openai.com/v1/engines/text-davinci-003/completions', {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       'Authorization': `Bearer ${apiKeyGpt}`,
-  //     },
-  //     body: JSON.stringify({
-  //       'prompt': prompt,
-  //       'max_tokens': 450, // Set this to the number of tokens you want the completion to be
-  //       'temperature': 0.5,
-  //       'top_p': 1,
-  //     }),
-  //   });
-  //   //Process the API response and extract the answer
-  //   const data = await apiResponse.json();
-  //   const answer = data.choices[0].text.trim();
-  //   console.log(answer);
-  //   // Set the answer in the state
-  //   setGpt3Answer(answer);
-  //   setIsLoading(false);
-  //   // Show the answer overlay
-  // };
 
   const startGptAnswer = async () => {
     if (question === '' || value === null) {
@@ -144,26 +109,25 @@ export default function Rights() {
             </View>
             <View style={{ flex: 1.5 }}>
               <View>
-                <Text style={styles.smHeader}>Categories</Text>
-                <DropDownPicker
-                  placeholder="Select a category"
-                  open={open}
-                  onOpen={onOpenDropdown}
-                  listMode="SCROLLVIEW"
-                  value={value}
-                  items={items}
-                  setOpen={setOpen}
-                  setValue={setValue}
-                  setItems={setItems}
-                  containerStyle={styles.dropdownContainer}
-                  placeholderStyle={value == null ? styles.dropdownPlaceholder : [styles.dropdownPlaceholder, { fontFamily: 'Urbanist-SemiBold' }]}
+                <Text style={[styles.smHeader, { marginVertical: 10 }]}>Categories</Text>
+                <Dropdown
                   style={styles.dropdownStyle}
-                  itemStyle={styles.dropdownItem}
-                  dropDownContainerStyle={styles.dropdownDropContainer}
-                  listItemLabelStyle={{ fontFamily: 'Urbanist-Light' }}
-                  onChangeItem={item => console.log(item.label, item.value)}
+                  placeholder="Select a category"
+                  placeholderStyle={value == null ? styles.dropdownPlaceholder : [styles.dropdownPlaceholder]}
+                  selectedTextStyle={styles.selectedTextStyle}
+                  data={items}
+                  itemTextStyle={styles.dropdownItem}
+                  labelField="label"
+                  valueField="value"
+                  value={value}
+                  onChange={item => { setValue(item.value); }}
+                  containerStyle={styles.dropContainer}
+                  renderRightIcon={() => (
+                    <Ionicons name="chevron-down-outline" size={22} color="gray" style={{ marginRight: 10, marginTop: 5 }} />
+                  )}
                 />
-                <Text style={styles.smHeader}>Question</Text>
+
+                < Text style={styles.smHeader}>Question</Text>
                 <TextInput
                   style={styles.inputTxt}
                   placeholder="What do you want to ask?"
@@ -342,6 +306,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Urbanist-Light',
     fontSize: 16,
     color: '#000',
+    paddingLeft: 10,
   },
   dropdownStyle: {
     backgroundColor: '#fff',
@@ -352,11 +317,20 @@ const styles = StyleSheet.create({
   },
   dropdownItem: {
     justifyContent: 'flex-start',
+    fontFamily: 'Urbanist-Light',
+    fontSize: 16,
+    color: '#000',
   },
-  dropdownDropContainer: {
+  dropContainer: {
     backgroundColor: '#fff',
     borderRadius: 16,
     borderWidth: 1.5,
     borderColor: '#E6EBF2',
-  },
+  },
+  selectedTextStyle: {
+    fontFamily: 'Urbanist-Medium',
+    fontSize: 16,
+    color: '#000',
+    paddingLeft: 10,
+  },
 });

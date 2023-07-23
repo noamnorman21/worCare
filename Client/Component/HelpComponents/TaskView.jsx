@@ -32,12 +32,6 @@ export default function TaskView(props) {
     setDate(day + '/' + month + '/' + year);
   }
 
-  const handlePress = () => {
-    // Handle the button press with the key prop
-    console.log('Component key:', props.key);
-    // Perform navigation or any other logic based on the key
-  };
-
   return (
     <View style={styles.container}>
       <View style={styles.taskTitle}>
@@ -47,11 +41,9 @@ export default function TaskView(props) {
           </View>
         </View>
         <View style={styles.taskDetails}>
-          <TouchableOpacity>
-            <Text style={styles.taskTitleTxt}>
-              {props.task.taskName}
-            </Text>
-          </TouchableOpacity>
+          <Text style={styles.taskTitleTxt}>
+            {props.task.taskName}
+          </Text>
           {props.hideDate ?
             <Text style={styles.taskSmallTxt}>
               {time}
@@ -61,14 +53,12 @@ export default function TaskView(props) {
               {date}{"  |  "}{time}
             </Text>
           }
+          <Text style={styles.txtTaskComment}>
+            {props.task.taskComment}
+          </Text>
         </View>
       </View>
-      <View style={styles.taskComment}>
-        <Text style={styles.txtTaskComment}>
-          {props.task.taskComment}
-        </Text>
-        <View style={styles.line} />
-      </View>
+      <View style={styles.line} />
     </View>
   )
 }
@@ -76,7 +66,7 @@ export default function TaskView(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: SCREEN_WIDTH * 0.9,
+    width: SCREEN_WIDTH,
     flexDirection: 'column',
     height: 'auto',
     minHeight: 75,
@@ -98,17 +88,9 @@ const styles = StyleSheet.create({
     color: '#000',
     marginTop: 7,
   },
-  taskComment: {
-    flex: 1.5,
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
-    width: SCREEN_WIDTH * 0.9,
-    paddingLeft: 30,
-    // flexDirection: 'row',
-  },
   taskTitle: {
     flex: 1,
-    width: SCREEN_WIDTH * 0.9,
+    width: SCREEN_WIDTH * 0.95,
     flexDirection: 'row',
   },
   iconContainer: {
@@ -129,8 +111,8 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   line: {
-    width: SCREEN_WIDTH * 0.85,
-    height: 0.5,
+    width: SCREEN_WIDTH,
+    height: 0.75,
     backgroundColor: '#808080',
     opacity: 0.5,
     marginTop: 7,

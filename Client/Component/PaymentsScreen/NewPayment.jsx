@@ -265,7 +265,7 @@ export default function NewPayment(props) {
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
       <Dialog visible={uploading} style={styles.dialogStyle}>
-        <Dialog.Title style={{ backgroundColor: 'transparent', fontFamily: "Urbanist-Medium", fontSize: 18 }}>This will only take a few seconds</Dialog.Title>
+        <Dialog.Title style={{ fontFamily: "Urbanist-Medium", fontSize: 18, marginBottom: 15 }}>This will take a few seconds...</Dialog.Title>
         <Dialog.Content>
           <ActivityIndicator size="large" color="#548DFF" />
         </Dialog.Content>
@@ -275,6 +275,14 @@ export default function NewPayment(props) {
 }
 
 const styles = StyleSheet.create({
+  dialogStyle: {
+    backgroundColor: '#FFF',
+    borderRadius: 16,
+    width: SCREEN_WIDTH * 0.8,
+    height: SCREEN_HEIGHT * 0.25,
+    alignSelf: 'center',
+    justifyContent: 'center',
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',

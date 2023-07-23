@@ -10,23 +10,18 @@ import { useUserContext } from '../../UserContext';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function GeneralTasks(props) {
-  const { allPublicTasks,allPrivateTasks } = useUserContext();
+  const { allPublicTasks, allPrivateTasks } = useUserContext();
 
   const navigation = useNavigation(); // Access the navigation object
   const [modalVisible, setModalVisible] = useState(false)
-  //const [publicTasks, setPublicTasks] = useState(props.allPublicTasks)
-  //const [privateTasks, setPrivateTasks] = useState(props.allPrivateTasks)
   const [allTasks, setAllTasks] = useState([])
-  const checkIcon = ["check-circle", "circle"];
   const arrowIcon = ["chevron-down-outline", "chevron-up-outline"];
   const [header, setHeader] = useState(false)
   const [headerCompleted, setHeaderCompleted] = useState(false)
   const isFocused = useIsFocused();
 
   useEffect(() => {
-   // setPublicTasks(props.allPublicTasks)
-   // setPrivateTasks(props.allPrivateTasks)
-    combineTasks(allPrivateTasks,allPublicTasks)
+    combineTasks(allPrivateTasks, allPublicTasks)
   }, [allPublicTasks, allPrivateTasks])
 
   const handleAddBtnPress = () => {
@@ -106,7 +101,7 @@ export default function GeneralTasks(props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{ width: SCREEN_WIDTH * 0.92, marginVertical: 20 }}>
+      <View style={{ width: SCREEN_WIDTH * 0.95, marginVertical: 20 }}>
         <View>
           <TouchableOpacity style={styles.headerForTasks} onPress={toggleHeader}>
             <Text style={styles.tasksTitle}>Next To Do</Text>
@@ -114,7 +109,7 @@ export default function GeneralTasks(props) {
           </TouchableOpacity>
         </View>
         <ScrollView>
-          <View style={[styles.tasksView, header ? { display: 'none' } : {}]} >
+          <View style={[styles.tasksView, header && { display: 'none' }]} >
             {allTasks.map((task, index) => {
               let isPrivate = false;
               if (task.patientId == null) {
@@ -128,7 +123,7 @@ export default function GeneralTasks(props) {
       <View style={styles.addBtnView}>
         <AddBtn onPress={handleAddBtnPress} />
       </View>
-      <NewTaskModal isVisible={modalVisible} onClose={handleModalClose} cancel={()=>{ setModalVisible(false)}} />
+      <NewTaskModal isVisible={modalVisible} onClose={handleModalClose} cancel={() => { setModalVisible(false) }} />
     </SafeAreaView >
   )
 }
@@ -139,7 +134,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 20,
-    paddingHorizontal: 8,
+    paddingHorizontal: 10,
   },
   container: {
     flex: 1,
@@ -156,8 +151,9 @@ const styles = StyleSheet.create({
     right: 10,
   },
   tasksView: {
-    width: SCREEN_WIDTH * 0.88,
+    width: SCREEN_WIDTH * 0.95,
     alignItems: 'flex-start',
     marginBottom: 30,
+    paddingHorizontal: 5,
   },
 });

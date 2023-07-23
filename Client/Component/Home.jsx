@@ -100,10 +100,6 @@ export default function Home({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.calendarContainer}>
-        {/* <View>
-          <Text style={styles.title}>Hey, {firstName}!</Text>
-          <Text style={styles.subtitle}>Welcome Back</Text>
-        </View> */}
         <CalendarProvider>
           <Agenda
             futureScrollRange={12}

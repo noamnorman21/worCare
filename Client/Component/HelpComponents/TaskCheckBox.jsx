@@ -13,7 +13,6 @@ export default function TaskCheckBox(props) {
     const { updateActualTask } = useUserContext();
     const [taskName, setTaskName] = useState(props.task.taskName);
 
-    // to make sure the name changes and not stay the same even if task wash checked
     useEffect(() => {
         setTaskName(props.task.taskName);
     }, [props.task.taskName]);
@@ -49,7 +48,7 @@ export default function TaskCheckBox(props) {
     const isPrivate = props.isPrivate;
     return (
         <TouchableOpacity onPress={openTaskList}>
-            <View style={[styles.container, isPrivate ? { backgroundColor: '#FFF7EB' } : {}]}>
+            <View style={[styles.container, isPrivate && { backgroundColor: '#FFF7EB' }]}>
                 <TouchableOpacity onPress={() => setIsDone(!isDone)}>
                     <Feather name={isDone ? checkIcon[0] : checkIcon[1]} size={27} color={!isPrivate ? '#548DFF' : '#FEA529'} />
                 </TouchableOpacity >
@@ -68,7 +67,7 @@ export default function TaskCheckBox(props) {
 const styles = StyleSheet.create({
     container: {
         height: 54,
-        width: SCREEN_WIDTH * 0.9,
+        width: SCREEN_WIDTH * 0.925,
         backgroundColor: '#EBF1FF',
         borderRadius: 16,
         shadowColor: '#000',

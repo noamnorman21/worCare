@@ -371,13 +371,11 @@ function Request(props) {
             </View>
             <View style={styles.requestItemBody}>
               <View style={styles.requestItemBodyLeft}>
-                {/* <Text style={styles.requestItemText}>Subject: </Text> */}
                 <Text style={styles.requestItemText}>Date: </Text>
                 <Text style={styles.requestItemText}>Amount: </Text>
                 <Text style={[styles.requestItemText, props.requestComment == null || props.requestComment == '' && { display: 'none' }]}>Comment: </Text>
               </View>
               <View style={styles.requestItemBodyRight}>
-                {/* <Text style={styles.requestItemSmallText}>{props.subject}</Text> */}
                 <Text style={styles.requestItemSmallText}>{dateString}</Text>
                 <Text style={styles.requestItemSmallText}>{props.amountToPay}</Text>
                 <Text style={[styles.requestItemSmallText, props.requestComment == null || props.requestComment == '' && { display: 'none' }]}>{props.requestComment}</Text>
@@ -848,6 +846,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#000000',
     fontFamily: 'Urbanist-Regular',
+    paddingLeft: 10
   },
   options: {
     flexDirection: 'row',

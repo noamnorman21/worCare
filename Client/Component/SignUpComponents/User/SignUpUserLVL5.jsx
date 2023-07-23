@@ -380,6 +380,5 @@ const styles = StyleSheet.create({
   datePickerIos: {
     flexDirection: 'row',
     width: SCREEN_WIDTH * 0.925,
-
   }
 })

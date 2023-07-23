@@ -11,7 +11,7 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export default function MainTasks(props) {
-  const { allPublicTasks,allPrivateTasks } = useUserContext();
+  const { allPublicTasks, allPrivateTasks } = useUserContext();
 
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -136,8 +136,6 @@ export default function MainTasks(props) {
 
   const handleModalClose = () => {
     setModalVisible(false);
-    // props.refreshPublicTask();
-    // props.refreshPrivateTask();
   };
 
   return (
@@ -210,6 +208,7 @@ const styles = StyleSheet.create({
   TommorowView: {
     flex: 1.25,
     width: '100%',
+    marginTop: 10
   },
   addBtnView: {
     position: 'absolute',
