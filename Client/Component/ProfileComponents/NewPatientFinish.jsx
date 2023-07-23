@@ -10,6 +10,8 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 import { useUserContext } from '../../UserContext';
 import { Buffer } from 'buffer';
+import { OrLine, HaveAccount } from '../SignUpComponents/FooterLine'
+
 
 
 export default function NewPatientFinish({ navigation, route }) {
@@ -254,6 +256,10 @@ export default function NewPatientFinish({ navigation, route }) {
                     </View>
                 </View>
             </Modal>
+            <OrLine />
+            <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+                <Text style={styles.footerSM}>Go back to home page</Text>
+            </TouchableOpacity>
 
             <ContactsList sendVisible={sendVisible} contactVisible={contactVisible} sendContact={sendContact} />
         </View>
@@ -451,5 +457,13 @@ const styles = StyleSheet.create({
         fontSize: 17,
         marginTop: 10,
         textDecorationLine: 'underline',
+    },
+    footerSM: {
+        color: '#548DFF',
+        justifyContent: 'center',
+        textAlign: 'center',
+        fontSize: 18,
+        fontFamily: 'Urbanist-Bold',
+        paddingBottom: 20,
     },
 });

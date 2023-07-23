@@ -4,6 +4,8 @@ import { Entypo } from '@expo/vector-icons';
 import { Dropdown } from 'react-native-element-dropdown';
 import LimitationsData from '../SignUpComponents/User/Limitations.json';
 import { useUserContext } from '../../UserContext';
+import { OrLine, HaveAccount } from '../SignUpComponents/FooterLine'
+
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function NewPatientLvl2({ navigation, route }) {
@@ -62,7 +64,7 @@ export default function NewPatientLvl2({ navigation, route }) {
     };
     navigation.navigate('NewPatientLvl3', { tblLimitations: tblLimitations, tblPatient: route.params.tblPatient, tblUser: userContext }); // Navigate to next lvl
   };
-  changebathRoutine = (value) => {
+  const changebathRoutine = (value) => {
     if (value === 'All') { // if the user clicked on the "All" button
       // change the state of all the checkboxes with inverse value
       if (bathRoutine.filter((item) => item.selected === true).length === bathRoutine.length - 1) {
@@ -364,7 +366,10 @@ export default function NewPatientLvl2({ navigation, route }) {
           <Text style={styles.button}>Continue</Text>
         </TouchableOpacity>
       </View>
-
+      <OrLine />
+            <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+                <Text style={styles.footerSM}>Go back to home page</Text>
+            </TouchableOpacity>
     </SafeAreaView>
   )
 }
@@ -377,6 +382,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  footerSM: {
+    color: '#548DFF',
+    justifyContent: 'center',
+    textAlign: 'center',
+    fontSize: 18,
+    fontFamily: 'Urbanist-Bold',
+    paddingBottom: 20,
+},
   headerContainer: {
     width: SCREEN_WIDTH * 1,
     alignItems: 'center',
@@ -427,8 +440,9 @@ const styles = StyleSheet.create({
   },
   header: {
     fontSize: 30,
-    marginBottom: 20,
     fontFamily: 'Urbanist-Bold',
+    marginTop: 30,
+    paddingTop:20,
   },
   input: {
     fontSize: 18,
@@ -497,7 +511,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     width: SCREEN_WIDTH * 1,
-    marginVertical: 20,
+    marginTop:20,
     alignItems: 'center',
     justifyContent: 'center',
   },

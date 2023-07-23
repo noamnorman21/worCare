@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, TouchableOpacity, TextInput, Modal, Dimensions,
 import { Entypo } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
 import HobbiesData from '../SignUpComponents/User/Hobbies.json';
+import { OrLine, HaveAccount } from '../SignUpComponents/FooterLine'
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
@@ -557,6 +558,10 @@ export default function SignUpHobbies({ navigation, route }) {
           <Text style={styles.button}>Continue</Text>
         </TouchableOpacity>
       </View>
+      <OrLine />
+            <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+                <Text style={styles.footerSM}>Go back to home page</Text>
+            </TouchableOpacity>
     </SafeAreaView >
   );
 }
@@ -599,7 +604,7 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: '#E6EBF2',
     padding: 10,
-    marginVertical: 7,
+    marginVertical: 5,
     justifyContent: 'center',
     alignItems: 'flex-start',
   },
@@ -611,8 +616,9 @@ const styles = StyleSheet.create({
   },
   header: {
     fontSize: 30,
-    marginBottom: 20,
     fontFamily: 'Urbanist-Bold',
+    marginTop: 30,
+paddingTop: 20,
   },
   input: {
     fontSize: 18,
@@ -686,7 +692,6 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     width: SCREEN_WIDTH * 1,
-    marginVertical: 20,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -798,4 +803,12 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: '#E6EBF2',
   },
+  footerSM: {
+    color: '#548DFF',
+    justifyContent: 'center',
+    textAlign: 'center',
+    fontSize: 18,
+    fontFamily: 'Urbanist-Bold',
+    paddingBottom: 20,
+},
 });

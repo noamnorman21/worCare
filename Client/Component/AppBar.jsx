@@ -335,7 +335,7 @@ function CustomHeader() {
 
 
 
-            <Dialog visible={newUserDialogVisable} onDismiss={() => setNewUserDialogVisable(false)}
+            {/* <Dialog visible={newUserDialogVisable} onDismiss={() => setNewUserDialogVisable(false)}
                 style={styles.dialogStyle}>
                 <Dialog.Title style={styles.dialogTitle}>Add New Patient</Dialog.Title>
                 <Dialog.Content>
@@ -351,7 +351,7 @@ function CustomHeader() {
                         setNewUserDialogVisable(false)
                     }}>Cancel</Button>
                 </Dialog.Actions>
-            </Dialog>
+            </Dialog> */}
             <Modal visible={switchPatientDialogVisable} transparent={true} animationType="fade">
                 <TouchableOpacity style={styles.menuOverlay} onPress={togllePatiemtDialog}>
                     <View style={styles.menuContent}>
@@ -359,7 +359,7 @@ function CustomHeader() {
                       
                         {userContext.userType === "User" && <TouchableOpacity style={styles.addNewPatient} onPress={
                             () => {
-                                toggleModal()
+                                togllePatiemtDialog()
                                 navigation.navigate('NewPatientLvl1')
                             }
                         }>
