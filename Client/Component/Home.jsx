@@ -14,34 +14,30 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default function Home({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
-  const { allPublicTasks, allPrivateTasks, holidays, logOutFireBase, userContext,GetUserHistory, GetUserPending,GetNotificationsThatSent } = useUserContext();
+  const { allPublicTasks, allPrivateTasks, holidays, logOutFireBase, userContext, GetUserHistory, GetUserPending, GetNotificationsThatSent } = useUserContext();
   const isFocused = useIsFocused();
   const firstName = userContext.FirstName;
 
-useEffect(() => {
-  let listener= Notifications.addNotificationReceivedListener((notification) => {
-    let notiBody= notification.request.content.body
-    if (notiBody.includes("message")) {
-      console.log("message");
-      setNewMessages(newMessages + 1);
-    }
-    else if (notiBody.includes("task")) {
-      console.log("task")
-    }
-    else if (notiBody.includes("payment")) {
-      console.log("payment")
-      GetUserPending()
-      GetUserHistory()
-    }
-    GetNotificationsThatSent(userContext.userId);
-});
+  useEffect(() => {
+    let listener = Notifications.addNotificationReceivedListener((notification) => {
+      let notiBody = notification.request.content.body
+      if (notiBody.includes("message")) {
+        setNewMessages(newMessages + 1);
+      }
+      else if (notiBody.includes("task")) {
+      }
+      else if (notiBody.includes("payment")) {
+        GetUserPending()
+        GetUserHistory()
+      }
+      GetNotificationsThatSent(userContext.userId);
+    });
 
-listener;
+    listener;
     return () => {
-      console.log("remove listener")
-        Notifications.removeNotificationSubscription(listener);
+      Notifications.removeNotificationSubscription(listener);
     };
-}, []);
+  }, []);
 
 
   useFocusEffect(
@@ -211,19 +207,17 @@ const styles = StyleSheet.create({
   },
   item: {
     flex: 1,
-    width: SCREEN_WIDTH * 0.9,
+    width: SCREEN_WIDTH * 0.95,
     flexDirection: 'column',
     height: 'auto',
     minHeight: 75,
     marginVertical: 7,
   },
   iconContainer: {
+    flex: 2,
     alignItems: 'center',
     justifyContent: 'flex-start',
     height: '100%',
-    flexDirection: 'row',
-    marginLeft: 23,
-    marginRight: 23,
   },
   icon: {
     borderRadius: 54,
@@ -231,7 +225,6 @@ const styles = StyleSheet.create({
     width: 54,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#CCEFAB',
   },
   itemTitle: {
     flex: 3,
@@ -240,21 +233,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     width: 'auto',
   },
-  // title: {
-  //   fontSize: 24,
-  //   fontFamily: 'Urbanist-SemiBold',
-  //   textAlign: 'center',
-  //   color: '#000',
-  //   marginLeft: 20,
-  //   marginVertical: 5,
-  // },
-  // subtitle: {
-  //   fontSize: 18,
-  //   fontFamily: 'Urbanist-Regular',
-  //   textAlign: 'center',
-  //   color: '#000',
-  //   marginLeft: 20,
-  // },
   itemTitleTxt: {
     fontSize: 18,
     fontFamily: 'Urbanist-SemiBold',
@@ -276,10 +254,10 @@ const styles = StyleSheet.create({
     paddingLeft: 30,
   },
   line: {
-    height: 0.5,
+    width: SCREEN_WIDTH,
+    height: 0.75,
     backgroundColor: '#808080',
     opacity: 0.5,
     marginTop: 7,
-    marginHorizontal: 30,
   },
 });

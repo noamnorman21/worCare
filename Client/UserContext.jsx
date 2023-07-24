@@ -455,27 +455,27 @@ export function UserProvider({ children }) {
         }
     }
 
-    // IMPORTANT!!!
+    // HOLIDAYS API
     async function getHolidays(country) {
-        const apiHolidaysKey = '1269df65cf0081dab91555b4d1bd5171de6dc403'
+        const apiHolidaysKey = '5041d468f75ee507e494ed2013565cdd25d08e48'
         const year = moment().year();
         const url = `https://calendarific.com/api/v2/holidays?api_key=${apiHolidaysKey}&country=${country}&year=${year}`;
-        // try {
-        //     const response = await fetch(url);
-        //     const data = await response.json();
-        //     if (data.response && data.response.holidays) {
-        //         const holidays = data.response.holidays.map((holiday) => ({
-        //             date: holiday.date.iso,
-        //             name: holiday.name,
-        //             desc: holiday.description,
-        //         }));
-        //         setHolidays((prev) => [...prev, ...holidays]);
-        //     } else {
-        //         throw new Error('Invalid API response');
-        //     }
-        // } catch (error) {
-        //     console.error('Error fetching holidays:', error);
-        // }
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            if (data.response && data.response.holidays) {
+                const holidays = data.response.holidays.map((holiday) => ({
+                    date: holiday.date.iso,
+                    name: holiday.name,
+                    desc: holiday.description,
+                }));
+                setHolidays((prev) => [...prev, ...holidays]);
+            } else {
+                throw new Error('Invalid API response');
+            }
+        } catch (error) {
+            console.error('Error fetching holidays:', error);
+        }
     }
 
     async function getLanguages() {
