@@ -322,32 +322,6 @@ function CustomHeader() {
                     options={{ unmountOnBlur: true, headerShown: false }}
                 />
             </Stack.Navigator>
-
-            {/* <Overlay visible={true} style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
-                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', height: '50%', width: '50%' }}>
-                    <Text>Loading...</Text>
-                </View>
-            </Overlay> */}
-
-
-
-            {/* <Dialog visible={newUserDialogVisable} onDismiss={() => setNewUserDialogVisable(false)}
-                style={styles.dialogStyle}>
-                <Dialog.Title style={styles.dialogTitle}>Add New Patient</Dialog.Title>
-                <Dialog.Content>
-                    <Paragraph style={{ fontFamily: 'Urbanist-Medium', fontSize: 18 }}>Do you want to create New Patient Profile?</Paragraph>
-                </Dialog.Content>
-                <Dialog.Actions>
-                    <Button labelStyle={styles.dialogTxt} onPress={() => {
-                        setNewUserDialogVisable(false)
-                        console.log('new patient')
-                        navigation.navigate('NewPatientLvl1')
-                    }}>New Patient</Button>
-                    <Button labelStyle={styles.dialogTxt} onPress={() => {
-                        setNewUserDialogVisable(false)
-                    }}>Cancel</Button>
-                </Dialog.Actions>
-            </Dialog> */}
             <Modal visible={switchPatientDialogVisable} transparent={true} animationType="fade">
                 <TouchableOpacity style={styles.menuOverlay} onPress={togllePatientDialog}>
                     <View style={styles.menuContent}>
@@ -466,13 +440,13 @@ const styles = StyleSheet.create({
     modalContainer: {
         width: SCREEN_WIDTH * 0.75,
         height: SCREEN_HEIGHT,
-        paddingVertical: 25,
+        paddingVertical: 50,
     },
     closeButtonContainer: {
         position: 'absolute',
         marginVertical: 10,
         left: 20,
-        top: 40,
+        top: 45,
     },
     menuItem: {
         flexDirection: 'row',
@@ -569,6 +543,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         maxHeight: '80%',
+        minHeight:'20%',
         paddingTop: 10,
     },
     menuOption: {

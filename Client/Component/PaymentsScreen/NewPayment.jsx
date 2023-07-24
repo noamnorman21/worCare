@@ -205,12 +205,10 @@ export default function NewPayment(props) {
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
-
           <View style={styles.centeredView}>
             <TouchableOpacity style={styles.cancelbutton} onPress={props.cancel}>
               <AntDesign name="close" size={24} color="black" />
             </TouchableOpacity>
-
             <Text style={styles.title}>Add New Request</Text>
             <View style={styles.inputContainer}>
               <TextInput
@@ -368,6 +366,7 @@ const styles = StyleSheet.create({
     color: '#000',
     backgroundColor: '#fff',
     marginVertical: 10,
+    padding:0,
     textAlign: 'left',
     width: Dimensions.get('window').width * 0.95,
     height: 54,

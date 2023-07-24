@@ -170,22 +170,29 @@ listener;
                 if (item.key == null) {
                   return (
                     <View style={styles.item}>
+                      <View>
                       <View style={styles.itemTitle}>
                         <View style={styles.iconContainer}>
                           <View style={styles.icon}>
-                            <FontAwesome5 name="umbrella-beach" size={24} color="#32D081" />
+                            <FontAwesome5 name="umbrella-beach" size={22} color="#32D081" />
                           </View>
-                        </View>
+                        </View>          
+                        <View style={styles.taskDetails}>
                         <Text style={styles.itemTitleTxt}>
                           {item.name}
                         </Text>
-                      </View>
-                      <View style={styles.taskDetails}>
-                      </View>
-                      <View style={styles.taskComment}>
                         <Text style={styles.itemText}>
                           {item.desc}
                         </Text>
+                      </View>
+                      </View>
+                      </View>
+                      
+                     
+                      <View style={styles.taskComment}>
+                        {/* <Text style={styles.itemText}>
+                          {item.desc}
+                        </Text> */}
                       </View>
                       <View style={styles.line} />
                     </View>
@@ -236,7 +243,7 @@ const styles = StyleSheet.create({
   },
   item: {
     flex: 1,
-    width: SCREEN_WIDTH * 0.95,
+    width: SCREEN_WIDTH,
     flexDirection: 'column',
     height: 'auto',
     minHeight: 75,
@@ -254,13 +261,12 @@ const styles = StyleSheet.create({
     width: 54,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: '#CCEFAB',
   },
   itemTitle: {
-    flex: 3,
+    flex: 1,
+    width: SCREEN_WIDTH * 0.95,
     flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    width: 'auto',
   },
   itemTitleTxt: {
     fontSize: 18,
@@ -288,5 +294,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#808080',
     opacity: 0.5,
     marginTop: 7,
+  },
+  taskDetails: {
+    flex: 5,
+    height: '100%',
   },
 });
