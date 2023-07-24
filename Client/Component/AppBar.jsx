@@ -33,7 +33,7 @@ const SCREEN_WIDTH = Dimensions.get('screen').width;
 
 function CustomHeader() {
     const [isModalVisible, setIsModalVisible] = useState(false);
-    const { userContext, appEmail, logOutFireBase, UpdatePatient, patientList, patientId } = useUserContext();
+    const { userContext, appEmail, logOutFireBase, UpdatePatient, patientList, patientId,isSigned, setIsSigned } = useUserContext();
     const { userUri, FirstName } = userContext;
     const [newUserDialogVisable, setNewUserDialogVisable] = useState(false);
     const [switchPatientDialogVisable, setSwitchPatientDialogVisable] = useState(false);
@@ -247,6 +247,7 @@ function CustomHeader() {
                                                 toggleModal()
                                                 AsyncStorage.removeItem("user");
                                                 AsyncStorage.removeItem("userData");
+                                                setIsSigned(false);
                                                 await navigation.popToTop()
                                                 logOutFireBase()
                                             }
@@ -465,7 +466,6 @@ const styles = StyleSheet.create({
         width: SCREEN_WIDTH * 0.75,
         height: SCREEN_HEIGHT,
         paddingVertical: 25,
-
     },
     closeButtonContainer: {
         position: 'absolute',
@@ -476,12 +476,12 @@ const styles = StyleSheet.create({
     menuItem: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginVertical: 15,
+        marginVertical: 18,
         paddingLeft: 20,
     },
     menuItemText: {
         fontFamily: 'Urbanist-Medium',
-        fontSize: 18,
+        fontSize: 20,
         marginHorizontal: 20,
         color: '#fff1e6',
     },
@@ -493,7 +493,8 @@ const styles = StyleSheet.create({
     imgContainer: {
         alignItems: 'center',
         justifyContent: 'center',
-        marginVertical: SCREEN_HEIGHT * 0.05,
+        marginTop: SCREEN_HEIGHT * 0.07,
+        marginBottom: SCREEN_HEIGHT * 0.05,
     },
     name: {
         fontSize: 20,
