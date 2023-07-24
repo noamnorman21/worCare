@@ -68,7 +68,8 @@ namespace WebApi.Controllers
                         userId = x.userId,
                         LanguageName_En = x.tblLanguage.LanguageName_En,
                         DateOfBirth = x.DateOfBirth,
-                        workerId = db.tblCaresForPatient.Where(y => y.patientId == x.patientId).Select(y => y.workerId).FirstOrDefault()
+                        workerId = db.tblCaresForPatient.Where(y => y.patientId == x.patientId).Select(y => y.workerId).FirstOrDefault(),
+                        pushTokenSecoundSide= db.tblUser.Where( y=> y.userId == db.tblCaresForPatient.Where(z=> z.patientId== x.patientId).Select(z=> z.workerId).FirstOrDefault()).Select(z => z.pushToken).FirstOrDefault(),
                     }).ToList();
                     if (patients != null)
                     {

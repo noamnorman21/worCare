@@ -63,6 +63,7 @@ function CustomHeader() {
 
     //updates 
     useEffect(() => {
+        if(patientList && patientList.length > 0){
             let arr = patientList.map(element => {
                 return (
                     <View key={element.patientId} style={styles.menuOption}>
@@ -78,6 +79,7 @@ function CustomHeader() {
                 )
             });
             setPatientArr(arr)
+        }
     }, [patientList, patientId])
 
     async function switchPatient(patient) {
@@ -92,16 +94,15 @@ function CustomHeader() {
             gender: userContext.gender,
             workerId: userContext.workerId,//if user is a caregiver, this field will be same as userId
             involvedInId: userContext.userId,//if user is a not caregiver, this field will be same as userId
-            patientId: userContext.patientId,
+            patientId: patient.patientId,
             calendarCode: userContext.calendarCode,
             CountryName_En: userContext.CountryName_En,
             patientHL: userContext.patientHL,
             patientData: userContext.patientData,
             pushToken: userContext.pushToken,
-            pushToken2: userContext.pushTokenSecoundSide,
+            pushToken2: patient.pushTokenSecoundSide,
             notification: userContext.notification,
         }
-        usertoSync.patientId = patient.patientId;
         if (usertoSync.userType == "User") {
             usertoSync.workerId = patient.workerId;
         }
@@ -247,7 +248,7 @@ function CustomHeader() {
                                                 toggleModal()
                                                 AsyncStorage.removeItem("user");
                                                 AsyncStorage.removeItem("userData");
-                                                setIsSigned(false);
+                                                await setIsSigned(false);
                                                 await navigation.popToTop()
                                                 logOutFireBase()
                                             }

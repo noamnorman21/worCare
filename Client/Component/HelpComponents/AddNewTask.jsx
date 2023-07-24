@@ -117,6 +117,13 @@ function AddNewMedicine(props) {
    }
 
    const clearInputs = async (type) => {
+      if (type == "Cancel") {
+         console.log(type)
+      }
+      else {
+         console.log(type)
+         await getAllPublicTasks(userData)
+      }
       setNumberPerDay(0);
       setQuantity(0);
       setCapacity(0);
@@ -129,15 +136,7 @@ function AddNewMedicine(props) {
       setMedDosage('');
       setMedDosageUnit('');
       setSelectedDrugName('');
-      if (type == "Cancel") {
-         console.log(type)
-         props.onClose();
-      }
-      else {
-         console.log(type)
-         await getAllPublicTasks(userData)
-         props.onClose();
-      }
+      props.onClose();
    }
 
    const handeleDrugChange = (item) => {

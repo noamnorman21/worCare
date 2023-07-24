@@ -16,6 +16,8 @@ namespace WebApi.DTO
         public int workerId { get; set; }
         public int userId { get; set; }
         public string LanguageName_En { get; set; }
+
+        public string pushTokenSecoundSide { get; set; }
         public virtual ICollection<tblCaresForPatient> tblCaresForPatient { get; set; }
         public virtual ICollection<tblContacts> tblContacts { get; set; }
         public virtual ICollection<tblDrugForPatient> tblDrugForPatient { get; set; }

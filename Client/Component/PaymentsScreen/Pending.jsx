@@ -746,7 +746,7 @@ function RequestHeb(props) {
                 optionsWrapper: styles.optionsWrapper,
               }}
               >
-                <MenuOption value={1} children={<View style={userContext.userId == props.data.userId ? styles.options : styles.disabledoptions}><MaterialCommunityIcons name='bell-ring-outline' size={20} /><Text style={styles.optionsText}> Send Notification</Text></View>} />
+                <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} value={1} children={<View style={userContext.userId == props.data.userId ? styles.options : styles.disabledoptions}><MaterialCommunityIcons name='bell-ring-outline' size={20} /><Text style={styles.optionsText}> Send Notification</Text></View>} />
                 <MenuOption value={2} children={<View style={styles.options}><Feather name='eye' size={20} /><Text style={styles.optionsText}> View Document</Text></View>} />
                 <MenuOption disableTouchable={userContext.userId == props.data.userId ? false : true} value={3} children={<View style={userContext.userId == props.data.userId ? styles.options : styles.disabledoptions}><Feather name='edit' size={20} /><Text style={styles.optionsText}> Edit Request</Text></View>} />
                 <MenuOption value={4} children={<View style={styles.options}><Feather name='trash-2' size={20} color='#FF3C3C' /><Text style={styles.deleteTxt}> Delete Request</Text></View>} />

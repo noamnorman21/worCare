@@ -17,6 +17,35 @@ export default function Home({ navigation }) {
   const { allPublicTasks, allPrivateTasks, holidays, logOutFireBase, userContext, GetUserHistory, GetUserPending, GetNotificationsThatSent } = useUserContext();
   const isFocused = useIsFocused();
   const firstName = userContext.FirstName;
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    setUser(userContext);
+  }, [userContext]);
+
+useEffect(() => {
+  let listener= Notifications.addNotificationReceivedListener((notification) => {
+    let notiBody= notification.request.content.body
+    if (notiBody.includes("message")) {
+      console.log("message");
+      setNewMessages(newMessages + 1);
+    }
+    else if (notiBody.includes("task")) {
+      console.log("task")
+    }
+    else if (notiBody.includes("payment")) {
+      GetUserPending(user)
+      GetUserHistory(user)
+    }
+    GetNotificationsThatSent(user.userId);
+});
+
+listener;
+    return () => {
+      console.log("remove listener")
+        Notifications.removeNotificationSubscription(listener);
+    };
+}, [user]);
 
   useEffect(() => {
     let listener = Notifications.addNotificationReceivedListener((notification) => {
