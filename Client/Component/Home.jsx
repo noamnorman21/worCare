@@ -34,8 +34,9 @@ useEffect(() => {
       console.log("task")
     }
     else if (notiBody.includes("payment")) {
+      console.log(user)
       GetUserPending(user)
-      GetUserHistory(user)
+      // GetUserHistory(user)
     }
     GetNotificationsThatSent(user.userId);
 });

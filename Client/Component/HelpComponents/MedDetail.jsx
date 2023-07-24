@@ -9,6 +9,9 @@ import * as WebBrowser from 'expo-web-browser';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 import EditMed from './EditMed';
 
+LogBox.ignoreLogs([
+   'Non-serializable values were found in the navigation state',
+]);
 LogBox.ignoreLogs(["Deprecation warning: value provided is not in a recognized RFC2822 or ISO format."]);
 
 export default function MedDetail({ navigation, route }) {

@@ -92,7 +92,7 @@ export default function Pending() {
 
   return (
     <>
-      <ScrollView contentContainerStyle={styles.pending} onScroll={onScroll}>
+      <ScrollView contentContainerStyle={styles.pending} onScroll={onScroll} >
         {Pendings}
         <Modal animationType='slide' transparent={true} visible={modal1Visible}>
           <NewPayment cancel={() => { setModal1Visible(false); renderPendings() }} />

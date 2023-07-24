@@ -326,17 +326,15 @@ function CustomHeader() {
                 <TouchableOpacity style={styles.menuOverlay} onPress={togllePatientDialog}>
                     <View style={styles.menuContent}>
                         {patientArr}
-
                         {userContext.userType === "User" && <TouchableOpacity style={styles.addNewPatient} onPress={
                             () => {
                                 togllePatientDialog()
                                 navigation.navigate('NewPatientLvl1')
                             }
                         }>
-                            <View style={styles.addNewPatient}>
-                                <Ionicons name="add-circle" size={28} color="#707070" />
-                                <Text style={[styles.menuOptionText, { paddingLeft: 10 }]}>Add New Patient</Text>
-                            </View>
+
+                                <Text style={[styles.menuOptionText,{ fontSize: 24}]}>Add New Patient</Text>
+                                <Ionicons name="add-circle" size={45} color="#969595" />
                         </TouchableOpacity>}
                         <TouchableOpacity style={[styles.noThankBtn]} onPress={togllePatientDialog}>
                             <Text style={[styles.menuOptionText,{ color: '#548DFF', fontSize: 16, textAlign: 'left' }]}>No Thanks</Text>
@@ -579,9 +577,12 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
     },
     addNewPatient: {
-        width: '100%',
+        width: '95%',
+        height: 54,
         flexDirection: 'row',
-        paddingHorizontal: 10,
+        justifyContent: 'space-between',
+        paddingLeft: 10,
+        paddingRight: 1,
         alignItems: 'center',
     },
     noThankBtn: {
