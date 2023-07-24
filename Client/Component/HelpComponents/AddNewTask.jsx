@@ -1779,7 +1779,6 @@ const styles = StyleSheet.create({
       fontSize: 16,
       fontFamily: 'Urbanist-Regular',
       textAlign: 'right',
-      backgroundColor: '#f00',
    },
    medDatePicker: {
       width: SCREEN_WIDTH * 0.45,
