@@ -16,6 +16,7 @@ LogBox.ignoreLogs(['Warning: componentWillReceiveProps has been renamed, and is 
 LogBox.ignoreLogs([`Key "cancelled" in the image picker result is deprecated and will be removed in SDK 48, use "canceled" instead`]);
 LogBox.ignoreLogs([`DatePickerIOS has been merged with DatePickerAndroid and will be removed in a future release. It can now be installed and imported from '@react-native-community/datetimepicker' instead of 'react-native'. See https://github.com/react-native-datetimepicker/datetimepicker`])
 LogBox.ignoreLogs([`VirtualizedLists should never be nested inside plain ScrollViews with the same orientation because it can break windowing and other functionality - use another VirtualizedList-backed container instead.`]);
+LogBox.ignoreAllLogs(true);
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
