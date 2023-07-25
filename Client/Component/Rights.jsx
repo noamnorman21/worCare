@@ -65,8 +65,8 @@ export default function Rights() {
       }),
     });
     const data = await apiResponse.json();
+    console.log(data);
     const answer = data.choices[0].text.trim();
-    console.log(answer);
     if (answer.toLowerCase() === 'no') {
       setGpt3Answer('The question does not seem to be related to the topic of foreign workers in Israel or their rights and regulations.');
     } else {
